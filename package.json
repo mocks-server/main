@@ -1,0 +1,82 @@
+{
+  "name": "@xbyorange/mocks-server",
+  "version": "1.0.0",
+  "description": "Mocks server with extensible fixtures groupables in predefined behaviors. Behavior can be changed using CLI or REST API",
+  "keywords": [
+    "mocks",
+    "server",
+    "fixtures",
+    "behaviors",
+    "api",
+    "rest",
+    "cli",
+    "express",
+    "testing",
+    "development"
+  ],
+  "author": "XByOrange",
+  "license": "Apache-2.0",
+  "repository": "https://github.com/XbyOrange/mocks-server",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "index.js"
+  ],
+  "main": "index.js",
+  "bin": {
+    "mocks-server": "./bin/mocks-server"
+  },
+  "scripts": {
+    "lint": "eslint index.js lib test",
+    "lint-staged": "lint-staged",
+    "test": "jest",
+    "test-acceptance": "jest --config=jest.acceptance.config.js",
+    "test-ci": "npm run test && npm run test-acceptance",
+    "coveralls": "cat ./coverage/lcov.info | coveralls"
+  },
+  "dependencies": {
+    "body-parser": "1.19.0",
+    "boom": "7.2.0",
+    "chalk": "^2.4.2",
+    "commander": "2.20.0",
+    "cors": "2.8.5",
+    "express": "4.17.1",
+    "express-request-id": "1.4.0",
+    "inquirer": "^6.3.1",
+    "inquirer-autocomplete-prompt": "^1.0.1",
+    "lodash": "4.17.11",
+    "node-watch": "0.5.8",
+    "require-all": "3.0.0",
+    "route-parser": "0.0.5",
+    "strip-ansi": "^4.0.0",
+    "tree-kill-sync": "^1.0.0",
+    "winston": "3.0.0"
+  },
+  "devDependencies": {
+    "coveralls": "^3.0.3",
+    "eslint": "5.14.1",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "husky": "^1.3.1",
+    "jest": "^23.6.0",
+    "lint-staged": "^8.1.4",
+    "prettier": "^1.16.4",
+    "sinon": "^7.2.3"
+  },
+  "lint-staged": {
+    "lib/**/*.js": "eslint",
+    "test/**/*.js": "eslint"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint-staged"
+    }
+  },
+  "engines": {
+    "node": ">8.0.0",
+    "npm": ">6.0.0"
+  }
+}

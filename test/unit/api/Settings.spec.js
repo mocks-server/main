@@ -8,6 +8,7 @@ const Settings = require("../../../lib/api/Settings");
 describe.only("Settings Api", () => {
   let sandbox;
   let routerStubs;
+  let resMock;
   let statusSpy;
   let sendSpy;
   let settingsMocks;
@@ -19,7 +20,6 @@ describe.only("Settings Api", () => {
       put: sandbox.stub()
     };
     settingsMocks = new SettingsMocks();
-    routerGetStub = sandbox.stub();
     sandbox.stub(express, "Router").returns(routerStubs);
     statusSpy = sandbox.spy();
     sendSpy = sandbox.spy();

@@ -10,6 +10,7 @@ describe("middlewares", () => {
   let sendSpy;
   let resMock;
   let nextSpy;
+  let headerSpy;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();

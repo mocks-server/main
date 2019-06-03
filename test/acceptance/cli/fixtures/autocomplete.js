@@ -47,9 +47,8 @@ const MyCli = class MyCli {
   async displayMainMenu() {
     this._cli.clearScreen();
     this._selectedOption = await this._cli.inquire("main");
-    switch (this._selectedOption) {
-      case "tags":
-        return this.changeTags();
+    if (this._selectedOption === "tags") {
+      return this.changeTags();
     }
   }
 };

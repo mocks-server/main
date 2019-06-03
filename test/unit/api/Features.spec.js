@@ -6,6 +6,7 @@ const Features = require("../../../lib/api/Features");
 describe("Features Api", () => {
   let sandbox;
   let routerStubs;
+  let resMock;
   let statusSpy;
   let sendSpy;
 
@@ -15,7 +16,6 @@ describe("Features Api", () => {
       get: sandbox.stub(),
       put: sandbox.stub()
     };
-    routerGetStub = sandbox.stub();
     sandbox.stub(express, "Router").returns(routerStubs);
     statusSpy = sandbox.spy();
     sendSpy = sandbox.spy();

@@ -13,6 +13,7 @@ const Server = require("../../../lib/Server");
 const FOO_FEATURES_PATH = "foo-path";
 
 describe("Server", () => {
+  let server;
   let sandbox;
   let featuresMocks;
   let settingsMocks;

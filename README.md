@@ -6,7 +6,7 @@
 
 # Mocks Server
 
-Mocks server with extensible fixtures groupables in predefined behaviors. Change behaviors using built-in CLI or REST API.
+Mocks server with extensible fixtures groupables in predefined behaviors. Behavior can be changed using built-in CLI or REST API.
 
 ## Table of contents
 
@@ -24,9 +24,9 @@ Mocks server with extensible fixtures groupables in predefined behaviors. Change
 
 ## Getting Started
 
-This package provides a server that simulate APIs behaviors. As input, it needs "fixtures", which are responses for specific uris, and "features", which are sets of "fixtures".
+This package provides a server that simulates API behaviors. As input, it needs "fixtures", which are responses for specific uris, and "features", which are sets of "fixtures".
 
-It also provide a built-in api which allows to change the currently used "feature" in any moment simply making an http request.
+It also provide a built-in CLI and a REST API which allows to change the currently used "feature" in any moment simply making an http request.
 
 ## Installation
 

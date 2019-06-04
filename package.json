@@ -1,6 +1,6 @@
 {
   "name": "@xbyorange/mocks-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Mocks server with extensible fixtures groupables in predefined behaviors. Behavior can be changed using CLI or REST API",
   "keywords": [
     "mocks",

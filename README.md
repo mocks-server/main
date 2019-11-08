@@ -52,7 +52,7 @@ Now, you can start the mocks server CLI simply typing:
 npm run mocks-server
 ```
 
-![cli-home](./assets/cli_home.png)
+![cli-home](./assets/cli_animation.gif)
 
 ## Options
 

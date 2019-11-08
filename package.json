@@ -1,6 +1,6 @@
 {
-  "name": "@xbyorange/mocks-server",
-  "version": "1.0.1",
+  "name": "@mocks-server/main",
+  "version": "1.0.2",
   "description": "Mocks server with extensible fixtures groupables in predefined behaviors. Behavior can be changed using CLI or REST API",
   "keywords": [
     "mocks",
@@ -14,9 +14,9 @@
     "testing",
     "development"
   ],
-  "author": "XByOrange",
+  "author": "Javier Brea",
   "license": "Apache-2.0",
-  "repository": "https://github.com/XbyOrange/mocks-server",
+  "repository": "https://github.com/mocks-server/main",
   "publishConfig": {
     "access": "public"
   },

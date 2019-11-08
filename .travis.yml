@@ -5,14 +5,13 @@ node_js:
 
 cache:
   directories:
-    - "node_modules"
-    - "$HOME/.sonar/cache"
+    - ~/.npm
+    - node_modules
+    - ~/.sonar/cache
 
 addons:
   sonarcloud:
-    organization: "javierbrea"
-    token:
-      secure: "$SONAR_TOKEN"
+    organization: "mocks-server"
     branch:
       name: "$TRAVIS_CURRENT_BRANCH"
 
@@ -20,11 +19,11 @@ script:
   - npm run lint
   - npm run test-ci
   - npm run coveralls
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then sonar-scanner; fi'
+  - sonar-scanner -Dsonar.login=${SONAR_TOKEN}
 
 deploy:
   provider: npm
-  email: "devops@xbyorange.com"
+  email: "javier.brea@gmail.com"
   api_key: "$NPM_TOKEN"
   on:
     tags: true

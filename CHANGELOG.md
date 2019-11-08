@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.0.2] - 2019-11-08
+### Changed
+- Project forked from xbyorange/mocks-server. Fixed license. Read NOTICE for further details
+
 ## [1.0.1] - 2019-06-04
 ### Fixed
 - Upgrade dependencies to fix potential security vulnerability

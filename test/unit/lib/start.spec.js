@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -54,17 +55,44 @@ describe("start method", () => {
       expect(cliMocks.stubs.instance.start.callCount).toEqual(1);
     });
 
+    describe("when creating Cli throws an error", () => {
+      it("should print the error", async () => {
+        sandbox.stub(console, "log");
+        const fooErrorMessage = "foo error message";
+        cliMocks.stubs.Constructor.mockImplementation(() => {
+          throw new Error(fooErrorMessage);
+        });
+        expect.assertions(1);
+        await start();
+        expect(console.log.getCall(0).args[0].message).toEqual(fooErrorMessage);
+      });
+    });
+
+    describe("when creating Server throws an error", () => {
+      it("should print the error", async () => {
+        const fooOptions = {
+          cli: false
+        };
+        options.get.returns(fooOptions);
+        const fooErrorMessage = "foo error message";
+        sandbox.stub(console, "log");
+        serverMocks.stubs.Constructor.mockImplementation(() => {
+          throw new Error(fooErrorMessage);
+        });
+        expect.assertions(1);
+        await start();
+        expect(console.log.getCall(0).args[0].message).toEqual(fooErrorMessage);
+      });
+    });
+
     describe("when cli throws an error", () => {
       it("should trace the error message if it is a Boom error", async () => {
         expect.assertions(1);
         const fooErrorMessage = "foo error message";
         const fooError = Boom.badImplementation(fooErrorMessage);
         cliMocks.stubs.instance.start.rejects(fooError);
-        try {
-          await start();
-        } catch (err) {
-          expect(tracer.error.getCall(0).args[0]).toEqual(fooErrorMessage);
-        }
+        await start();
+        expect(tracer.error.getCall(0).args[0]).toEqual(fooErrorMessage);
       });
 
       it("should print the error if it is not a Boom error", async () => {
@@ -72,11 +100,8 @@ describe("start method", () => {
         sandbox.stub(console, "log");
         const fooError = new Error();
         cliMocks.stubs.instance.start.rejects(fooError);
-        try {
-          await start();
-        } catch (err) {
-          expect(console.log.getCall(0).args[0]).toEqual(fooError);
-        }
+        await start();
+        expect(console.log.getCall(0).args[0]).toEqual(fooError);
       });
     });
 

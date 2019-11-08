@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -37,6 +38,7 @@ describe("Server", () => {
     processOnStub = sandbox.stub(process, "on");
     sandbox.stub(_, "delay").callsFake(cb => cb());
     sandbox.stub(_, "debounce").callsFake(cb => cb);
+    sandbox.spy(console, "warn");
     libsMocks = new LibsMocks();
     apiMocks = new ApiMocks();
     settingsMocks = new SettingsMocks();
@@ -53,7 +55,7 @@ describe("Server", () => {
   });
 
   describe("when instantiated", () => {
-    it("should call to create Features passing the provided features folder relative to current cwd", () => {
+    it("should call to create Behaviors passing the provided features folder relative to current cwd", () => {
       server = new Server(FOO_FEATURES_PATH);
       expect(featuresMocks.stubs.Constructor.mock.calls[0]).toEqual([
         path.resolve(process.cwd(), "foo-path"),
@@ -72,7 +74,7 @@ describe("Server", () => {
       }
     });
 
-    it("should call to create Features passing the provided features folder as absolute if it is absolute", () => {
+    it("should call to create Behaviors passing the provided features folder as absolute if it is absolute", () => {
       server = new Server("/foo-path");
       expect(featuresMocks.stubs.Constructor.mock.calls[0]).toEqual([
         "/foo-path",
@@ -83,13 +85,35 @@ describe("Server", () => {
       ]);
     });
 
-    it("should call to create Features passing the current feature if it is defined in options", () => {
+    it("should call to create Behaviors passing the current feature if it is defined in options", () => {
       server = new Server("/foo-path", {
         feature: "foo-feature"
       });
       expect(featuresMocks.stubs.Constructor.mock.calls[0]).toEqual([
         "/foo-path",
         "foo-feature",
+        {
+          recursive: true
+        }
+      ]);
+    });
+
+    it("should print a warning if feature option is received and behavior option not", () => {
+      server = new Server("/foo-path", {
+        feature: "foo-feature"
+      });
+      expect(console.warn.getCall(0).args[0]).toEqual(
+        expect.stringContaining("Deprecation warning:")
+      );
+    });
+
+    it("should call to create Behaviors passing the current behavior if it is defined in options", () => {
+      server = new Server("/foo-path", {
+        behavior: "foo-behavior"
+      });
+      expect(featuresMocks.stubs.Constructor.mock.calls[0]).toEqual([
+        "/foo-path",
+        "foo-behavior",
         {
           recursive: true
         }

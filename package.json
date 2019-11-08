@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/main",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Mocks server with extensible fixtures groupables in predefined behaviors. Behavior can be changed using CLI or REST API",
   "keywords": [
     "mocks",
@@ -41,30 +41,30 @@
     "body-parser": "1.19.0",
     "boom": "7.3.0",
     "chalk": "^2.4.2",
-    "commander": "2.20.0",
+    "commander": "4.0.0",
     "cors": "2.8.5",
     "express": "4.17.1",
     "express-request-id": "1.4.1",
-    "inquirer": "^6.3.1",
+    "inquirer": "7.0.0",
     "inquirer-autocomplete-prompt": "^1.0.1",
-    "lodash": "4.17.11",
-    "node-watch": "0.6.2",
+    "lodash": "4.17.15",
+    "node-watch": "0.6.3",
     "require-all": "3.0.0",
     "route-parser": "0.0.5",
     "strip-ansi": "5.2.0",
     "tree-kill-sync": "^1.0.0",
-    "winston": "3.2.0"
+    "winston": "3.2.1"
   },
   "devDependencies": {
     "coveralls": "^3.0.3",
-    "eslint": "5.16.0",
-    "eslint-config-prettier": "^4.0.0",
-    "eslint-plugin-prettier": "^3.0.1",
-    "husky": "2.3.0",
-    "jest": "24.8.0",
-    "lint-staged": "^8.1.4",
-    "prettier": "^1.16.4",
-    "sinon": "^7.2.3"
+    "eslint": "6.6.0",
+    "eslint-config-prettier": "6.5.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "husky": "3.0.9",
+    "jest": "24.9.0",
+    "lint-staged": "^9.4.2",
+    "prettier": "^1.18.2",
+    "sinon": "^7.5.0"
   },
   "lint-staged": {
     "lib/**/*.js": "eslint",

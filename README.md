@@ -237,10 +237,17 @@ Now, you can start the built-in command line interface from anywhere, providing 
 mocks-server --behaviors=./path-to-behaviors
 ```
 
+### Support (OS Terminals)
+
+@mocks-server/main uses [inquirer][inquirer-url] for displaying CLI. You can [consult his OS Terminals support here][inquirer-support].
+
 ## Contributing
 
 Contributors are welcome.
 Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of conduct](.github/CODE_OF_CONDUCT.md).
+
+[inquirer-url]: https://www.npmjs.com/package/inquirer#support-os-terminals
+[inquirer-support]: https://www.npmjs.com/package/inquirer#support-os-terminals
 
 [coveralls-image]: https://coveralls.io/repos/github/mocks-server/main/badge.svg
 [coveralls-url]: https://coveralls.io/github/mocks-server/main

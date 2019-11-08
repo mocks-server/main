@@ -8,20 +8,6 @@
 
 Mocks server with extensible fixtures groupables in predefined behaviors. Behavior can be changed using built-in CLI or REST API.
 
-## Table of contents
-
-- [Getting started](#getting-started)
-- [Installation](#installation)
-- [Usage](#usage)
-	- [Interactive CLI](#interactive-cli)
-  - [Rest Api](#rest-api)
-	- [Programmatic usage](#programmatic-usage)
-		- [CLI](#cli)
-		- [Server](#server)
-	- [Global usage](#global-usage)
-- [Options](#Options)
-- [Defining mocks](#defining-mocks)
-
 ## Getting Started
 
 This package provides a server that simulates API behaviors. As input, it needs "fixtures", which are responses for specific uris, and "behaviors", which are sets of "fixtures".
@@ -35,8 +21,6 @@ npm i @mocks-server/main --save-dev
 ```
 
 ## Usage
-
-### Interactive CLI
 
 Add an script to your `package.json` file, including the path to your mocks folder:
 
@@ -163,7 +147,7 @@ module.exports = {
 };
 ```
 
-### REST API
+## REST API
 
 The server includes a REST API that allows to change dinamically the current behavior, change delay time, etc. This is __very useful when running acceptance tests, as you can change the behavior of the api__ simply with a request in your tests `before` method.
 
@@ -178,9 +162,7 @@ Available api resources are:
 * `PUT` `/mocks/settings` Change current server settings.
   * Request body example: `{ "delay": 3000 }`
 
-### Programmatic usage
-
-#### Server
+## Programmatic usage
 
 The server can be instantiated and started programmatically:
 
@@ -202,7 +184,7 @@ startMyServer().then(server => {
 });
 ```
 
-##### `Server` (behaviorsFolder \[,options\])
+#### `Server` (behaviorsFolder \[,options\])
 
 First argument is mandatory, and has to be a path to a folder containing "behaviors" and "fixtures". All files in the folder will be loaded recursively, including subfolders.
 For second argument options, please read the [options](#options) chapter of this documentation.
@@ -223,7 +205,7 @@ Available getters are:
 
 > The interactive CLI can be started programatically too. Read the [cli advanced docs](./docs/cli.md) for further info.
 
-### Global usage
+## Global usage
 
 The mocks server can be used as a global dependency as well:
 
@@ -237,7 +219,7 @@ Now, you can start the built-in command line interface from anywhere, providing 
 mocks-server --behaviors=./path-to-behaviors
 ```
 
-### Support (OS Terminals)
+## Support (OS Terminals)
 
 This package uses [inquirer][inquirer-url] for displaying CLI. You can [consult his OS Terminals support here][inquirer-support].
 

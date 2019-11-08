@@ -108,6 +108,7 @@ A "fixture" defines the response for an specific uri. It has to be an object con
 ```js
 // Fixtures file
 
+// fixtures with static responses
 const uri_1_fixture = {
   url: "/api/foo-uri",
   method: "GET",
@@ -129,6 +130,7 @@ const uri_2_fixture = {
   }
 };
 
+// fixture with a dynamic response
 const uri_2_different_fixture = {
   url: "/api/foo-uri-2/:id",
   method: "PUT",

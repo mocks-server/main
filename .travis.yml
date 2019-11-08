@@ -12,15 +12,15 @@ cache:
 addons:
   sonarcloud:
     organization: "javierbrea"
-    # token:
-      # secure: "$SONAR_TOKEN"
+    token:
+      secure: "$SONAR_TOKEN"
     branch:
       name: "$TRAVIS_CURRENT_BRANCH"
 
 script:
-  #- npm run lint
-  #- npm run test-ci
-  #- npm run coveralls
+  - npm run lint
+  - npm run test-ci
+  - npm run coveralls
   - sonar-scanner -Dsonar.login=${SONAR_TOKEN}
 
 deploy:

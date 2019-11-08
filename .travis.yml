@@ -24,7 +24,7 @@ script:
 
 deploy:
   provider: npm
-  email: "devops@xbyorange.com"
+  email: "javier.brea@gmail.com"
   api_key: "$NPM_TOKEN"
   on:
     tags: true

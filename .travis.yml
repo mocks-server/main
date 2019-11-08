@@ -21,7 +21,7 @@ script:
   - npm run lint
   - npm run test-ci
   - npm run coveralls
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.login=${SONAR_TOKEN}; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.login=${SONAR_TOKEN}; fi'
 
 deploy:
   provider: npm

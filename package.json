@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/main",
-  "version": "1.1.0",
+  "version": "1.0.3",
   "description": "Mocks server with extensible fixtures groupables in predefined behaviors. Behavior can be changed using CLI or REST API",
   "keywords": [
     "mocks",

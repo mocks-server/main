@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [1.1.0] - 2019-11-08
+## [1.0.3] - 2019-11-08
 ### Fixed
 - Fix examples and badges in readme.
 

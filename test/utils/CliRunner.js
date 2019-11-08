@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -116,7 +117,9 @@ module.exports = class CliRunner {
     return this._exitPromise;
   }
 
-  async hasPrinted(data, action, timeOut = 1000) {
+  async hasPrinted(data, inputAction, inputTimeOut = 1000) {
+    let timeOut = inputTimeOut;
+    let action = inputAction;
     if (isNumber(action)) {
       timeOut = action;
       action = null;

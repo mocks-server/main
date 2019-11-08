@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -52,14 +53,14 @@ describe("Api", () => {
 
     it('should add an express path under "/features"', () => {
       new Api("foo-path");
-      expect(routerUseStub.getCall(0).args[0]).toEqual("/features");
+      expect(routerUseStub.getCall(1).args[0]).toEqual("/features");
     });
 
     it('should use the created features under the "/features" router path', () => {
       const fooFeaturesRouter = "foo-features-router";
       featuresMocks.stubs.instance.router = fooFeaturesRouter;
       new Api();
-      expect(routerUseStub.getCall(0).args[1]).toEqual(fooFeaturesRouter);
+      expect(routerUseStub.getCall(1).args[1]).toEqual(fooFeaturesRouter);
     });
   });
 

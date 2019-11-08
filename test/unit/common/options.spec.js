@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -40,7 +41,7 @@ describe("options", () => {
   describe("get method", () => {
     it("should call to commander to get user options from command line", () => {
       options.get();
-      expect(optionStub.callCount).toEqual(8);
+      expect(optionStub.callCount).toEqual(10);
     });
 
     it("should call to convert to number received value in --port option", () => {

@@ -11,7 +11,7 @@ addons:
   sonarcloud:
     organization: "mocks-server"
     token:
-      secure: $SONAR_TOKEN
+      secure: "$SONAR_TOKEN"
     branch:
       name: "$TRAVIS_CURRENT_BRANCH"
 

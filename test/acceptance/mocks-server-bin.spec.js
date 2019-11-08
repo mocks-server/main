@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -16,11 +17,11 @@ describe("when mocks-server binary is executed", () => {
   const binFile = path.resolve(__dirname, "..", "..", "bin", "mocks-server");
   let cliRunner;
 
-  it("should throw a controlled error if no features folder is provided", async () => {
+  it("should throw a controlled error if no behaviors folder is provided", async () => {
     cliRunner = new CliRunner([binFile]);
     await cliRunner.hasExit();
     expect(await cliRunner.logs).toEqual(
-      expect.stringContaining("Please provide a path to a folder containing features")
+      expect.stringContaining("Please provide a path to a folder containing behaviors")
     );
   });
 });

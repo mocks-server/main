@@ -31,7 +31,7 @@ It also provide a built-in CLI and a REST API which allows to change the current
 ## Installation
 
 ```bash
-npm i @xbyorange/mocks-server --save-dev
+npm i @mocks-server/main --save-dev
 ```
 
 ## Usage
@@ -76,7 +76,7 @@ Available api resources are:
 The interactive CLI can be instantiated and started programmatically:
 
 ```js
-const { Cli } = require("@xbyorange/mocks-server");
+const { Cli } = require("@mocks-server/main");
 
 const startMyCli = () => {
   const cli = new Cli({
@@ -107,7 +107,7 @@ When server watch is active, the main menu will be displayed on file changes. Th
 The server can be instantiated and started programmatically:
 
 ```js
-const { Server } = require("@xbyorange/mocks-server");
+const { Server } = require("@mocks-server/main");
 
 const startMyServer = () => {
   const server = new Server(path.resolve(__dirname, "mocks"), {
@@ -148,7 +148,7 @@ Available getters are:
 The mocks server can be used as a global dependency as well:
 
 ```bash
-npm i @xbyorange/mocks-server -g
+npm i @mocks-server/main -g
 ```
 
 Now, you can start the built-in command line interface from anywhere, providing a path to a features folder:
@@ -184,7 +184,7 @@ For creating a Feature, you have to use the mocks-server "Feature" class, provid
 ```js
 // Features file 1
 
-const { Feature } = require("@xbyorange/mocks-server");
+const { Feature } = require("@mocks-server/main");
 
 const fixtures = require("./fixtures");
 
@@ -271,19 +271,19 @@ module.exports = {
 Contributors are welcome.
 Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of conduct](.github/CODE_OF_CONDUCT.md).
 
-[coveralls-image]: https://coveralls.io/repos/github/XbyOrange/mocks-server/badge.svg
-[coveralls-url]: https://coveralls.io/github/XbyOrange/mocks-server
-[travisci-image]: https://travis-ci.com/xbyorange/mocks-server.svg?branch=master
-[travisci-url]: https://travis-ci.com/xbyorange/mocks-server
-[last-commit-image]: https://img.shields.io/github/last-commit/xbyorange/mocks-server.svg
-[last-commit-url]: https://github.com/xbyorange/mocks-server/commits
-[license-image]: https://img.shields.io/npm/l/@xbyorange/mocks-server.svg
-[license-url]: https://github.com/xbyorange/mocks-server/blob/master/LICENSE
-[npm-downloads-image]: https://img.shields.io/npm/dm/@xbyorange/mocks-server.svg
-[npm-downloads-url]: https://www.npmjs.com/package/@xbyorange/mocks-server
-[npm-dependencies-image]: https://img.shields.io/david/xbyorange/mocks-server.svg
-[npm-dependencies-url]: https://david-dm.org/xbyorange/mocks-server
-[quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=xbyorange-mocks-server&metric=alert_status
-[quality-gate-url]: https://sonarcloud.io/dashboard?id=xbyorange-mocks-server
-[release-image]: https://img.shields.io/github/release-date/xbyorange/mocks-server.svg
-[release-url]: https://github.com/xbyorange/mocks-server/releases
+[coveralls-image]: https://coveralls.io/repos/github/mocks-server/main/badge.svg
+[coveralls-url]: https://coveralls.io/github/mocks-server/main
+[travisci-image]: https://travis-ci.com/mocks-server/main.svg?branch=master
+[travisci-url]: https://travis-ci.com/mocks-server/main
+[last-commit-image]: https://img.shields.io/github/last-commit/mocks-server/main.svg
+[last-commit-url]: https://github.com/mocks-server/main/commits
+[license-image]: https://img.shields.io/npm/l/@mocks-server/main.svg
+[license-url]: https://github.com/mocks-server/main/blob/master/LICENSE
+[npm-downloads-image]: https://img.shields.io/npm/dm/@mocks-server/main.svg
+[npm-downloads-url]: https://www.npmjs.com/package/@mocks-server/main
+[npm-dependencies-image]: https://img.shields.io/david/mocks-server/main.svg
+[npm-dependencies-url]: https://david-dm.org/mocks-server/main
+[quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=mocks-server-main&metric=alert_status
+[quality-gate-url]: https://sonarcloud.io/dashboard?id=mocks-server-main
+[release-image]: https://img.shields.io/github/release-date/mocks-server/main.svg
+[release-url]: https://github.com/mocks-server/main/releases

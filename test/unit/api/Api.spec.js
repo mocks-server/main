@@ -15,6 +15,7 @@ const sinon = require("sinon");
 const FeaturesMocks = require("./Features.mocks.js");
 const SettingsMocks = require("./Settings.mocks.js");
 
+const tracer = require("../../../lib/common/tracer");
 const Api = require("../../../lib/api/Api");
 
 describe("Api", () => {
@@ -25,6 +26,7 @@ describe("Api", () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    sandbox.stub(tracer, "warn");
     routerUseStub = sandbox.stub();
     sandbox.stub(express, "Router").returns({
       use: routerUseStub
@@ -51,6 +53,18 @@ describe("Api", () => {
       expect(featuresMocks.stubs.Constructor).toHaveBeenCalledWith("foo-path");
     });
 
+    it('should trace a warning each time any path under "/features" is requested', () => {
+      expect.assertions(3);
+      new Api("foo-path");
+      const nextStub = sandbox.stub();
+      routerUseStub.getCall(0).args[1](null, null, nextStub);
+      expect(routerUseStub.getCall(0).args[0]).toEqual("/features");
+      expect(nextStub.callCount).toEqual(1);
+      expect(tracer.warn.getCall(0).args[0]).toEqual(
+        expect.stringContaining("Deprecation warning: ")
+      );
+    });
+
     it('should add an express path under "/features"', () => {
       new Api("foo-path");
       expect(routerUseStub.getCall(1).args[0]).toEqual("/features");
@@ -61,6 +75,18 @@ describe("Api", () => {
       featuresMocks.stubs.instance.router = fooFeaturesRouter;
       new Api();
       expect(routerUseStub.getCall(1).args[1]).toEqual(fooFeaturesRouter);
+    });
+
+    it('should add an express path under "/behaviors"', () => {
+      new Api("foo-path");
+      expect(routerUseStub.getCall(2).args[0]).toEqual("/behaviors");
+    });
+
+    it('should use the created features under the "/behaviors" router path', () => {
+      const fooFeaturesRouter = "foo-features-router";
+      featuresMocks.stubs.instance.router = fooFeaturesRouter;
+      new Api();
+      expect(routerUseStub.getCall(2).args[1]).toEqual(fooFeaturesRouter);
     });
   });
 

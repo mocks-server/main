@@ -165,7 +165,7 @@ module.exports = {
 
 ### REST API
 
-The server includes a REST API that allows to change dinamically the current behavior, change delay time, etc.
+The server includes a REST API that allows to change dinamically the current behavior, change delay time, etc. This is __very useful when running acceptance tests, as you can change the behavior of the api__ simply with a request in your tests `before` method.
 
 Available api resources are:
 

@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+### Changed
+- Change "feature" concept by "behavior". Maintain old "feature" options and urls as aliases for maintaining compatibility.
+
 ## [1.1.0] - 2019-11-08
 ### Fixed
 - Fix examples and badges in readme.

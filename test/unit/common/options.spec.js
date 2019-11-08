@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -22,6 +23,7 @@ describe("options", () => {
     sandbox = sinon.createSandbox();
     optionStub = sandbox.stub();
     parseStub = sandbox.stub().returns({});
+    sandbox.spy(console, "warn");
 
     optionStub.returns({
       option: optionStub,
@@ -40,7 +42,7 @@ describe("options", () => {
   describe("get method", () => {
     it("should call to commander to get user options from command line", () => {
       options.get();
-      expect(optionStub.callCount).toEqual(8);
+      expect(optionStub.callCount).toEqual(10);
     });
 
     it("should call to convert to number received value in --port option", () => {
@@ -55,6 +57,29 @@ describe("options", () => {
         };
       });
       options.get();
+    });
+
+    it("should print a warning if --feature option is received", () => {
+      parseStub.returns({
+        feature: "foo-feature",
+        cli: true,
+        behaviors: "foo/features/path"
+      });
+      options.get();
+      expect(console.warn.getCall(0).args[0]).toEqual(
+        expect.stringContaining("Deprecation warning: --feature")
+      );
+    });
+
+    it("should print a warning if --features option is received", () => {
+      parseStub.returns({
+        cli: true,
+        features: "foo/features/path"
+      });
+      options.get();
+      expect(console.warn.getCall(0).args[0]).toEqual(
+        expect.stringContaining("Deprecation warning: --features")
+      );
     });
 
     it("should extend default options with user options, ommiting undefined values", () => {
@@ -72,6 +97,50 @@ describe("options", () => {
         watch: true,
         feature: "foo-feature",
         features: "foo/features/path",
+        recursive: true
+      });
+    });
+
+    it("should convert behavior and behavior options to features", () => {
+      parseStub.returns({
+        behavior: "foo-feature",
+        cli: true,
+        behaviors: "foo/features/path"
+      });
+      expect(options.get()).toEqual({
+        cli: true,
+        port: 3100,
+        host: "0.0.0.0",
+        log: "info",
+        delay: 0,
+        watch: true,
+        behavior: "foo-feature",
+        behaviors: "foo/features/path",
+        feature: "foo-feature",
+        features: "foo/features/path",
+        recursive: true
+      });
+    });
+
+    it("should apply behavior and behavior options if feature and features options are received too", () => {
+      parseStub.returns({
+        behavior: "foo-behavior",
+        feature: "foo-feature",
+        cli: true,
+        behaviors: "foo/behaviors/path",
+        features: "foo-feature"
+      });
+      expect(options.get()).toEqual({
+        cli: true,
+        port: 3100,
+        host: "0.0.0.0",
+        log: "info",
+        delay: 0,
+        watch: true,
+        behavior: "foo-behavior",
+        behaviors: "foo/behaviors/path",
+        feature: "foo-behavior",
+        features: "foo/behaviors/path",
         recursive: true
       });
     });

@@ -4,13 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [To be deprecated]
+- Deprecate options "features" and "feature".
+- Remove "/features" api path.
+
 ## [unreleased]
 ### Added
 ### Changed
 ### Fixed
 ### Removed
 
-## [1.1.0]
+## [1.1.0] - 2019-11-08
+### Changed
+- Change "feature" concept by "behavior". Maintain old "feature" options and urls as aliases for maintaining compatibility.
+- Upgrade dependencies
 
 ## [1.0.3] - 2019-11-08
 ### Fixed

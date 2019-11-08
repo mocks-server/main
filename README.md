@@ -239,7 +239,7 @@ mocks-server --behaviors=./path-to-behaviors
 
 ### Support (OS Terminals)
 
-@mocks-server/main uses [inquirer][inquirer-url] for displaying CLI. You can [consult his OS Terminals support here][inquirer-support].
+This package uses [inquirer][inquirer-url] for displaying CLI. You can [consult his OS Terminals support here][inquirer-support].
 
 ## Contributing
 

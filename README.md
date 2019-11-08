@@ -54,109 +54,6 @@ npm run mocks-server
 
 ![cli-home](./assets/cli_home.png)
 
-### REST API
-
-The server includes a REST API that allows to change dinamically the current behavior, change delay time, etc.
-
-Available api resources are:
-
-* `GET` `/mocks/behaviors` Returns an array containing all available behaviors.
-* `GET` `/mocks/behaviors/current` Returns current behavior.
-* `PUT` `/mocks/behaviors/current` Set current behavior.
-  * Request body example: `{ "name": "behavior-name" }`
-* `GET` `/mocks/settings` Return current server settings.
-  * Response body example: `{ "delay": 0 }`
-* `PUT` `/mocks/settings` Change current server settings.
-  * Request body example: `{ "delay": 3000 }`
-
-### Programmatic usage
-
-#### CLI
-
-The interactive CLI can be instantiated and started programmatically:
-
-```js
-const { Cli } = require("@mocks-server/main");
-
-const startMyCli = () => {
-  const cli = new Cli({
-    port: 3200,
-    log: "debug",
-    watch: false
-  });
-
-  return cli.start();
-};
-
-startMyCli().catch(err => {
-  console.log("Error starting CLI", err);
-});
-```
-
-##### `Cli` (\[options\]\[,customQuitMethod\])
-For first argument options, please read the [options](#options) chapter of this documentation. Available methods of an instance are:
-- `start` ()
-Inits the server in case it was stopped, adds the watch listeners, and renders main menu.
-- `initServer` ()
-Inits the server in case it was stopped, adds the watch listeners.
-- `stopListeningServerWatch` ()
-When server watch is active, the main menu will be displayed on file changes. This behavior can be deactivated using this method. This is useful when this CLI is loaded as a submenu of another CLI, for example.
-
-#### Server
-
-The server can be instantiated and started programmatically:
-
-```js
-const { Server } = require("@mocks-server/main");
-
-const startMyServer = () => {
-  const server = new Server(path.resolve(__dirname, "mocks"), {
-    port: 3200,
-    log: "debug",
-    watch: false
-  });
-
-  return server.start();
-};
-
-startMyServer().then(server => {
-  console.log("Server started", server);
-});
-```
-
-##### `Server` (behaviorsFolder \[,options\])
-
-First argument is mandatory, and has to be a path to a folder containing "behaviors" and "fixtures". All files in the folder will be loaded recursively, including subfolders.
-For second argument options, please read the [options](#options) chapter of this documentation.
-
-Available methods of an instance are:
-
-- `start` (). Starts the server.
-- `stop` (). Stops the server.
-- `restart` (). Stops the server, initializes it again (reloading behaviors files), and starts it again.
-- `switchWatch` (state `<Boolean>`). Enable or disable behaviors files watch, depending of the received "state" value.
-
-Available getters are:
-
-- `behaviors`. Returns loaded behaviors object.
-- `watchEnabled`. Current state of the behaviors files watcher.
-- `error`. When server has returned an error, or an error ocurred loading behaviors, it is available in this property.
-- `events`. Returns server events object. A "watch-reload" event is emitted when the server watch detects changes in any behaviors or fixtures file, and restarts the server.
-
-### Global usage
-
-The mocks server can be used as a global dependency as well:
-
-```bash
-npm i @mocks-server/main -g
-```
-
-Now, you can start the built-in command line interface from anywhere, providing a path to a folder containing behaviors:
-
-```bash
-mocks-server --behaviors=./path-to-behaviors
-```
-
 ## Options
 
 * port `<Number>` Por number for the Server to be listening.
@@ -220,8 +117,8 @@ A "fixture" defines the response for an specific uri. It has to be an object con
 * url `uri as <String>` Uri of the resource. It can contains expressions for matching dynamic uris. Read the [route-parser](https://www.npmjs.com/package/route-parser) documentation for further info about how to use dynamic routing.
 * method `<String>` Method of the request. Defines to which method will response this fixture. Valid values are http request methods, such as "GET", "POST", "PUT", etc.
 * response `<Object>` Defines the response that the Mocks Server will send to the request:
-	* status `<Number>` Status code to send.
-	* body `<Object>` Json object to send as body in the response.
+  * status `<Number>` Status code to send.
+  * body `<Object>` Json object to send as body in the response.
 * response `<Function>` Response can be defined as a function too. The function will receive the [express](http://expressjs.com/es/api.html) `request`, `response` and `next` arguments, so you are free to handle the server request as you need.
 
 ```js
@@ -264,6 +161,80 @@ module.exports = {
   uri_2_fixture,
   uri_2_different_fixture
 };
+```
+
+### REST API
+
+The server includes a REST API that allows to change dinamically the current behavior, change delay time, etc.
+
+Available api resources are:
+
+* `GET` `/mocks/behaviors` Returns an array containing all available behaviors.
+* `GET` `/mocks/behaviors/current` Returns current behavior.
+* `PUT` `/mocks/behaviors/current` Set current behavior.
+  * Request body example: `{ "name": "behavior-name" }`
+* `GET` `/mocks/settings` Return current server settings.
+  * Response body example: `{ "delay": 0 }`
+* `PUT` `/mocks/settings` Change current server settings.
+  * Request body example: `{ "delay": 3000 }`
+
+### Programmatic usage
+
+#### Server
+
+The server can be instantiated and started programmatically:
+
+```js
+const { Server } = require("@mocks-server/main");
+
+const startMyServer = () => {
+  const server = new Server(path.resolve(__dirname, "mocks"), {
+    port: 3200,
+    log: "debug",
+    watch: false
+  });
+
+  return server.start();
+};
+
+startMyServer().then(server => {
+  console.log("Server started", server);
+});
+```
+
+##### `Server` (behaviorsFolder \[,options\])
+
+First argument is mandatory, and has to be a path to a folder containing "behaviors" and "fixtures". All files in the folder will be loaded recursively, including subfolders.
+For second argument options, please read the [options](#options) chapter of this documentation.
+
+Available methods of an instance are:
+
+- `start` (). Starts the server.
+- `stop` (). Stops the server.
+- `restart` (). Stops the server, initializes it again (reloading behaviors files), and starts it again.
+- `switchWatch` (state `<Boolean>`). Enable or disable behaviors files watch, depending of the received "state" value.
+
+Available getters are:
+
+- `behaviors`. Returns loaded behaviors object.
+- `watchEnabled`. Current state of the behaviors files watcher.
+- `error`. When server has returned an error, or an error ocurred loading behaviors, it is available in this property.
+- `events`. Returns server events object. A "watch-reload" event is emitted when the server watch detects changes in any behaviors or fixtures file, and restarts the server.
+
+> The interactive CLI can be started programatically too. Read the [cli advanced docs](./docs/cli.md) for further info.
+
+### Global usage
+
+The mocks server can be used as a global dependency as well:
+
+```bash
+npm i @mocks-server/main -g
+```
+
+Now, you can start the built-in command line interface from anywhere, providing a path to a folder containing behaviors:
+
+```bash
+mocks-server --behaviors=./path-to-behaviors
 ```
 
 ## Contributing

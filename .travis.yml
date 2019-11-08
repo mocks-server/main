@@ -10,7 +10,7 @@ cache:
 
 addons:
   sonarcloud:
-    organization: "javierbrea"
+    organization: "mocks-server"
     token:
       secure: "$SONAR_TOKEN"
     branch:

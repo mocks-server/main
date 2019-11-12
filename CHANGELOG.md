@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 ## [1.1.1] - 2019-11-12
+### Changed
+- Change readme. Add links to docs website.
 
 ## [1.1.0] - 2019-11-08
 ### Changed

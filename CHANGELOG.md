@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.1.1] - 2019-11-12
+### Changed
+- Change readme. Add links to docs website.
+
 ## [1.1.0] - 2019-11-08
 ### Changed
 - Change "feature" concept by "behavior". Maintain old "feature" options and urls as aliases for maintaining compatibility.

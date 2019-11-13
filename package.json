@@ -17,6 +17,7 @@
   "author": "Javier Brea",
   "license": "Apache-2.0",
   "repository": "https://github.com/mocks-server/main",
+  "homepage": "https://www.mocks-server.org",
   "publishConfig": {
     "access": "public"
   },

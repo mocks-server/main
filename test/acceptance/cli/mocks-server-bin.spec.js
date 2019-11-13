@@ -11,10 +11,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 
-const { CliRunner } = require("../utils");
+const { CliRunner } = require("../../utils");
 
 describe("when mocks-server binary is executed", () => {
-  const binFile = path.resolve(__dirname, "..", "..", "bin", "mocks-server");
+  const binFile = path.resolve(__dirname, "..", "..", "..", "bin", "mocks-server");
   let cliRunner;
 
   it("should throw a controlled error if no behaviors folder is provided", async () => {

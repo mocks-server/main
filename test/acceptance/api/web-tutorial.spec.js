@@ -29,7 +29,10 @@ describe("web tutorial", () => {
 
     it("should serve users collection mock under the /api/users path", async () => {
       const users = await request("/api/users");
-      expect(users).toEqual([{ id: 1, name: "John Doe" }, { id: 2, name: "Jane Doe" }]);
+      expect(users).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" }
+      ]);
     });
 
     it("should serve user 1 under the /api/users/1 path", async () => {
@@ -50,7 +53,10 @@ describe("web tutorial", () => {
 
     it("should serve users collection mock under the /api/users path", async () => {
       const users = await request("/api/users");
-      expect(users).toEqual([{ id: 1, name: "John Doe" }, { id: 2, name: "Jane Doe" }]);
+      expect(users).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" }
+      ]);
     });
 
     it("should serve user 2 under the /api/users/1 path", async () => {
@@ -71,7 +77,10 @@ describe("web tutorial", () => {
 
     it("should serve users collection mock under the /api/users path", async () => {
       const users = await request("/api/users");
-      expect(users).toEqual([{ id: 1, name: "John Doe" }, { id: 2, name: "Jane Doe" }]);
+      expect(users).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" }
+      ]);
     });
 
     it("should serve user 1 under the /api/users/1 path", async () => {

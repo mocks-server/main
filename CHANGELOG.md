@@ -18,8 +18,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Add api acceptance tests
 
+### Changed
+- Upgrade dependencies
+
 ### Fixed
-- Catch server.listen error and reject start method promise with it.
+- Catch server.listen error and reject start method promise with it when occurs.
 
 ## [1.1.1] - 2019-11-12
 ### Changed

@@ -30,10 +30,10 @@
     "mocks-server": "./bin/mocks-server"
   },
   "scripts": {
-    "lint": "eslint index.js lib test",
+    "lint": "eslint index.js lib test jest.config.js jest.acceptance.config.js",
     "lint-staged": "lint-staged",
     "test": "jest",
-    "test-acceptance": "jest --config=jest.acceptance.config.js",
+    "test-acceptance": "jest --config=jest.acceptance.config.js --runInBand",
     "test-ci": "npm run test && npm run test-acceptance",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
@@ -64,11 +64,16 @@
     "jest": "24.9.0",
     "lint-staged": "^9.4.2",
     "prettier": "^1.18.2",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.5",
     "sinon": "^7.5.0"
   },
   "lint-staged": {
     "lib/**/*.js": "eslint",
-    "test/**/*.js": "eslint"
+    "test/**/*.js": "eslint",
+    "index.js": "eslint",
+    "jest.config.js": "eslint",
+    "jest.acceptance.config.js": "eslint"
   },
   "husky": {
     "hooks": {

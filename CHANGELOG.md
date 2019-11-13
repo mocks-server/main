@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 ## [1.2.0] - 2019-11-13
+### Added
+- Add api acceptance tests
+
+### Fixed
+- Catch server.listen error and reject start method promise with it.
 
 ## [1.1.1] - 2019-11-12
 ### Changed

@@ -14,10 +14,7 @@ describe("delay setting", () => {
   let server;
 
   beforeAll(async () => {
-    console.log("BEFORE ALL!!!");
     server = await startServer();
-
-    return server.start();
   });
 
   afterAll(() => {

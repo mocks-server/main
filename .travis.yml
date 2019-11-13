@@ -16,10 +16,10 @@ addons:
       name: "$TRAVIS_CURRENT_BRANCH"
 
 script:
-  # - npm run lint
-  - npm run test-acceptance
-  # - npm run coveralls
-  # - sonar-scanner -Dsonar.login=${SONAR_TOKEN}
+  - npm run lint
+  - npm run test-ci
+  - npm run coveralls
+  - sonar-scanner -Dsonar.login=${SONAR_TOKEN}
 
 deploy:
   provider: npm

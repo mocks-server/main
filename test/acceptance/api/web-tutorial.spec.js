@@ -15,8 +15,6 @@ describe("web tutorial", () => {
 
   beforeAll(async () => {
     server = await startServer();
-
-    return server.start();
   });
 
   afterAll(() => {

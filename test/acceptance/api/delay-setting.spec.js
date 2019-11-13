@@ -32,7 +32,7 @@ describe("delay setting", () => {
     });
   });
 
-  describe("When delay is changed", () => {
+  describe("When delay is changed through admin-api", () => {
     it("should respond after defined delay", async () => {
       await changeDelay(1000);
       const timeCounter = new TimeCounter();

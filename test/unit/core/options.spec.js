@@ -39,6 +39,25 @@ describe("options", () => {
     sandbox.restore();
   });
 
+  describe("stringToBoolean helper", () => {
+    it("should return true if value is 'true'", async () => {
+      expect(options.stringToBoolean("true")).toEqual(true);
+    });
+
+    it("should return false if value is 'false'", async () => {
+      expect(options.stringToBoolean("false")).toEqual(false);
+    });
+
+    it("should throw an error if values does not match any of previous", async () => {
+      expect.assertions(1);
+      try {
+        options.stringToBoolean("foo");
+      } catch (err) {
+        expect(err.message).toEqual("Invalid boolean value");
+      }
+    });
+  });
+
   describe("get method", () => {
     it("should call to commander to get user options from command line", () => {
       options.get();

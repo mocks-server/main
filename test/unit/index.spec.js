@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -19,7 +20,11 @@ describe("index", () => {
     expect(typeof index.Server).toEqual("function");
   });
 
-  it("should export a Feature constructor", () => {
-    expect(typeof index.Feature).toEqual("function");
+  it("should export a Behavior constructor", () => {
+    expect(typeof index.Behavior).toEqual("function");
+  });
+
+  it("should export a deprecated Feature constructor", () => {
+    expect(index.Feature).toBe(index.Behavior);
   });
 });

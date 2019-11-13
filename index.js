@@ -11,13 +11,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-const Cli = require("./lib/Cli");
-const Server = require("./lib/Server");
-const Feature = require("./lib/features/Feature");
+const Cli = require("./lib/cli/Cli");
+const Server = require("./lib/core/Server");
+const Behavior = require("./lib/core/Behavior");
 
 module.exports = {
   Cli,
   Server,
-  Feature,
-  Behavior: Feature
+  Feature: Behavior,
+  Behavior
 };

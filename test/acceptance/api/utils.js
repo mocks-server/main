@@ -35,6 +35,11 @@ const startServer = (mocksPath, options = {}) => {
   });
 };
 
+const stopServer = server => {
+  server.stop();
+  server.switchWatch(false);
+};
+
 const request = (uri, options = {}) => {
   const requestOptions = {
     ...defaultRequestOptions,
@@ -61,9 +66,40 @@ const getBehaviors = () => {
   return request("/mocks/behaviors");
 };
 
+const changeDelay = delay => {
+  return request("/mocks/settings", {
+    method: "PUT",
+    body: {
+      delay
+    }
+  });
+};
+
+class TimeCounter {
+  constructor() {
+    this._startTime = new Date();
+  }
+
+  _getMiliseconds() {
+    this._miliseconds = this._endTime - this._startTime;
+  }
+
+  get total() {
+    return this._miliseconds;
+  }
+
+  stop() {
+    this._endTime = new Date();
+    this._getMiliseconds();
+  }
+}
+
 module.exports = {
   startServer,
+  stopServer,
   request,
   changeBehavior,
-  getBehaviors
+  getBehaviors,
+  changeDelay,
+  TimeCounter
 };

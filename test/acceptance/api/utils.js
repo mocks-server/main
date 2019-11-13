@@ -18,7 +18,7 @@ const SERVER_PORT = 3100;
 const defaultOptions = {
   port: SERVER_PORT,
   log: "debug",
-  watch: true
+  watch: false
 };
 
 const defaultRequestOptions = {

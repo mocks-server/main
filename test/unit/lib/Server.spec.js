@@ -150,6 +150,19 @@ describe("Server", () => {
   });
 
   describe("start method", () => {
+    it("should reject the promise if an error occurs when calling to server listen method", async () => {
+      const error = new Error("Foo error");
+      libsMocks.stubs.http.createServer.listen.throws(error);
+
+      server = new Server(FOO_FEATURES_PATH);
+
+      try {
+        await server.start();
+      } catch (err) {
+        expect(err).toEqual(error);
+      }
+    });
+
     it("should call to server listen, and resolve the promise when started", async () => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
 

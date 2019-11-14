@@ -11,8 +11,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const path = require("path");
 const { CliRunner, request, wait, TimeCounter } = require("./utils");
 
-describe("programmatic Server", () => {
-  const cwdPath = path.resolve(__dirname, "fixtures", "programmatic-server");
+describe("programmatic Cli", () => {
+  const cwdPath = path.resolve(__dirname, "fixtures", "programmatic-cli");
   let cli;
 
   afterEach(async () => {
@@ -21,6 +21,7 @@ describe("programmatic Server", () => {
 
   describe("When started", () => {
     it("should set mocks folder", async () => {
+      expect.assertions(2);
       cli = new CliRunner("start.js", {
         cwd: cwdPath
       });
@@ -30,6 +31,24 @@ describe("programmatic Server", () => {
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" }
       ]);
+      expect(cli.allLogsString).toEqual(expect.stringContaining("Behaviors: 3"));
+    });
+
+    it("should set mocks folder even when deprecated features option is received", async () => {
+      expect.assertions(3);
+      cli = new CliRunner("start-features.js", {
+        cwd: cwdPath
+      });
+      await wait();
+      const users = await request("/api/users");
+      expect(users).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" }
+      ]);
+      expect(cli.allLogsString).toEqual(
+        expect.stringContaining('Deprecation warning: "features" option will be deprecated')
+      );
+      expect(cli.allLogsString).toEqual(expect.stringContaining("Behaviors: 3"));
     });
 
     it("should print a log when started", async () => {
@@ -44,23 +63,27 @@ describe("programmatic Server", () => {
   describe("behavior option", () => {
     describe("when not provided", () => {
       it("should set as current behavior the first one found", async () => {
+        expect.assertions(2);
         cli = new CliRunner("start.js", {
           cwd: cwdPath
         });
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 1, name: "John Doe" });
+        expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: standard"));
       });
     });
 
     describe("when provided and exists", () => {
       it("should set current behavior", async () => {
+        expect.assertions(2);
         cli = new CliRunner("start-dynamic-behavior.js", {
           cwd: cwdPath
         });
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 2, name: "Jane Doe" });
+        expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: dynamic"));
       });
     });
 
@@ -76,12 +99,14 @@ describe("programmatic Server", () => {
       });
 
       it("should set as current behavior the first one found", async () => {
+        expect.assertions(2);
         cli = new CliRunner("start-unexistant-behavior.js", {
           cwd: cwdPath
         });
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 1, name: "John Doe" });
+        expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: standard"));
       });
     });
   });
@@ -89,12 +114,14 @@ describe("programmatic Server", () => {
   describe("feature option", () => {
     describe("when provided and exists", () => {
       it("should set current behavior", async () => {
+        expect.assertions(2);
         cli = new CliRunner("start-dynamic-feature.js", {
           cwd: cwdPath
         });
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 2, name: "Jane Doe" });
+        expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: dynamic"));
       });
 
       it("should print a deprecation warning", async () => {
@@ -120,12 +147,14 @@ describe("programmatic Server", () => {
       });
 
       it("should set as current behavior the first one found", async () => {
+        expect.assertions(2);
         cli = new CliRunner("start-unexistant-feature.js", {
           cwd: cwdPath
         });
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 1, name: "John Doe" });
+        expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: standard"));
       });
     });
   });
@@ -145,27 +174,6 @@ describe("programmatic Server", () => {
         { id: 2, name: "Jane Doe" }
       ]);
       expect(timeCounter.total).toBeGreaterThan(1999);
-    });
-  });
-
-  describe("stop method", () => {
-    it("should stop the server", async () => {
-      expect.assertions(2);
-      cli = new CliRunner("start-and-stop.js", {
-        cwd: cwdPath
-      });
-      await wait();
-      const users = await request("/api/users");
-      expect(users).toEqual([
-        { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
-      ]);
-      await wait(2000);
-      try {
-        await request("/api/users");
-      } catch (error) {
-        expect(error.message).toEqual(expect.stringContaining("ECONNREFUSED"));
-      }
     });
   });
 });

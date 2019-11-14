@@ -45,10 +45,13 @@ module.exports = class InteractiveCliRunner {
     return this._cli.logs;
   }
 
-  async cursorDown() {
+  async cursorDown(number) {
     this._log("Moving cursor down");
     this._cli.cursorDown();
     await this.logCurrentSelection();
+    if (number > 1) {
+      await this.cursorDown(number - 1);
+    }
   }
 
   async pressEnter() {
@@ -56,5 +59,10 @@ module.exports = class InteractiveCliRunner {
     const newScreen = await this._cli.newScreenAfter(this._cli.pressEnter);
     await this.logCurrentSelection();
     return newScreen;
+  }
+
+  write(data) {
+    this._log(`Writing: "${data}"`);
+    this._cli.write(data);
   }
 };

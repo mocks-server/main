@@ -9,10 +9,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { request, wait } = require("./utils");
+const { request, wait, TimeCounter } = require("./utils");
 const InteractiveCliRunner = require("./InteractiveCliRunner");
 
-describe("web tutorial", () => {
+describe("interactive CLI", () => {
   let cli;
   const binaryPath = "../../../../bin/mocks-server";
   const cwdPath = path.resolve(__dirname, "fixtures");
@@ -52,33 +52,6 @@ describe("web tutorial", () => {
     });
   });
 
-  describe('When changing current behavior to "user2"', () => {
-    it("should display new selected behavior", async () => {
-      await cli.pressEnter();
-      await cli.cursorDown();
-      const newScreen = await cli.pressEnter();
-      expect(newScreen).toEqual(expect.stringContaining("Current behavior: user2"));
-    });
-
-    it("should serve users collection mock under the /api/users path", async () => {
-      const users = await request("/api/users");
-      expect(users).toEqual([
-        { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
-      ]);
-    });
-
-    it("should serve user 2 under the /api/users/1 path", async () => {
-      const users = await request("/api/users/1");
-      expect(users).toEqual({ id: 2, name: "Jane Doe" });
-    });
-
-    it("should serve user 2 under the /api/users/2 path", async () => {
-      const users = await request("/api/users/2");
-      expect(users).toEqual({ id: 2, name: "Jane Doe" });
-    });
-  });
-
   describe('When changing current behavior to "dynamic"', () => {
     it("should display new selected behavior", async () => {
       await cli.pressEnter();
@@ -111,6 +84,51 @@ describe("web tutorial", () => {
         simple: false
       });
       expect(usersResponse.statusCode).toEqual(404);
+    });
+  });
+
+  describe("When changing logs level", () => {
+    it("should display new selected log level", async () => {
+      await cli.cursorDown(3);
+      await cli.pressEnter();
+      await cli.cursorDown(2);
+      const newScreen = await cli.pressEnter();
+      expect(newScreen).toEqual(expect.stringContaining("Log level: verbose"));
+    });
+  });
+
+  describe("When displaying logs", () => {
+    it("should log requests", async () => {
+      expect.assertions(2);
+      await cli.cursorDown(5);
+      await cli.pressEnter();
+      await request("/api/users");
+      const newScreen = await cli.getCurrentScreen();
+      expect(newScreen).toEqual(expect.stringContaining("Displaying logs"));
+      expect(newScreen).toEqual(expect.stringContaining("[Mocks verbose] Request received"));
+      await cli.pressEnter();
+    });
+  });
+
+  describe("When changing delay time", () => {
+    it("should display new selected delay time", async () => {
+      await cli.cursorDown();
+      await cli.pressEnter();
+      await cli.write(2000);
+      const newScreen = await cli.pressEnter();
+      expect(newScreen).toEqual(expect.stringContaining("Delay: 2000"));
+    });
+
+    it("should respond after defined delay", async () => {
+      expect.assertions(2);
+      const timeCounter = new TimeCounter();
+      const users = await request("/api/users");
+      timeCounter.stop();
+      expect(timeCounter.total).toBeGreaterThan(1999);
+      expect(users).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" }
+      ]);
     });
   });
 });

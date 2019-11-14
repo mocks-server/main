@@ -147,4 +147,25 @@ describe("programmatic server", () => {
       expect(timeCounter.total).toBeGreaterThan(1999);
     });
   });
+
+  describe("stop method", () => {
+    it("should stop the server", async () => {
+      expect.assertions(2);
+      cli = new CliRunner("start-and-stop.js", {
+        cwd: cwdPath
+      });
+      await wait();
+      const users = await request("/api/users");
+      expect(users).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" }
+      ]);
+      await wait(2000);
+      try {
+        await request("/api/users");
+      } catch (error) {
+        expect(error.message).toEqual(expect.stringContaining("ECONNREFUSED"));
+      }
+    });
+  });
 });

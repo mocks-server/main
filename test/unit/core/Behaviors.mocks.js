@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -10,9 +11,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../../lib/features/Features");
+jest.mock("../../../lib/core/Behaviors");
 
-const Features = require("../../../lib/features/Features");
+const Behaviors = require("../../../lib/core/Behaviors");
 
 class Mock {
   constructor() {
@@ -23,12 +24,12 @@ class Mock {
       current: {}
     };
 
-    Features.mockImplementation(() => this._stubs);
+    Behaviors.mockImplementation(() => this._stubs);
   }
 
   get stubs() {
     return {
-      Constructor: Features,
+      Constructor: Behaviors,
       instance: this._stubs
     };
   }

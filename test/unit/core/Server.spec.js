@@ -14,19 +14,19 @@ const path = require("path");
 const sinon = require("sinon");
 const _ = require("lodash");
 
-const LibsMocks = require("../common/Libs.mocks.js");
+const LibsMocks = require("../Libs.mocks.js");
 const ApiMocks = require("../api/Api.mocks.js");
-const FeaturesMocks = require("../features/Features.mocks.js");
+const BehaviorsMocks = require("./Behaviors.mocks.js");
 const SettingsMocks = require("./Settings.mocks.js");
 
-const Server = require("../../../lib/Server");
+const Server = require("../../../lib/core/Server");
 
 const FOO_FEATURES_PATH = "foo-path";
 
 describe("Server", () => {
   let server;
   let sandbox;
-  let featuresMocks;
+  let behaviorsMocks;
   let settingsMocks;
   let apiMocks;
   let libsMocks;
@@ -42,22 +42,22 @@ describe("Server", () => {
     libsMocks = new LibsMocks();
     apiMocks = new ApiMocks();
     settingsMocks = new SettingsMocks();
-    featuresMocks = new FeaturesMocks();
+    behaviorsMocks = new BehaviorsMocks();
     expect.assertions(1);
   });
 
   afterEach(() => {
     libsMocks.restore();
     apiMocks.restore();
-    featuresMocks.restore();
+    behaviorsMocks.restore();
     settingsMocks.restore();
     sandbox.restore();
   });
 
   describe("when instantiated", () => {
-    it("should call to create Behaviors passing the provided features folder relative to current cwd", () => {
+    it("should call to create Behaviors passing the provided behaviors folder relative to current cwd", () => {
       server = new Server(FOO_FEATURES_PATH);
-      expect(featuresMocks.stubs.Constructor.mock.calls[0]).toEqual([
+      expect(behaviorsMocks.stubs.Constructor.mock.calls[0]).toEqual([
         path.resolve(process.cwd(), "foo-path"),
         null,
         {
@@ -66,7 +66,7 @@ describe("Server", () => {
       ]);
     });
 
-    it("should throw an error if no features folder is provided", () => {
+    it("should throw an error if no behaviors folder is provided", () => {
       try {
         new Server();
       } catch (err) {
@@ -74,9 +74,9 @@ describe("Server", () => {
       }
     });
 
-    it("should call to create Behaviors passing the provided features folder as absolute if it is absolute", () => {
+    it("should call to create Behaviors passing the provided behaviors folder as absolute if it is absolute", () => {
       server = new Server("/foo-path");
-      expect(featuresMocks.stubs.Constructor.mock.calls[0]).toEqual([
+      expect(behaviorsMocks.stubs.Constructor.mock.calls[0]).toEqual([
         "/foo-path",
         null,
         {
@@ -89,7 +89,7 @@ describe("Server", () => {
       server = new Server("/foo-path", {
         feature: "foo-feature"
       });
-      expect(featuresMocks.stubs.Constructor.mock.calls[0]).toEqual([
+      expect(behaviorsMocks.stubs.Constructor.mock.calls[0]).toEqual([
         "/foo-path",
         "foo-feature",
         {
@@ -111,7 +111,7 @@ describe("Server", () => {
       server = new Server("/foo-path", {
         behavior: "foo-behavior"
       });
-      expect(featuresMocks.stubs.Constructor.mock.calls[0]).toEqual([
+      expect(behaviorsMocks.stubs.Constructor.mock.calls[0]).toEqual([
         "/foo-path",
         "foo-behavior",
         {
@@ -196,11 +196,11 @@ describe("Server", () => {
       expect(libsMocks.stubs.http.createServer.close.callCount).toEqual(1);
     });
 
-    it("should call to create Features again", async () => {
+    it("should call to create Behaviors again", async () => {
       server = new Server(FOO_FEATURES_PATH);
       await server.start();
       await server.restart();
-      expect(featuresMocks.stubs.Constructor.mock.calls.length).toEqual(2);
+      expect(behaviorsMocks.stubs.Constructor.mock.calls.length).toEqual(2);
     });
 
     it("should call to start server again", async () => {
@@ -218,10 +218,17 @@ describe("Server", () => {
     });
   });
 
-  describe("features getter", () => {
-    it("should return current features", async () => {
+  describe("behaviors getter", () => {
+    it("should return current behaviors", async () => {
       server = new Server(FOO_FEATURES_PATH);
-      expect(server.features).toEqual(featuresMocks.stubs.instance);
+      expect(server.behaviors).toEqual(behaviorsMocks.stubs.instance);
+    });
+  });
+
+  describe("features getter", () => {
+    it("should return current behaviors", async () => {
+      server = new Server(FOO_FEATURES_PATH);
+      expect(server.features).toEqual(behaviorsMocks.stubs.instance);
     });
   });
 
@@ -291,12 +298,12 @@ describe("Server", () => {
       expect(libsMocks.stubs.http.createServer.close.callCount).toEqual(1);
     });
 
-    it("should call to create Features again", async () => {
+    it("should call to create Behaviors again", async () => {
       libsMocks.stubs.watch.triggerChange(true);
       server = new Server(FOO_FEATURES_PATH, { watch: false });
       await server.start();
       server.switchWatch(true);
-      expect(featuresMocks.stubs.Constructor.mock.calls.length).toEqual(2);
+      expect(behaviorsMocks.stubs.Constructor.mock.calls.length).toEqual(2);
     });
 
     it("should call to start server again", async () => {
@@ -307,7 +314,7 @@ describe("Server", () => {
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
     });
 
-    it("should set server error if an error occurs loading features", async () => {
+    it("should set server error if an error occurs loading behaviors", async () => {
       const fooError = new Error();
       libsMocks.stubs.watch.triggerChange(true);
       server = new Server(FOO_FEATURES_PATH, { watch: false });
@@ -329,7 +336,7 @@ describe("Server", () => {
     });
   });
 
-  describe("features middleware", () => {
+  describe("behaviors middleware", () => {
     const fooRequest = {
       method: "get",
       url: "foo-route"
@@ -352,13 +359,13 @@ describe("Server", () => {
     it("should call next if does not found a fixture in current feature matching the request url", async () => {
       server = new Server(FOO_FEATURES_PATH);
 
-      server.featuresMiddleWare(fooRequest, resMock, nextSpy);
+      server.fixturesMiddleware(fooRequest, resMock, nextSpy);
       expect(nextSpy.callCount).toEqual(1);
     });
 
     it("should call to response status method to set the matching fixture status code", async () => {
       server = new Server(FOO_FEATURES_PATH);
-      featuresMocks.stubs.instance.current = {
+      behaviorsMocks.stubs.instance.current = {
         get: {
           "foo-route": {
             route: {
@@ -370,7 +377,7 @@ describe("Server", () => {
           }
         }
       };
-      server.featuresMiddleWare(fooRequest, resMock, nextSpy);
+      server.fixturesMiddleware(fooRequest, resMock, nextSpy);
       expect(resMock.status.getCall(0).args[0]).toEqual(200);
     });
 
@@ -379,7 +386,7 @@ describe("Server", () => {
         foo: "foo-data"
       };
       server = new Server(FOO_FEATURES_PATH);
-      featuresMocks.stubs.instance.current = {
+      behaviorsMocks.stubs.instance.current = {
         get: {
           "foo-route": {
             route: {
@@ -392,14 +399,14 @@ describe("Server", () => {
           }
         }
       };
-      server.featuresMiddleWare(fooRequest, resMock, nextSpy);
+      server.fixturesMiddleware(fooRequest, resMock, nextSpy);
       expect(resMock.send.getCall(0).args[0]).toEqual(fooBody);
     });
 
     it("should call to fixture response method passing all request data if it is a function", async () => {
       const responseSpy = sandbox.spy();
       server = new Server(FOO_FEATURES_PATH);
-      featuresMocks.stubs.instance.current = {
+      behaviorsMocks.stubs.instance.current = {
         get: {
           "foo-route": {
             route: {
@@ -409,7 +416,7 @@ describe("Server", () => {
           }
         }
       };
-      server.featuresMiddleWare(fooRequest, resMock, nextSpy);
+      server.fixturesMiddleware(fooRequest, resMock, nextSpy);
       expect(responseSpy.calledWith(fooRequest, resMock, nextSpy)).toEqual(true);
     });
   });

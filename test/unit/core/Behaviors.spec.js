@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -16,9 +17,9 @@ jest.mock("require-all");
 
 const requireAll = require("require-all");
 
-const Features = require("../../../lib/features/Features");
+const Behaviors = require("../../../lib/core/Behaviors");
 
-describe("Features", () => {
+describe("Behaviors", () => {
   const fooRequireCache = {
     "foo-path": {
       id: "foo-path",
@@ -49,9 +50,9 @@ describe("Features", () => {
     }
   };
 
-  const fooFeaturesFiles = {
+  const fooBehaviorsFiles = {
     file1: {
-      feature1: {
+      behavior1: {
         fixtures: [
           {
             url: "/api/foo/foo-uri",
@@ -81,7 +82,7 @@ describe("Features", () => {
       }
     },
     file2: {
-      feature2: {
+      behavior2: {
         fixtures: [
           {
             url: "/api/foo/foo-uri-2",
@@ -127,7 +128,7 @@ describe("Features", () => {
     requireCache = cloneDeep(fooRequireCache);
     sandbox = sinon.createSandbox();
     sandbox.stub(Boom, "badData").returns(fooBoomError);
-    requireAll.mockImplementation(() => fooFeaturesFiles);
+    requireAll.mockImplementation(() => fooBehaviorsFiles);
   });
 
   afterEach(() => {
@@ -135,8 +136,8 @@ describe("Features", () => {
   });
 
   describe("when instanciated", () => {
-    it("should require all files from features folders", () => {
-      new Features("foo-path", "feature1", {
+    it("should require all files from mocks folders", () => {
+      new Behaviors("foo-path", "behavior1", {
         recursive: true
       });
       expect(requireAll).toHaveBeenCalledWith({
@@ -145,39 +146,39 @@ describe("Features", () => {
       });
     });
 
-    it("should clean require cache for features folder", () => {
+    it("should clean require cache for behaviors folder", () => {
       const fooCachePath = "foo-path";
 
       expect(requireCache[fooCachePath]).toBeDefined();
-      new Features("foo-path", "feature1", {
+      new Behaviors("foo-path", "behavior1", {
         cache: requireCache
       });
       expect(requireCache[fooCachePath]).not.toBeDefined();
     });
 
-    it("should clean require cache for features folder childs", () => {
+    it("should clean require cache for behaviors folder childs", () => {
       const fooCachePath = "foo-path/foo-children";
 
       expect(requireCache[fooCachePath]).toBeDefined();
-      new Features("foo-path", "feature1", {
+      new Behaviors("foo-path", "behavior1", {
         cache: requireCache
       });
       expect(requireCache[fooCachePath]).not.toBeDefined();
     });
 
-    it("should clean require cache for features folder childs recursively", () => {
+    it("should clean require cache for behaviors folder childs recursively", () => {
       const fooCachePath = "foo-path/foo-children-2";
 
       expect(requireCache[fooCachePath]).toBeDefined();
-      new Features("foo-path", "feature1", {
+      new Behaviors("foo-path", "behavior1", {
         cache: requireCache
       });
       expect(requireCache[fooCachePath]).not.toBeDefined();
     });
 
-    it("should throw an error if selected feature is not found in features", () => {
+    it("should throw an error if selected behavior is not found in behaviors", () => {
       try {
-        new Features("foo-path", "foo");
+        new Behaviors("foo-path", "foo");
       } catch (err) {
         expect(err).toEqual(fooBoomError);
       }
@@ -185,19 +186,19 @@ describe("Features", () => {
   });
 
   describe("current setter", () => {
-    it("should throw an error if feature to set is not found in features", () => {
-      const features = new Features("foo-path", "feature1");
+    it("should throw an error if behavior to set is not found in behaviors", () => {
+      const behaviors = new Behaviors("foo-path", "behavior1");
       try {
-        features.current = "foo";
+        behaviors.current = "foo";
       } catch (err) {
         expect(err).toEqual(fooBoomError);
       }
     });
 
-    it("should change the current selected feature", () => {
-      const features = new Features("foo-path", "feature1");
-      features.current = "feature2";
-      expect(features.current).toEqual({
+    it("should change the current selected behavior", () => {
+      const behaviors = new Behaviors("foo-path", "behavior1");
+      behaviors.current = "behavior2";
+      expect(behaviors.current).toEqual({
         POST: {
           "/api/foo/foo-uri-2": {
             route: "foo-route-parser",
@@ -214,9 +215,9 @@ describe("Features", () => {
   });
 
   describe("current getter", () => {
-    it("should return the current selected feature", () => {
-      const features = new Features("foo-path", "feature1");
-      expect(features.current).toEqual({
+    it("should return the current selected behavior", () => {
+      const behaviors = new Behaviors("foo-path", "behavior1");
+      expect(behaviors.current).toEqual({
         POST: {
           "/api/foo/foo-uri": {
             route: "foo-route-parser",
@@ -231,9 +232,9 @@ describe("Features", () => {
       });
     });
 
-    it("should return the first feature if current was not set", () => {
-      const features = new Features("foo-path");
-      expect(features.current).toEqual({
+    it("should return the first behavior if current was not set", () => {
+      const behaviors = new Behaviors("foo-path");
+      expect(behaviors.current).toEqual({
         POST: {
           "/api/foo/foo-uri": {
             route: "foo-route-parser",
@@ -249,24 +250,24 @@ describe("Features", () => {
     });
   });
 
-  describe("totalFeatures getter", () => {
-    it("should return the number of features", () => {
-      const features = new Features("foo-path");
-      expect(features.totalFeatures).toEqual(2);
+  describe("totalBehaviors getter", () => {
+    it("should return the number of behaviors", () => {
+      const behaviors = new Behaviors("foo-path");
+      expect(behaviors.totalBehaviors).toEqual(2);
     });
   });
 
   describe("currentTotalFixtures getter", () => {
-    it("should return the total number of fixtures of currently selected feature", () => {
-      const features = new Features("foo-path", "feature1");
-      expect(features.currentTotalFixtures).toEqual(1);
+    it("should return the total number of fixtures of currently selected behavior", () => {
+      const behaviors = new Behaviors("foo-path", "behavior1");
+      expect(behaviors.currentTotalFixtures).toEqual(1);
     });
   });
 
   describe("currentFromCollection getter", () => {
-    it("should return the current selected feature in collection format", () => {
-      const features = new Features("foo-path", "feature1");
-      expect(features.currentFromCollection).toEqual({
+    it("should return the current selected behavior in collection format", () => {
+      const behaviors = new Behaviors("foo-path", "behavior1");
+      expect(behaviors.currentFromCollection).toEqual({
         fixtures: [
           {
             method: "GET",
@@ -274,16 +275,16 @@ describe("Features", () => {
             url: "/api/foo/foo-uri"
           }
         ],
-        name: "feature1"
+        name: "behavior1"
       });
     });
   });
 
   describe("all getter", () => {
-    it("should return all features", () => {
-      const features = new Features("foo-path", "feature1");
-      expect(features.all).toEqual({
-        feature1: {
+    it("should return all behaviors", () => {
+      const behaviors = new Behaviors("foo-path", "behavior1");
+      expect(behaviors.all).toEqual({
+        behavior1: {
           POST: {
             "/api/foo/foo-uri": {
               response: { body: { fooProperty: "foo" }, status: 200 },
@@ -291,7 +292,7 @@ describe("Features", () => {
             }
           }
         },
-        feature2: {
+        behavior2: {
           POST: {
             "/api/foo/foo-uri-2": {
               response: { body: { fooProperty2: "foo2" }, status: 422 },
@@ -304,23 +305,23 @@ describe("Features", () => {
   });
 
   describe("names getter", () => {
-    it("should return all features names", () => {
-      const features = new Features("foo-path", "feature1");
-      expect(features.names).toEqual(["feature1", "feature2"]);
+    it("should return all behaviors names", () => {
+      const behaviors = new Behaviors("foo-path", "behavior1");
+      expect(behaviors.names).toEqual(["behavior1", "behavior2"]);
     });
   });
 
   describe("currentName getter", () => {
-    it("should return current feature name", () => {
-      const features = new Features("foo-path", "feature2");
-      expect(features.currentName).toEqual("feature2");
+    it("should return current behavior name", () => {
+      const behaviors = new Behaviors("foo-path", "behavior2");
+      expect(behaviors.currentName).toEqual("behavior2");
     });
   });
 
   describe("collection getter", () => {
-    it("should return all features in collection format", () => {
-      const features = new Features("foo-path", "feature2");
-      expect(features.collection).toEqual([
+    it("should return all behaviors in collection format", () => {
+      const behaviors = new Behaviors("foo-path", "behavior2");
+      expect(behaviors.collection).toEqual([
         {
           fixtures: [
             {
@@ -329,7 +330,7 @@ describe("Features", () => {
               url: "/api/foo/foo-uri"
             }
           ],
-          name: "feature1"
+          name: "behavior1"
         },
         {
           fixtures: [
@@ -339,7 +340,7 @@ describe("Features", () => {
               url: "/api/foo/foo-uri-2"
             }
           ],
-          name: "feature2"
+          name: "behavior2"
         }
       ]);
     });

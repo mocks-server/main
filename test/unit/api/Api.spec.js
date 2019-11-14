@@ -12,15 +12,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const express = require("express");
 const sinon = require("sinon");
 
-const FeaturesMocks = require("./Features.mocks.js");
+const BehaviorsMocks = require("./Behaviors.mocks.js");
 const SettingsMocks = require("./Settings.mocks.js");
 
-const tracer = require("../../../lib/common/tracer");
+const tracer = require("../../../lib/core/tracer");
 const Api = require("../../../lib/api/Api");
 
 describe("Api", () => {
   let sandbox;
-  let featuresMocks;
+  let behaviorsMocks;
   let settingsMocks;
   let routerUseStub;
 
@@ -31,14 +31,14 @@ describe("Api", () => {
     sandbox.stub(express, "Router").returns({
       use: routerUseStub
     });
-    featuresMocks = new FeaturesMocks();
+    behaviorsMocks = new BehaviorsMocks();
     settingsMocks = new SettingsMocks();
     expect.assertions(1);
   });
 
   afterEach(() => {
     sandbox.restore();
-    featuresMocks.restore();
+    behaviorsMocks.restore();
     settingsMocks.restore();
   });
 
@@ -48,9 +48,9 @@ describe("Api", () => {
       expect(express.Router.calledOnce).toEqual(true);
     });
 
-    it("should create Features passing the received features folder", () => {
+    it("should create Features passing the received mocks folder", () => {
       new Api("foo-path");
-      expect(featuresMocks.stubs.Constructor).toHaveBeenCalledWith("foo-path");
+      expect(behaviorsMocks.stubs.Constructor).toHaveBeenCalledWith("foo-path");
     });
 
     it('should trace a warning each time any path under "/features" is requested', () => {
@@ -70,11 +70,11 @@ describe("Api", () => {
       expect(routerUseStub.getCall(1).args[0]).toEqual("/features");
     });
 
-    it('should use the created features under the "/features" router path', () => {
-      const fooFeaturesRouter = "foo-features-router";
-      featuresMocks.stubs.instance.router = fooFeaturesRouter;
+    it('should use the created behaviors under the "/features" router path', () => {
+      const fooBehaviorsRouter = "foo-features-router";
+      behaviorsMocks.stubs.instance.router = fooBehaviorsRouter;
       new Api();
-      expect(routerUseStub.getCall(1).args[1]).toEqual(fooFeaturesRouter);
+      expect(routerUseStub.getCall(1).args[1]).toEqual(fooBehaviorsRouter);
     });
 
     it('should add an express path under "/behaviors"', () => {
@@ -82,11 +82,11 @@ describe("Api", () => {
       expect(routerUseStub.getCall(2).args[0]).toEqual("/behaviors");
     });
 
-    it('should use the created features under the "/behaviors" router path', () => {
-      const fooFeaturesRouter = "foo-features-router";
-      featuresMocks.stubs.instance.router = fooFeaturesRouter;
+    it('should use the created behaviors under the "/behaviors" router path', () => {
+      const fooBehaviorsRouter = "foo-behaviors-router";
+      behaviorsMocks.stubs.instance.router = fooBehaviorsRouter;
       new Api();
-      expect(routerUseStub.getCall(2).args[1]).toEqual(fooFeaturesRouter);
+      expect(routerUseStub.getCall(2).args[1]).toEqual(fooBehaviorsRouter);
     });
   });
 

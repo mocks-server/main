@@ -12,7 +12,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const commander = require("commander");
 
-const options = require("../../../lib/common/options");
+const options = require("../../../lib/core/options");
 
 describe("options", () => {
   let sandbox;
@@ -103,6 +103,25 @@ describe("options", () => {
 
     it("should extend default options with user options, ommiting undefined values", () => {
       parseStub.returns({
+        behavior: "foo-behavior",
+        cli: true,
+        behaviors: "foo/behaviors/path"
+      });
+      expect(options.get()).toEqual({
+        cli: true,
+        port: 3100,
+        host: "0.0.0.0",
+        log: "info",
+        delay: 0,
+        watch: true,
+        behavior: "foo-behavior",
+        behaviors: "foo/behaviors/path",
+        recursive: true
+      });
+    });
+
+    it("should convert feature and features options to behavior and behaviors", () => {
+      parseStub.returns({
         feature: "foo-feature",
         cli: true,
         features: "foo/features/path"
@@ -114,29 +133,8 @@ describe("options", () => {
         log: "info",
         delay: 0,
         watch: true,
-        feature: "foo-feature",
-        features: "foo/features/path",
-        recursive: true
-      });
-    });
-
-    it("should convert behavior and behavior options to features", () => {
-      parseStub.returns({
-        behavior: "foo-feature",
-        cli: true,
-        behaviors: "foo/features/path"
-      });
-      expect(options.get()).toEqual({
-        cli: true,
-        port: 3100,
-        host: "0.0.0.0",
-        log: "info",
-        delay: 0,
-        watch: true,
         behavior: "foo-feature",
         behaviors: "foo/features/path",
-        feature: "foo-feature",
-        features: "foo/features/path",
         recursive: true
       });
     });
@@ -158,8 +156,6 @@ describe("options", () => {
         watch: true,
         behavior: "foo-behavior",
         behaviors: "foo/behaviors/path",
-        feature: "foo-behavior",
-        features: "foo/behaviors/path",
         recursive: true
       });
     });

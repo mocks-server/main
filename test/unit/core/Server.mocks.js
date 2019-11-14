@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -10,9 +11,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../../lib/Server");
+jest.mock("../../../lib/core/Server");
 
-const Server = require("../../../lib/Server");
+const Server = require("../../../lib/core/Server");
 
 class CallBackRunner {
   constructor() {
@@ -49,7 +50,7 @@ class Mock {
     this._stubs = {
       error: null,
       watchEnabled: true,
-      features: {},
+      behaviors: {},
       settings: {},
       start: this._sandbox.stub(),
       restart: this._sandbox.stub(),

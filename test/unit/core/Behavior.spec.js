@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -12,11 +13,11 @@ jest.mock("route-parser");
 
 const routeParser = require("route-parser");
 
-const Feature = require("../../../lib/features/Feature");
+const Behavior = require("../../../lib/core/Behavior");
 
-describe("Feature", () => {
+describe("Behavior", () => {
   const fooFunctionResponse = () => {};
-  const fooFeatureData = [
+  const fooBehaviorData = [
     {
       url: "/api/foo/foo-uri",
       method: "GET",
@@ -72,8 +73,8 @@ describe("Feature", () => {
 
   describe("methods method", () => {
     it("should return an object containing provided fixtures grouped by methods", () => {
-      const feature = new Feature(fooFeatureData);
-      expect(feature.methods).toEqual({
+      const behavior = new Behavior(fooBehaviorData);
+      expect(behavior.methods).toEqual({
         GET: {
           "/api/foo/foo-uri": {
             route: "foo-route-parser",
@@ -106,8 +107,8 @@ describe("Feature", () => {
 
   describe("fixtures method", () => {
     it("should return an array containing provided fixtures", () => {
-      const feature = new Feature(fooFeatureData);
-      expect(feature.fixtures).toEqual([
+      const behavior = new Behavior(fooBehaviorData);
+      expect(behavior.fixtures).toEqual([
         {
           url: "/api/foo/foo-uri",
           method: "GET",
@@ -139,16 +140,16 @@ describe("Feature", () => {
 
   describe("totalFixtures method", () => {
     it("should return the total number of fixtures", () => {
-      const feature = new Feature(fooFeatureData);
-      expect(feature.totalFixtures).toEqual(3);
+      const behavior = new Behavior(fooBehaviorData);
+      expect(behavior.totalFixtures).toEqual(3);
     });
   });
 
   describe("extend method", () => {
-    it("should leave original Feature methods without modification", () => {
-      const feature = new Feature(fooFeatureData);
-      feature.extend(fooExtendedData);
-      expect(feature.methods).toEqual({
+    it("should leave original Behavior methods without modification", () => {
+      const behavior = new Behavior(fooBehaviorData);
+      behavior.extend(fooExtendedData);
+      expect(behavior.methods).toEqual({
         GET: {
           "/api/foo/foo-uri": {
             route: "foo-route-parser",
@@ -178,10 +179,10 @@ describe("Feature", () => {
       });
     });
 
-    it("should leave original Feature fixtures without modification", () => {
-      const feature = new Feature(fooFeatureData);
-      feature.extend(fooExtendedData);
-      expect(feature.fixtures).toEqual([
+    it("should leave original Behavior fixtures without modification", () => {
+      const behavior = new Behavior(fooBehaviorData);
+      behavior.extend(fooExtendedData);
+      expect(behavior.fixtures).toEqual([
         {
           url: "/api/foo/foo-uri",
           method: "GET",
@@ -210,10 +211,10 @@ describe("Feature", () => {
       ]);
     });
 
-    it("should return a new Feature which methods will be an extension from current", () => {
-      const feature = new Feature(fooFeatureData);
-      const extendedFeature = feature.extend(fooExtendedData);
-      expect(extendedFeature.methods).toEqual({
+    it("should return a new Behavior which methods will be an extension from current", () => {
+      const behavior = new Behavior(fooBehaviorData);
+      const extendedBehavior = behavior.extend(fooExtendedData);
+      expect(extendedBehavior.methods).toEqual({
         GET: {
           "/api/foo/foo-uri": {
             route: "foo-route-parser",
@@ -250,10 +251,10 @@ describe("Feature", () => {
       });
     });
 
-    it("should return a new Feature which fixtures will be an extension from current", () => {
-      const feature = new Feature(fooFeatureData);
-      const extendedFeature = feature.extend(fooExtendedData);
-      expect(extendedFeature.fixtures).toEqual([
+    it("should return a new Behavior which fixtures will be an extension from current", () => {
+      const behavior = new Behavior(fooBehaviorData);
+      const extendedBehavior = behavior.extend(fooExtendedData);
+      expect(extendedBehavior.fixtures).toEqual([
         {
           url: "/api/foo/foo-uri",
           method: "GET",

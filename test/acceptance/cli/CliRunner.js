@@ -240,6 +240,10 @@ module.exports = class CliRunner {
       .map(stripAnsi);
   }
 
+  get allLogsString() {
+    return this.allLogs.join("\n");
+  }
+
   get exitCode() {
     return this._exitCode;
   }

@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -11,7 +12,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const express = require("express");
 const sinon = require("sinon");
 
-const SettingsMocks = require("../lib/Settings.mocks.js");
+const SettingsMocks = require("../core/Settings.mocks.js");
 
 const Settings = require("../../../lib/api/Settings");
 

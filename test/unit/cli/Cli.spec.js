@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -10,42 +11,54 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-const ServerMocks = require("./Server.mocks.js");
-const BaseCliMocks = require("./BaseCli.mocks.js");
+const ServerMocks = require("../core/Server.mocks.js");
+const InquirerMocks = require("./Inquirer.mocks.js");
 
-const Cli = require("../../../lib/Cli");
-const tracer = require("../../../lib/common/tracer");
+const Cli = require("../../../lib/cli/Cli");
+const tracer = require("../../../lib/core/tracer");
 
 describe("Cli", () => {
   let sandbox;
   let cli;
   let serverMocks;
-  let baseCliMocks;
+  let inquirerMocks;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     sandbox.spy(tracer, "set");
     serverMocks = new ServerMocks();
-    baseCliMocks = new BaseCliMocks();
+    inquirerMocks = new InquirerMocks();
     expect.assertions(1);
   });
 
   afterEach(() => {
     sandbox.restore();
     serverMocks.restore();
-    baseCliMocks.restore();
+    inquirerMocks.restore();
   });
 
   describe("when instantiated", () => {
-    it("should call to create a base-cli", () => {
+    it("should call to create an inquirer", () => {
       cli = new Cli();
-      expect(baseCliMocks.stubs.Inquirer.callCount).toEqual(1);
+      expect(inquirerMocks.stubs.Inquirer.callCount).toEqual(1);
     });
 
-    it("should pass to base-cli the custom quitMethod, if received", () => {
+    it("should pass to inquirer the custom quitMethod, if received", () => {
       const fooQuitMethod = "foo";
       cli = new Cli({}, fooQuitMethod);
-      expect(baseCliMocks.stubs.Inquirer.getCall(0).args[2]).toEqual(fooQuitMethod);
+      expect(inquirerMocks.stubs.Inquirer.getCall(0).args[2]).toEqual(fooQuitMethod);
+    });
+
+    it("should create a new Server, passing to it the behaviors and the rest of options", () => {
+      const fooOptions = {
+        behaviors: "foo-behaviors",
+        otherOption: "fooOption"
+      };
+      cli = new Cli(fooOptions);
+      expect(serverMocks.stubs.Constructor.mock.calls[0]).toEqual([
+        fooOptions.behaviors,
+        fooOptions
+      ]);
     });
 
     it("should create a new Server, passing to it the features and the rest of options", () => {
@@ -56,6 +69,19 @@ describe("Cli", () => {
       cli = new Cli(fooOptions);
       expect(serverMocks.stubs.Constructor.mock.calls[0]).toEqual([
         fooOptions.features,
+        fooOptions
+      ]);
+    });
+
+    it("should create a new Server, passing to it the behaviors option if features is also received", () => {
+      const fooOptions = {
+        features: "foo-features",
+        behaviors: "foo-behaviors",
+        otherOption: "fooOption"
+      };
+      cli = new Cli(fooOptions);
+      expect(serverMocks.stubs.Constructor.mock.calls[0]).toEqual([
+        fooOptions.behaviors,
         fooOptions
       ]);
     });
@@ -96,98 +122,98 @@ describe("Cli", () => {
     it("should call to clear screen", async () => {
       cli = new Cli();
       await cli.start();
-      expect(baseCliMocks.stubs.inquirer.clearScreen.callCount).toEqual(1);
+      expect(inquirerMocks.stubs.inquirer.clearScreen.callCount).toEqual(1);
     });
 
     it("should call to display main menu", async () => {
       cli = new Cli();
       await cli.start();
-      expect(baseCliMocks.stubs.inquirer.inquire.getCall(0).args[0]).toEqual("main");
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(0).args[0]).toEqual("main");
     });
   });
 
-  describe('when user selects "Change current feature"', () => {
-    const fooSelectedFeature = "foo feature";
+  describe('when user selects "Change current behavior"', () => {
+    const fooSelectedBehavior = "foo behavior";
     beforeEach(() => {
-      baseCliMocks.stubs.inquirer.inquire.onCall(0).resolves("feature");
-      baseCliMocks.stubs.inquirer.inquire.onCall(1).resolves(fooSelectedFeature);
+      inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("behavior");
+      inquirerMocks.stubs.inquirer.inquire.onCall(1).resolves(fooSelectedBehavior);
     });
 
     it("should call to clear screen", async () => {
       cli = new Cli();
       await cli.start();
-      expect(baseCliMocks.stubs.inquirer.clearScreen.callCount).toEqual(3);
+      expect(inquirerMocks.stubs.inquirer.clearScreen.callCount).toEqual(3);
     });
 
-    it("should call to display feature menu", async () => {
+    it("should call to display behavior menu", async () => {
       cli = new Cli();
       await cli.start();
-      expect(baseCliMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("feature");
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("behavior");
     });
 
-    it("should set current selected feature", async () => {
+    it("should set current selected behavior", async () => {
       cli = new Cli();
       await cli.start();
-      expect(cli._features.current).toEqual(fooSelectedFeature);
+      expect(cli._behaviors.current).toEqual(fooSelectedBehavior);
     });
 
-    it("should not filter current features if there is no input", async () => {
-      const fooFeaturesNames = ["foo1", "foo2"];
-      baseCliMocks.stubs.inquirer.inquireFake.executeCb(true);
-      baseCliMocks.stubs.inquirer.inquireFake.returns(null);
-      baseCliMocks.stubs.inquirer.inquire
+    it("should not filter current behaviors if there is no input", async () => {
+      const fooBehaviorsNames = ["foo1", "foo2"];
+      inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
+      inquirerMocks.stubs.inquirer.inquireFake.returns(null);
+      inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
-        .callsFake(baseCliMocks.stubs.inquirer.inquireFake.runner);
+        .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
       cli = new Cli();
-      cli._features.names = fooFeaturesNames;
-      await cli.changeCurrentFeature();
-      expect(cli._features.current).toEqual(fooFeaturesNames);
+      cli._behaviors.names = fooBehaviorsNames;
+      await cli.changeCurrentBehavior();
+      expect(cli._behaviors.current).toEqual(fooBehaviorsNames);
     });
 
     it("should not filter current features if current input is empty", async () => {
-      const fooFeaturesNames = ["foo1", "foo2"];
-      baseCliMocks.stubs.inquirer.inquireFake.executeCb(true);
-      baseCliMocks.stubs.inquirer.inquireFake.returns([]);
-      baseCliMocks.stubs.inquirer.inquire
+      const fooBehaviorsNames = ["foo1", "foo2"];
+      inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
+      inquirerMocks.stubs.inquirer.inquireFake.returns([]);
+      inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
-        .callsFake(baseCliMocks.stubs.inquirer.inquireFake.runner);
+        .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
       cli = new Cli();
-      cli._features.names = fooFeaturesNames;
-      await cli.changeCurrentFeature();
-      expect(cli._features.current).toEqual(fooFeaturesNames);
+      cli._behaviors.names = fooBehaviorsNames;
+      await cli.changeCurrentBehavior();
+      expect(cli._behaviors.current).toEqual(fooBehaviorsNames);
     });
 
-    it("should filter current features and returns all that includes current input", async () => {
-      const fooFeaturesNames = ["foo1", "foo2", "not-included"];
-      baseCliMocks.stubs.inquirer.inquireFake.executeCb(true);
-      baseCliMocks.stubs.inquirer.inquireFake.returns("foo");
-      baseCliMocks.stubs.inquirer.inquire
+    it("should filter current behaviors and returns all that includes current input", async () => {
+      const fooBehaviorsNames = ["foo1", "foo2", "not-included"];
+      inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
+      inquirerMocks.stubs.inquirer.inquireFake.returns("foo");
+      inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
-        .callsFake(baseCliMocks.stubs.inquirer.inquireFake.runner);
+        .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
       cli = new Cli();
-      cli._features.names = fooFeaturesNames;
-      await cli.changeCurrentFeature();
-      expect(cli._features.current).toEqual(["foo1", "foo2"]);
+      cli._behaviors.names = fooBehaviorsNames;
+      await cli.changeCurrentBehavior();
+      expect(cli._behaviors.current).toEqual(["foo1", "foo2"]);
     });
   });
 
   describe('when user selects "Change Delay"', () => {
     const fooDelay = 2000;
     beforeEach(() => {
-      baseCliMocks.stubs.inquirer.inquire.onCall(0).resolves("delay");
-      baseCliMocks.stubs.inquirer.inquire.onCall(1).resolves(fooDelay);
+      inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("delay");
+      inquirerMocks.stubs.inquirer.inquire.onCall(1).resolves(fooDelay);
     });
 
     it("should call to clear screen", async () => {
       cli = new Cli();
       await cli.start();
-      expect(baseCliMocks.stubs.inquirer.clearScreen.callCount).toEqual(3);
+      expect(inquirerMocks.stubs.inquirer.clearScreen.callCount).toEqual(3);
     });
 
     it("should call to display delay menu", async () => {
       cli = new Cli();
       await cli.start();
-      expect(baseCliMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("delay");
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("delay");
     });
 
     it("should set current selected feature", async () => {
@@ -209,7 +235,7 @@ describe("Cli", () => {
 
   describe('when user selects "Restart server"', () => {
     beforeEach(() => {
-      baseCliMocks.stubs.inquirer.inquire.onCall(0).resolves("restart");
+      inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("restart");
     });
 
     it("should call to restart server", async () => {
@@ -223,14 +249,14 @@ describe("Cli", () => {
     const fooLogLevel = "foo-level";
 
     beforeEach(() => {
-      baseCliMocks.stubs.inquirer.inquire.onCall(0).resolves("logLevel");
-      baseCliMocks.stubs.inquirer.inquire.onCall(1).resolves(fooLogLevel);
+      inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("logLevel");
+      inquirerMocks.stubs.inquirer.inquire.onCall(1).resolves(fooLogLevel);
     });
 
     it("should call to display log level menu", async () => {
       cli = new Cli();
       await cli.start();
-      expect(baseCliMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("logLevel");
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("logLevel");
     });
 
     it("should set current log level with the result of log level question", async () => {
@@ -242,7 +268,7 @@ describe("Cli", () => {
 
   describe('when user selects "Switch watch"', () => {
     beforeEach(() => {
-      baseCliMocks.stubs.inquirer.inquire.onCall(0).resolves("watch");
+      inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("watch");
     });
 
     it("should call to switchWatch server method, passing true if it was disabled", async () => {
@@ -262,18 +288,18 @@ describe("Cli", () => {
 
   describe('when user selects "Display server logs"', () => {
     beforeEach(() => {
-      baseCliMocks.stubs.inquirer.inquire.onCall(0).resolves("logs");
+      inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("logs");
     });
 
     it("should call to logsMode server method", async () => {
       cli = new Cli();
       await cli.start();
-      expect(baseCliMocks.stubs.inquirer.logsMode.callCount).toEqual(1);
+      expect(inquirerMocks.stubs.inquirer.logsMode.callCount).toEqual(1);
     });
 
     it("should call to set current log level after logs mode is enabled", async () => {
       const fooLogLevel = "foo log level";
-      baseCliMocks.stubs.inquirer.logsMode.executeCb(true);
+      inquirerMocks.stubs.inquirer.logsMode.executeCb(true);
       cli = new Cli({
         log: fooLogLevel
       });
@@ -307,13 +333,13 @@ describe("Cli", () => {
     it("should remove all base-cli listeners", async () => {
       cli = new Cli();
       await cli.start();
-      expect(baseCliMocks.stubs.inquirer.removeListeners.callCount).toEqual(1);
+      expect(inquirerMocks.stubs.inquirer.removeListeners.callCount).toEqual(1);
     });
 
     it("should exit logs mode", async () => {
       cli = new Cli();
       await cli.start();
-      expect(baseCliMocks.stubs.inquirer.exitLogsMode.callCount).toEqual(1);
+      expect(inquirerMocks.stubs.inquirer.exitLogsMode.callCount).toEqual(1);
     });
   });
 });

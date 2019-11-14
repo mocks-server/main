@@ -12,12 +12,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const Boom = require("boom");
 
-const CliMocks = require("./Cli.mocks.js");
-const ServerMocks = require("./Server.mocks.js");
+const CliMocks = require("./cli/Cli.mocks.js");
+const ServerMocks = require("./core/Server.mocks.js");
 
-const { start } = require("../../../lib/start");
-const options = require("../../../lib/common/options");
-const tracer = require("../../../lib/common/tracer");
+const { start } = require("../../lib/start");
+const options = require("../../lib/core/options");
+const tracer = require("../../lib/core/tracer");
 
 describe("start method", () => {
   let sandbox;
@@ -109,12 +109,12 @@ describe("start method", () => {
       it("should create a Server, passing to it the user options", async () => {
         const fooOptions = {
           cli: false,
-          features: "foo"
+          behaviors: "foo"
         };
         options.get.returns(fooOptions);
         await start();
         expect(serverMocks.stubs.Constructor.mock.calls[0]).toEqual([
-          fooOptions.features,
+          fooOptions.behaviors,
           fooOptions
         ]);
       });

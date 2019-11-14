@@ -11,6 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const path = require("path");
 
 const requestPromise = require("request-promise");
+const CliRunner = require("../cli/CliRunner"); // TODO, export in CLI package for testing purposes?
 const { Server } = require("../../../index");
 
 const SERVER_PORT = 3100;
@@ -94,6 +95,14 @@ class TimeCounter {
   }
 }
 
+const wait = (time = 1000) => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  });
+};
+
 module.exports = {
   startServer,
   stopServer,
@@ -101,5 +110,7 @@ module.exports = {
   changeBehavior,
   getBehaviors,
   changeDelay,
-  TimeCounter
+  TimeCounter,
+  CliRunner,
+  wait
 };

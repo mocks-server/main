@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const path = require("path");
 const { CliRunner, request, wait, TimeCounter } = require("./utils");
 
-describe("programmatic Cli", () => {
+describe.skip("programmatic Cli", () => {
   const cwdPath = path.resolve(__dirname, "fixtures", "programmatic-cli");
   let cli;
 

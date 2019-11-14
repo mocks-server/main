@@ -8,6 +8,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
+const SCREEN_SEPARATOR = ">> Mocks server";
+
 const path = require("path");
 const { CliRunner, request, wait } = require("./utils");
 
@@ -15,6 +17,16 @@ describe("web tutorial", () => {
   let cli;
   const binaryPath = "../../../../bin/mocks-server";
   const cwdPath = path.resolve(__dirname, "fixtures");
+
+  const logCurrentScreen = async () => {
+    await wait(500);
+    const lastLog = cli.allLogs[cli.allLogs.length - 1];
+    const screen = lastLog.includes(SCREEN_SEPARATOR)
+      ? `${SCREEN_SEPARATOR}${lastLog.split(SCREEN_SEPARATOR).pop()}`
+      : lastLog;
+    console.log("CURRENT CLI SCREEN -----------------------");
+    console.log(screen);
+  };
 
   beforeAll(async () => {
     cli = new CliRunner([binaryPath, "--behaviors=web-tutorial"], {
@@ -53,9 +65,11 @@ describe("web tutorial", () => {
 
   describe('When changing current behavior to "user2"', () => {
     it("should display new selected behavior", async () => {
-      cli.pressEnter();
+      console.log(await cli.newScreenAfter(cli.pressEnter));
       cli.cursorDown();
+      await logCurrentScreen();
       const newScreen = await cli.newScreenAfter(cli.pressEnter);
+      await logCurrentScreen();
       expect(newScreen).toEqual(expect.stringContaining("Current behavior: user2"));
     });
 
@@ -80,11 +94,13 @@ describe("web tutorial", () => {
 
   describe('When changing current behavior to "dynamic"', () => {
     it("should display new selected behavior", async () => {
-      cli.pressEnter();
+      console.log(await cli.newScreenAfter(cli.pressEnter));
       cli.cursorDown();
+      await logCurrentScreen();
       cli.cursorDown();
-      cli.cursorDown();
+      await logCurrentScreen();
       const newScreen = await cli.newScreenAfter(cli.pressEnter);
+      await logCurrentScreen();
       expect(newScreen).toEqual(expect.stringContaining("Current behavior: dynamic"));
     });
 

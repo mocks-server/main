@@ -9,7 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { CliRunner, request, wait } = require("./utils");
+const { CliRunner, request, wait, TimeCounter } = require("./utils");
 
 describe("programmatic server", () => {
   const cwdPath = path.resolve(__dirname, "fixtures", "programmatic-server");
@@ -127,6 +127,24 @@ describe("programmatic server", () => {
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 1, name: "John Doe" });
       });
+    });
+  });
+
+  describe("delay option", () => {
+    it("should set delay", async () => {
+      expect.assertions(2);
+      cli = new CliRunner("start-delay.js", {
+        cwd: cwdPath
+      });
+      await wait();
+      const timeCounter = new TimeCounter();
+      const users = await request("/api/users");
+      timeCounter.stop();
+      expect(users).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" }
+      ]);
+      expect(timeCounter.total).toBeGreaterThan(1999);
     });
   });
 });

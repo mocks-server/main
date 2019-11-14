@@ -16,7 +16,7 @@ const CliMocks = require("./cli/Cli.mocks.js");
 const ServerMocks = require("./core/Server.mocks.js");
 
 const { start } = require("../../lib/start");
-const options = require("../../lib/core/options");
+const options = require("../../lib/core/Options");
 const tracer = require("../../lib/core/tracer");
 
 describe("start method", () => {

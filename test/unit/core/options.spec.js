@@ -12,7 +12,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const commander = require("commander");
 
-const options = require("../../../lib/core/options");
+const options = require("../../../lib/core/Options");
 
 describe("options", () => {
   let sandbox;

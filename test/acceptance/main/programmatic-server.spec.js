@@ -37,7 +37,7 @@ describe("programmatic Server", () => {
         cwd: cwdPath
       });
       await wait();
-      expect(cli.allLogsString).toEqual(expect.stringContaining("Server started"));
+      expect(cli.logs).toEqual(expect.stringContaining("Server started"));
     });
   });
 
@@ -70,9 +70,7 @@ describe("programmatic Server", () => {
           cwd: cwdPath
         });
         await wait();
-        expect(cli.allLogsString).toEqual(
-          expect.stringContaining('Defined behavior "foo" was not found')
-        );
+        expect(cli.logs).toEqual(expect.stringContaining('Defined behavior "foo" was not found'));
       });
 
       it("should set as current behavior the first one found", async () => {
@@ -102,7 +100,7 @@ describe("programmatic Server", () => {
           cwd: cwdPath
         });
         await wait();
-        expect(cli.allLogsString).toEqual(
+        expect(cli.logs).toEqual(
           expect.stringContaining('Deprecation warning: "feature" option will be deprecated')
         );
       });
@@ -114,9 +112,7 @@ describe("programmatic Server", () => {
           cwd: cwdPath
         });
         await wait();
-        expect(cli.allLogsString).toEqual(
-          expect.stringContaining('Defined behavior "foo" was not found')
-        );
+        expect(cli.logs).toEqual(expect.stringContaining('Defined behavior "foo" was not found'));
       });
 
       it("should set as current behavior the first one found", async () => {

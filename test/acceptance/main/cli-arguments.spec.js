@@ -32,7 +32,7 @@ describe("command line arguments", () => {
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" }
       ]);
-      expect(cli.allLogsString).toEqual(expect.stringContaining("Behaviors: 3"));
+      expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
     });
   });
 
@@ -46,7 +46,7 @@ describe("command line arguments", () => {
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 1, name: "John Doe" });
-        expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: standard"));
+        expect(cli.logs).toEqual(expect.stringContaining("Current behavior: standard"));
       });
     });
 
@@ -59,7 +59,7 @@ describe("command line arguments", () => {
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 2, name: "Jane Doe" });
-        expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: dynamic"));
+        expect(cli.logs).toEqual(expect.stringContaining("Current behavior: dynamic"));
       });
     });
 
@@ -69,9 +69,7 @@ describe("command line arguments", () => {
           cwd: cwdPath
         });
         await wait();
-        expect(cli.allLogsString).toEqual(
-          expect.stringContaining('Defined behavior "foo" was not found')
-        );
+        expect(cli.logs).toEqual(expect.stringContaining('Defined behavior "foo" was not found'));
       });
 
       it("should set as current behavior the first one found", async () => {
@@ -82,7 +80,7 @@ describe("command line arguments", () => {
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 1, name: "John Doe" });
-        expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: standard"));
+        expect(cli.logs).toEqual(expect.stringContaining("Current behavior: standard"));
       });
     });
   });
@@ -99,7 +97,7 @@ describe("command line arguments", () => {
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" }
       ]);
-      expect(cli.allLogsString).toEqual(expect.stringContaining("Behaviors: 3"));
+      expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
     });
   });
 
@@ -113,7 +111,7 @@ describe("command line arguments", () => {
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 1, name: "John Doe" });
-        expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: standard"));
+        expect(cli.logs).toEqual(expect.stringContaining("Current behavior: standard"));
       });
     });
 
@@ -126,7 +124,7 @@ describe("command line arguments", () => {
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 2, name: "Jane Doe" });
-        expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: dynamic"));
+        expect(cli.logs).toEqual(expect.stringContaining("Current behavior: dynamic"));
       });
     });
 
@@ -136,9 +134,7 @@ describe("command line arguments", () => {
           cwd: cwdPath
         });
         await wait();
-        expect(cli.allLogsString).toEqual(
-          expect.stringContaining('Defined behavior "foo" was not found')
-        );
+        expect(cli.logs).toEqual(expect.stringContaining('Defined behavior "foo" was not found'));
       });
 
       it("should set as current behavior the first one found", async () => {
@@ -149,7 +145,7 @@ describe("command line arguments", () => {
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 1, name: "John Doe" });
-        expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: standard"));
+        expect(cli.logs).toEqual(expect.stringContaining("Current behavior: standard"));
       });
     });
   });

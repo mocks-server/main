@@ -25,7 +25,7 @@ describe("with no behaviors", () => {
       cwd: cwdPath
     });
     await wait();
-    expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: -"));
+    expect(cli.logs).toEqual(expect.stringContaining("Current behavior: -"));
   });
 
   it("should print behaviors as 0", async () => {
@@ -33,7 +33,7 @@ describe("with no behaviors", () => {
       cwd: cwdPath
     });
     await wait();
-    expect(cli.allLogsString).toEqual(expect.stringContaining("Behaviors: 0"));
+    expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 0"));
   });
 
   it("should print current fixtures as 0", async () => {
@@ -41,6 +41,6 @@ describe("with no behaviors", () => {
       cwd: cwdPath
     });
     await wait();
-    expect(cli.allLogsString).toEqual(expect.stringContaining("Current fixtures: 0"));
+    expect(cli.logs).toEqual(expect.stringContaining("Current fixtures: 0"));
   });
 });

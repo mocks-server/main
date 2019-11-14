@@ -31,7 +31,7 @@ describe("programmatic Cli", () => {
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" }
       ]);
-      expect(cli.allLogsString).toEqual(expect.stringContaining("Behaviors: 3"));
+      expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
     });
 
     it("should set mocks folder even when deprecated features option is received", async () => {
@@ -45,10 +45,10 @@ describe("programmatic Cli", () => {
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" }
       ]);
-      expect(cli.allLogsString).toEqual(
+      expect(cli.logs).toEqual(
         expect.stringContaining('Deprecation warning: "features" option will be deprecated')
       );
-      expect(cli.allLogsString).toEqual(expect.stringContaining("Behaviors: 3"));
+      expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
     });
 
     it("should print a log when started", async () => {
@@ -56,7 +56,7 @@ describe("programmatic Cli", () => {
         cwd: cwdPath
       });
       await wait();
-      expect(cli.allLogsString).toEqual(expect.stringContaining("Server started"));
+      expect(cli.logs).toEqual(expect.stringContaining("Server started"));
     });
   });
 
@@ -70,7 +70,7 @@ describe("programmatic Cli", () => {
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 1, name: "John Doe" });
-        expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: standard"));
+        expect(cli.logs).toEqual(expect.stringContaining("Current behavior: standard"));
       });
     });
 
@@ -83,7 +83,7 @@ describe("programmatic Cli", () => {
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 2, name: "Jane Doe" });
-        expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: dynamic"));
+        expect(cli.logs).toEqual(expect.stringContaining("Current behavior: dynamic"));
       });
     });
 
@@ -93,9 +93,7 @@ describe("programmatic Cli", () => {
           cwd: cwdPath
         });
         await wait();
-        expect(cli.allLogsString).toEqual(
-          expect.stringContaining('Defined behavior "foo" was not found')
-        );
+        expect(cli.logs).toEqual(expect.stringContaining('Defined behavior "foo" was not found'));
       });
 
       it("should set as current behavior the first one found", async () => {
@@ -106,7 +104,7 @@ describe("programmatic Cli", () => {
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 1, name: "John Doe" });
-        expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: standard"));
+        expect(cli.logs).toEqual(expect.stringContaining("Current behavior: standard"));
       });
     });
   });
@@ -121,7 +119,7 @@ describe("programmatic Cli", () => {
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 2, name: "Jane Doe" });
-        expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: dynamic"));
+        expect(cli.logs).toEqual(expect.stringContaining("Current behavior: dynamic"));
       });
 
       it("should print a deprecation warning", async () => {
@@ -129,7 +127,7 @@ describe("programmatic Cli", () => {
           cwd: cwdPath
         });
         await wait();
-        expect(cli.allLogsString).toEqual(
+        expect(cli.logs).toEqual(
           expect.stringContaining('Deprecation warning: "feature" option will be deprecated')
         );
       });
@@ -141,9 +139,7 @@ describe("programmatic Cli", () => {
           cwd: cwdPath
         });
         await wait();
-        expect(cli.allLogsString).toEqual(
-          expect.stringContaining('Defined behavior "foo" was not found')
-        );
+        expect(cli.logs).toEqual(expect.stringContaining('Defined behavior "foo" was not found'));
       });
 
       it("should set as current behavior the first one found", async () => {
@@ -154,7 +150,7 @@ describe("programmatic Cli", () => {
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 1, name: "John Doe" });
-        expect(cli.allLogsString).toEqual(expect.stringContaining("Current behavior: standard"));
+        expect(cli.logs).toEqual(expect.stringContaining("Current behavior: standard"));
       });
     });
   });

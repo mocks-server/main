@@ -69,9 +69,7 @@ describe("command line arguments with cli disabled", () => {
           }
         );
         await wait();
-        expect(cli.allLogsString).toEqual(
-          expect.stringContaining('Defined behavior "foo" was not found')
-        );
+        expect(cli.logs).toEqual(expect.stringContaining('Defined behavior "foo" was not found'));
       });
 
       it("should set as current behavior the first one found", async () => {
@@ -137,9 +135,7 @@ describe("command line arguments with cli disabled", () => {
           }
         );
         await wait();
-        expect(cli.allLogsString).toEqual(
-          expect.stringContaining('Defined behavior "foo" was not found')
-        );
+        expect(cli.logs).toEqual(expect.stringContaining('Defined behavior "foo" was not found'));
       });
 
       it("should set as current behavior the first one found", async () => {

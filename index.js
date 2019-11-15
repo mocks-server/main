@@ -13,7 +13,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const ProgrammaticCli = require("./lib/ProgrammaticCli");
 const ProgrammaticServer = require("./lib/ProgrammaticServer");
-const Behavior = require("./lib/core/Behavior");
+const Behavior = require("./lib/core/mocks/Behavior");
 
 module.exports = {
   Cli: ProgrammaticCli,

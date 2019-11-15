@@ -20,6 +20,16 @@ describe("command line arguments with cli disabled", () => {
     await cli.kill();
   });
 
+  describe("interactive cli", () => {
+    it("should not be started", async () => {
+      cli = new CliRunner([binaryPath, "--behaviors=web-tutorial", "--cli=false"], {
+        cwd: cwdPath
+      });
+      await wait(3000);
+      expect(cli.logs).toEqual(expect.not.stringContaining("Select action"));
+    });
+  });
+
   describe("behaviors option", () => {
     it("should set mocks folder", async () => {
       cli = new CliRunner([binaryPath, "--behaviors=web-tutorial", "--cli=false"], {

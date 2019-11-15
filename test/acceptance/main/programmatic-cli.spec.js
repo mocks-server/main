@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const path = require("path");
 const { CliRunner, request, wait, TimeCounter } = require("./utils");
 
-describe.skip("programmatic Cli", () => {
+describe("programmatic Cli", () => {
   const cwdPath = path.resolve(__dirname, "fixtures", "programmatic-cli");
   let cli;
 
@@ -46,7 +46,9 @@ describe.skip("programmatic Cli", () => {
         { id: 2, name: "Jane Doe" }
       ]);
       expect(cli.logs).toEqual(
-        expect.stringContaining('Deprecation warning: "features" option will be deprecated')
+        expect.stringContaining(
+          "Deprecation warning: --features option will be deprecated. Use --behaviors instead"
+        )
       );
       expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
     });
@@ -128,7 +130,9 @@ describe.skip("programmatic Cli", () => {
         });
         await wait();
         expect(cli.logs).toEqual(
-          expect.stringContaining('Deprecation warning: "feature" option will be deprecated')
+          expect.stringContaining(
+            "Deprecation warning: --feature option will be deprecated. Use --behavior instead"
+          )
         );
       });
     });

@@ -176,4 +176,19 @@ describe("programmatic Cli", () => {
       expect(timeCounter.total).toBeGreaterThan(1999);
     });
   });
+
+  describe("when initializing server manually and start after", () => {
+    it("should start server without cli, then start", async () => {
+      expect.assertions(3);
+      cli = new CliRunner("init-server.js", {
+        cwd: cwdPath
+      });
+      await wait();
+      const users = await request("/api/users/2");
+      expect(users).toEqual({ id: 1, name: "John Doe" });
+      expect(cli.logs).toEqual(expect.not.stringContaining("Select action"));
+      await wait(3000);
+      expect(cli.logs).toEqual(expect.stringContaining("Select action"));
+    });
+  });
 });

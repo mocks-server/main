@@ -15,7 +15,7 @@ Please refer to the [project documentation website][website-url]:
 
 * [Get started](https://www.mocks-server.org/docs/get-started-intro)
 * [Tutorials](https://www.mocks-server.org/docs/tutorials-static)
-* [configuration](https://www.mocks-server.org/docs/configuration-command-line-arguments)
+* [Configuration](https://www.mocks-server.org/docs/configuration-command-line-arguments)
 
 ## Why a mocks server?
 

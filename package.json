@@ -1,7 +1,7 @@
 {
   "name": "@mocks-server/main",
   "version": "1.2.0",
-  "description": "Mocks Server simulating multiple APIs behaviors",
+  "description": "Mocks server supporting multiple api behaviors",
   "keywords": [
     "mocks",
     "server",

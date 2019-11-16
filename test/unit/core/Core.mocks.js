@@ -35,7 +35,11 @@ class CoreMock {
         error: this._sandbox.stub()
       },
       onChangeSettings: this._sandbox.stub(),
-      behaviors: {},
+      addCustomRouter: this._sandbox.stub(),
+      behaviors: {
+        currentFromCollection: "foo-current",
+        collection: "foo-behaviors-collection"
+      },
       serverError: "foo-error",
       _eventEmitter: {
         on: this._sandbox.stub(),

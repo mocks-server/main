@@ -12,6 +12,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const express = require("express");
 const sinon = require("sinon");
 
+const CoreMocks = require("../core/Core.mocks.js");
+
 const Behaviors = require("../../../lib/api/Behaviors");
 
 describe("Behaviors Api", () => {
@@ -20,6 +22,10 @@ describe("Behaviors Api", () => {
   let resMock;
   let statusSpy;
   let sendSpy;
+  let coreMock;
+  let coreMocks;
+  let tracerMock;
+  let behaviors;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -27,6 +33,9 @@ describe("Behaviors Api", () => {
       get: sandbox.stub(),
       put: sandbox.stub()
     };
+    coreMock = new CoreMocks();
+    coreMocks = coreMock.stubs.instance;
+    tracerMock = coreMocks.tracer;
     sandbox.stub(express, "Router").returns(routerStubs);
     statusSpy = sandbox.spy();
     sendSpy = sandbox.spy();
@@ -34,43 +43,35 @@ describe("Behaviors Api", () => {
       status: statusSpy,
       send: sendSpy
     };
+    behaviors = new Behaviors(coreMocks, tracerMock);
     expect.assertions(1);
   });
 
   afterEach(() => {
     sandbox.restore();
+    coreMock.restore();
   });
 
   describe("when instanciated", () => {
     it("should create an express Router", () => {
-      new Behaviors();
       expect(express.Router.calledOnce).toEqual(true);
     });
   });
 
   describe("getCurrent route", () => {
     it("should set response status as 200", () => {
-      const behaviors = new Behaviors({
-        currentFromCollection: "foo-current"
-      });
       behaviors.getCurrent({}, resMock);
       expect(statusSpy.getCall(0).args[0]).toEqual(200);
     });
 
     it("should send current feature from collection", () => {
-      const behaviors = new Behaviors({
-        currentFromCollection: "foo-current"
-      });
       behaviors.getCurrent({}, resMock);
-      expect(sendSpy.getCall(0).args[0]).toEqual("foo-current");
+      expect(sendSpy.getCall(0).args[0]).toEqual(coreMocks.behaviors.currentFromCollection);
     });
   });
 
   describe("putCurrent route", () => {
     it("should set current feature", () => {
-      const behaviors = new Behaviors({
-        currentFromCollection: "foo-current"
-      });
       behaviors.putCurrent(
         {
           body: {
@@ -79,13 +80,10 @@ describe("Behaviors Api", () => {
         },
         resMock
       );
-      expect(behaviors._behaviors.current).toEqual("foo-name");
+      expect(coreMocks.settings.set.getCall(0).args).toEqual(["behavior", "foo-name"]);
     });
 
     it("should send current feature from collection", () => {
-      const behaviors = new Behaviors({
-        currentFromCollection: "foo-current"
-      });
       behaviors.putCurrent(
         {
           body: {
@@ -94,31 +92,24 @@ describe("Behaviors Api", () => {
         },
         resMock
       );
-      expect(sendSpy.getCall(0).args[0]).toEqual("foo-current");
+      expect(sendSpy.getCall(0).args[0]).toEqual(coreMocks.behaviors.currentFromCollection);
     });
   });
 
   describe("getCollection route", () => {
     it("should set response status as 200", () => {
-      const behaviors = new Behaviors({
-        collection: "foo-collection"
-      });
       behaviors.getCollection({}, resMock);
       expect(statusSpy.getCall(0).args[0]).toEqual(200);
     });
 
     it("should send current behaviors collection", () => {
-      const behaviors = new Behaviors({
-        collection: "foo-collection"
-      });
       behaviors.getCollection({}, resMock);
-      expect(sendSpy.getCall(0).args[0]).toEqual("foo-collection");
+      expect(sendSpy.getCall(0).args[0]).toEqual(coreMocks.behaviors.collection);
     });
   });
 
   describe("router getter", () => {
     it("should return the express router", () => {
-      const behaviors = new Behaviors();
       expect(behaviors.router).toEqual(routerStubs);
     });
   });

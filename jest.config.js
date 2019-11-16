@@ -36,9 +36,10 @@ module.exports = {
     "**/test/unit/cli/Inquirer.spec.js",
     "**/test/unit/api/Settings.spec.js",
     "**/test/unit/api/Behaviors.spec.js",
-    "**/test/unit/api/Api.spec.js"
+    "**/test/unit/api/Api.spec.js",
+    "**/test/unit/cli/Cli.spec.js"
   ],
-  //testMatch: ["**/test/unit/api/Api.spec.js"],
+  //testMatch: ["**/test/unit/cli/Cli.spec.js"],
 
   // The test environment that will be used for testing
   testEnvironment: "node"

@@ -73,6 +73,10 @@ class Mock {
   restore() {
     this._sandbox.restore();
   }
+
+  reset() {
+    this._sandbox.reset();
+  }
 }
 
 module.exports = Mock;

@@ -26,8 +26,13 @@ const defaultRequestOptions = {
   method: "GET"
 };
 
+const fixturesFolder = folderName => {
+  return path.resolve(__dirname, "fixtures", folderName);
+};
+
 const startServer = (mocksPath, options = {}) => {
-  const server = new Server(path.resolve(__dirname, "fixtures", "web-tutorial"), {
+  const mocks = mocksPath || "web-tutorial";
+  const server = new Server(fixturesFolder(mocks), {
     ...defaultOptions,
     ...options
   });
@@ -112,5 +117,6 @@ module.exports = {
   changeDelay,
   TimeCounter,
   CliRunner,
-  wait
+  wait,
+  fixturesFolder
 };

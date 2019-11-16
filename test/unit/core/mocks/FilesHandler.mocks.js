@@ -93,7 +93,9 @@ class Mock {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      files: INITIAL_FILES
+      files: INITIAL_FILES,
+      init: this._sandbox.stub().resolves(),
+      start: this._sandbox.stub().resolves()
     };
 
     FilesHandler.mockImplementation(() => this._stubs);

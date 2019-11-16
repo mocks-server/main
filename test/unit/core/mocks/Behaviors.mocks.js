@@ -11,9 +11,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../../lib/core/Behaviors");
+jest.mock("../../../../lib/core/mocks/Behaviors");
 
-const Behaviors = require("../../../lib/core/Behaviors");
+const Behaviors = require("../../../../lib/core/mocks/Behaviors");
 
 class Mock {
   constructor() {
@@ -21,7 +21,9 @@ class Mock {
 
     this._stubs = {
       currentName: "foo-current-name",
-      current: {}
+      current: {},
+      init: this._sandbox.stub().resolves(),
+      start: this._sandbox.stub().resolves()
     };
 
     Behaviors.mockImplementation(() => this._stubs);

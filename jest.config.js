@@ -32,7 +32,7 @@ module.exports = {
     "**/test/unit/ProgrammaticCli.spec.js",
     "**/test/unit/ProgrammaticServer.spec.js",
     "**/test/unit/core/tracer.spec.js",
-    "**/test/unit/server/middlewares.spec.js",
+    "**/test/unit/core/server/middlewares.spec.js",
     "**/test/unit/cli/Inquirer.spec.js",
     "**/test/unit/api/Settings.spec.js",
     "**/test/unit/api/Behaviors.spec.js",
@@ -40,9 +40,10 @@ module.exports = {
     "**/test/unit/cli/Cli.spec.js",
     "**/test/unit/core/mocks/Behavior.spec.js",
     "**/test/unit/core/mocks/Behaviors.spec.js",
-    "**/test/unit/core/mocks/FilesHandler.spec.js"
+    "**/test/unit/core/mocks/FilesHandler.spec.js",
+    "**/test/unit/core/mocks/Mocks.spec.js"
   ],
-  //testMatch: ["**/test/unit/core/mocks/FilesHandler.spec.js"],
+  //testMatch: ["**/test/unit/core/server/middlewares.spec.js"],
 
   // The test environment that will be used for testing
   testEnvironment: "node"

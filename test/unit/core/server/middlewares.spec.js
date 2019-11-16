@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const Boom = require("boom");
 
-const tracer = require("../../../lib/core/tracer");
-const middlewares = require("../../../lib/core/serverMiddlewares");
+const tracer = require("../../../../lib/core/tracer");
+const middlewares = require("../../../../lib/core/server/middlewares");
 
 describe("middlewares", () => {
   let sandbox;

@@ -18,10 +18,19 @@ jest.mock("require-all");
 
 const requireAll = require("require-all");
 
+const LibsMocks = require("../../Libs.mocks.js");
 const CoreMocks = require("../Core.mocks.js");
 
 const FilesHandler = require("../../../../lib/core/mocks/FilesHandler");
 const tracer = require("../../../../lib/core/tracer");
+
+const wait = () => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve();
+    }, 1000);
+  });
+};
 
 describe("Behaviors", () => {
   const fooRequireCache = {
@@ -130,12 +139,14 @@ describe("Behaviors", () => {
   let coreInstance;
   let requireCache;
   let filesHandler;
+  let libsMocks;
 
   beforeEach(async () => {
     requireCache = cloneDeep(fooRequireCache);
     sandbox = sinon.createSandbox();
     sandbox.stub(Boom, "badData").returns(fooBoomError);
     coreMocks = new CoreMocks();
+    libsMocks = new LibsMocks();
     coreInstance = coreMocks.stubs.instance;
     sandbox.stub(tracer, "error");
     sandbox.stub(tracer, "info");
@@ -149,6 +160,7 @@ describe("Behaviors", () => {
   });
 
   afterEach(() => {
+    libsMocks.restore();
     sandbox.restore();
     coreMocks.restore();
   });
@@ -218,6 +230,82 @@ describe("Behaviors", () => {
     it("should return current files", async () => {
       await filesHandler.init();
       expect(filesHandler.files).toEqual(fooFiles);
+    });
+  });
+
+  describe("start method", () => {
+    describe("when starting files watch", () => {
+      it("should do nothing if watch was not enabled", async () => {
+        coreInstance.settings.get.withArgs("watch").returns(false);
+        await filesHandler.init();
+        await filesHandler.start();
+        expect(libsMocks.stubs.watch.callCount).toEqual(0);
+      });
+
+      it("should call to close watcher if watch was enabled previously", async () => {
+        coreInstance.settings.get.withArgs("watch").returns(true);
+        await filesHandler.init();
+        await filesHandler.start();
+        await filesHandler.start();
+        expect(libsMocks.stubs.watchClose.callCount).toEqual(1);
+      });
+    });
+  });
+
+  describe("when a file is changed", () => {
+    it("should load files again", async () => {
+      coreInstance.settings.get.withArgs("watch").returns(true);
+      await filesHandler.init();
+      await filesHandler.start();
+      libsMocks.stubs.watch.getCall(0).args[2]();
+      await wait();
+      expect(requireAll.mock.calls.length).toEqual(2);
+    });
+  });
+
+  describe("when core settings change", () => {
+    it("should load files again if behaviors setting is changed", async () => {
+      await filesHandler.init();
+      coreInstance._eventEmitter.on.getCall(0).args[1]({
+        behaviors: "foo-path"
+      });
+      await wait();
+      expect(requireAll.mock.calls.length).toEqual(2);
+    });
+
+    it("should enable watch again if behaviors setting is changed", async () => {
+      coreInstance.settings.get.withArgs("watch").returns(true);
+      await filesHandler.init();
+      await filesHandler.start();
+      coreInstance._eventEmitter.on.getCall(0).args[1]({
+        behaviors: "foo-path"
+      });
+      await wait();
+      expect(libsMocks.stubs.watch.callCount).toEqual(2);
+    });
+
+    it("should disable watch if watch is changed", async () => {
+      coreInstance.settings.get.withArgs("watch").returns(true);
+      await filesHandler.init();
+      await filesHandler.start();
+      coreInstance.settings.get.withArgs("watch").returns(false);
+      coreInstance._eventEmitter.on.getCall(0).args[1]({
+        watch: false
+      });
+      await wait();
+      expect(libsMocks.stubs.watchClose.callCount).toEqual(1);
+    });
+
+    it("should do nothing if no behaviors or watch settings are changed", async () => {
+      expect.assertions(3);
+      coreInstance.settings.get.withArgs("watch").returns(true);
+      await filesHandler.init();
+      await filesHandler.start();
+      coreInstance._eventEmitter.on.getCall(0).args[1]({});
+      await wait();
+      expect(requireAll.mock.calls.length).toEqual(1);
+      expect(libsMocks.stubs.watch.callCount).toEqual(1);
+      expect(libsMocks.stubs.watchClose.callCount).toEqual(0);
     });
   });
 });

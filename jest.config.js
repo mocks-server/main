@@ -38,9 +38,10 @@ module.exports = {
     "**/test/unit/api/Behaviors.spec.js",
     "**/test/unit/api/Api.spec.js",
     "**/test/unit/cli/Cli.spec.js",
-    "**/test/unit/core/mocks/Behavior.spec.js"
+    "**/test/unit/core/mocks/Behavior.spec.js",
+    "**/test/unit/core/mocks/Behaviors.spec.js"
   ],
-  //testMatch: ["**/test/unit/core/mocks/Behavior.spec.js"],
+  testMatch: ["**/test/unit/core/mocks/Behaviors.spec.js"],
 
   // The test environment that will be used for testing
   testEnvironment: "node"

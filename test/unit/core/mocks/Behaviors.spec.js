@@ -11,183 +11,57 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 const Boom = require("boom");
-const { cloneDeep } = require("lodash");
 
-jest.mock("require-all");
+const FilesHandlerMocks = require("./FilesHandler.mocks.js");
+const CoreMocks = require("../Core.mocks.js");
 
-const requireAll = require("require-all");
-
-const Behaviors = require("../../../lib/core/Behaviors");
+const Behaviors = require("../../../../lib/core/mocks/Behaviors");
+const tracer = require("../../../../lib/core/tracer");
 
 describe("Behaviors", () => {
-  const fooRequireCache = {
-    "foo-path": {
-      id: "foo-path",
-      children: {
-        "foo-path/foo-children": {
-          id: "foo-path/foo-children"
-        }
-      }
-    },
-    "foo-path/foo-children": {
-      id: "foo-path/foo-children",
-      children: {
-        "foo-path/foo-children-2": {
-          id: "foo-path/foo-children-2"
-        }
-      }
-    },
-    "foo-path/foo-children-2": {
-      id: "foo-path/foo-children-2",
-      children: {
-        "foo-children-3": {
-          id: "foo-children-3"
-        }
-      }
-    },
-    "foo-not-children": {
-      id: "foo-not-children"
-    }
-  };
-
-  const fooBehaviorsFiles = {
-    file1: {
-      behavior1: {
-        fixtures: [
-          {
-            url: "/api/foo/foo-uri",
-            method: "GET",
-            response: {
-              status: 200,
-              body: {
-                fooProperty: "foo"
-              }
-            }
-          }
-        ],
-        totalFixtures: 1,
-        methods: {
-          POST: {
-            "/api/foo/foo-uri": {
-              route: "foo-route-parser",
-              response: {
-                status: 200,
-                body: {
-                  fooProperty: "foo"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    file2: {
-      behavior2: {
-        fixtures: [
-          {
-            url: "/api/foo/foo-uri-2",
-            method: "POST",
-            response: {
-              status: 422,
-              body: {
-                fooProperty2: "foo2"
-              }
-            }
-          }
-        ],
-        totalFixtures: 1,
-        methods: {
-          POST: {
-            "/api/foo/foo-uri-2": {
-              route: "foo-route-parser",
-              response: {
-                status: 422,
-                body: {
-                  fooProperty2: "foo2"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    folder: {
-      folder2: {
-        file: {
-          fooProperty: ""
-        }
-      }
-    }
-  };
-
   const fooBoomError = new Error("foo boom error");
   let sandbox;
-  let requireCache;
+  let coreMocks;
+  let coreInstance;
+  let filesHandlerMock;
+  let filesHandlerInstance;
+  let behaviors;
 
   beforeEach(() => {
-    requireCache = cloneDeep(fooRequireCache);
     sandbox = sinon.createSandbox();
     sandbox.stub(Boom, "badData").returns(fooBoomError);
-    requireAll.mockImplementation(() => fooBehaviorsFiles);
+    filesHandlerMock = new FilesHandlerMocks();
+    filesHandlerInstance = filesHandlerMock.stubs.instance;
+    coreMocks = new CoreMocks();
+    coreInstance = coreMocks.stubs.instance;
+    coreInstance.settings.get.withArgs("behavior").returns("behavior");
+    sandbox.stub(tracer, "warn");
+    behaviors = new Behaviors(
+      filesHandlerInstance,
+      coreInstance.settings,
+      coreInstance._eventEmitter
+    );
   });
 
   afterEach(() => {
     sandbox.restore();
+    filesHandlerMock.restore();
+    coreMocks.restore();
   });
 
-  describe("when instanciated", () => {
-    it("should require all files from mocks folders", () => {
-      new Behaviors("foo-path", "behavior1", {
-        recursive: true
-      });
-      expect(requireAll).toHaveBeenCalledWith({
-        dirname: "foo-path",
-        recursive: true
-      });
-    });
-
-    it("should clean require cache for behaviors folder", () => {
-      const fooCachePath = "foo-path";
-
-      expect(requireCache[fooCachePath]).toBeDefined();
-      new Behaviors("foo-path", "behavior1", {
-        cache: requireCache
-      });
-      expect(requireCache[fooCachePath]).not.toBeDefined();
-    });
-
-    it("should clean require cache for behaviors folder childs", () => {
-      const fooCachePath = "foo-path/foo-children";
-
-      expect(requireCache[fooCachePath]).toBeDefined();
-      new Behaviors("foo-path", "behavior1", {
-        cache: requireCache
-      });
-      expect(requireCache[fooCachePath]).not.toBeDefined();
-    });
-
-    it("should clean require cache for behaviors folder childs recursively", () => {
-      const fooCachePath = "foo-path/foo-children-2";
-
-      expect(requireCache[fooCachePath]).toBeDefined();
-      new Behaviors("foo-path", "behavior1", {
-        cache: requireCache
-      });
-      expect(requireCache[fooCachePath]).not.toBeDefined();
-    });
-
-    it("should throw an error if selected behavior is not found in behaviors", () => {
-      try {
-        new Behaviors("foo-path", "foo");
-      } catch (err) {
-        expect(err).toEqual(fooBoomError);
-      }
+  describe("when initializated", () => {
+    it("should trace an error if selected behavior is not found in behaviors", async () => {
+      coreInstance.settings.get.withArgs("behavior").returns("foo");
+      await behaviors.init();
+      expect(tracer.warn.getCall(0).args[0]).toEqual(
+        expect.stringContaining('Defined behavior "foo" was not found')
+      );
     });
   });
 
   describe("current setter", () => {
-    it("should throw an error if behavior to set is not found in behaviors", () => {
-      const behaviors = new Behaviors("foo-path", "behavior1");
+    it("should throw an error if behavior to set is not found in behaviors", async () => {
+      await behaviors.init();
       try {
         behaviors.current = "foo";
       } catch (err) {
@@ -195,8 +69,8 @@ describe("Behaviors", () => {
       }
     });
 
-    it("should change the current selected behavior", () => {
-      const behaviors = new Behaviors("foo-path", "behavior1");
+    it("should change the current selected behavior", async () => {
+      await behaviors.init();
       behaviors.current = "behavior2";
       expect(behaviors.current).toEqual({
         POST: {
@@ -215,8 +89,8 @@ describe("Behaviors", () => {
   });
 
   describe("current getter", () => {
-    it("should return the current selected behavior", () => {
-      const behaviors = new Behaviors("foo-path", "behavior1");
+    it("should return the current selected behavior", async () => {
+      await behaviors.init();
       expect(behaviors.current).toEqual({
         POST: {
           "/api/foo/foo-uri": {
@@ -232,8 +106,8 @@ describe("Behaviors", () => {
       });
     });
 
-    it("should return the first behavior if current was not set", () => {
-      const behaviors = new Behaviors("foo-path");
+    it("should return the first behavior if current was not set", async () => {
+      await behaviors.init();
       expect(behaviors.current).toEqual({
         POST: {
           "/api/foo/foo-uri": {
@@ -251,22 +125,22 @@ describe("Behaviors", () => {
   });
 
   describe("totalBehaviors getter", () => {
-    it("should return the number of behaviors", () => {
-      const behaviors = new Behaviors("foo-path");
+    it("should return the number of behaviors", async () => {
+      await behaviors.init();
       expect(behaviors.totalBehaviors).toEqual(2);
     });
   });
 
   describe("currentTotalFixtures getter", () => {
-    it("should return the total number of fixtures of currently selected behavior", () => {
-      const behaviors = new Behaviors("foo-path", "behavior1");
+    it("should return the total number of fixtures of currently selected behavior", async () => {
+      await behaviors.init();
       expect(behaviors.currentTotalFixtures).toEqual(1);
     });
   });
 
   describe("currentFromCollection getter", () => {
-    it("should return the current selected behavior in collection format", () => {
-      const behaviors = new Behaviors("foo-path", "behavior1");
+    it("should return the current selected behavior in collection format", async () => {
+      await behaviors.init();
       expect(behaviors.currentFromCollection).toEqual({
         fixtures: [
           {
@@ -281,8 +155,8 @@ describe("Behaviors", () => {
   });
 
   describe("all getter", () => {
-    it("should return all behaviors", () => {
-      const behaviors = new Behaviors("foo-path", "behavior1");
+    it("should return all behaviors", async () => {
+      await behaviors.init();
       expect(behaviors.all).toEqual({
         behavior1: {
           POST: {
@@ -305,22 +179,23 @@ describe("Behaviors", () => {
   });
 
   describe("names getter", () => {
-    it("should return all behaviors names", () => {
-      const behaviors = new Behaviors("foo-path", "behavior1");
+    it("should return all behaviors names", async () => {
+      await behaviors.init();
       expect(behaviors.names).toEqual(["behavior1", "behavior2"]);
     });
   });
 
   describe("currentName getter", () => {
-    it("should return current behavior name", () => {
-      const behaviors = new Behaviors("foo-path", "behavior2");
+    it("should return current behavior name", async () => {
+      coreInstance.settings.get.withArgs("behavior").returns("behavior2");
+      await behaviors.init();
       expect(behaviors.currentName).toEqual("behavior2");
     });
   });
 
   describe("collection getter", () => {
-    it("should return all behaviors in collection format", () => {
-      const behaviors = new Behaviors("foo-path", "behavior2");
+    it("should return all behaviors in collection format", async () => {
+      await behaviors.init();
       expect(behaviors.collection).toEqual([
         {
           fixtures: [

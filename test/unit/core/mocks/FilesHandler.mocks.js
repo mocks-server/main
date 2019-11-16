@@ -85,6 +85,10 @@ const INITIAL_FILES = {
 };
 
 class Mock {
+  static get files() {
+    return INITIAL_FILES;
+  }
+
   constructor() {
     this._sandbox = sinon.createSandbox();
 

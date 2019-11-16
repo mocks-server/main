@@ -34,8 +34,9 @@ describe("Behaviors", () => {
     filesHandlerInstance = filesHandlerMock.stubs.instance;
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
-    coreInstance.settings.get.withArgs("behavior").returns("behavior");
+    coreInstance.settings.get.withArgs("behavior").returns("behavior1");
     sandbox.stub(tracer, "warn");
+    sandbox.stub(tracer, "silly");
     behaviors = new Behaviors(
       filesHandlerInstance,
       coreInstance.settings,
@@ -50,12 +51,42 @@ describe("Behaviors", () => {
   });
 
   describe("when initializated", () => {
+    it("should set as current the first one behavior found if no behavior is defined", async () => {
+      coreInstance.settings.get.withArgs("behavior").returns(undefined);
+      await behaviors.init();
+      expect(behaviors.currentName).toEqual("behavior1");
+    });
+
     it("should trace an error if selected behavior is not found in behaviors", async () => {
       coreInstance.settings.get.withArgs("behavior").returns("foo");
       await behaviors.init();
       expect(tracer.warn.getCall(0).args[0]).toEqual(
         expect.stringContaining('Defined behavior "foo" was not found')
       );
+    });
+  });
+
+  describe("when core emits load:mocks", () => {
+    it("should process mocks again", async () => {
+      await behaviors.init();
+      coreInstance._eventEmitter.on.getCall(0).args[1]();
+      expect(tracer.silly.callCount).toEqual(2);
+    });
+  });
+
+  describe("when core emits a change:settings event", () => {
+    it("should set new behavior as current one if behavior has changed", async () => {
+      await behaviors.init();
+      coreInstance._eventEmitter.on.getCall(1).args[1]({
+        behavior: "behavior2"
+      });
+      expect(behaviors.currentName).toEqual("behavior2");
+    });
+
+    it("should do nothing if behavior has not changed", async () => {
+      await behaviors.init();
+      coreInstance._eventEmitter.on.getCall(1).args[1]({});
+      expect(behaviors.currentName).toEqual("behavior1");
     });
   });
 

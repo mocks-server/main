@@ -10,114 +10,50 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
-const Boom = require("boom");
 
-const CliMocks = require("./cli/Cli.mocks.js");
-const ServerMocks = require("./core/Server.mocks.js");
+const CoreMocks = require("./core/Core.mocks.js");
+const AdminApi = require("../../lib/api/Api");
+const InquirerCli = require("../../lib/cli/Cli");
 
 const { start } = require("../../lib/start");
-const options = require("../../lib/core/Options");
-const tracer = require("../../lib/core/tracer");
 
 describe("start method", () => {
   let sandbox;
-  let cliMocks;
-  let serverMocks;
+  let coreMocks;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    sandbox.stub(options, "get").returns({
-      cli: true
-    });
-    sandbox.stub(tracer, "error");
-    cliMocks = new CliMocks();
-    serverMocks = new ServerMocks();
+    coreMocks = new CoreMocks();
     expect.assertions(1);
   });
 
   afterEach(() => {
     sandbox.restore();
-    cliMocks.restore();
+    coreMocks.restore();
   });
 
-  describe("when cli option is true", () => {
-    it("should create a CLI, passing to it the user options", async () => {
-      const fooOptions = {
-        cli: true
-      };
-      options.get.returns(fooOptions);
-      await start();
-      expect(cliMocks.stubs.Constructor.mock.calls[0]).toEqual([fooOptions]);
+  it("should create a new Core, passing to it AdminApi and CLI plugins", async () => {
+    await start();
+    expect(coreMocks.stubs.Constructor.mock.calls[0][0]).toEqual({
+      plugins: [AdminApi, InquirerCli]
     });
+  });
 
-    it("should call to cli start method", async () => {
-      await start();
-      expect(cliMocks.stubs.instance.start.callCount).toEqual(1);
+  it("should catch and trace errors while creating Core", async () => {
+    const errorMessage = "Foo error";
+    sandbox.stub(console, "error");
+    coreMocks.stubs.Constructor.mockImplementationOnce(() => {
+      throw new Error(errorMessage);
     });
+    await start();
+    expect(console.error.getCall(0).args[0]).toEqual(`Error: ${errorMessage}`);
+  });
 
-    describe("when creating Cli throws an error", () => {
-      it("should print the error", async () => {
-        sandbox.stub(console, "log");
-        const fooErrorMessage = "foo error message";
-        cliMocks.stubs.Constructor.mockImplementation(() => {
-          throw new Error(fooErrorMessage);
-        });
-        expect.assertions(1);
-        await start();
-        expect(console.log.getCall(0).args[0].message).toEqual(fooErrorMessage);
-      });
-    });
-
-    describe("when creating Server throws an error", () => {
-      it("should print the error", async () => {
-        const fooOptions = {
-          cli: false
-        };
-        options.get.returns(fooOptions);
-        const fooErrorMessage = "foo error message";
-        sandbox.stub(console, "log");
-        serverMocks.stubs.Constructor.mockImplementation(() => {
-          throw new Error(fooErrorMessage);
-        });
-        expect.assertions(1);
-        await start();
-        expect(console.log.getCall(0).args[0].message).toEqual(fooErrorMessage);
-      });
-    });
-
-    describe("when cli throws an error", () => {
-      it("should trace the error message if it is a Boom error", async () => {
-        expect.assertions(1);
-        const fooErrorMessage = "foo error message";
-        const fooError = Boom.badImplementation(fooErrorMessage);
-        cliMocks.stubs.instance.start.rejects(fooError);
-        await start();
-        expect(tracer.error.getCall(0).args[0]).toEqual(fooErrorMessage);
-      });
-
-      it("should print the error if it is not a Boom error", async () => {
-        expect.assertions(1);
-        sandbox.stub(console, "log");
-        const fooError = new Error();
-        cliMocks.stubs.instance.start.rejects(fooError);
-        await start();
-        expect(console.log.getCall(0).args[0]).toEqual(fooError);
-      });
-    });
-
-    describe("when cli option is false", () => {
-      it("should create a Server, passing to it the user options", async () => {
-        const fooOptions = {
-          cli: false,
-          behaviors: "foo"
-        };
-        options.get.returns(fooOptions);
-        await start();
-        expect(serverMocks.stubs.Constructor.mock.calls[0]).toEqual([
-          fooOptions.behaviors,
-          fooOptions
-        ]);
-      });
-    });
+  it("should catch and trace start method errors", async () => {
+    const errorMessage = "Foo error";
+    sandbox.stub(console, "error");
+    coreMocks.stubs.instance.start.rejects(new Error(errorMessage));
+    await start();
+    expect(console.error.getCall(0).args[0]).toEqual(`Error: ${errorMessage}`);
   });
 });

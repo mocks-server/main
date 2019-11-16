@@ -24,10 +24,16 @@ module.exports = {
     }
   },
 
-  // The test environment that will be used for testing
-  testEnvironment: "node",
-
   // The glob patterns Jest uses to detect test files
-  testMatch: ["**/test/unit/**/?(*.)+(spec|test).js?(x)"]
-  //testMatch: ["**/test/unit/cli/Cli.spec.js"]
+  testMatch: ["**/test/unit/**/?(*.)+(spec|test).js?(x)"],
+  testMatch: [
+    "**/test/unit/index.spec.js",
+    "**/test/unit/start.spec.js",
+    "**/test/unit/ProgrammaticCli.spec.js",
+    "**/test/unit/ProgrammaticServer.spec.js"
+  ],
+  //testMatch: ["**/test/unit/ProgrammaticServer.spec.js"],
+
+  // The test environment that will be used for testing
+  testEnvironment: "node"
 };

@@ -17,16 +17,16 @@ module.exports = {
   // An object that configures minimum threshold enforcement for coverage results
   coverageThreshold: {
     global: {
-      branches: 88,
-      functions: 90,
-      lines: 90,
-      statements: 90
+      branches: 93,
+      functions: 93,
+      lines: 93,
+      statements: 93
     }
   },
 
   // The glob patterns Jest uses to detect test files
   testMatch: ["**/test/unit/**/?(*.)+(spec|test).js?(x)"],
-  // testMatch: ["**/test/unit/core/Plugins.spec.js"],
+  //testMatch: ["**/test/unit/core/Plugins.spec.js"],
 
   // The test environment that will be used for testing
   testEnvironment: "node"

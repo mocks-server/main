@@ -9,27 +9,91 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const Settings = require("../../../lib/core/Settings");
+const sinon = require("sinon");
+
+const OptionsMocks = require("./Options.mocks.js");
+const CoreMocks = require("../Core.mocks.js");
+
+const Settings = require("../../../../lib/core/settings/Settings");
+const tracer = require("../../../../lib/core/tracer");
 
 describe("Settings", () => {
-  describe("when instantiated", () => {
-    describe("options", () => {
-      it("should set the delay value", () => {
-        const settings = new Settings({
-          delay: 3000
-        });
-        expect(settings.delay).toEqual(3000);
-      });
+  let optionsMocks;
+  let optionsInstance;
+  let coreMocks;
+  let coreInstance;
+  let sandbox;
+  let settings;
+
+  beforeEach(async () => {
+    sandbox = sinon.createSandbox();
+    optionsMocks = new OptionsMocks();
+    optionsInstance = optionsMocks.stubs.instance;
+    coreMocks = new CoreMocks();
+    coreInstance = coreMocks.stubs.instance;
+    sandbox.stub(tracer, "set");
+    sandbox.stub(tracer, "info");
+    settings = new Settings({}, coreInstance._eventEmitter);
+    await settings.init();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+    optionsMocks.restore();
+    coreMocks.restore();
+  });
+
+  describe("when initializated", () => {
+    it("should init options", () => {
+      expect(optionsInstance.init.callCount).toEqual(1);
     });
 
-    describe("delay setter", () => {
-      it("should set the daly value", () => {
-        const settings = new Settings({
-          delay: 3000
-        });
-        settings.delay = 2000;
-        expect(settings.delay).toEqual(2000);
-      });
+    it("should set current tracer level", () => {
+      expect(tracer.set.calledWith("console", "foo-log-level")).toEqual(true);
+    });
+  });
+
+  describe("get method", () => {
+    it("should return current option value", () => {
+      expect(settings.get("log")).toEqual("foo-log-level");
+    });
+
+    it("should return new value if set is called", () => {
+      settings.set("log", "foo-new-value");
+      expect(settings.get("log")).toEqual("foo-new-value");
+    });
+  });
+
+  describe("set method", () => {
+    it("should set log level if setting is log", () => {
+      settings.set("log", "foo-new-value");
+      expect(tracer.set.calledWith("console", "foo-new-value")).toEqual(true);
+    });
+
+    it("should emit change if setting has changed value", () => {
+      settings.set("foo", "foo-new-value");
+      expect(
+        coreInstance._eventEmitter.emit.calledWith("change:settings", {
+          foo: "foo-new-value"
+        })
+      ).toEqual(true);
+    });
+
+    it("should not emit change if setting maintains value", () => {
+      settings.set("foo", "foo-new-value");
+      settings.set("foo", "foo-new-value");
+      settings.set("foo", "foo-new-value");
+      expect(coreInstance._eventEmitter.emit.callCount).toEqual(1);
+    });
+  });
+
+  describe("addCustom method", () => {
+    it("should pass custom option to options Class", () => {
+      const fooOption = {
+        foo: "foo"
+      };
+      settings.addCustom(fooOption);
+      expect(optionsInstance.addCustom.calledWith(fooOption)).toEqual(true);
     });
   });
 });

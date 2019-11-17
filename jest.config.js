@@ -44,9 +44,10 @@ module.exports = {
     "**/test/unit/core/mocks/Mocks.spec.js",
     "**/test/unit/core/server/Server.spec.js",
     "**/test/unit/core/settings/CommandLineArguments.spec.js",
-    "**/test/unit/core/settings/Options.spec.js"
+    "**/test/unit/core/settings/Options.spec.js",
+    "**/test/unit/core/settings/Settings.spec.js"
   ],
-  //testMatch: ["**/test/unit/core/settings/Options.spec.js"],
+  //testMatch: ["**/test/unit/core/settings/Settings.spec.js"],
 
   // The test environment that will be used for testing
   testEnvironment: "node"

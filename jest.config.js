@@ -17,37 +17,16 @@ module.exports = {
   // An object that configures minimum threshold enforcement for coverage results
   coverageThreshold: {
     global: {
-      branches: 85,
-      functions: 82,
-      lines: 85,
-      statements: 85
+      branches: 88,
+      functions: 90,
+      lines: 90,
+      statements: 90
     }
   },
 
   // The glob patterns Jest uses to detect test files
   testMatch: ["**/test/unit/**/?(*.)+(spec|test).js?(x)"],
-  testMatch: [
-    "**/test/unit/index.spec.js",
-    "**/test/unit/start.spec.js",
-    "**/test/unit/ProgrammaticCli.spec.js",
-    "**/test/unit/ProgrammaticServer.spec.js",
-    "**/test/unit/core/tracer.spec.js",
-    "**/test/unit/core/server/middlewares.spec.js",
-    "**/test/unit/cli/Inquirer.spec.js",
-    "**/test/unit/api/Settings.spec.js",
-    "**/test/unit/api/Behaviors.spec.js",
-    "**/test/unit/api/Api.spec.js",
-    "**/test/unit/cli/Cli.spec.js",
-    "**/test/unit/core/mocks/Behavior.spec.js",
-    "**/test/unit/core/mocks/Behaviors.spec.js",
-    "**/test/unit/core/mocks/FilesHandler.spec.js",
-    "**/test/unit/core/mocks/Mocks.spec.js",
-    "**/test/unit/core/server/Server.spec.js",
-    "**/test/unit/core/settings/CommandLineArguments.spec.js",
-    "**/test/unit/core/settings/Options.spec.js",
-    "**/test/unit/core/settings/Settings.spec.js"
-  ],
-  //testMatch: ["**/test/unit/core/settings/Settings.spec.js", "**/test/unit/core/settings/Options.spec.js"],
+  // testMatch: ["**/test/unit/core/Plugins.spec.js"],
 
   // The test environment that will be used for testing
   testEnvironment: "node"

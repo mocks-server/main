@@ -21,9 +21,11 @@ class Mock {
 
     this._stubs = {
       error: null,
-      start: this._sandbox.stub(),
-      restart: this._sandbox.stub(),
-      stop: this._sandbox.stub()
+      start: this._sandbox.stub().resolves(),
+      restart: this._sandbox.stub().resolves(),
+      stop: this._sandbox.stub().resolves(),
+      init: this._sandbox.stub().resolves(),
+      addCustomRouter: this._sandbox.stub().resolves()
     };
 
     Server.mockImplementation(() => this._stubs);

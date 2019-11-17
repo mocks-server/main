@@ -10,153 +10,164 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
-const commander = require("commander");
 
-const options = require("../../../lib/core/Options");
+const CommandLineArgumentsMocks = require("./CommandLineArguments.mocks.js");
+
+const Options = require("../../../../lib/core/settings/Options");
+const tracer = require("../../../../lib/core/tracer");
 
 describe("options", () => {
   let sandbox;
-  let optionStub;
-  let parseStub;
+  let options;
+  let commandLineArgumentsMocks;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    optionStub = sandbox.stub();
-    parseStub = sandbox.stub().returns({});
-    sandbox.spy(console, "warn");
-
-    optionStub.returns({
-      option: optionStub,
-      parse: parseStub
-    });
-
-    sandbox.stub(commander, "option").returns({
-      option: optionStub
-    });
+    sandbox.stub(tracer, "warn");
+    sandbox.stub(tracer, "error");
+    commandLineArgumentsMocks = new CommandLineArgumentsMocks();
+    options = new Options();
   });
 
   afterEach(() => {
     sandbox.restore();
+    commandLineArgumentsMocks.restore();
   });
 
-  describe("stringToBoolean helper", () => {
-    it("should return true if value is 'true'", async () => {
-      expect(options.stringToBoolean("true")).toEqual(true);
+  describe("init method", () => {
+    it("should call to get command line arguments", async () => {
+      await options.init();
+      expect(commandLineArgumentsMocks.stubs.instance.init.callCount).toEqual(1);
     });
 
-    it("should return false if value is 'false'", async () => {
-      expect(options.stringToBoolean("false")).toEqual(false);
-    });
-
-    it("should throw an error if values does not match any of previous", async () => {
-      expect.assertions(1);
-      try {
-        options.stringToBoolean("foo");
-      } catch (err) {
-        expect(err.message).toEqual("Invalid boolean value");
-      }
-    });
-  });
-
-  describe("get method", () => {
-    it("should call to commander to get user options from command line", () => {
-      options.get();
-      expect(optionStub.callCount).toEqual(10);
-    });
-
-    it("should call to convert to number received value in --port option", () => {
-      expect.assertions(1);
-      optionStub.callsFake((commandName, description, parser) => {
-        if (commandName.includes("--port")) {
-          expect(parser("5")).toEqual(5);
-        }
-        return {
-          option: optionStub,
-          parse: parseStub
-        };
-      });
-      options.get();
-    });
-
-    it("should print a warning if --feature option is received", () => {
-      parseStub.returns({
+    it("should print a warning if --feature option is received", async () => {
+      commandLineArgumentsMocks.stubs.instance.options = {
         feature: "foo-feature",
         cli: true,
         behaviors: "foo/features/path"
-      });
-      options.get();
-      expect(console.warn.getCall(0).args[0]).toEqual(
+      };
+      await options.init();
+      expect(tracer.warn.getCall(0).args[0]).toEqual(
         expect.stringContaining("Deprecation warning: --feature")
       );
     });
 
-    it("should print a warning if --features option is received", () => {
-      parseStub.returns({
+    it("should print a warning if --features option is received", async () => {
+      commandLineArgumentsMocks.stubs.instance.options = {
         cli: true,
         features: "foo/features/path"
-      });
-      options.get();
-      expect(console.warn.getCall(0).args[0]).toEqual(
+      };
+      await options.init();
+      expect(tracer.warn.getCall(0).args[0]).toEqual(
         expect.stringContaining("Deprecation warning: --features")
       );
     });
+  });
 
-    it("should extend default options with user options, ommiting undefined values", () => {
-      parseStub.returns({
+  describe("options getter", () => {
+    it("should only get values from keys defined in default values", async () => {
+      commandLineArgumentsMocks.stubs.instance.options = {
         behavior: "foo-behavior",
         cli: true,
-        behaviors: "foo/behaviors/path"
-      });
-      expect(options.get()).toEqual({
-        cli: true,
+        behaviors: "foo/behaviors/path",
+        foo: undefined,
+        foo2: "foooo"
+      };
+      await options.init();
+      expect(options.options).toEqual({
         port: 3100,
         host: "0.0.0.0",
         log: "info",
         delay: 0,
         watch: true,
         behavior: "foo-behavior",
-        behaviors: "foo/behaviors/path",
-        recursive: true
+        behaviors: "foo/behaviors/path"
       });
     });
 
-    it("should convert feature and features options to behavior and behaviors", () => {
-      parseStub.returns({
+    it("should get values from keys defined in new options", async () => {
+      commandLineArgumentsMocks.stubs.instance.options = {
+        behavior: "foo-behavior",
+        cli: true,
+        behaviors: "foo/behaviors/path",
+        foo: "foo"
+      };
+      options.addCustom({
+        name: "cli",
+        type: "boolean"
+      });
+      options.addCustom({
+        name: "foo",
+        type: "string"
+      });
+      await options.init();
+      expect(options.options).toEqual({
+        port: 3100,
+        host: "0.0.0.0",
+        log: "info",
+        cli: true,
+        foo: "foo",
+        delay: 0,
+        watch: true,
+        behavior: "foo-behavior",
+        behaviors: "foo/behaviors/path"
+      });
+    });
+
+    it("should extend default options with user options, ommiting undefined values", async () => {
+      commandLineArgumentsMocks.stubs.instance.options = {
+        behavior: "foo-behavior",
+        cli: true,
+        behaviors: "foo/behaviors/path",
+        foo: undefined
+      };
+      await options.init();
+      expect(options.options).toEqual({
+        port: 3100,
+        host: "0.0.0.0",
+        log: "info",
+        delay: 0,
+        watch: true,
+        behavior: "foo-behavior",
+        behaviors: "foo/behaviors/path"
+      });
+    });
+
+    it("should convert feature and features options to behavior and behaviors", async () => {
+      commandLineArgumentsMocks.stubs.instance.options = {
         feature: "foo-feature",
         cli: true,
         features: "foo/features/path"
-      });
-      expect(options.get()).toEqual({
-        cli: true,
+      };
+      await options.init();
+      expect(options.options).toEqual({
         port: 3100,
         host: "0.0.0.0",
         log: "info",
         delay: 0,
         watch: true,
         behavior: "foo-feature",
-        behaviors: "foo/features/path",
-        recursive: true
+        behaviors: "foo/features/path"
       });
     });
 
-    it("should apply behavior and behavior options if feature and features options are received too", () => {
-      parseStub.returns({
+    it("should apply behavior and behavior options if feature and features options are received too", async () => {
+      commandLineArgumentsMocks.stubs.instance.options = {
         behavior: "foo-behavior",
         feature: "foo-feature",
         cli: true,
         behaviors: "foo/behaviors/path",
         features: "foo-feature"
-      });
-      expect(options.get()).toEqual({
-        cli: true,
+      };
+      await options.init();
+      expect(options.options).toEqual({
         port: 3100,
         host: "0.0.0.0",
         log: "info",
         delay: 0,
         watch: true,
         behavior: "foo-behavior",
-        behaviors: "foo/behaviors/path",
-        recursive: true
+        behaviors: "foo/behaviors/path"
       });
     });
   });

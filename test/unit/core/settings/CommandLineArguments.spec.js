@@ -75,20 +75,6 @@ describe("options", () => {
       await commandLineArguments.init();
     });
 
-    it("should only get values from keys defined in default values", async () => {
-      const options = {
-        behavior: "foo-behavior",
-        behaviors: "foo/behaviors/path"
-      };
-      parseStub.returns({
-        ...options,
-        foo: "foo-2",
-        cli: true
-      });
-      await commandLineArguments.init();
-      expect(commandLineArguments.options).toEqual(options);
-    });
-
     it("should omit undefined values", async () => {
       const options = {
         behavior: "foo-behavior",
@@ -169,29 +155,6 @@ describe("options", () => {
   });
 
   describe("when adding custom option", () => {
-    describe("when initializing", () => {
-      it("should get values from keys defined in new options", async () => {
-        const options = {
-          behavior: "foo-behavior",
-          behaviors: "foo/behaviors/path"
-        };
-        parseStub.returns({
-          ...options,
-          foo: "foo-2",
-          cli: true
-        });
-        commandLineArguments.addCustom({
-          name: "cli",
-          type: "boolean"
-        });
-        await commandLineArguments.init();
-        expect(commandLineArguments.options).toEqual({
-          ...options,
-          cli: true
-        });
-      });
-    });
-
     describe("when it is string type", () => {
       it("should add commander option with mandatory value", async () => {
         expect.assertions(2);

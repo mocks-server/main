@@ -176,7 +176,7 @@ describe("programmatic Cli", () => {
     });
   });
 
-  describe("when initializing server manually and start after", () => {
+  describe.only("when initializing server manually and start after", () => {
     it("should start server without cli, then start", async () => {
       expect.assertions(3);
       cli = new CliRunner("init-server.js", {

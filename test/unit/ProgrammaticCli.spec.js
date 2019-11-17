@@ -114,6 +114,12 @@ describe("start method", () => {
       await cli.initServer();
       expect(coreMocks.stubs.instance.start.callCount).toEqual(1);
     });
+
+    it("should start core only once after calling start", async () => {
+      await cli.initServer();
+      await cli.start();
+      expect(coreMocks.stubs.instance.start.callCount).toEqual(1);
+    });
   });
 
   describe("stopListeningServerWatch method", () => {

@@ -17,10 +17,10 @@ module.exports = {
   // An object that configures minimum threshold enforcement for coverage results
   coverageThreshold: {
     global: {
-      branches: 60,
-      functions: 70,
-      lines: 70,
-      statements: 70
+      branches: 70,
+      functions: 75,
+      lines: 75,
+      statements: 75
     }
   },
 
@@ -42,9 +42,10 @@ module.exports = {
     "**/test/unit/core/mocks/Behaviors.spec.js",
     "**/test/unit/core/mocks/FilesHandler.spec.js",
     "**/test/unit/core/mocks/Mocks.spec.js",
-    "**/test/unit/core/server/Server.spec.js"
+    "**/test/unit/core/server/Server.spec.js",
+    "**/test/unit/core/settings/CommandLineArguments.spec.js"
   ],
-  //testMatch: ["**/test/unit/core/server/Server.spec.js"],
+  //testMatch: ["**/test/unit/core/settings/CommandLineArguments.spec.js"],
 
   // The test environment that will be used for testing
   testEnvironment: "node"

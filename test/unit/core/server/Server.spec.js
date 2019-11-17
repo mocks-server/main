@@ -18,6 +18,14 @@ const CoreMocks = require("../Core.mocks.js");
 const Server = require("../../../../lib/core/server/Server");
 const tracer = require("../../../../lib/core/tracer");
 
+const wait = (time = 1000) => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  });
+};
+
 describe("Server", () => {
   let sandbox;
   let libsMocks;
@@ -54,28 +62,32 @@ describe("Server", () => {
     mocksMocks.restore();
   });
 
-  describe.skip("when instantiated", () => {
+  describe("when initialized", () => {
     it("should be listening to process exit signals and stop the server if occurs", async () => {
       processOnStub.callsFake((event, cb) => {
-        cb();
+        wait().then(() => {
+          cb();
+        });
       });
+      libsMocks.stubs.http.createServer.onListen.returns(null);
       await server.init();
+      await server.start();
+      await wait();
       expect(libsMocks.stubs.http.createServer.close.callCount).toEqual(1);
     });
   });
 
-  describe("when started", () => {
-    it.skip("should be listening to server errors and throw an error if occurs", async () => {
-      const error = new Error();
-      libsMocks.stubs.http.createServer.onError.returns(error);
-
-      try {
-        await server.init();
-      } catch (err) {
-        expect(err).toEqual(error);
-      }
+  describe("custom routers", () => {
+    it("should be registered when initializating http server", async () => {
+      const fooRouter = sandbox.spy();
+      server.addCustomRouter("fooPath", fooRouter);
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      await server.start();
+      expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
     });
+  });
 
+  describe("when started", () => {
     it("should reject the promise if an error occurs when calling to server listen method", async () => {
       const error = new Error("Foo error");
       libsMocks.stubs.http.createServer.listen.throws(error);
@@ -87,6 +99,26 @@ describe("Server", () => {
       } catch (err) {
         expect(err).toEqual(error);
       }
+    });
+
+    it("should be listening to server errors and throw an error if occurs", async () => {
+      const error = new Error();
+      libsMocks.stubs.http.createServer.onError.returns(error);
+
+      try {
+        await server.init();
+        await server.start();
+      } catch (err) {
+        expect(err).toEqual(error);
+      }
+    });
+
+    it("should not init httpServer more than once", async () => {
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      await server.start();
+      await server.start();
+      await server.start();
+      expect(libsMocks.stubs.http.createServer.on.callCount).toEqual(1);
     });
 
     it("should call to server listen, and resolve the promise when started", async () => {
@@ -110,7 +142,26 @@ describe("Server", () => {
     });
   });
 
-  describe.skip("restart method", () => {
+  describe("stop method", () => {
+    beforeEach(() => {
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+    });
+
+    it("should call to stop the server", async () => {
+      await server.init();
+      await server.start();
+      await server.stop();
+      expect(libsMocks.stubs.http.createServer.close.callCount).toEqual(1);
+    });
+
+    it("should not call to stop server if it has not been initialized", async () => {
+      await server.init();
+      await server.stop();
+      expect(libsMocks.stubs.http.createServer.close.callCount).toEqual(0);
+    });
+  });
+
+  describe("restart method", () => {
     beforeEach(() => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
     });
@@ -149,7 +200,7 @@ describe("Server", () => {
     });
   });
 
-  describe.skip("behaviors middleware", () => {
+  describe("behaviors middleware", () => {
     const fooRequest = {
       method: "get",
       url: "foo-route"
@@ -159,7 +210,7 @@ describe("Server", () => {
     let resMock;
     let nextSpy;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       statusSpy = sandbox.spy();
       sendSpy = sandbox.spy();
       resMock = {
@@ -167,12 +218,14 @@ describe("Server", () => {
         send: sendSpy
       };
       nextSpy = sandbox.spy();
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      coreInstance.settings.get.withArgs("delay").returns(0);
     });
 
     it("should call next if does not found a fixture in current feature matching the request url", async () => {
       await server.start();
 
-      server.fixturesMiddleware(fooRequest, resMock, nextSpy);
+      server._fixturesMiddleware(fooRequest, resMock, nextSpy);
       expect(nextSpy.callCount).toEqual(1);
     });
 
@@ -190,7 +243,8 @@ describe("Server", () => {
           }
         }
       };
-      server.fixturesMiddleware(fooRequest, resMock, nextSpy);
+      server._fixturesMiddleware(fooRequest, resMock, nextSpy);
+      await wait(200);
       expect(resMock.status.getCall(0).args[0]).toEqual(200);
     });
 
@@ -212,7 +266,8 @@ describe("Server", () => {
           }
         }
       };
-      server.fixturesMiddleware(fooRequest, resMock, nextSpy);
+      server._fixturesMiddleware(fooRequest, resMock, nextSpy);
+      await wait(200);
       expect(resMock.send.getCall(0).args[0]).toEqual(fooBody);
     });
 
@@ -229,7 +284,8 @@ describe("Server", () => {
           }
         }
       };
-      server.fixturesMiddleware(fooRequest, resMock, nextSpy);
+      server._fixturesMiddleware(fooRequest, resMock, nextSpy);
+      await wait(200);
       expect(responseSpy.calledWith(fooRequest, resMock, nextSpy)).toEqual(true);
     });
   });

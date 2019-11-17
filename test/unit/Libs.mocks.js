@@ -81,7 +81,7 @@ class Mock {
           onError: httpCreateServerOnError,
           listen: this._sandbox.stub().callsFake(httpCreateServerOnListen.runner),
           onListen: httpCreateServerOnListen,
-          close: this._sandbox.stub()
+          close: this._sandbox.stub().callsFake(cb => cb())
         }
       }
     };

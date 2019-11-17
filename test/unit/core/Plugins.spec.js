@@ -66,10 +66,13 @@ describe("Settings", () => {
       expect(tracer.verbose.calledWith("Registered 0 plugins")).toEqual(true);
     });
 
-    it("should register function plugins", async () => {
-      const fooPlugin = () => {};
+    it("should register function plugins executing them passing the core", async () => {
+      expect.assertions(3);
+      const fooPlugin = sinon.spy();
       plugins = new Plugins([fooPlugin], coreInstance);
       await plugins.register();
+      expect(fooPlugin.calledWith(coreInstance)).toEqual(true);
+      expect(fooPlugin.callCount).toEqual(1);
       expect(tracer.verbose.calledWith("Registered 1 plugins")).toEqual(true);
     });
 
@@ -119,6 +122,144 @@ describe("Settings", () => {
       await plugins.register();
       expect(console.log.calledWith("Error registering plugin")).toEqual(true);
       expect(tracer.verbose.calledWith("Registered 3 plugins")).toEqual(true);
+    });
+  });
+
+  describe("init method", () => {
+    it("should do nothing if there are no plugins to register", async () => {
+      plugins = new Plugins(null, coreInstance);
+      await plugins.register();
+      await plugins.init();
+      expect(tracer.verbose.calledWith("Initializated 0 plugins")).toEqual(true);
+    });
+
+    it("should init object plugins with an init property", async () => {
+      expect.assertions(2);
+      const fooPlugin = {
+        init: sinon.spy()
+      };
+      plugins = new Plugins([fooPlugin], coreInstance);
+      await plugins.register();
+      await plugins.init();
+      expect(fooPlugin.init.callCount).toEqual(1);
+      expect(tracer.verbose.calledWith("Initializated 1 plugins")).toEqual(true);
+    });
+
+    it("should accept init methods non returning a Promise", async () => {
+      expect.assertions(1);
+      const fooPlugin = {
+        init: () => true
+      };
+      const fooPlugin2 = {
+        init: () => Promise.resolve()
+      };
+      plugins = new Plugins([fooPlugin, fooPlugin2], coreInstance);
+      await plugins.register();
+      await plugins.init();
+      expect(tracer.verbose.calledWith("Initializated 2 plugins")).toEqual(true);
+    });
+
+    it("should catch init method errors", async () => {
+      expect.assertions(1);
+      const fooPlugin = {
+        init: () => {
+          throw new Error();
+        }
+      };
+      const fooPlugin2 = {
+        init: () => Promise.resolve()
+      };
+      const fooPlugin3 = {
+        init: () => Promise.resolve()
+      };
+      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      await plugins.register();
+      await plugins.init();
+      expect(tracer.verbose.calledWith("Initializated 2 plugins")).toEqual(true);
+    });
+
+    it("should accept plugins with no init method", async () => {
+      expect.assertions(1);
+      const fooPlugin = {};
+      const fooPlugin2 = {
+        init: () => Promise.resolve()
+      };
+      const fooPlugin3 = {
+        init: () => Promise.resolve()
+      };
+      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      await plugins.register();
+      await plugins.init();
+      expect(tracer.verbose.calledWith("Initializated 2 plugins")).toEqual(true);
+    });
+  });
+
+  describe("start method", () => {
+    it("should do nothing if there are no plugins to register", async () => {
+      plugins = new Plugins(null, coreInstance);
+      await plugins.register();
+      await plugins.start();
+      expect(tracer.verbose.calledWith("Started 0 plugins")).toEqual(true);
+    });
+
+    it("should start object plugins with an init property", async () => {
+      expect.assertions(2);
+      const fooPlugin = {
+        start: sinon.spy()
+      };
+      plugins = new Plugins([fooPlugin], coreInstance);
+      await plugins.register();
+      await plugins.start();
+      expect(fooPlugin.start.callCount).toEqual(1);
+      expect(tracer.verbose.calledWith("Started 1 plugins")).toEqual(true);
+    });
+
+    it("should accept start methods non returning a Promise", async () => {
+      expect.assertions(1);
+      const fooPlugin = {
+        start: () => true
+      };
+      const fooPlugin2 = {
+        start: () => Promise.resolve()
+      };
+      plugins = new Plugins([fooPlugin, fooPlugin2], coreInstance);
+      await plugins.register();
+      await plugins.start();
+      expect(tracer.verbose.calledWith("Started 2 plugins")).toEqual(true);
+    });
+
+    it("should catch start method errors", async () => {
+      expect.assertions(1);
+      const fooPlugin = {
+        start: () => {
+          throw new Error();
+        }
+      };
+      const fooPlugin2 = {
+        start: () => Promise.resolve()
+      };
+      const fooPlugin3 = {
+        start: () => Promise.resolve()
+      };
+      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      await plugins.register();
+      await plugins.start();
+      expect(tracer.verbose.calledWith("Started 2 plugins")).toEqual(true);
+    });
+
+    it("should accept plugins with no start method", async () => {
+      expect.assertions(1);
+      const fooPlugin = {};
+      const fooPlugin2 = {
+        start: () => Promise.resolve()
+      };
+      const fooPlugin3 = {
+        start: () => Promise.resolve()
+      };
+      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      await plugins.register();
+      await plugins.start();
+      expect(tracer.verbose.calledWith("Started 2 plugins")).toEqual(true);
     });
   });
 });

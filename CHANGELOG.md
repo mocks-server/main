@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 ## [1.3.0] - 2019-11-17
+### Changed
+- Full refactor for making it pluggable.
+- Split code into core, cli and api main Classes, which are intended to be published separately.
 
 ## [1.2.0] - 2019-11-13
 ### Added

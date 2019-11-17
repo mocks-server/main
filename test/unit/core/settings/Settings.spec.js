@@ -92,9 +92,12 @@ describe("Settings", () => {
     });
 
     it("should not emit change if setting maintains value", () => {
-      settings.set("foo", "foo-new-value");
-      settings.set("foo", "foo-new-value");
-      settings.set("foo", "foo-new-value");
+      const setFoo = () => {
+        settings.set("foo", "foo-new-value");
+      };
+      setFoo();
+      setFoo();
+      setFoo();
       expect(coreInstance._eventEmitter.emit.callCount).toEqual(1);
     });
   });

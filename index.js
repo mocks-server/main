@@ -11,13 +11,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-const Cli = require("./lib/Cli");
-const Server = require("./lib/Server");
-const Feature = require("./lib/features/Feature");
+const ProgrammaticCli = require("./lib/ProgrammaticCli");
+const ProgrammaticServer = require("./lib/ProgrammaticServer");
+const Behavior = require("./lib/core/mocks/Behavior");
 
 module.exports = {
-  Cli,
-  Server,
-  Feature,
-  Behavior: Feature
+  Cli: ProgrammaticCli,
+  Server: ProgrammaticServer,
+  Feature: Behavior,
+  Behavior
 };

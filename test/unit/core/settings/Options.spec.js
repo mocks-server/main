@@ -23,7 +23,7 @@ describe("options", () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    sandbox.stub(tracer, "warn");
+    sandbox.spy(tracer, "warn");
     sandbox.stub(tracer, "error");
     commandLineArgumentsMocks = new CommandLineArgumentsMocks();
     options = new Options();
@@ -36,6 +36,13 @@ describe("options", () => {
 
   describe("init method", () => {
     it("should call to get command line arguments", async () => {
+      await options.init();
+      expect(commandLineArgumentsMocks.stubs.instance.init.callCount).toEqual(1);
+    });
+
+    it("should call only once to get command line arguments", async () => {
+      await options.init();
+      await options.init();
       await options.init();
       expect(commandLineArgumentsMocks.stubs.instance.init.callCount).toEqual(1);
     });
@@ -61,6 +68,113 @@ describe("options", () => {
       expect(tracer.warn.getCall(0).args[0]).toEqual(
         expect.stringContaining("Deprecation warning: --features")
       );
+    });
+  });
+
+  describe("init method when using programmatic options", () => {
+    it("should not call to get command line arguments", async () => {
+      options = new Options({
+        onlyProgrammaticOptions: true
+      });
+      await options.init();
+      expect(commandLineArgumentsMocks.stubs.instance.init.callCount).toEqual(0);
+    });
+  });
+
+  describe("when adding custom option", () => {
+    it("should trow an error if options have been already initialized", async () => {
+      expect.assertions(2);
+      await options.init();
+      try {
+        options.addCustom();
+      } catch (error) {
+        const errorMessageContains = "already initializated";
+        expect(tracer.error.getCall(0).args[0]).toEqual(
+          expect.stringContaining(errorMessageContains)
+        );
+        expect(error.message).toEqual(expect.stringContaining(errorMessageContains));
+      }
+    });
+
+    it("should trow an error if no option is provided", () => {
+      expect.assertions(2);
+      try {
+        options.addCustom();
+      } catch (error) {
+        const errorMessageContains = "provide option details";
+        expect(tracer.error.getCall(0).args[0]).toEqual(
+          expect.stringContaining(errorMessageContains)
+        );
+        expect(error.message).toEqual(expect.stringContaining(errorMessageContains));
+      }
+    });
+
+    it("should trow an error if option name is not provided", () => {
+      expect.assertions(2);
+      try {
+        options.addCustom({
+          description: "foo"
+        });
+      } catch (error) {
+        const errorMessageContains = "provide option name";
+        expect(tracer.error.getCall(0).args[0]).toEqual(
+          expect.stringContaining(errorMessageContains)
+        );
+        expect(error.message).toEqual(expect.stringContaining(errorMessageContains));
+      }
+    });
+
+    it("should trow an error if option was already declared", () => {
+      expect.assertions(2);
+      try {
+        options.addCustom({
+          name: "behaviors"
+        });
+      } catch (error) {
+        const errorMessageContains = "already registered";
+        expect(tracer.error.getCall(0).args[0]).toEqual(
+          expect.stringContaining(errorMessageContains)
+        );
+        expect(error.message).toEqual(expect.stringContaining(errorMessageContains));
+      }
+    });
+
+    it("should trow an error if option type is unknown", () => {
+      expect.assertions(2);
+      try {
+        options.addCustom({
+          name: "foo",
+          type: "foo"
+        });
+      } catch (error) {
+        const errorMessageContains = "provide a valid option type";
+        expect(tracer.error.getCall(0).args[0]).toEqual(
+          expect.stringContaining(errorMessageContains)
+        );
+        expect(error.message).toEqual(expect.stringContaining(errorMessageContains));
+      }
+    });
+
+    it("should print a warning if option description is not provided", () => {
+      expect.assertions(1);
+      options.addCustom({
+        name: "foo",
+        type: "string"
+      });
+      const errorMessageContains = "provide option description";
+      expect(tracer.warn.getCall(0).args[0]).toEqual(
+        expect.stringContaining(errorMessageContains)
+      );
+    });
+
+    it("should not print a warning if option description is not provided", () => {
+      expect.assertions(1);
+      options.addCustom({
+        name: "foo",
+        type: "string",
+        description: "foo-description"
+      });
+      expect(tracer.warn.callCount).toEqual(0);
     });
   });
 
@@ -160,6 +274,115 @@ describe("options", () => {
         features: "foo-feature"
       };
       await options.init();
+      expect(options.options).toEqual({
+        port: 3100,
+        host: "0.0.0.0",
+        log: "info",
+        delay: 0,
+        watch: true,
+        behavior: "foo-behavior",
+        behaviors: "foo/behaviors/path"
+      });
+    });
+  });
+
+  describe("options getter when using programmatic options", () => {
+    beforeEach(() => {
+      options = new Options({
+        onlyProgrammaticOptions: true
+      });
+    });
+
+    it("should only get values from keys defined in default values", async () => {
+      await options.init({
+        behavior: "foo-behavior",
+        cli: true,
+        behaviors: "foo/behaviors/path",
+        foo: undefined,
+        foo2: "foooo"
+      });
+      expect(options.options).toEqual({
+        port: 3100,
+        host: "0.0.0.0",
+        log: "info",
+        delay: 0,
+        watch: true,
+        behavior: "foo-behavior",
+        behaviors: "foo/behaviors/path"
+      });
+    });
+
+    it("should get values from keys defined in new options", async () => {
+      options.addCustom({
+        name: "cli",
+        type: "boolean"
+      });
+      options.addCustom({
+        name: "foo",
+        type: "string"
+      });
+      await options.init({
+        behavior: "foo-behavior",
+        cli: true,
+        behaviors: "foo/behaviors/path",
+        foo: "foo"
+      });
+      expect(options.options).toEqual({
+        port: 3100,
+        host: "0.0.0.0",
+        log: "info",
+        cli: true,
+        foo: "foo",
+        delay: 0,
+        watch: true,
+        behavior: "foo-behavior",
+        behaviors: "foo/behaviors/path"
+      });
+    });
+
+    it("should extend default options with user options, ommiting undefined values", async () => {
+      await options.init({
+        behavior: "foo-behavior",
+        cli: true,
+        behaviors: "foo/behaviors/path",
+        foo: undefined
+      });
+      expect(options.options).toEqual({
+        port: 3100,
+        host: "0.0.0.0",
+        log: "info",
+        delay: 0,
+        watch: true,
+        behavior: "foo-behavior",
+        behaviors: "foo/behaviors/path"
+      });
+    });
+
+    it("should convert feature and features options to behavior and behaviors", async () => {
+      await options.init({
+        feature: "foo-feature",
+        cli: true,
+        features: "foo/features/path"
+      });
+      expect(options.options).toEqual({
+        port: 3100,
+        host: "0.0.0.0",
+        log: "info",
+        delay: 0,
+        watch: true,
+        behavior: "foo-feature",
+        behaviors: "foo/features/path"
+      });
+    });
+
+    it("should apply behavior and behavior options if feature and features options are received too", async () => {
+      await options.init({
+        behavior: "foo-behavior",
+        feature: "foo-feature",
+        cli: true,
+        behaviors: "foo/behaviors/path",
+        features: "foo-feature"
+      });
       expect(options.options).toEqual({
         port: 3100,
         host: "0.0.0.0",

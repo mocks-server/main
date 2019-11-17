@@ -29,6 +29,7 @@ describe("Settings", () => {
     sandbox = sinon.createSandbox();
     optionsMocks = new OptionsMocks();
     optionsInstance = optionsMocks.stubs.instance;
+    optionsInstance.getValidOptionName.callsFake(name => name);
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
     sandbox.stub(tracer, "set");
@@ -58,6 +59,11 @@ describe("Settings", () => {
       expect(settings.get("log")).toEqual("foo-log-level");
     });
 
+    it("should return current deprecated option value", () => {
+      optionsInstance.getValidOptionName.returns("behavior");
+      expect(settings.get("log")).toEqual("foo-behavior");
+    });
+
     it("should return new value if set is called", () => {
       settings.set("log", "foo-new-value");
       expect(settings.get("log")).toEqual("foo-new-value");
@@ -68,6 +74,12 @@ describe("Settings", () => {
     it("should set log level if setting is log", () => {
       settings.set("log", "foo-new-value");
       expect(tracer.set.calledWith("console", "foo-new-value")).toEqual(true);
+    });
+
+    it("should set new option if provided one is deprecated", () => {
+      optionsInstance.getValidOptionName.returns("behavior");
+      settings.set("log", "foo");
+      expect(settings.get("behavior")).toEqual("foo");
     });
 
     it("should emit change if setting has changed value", () => {

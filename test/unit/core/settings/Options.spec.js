@@ -199,6 +199,27 @@ describe("options", () => {
       });
     });
 
+    it("should remove deprecated options", async () => {
+      commandLineArgumentsMocks.stubs.instance.options = {
+        behavior: "foo-behavior",
+        cli: true,
+        behaviors: "foo/behaviors/path",
+        foo: undefined,
+        foo2: "foooo",
+        recursive: false
+      };
+      await options.init();
+      expect(options.options).toEqual({
+        port: 3100,
+        host: "0.0.0.0",
+        log: "info",
+        delay: 0,
+        watch: true,
+        behavior: "foo-behavior",
+        behaviors: "foo/behaviors/path"
+      });
+    });
+
     it("should get values from keys defined in new options", async () => {
       commandLineArgumentsMocks.stubs.instance.options = {
         behavior: "foo-behavior",
@@ -312,6 +333,26 @@ describe("options", () => {
       });
     });
 
+    it("should remove deprecated options", async () => {
+      await options.init({
+        behavior: "foo-behavior",
+        cli: true,
+        behaviors: "foo/behaviors/path",
+        foo: undefined,
+        foo2: "foooo",
+        recursive: false
+      });
+      expect(options.options).toEqual({
+        port: 3100,
+        host: "0.0.0.0",
+        log: "info",
+        delay: 0,
+        watch: true,
+        behavior: "foo-behavior",
+        behaviors: "foo/behaviors/path"
+      });
+    });
+
     it("should get values from keys defined in new options", async () => {
       options.addCustom({
         name: "cli",
@@ -392,6 +433,44 @@ describe("options", () => {
         behavior: "foo-behavior",
         behaviors: "foo/behaviors/path"
       });
+    });
+  });
+
+  describe("getValidOptionName method", () => {
+    it("should throw an error if option is not valid", async () => {
+      expect.assertions(1);
+      await options.init();
+      try {
+        options.getValidOptionName("foo");
+      } catch (error) {
+        expect(error.message).toEqual(expect.stringContaining("Not valid option"));
+      }
+    });
+
+    it("should return option name if option is valid", async () => {
+      await options.init();
+      expect(options.getValidOptionName("behavior")).toEqual("behavior");
+    });
+
+    it("should return new option name if option is deprecated", async () => {
+      expect.assertions(2);
+      await options.init();
+      const option = options.getValidOptionName("feature");
+      expect(
+        tracer.warn.calledWith(
+          "Deprecation warning: feature option will be deprecated. Use behavior instead"
+        )
+      ).toEqual(true);
+      expect(option).toEqual("behavior");
+    });
+
+    it("should return true if option is custom option", async () => {
+      options.addCustom({
+        name: "foo",
+        type: "boolean"
+      });
+      await options.init();
+      expect(options.getValidOptionName("foo")).toEqual("foo");
     });
   });
 });

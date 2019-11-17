@@ -22,8 +22,10 @@ class Mock {
     this._stubs = {
       init: this._sandbox.stub(),
       addCustom: this._sandbox.stub(),
+      getValidOptionName: this._sandbox.stub(),
       options: {
-        log: "foo-log-level"
+        log: "foo-log-level",
+        behavior: "foo-behavior"
       }
     };
 

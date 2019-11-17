@@ -16,7 +16,7 @@ const CoreMocks = require("../core/Core.mocks.js");
 
 const Settings = require("../../../lib/api/Settings");
 
-describe.only("Settings Api", () => {
+describe("Settings Api", () => {
   let sandbox;
   let routerStubs;
   let resMock;

@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -12,7 +13,7 @@ const inquirer = require("inquirer");
 const sinon = require("sinon");
 const chalk = require("chalk");
 
-const Inquirer = require("../../../lib/base-cli/Inquirer").Inquirer;
+const Inquirer = require("../../../lib/cli/Inquirer").Inquirer;
 
 const fooQuestions = {
   main: {

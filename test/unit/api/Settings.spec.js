@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -11,17 +12,19 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const express = require("express");
 const sinon = require("sinon");
 
-const SettingsMocks = require("../lib/Settings.mocks.js");
+const CoreMocks = require("../core/Core.mocks.js");
 
 const Settings = require("../../../lib/api/Settings");
 
-describe.only("Settings Api", () => {
+describe("Settings Api", () => {
   let sandbox;
   let routerStubs;
   let resMock;
   let statusSpy;
   let sendSpy;
-  let settingsMocks;
+  let coreMocks;
+  let settingsMock;
+  let tracerMock;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -29,7 +32,9 @@ describe.only("Settings Api", () => {
       get: sandbox.stub(),
       put: sandbox.stub()
     };
-    settingsMocks = new SettingsMocks();
+    coreMocks = new CoreMocks();
+    settingsMock = coreMocks.stubs.instance.settings;
+    tracerMock = coreMocks.stubs.instance.tracer;
     sandbox.stub(express, "Router").returns(routerStubs);
     statusSpy = sandbox.spy();
     sendSpy = sandbox.spy();
@@ -42,26 +47,26 @@ describe.only("Settings Api", () => {
 
   afterEach(() => {
     sandbox.restore();
-    settingsMocks.restore();
+    coreMocks.restore();
   });
 
   describe("when instanciated", () => {
     it("should create an express Router", () => {
-      new Settings();
+      new Settings(settingsMock, tracerMock);
       expect(express.Router.calledOnce).toEqual(true);
     });
   });
 
   describe("get route", () => {
     it("should set response status as 200", () => {
-      const settings = new Settings(settingsMocks);
+      const settings = new Settings(settingsMock, tracerMock);
       settings.get({}, resMock);
       expect(statusSpy.getCall(0).args[0]).toEqual(200);
     });
 
     it("should send current settings", () => {
-      settingsMocks.delay = 3000;
-      const settings = new Settings(settingsMocks);
+      settingsMock.get.withArgs("delay").returns(3000);
+      const settings = new Settings(settingsMock, tracerMock);
       settings.get({}, resMock);
       expect(sendSpy.getCall(0).args[0]).toEqual({
         delay: 3000
@@ -71,7 +76,7 @@ describe.only("Settings Api", () => {
 
   describe("put route", () => {
     it("should set current delay", () => {
-      const settings = new Settings(settingsMocks);
+      const settings = new Settings(settingsMock, tracerMock);
       settings.put(
         {
           body: {
@@ -80,11 +85,12 @@ describe.only("Settings Api", () => {
         },
         resMock
       );
-      expect(settings._settings.delay).toEqual(5000);
+      expect(settingsMock.set.getCall(0).args).toEqual(["delay", 5000]);
     });
 
     it("should send current settings", () => {
-      const settings = new Settings(settingsMocks);
+      const settings = new Settings(settingsMock, tracerMock);
+      settingsMock.get.withArgs("delay").returns(2000);
       settings.put(
         {
           body: {
@@ -101,7 +107,7 @@ describe.only("Settings Api", () => {
 
   describe("router getter", () => {
     it("should return the express router", () => {
-      const settings = new Settings(settingsMocks);
+      const settings = new Settings(settingsMock, tracerMock);
       expect(settings.router).toEqual(routerStubs);
     });
   });

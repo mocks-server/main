@@ -7,12 +7,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [To be deprecated]
 - Deprecate options "features" and "feature".
 - Remove "/features" api path.
+- Remove "features" getter from Server
+- Remove Server and Cli constructors. Use @mocks-server/core instead
 
 ## [unreleased]
 ### Added
 ### Changed
 ### Fixed
 ### Removed
+
+## [1.3.0] - 2019-11-17
+### Added
+- Add programmatic Classes end-to-end tests
+- Add files watcher end-to-end tests
+
+### Changed
+- Full refactor for making it pluggable.
+- Split code into core, cli and api main Classes, which are intended to be published separately.
 
 ## [1.2.0] - 2019-11-13
 ### Added

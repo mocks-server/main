@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.4.0] -
+
 ## [1.3.0] - 2019-11-17
 ### Added
 - Add programmatic Classes end-to-end tests

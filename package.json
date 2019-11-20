@@ -1,36 +1,30 @@
 {
-  "name": "@mocks-server/main",
-  "version": "1.3.0",
-  "description": "Mocks server supporting multiple api behaviors",
+  "name": "@mocks-server/plugin-admin-api",
+  "version": "1.0.0",
+  "description": "Mocks server administration REST API plugin",
   "keywords": [
     "mocks",
     "server",
     "mock",
-    "fixtures",
-    "behaviors",
+    "administration",
+    "admin",
     "api",
     "rest",
-    "cli",
-    "express",
     "testing",
     "development"
   ],
   "author": "Javier Brea",
   "license": "Apache-2.0",
-  "repository": "https://github.com/mocks-server/main",
+  "repository": "https://github.com/mocks-server/plugin-admin-api",
   "homepage": "https://www.mocks-server.org",
   "publishConfig": {
     "access": "public"
   },
   "files": [
-    "bin",
-    "lib",
+    "src",
     "index.js"
   ],
   "main": "index.js",
-  "bin": {
-    "mocks-server": "./bin/mocks-server"
-  },
   "scripts": {
     "lint": "eslint index.js lib test jest.config.js jest.acceptance.config.js",
     "lint-staged": "lint-staged",

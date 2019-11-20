@@ -1,11 +1,12 @@
 {
   "name": "@mocks-server/plugin-admin-api",
   "version": "1.0.0",
-  "description": "Mocks server administration REST API plugin",
+  "description": "Plugin for Mocks Server. Provides a REST API for administrating settings, fixtures and behaviors",
   "keywords": [
     "mocks",
     "server",
     "mock",
+    "plugin",
     "administration",
     "admin",
     "api",

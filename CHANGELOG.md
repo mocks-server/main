@@ -6,7 +6,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [To be deprecated]
 - Deprecate options "features" and "feature".
-- Remove "/features" api path.
 - Remove "features" getter from Server
 - Remove Server and Cli constructors. Use @mocks-server/core instead
 

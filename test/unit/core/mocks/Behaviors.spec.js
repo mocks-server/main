@@ -15,8 +15,8 @@ const Boom = require("boom");
 const FilesHandlerMocks = require("./FilesHandler.mocks.js");
 const CoreMocks = require("../Core.mocks.js");
 
-const Behaviors = require("../../../../lib/core/mocks/Behaviors");
-const tracer = require("../../../../lib/core/tracer");
+const Behaviors = require("../../../../src/mocks/Behaviors");
+const tracer = require("../../../../src/tracer");
 
 describe("Behaviors", () => {
   const fooBoomError = new Error("foo boom error");
@@ -155,10 +155,10 @@ describe("Behaviors", () => {
     });
   });
 
-  describe("totalBehaviors getter", () => {
+  describe("count getter", () => {
     it("should return the number of behaviors", async () => {
       await behaviors.init();
-      expect(behaviors.totalBehaviors).toEqual(2);
+      expect(behaviors.count).toEqual(2);
     });
   });
 

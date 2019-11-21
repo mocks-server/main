@@ -13,7 +13,7 @@ jest.mock("route-parser");
 
 const routeParser = require("route-parser");
 
-const Behavior = require("../../../../lib/core/mocks/Behavior");
+const Behavior = require("../../../../src/mocks/Behavior");
 
 describe("Behavior", () => {
   const fooFunctionResponse = () => {};

@@ -15,8 +15,8 @@ const LibsMocks = require("../../Libs.mocks.js");
 const MocksMocks = require("../mocks/Mocks.mocks.js");
 const CoreMocks = require("../Core.mocks.js");
 
-const Server = require("../../../../lib/core/server/Server");
-const tracer = require("../../../../lib/core/tracer");
+const Server = require("../../../../src/server/Server");
+const tracer = require("../../../../src/tracer");
 
 const wait = (time = 1000) => {
   return new Promise(resolve => {

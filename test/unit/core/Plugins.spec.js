@@ -12,8 +12,8 @@ const sinon = require("sinon");
 
 const CoreMocks = require("./Core.mocks.js");
 
-const Plugins = require("../../../lib/core/Plugins");
-const tracer = require("../../../lib/core/tracer");
+const Plugins = require("../../../src/Plugins");
+const tracer = require("../../../src/tracer");
 
 describe("Settings", () => {
   let sandbox;

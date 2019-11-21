@@ -14,8 +14,8 @@ const sinon = require("sinon");
 const OptionsMocks = require("./Options.mocks.js");
 const CoreMocks = require("../Core.mocks.js");
 
-const Settings = require("../../../../lib/core/settings/Settings");
-const tracer = require("../../../../lib/core/tracer");
+const Settings = require("../../../../src/settings/Settings");
+const tracer = require("../../../../src/tracer");
 
 describe("Settings", () => {
   let optionsMocks;

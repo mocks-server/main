@@ -15,7 +15,7 @@ const BehaviorsMocks = require("./Behaviors.mocks.js");
 const FilesHandlerMocks = require("./FilesHandler.mocks.js");
 const CoreMocks = require("../Core.mocks.js");
 
-const Mocks = require("../../../../lib/core/mocks/Mocks");
+const Mocks = require("../../../../src/mocks/Mocks");
 
 describe("Behaviors", () => {
   const fooBoomError = new Error("foo boom error");

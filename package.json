@@ -31,7 +31,7 @@
   ],
   "main": "index.js",
   "scripts": {
-    "lint": "eslint index.js lib test jest.config.js jest.acceptance.config.js",
+    "lint": "eslint index.js src test jest.config.js jest.acceptance.config.js",
     "lint-staged": "lint-staged",
     "test": "jest",
     "test-acceptance": "jest --config=jest.acceptance.config.js --runInBand",
@@ -72,7 +72,7 @@
     "sinon": "^7.5.0"
   },
   "lint-staged": {
-    "lib/**/*.js": "eslint",
+    "src/**/*.js": "eslint",
     "test/**/*.js": "eslint",
     "index.js": "eslint",
     "jest.config.js": "eslint",

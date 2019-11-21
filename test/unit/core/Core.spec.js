@@ -15,8 +15,8 @@ const MocksMocks = require("./mocks/Mocks.mocks.js");
 const ServerMocks = require("./server/Server.mocks.js");
 const PluginsMocks = require("./Plugins.mocks.js");
 
-const Core = require("../../../lib/core/Core");
-const tracer = require("../../../lib/core/tracer");
+const Core = require("../../../src/Core");
+const tracer = require("../../../src/tracer");
 
 describe("Settings", () => {
   let sandbox;

@@ -21,8 +21,8 @@ const requireAll = require("require-all");
 const LibsMocks = require("../../Libs.mocks.js");
 const CoreMocks = require("../Core.mocks.js");
 
-const FilesHandler = require("../../../../lib/core/mocks/FilesHandler");
-const tracer = require("../../../../lib/core/tracer");
+const FilesHandler = require("../../../../src/mocks/FilesHandler");
+const tracer = require("../../../../src/tracer");
 
 const wait = () => {
   return new Promise(resolve => {

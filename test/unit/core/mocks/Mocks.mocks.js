@@ -21,6 +21,7 @@ class Mock {
     this._stubs = {
       init: this._sandbox.stub().resolves(),
       start: this._sandbox.stub().resolves(),
+      stop: this._sandbox.stub(),
       behaviors: {
         current: {}
       }

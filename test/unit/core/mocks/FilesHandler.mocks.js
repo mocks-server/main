@@ -95,7 +95,8 @@ class Mock {
     this._stubs = {
       files: INITIAL_FILES,
       init: this._sandbox.stub().resolves(),
-      start: this._sandbox.stub().resolves()
+      start: this._sandbox.stub().resolves(),
+      stop: this._sandbox.stub()
     };
 
     FilesHandler.mockImplementation(() => this._stubs);

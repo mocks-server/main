@@ -59,6 +59,13 @@ describe("Behaviors", () => {
     });
   });
 
+  describe("stop method", () => {
+    it("should stop filesHandler", async () => {
+      await mocks.stop();
+      expect(filesHandlerMocks.stubs.instance.stop.callCount).toEqual(1);
+    });
+  });
+
   describe("behaviors getter", () => {
     it("should return behaviors", async () => {
       expect(mocks.behaviors).toEqual(behaviorsMocks.stubs.instance);

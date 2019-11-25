@@ -8,28 +8,32 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startCore, stopCore, request } = require("./utils");
+const path = require("path");
+const { CliRunner, request, wait } = require("./utils");
 
-describe("with no behaviors", () => {
-  let core;
+describe("port command line argument", () => {
+  const binaryPath = "./starter";
+  const cwdPath = path.resolve(__dirname, "fixtures");
+  let cli;
 
   beforeAll(async () => {
-    core = await startCore("no-behaviors");
+    cli = new CliRunner([binaryPath, "--behaviors=web-tutorial", "--port=3005"], {
+      cwd: cwdPath
+    });
+    await wait();
   });
 
   afterAll(async () => {
-    await stopCore(core);
+    await cli.kill();
   });
 
-  it("should start server and return 404 to all requests", async () => {
-    const usersResponse = await request("/api/users", {
-      resolveWithFullResponse: true,
-      simple: false
+  it("should set server port", async () => {
+    const users = await request("/api/users", {
+      port: 3005
     });
-    expect(usersResponse.statusCode).toEqual(404);
-  });
-
-  it("should have no behaviors", async () => {
-    expect(core.behaviors.count).toEqual(0);
+    expect(users).toEqual([
+      { id: 1, name: "John Doe" },
+      { id: 2, name: "Jane Doe" }
+    ]);
   });
 });

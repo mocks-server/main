@@ -41,6 +41,13 @@ class FilesHandler {
     this._switchWatch();
   }
 
+  stop() {
+    if (this._watcher) {
+      tracer.debug("Stopping files watch");
+      this._watcher.close();
+    }
+  }
+
   _cleanRequireCacheFolder() {
     map(this._cache(), (cacheData, filePath) => {
       if (filePath.indexOf(this._path) === 0) {
@@ -86,10 +93,7 @@ class FilesHandler {
 
   _switchWatch() {
     const enabled = this._settings.get("watch");
-    if (this._watcher) {
-      tracer.debug("Stopping files watch");
-      this._watcher.close();
-    }
+    this.stop();
     if (enabled) {
       tracer.debug("Starting files watcher");
       this._watcher = watch(

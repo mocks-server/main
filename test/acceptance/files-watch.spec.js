@@ -10,35 +10,27 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 const fsExtra = require("fs-extra");
-const {
-  CliRunner,
-  request,
-  changeBehavior,
-  getBehaviors,
-  fixturesFolder,
-  wait
-} = require("./utils");
-const InteractiveCliRunner = require("./InteractiveCliRunner");
+const { CliRunner, request, fixturesFolder, wait } = require("./utils");
 
-const runTests = interactiveCli => {
-  describe.skip("When started", () => {
-    it("should have 3 behaviors available", async () => {
-      const behaviors = await getBehaviors();
-      expect(behaviors.length).toEqual(3);
+describe("files watcher", () => {
+  const binaryPath = "./starter";
+  const cwdPath = path.resolve(__dirname, "fixtures");
+  let cli;
+
+  beforeAll(async () => {
+    fsExtra.removeSync(fixturesFolder("files-watch"));
+    fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
+    cli = new CliRunner([binaryPath, "--behaviors=files-watch"], {
+      cwd: cwdPath
     });
+    await wait();
+  });
 
-    if (interactiveCli) {
-      it("should display available behaviors in CLI", async () => {
-        await wait(500);
-        expect(interactiveCli.cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
-      });
-      it("should display current behavior in CLI", async () => {
-        expect(interactiveCli.cli.logs).toEqual(
-          expect.stringContaining("Current behavior: standard")
-        );
-      });
-    }
+  afterAll(async () => {
+    await cli.kill();
+  });
 
+  describe("When started", () => {
     it("should serve users collection mock under the /api/users path", async () => {
       const users = await request("/api/users");
       expect(users).toEqual([
@@ -61,21 +53,10 @@ const runTests = interactiveCli => {
   describe("When files are modified", () => {
     beforeAll(async () => {
       fsExtra.copySync(fixturesFolder("files-modification"), fixturesFolder("files-watch"));
-      await wait(2000);
+      await wait(4000);
     });
 
     describe("without changing current behavior", () => {
-      it("should have 4 behaviors available", async () => {
-        const behaviors = await getBehaviors();
-        expect(behaviors.length).toEqual(4);
-      });
-
-      if (interactiveCli) {
-        it("should display available behaviors in CLI", async () => {
-          expect(interactiveCli.cli.logs).toEqual(expect.stringContaining("Behaviors: 4"));
-        });
-      }
-
       it("should serve users collection mock under the /api/users path", async () => {
         const users = await request("/api/users");
         expect(users).toEqual([
@@ -97,17 +78,12 @@ const runTests = interactiveCli => {
 
     describe('When changing current behavior to "user2"', () => {
       beforeAll(async () => {
-        await changeBehavior("user2");
-      });
-
-      if (interactiveCli) {
-        it("should display current behavior in CLI", async () => {
-          await wait(500);
-          expect(interactiveCli.cli.logs).toEqual(
-            expect.stringContaining("Current behavior: user2")
-          );
+        await cli.kill();
+        cli = new CliRunner([binaryPath, "--behaviors=files-watch", "--behavior=user2"], {
+          cwd: cwdPath
         });
-      }
+        await wait();
+      });
 
       it("should serve users collection mock under the /api/users path", async () => {
         const users = await request("/api/users");
@@ -130,17 +106,12 @@ const runTests = interactiveCli => {
 
     describe('When changing current behavior to "dynamic"', () => {
       beforeAll(async () => {
-        await changeBehavior("dynamic");
-      });
-
-      if (interactiveCli) {
-        it("should display current behavior in CLI", async () => {
-          await wait(500);
-          expect(interactiveCli.cli.logs).toEqual(
-            expect.stringContaining("Current behavior: dynamic")
-          );
+        await cli.kill();
+        cli = new CliRunner([binaryPath, "--behaviors=files-watch", "--behavior=dynamic"], {
+          cwd: cwdPath
         });
-      }
+        await wait();
+      });
 
       it("should serve users collection mock under the /api/users path", async () => {
         const users = await request("/api/users");
@@ -163,17 +134,12 @@ const runTests = interactiveCli => {
 
     describe('When changing current behavior to "newOne"', () => {
       beforeAll(async () => {
-        await changeBehavior("newOne");
-      });
-
-      if (interactiveCli) {
-        it("should display current behavior in CLI", async () => {
-          await wait(500);
-          expect(interactiveCli.cli.logs).toEqual(
-            expect.stringContaining("Current behavior: newOne")
-          );
+        await cli.kill();
+        cli = new CliRunner([binaryPath, "--behaviors=files-watch", "--behavior=newOne"], {
+          cwd: cwdPath
         });
-      }
+        await wait();
+      });
 
       it("should serve users collection mock under the /api/users path", async () => {
         const users = await request("/api/new-users");
@@ -194,47 +160,4 @@ const runTests = interactiveCli => {
       });
     });
   });
-};
-
-describe.skip("files watcher", () => {
-  const binaryPath = "../../../../bin/mocks-server";
-  const cwdPath = path.resolve(__dirname, "fixtures");
-  const interactiveCli = {
-    cli: null
-  };
-
-  beforeAll(async () => {
-    fsExtra.removeSync(fixturesFolder("files-watch"));
-    fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
-    interactiveCli.cli = new InteractiveCliRunner([binaryPath, "--behaviors=files-watch"], {
-      cwd: cwdPath
-    });
-    await wait();
-  });
-
-  afterAll(async () => {
-    await interactiveCli.cli.kill();
-  });
-
-  runTests(interactiveCli);
-});
-
-describe.skip("files watcher started using Server", () => {
-  const cwdPath = fixturesFolder("programmatic-server");
-  let cli;
-
-  beforeAll(async () => {
-    fsExtra.removeSync(fixturesFolder("files-watch"));
-    fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
-    cli = new CliRunner("start-watch.js", {
-      cwd: cwdPath
-    });
-    await wait();
-  });
-
-  afterAll(async () => {
-    await cli.kill();
-  });
-
-  runTests();
 });

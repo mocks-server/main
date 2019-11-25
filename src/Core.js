@@ -91,6 +91,7 @@ class Core {
   // Expose Server methods and getters
 
   stop() {
+    this._mocks.stop();
     return this._server.stop();
   }
 

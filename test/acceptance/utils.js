@@ -31,27 +31,27 @@ const fixturesFolder = folderName => {
   return path.resolve(__dirname, "fixtures", folderName);
 };
 
-const startServer = (mocksPath, options = {}) => {
+const startCore = (mocksPath, options = {}) => {
   const mocks = mocksPath || "web-tutorial";
-  const server = new Core({
+  const core = new Core({
     onlyProgrammaticOptions: true
   });
 
-  return server
+  return core
     .init({
       ...defaultOptions,
       behaviors: fixturesFolder(mocks),
       ...options
     })
     .then(() => {
-      return server.start().then(() => {
-        return Promise.resolve(server);
+      return core.start().then(() => {
+        return Promise.resolve(core);
       });
     });
 };
 
-const stopServer = server => {
-  return server.stop();
+const stopCore = core => {
+  return core.stop();
 };
 
 const request = (uri, options = {}) => {
@@ -61,7 +61,7 @@ const request = (uri, options = {}) => {
   };
 
   return requestPromise({
-    uri: `http://localhost:${SERVER_PORT}${uri}`,
+    uri: `http://localhost:${options.port || SERVER_PORT}${uri}`,
     json: true,
     ...requestOptions
   });
@@ -117,8 +117,8 @@ const wait = (time = 1000) => {
 };
 
 module.exports = {
-  startServer,
-  stopServer,
+  startCore,
+  stopCore,
   request,
   changeBehavior,
   getBehaviors,

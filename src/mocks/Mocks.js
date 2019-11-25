@@ -25,6 +25,10 @@ class Mocks {
     return this._behaviors.init();
   }
 
+  async stop() {
+    await this._filesHandler.stop();
+  }
+
   async start() {
     await this._filesHandler.start();
   }

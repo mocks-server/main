@@ -105,7 +105,10 @@ class Server {
   }
 
   _getFixtureMatching(method, url) {
-    return find(this._mocks.behaviors.current[method], fixture => fixture.route.match(url));
+    return (
+      this._mocks.behaviors.current &&
+      find(this._mocks.behaviors.current[method], fixture => fixture.route.match(url))
+    );
   }
 
   _fixturesMiddleware(req, res, next) {

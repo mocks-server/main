@@ -8,17 +8,17 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startServer, stopServer, request, TimeCounter } = require("./utils");
+const { startCore, stopCore, request, TimeCounter } = require("./utils");
 
 describe("delay setting", () => {
-  let server;
+  let core;
 
   beforeAll(async () => {
-    server = await startServer();
+    core = await startCore();
   });
 
   afterAll(async () => {
-    await stopServer(server);
+    await stopCore(core);
   });
 
   describe("When started", () => {
@@ -32,7 +32,7 @@ describe("delay setting", () => {
 
   describe("When delay is changed", () => {
     it("should respond after defined delay", async () => {
-      server.settings.set("delay", 1000);
+      core.settings.set("delay", 1000);
       const timeCounter = new TimeCounter();
       await request("/api/users");
       timeCounter.stop();

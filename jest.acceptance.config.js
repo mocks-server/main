@@ -6,11 +6,6 @@ module.exports = {
   clearMocks: true,
 
   testMatch: ["**/test/acceptance/**/?(*.)+(spec|test).js?(x)"],
-  testMatch: [
-    "**/test/acceptance/command-line-arguments.spec.js",
-    "**/test/acceptance/delay-setting.spec.js",
-    "**/test/acceptance/no-behaviors.spec.js"
-  ],
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: false,

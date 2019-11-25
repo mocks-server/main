@@ -26,7 +26,6 @@ describe("command line arguments", () => {
         cwd: cwdPath
       });
       await wait();
-      console.log(cli.logs);
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },

@@ -18,6 +18,8 @@ const { delay, find } = require("lodash");
 const tracer = require("../tracer");
 const middlewares = require("./middlewares");
 
+const { CHANGE_SETTINGS } = require("../eventNames");
+
 class Server {
   constructor(mocks, settings, eventEmitter) {
     this._mocks = mocks;
@@ -27,6 +29,7 @@ class Server {
     this._error = null;
 
     this._startServer = this._startServer.bind(this);
+    this._onChangeSettings = this._onChangeSettings.bind(this);
   }
 
   init() {
@@ -36,7 +39,14 @@ class Server {
       });
       process.exit();
     });
+    this._eventEmitter.on(CHANGE_SETTINGS, this._onChangeSettings);
     return Promise.resolve();
+  }
+
+  _onChangeSettings(changeDetails) {
+    if (changeDetails.hasOwnProperty("port") || changeDetails.hasOwnProperty("host")) {
+      this.restart();
+    }
   }
 
   _initServer() {

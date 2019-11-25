@@ -17,7 +17,7 @@ const watch = require("node-watch");
 const { map, debounce } = require("lodash");
 
 const tracer = require("../tracer");
-const { LOAD_MOCKS, CHANGE_SETTINGS } = require("../eventNames");
+const { LOAD_FILES, CHANGE_SETTINGS } = require("../eventNames");
 
 class FilesHandler {
   constructor(settings, eventEmitter, extraOptions = {}) {
@@ -88,7 +88,7 @@ class FilesHandler {
       dirname: this._path,
       recursive: true
     });
-    this._eventEmitter.emit(LOAD_MOCKS);
+    this._eventEmitter.emit(LOAD_FILES, this._files);
   }
 
   _switchWatch() {

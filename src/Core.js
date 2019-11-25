@@ -17,6 +17,8 @@ const Mocks = require("./mocks/Mocks");
 const Settings = require("./settings/Settings");
 const Plugins = require("./Plugins");
 
+const { INIT, START } = require("./eventNames");
+
 class Core {
   constructor(coreOptions = {}) {
     this._eventEmitter = new EventEmitter();
@@ -45,14 +47,18 @@ class Core {
     // Settings are ready, init all
     await this._mocks.init();
     await this._server.init();
-    return this._plugins.init();
+    return this._plugins.init().then(() => {
+      this._eventEmitter.emit(INIT, this);
+    });
   }
 
   async start() {
     await this.init(); // in case it has not been initializated manually before
     await this._mocks.start();
     await this._server.start();
-    return this._startPlugins();
+    return this._startPlugins().then(() => {
+      this._eventEmitter.emit(START, this);
+    });
   }
 
   async _startPlugins() {

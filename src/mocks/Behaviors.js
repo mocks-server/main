@@ -17,20 +17,20 @@ const { flatten, map, each, compact } = require("lodash");
 
 const tracer = require("../tracer");
 
-const { LOAD_MOCKS, CHANGE_SETTINGS } = require("../eventNames");
+const { LOAD_MOCKS, LOAD_FILES, CHANGE_SETTINGS } = require("../eventNames");
 
 class Behaviors {
   constructor(filesHandler, settings, eventEmitter) {
     this._filesHandler = filesHandler;
     this._settings = settings;
     this._eventEmitter = eventEmitter;
-    this._onLoadMocks = this._onLoadMocks.bind(this);
+    this._onLoadFiles = this._onLoadFiles.bind(this);
     this._onChangeSettings = this._onChangeSettings.bind(this);
   }
 
   init() {
     this._loadBehaviors();
-    this._eventEmitter.on(LOAD_MOCKS, this._onLoadMocks);
+    this._eventEmitter.on(LOAD_FILES, this._onLoadFiles);
     this._eventEmitter.on(CHANGE_SETTINGS, this._onChangeSettings);
     return Promise.resolve();
   }
@@ -61,9 +61,10 @@ class Behaviors {
       );
       this._current = this._names[0];
     }
+    this._eventEmitter.emit(LOAD_MOCKS, this._behaviors);
   }
 
-  _onLoadMocks() {
+  _onLoadFiles() {
     this._loadBehaviors();
   }
 

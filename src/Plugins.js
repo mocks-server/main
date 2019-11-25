@@ -76,7 +76,7 @@ class Plugins {
   }
 
   _registerPlugin(Plugin) {
-    if (isObject(Plugin) && !isFunction(Plugin)) {
+    if (isObject(Plugin) && !isFunction(Plugin) && !Plugin.hasOwnProperty("register")) {
       this._pluginsRegistered++;
       return Plugin;
     }
@@ -86,7 +86,11 @@ class Plugins {
       this._pluginsRegistered++;
     } catch (error) {
       if (error.message.includes("is not a constructor")) {
-        return this._registerPluginFunction(Plugin);
+        if (Plugin.hasOwnProperty("register")) {
+          return this._registerPluginFunction(Plugin.register);
+        } else {
+          return this._registerPluginFunction(Plugin);
+        }
       } else {
         return this._catchRegisterError(error);
       }
@@ -119,7 +123,7 @@ class Plugins {
     }
     let pluginInit;
     try {
-      pluginInit = this._pluginsInstances[pluginIndex].init();
+      pluginInit = this._pluginsInstances[pluginIndex].init(this._core);
     } catch (error) {
       return this._catchInitError(error).then(initNextPlugin);
     }
@@ -146,7 +150,7 @@ class Plugins {
     }
     let pluginStart;
     try {
-      pluginStart = this._pluginsInstances[pluginIndex].start();
+      pluginStart = this._pluginsInstances[pluginIndex].start(this._core);
     } catch (error) {
       return this._catchStartError(error).then(startNextPlugin);
     }

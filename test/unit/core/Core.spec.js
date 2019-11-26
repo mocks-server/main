@@ -89,6 +89,8 @@ describe("Settings", () => {
   describe("start method", () => {
     it("should init if it has not been done before", async () => {
       pluginsMocks.reset();
+      pluginsMocks = new PluginsMocks();
+      pluginsInstance = pluginsMocks.stubs.instance;
       core = new Core();
       await core.start();
       expect(pluginsInstance.register.callCount).toEqual(1);

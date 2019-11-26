@@ -20,8 +20,8 @@ class Mock {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      init: this._sandbox.stub(),
-      register: this._sandbox.stub(),
+      init: this._sandbox.stub().resolves(),
+      register: this._sandbox.stub().resolves(),
       start: this._sandbox.stub().resolves()
     };
 

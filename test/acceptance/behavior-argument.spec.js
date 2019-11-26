@@ -9,9 +9,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { CliRunner, request, wait, TimeCounter } = require("./utils");
+const { CliRunner, request, wait } = require("./utils");
 
-describe("command line arguments", () => {
+describe("behavior arguments", () => {
   const binaryPath = "./starter";
   const cwdPath = path.resolve(__dirname, "fixtures");
   let cli;
@@ -20,21 +20,7 @@ describe("command line arguments", () => {
     await cli.kill();
   });
 
-  describe("behaviors option", () => {
-    it("should set mocks folder", async () => {
-      cli = new CliRunner([binaryPath, "--behaviors=web-tutorial"], {
-        cwd: cwdPath
-      });
-      await wait();
-      const users = await request("/api/users");
-      expect(users).toEqual([
-        { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
-      ]);
-    });
-  });
-
-  describe("behavior option", () => {
+  describe("behavior argument", () => {
     describe("when not provided", () => {
       it("should set as current behavior the first one found", async () => {
         cli = new CliRunner([binaryPath, "--behaviors=web-tutorial"], {
@@ -77,21 +63,7 @@ describe("command line arguments", () => {
     });
   });
 
-  describe("features option", () => {
-    it("should set mocks folder", async () => {
-      cli = new CliRunner([binaryPath, "--features=web-tutorial"], {
-        cwd: cwdPath
-      });
-      await wait();
-      const users = await request("/api/users");
-      expect(users).toEqual([
-        { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
-      ]);
-    });
-  });
-
-  describe("feature option", () => {
+  describe("feature argument", () => {
     describe("when not provided", () => {
       it("should set as current behavior the first one found", async () => {
         cli = new CliRunner([binaryPath, "--features=web-tutorial"], {
@@ -131,24 +103,6 @@ describe("command line arguments", () => {
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 1, name: "John Doe" });
       });
-    });
-  });
-
-  describe("delay option", () => {
-    it("should set delay", async () => {
-      expect.assertions(2);
-      cli = new CliRunner([binaryPath, "--behaviors=web-tutorial", "--delay=2000"], {
-        cwd: cwdPath
-      });
-      await wait();
-      const timeCounter = new TimeCounter();
-      const users = await request("/api/users");
-      timeCounter.stop();
-      expect(users).toEqual([
-        { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
-      ]);
-      expect(timeCounter.total).toBeGreaterThan(1999);
     });
   });
 });

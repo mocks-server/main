@@ -50,6 +50,35 @@ describe("Settings", () => {
       expect(tracer.verbose.calledWith("Registered 1 plugins")).toEqual(true);
     });
 
+    it("should register object plugins with register method", async () => {
+      const fooPlugin = {
+        register: () => {}
+      };
+      plugins = new Plugins([fooPlugin], coreInstance);
+      await plugins.register();
+      expect(tracer.verbose.calledWith("Registered 1 plugins")).toEqual(true);
+    });
+
+    it("should register object plugins with register method passing to it the core itself", async () => {
+      const fooPlugin = {
+        register: sinon.spy()
+      };
+      plugins = new Plugins([fooPlugin], coreInstance);
+      await plugins.register();
+      expect(fooPlugin.register.calledWith(coreInstance)).toEqual(true);
+    });
+
+    it("should  not register object plugins with register method throwing an error", async () => {
+      const fooPlugin = {
+        register: () => {
+          throw new Error();
+        }
+      };
+      plugins = new Plugins([fooPlugin], coreInstance);
+      await plugins.register();
+      expect(tracer.verbose.calledWith("Registered 0 plugins")).toEqual(true);
+    });
+
     it("should not register strings as plugins", async () => {
       expect.assertions(2);
       plugins = new Plugins(["foo"], coreInstance);
@@ -74,6 +103,30 @@ describe("Settings", () => {
       expect(fooPlugin.calledWith(coreInstance)).toEqual(true);
       expect(fooPlugin.callCount).toEqual(1);
       expect(tracer.verbose.calledWith("Registered 1 plugins")).toEqual(true);
+    });
+
+    it("should register function plugins returning a register method", async () => {
+      expect.assertions(3);
+      const spy = sinon.spy();
+      const fooPlugin = () => ({
+        register: spy
+      });
+      plugins = new Plugins([fooPlugin], coreInstance);
+      await plugins.register();
+      expect(spy.calledWith(coreInstance)).toEqual(true);
+      expect(spy.callCount).toEqual(1);
+      expect(tracer.verbose.calledWith("Registered 1 plugins")).toEqual(true);
+    });
+
+    it("should not register function plugins returning a register method which throws an error", async () => {
+      const fooPlugin = () => ({
+        register: () => {
+          throw new Error();
+        }
+      });
+      plugins = new Plugins([fooPlugin], coreInstance);
+      await plugins.register();
+      expect(tracer.verbose.calledWith("Registered 0 plugins")).toEqual(true);
     });
 
     it("should register class plugins, instantiating them passing the core", async () => {
@@ -104,6 +157,41 @@ describe("Settings", () => {
       plugins = new Plugins([FooPlugin], coreInstance);
       await plugins.register();
       expect(console.log.calledWith("Error registering plugin")).toEqual(true);
+      expect(tracer.verbose.calledWith("Registered 0 plugins")).toEqual(true);
+    });
+
+    it("should register class plugins with a register method, passing to it the core", async () => {
+      expect.assertions(3);
+      let instantiated = false;
+      let receivedCore;
+      class FooPlugin {
+        constructor() {
+          console.log("Created class");
+        }
+        register(core) {
+          receivedCore = core;
+          instantiated = true;
+        }
+      }
+      plugins = new Plugins([FooPlugin], coreInstance);
+      await plugins.register();
+      expect(receivedCore).toEqual(coreInstance);
+      expect(instantiated).toEqual(true);
+      expect(tracer.verbose.calledWith("Registered 1 plugins")).toEqual(true);
+    });
+
+    it("should not register class plugins with a register method when it throws an error", async () => {
+      expect.assertions(1);
+      class FooPlugin {
+        constructor() {
+          console.log("Created class");
+        }
+        register() {
+          throw new Error();
+        }
+      }
+      plugins = new Plugins([FooPlugin], coreInstance);
+      await plugins.register();
       expect(tracer.verbose.calledWith("Registered 0 plugins")).toEqual(true);
     });
 

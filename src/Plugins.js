@@ -64,35 +64,35 @@ class Plugins {
     return Promise.resolve();
   }
 
-  _registerPluginFunction(Plugin) {
-    let pluginInstance;
-    try {
-      pluginInstance = Plugin(this._core);
-      this._pluginsRegistered++;
-    } catch (error) {
-      return this._catchRegisterError(error);
-    }
-    return pluginInstance;
-  }
-
   _registerPlugin(Plugin) {
-    if (isObject(Plugin) && !isFunction(Plugin) && !Plugin.hasOwnProperty("register")) {
-      this._pluginsRegistered++;
-      return Plugin;
-    }
     let pluginInstance;
-    try {
-      pluginInstance = new Plugin(this._core);
+    if (isObject(Plugin) && !isFunction(Plugin)) {
+      pluginInstance = Plugin;
       this._pluginsRegistered++;
-    } catch (error) {
-      if (error.message.includes("is not a constructor")) {
-        if (Plugin.hasOwnProperty("register")) {
-          return this._registerPluginFunction(Plugin.register);
+    } else {
+      try {
+        pluginInstance = new Plugin(this._core);
+        this._pluginsRegistered++;
+      } catch (error) {
+        if (error.message.includes("is not a constructor")) {
+          try {
+            pluginInstance = Plugin(this._core) || {};
+            this._pluginsRegistered++;
+          } catch (error) {
+            return this._catchRegisterError(error);
+          }
         } else {
-          return this._registerPluginFunction(Plugin);
+          return this._catchRegisterError(error);
         }
-      } else {
-        return this._catchRegisterError(error);
+      }
+    }
+    if (typeof pluginInstance.register === "function") {
+      try {
+        pluginInstance.register(this._core);
+      } catch (error) {
+        this._catchRegisterError(error);
+        this._pluginsRegistered = this._pluginsRegistered - 1;
+        pluginInstance = {};
       }
     }
     return pluginInstance;

@@ -34,7 +34,8 @@ const fixturesFolder = folderName => {
 const startCore = (mocksPath, options = {}) => {
   const mocks = mocksPath || "web-tutorial";
   const core = new Core({
-    onlyProgrammaticOptions: true
+    onlyProgrammaticOptions: true,
+    plugins: options.plugins
   });
 
   return core

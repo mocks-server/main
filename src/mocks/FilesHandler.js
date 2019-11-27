@@ -88,6 +88,7 @@ class FilesHandler {
       dirname: this._path,
       recursive: true
     });
+    tracer.silly(`Loaded mocks from folder ${this._path}`);
     this._eventEmitter.emit(LOAD_FILES, this._files);
   }
 

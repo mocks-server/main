@@ -10,14 +10,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const EventEmitter = require("events");
 
-const { LOAD_MOCKS, CHANGE_SETTINGS } = require("./eventNames");
+const { INIT, START, LOAD_FILES, LOAD_MOCKS, CHANGE_SETTINGS } = require("./eventNames");
 const Server = require("./server/Server");
 const tracer = require("./tracer");
 const Mocks = require("./mocks/Mocks");
 const Settings = require("./settings/Settings");
 const Plugins = require("./Plugins");
-
-const { INIT, START } = require("./eventNames");
 
 class Core {
   constructor(coreOptions = {}) {
@@ -77,6 +75,14 @@ class Core {
   }
 
   // Listeners
+
+  onLoadFiles(cb) {
+    const removeCallback = () => {
+      this._eventEmitter.removeListener(LOAD_FILES, cb);
+    };
+    this._eventEmitter.on(LOAD_FILES, cb);
+    return removeCallback;
+  }
 
   onLoadMocks(cb) {
     const removeCallback = () => {

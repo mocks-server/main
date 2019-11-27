@@ -25,21 +25,21 @@ class Plugins {
 
   register() {
     return this._registerPlugins().then(() => {
-      tracer.verbose(`Registered ${this._pluginsRegistered} plugins`);
+      tracer.verbose(`Registered ${this._pluginsRegistered} plugins without errors`);
       return Promise.resolve();
     });
   }
 
   init() {
     return this._initPlugins().then(() => {
-      tracer.verbose(`Initializated ${this._pluginsInitialized} plugins`);
+      tracer.verbose(`Initializated ${this._pluginsInitialized} plugins without errors`);
       return Promise.resolve();
     });
   }
 
   start() {
     return this._startPlugins().then(() => {
-      tracer.verbose(`Started ${this._pluginsStarted} plugins`);
+      tracer.verbose(`Started ${this._pluginsStarted} plugins without errors`);
       return Promise.resolve();
     });
   }
@@ -48,20 +48,6 @@ class Plugins {
     console.log("Error registering plugin");
     console.log(error);
     return {};
-  }
-
-  _catchInitError(error) {
-    this._pluginsInitialized = this._pluginsInitialized - 1;
-    tracer.error("Error initializating plugin");
-    tracer.debug(error);
-    return Promise.resolve();
-  }
-
-  _catchStartError(error) {
-    this._pluginsStarted = this._pluginsStarted - 1;
-    tracer.error("Error starting plugin");
-    tracer.debug(error);
-    return Promise.resolve();
   }
 
   _registerPlugin(Plugin) {
@@ -92,7 +78,6 @@ class Plugins {
       } catch (error) {
         this._catchRegisterError(error);
         this._pluginsRegistered = this._pluginsRegistered - 1;
-        pluginInstance = {};
       }
     }
     return pluginInstance;
@@ -105,6 +90,13 @@ class Plugins {
     const plugin = this._registerPlugin(this._plugins[pluginIndex]);
     this._pluginsInstances.push(plugin);
     return this._registerPlugins(pluginIndex + 1);
+  }
+
+  _catchInitError(error, index) {
+    this._pluginsInitialized = this._pluginsInitialized - 1;
+    tracer.error(`Error initializating plugin ${index}`);
+    tracer.debug(error.toString());
+    return Promise.resolve();
   }
 
   _initPlugins(pluginIndex = 0) {
@@ -125,13 +117,25 @@ class Plugins {
     try {
       pluginInit = this._pluginsInstances[pluginIndex].init(this._core);
     } catch (error) {
-      return this._catchInitError(error).then(initNextPlugin);
+      console.log(error);
+      return this._catchInitError(error, pluginIndex).then(initNextPlugin);
     }
 
     if (!isPromise(pluginInit)) {
       return initNextPlugin();
     }
-    return pluginInit.catch(this._catchInitError).then(initNextPlugin);
+    return pluginInit
+      .catch(error => {
+        return this._catchInitError(error, pluginIndex);
+      })
+      .then(initNextPlugin);
+  }
+
+  _catchStartError(error, index) {
+    this._pluginsStarted = this._pluginsStarted - 1;
+    tracer.error(`Error starting plugin ${index}`);
+    tracer.debug(error.toString());
+    return Promise.resolve();
   }
 
   _startPlugins(pluginIndex = 0) {
@@ -152,13 +156,17 @@ class Plugins {
     try {
       pluginStart = this._pluginsInstances[pluginIndex].start(this._core);
     } catch (error) {
-      return this._catchStartError(error).then(startNextPlugin);
+      return this._catchStartError(error, pluginIndex).then(startNextPlugin);
     }
 
     if (!isPromise(pluginStart)) {
       return startNextPlugin();
     }
-    return pluginStart.catch(this._catchStartError).then(startNextPlugin);
+    return pluginStart
+      .catch(error => {
+        return this._catchStartError(error, pluginIndex);
+      })
+      .then(startNextPlugin);
   }
 }
 

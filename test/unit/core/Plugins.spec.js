@@ -73,7 +73,7 @@ describe("Settings", () => {
       expect(fooPlugin.register.calledWith(coreInstance)).toEqual(true);
     });
 
-    it("should  not register object plugins with register method throwing an error", async () => {
+    it("should not register object plugins with register method throwing an error", async () => {
       const fooPlugin = {
         register: () => {
           throw new Error();
@@ -272,6 +272,27 @@ describe("Settings", () => {
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
     });
 
+    it("should catch init method rejected", async () => {
+      expect.assertions(1);
+      const fooPlugin = {
+        init: () => {
+          return new Promise((resolve, reject) => {
+            reject(new Error());
+          });
+        }
+      };
+      const fooPlugin2 = {
+        init: () => Promise.resolve()
+      };
+      const fooPlugin3 = {
+        init: () => Promise.resolve()
+      };
+      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      await plugins.register();
+      await plugins.init();
+      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
+    });
+
     it("should accept plugins with no init method", async () => {
       expect.assertions(1);
       const fooPlugin = {};
@@ -329,6 +350,27 @@ describe("Settings", () => {
       const fooPlugin = {
         start: () => {
           throw new Error();
+        }
+      };
+      const fooPlugin2 = {
+        start: () => Promise.resolve()
+      };
+      const fooPlugin3 = {
+        start: () => Promise.resolve()
+      };
+      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      await plugins.register();
+      await plugins.start();
+      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
+    });
+
+    it("should catch start method rejected", async () => {
+      expect.assertions(1);
+      const fooPlugin = {
+        start: () => {
+          return new Promise((resolve, reject) => {
+            reject(new Error());
+          });
         }
       };
       const fooPlugin2 = {

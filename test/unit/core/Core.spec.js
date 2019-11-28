@@ -159,6 +159,26 @@ describe("Settings", () => {
     });
   });
 
+  describe("onLoadFiles method", () => {
+    it("should add listener to eventEmitter", () => {
+      const spy = sandbox.spy();
+      core.onLoadFiles(spy);
+      core._eventEmitter.emit("load:files");
+      expect(spy.callCount).toEqual(1);
+    });
+
+    it("should return a function to remove listener", () => {
+      expect.assertions(2);
+      const spy = sandbox.spy();
+      const removeCallback = core.onLoadFiles(spy);
+      core._eventEmitter.emit("load:files");
+      expect(spy.callCount).toEqual(1);
+      removeCallback();
+      core._eventEmitter.emit("load:files");
+      expect(spy.callCount).toEqual(1);
+    });
+  });
+
   describe("onChangeSettings method", () => {
     it("should add listener to eventEmitter", () => {
       const spy = sandbox.spy();

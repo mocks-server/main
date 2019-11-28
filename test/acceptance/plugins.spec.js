@@ -23,7 +23,6 @@ describe("plugins", () => {
   let changeSettingsSpy;
   let filesLoadedSpy;
   let mocksLoadedSpy;
-  let plugin;
   let initSpy;
   let registerSpy;
   let startSpy;
@@ -47,139 +46,267 @@ describe("plugins", () => {
     sandbox.restore();
   });
 
-  describe("created as an object", () => {
-    beforeAll(async () => {
-      plugin = {
-        register: core => {
-          core.addCustomRouter("/foo-path", customRouter);
-          registerSpy(core);
-        },
-        init: core => {
-          initSpy(
-            core,
-            core.settings.get("behaviors"),
-            core.settings.get("port"),
-            core.settings.get("delay")
-          );
-          core.settings.set("log", "silly");
-          core.onChangeSettings(changeSettingsSpy);
-          core.onLoadMocks(mocksLoadedSpy);
-          core.onLoadFiles(filesLoadedSpy);
-        },
-        start: core => {
-          startSpy(core);
-        }
-      };
-      core = await startCore("web-tutorial", {
-        plugins: [plugin]
-      });
-    });
-
-    afterAll(async () => {
-      sandbox.reset();
-      await stopCore(core);
-    });
-
-    describe("when started", () => {
-      it("should start server and send responses", async () => {
-        const users = await request("/api/users");
-        expect(users).toEqual([
-          { id: 1, name: "John Doe" },
-          { id: 2, name: "Jane Doe" }
-        ]);
-      });
-
-      it("should have executed register method passing core", async () => {
-        expect(registerSpy.callCount).toEqual(1);
-      });
-
-      it("should have passed core to register method", async () => {
-        expect(initSpy.getCall(0).args[0]).toEqual(core);
-      });
-
-      it("should have executed init method when settings are available", async () => {
-        expect(initSpy.callCount).toEqual(1);
-      });
-
-      it("should have settings available when init is called", async () => {
-        expect.assertions(3);
-        expect(initSpy.getCall(0).args[1]).toEqual(fixturesFolder("web-tutorial"));
-        expect(initSpy.getCall(0).args[2]).toEqual(3100);
-        expect(initSpy.getCall(0).args[3]).toEqual(0);
-      });
-
-      it("should have passed core to init method", async () => {
-        expect(initSpy.getCall(0).args[0]).toEqual(core);
-      });
-
-      it("should have executed start method", async () => {
-        expect(startSpy.callCount).toEqual(1);
-      });
-
-      it("should have passed core to start method", async () => {
-        expect(startSpy.getCall(0).args[0]).toEqual(core);
-      });
-
-      it("should respond to custom routes", async () => {
-        const response = await request("/foo-path");
-        expect(response).toEqual(FOO_CUSTOM_RESPONSE);
-      });
-    });
-
-    describe("when emit events", () => {
+  const testPlugin = (description, pluginConstructor) => {
+    describe(description, () => {
       beforeAll(async () => {
-        core.settings.set("behaviors", fixturesFolder("files-modification"));
-        await wait(4000);
-      });
-
-      it("should inform plugin when settings are changed", async () => {
-        expect(changeSettingsSpy.getCall(0).args[0]).toEqual({
-          behaviors: fixturesFolder("files-modification")
+        core = await startCore("web-tutorial", {
+          plugins: [pluginConstructor]
         });
       });
 
-      it("should inform plugin when files are loaded", async () => {
-        expect(filesLoadedSpy.callCount).toEqual(1);
+      afterAll(async () => {
+        sandbox.reset();
+        await stopCore(core);
       });
 
-      it("should inform plugin when mocks are loaded", async () => {
-        expect(mocksLoadedSpy.callCount).toEqual(1);
+      describe("when started", () => {
+        it("should start server and send responses", async () => {
+          const users = await request("/api/users");
+          expect(users).toEqual([
+            { id: 1, name: "John Doe" },
+            { id: 2, name: "Jane Doe" }
+          ]);
+        });
+
+        it("should have executed register method passing core", async () => {
+          expect(registerSpy.callCount).toEqual(1);
+        });
+
+        it("should have passed core to register method", async () => {
+          expect(initSpy.getCall(0).args[0]).toEqual(core);
+        });
+
+        it("should have executed init method when settings are available", async () => {
+          expect(initSpy.callCount).toEqual(1);
+        });
+
+        it("should have settings available when init is called", async () => {
+          expect.assertions(3);
+          expect(initSpy.getCall(0).args[1]).toEqual(fixturesFolder("web-tutorial"));
+          expect(initSpy.getCall(0).args[2]).toEqual(3100);
+          expect(initSpy.getCall(0).args[3]).toEqual(0);
+        });
+
+        it("should have passed core to init method", async () => {
+          expect(initSpy.getCall(0).args[0]).toEqual(core);
+        });
+
+        it("should have executed start method", async () => {
+          expect(startSpy.callCount).toEqual(1);
+        });
+
+        it("should have passed core to start method", async () => {
+          expect(startSpy.getCall(0).args[0]).toEqual(core);
+        });
+
+        it("should respond to custom routes", async () => {
+          const response = await request("/foo-path");
+          expect(response).toEqual(FOO_CUSTOM_RESPONSE);
+        });
+      });
+
+      describe("when emit events", () => {
+        beforeAll(async () => {
+          core.settings.set("behaviors", fixturesFolder("files-modification"));
+          await wait(4000);
+        });
+
+        it("should inform plugin when settings are changed", async () => {
+          expect(changeSettingsSpy.getCall(0).args[0]).toEqual({
+            behaviors: fixturesFolder("files-modification")
+          });
+        });
+
+        it("should inform plugin when files are loaded", async () => {
+          expect(filesLoadedSpy.callCount).toEqual(1);
+        });
+
+        it("should inform plugin when mocks are loaded", async () => {
+          expect(mocksLoadedSpy.callCount).toEqual(1);
+        });
       });
     });
+  };
+
+  const testAsyncPlugin = (description, pluginConstructor) => {
+    describe(`${description} with async methods`, () => {
+      afterEach(async () => {
+        sandbox.reset();
+        await stopCore(core);
+      });
+
+      describe("when started", () => {
+        it("should start server when all initialization is finished", async () => {
+          const timeCounter = new TimeCounter();
+          core = await startCore("web-tutorial", {
+            plugins: [pluginConstructor]
+          });
+          const users = await request("/api/users");
+          expect(users).toEqual([
+            { id: 1, name: "John Doe" },
+            { id: 2, name: "Jane Doe" }
+          ]);
+          timeCounter.stop();
+          expect(timeCounter.total).toBeGreaterThan(3000);
+        });
+      });
+    });
+  };
+
+  testPlugin("created as an object", {
+    register: core => {
+      core.addCustomRouter("/foo-path", customRouter);
+      registerSpy(core);
+    },
+    init: core => {
+      initSpy(
+        core,
+        core.settings.get("behaviors"),
+        core.settings.get("port"),
+        core.settings.get("delay")
+      );
+      core.settings.set("log", "silly");
+      core.onChangeSettings(changeSettingsSpy);
+      core.onLoadMocks(mocksLoadedSpy);
+      core.onLoadFiles(filesLoadedSpy);
+    },
+    start: core => {
+      startSpy(core);
+    }
   });
 
-  describe("created as an object with async methods", () => {
-    beforeAll(async () => {
-      plugin = {
-        // TODO, allow async register
-        init: () => {
-          return wait(2000);
-        },
-        start: () => {
-          return wait(1000);
-        }
-      };
-    });
+  testAsyncPlugin("created as an object", {
+    // TODO, allow async register
+    init: () => {
+      return wait(2000);
+    },
+    start: () => {
+      return wait(1000);
+    }
+  });
 
-    afterEach(async () => {
-      sandbox.reset();
-      await stopCore(core);
-    });
+  testPlugin(
+    "created as a Class",
+    class Plugin {
+      constructor(core) {
+        core.addCustomRouter("/foo-path", customRouter);
+        registerSpy(core);
+      }
+      init(core) {
+        initSpy(
+          core,
+          core.settings.get("behaviors"),
+          core.settings.get("port"),
+          core.settings.get("delay")
+        );
+        core.settings.set("log", "silly");
+        core.onChangeSettings(changeSettingsSpy);
+        core.onLoadMocks(mocksLoadedSpy);
+        core.onLoadFiles(filesLoadedSpy);
+      }
+      start(core) {
+        startSpy(core);
+      }
+    }
+  );
 
-    describe("when started", () => {
-      it("should start server when all initialization is finished", async () => {
-        const timeCounter = new TimeCounter();
-        core = await startCore("web-tutorial", {
-          plugins: [plugin]
-        });
-        const users = await request("/api/users");
-        expect(users).toEqual([
-          { id: 1, name: "John Doe" },
-          { id: 2, name: "Jane Doe" }
-        ]);
-        timeCounter.stop();
-        expect(timeCounter.total).toBeGreaterThan(3000);
-      });
-    });
+  testPlugin(
+    "created as a Class with register method",
+    class Plugin {
+      register(core) {
+        core.addCustomRouter("/foo-path", customRouter);
+        registerSpy(core);
+      }
+      init(core) {
+        initSpy(
+          core,
+          core.settings.get("behaviors"),
+          core.settings.get("port"),
+          core.settings.get("delay")
+        );
+        core.settings.set("log", "silly");
+        core.onChangeSettings(changeSettingsSpy);
+        core.onLoadMocks(mocksLoadedSpy);
+        core.onLoadFiles(filesLoadedSpy);
+      }
+      start(core) {
+        startSpy(core);
+      }
+    }
+  );
+
+  testAsyncPlugin(
+    "created as a Class",
+    class Plugin {
+      register(core) {
+        core.addCustomRouter("/foo-path", customRouter);
+        registerSpy(core);
+      }
+      async init() {
+        await wait(2000);
+      }
+      async start() {
+        await wait(1000);
+      }
+    }
+  );
+
+  testPlugin("created as a function", core => {
+    core.addCustomRouter("/foo-path", customRouter);
+    registerSpy(core);
+    return {
+      init: core => {
+        initSpy(
+          core,
+          core.settings.get("behaviors"),
+          core.settings.get("port"),
+          core.settings.get("delay")
+        );
+        core.settings.set("log", "silly");
+        core.onChangeSettings(changeSettingsSpy);
+        core.onLoadMocks(mocksLoadedSpy);
+        core.onLoadFiles(filesLoadedSpy);
+      },
+      start: core => {
+        startSpy(core);
+      }
+    };
+  });
+
+  testAsyncPlugin("created as a function", core => {
+    core.addCustomRouter("/foo-path", customRouter);
+    registerSpy(core);
+    return {
+      init: async () => {
+        await wait(2000);
+      },
+      start: async () => {
+        await wait(1000);
+      }
+    };
+  });
+
+  testPlugin("created as a function returning register property", () => {
+    return {
+      register: core => {
+        core.addCustomRouter("/foo-path", customRouter);
+        registerSpy(core);
+      },
+      init: core => {
+        initSpy(
+          core,
+          core.settings.get("behaviors"),
+          core.settings.get("port"),
+          core.settings.get("delay")
+        );
+        core.settings.set("log", "silly");
+        core.onChangeSettings(changeSettingsSpy);
+        core.onLoadMocks(mocksLoadedSpy);
+        core.onLoadFiles(filesLoadedSpy);
+      },
+      start: core => {
+        startSpy(core);
+      }
+    };
   });
 });

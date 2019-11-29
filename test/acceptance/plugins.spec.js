@@ -255,20 +255,20 @@ describe("plugins", () => {
     coreInstance.addCustomRouter("/foo-path", customRouter);
     registerSpy(coreInstance);
     return {
-      init: coreInstance => {
+      init: coreIns => {
         initSpy(
-          coreInstance,
-          coreInstance.settings.get("behaviors"),
-          coreInstance.settings.get("port"),
-          coreInstance.settings.get("delay")
+          coreIns,
+          coreIns.settings.get("behaviors"),
+          coreIns.settings.get("port"),
+          coreIns.settings.get("delay")
         );
-        coreInstance.settings.set("log", "silly");
-        coreInstance.onChangeSettings(changeSettingsSpy);
-        coreInstance.onLoadMocks(mocksLoadedSpy);
-        coreInstance.onLoadFiles(filesLoadedSpy);
+        coreIns.settings.set("log", "silly");
+        coreIns.onChangeSettings(changeSettingsSpy);
+        coreIns.onLoadMocks(mocksLoadedSpy);
+        coreIns.onLoadFiles(filesLoadedSpy);
       },
-      start: coreInstance => {
-        startSpy(coreInstance);
+      start: coreIns => {
+        startSpy(coreIns);
       }
     };
   });

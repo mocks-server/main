@@ -5,9 +5,11 @@
 [![NPM downloads][npm-downloads-image]][npm-downloads-url] [![License][license-image]][license-url]
 
 
-# [![Mocks Server][logo-url]][website-url] Mocks Server
+# [![Mocks Server][logo-url]][website-url] Mocks Server Core
 
-This package provides a server that simulates API behaviors. It can be added as a dependency of your project, and started simply running an NPM command.
+This package provides the plugabble core of the [@mocks-server][website-url] project.
+
+Use it if you want to start the mocks-server programmatically by your own, or even create your own mocks-server distribution with your desired plugins. Until that, you'll probably should prefer using the [main distribution of the @mocks-server project][main-url].
 
 ## Documentation
 
@@ -17,14 +19,6 @@ Please refer to the [project documentation website][website-url]:
 * [Tutorials](https://www.mocks-server.org/docs/tutorials-static)
 * [Configuration](https://www.mocks-server.org/docs/configuration-command-line-arguments)
 
-## Why a mocks server?
-
-Controlling the responses of the api will improve the front-end development workflow, avoiding early dependencies with back-end. It also improves the testing and development of error cases or another cases that are commonly hard to reproduce in the real api.
-
-Defining the api responses during the earliest phases of development will improve the communication among team members and align their expectations.
-
-Working with Node.js, it integrates better in front-end projects as any other NPM dependency, and it will be easier for front-end developers to maintain the mocks.
-
 ## Contributing
 
 Contributors are welcome.
@@ -32,8 +26,7 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 
 [website-url]: https://www.mocks-server.org
 [logo-url]: https://www.mocks-server.org/img/logo_120.png
-[inquirer-url]: https://www.npmjs.com/package/inquirer#support-os-terminals
-[inquirer-support]: https://www.npmjs.com/package/inquirer#support-os-terminals
+[main-url]: https://www.npmjs.com/package/@mocks-server/main
 
 [coveralls-image]: https://coveralls.io/repos/github/mocks-server/main/badge.svg
 [coveralls-url]: https://coveralls.io/github/mocks-server/main

@@ -15,7 +15,7 @@ const BehaviorsMocks = require("./Behaviors.mocks.js");
 const FilesHandlerMocks = require("./FilesHandler.mocks.js");
 const CoreMocks = require("../Core.mocks.js");
 
-const Mocks = require("../../../../lib/core/mocks/Mocks");
+const Mocks = require("../../../../src/mocks/Mocks");
 
 describe("Behaviors", () => {
   const fooBoomError = new Error("foo boom error");
@@ -56,6 +56,13 @@ describe("Behaviors", () => {
     it("should start filesHandler", async () => {
       await mocks.start();
       expect(filesHandlerMocks.stubs.instance.start.callCount).toEqual(1);
+    });
+  });
+
+  describe("stop method", () => {
+    it("should stop filesHandler", async () => {
+      await mocks.stop();
+      expect(filesHandlerMocks.stubs.instance.stop.callCount).toEqual(1);
     });
   });
 

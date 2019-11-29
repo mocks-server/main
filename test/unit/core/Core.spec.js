@@ -15,8 +15,8 @@ const MocksMocks = require("./mocks/Mocks.mocks.js");
 const ServerMocks = require("./server/Server.mocks.js");
 const PluginsMocks = require("./Plugins.mocks.js");
 
-const Core = require("../../../lib/core/Core");
-const tracer = require("../../../lib/core/tracer");
+const Core = require("../../../src/Core");
+const tracer = require("../../../src/tracer");
 
 describe("Settings", () => {
   let sandbox;
@@ -89,6 +89,8 @@ describe("Settings", () => {
   describe("start method", () => {
     it("should init if it has not been done before", async () => {
       pluginsMocks.reset();
+      pluginsMocks = new PluginsMocks();
+      pluginsInstance = pluginsMocks.stubs.instance;
       core = new Core();
       await core.start();
       expect(pluginsInstance.register.callCount).toEqual(1);
@@ -153,6 +155,26 @@ describe("Settings", () => {
       expect(spy.callCount).toEqual(1);
       removeCallback();
       core._eventEmitter.emit("load:mocks");
+      expect(spy.callCount).toEqual(1);
+    });
+  });
+
+  describe("onLoadFiles method", () => {
+    it("should add listener to eventEmitter", () => {
+      const spy = sandbox.spy();
+      core.onLoadFiles(spy);
+      core._eventEmitter.emit("load:files");
+      expect(spy.callCount).toEqual(1);
+    });
+
+    it("should return a function to remove listener", () => {
+      expect.assertions(2);
+      const spy = sandbox.spy();
+      const removeCallback = core.onLoadFiles(spy);
+      core._eventEmitter.emit("load:files");
+      expect(spy.callCount).toEqual(1);
+      removeCallback();
+      core._eventEmitter.emit("load:files");
       expect(spy.callCount).toEqual(1);
     });
   });

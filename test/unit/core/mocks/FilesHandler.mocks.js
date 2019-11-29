@@ -10,9 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../../../lib/core/mocks/FilesHandler");
+jest.mock("../../../../src/mocks/FilesHandler");
 
-const FilesHandler = require("../../../../lib/core/mocks/FilesHandler");
+const FilesHandler = require("../../../../src/mocks/FilesHandler");
 
 const INITIAL_FILES = {
   file1: {
@@ -95,7 +95,8 @@ class Mock {
     this._stubs = {
       files: INITIAL_FILES,
       init: this._sandbox.stub().resolves(),
-      start: this._sandbox.stub().resolves()
+      start: this._sandbox.stub().resolves(),
+      stop: this._sandbox.stub()
     };
 
     FilesHandler.mockImplementation(() => this._stubs);

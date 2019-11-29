@@ -15,8 +15,8 @@ const LibsMocks = require("../../Libs.mocks.js");
 const MocksMocks = require("../mocks/Mocks.mocks.js");
 const CoreMocks = require("../Core.mocks.js");
 
-const Server = require("../../../../lib/core/server/Server");
-const tracer = require("../../../../lib/core/tracer");
+const Server = require("../../../../src/server/Server");
+const tracer = require("../../../../src/tracer");
 
 const wait = (time = 1000) => {
   return new Promise(resolve => {
@@ -74,6 +74,47 @@ describe("Server", () => {
       await server.start();
       await wait();
       expect(libsMocks.stubs.http.createServer.close.callCount).toEqual(1);
+    });
+  });
+
+  describe("when settings change", () => {
+    it("should restart the server when port changes", async () => {
+      expect.assertions(2);
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      await server.init();
+      await server.start();
+      coreInstance._eventEmitter.on.getCall(0).args[1]({
+        port: 4540
+      });
+      await wait();
+      expect(libsMocks.stubs.http.createServer.close.callCount).toEqual(1);
+      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
+    });
+
+    it("should restart the server when host changes", async () => {
+      expect.assertions(2);
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      await server.init();
+      await server.start();
+      coreInstance._eventEmitter.on.getCall(0).args[1]({
+        host: "foo-new-host"
+      });
+      await wait();
+      expect(libsMocks.stubs.http.createServer.close.callCount).toEqual(1);
+      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
+    });
+
+    it("should do nothing when no port nor host are changed", async () => {
+      expect.assertions(2);
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      await server.init();
+      await server.start();
+      coreInstance._eventEmitter.on.getCall(0).args[1]({
+        foo: true
+      });
+      await wait();
+      expect(libsMocks.stubs.http.createServer.close.callCount).toEqual(0);
+      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(1);
     });
   });
 

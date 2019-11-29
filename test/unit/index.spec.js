@@ -12,19 +12,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const index = require("../../index");
 
 describe("index", () => {
-  it("should export a Cli constructor", () => {
-    expect(index.Cli).toBeDefined();
-  });
-
-  it("should export a Server constructor", () => {
-    expect(typeof index.Server).toEqual("function");
+  it("should export a Core constructor", () => {
+    expect(index.Core).toBeDefined();
   });
 
   it("should export a Behavior constructor", () => {
-    expect(typeof index.Behavior).toEqual("function");
-  });
-
-  it("should export a deprecated Feature constructor", () => {
-    expect(index.Feature).toBe(index.Behavior);
+    expect(index.Behavior).toBeDefined();
   });
 });

@@ -11,17 +11,17 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../../lib/core/Plugins");
+jest.mock("../../../src/Plugins");
 
-const Plugins = require("../../../lib/core/Plugins");
+const Plugins = require("../../../src/Plugins");
 
 class Mock {
   constructor() {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      init: this._sandbox.stub(),
-      register: this._sandbox.stub(),
+      init: this._sandbox.stub().resolves(),
+      register: this._sandbox.stub().resolves(),
       start: this._sandbox.stub().resolves()
     };
 

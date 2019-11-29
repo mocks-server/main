@@ -154,24 +154,24 @@ describe("plugins", () => {
   };
 
   testPlugin("created as an object", {
-    register: core => {
-      core.addCustomRouter("/foo-path", customRouter);
-      registerSpy(core);
+    register: coreInstance => {
+      coreInstance.addCustomRouter("/foo-path", customRouter);
+      registerSpy(coreInstance);
     },
-    init: core => {
+    init: coreInstance => {
       initSpy(
-        core,
-        core.settings.get("behaviors"),
-        core.settings.get("port"),
-        core.settings.get("delay")
+        coreInstance,
+        coreInstance.settings.get("behaviors"),
+        coreInstance.settings.get("port"),
+        coreInstance.settings.get("delay")
       );
-      core.settings.set("log", "silly");
-      core.onChangeSettings(changeSettingsSpy);
-      core.onLoadMocks(mocksLoadedSpy);
-      core.onLoadFiles(filesLoadedSpy);
+      coreInstance.settings.set("log", "silly");
+      coreInstance.onChangeSettings(changeSettingsSpy);
+      coreInstance.onLoadMocks(mocksLoadedSpy);
+      coreInstance.onLoadFiles(filesLoadedSpy);
     },
-    start: core => {
-      startSpy(core);
+    start: coreInstance => {
+      startSpy(coreInstance);
     }
   });
 
@@ -188,24 +188,24 @@ describe("plugins", () => {
   testPlugin(
     "created as a Class",
     class Plugin {
-      constructor(core) {
-        core.addCustomRouter("/foo-path", customRouter);
-        registerSpy(core);
+      constructor(coreInstance) {
+        coreInstance.addCustomRouter("/foo-path", customRouter);
+        registerSpy(coreInstance);
       }
-      init(core) {
+      init(coreInstance) {
         initSpy(
-          core,
-          core.settings.get("behaviors"),
-          core.settings.get("port"),
-          core.settings.get("delay")
+          coreInstance,
+          coreInstance.settings.get("behaviors"),
+          coreInstance.settings.get("port"),
+          coreInstance.settings.get("delay")
         );
-        core.settings.set("log", "silly");
-        core.onChangeSettings(changeSettingsSpy);
-        core.onLoadMocks(mocksLoadedSpy);
-        core.onLoadFiles(filesLoadedSpy);
+        coreInstance.settings.set("log", "silly");
+        coreInstance.onChangeSettings(changeSettingsSpy);
+        coreInstance.onLoadMocks(mocksLoadedSpy);
+        coreInstance.onLoadFiles(filesLoadedSpy);
       }
-      start(core) {
-        startSpy(core);
+      start(coreInstance) {
+        startSpy(coreInstance);
       }
     }
   );
@@ -213,24 +213,24 @@ describe("plugins", () => {
   testPlugin(
     "created as a Class with register method",
     class Plugin {
-      register(core) {
-        core.addCustomRouter("/foo-path", customRouter);
-        registerSpy(core);
+      register(coreInstance) {
+        coreInstance.addCustomRouter("/foo-path", customRouter);
+        registerSpy(coreInstance);
       }
-      init(core) {
+      init(coreInstance) {
         initSpy(
-          core,
-          core.settings.get("behaviors"),
-          core.settings.get("port"),
-          core.settings.get("delay")
+          coreInstance,
+          coreInstance.settings.get("behaviors"),
+          coreInstance.settings.get("port"),
+          coreInstance.settings.get("delay")
         );
-        core.settings.set("log", "silly");
-        core.onChangeSettings(changeSettingsSpy);
-        core.onLoadMocks(mocksLoadedSpy);
-        core.onLoadFiles(filesLoadedSpy);
+        coreInstance.settings.set("log", "silly");
+        coreInstance.onChangeSettings(changeSettingsSpy);
+        coreInstance.onLoadMocks(mocksLoadedSpy);
+        coreInstance.onLoadFiles(filesLoadedSpy);
       }
-      start(core) {
-        startSpy(core);
+      start(coreInstance) {
+        startSpy(coreInstance);
       }
     }
   );
@@ -238,9 +238,9 @@ describe("plugins", () => {
   testAsyncPlugin(
     "created as a Class",
     class Plugin {
-      register(core) {
-        core.addCustomRouter("/foo-path", customRouter);
-        registerSpy(core);
+      register(coreInstance) {
+        coreInstance.addCustomRouter("/foo-path", customRouter);
+        registerSpy(coreInstance);
       }
       async init() {
         await wait(2000);
@@ -251,31 +251,31 @@ describe("plugins", () => {
     }
   );
 
-  testPlugin("created as a function", core => {
-    core.addCustomRouter("/foo-path", customRouter);
-    registerSpy(core);
+  testPlugin("created as a function", coreInstance => {
+    coreInstance.addCustomRouter("/foo-path", customRouter);
+    registerSpy(coreInstance);
     return {
-      init: core => {
+      init: coreInstance => {
         initSpy(
-          core,
-          core.settings.get("behaviors"),
-          core.settings.get("port"),
-          core.settings.get("delay")
+          coreInstance,
+          coreInstance.settings.get("behaviors"),
+          coreInstance.settings.get("port"),
+          coreInstance.settings.get("delay")
         );
-        core.settings.set("log", "silly");
-        core.onChangeSettings(changeSettingsSpy);
-        core.onLoadMocks(mocksLoadedSpy);
-        core.onLoadFiles(filesLoadedSpy);
+        coreInstance.settings.set("log", "silly");
+        coreInstance.onChangeSettings(changeSettingsSpy);
+        coreInstance.onLoadMocks(mocksLoadedSpy);
+        coreInstance.onLoadFiles(filesLoadedSpy);
       },
-      start: core => {
-        startSpy(core);
+      start: coreInstance => {
+        startSpy(coreInstance);
       }
     };
   });
 
-  testAsyncPlugin("created as a function", core => {
-    core.addCustomRouter("/foo-path", customRouter);
-    registerSpy(core);
+  testAsyncPlugin("created as a function", coreInstance => {
+    coreInstance.addCustomRouter("/foo-path", customRouter);
+    registerSpy(coreInstance);
     return {
       init: async () => {
         await wait(2000);
@@ -288,24 +288,24 @@ describe("plugins", () => {
 
   testPlugin("created as a function returning register property", () => {
     return {
-      register: core => {
-        core.addCustomRouter("/foo-path", customRouter);
-        registerSpy(core);
+      register: coreInstance => {
+        coreInstance.addCustomRouter("/foo-path", customRouter);
+        registerSpy(coreInstance);
       },
-      init: core => {
+      init: coreInstance => {
         initSpy(
-          core,
-          core.settings.get("behaviors"),
-          core.settings.get("port"),
-          core.settings.get("delay")
+          coreInstance,
+          coreInstance.settings.get("behaviors"),
+          coreInstance.settings.get("port"),
+          coreInstance.settings.get("delay")
         );
-        core.settings.set("log", "silly");
-        core.onChangeSettings(changeSettingsSpy);
-        core.onLoadMocks(mocksLoadedSpy);
-        core.onLoadFiles(filesLoadedSpy);
+        coreInstance.settings.set("log", "silly");
+        coreInstance.onChangeSettings(changeSettingsSpy);
+        coreInstance.onLoadMocks(mocksLoadedSpy);
+        coreInstance.onLoadFiles(filesLoadedSpy);
       },
-      start: core => {
-        startSpy(core);
+      start: coreInstance => {
+        startSpy(coreInstance);
       }
     };
   });

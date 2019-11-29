@@ -62,10 +62,11 @@ class Plugins {
       } catch (error) {
         if (error.message.includes("is not a constructor")) {
           try {
-            pluginInstance = Plugin(this._core) || {};
+            const pluginFunc = Plugin;
+            pluginInstance = pluginFunc(this._core) || {};
             this._pluginsRegistered++;
-          } catch (error) {
-            return this._catchRegisterError(error);
+          } catch (err) {
+            return this._catchRegisterError(err);
           }
         } else {
           return this._catchRegisterError(error);

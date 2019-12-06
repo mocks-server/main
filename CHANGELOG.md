@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.4.0] -
 ### Changed
 - Core code migrated to @mocks-server/core
+- Admin API code migrated to @mocks-server/plugin-admin-api
 
 ## [1.3.0] - 2019-11-17
 ### Added

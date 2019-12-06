@@ -7,7 +7,9 @@
 
 # [![Mocks Server][logo-url]][website-url] Mocks Server Plugin Inquirer CLI
 
-Plugin for [Mocks Server][website-url] that provides an interactive CLI that allows to change dinamically the current behavior, change delay time, and another [Mocks Server options][options-url].
+Plugin for [Mocks Server][website-url] that provides an interactive CLI that allows to change the current behavior, change delay time, and another [Mocks Server options][options-url].
+
+![Interactive CLI](./assets/cli_animation.gif)
 
 ## Usage
 

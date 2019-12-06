@@ -9,8 +9,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-"use strict";
+const path = require("path");
 
-const InquirerCli = require("./src/Cli");
+const CliRunner = require("./CliRunner");
 
-module.exports = InquirerCli;
+describe("when mocks-server binary is executed", () => {
+  const binFile = path.resolve(__dirname, "..", "mocks-server");
+  let cliRunner;
+
+  it("should throw a controlled error if no behaviors folder is provided", async () => {
+    cliRunner = new CliRunner([binFile]);
+    await cliRunner.hasExit();
+    expect(await cliRunner.logs).toEqual(
+      expect.stringContaining("Please provide a path to a folder containing behaviors")
+    );
+  });
+});

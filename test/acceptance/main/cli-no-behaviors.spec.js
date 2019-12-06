@@ -9,10 +9,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { CliRunner, wait } = require("./utils");
+const { CliRunner, wait, BINARY_PATH } = require("./utils");
 
 describe("with no behaviors", () => {
-  const binaryPath = "../../../../bin/mocks-server";
   const cwdPath = path.resolve(__dirname, "fixtures");
   let cli;
 
@@ -21,7 +20,7 @@ describe("with no behaviors", () => {
   });
 
   it("should print a dash as current behavior", async () => {
-    cli = new CliRunner([binaryPath, "--behaviors=no-behaviors"], {
+    cli = new CliRunner([BINARY_PATH, "--behaviors=no-behaviors"], {
       cwd: cwdPath
     });
     await wait();
@@ -29,7 +28,7 @@ describe("with no behaviors", () => {
   });
 
   it("should print behaviors as 0", async () => {
-    cli = new CliRunner([binaryPath, "--behaviors=no-behaviors"], {
+    cli = new CliRunner([BINARY_PATH, "--behaviors=no-behaviors"], {
       cwd: cwdPath
     });
     await wait();
@@ -37,7 +36,7 @@ describe("with no behaviors", () => {
   });
 
   it("should print current fixtures as 0", async () => {
-    cli = new CliRunner([binaryPath, "--behaviors=no-behaviors"], {
+    cli = new CliRunner([BINARY_PATH, "--behaviors=no-behaviors"], {
       cwd: cwdPath
     });
     await wait();

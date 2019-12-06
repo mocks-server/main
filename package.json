@@ -1,63 +1,50 @@
 {
-  "name": "@mocks-server/main",
-  "version": "1.3.0",
-  "description": "Mocks server supporting multiple api behaviors",
+  "name": "@mocks-server/plugin-inquirer-cli",
+  "version": "1.0.0",
+  "description": "Plugin for Mocks server. Displays an interactive CLI",
   "keywords": [
     "mocks",
     "server",
+    "plugin",
     "mock",
-    "fixtures",
-    "behaviors",
-    "api",
-    "rest",
+    "interactive",
     "cli",
-    "express",
+    "inquirer",
+    "administration",
     "testing",
     "development"
   ],
   "author": "Javier Brea",
   "license": "Apache-2.0",
-  "repository": "https://github.com/mocks-server/main",
+  "repository": "https://github.com/mocks-server/plugin-inquirer-cli",
   "homepage": "https://www.mocks-server.org",
   "publishConfig": {
     "access": "public"
   },
   "files": [
-    "bin",
-    "lib",
+    "src",
     "index.js"
   ],
   "main": "index.js",
-  "bin": {
-    "mocks-server": "./bin/mocks-server"
-  },
   "scripts": {
-    "lint": "eslint index.js lib test jest.config.js jest.acceptance.config.js",
+    "lint": "eslint index.js src test jest.config.js jest.acceptance.config.js",
     "lint-staged": "lint-staged",
     "test": "jest",
     "test-acceptance": "jest --config=jest.acceptance.config.js --runInBand",
     "test-ci": "npm run test && npm run test-acceptance",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
+  "peerDependencies": {
+    "@mocks-server/core": "1.0.0"
+  },
   "dependencies": {
-    "body-parser": "1.19.0",
-    "boom": "7.3.0",
     "chalk": "^3.0.0",
-    "commander": "4.0.1",
-    "cors": "2.8.5",
-    "express": "4.17.1",
-    "express-request-id": "1.4.1",
     "inquirer": "7.0.0",
     "inquirer-autocomplete-prompt": "^1.0.1",
-    "lodash": "4.17.15",
-    "node-watch": "0.6.3",
-    "require-all": "3.0.0",
-    "route-parser": "0.0.5",
-    "strip-ansi": "6.0.0",
-    "tree-kill-sync": "^1.0.0",
-    "winston": "3.2.1"
+    "lodash": "4.17.15"
   },
   "devDependencies": {
+    "@mocks-server/core": "1.0.0",
     "coveralls": "^3.0.7",
     "eslint": "6.6.0",
     "eslint-config-prettier": "6.5.0",
@@ -70,10 +57,12 @@
     "prettier": "^1.19.1",
     "request": "^2.88.0",
     "request-promise": "^4.2.5",
-    "sinon": "^7.5.0"
+    "sinon": "^7.5.0",
+    "strip-ansi": "6.0.0",
+    "tree-kill-sync": "^1.0.0"
   },
   "lint-staged": {
-    "lib/**/*.js": "eslint",
+    "src/**/*.js": "eslint",
     "test/**/*.js": "eslint",
     "index.js": "eslint",
     "jest.config.js": "eslint",

@@ -11,6 +11,26 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-const InquirerCli = require("./src/Cli");
+const { Core } = require("@mocks-server/core");
+const InquirerCli = require("../../index");
 
-module.exports = InquirerCli;
+const handleError = error => {
+  console.error(`Error: ${error.message}`);
+  process.exitCode = 1;
+};
+
+const start = () => {
+  try {
+    const mocksServer = new Core({
+      plugins: [InquirerCli]
+    });
+
+    return mocksServer.start().catch(handleError);
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+module.exports = {
+  start
+};

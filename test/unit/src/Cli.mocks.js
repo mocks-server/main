@@ -9,8 +9,34 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-"use strict";
+const sinon = require("sinon");
 
-const InquirerCli = require("./src/Cli");
+jest.mock("../../../src/Cli");
 
-module.exports = InquirerCli;
+const Cli = require("../../../src/Cli");
+
+class Mock {
+  constructor() {
+    this._sandbox = sinon.createSandbox();
+
+    this._stubs = {
+      start: this._sandbox.stub().resolves(),
+      stopListeningServerWatch: this._sandbox.stub()
+    };
+
+    Cli.mockImplementation(() => this._stubs);
+  }
+
+  get stubs() {
+    return {
+      Constructor: Cli,
+      instance: this._stubs
+    };
+  }
+
+  restore() {
+    this._sandbox.restore();
+  }
+}
+
+module.exports = Mock;

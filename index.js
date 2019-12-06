@@ -11,13 +11,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-const ProgrammaticCli = require("./lib/ProgrammaticCli");
-const ProgrammaticServer = require("./lib/ProgrammaticServer");
-const Behavior = require("./lib/core/mocks/Behavior");
+const InquirerCli = require("./src/Cli");
 
-module.exports = {
-  Cli: ProgrammaticCli,
-  Server: ProgrammaticServer,
-  Feature: Behavior,
-  Behavior
-};
+module.exports = InquirerCli;

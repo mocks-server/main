@@ -145,7 +145,7 @@ class Cli {
     const header = [
       `Mocks server listening at: ${chalk.cyan(this._serverUrl)}`,
       `Delay: ${chalk.cyan(this._settings.get("delay"))}`,
-      `Behaviors: ${chalk.cyan(this._core.behaviors.totalBehaviors)}`,
+      `Behaviors: ${chalk.cyan(this._core.behaviors.count)}`,
       `Current behavior: ${chalk.cyan(this._core.behaviors.currentName || "-")}`,
       `Current fixtures: ${chalk.cyan(this._core.behaviors.currentTotalFixtures || 0)}`,
       `Log level: ${chalk.cyan(this._logLevel)}`,

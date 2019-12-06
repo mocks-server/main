@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-const inquirer = require("../../../lib/cli/Inquirer");
+const inquirer = require("../../../src/Inquirer");
 
 class CallBackRunner {
   constructor() {

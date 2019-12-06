@@ -13,7 +13,7 @@ const inquirer = require("inquirer");
 const sinon = require("sinon");
 const chalk = require("chalk");
 
-const Inquirer = require("../../../lib/cli/Inquirer").Inquirer;
+const Inquirer = require("../../../src/Inquirer").Inquirer;
 
 const fooQuestions = {
   main: {

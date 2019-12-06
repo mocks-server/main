@@ -9,16 +9,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { request, wait } = require("./utils");
+const { request, wait, BINARY_PATH } = require("./utils");
 const InteractiveCliRunner = require("./InteractiveCliRunner");
 
 describe("web tutorial", () => {
   let cli;
-  const binaryPath = "../../../bin/mocks-server";
   const cwdPath = path.resolve(__dirname, "fixtures");
 
   beforeAll(async () => {
-    cli = new InteractiveCliRunner([binaryPath, "--behaviors=web-tutorial"], {
+    cli = new InteractiveCliRunner([BINARY_PATH, "--behaviors=web-tutorial"], {
       cwd: cwdPath
     });
     await wait();

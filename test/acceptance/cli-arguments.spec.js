@@ -9,10 +9,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { CliRunner, request, wait, TimeCounter } = require("./utils");
+const { CliRunner, request, wait, TimeCounter, BINARY_PATH } = require("./utils");
 
 describe("command line arguments", () => {
-  const binaryPath = "../../../bin/mocks-server";
   const cwdPath = path.resolve(__dirname, "fixtures");
   let cli;
 
@@ -23,7 +22,7 @@ describe("command line arguments", () => {
   describe("behaviors option", () => {
     it("should set mocks folder", async () => {
       expect.assertions(2);
-      cli = new CliRunner([binaryPath, "--behaviors=web-tutorial"], {
+      cli = new CliRunner([BINARY_PATH, "--behaviors=web-tutorial"], {
         cwd: cwdPath
       });
       await wait();
@@ -40,7 +39,7 @@ describe("command line arguments", () => {
     describe("when not provided", () => {
       it("should set as current behavior the first one found", async () => {
         expect.assertions(2);
-        cli = new CliRunner([binaryPath, "--behaviors=web-tutorial"], {
+        cli = new CliRunner([BINARY_PATH, "--behaviors=web-tutorial"], {
           cwd: cwdPath
         });
         await wait();
@@ -53,7 +52,7 @@ describe("command line arguments", () => {
     describe("when provided and exists", () => {
       it("should set current behavior", async () => {
         expect.assertions(2);
-        cli = new CliRunner([binaryPath, "--behaviors=web-tutorial", "--behavior=dynamic"], {
+        cli = new CliRunner([BINARY_PATH, "--behaviors=web-tutorial", "--behavior=dynamic"], {
           cwd: cwdPath
         });
         await wait();
@@ -65,7 +64,7 @@ describe("command line arguments", () => {
 
     describe("when provided and does not exist", () => {
       it("should print a warning", async () => {
-        cli = new CliRunner([binaryPath, "--behaviors=web-tutorial", "--behavior=foo"], {
+        cli = new CliRunner([BINARY_PATH, "--behaviors=web-tutorial", "--behavior=foo"], {
           cwd: cwdPath
         });
         await wait();
@@ -74,7 +73,7 @@ describe("command line arguments", () => {
 
       it("should set as current behavior the first one found", async () => {
         expect.assertions(2);
-        cli = new CliRunner([binaryPath, "--behaviors=web-tutorial", "--behavior=foo"], {
+        cli = new CliRunner([BINARY_PATH, "--behaviors=web-tutorial", "--behavior=foo"], {
           cwd: cwdPath
         });
         await wait();
@@ -88,7 +87,7 @@ describe("command line arguments", () => {
   describe("features option", () => {
     it("should set mocks folder", async () => {
       expect.assertions(2);
-      cli = new CliRunner([binaryPath, "--features=web-tutorial"], {
+      cli = new CliRunner([BINARY_PATH, "--features=web-tutorial"], {
         cwd: cwdPath
       });
       await wait();
@@ -105,7 +104,7 @@ describe("command line arguments", () => {
     describe("when not provided", () => {
       it("should set as current behavior the first one found", async () => {
         expect.assertions(2);
-        cli = new CliRunner([binaryPath, "--features=web-tutorial"], {
+        cli = new CliRunner([BINARY_PATH, "--features=web-tutorial"], {
           cwd: cwdPath
         });
         await wait();
@@ -118,7 +117,7 @@ describe("command line arguments", () => {
     describe("when provided and exists", () => {
       it("should set current behavior", async () => {
         expect.assertions(2);
-        cli = new CliRunner([binaryPath, "--features=web-tutorial", "--feature=dynamic"], {
+        cli = new CliRunner([BINARY_PATH, "--features=web-tutorial", "--feature=dynamic"], {
           cwd: cwdPath
         });
         await wait();
@@ -130,7 +129,7 @@ describe("command line arguments", () => {
 
     describe("when provided and does not exist", () => {
       it("should print a warning", async () => {
-        cli = new CliRunner([binaryPath, "--features=web-tutorial", "--feature=foo"], {
+        cli = new CliRunner([BINARY_PATH, "--features=web-tutorial", "--feature=foo"], {
           cwd: cwdPath
         });
         await wait();
@@ -139,7 +138,7 @@ describe("command line arguments", () => {
 
       it("should set as current behavior the first one found", async () => {
         expect.assertions(2);
-        cli = new CliRunner([binaryPath, "--features=web-tutorial", "--feature=foo"], {
+        cli = new CliRunner([BINARY_PATH, "--features=web-tutorial", "--feature=foo"], {
           cwd: cwdPath
         });
         await wait();
@@ -153,7 +152,7 @@ describe("command line arguments", () => {
   describe("delay option", () => {
     it("should set delay", async () => {
       expect.assertions(2);
-      cli = new CliRunner([binaryPath, "--behaviors=web-tutorial", "--delay=2000"], {
+      cli = new CliRunner([BINARY_PATH, "--behaviors=web-tutorial", "--delay=2000"], {
         cwd: cwdPath
       });
       await wait();

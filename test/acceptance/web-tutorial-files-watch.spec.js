@@ -197,7 +197,7 @@ const runTests = interactiveCli => {
 };
 
 describe("files watcher", () => {
-  const binaryPath = "../../../bin/mocks-server";
+  const BINARY_PATH = "../../../bin/mocks-server";
   const cwdPath = path.resolve(__dirname, "fixtures");
   const interactiveCli = {
     cli: null
@@ -206,7 +206,7 @@ describe("files watcher", () => {
   beforeAll(async () => {
     fsExtra.removeSync(fixturesFolder("files-watch"));
     fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
-    interactiveCli.cli = new InteractiveCliRunner([binaryPath, "--behaviors=files-watch"], {
+    interactiveCli.cli = new InteractiveCliRunner([BINARY_PATH, "--behaviors=files-watch"], {
       cwd: cwdPath
     });
     await wait();

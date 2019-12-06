@@ -12,7 +12,7 @@ const sinon = require("sinon");
 const AdminApi = require("@mocks-server/plugin-admin-api");
 
 const CoreMocks = require("./Core.mocks.js");
-const CliMocks = require("./cli/Cli.mocks.js");
+const CliMocks = require("./Cli.mocks.js");
 
 const ProgrammaticCli = require("../../lib/ProgrammaticCli");
 

@@ -60,7 +60,9 @@
     "prettier": "^1.19.1",
     "request": "^2.88.0",
     "request-promise": "^4.2.5",
-    "sinon": "^7.5.0"
+    "sinon": "^7.5.0",
+    "strip-ansi": "6.0.0",
+    "tree-kill-sync": "^1.0.0"
   },
   "lint-staged": {
     "lib/**/*.js": "eslint",

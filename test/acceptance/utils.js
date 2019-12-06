@@ -10,15 +10,17 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 const { Core } = require("@mocks-server/core");
-const PluginAdminApi = require("../../../index");
 
 const requestPromise = require("request-promise");
+const CliRunner = require("./CliRunner");
+
+const PluginAdminApi = require("../../index");
 
 const SERVER_PORT = 3100;
 
 const defaultOptions = {
   port: SERVER_PORT,
-  log: "debug",
+  log: "silly",
   watch: false
 };
 
@@ -38,6 +40,7 @@ const startServer = (mocksPath, opts = {}) => {
     ...opts
   };
   const server = new Core({
+    onlyProgrammaticOptions: true,
     plugins: [PluginAdminApi]
   });
   return server.init(options).then(() => {
@@ -122,5 +125,6 @@ module.exports = {
   changeDelay,
   TimeCounter,
   wait,
-  fixturesFolder
+  fixturesFolder,
+  CliRunner
 };

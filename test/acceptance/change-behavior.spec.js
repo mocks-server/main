@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { startServer, stopServer, request, changeBehavior, getBehaviors } = require("./utils");
 
-describe("web tutorial", () => {
+describe("API for changing current behavior", () => {
   let server;
 
   beforeAll(async () => {

@@ -9,10 +9,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
+const { Core } = require("@mocks-server/core");
+const PluginAdminApi = require("../../../index");
 
 const requestPromise = require("request-promise");
-const CliRunner = require("../cli/CliRunner"); // TODO, export in CLI package for testing purposes?
-const { Server } = require("../../../index");
 
 const SERVER_PORT = 3100;
 
@@ -30,20 +30,25 @@ const fixturesFolder = folderName => {
   return path.resolve(__dirname, "fixtures", folderName);
 };
 
-const startServer = (mocksPath, options = {}) => {
+const startServer = (mocksPath, opts = {}) => {
   const mocks = mocksPath || "web-tutorial";
-  const server = new Server(fixturesFolder(mocks), {
+  const options = {
+    behaviors: fixturesFolder(mocks),
     ...defaultOptions,
-    ...options
+    ...opts
+  };
+  const server = new Core({
+    plugins: [PluginAdminApi]
   });
-  return server.start().then(() => {
-    return Promise.resolve(server);
+  return server.init(options).then(() => {
+    return server.start().then(() => {
+      return Promise.resolve(server);
+    });
   });
 };
 
 const stopServer = server => {
-  server.stop();
-  server.switchWatch(false);
+  return server.stop();
 };
 
 const request = (uri, options = {}) => {
@@ -116,7 +121,6 @@ module.exports = {
   getBehaviors,
   changeDelay,
   TimeCounter,
-  CliRunner,
   wait,
   fixturesFolder
 };

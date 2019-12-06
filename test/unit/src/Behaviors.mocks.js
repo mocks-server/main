@@ -1,5 +1,6 @@
 /*
 Copyright 2019 Javier Brea
+Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -10,28 +11,27 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../../../lib/core/mocks/Mocks");
+jest.mock("../../../src/Behaviors");
 
-const Mocks = require("../../../../lib/core/mocks/Mocks");
+const Behaviors = require("../../../src/Behaviors");
 
-class Mock {
+const Mock = class Mock {
   constructor() {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      init: this._sandbox.stub().resolves(),
-      start: this._sandbox.stub().resolves(),
-      behaviors: {
-        current: {}
-      }
+      getCurrent: this._sandbox.stub(),
+      putCurrent: this._sandbox.stub(),
+      getCollection: this._sandbox.stub(),
+      router: "foo-behaviors-router"
     };
 
-    Mocks.mockImplementation(() => this._stubs);
+    Behaviors.mockImplementation(() => this._stubs);
   }
 
   get stubs() {
     return {
-      Constructor: Mocks,
+      Constructor: Behaviors,
       instance: this._stubs
     };
   }
@@ -39,6 +39,6 @@ class Mock {
   restore() {
     this._sandbox.restore();
   }
-}
+};
 
 module.exports = Mock;

@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -13,10 +14,8 @@ const sinon = require("sinon");
 const http = require("http");
 
 jest.mock("express");
-jest.mock("node-watch");
 
 const express = require("express");
-const watch = require("node-watch");
 
 class CallBackRunner {
   constructor() {
@@ -34,43 +33,14 @@ class CallBackRunner {
   }
 }
 
-class WatchRunner {
-  constructor(closeStub) {
-    this.runner = this.runner.bind(this);
-    this.triggerChange = this.triggerChange.bind(this);
-    this._closeStub = closeStub;
-    this._change = false;
-  }
-
-  runner(eventName, options, cb) {
-    if (this._change) {
-      return cb();
-    }
-    return {
-      close: this._closeStub
-    };
-  }
-
-  triggerChange(change) {
-    this._change = change;
-  }
-}
-
 class Mock {
   constructor() {
     this._sandbox = sinon.createSandbox();
 
     const httpCreateServerOnError = new CallBackRunner();
     const httpCreateServerOnListen = new CallBackRunner();
-    const watchClose = this._sandbox.stub();
-    const watchRunner = new WatchRunner(watchClose);
-    const watchStub = this._sandbox.stub().callsFake(watchRunner.runner);
-    watchStub.triggerChange = watchRunner.triggerChange;
 
     this._stubs = {
-      watch: watchStub,
-      watchTriggerChange: watchRunner.triggerChange,
-      watchClose,
       express: {
         use: this._sandbox.stub(),
         options: this._sandbox.stub()
@@ -87,7 +57,6 @@ class Mock {
     };
 
     express.mockImplementation(() => this._stubs.express);
-    watch.mockImplementation(this._stubs.watch);
     this._sandbox.stub(http, "createServer").returns(this._stubs.http.createServer);
   }
 

@@ -5,25 +5,27 @@
 [![NPM downloads][npm-downloads-image]][npm-downloads-url] [![License][license-image]][license-url]
 
 
-# [![Mocks Server][logo-url]][website-url] Mocks Server
+# [![Mocks Server][logo-url]][website-url] Mocks Server Plugin Admin Api
 
-This package provides a server that simulates API behaviors. It can be added as a dependency of your project, and started simply running an NPM command.
+Plugin for [Mocks Server][website-url] that provides an API REST that allows to change dinamically the current behavior, change delay time, and another [Mocks Server options][options-url].
 
-## Documentation
+This is __very useful when running acceptance tests, as you can change the behavior of the api__ simply making an HTTP request in your tests `before` method, for example.
 
-Please refer to the [project documentation website][website-url]:
+## Usage
 
-* [Get started](https://www.mocks-server.org/docs/get-started-intro)
-* [Tutorials](https://www.mocks-server.org/docs/tutorials-static)
-* [Configuration](https://www.mocks-server.org/docs/configuration-command-line-arguments)
+This plugin is included in the [main distribution of the Mocks Server project][main-distribution-url], so you can refer to the [official documentation website][website-url].
 
-## Why a mocks server?
+## API Resources
 
-Controlling the responses of the api will improve the front-end development workflow, avoiding early dependencies with back-end. It also improves the testing and development of error cases or another cases that are commonly hard to reproduce in the real api.
+Available api resources are:
 
-Defining the api responses during the earliest phases of development will improve the communication among team members and align their expectations.
-
-Working with Node.js, it integrates better in front-end projects as any other NPM dependency, and it will be easier for front-end developers to maintain the mocks.
+* `GET` `/mocks/behaviors/current` Returns current behavior.
+* `PUT` `/mocks/behaviors/current` Set current behavior.
+  * Request body example: `{ "name": "behavior-name" }`
+* `GET` `/mocks/settings` Returns current server settings.
+  * Response body example: `{ "delay": 0 }`
+* `PUT` `/mocks/settings` Changes current server settings.
+  * Request body example: `{ "delay": 3000 }`
 
 ## Contributing
 
@@ -31,23 +33,23 @@ Contributors are welcome.
 Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of conduct](.github/CODE_OF_CONDUCT.md).
 
 [website-url]: https://www.mocks-server.org
+[main-distribution-url]: https://www.npmjs.com/package/@mocks-server/main
+[options-url]: https://www.mocks-server.org/docs/configuration-options
 [logo-url]: https://www.mocks-server.org/img/logo_120.png
-[inquirer-url]: https://www.npmjs.com/package/inquirer#support-os-terminals
-[inquirer-support]: https://www.npmjs.com/package/inquirer#support-os-terminals
 
-[coveralls-image]: https://coveralls.io/repos/github/mocks-server/main/badge.svg
-[coveralls-url]: https://coveralls.io/github/mocks-server/main
-[travisci-image]: https://travis-ci.com/mocks-server/main.svg?branch=master
-[travisci-url]: https://travis-ci.com/mocks-server/main
-[last-commit-image]: https://img.shields.io/github/last-commit/mocks-server/main.svg
-[last-commit-url]: https://github.com/mocks-server/main/commits
-[license-image]: https://img.shields.io/npm/l/@mocks-server/main.svg
-[license-url]: https://github.com/mocks-server/main/blob/master/LICENSE
-[npm-downloads-image]: https://img.shields.io/npm/dm/@mocks-server/main.svg
-[npm-downloads-url]: https://www.npmjs.com/package/@mocks-server/main
-[npm-dependencies-image]: https://img.shields.io/david/mocks-server/main.svg
-[npm-dependencies-url]: https://david-dm.org/mocks-server/main
-[quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=mocks-server-main&metric=alert_status
-[quality-gate-url]: https://sonarcloud.io/dashboard?id=mocks-server-main
-[release-image]: https://img.shields.io/github/release-date/mocks-server/main.svg
-[release-url]: https://github.com/mocks-server/main/releases
+[coveralls-image]: https://coveralls.io/repos/github/mocks-server/plugin-admin-api/badge.svg
+[coveralls-url]: https://coveralls.io/github/mocks-server/plugin-admin-api
+[travisci-image]: https://travis-ci.com/mocks-server/plugin-admin-api.svg?branch=master
+[travisci-url]: https://travis-ci.com/mocks-server/plugin-admin-api
+[last-commit-image]: https://img.shields.io/github/last-commit/mocks-server/plugin-admin-api.svg
+[last-commit-url]: https://github.com/mocks-server/plugin-admin-api/commits
+[license-image]: https://img.shields.io/npm/l/@mocks-server/plugin-admin-api.svg
+[license-url]: https://github.com/mocks-server/plugin-admin-api/blob/master/LICENSE
+[npm-downloads-image]: https://img.shields.io/npm/dm/@mocks-server/plugin-admin-api.svg
+[npm-downloads-url]: https://www.npmjs.com/package/@mocks-server/plugin-admin-api
+[npm-dependencies-image]: https://img.shields.io/david/mocks-server/plugin-admin-api.svg
+[npm-dependencies-url]: https://david-dm.org/mocks-server/plugin-admin-api
+[quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=mocks-server-plugin-admin-api&metric=alert_status
+[quality-gate-url]: https://sonarcloud.io/dashboard?id=mocks-server-plugin-admin-api
+[release-image]: https://img.shields.io/github/release-date/mocks-server/plugin-admin-api.svg
+[release-url]: https://github.com/mocks-server/plugin-admin-api/releases

@@ -9,7 +9,7 @@
 # tests
 /coverage
 /mocks
-/test/acceptance/fixtures/files-watch
+/test/acceptance/main/fixtures/files-watch
 
 # misc
 .DS_Store

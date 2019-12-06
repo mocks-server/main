@@ -92,7 +92,7 @@ describe("files watcher", () => {
     describe('When changing current behavior to "user2"', () => {
       beforeAll(async () => {
         await interactiveCli.pressEnter();
-        await interactiveCli.cursorDown(2);
+        await interactiveCli.cursorDown();
         await interactiveCli.pressEnter();
       });
 
@@ -154,7 +154,7 @@ describe("files watcher", () => {
     describe('When changing current behavior to "newOne"', () => {
       beforeAll(async () => {
         await interactiveCli.pressEnter();
-        await interactiveCli.cursorDown(2);
+        await interactiveCli.cursorDown(3);
         await interactiveCli.pressEnter();
       });
 

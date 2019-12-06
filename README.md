@@ -9,11 +9,11 @@
 
 Plugin for [Mocks Server][website-url] that provides an interactive CLI that allows to change the current behavior, change delay time, and another [Mocks Server options][options-url].
 
-![Interactive CLI](./assets/cli_animation.gif)
-
 ## Usage
 
 This plugin is included in the [main distribution of the Mocks Server project][main-distribution-url], so you can refer to the [official documentation website][website-url].
+
+![Interactive CLI](./assets/cli_animation.gif)
 
 ## Contributing
 

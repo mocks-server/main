@@ -9,7 +9,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { Inquirer } = require("../../../../lib/cli/Inquirer");
+const { Inquirer } = require("../../../../src/Inquirer");
 
 const questions = {
   main: {
@@ -18,14 +18,15 @@ const questions = {
     name: "value",
     choices: [
       {
-        name: "Option 1",
-        value: "option1"
-      },
-      {
-        name: "Display logs",
-        value: "logs"
+        name: "Select tags",
+        value: "tags"
       }
     ]
+  },
+  tags: {
+    type: "autocomplete",
+    name: "value",
+    message: "Insert tags:"
   }
 };
 
@@ -39,19 +40,27 @@ const MyCli = class MyCli {
     return [`Selected option: ${this._selectedOption}`];
   }
 
+  async changeTags() {
+    this._cli.clearScreen();
+    const tags = ["a-tag", "b-tag", "c-tag"];
+    this._selectedOption = await this._cli.inquire("tags", {
+      source: (answers, input) => {
+        const currentInput = input ? input.split(" ").pop() : null;
+        if (!currentInput) {
+          return Promise.resolve(tags);
+        }
+        return Promise.resolve(tags.filter(tag => tag.indexOf(currentInput) === 0));
+      }
+    });
+    return this.displayMainMenu();
+  }
+
   async displayMainMenu() {
     this._cli.clearScreen();
-
-    setTimeout(() => {
-      this._cli.removeListeners();
-    }, 100); // Remove listeners will do promise never resolving. This is for testing purposes only
-
     this._selectedOption = await this._cli.inquire("main");
-
-    if (this._selectedOption === "logs") {
-      await this.displayLogs();
+    if (this._selectedOption === "tags") {
+      return this.changeTags();
     }
-    await this.displayMainMenu();
   }
 };
 

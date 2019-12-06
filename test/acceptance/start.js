@@ -9,19 +9,28 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const path = require("path");
+"use strict";
 
-const CliRunner = require("./CliRunner");
+const { Core } = require("@mocks-server/core");
+const InquirerCli = require("../../index");
 
-describe("when mocks-server binary is executed", () => {
-  const binFile = path.resolve(__dirname, "..", "..", "..", "bin", "mocks-server");
-  let cliRunner;
+const handleError = error => {
+  console.error(`Error: ${error.message}`);
+  process.exitCode = 1;
+};
 
-  it("should throw a controlled error if no behaviors folder is provided", async () => {
-    cliRunner = new CliRunner([binFile]);
-    await cliRunner.hasExit();
-    expect(await cliRunner.logs).toEqual(
-      expect.stringContaining("Please provide a path to a folder containing behaviors")
-    );
-  });
-});
+const start = () => {
+  try {
+    const mocksServer = new Core({
+      plugins: [InquirerCli]
+    });
+
+    return mocksServer.start().catch(handleError);
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+module.exports = {
+  start
+};

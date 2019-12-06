@@ -11,16 +11,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const path = require("path");
 
 const requestPromise = require("request-promise");
-const CliRunner = require("../cli/CliRunner"); // TODO, export in CLI package for testing purposes?
-const { Server } = require("../../../index");
+const CliRunner = require("../inquirer/CliRunner");
 
 const SERVER_PORT = 3100;
 
-const defaultOptions = {
-  port: SERVER_PORT,
-  log: "debug",
-  watch: false
-};
+const BINARY_PATH = "../../mocks-server";
 
 const defaultRequestOptions = {
   method: "GET"
@@ -28,22 +23,6 @@ const defaultRequestOptions = {
 
 const fixturesFolder = folderName => {
   return path.resolve(__dirname, "fixtures", folderName);
-};
-
-const startServer = (mocksPath, options = {}) => {
-  const mocks = mocksPath || "web-tutorial";
-  const server = new Server(fixturesFolder(mocks), {
-    ...defaultOptions,
-    ...options
-  });
-  return server.start().then(() => {
-    return Promise.resolve(server);
-  });
-};
-
-const stopServer = server => {
-  server.stop();
-  server.switchWatch(false);
 };
 
 const request = (uri, options = {}) => {
@@ -56,28 +35,6 @@ const request = (uri, options = {}) => {
     uri: `http://localhost:${SERVER_PORT}${uri}`,
     json: true,
     ...requestOptions
-  });
-};
-
-const changeBehavior = behavior => {
-  return request("/mocks/behaviors/current", {
-    method: "PUT",
-    body: {
-      name: behavior
-    }
-  });
-};
-
-const getBehaviors = () => {
-  return request("/mocks/behaviors");
-};
-
-const changeDelay = delay => {
-  return request("/mocks/settings", {
-    method: "PUT",
-    body: {
-      delay
-    }
   });
 };
 
@@ -109,14 +66,10 @@ const wait = (time = 1000) => {
 };
 
 module.exports = {
-  startServer,
-  stopServer,
   request,
-  changeBehavior,
-  getBehaviors,
-  changeDelay,
   TimeCounter,
   CliRunner,
   wait,
-  fixturesFolder
+  fixturesFolder,
+  BINARY_PATH
 };

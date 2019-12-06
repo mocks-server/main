@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 // /mocks/behaviors.js
 
-const { Behavior } = require("../../../../../index");
+const { Behavior } = require("@mocks-server/core");
 
 const { getUsers, getUser, getUser2, getRealUser } = require("./fixtures/users");
 const { getNewUsers, getNewUser } = require("./new-fixtures/users");

@@ -12,7 +12,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const express = require("express");
 const sinon = require("sinon");
 
-const CoreMocks = require("../core/Core.mocks.js");
+const CoreMocks = require("../Core.mocks.js");
 
 const Settings = require("../../../lib/api/Settings");
 

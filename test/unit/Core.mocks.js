@@ -10,9 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../../lib/core/Core");
+jest.mock("@mocks-server/core");
 
-const Core = require("../../../lib/core/Core");
+const { Core } = require("@mocks-server/core");
 
 class CoreMock {
   constructor() {

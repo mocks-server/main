@@ -20,7 +20,7 @@ describe("with no behaviors", () => {
   });
 
   it("should print a dash as current behavior", async () => {
-    cli = new CliRunner([BINARY_PATH, "--behaviors=no-behaviors"], {
+    cli = new CliRunner([BINARY_PATH, "--path=no-behaviors"], {
       cwd: cwdPath
     });
     await wait();
@@ -28,7 +28,7 @@ describe("with no behaviors", () => {
   });
 
   it("should print behaviors as 0", async () => {
-    cli = new CliRunner([BINARY_PATH, "--behaviors=no-behaviors"], {
+    cli = new CliRunner([BINARY_PATH, "--path=no-behaviors"], {
       cwd: cwdPath
     });
     await wait();
@@ -36,7 +36,7 @@ describe("with no behaviors", () => {
   });
 
   it("should print current fixtures as 0", async () => {
-    cli = new CliRunner([BINARY_PATH, "--behaviors=no-behaviors"], {
+    cli = new CliRunner([BINARY_PATH, "--path=no-behaviors"], {
       cwd: cwdPath
     });
     await wait();

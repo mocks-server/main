@@ -138,7 +138,9 @@ class Cli {
   }
 
   get _serverUrl() {
-    return `http://${this._settings.get("host")}:${this._settings.get("port")}`;
+    const hostSetting = this._settings.get("host");
+    const host = hostSetting === "0.0.0.0" ? "localhost" : hostSetting;
+    return `http://${host}:${this._settings.get("port")}`;
   }
 
   _header() {

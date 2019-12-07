@@ -27,8 +27,8 @@
     "lint": "eslint index.js src test jest.config.js jest.acceptance.config.js",
     "lint-staged": "lint-staged",
     "test": "jest",
-    "test-acceptance": "jest --config=jest.acceptance.config.js --runInBand",
-    "test-ci": "npm run test && npm run test-acceptance",
+    "test:acceptance": "jest --config=jest.acceptance.config.js --runInBand",
+    "test:ci": "npm run test && npm run test:acceptance",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "peerDependencies": {
@@ -38,7 +38,7 @@
     "express": "4.17.1"
   },
   "devDependencies": {
-    "@mocks-server/core": "1.0.0",
+    "@mocks-server/core": "^1.1.0",
     "coveralls": "^3.0.7",
     "eslint": "6.6.0",
     "eslint-config-prettier": "6.5.0",

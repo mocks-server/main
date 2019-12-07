@@ -35,7 +35,7 @@ const fixturesFolder = folderName => {
 const startServer = (mocksPath, opts = {}) => {
   const mocks = mocksPath || "web-tutorial";
   const options = {
-    behaviors: fixturesFolder(mocks),
+    path: fixturesFolder(mocks),
     ...defaultOptions,
     ...opts
   };

@@ -17,6 +17,7 @@ jest.mock("node-watch");
 
 const express = require("express");
 const watch = require("node-watch");
+const fsExtra = require("fs-extra");
 
 class CallBackRunner {
   constructor() {
@@ -67,6 +68,8 @@ class Mock {
     const watchStub = this._sandbox.stub().callsFake(watchRunner.runner);
     watchStub.triggerChange = watchRunner.triggerChange;
 
+    const ensureDirSyncStub = this._sandbox.stub(fsExtra, "ensureDirSync");
+
     this._stubs = {
       watch: watchStub,
       watchTriggerChange: watchRunner.triggerChange,
@@ -83,6 +86,9 @@ class Mock {
           onListen: httpCreateServerOnListen,
           close: this._sandbox.stub().callsFake(cb => cb())
         }
+      },
+      fsExtra: {
+        ensureDirSync: ensureDirSyncStub
       }
     };
 

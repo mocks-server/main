@@ -13,6 +13,7 @@ const path = require("path");
 const Boom = require("boom");
 const requireAll = require("require-all");
 const watch = require("node-watch");
+const fsExtra = require("fs-extra");
 
 const { map, debounce } = require("lodash");
 
@@ -78,8 +79,13 @@ class FilesHandler {
     return path.resolve(process.cwd(), folder);
   }
 
+  _ensureFolder(folder) {
+    fsExtra.ensureDirSync(folder);
+    return folder;
+  }
+
   _loadFiles() {
-    this._path = this._resolveFolder(this._settings.get("path"));
+    this._path = this._ensureFolder(this._resolveFolder(this._settings.get("path")));
     tracer.info(`Loading mocks from folder ${this._path}`);
     this._cleanRequireCacheFolder();
     this._files = requireAll({

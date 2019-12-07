@@ -278,6 +278,20 @@ describe("options", () => {
       });
     });
 
+    it("should return default options", async () => {
+      commandLineArgumentsMocks.stubs.instance.options = {};
+      await options.init();
+      expect(options.options).toEqual({
+        port: 3100,
+        host: "0.0.0.0",
+        log: "info",
+        delay: 0,
+        watch: true,
+        behavior: null,
+        path: "mocks"
+      });
+    });
+
     it("should extend default options with user options, ommiting undefined values", async () => {
       commandLineArgumentsMocks.stubs.instance.options = {
         behavior: "foo-behavior",

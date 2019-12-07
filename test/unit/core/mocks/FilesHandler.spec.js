@@ -183,6 +183,11 @@ describe("Behaviors", () => {
       });
     });
 
+    it("should ensure that defined mocks folder exists", async () => {
+      await filesHandler.init();
+      expect(libsMocks.stubs.fsExtra.ensureDirSync.calledWith("foo-path")).toEqual(true);
+    });
+
     it("should throw an error if mocks folder is not defined", async () => {
       expect.assertions(1);
       try {

@@ -31,6 +31,24 @@ const fixturesFolder = folderName => {
   return path.resolve(__dirname, "fixtures", folderName);
 };
 
+const startCoreWithoutPath = (options = {}) => {
+  const core = new Core({
+    onlyProgrammaticOptions: true,
+    plugins: options.plugins
+  });
+
+  return core
+    .init({
+      ...defaultOptions,
+      ...options
+    })
+    .then(() => {
+      return core.start().then(() => {
+        return Promise.resolve(core);
+      });
+    });
+};
+
 const startCore = (mocksPath, options = {}) => {
   const mocks = mocksPath || "web-tutorial";
   const core = new Core({
@@ -119,6 +137,7 @@ const wait = (time = 1000) => {
 
 module.exports = {
   startCore,
+  startCoreWithoutPath,
   stopCore,
   request,
   changeBehavior,

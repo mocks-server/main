@@ -17,7 +17,7 @@ const CommandLineArguments = require("./CommandLineArguments");
 
 const DEFAULT_OPTIONS = {
   behavior: null,
-  path: null,
+  path: "mocks",
   delay: 0,
   host: "0.0.0.0",
   port: 3100,
@@ -134,7 +134,7 @@ class Options {
   _removeDeprecatedOption(options, optionName) {
     if (options[optionName] !== DEFAULT_OPTIONS[optionName]) {
       const newOption = DEPRECATED_OPTIONS[optionName];
-      if (!options[newOption]) {
+      if (options[newOption] === DEFAULT_OPTIONS[newOption]) {
         options[newOption] = options[optionName];
       }
       tracer.warn(

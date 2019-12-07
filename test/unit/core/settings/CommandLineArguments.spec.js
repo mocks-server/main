@@ -17,7 +17,7 @@ const CommandLineArguments = require("../../../../src/settings/CommandLineArgume
 describe("options", () => {
   const DEFAULT_OPTIONS = {
     behavior: null,
-    path: null,
+    path: "mocks",
     delay: 0,
     host: "0.0.0.0",
     port: 3100,

@@ -9,10 +9,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
+const AdminApi = require("@mocks-server/plugin-admin-api");
 
-const CoreMocks = require("./core/Core.mocks.js");
-
-const AdminApi = require("../../lib/api/Api");
+const CoreMocks = require("./Core.mocks.js");
 
 const ProgrammaticServer = require("../../lib/ProgrammaticServer");
 
@@ -49,7 +48,7 @@ describe("start method", () => {
       await cli.start();
       expect(coreMocks.stubs.instance.init.getCall(0).args[0]).toEqual({
         ...fooOptions,
-        behaviors: fooMocksPath
+        path: fooMocksPath
       });
     });
 

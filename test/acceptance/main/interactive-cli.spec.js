@@ -17,7 +17,7 @@ describe("interactive CLI", () => {
   const cwdPath = path.resolve(__dirname, "fixtures");
 
   beforeAll(async () => {
-    cli = new InteractiveCliRunner([BINARY_PATH, "--behaviors=web-tutorial"], {
+    cli = new InteractiveCliRunner([BINARY_PATH, "--path=web-tutorial"], {
       cwd: cwdPath
     });
     await wait();

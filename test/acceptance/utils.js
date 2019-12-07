@@ -41,7 +41,7 @@ const startCore = (mocksPath, options = {}) => {
   return core
     .init({
       ...defaultOptions,
-      behaviors: fixturesFolder(mocks),
+      path: fixturesFolder(mocks),
       ...options
     })
     .then(() => {

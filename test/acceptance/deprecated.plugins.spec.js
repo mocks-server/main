@@ -107,7 +107,7 @@ describe("plugins", () => {
 
       describe("when emit events", () => {
         beforeAll(async () => {
-          core.settings.set("path", fixturesFolder("files-modification"));
+          core.settings.set("behaviors", fixturesFolder("files-modification"));
           await wait(4000);
         });
 
@@ -161,7 +161,7 @@ describe("plugins", () => {
     init: coreInstance => {
       initSpy(
         coreInstance,
-        coreInstance.settings.get("path"),
+        coreInstance.settings.get("behaviors"),
         coreInstance.settings.get("port"),
         coreInstance.settings.get("delay")
       );
@@ -195,7 +195,7 @@ describe("plugins", () => {
       init(coreInstance) {
         initSpy(
           coreInstance,
-          coreInstance.settings.get("path"),
+          coreInstance.settings.get("behaviors"),
           coreInstance.settings.get("port"),
           coreInstance.settings.get("delay")
         );
@@ -220,7 +220,7 @@ describe("plugins", () => {
       init(coreInstance) {
         initSpy(
           coreInstance,
-          coreInstance.settings.get("path"),
+          coreInstance.settings.get("behaviors"),
           coreInstance.settings.get("port"),
           coreInstance.settings.get("delay")
         );
@@ -258,7 +258,7 @@ describe("plugins", () => {
       init: coreIns => {
         initSpy(
           coreIns,
-          coreIns.settings.get("path"),
+          coreIns.settings.get("behaviors"),
           coreIns.settings.get("port"),
           coreIns.settings.get("delay")
         );
@@ -295,7 +295,7 @@ describe("plugins", () => {
       init: coreInstance => {
         initSpy(
           coreInstance,
-          coreInstance.settings.get("path"),
+          coreInstance.settings.get("behaviors"),
           coreInstance.settings.get("port"),
           coreInstance.settings.get("delay")
         );

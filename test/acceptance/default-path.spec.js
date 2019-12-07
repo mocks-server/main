@@ -9,26 +9,34 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { CliRunner, request, wait } = require("./utils");
+const fsExtra = require("fs-extra");
+const { CliRunner, request, fixturesFolder, wait } = require("./utils");
 
-describe("path argument", () => {
+describe("with no path defined", () => {
   const binaryPath = "./starter";
   const cwdPath = path.resolve(__dirname, "fixtures");
   let cli;
 
-  afterEach(async () => {
-    await cli.kill();
-  });
-
-  it("should set mocks folder", async () => {
-    cli = new CliRunner([binaryPath, "--path=web-tutorial"], {
+  beforeAll(async () => {
+    cli = new CliRunner([binaryPath], {
       cwd: cwdPath
     });
     await wait();
-    const users = await request("/api/users");
-    expect(users).toEqual([
-      { id: 1, name: "John Doe" },
-      { id: 2, name: "Jane Doe" }
-    ]);
+  });
+
+  afterAll(async () => {
+    await cli.kill();
+  });
+
+  it("should start server and return 404 to all requests", async () => {
+    const usersResponse = await request("/api/users", {
+      resolveWithFullResponse: true,
+      simple: false
+    });
+    expect(usersResponse.statusCode).toEqual(404);
+  });
+
+  it("should have created a mocks folder", async () => {
+    expect(fsExtra.existsSync(fixturesFolder("mocks"))).toEqual(true);
   });
 });

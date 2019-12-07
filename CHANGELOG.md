@@ -5,15 +5,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [To be deprecated]
-- Deprecate options "features" and "feature".
+- Deprecate options "features", "behaviors" and "feature".
 - Remove "features" getter from Server
-- Remove Server and Cli constructors. Use @mocks-server/core instead
 
 ## [unreleased]
 ### Added
 ### Changed
 ### Fixed
 ### Removed
+
+## [1.1.0] - 2019-12-07
+### Changed
+- "behaviors" option renamed to "path". Old option still working due to backward compatibility.
+- "path" option has "mocks" value by default. The server will create path if it does not exist.
+
+### Fixed
+- Fix server started log. Was always printing localhost, without taking into account custom "host" option.
 
 ## [1.0.0] - 2019-11-29
 ### Added

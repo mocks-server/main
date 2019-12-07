@@ -17,7 +17,7 @@ const CommandLineArguments = require("../../../../src/settings/CommandLineArgume
 describe("options", () => {
   const DEFAULT_OPTIONS = {
     behavior: null,
-    behaviors: null,
+    path: "mocks",
     delay: 0,
     host: "0.0.0.0",
     port: 3100,
@@ -25,7 +25,8 @@ describe("options", () => {
     log: "info",
     // TODO, remove deprecated options
     feature: null,
-    features: null
+    features: null,
+    behaviors: null
   };
   let sandbox;
   let optionStub;
@@ -57,7 +58,7 @@ describe("options", () => {
   describe("init method", () => {
     it("should call to commander to get user options from command line", async () => {
       await commandLineArguments.init();
-      expect(optionStub.callCount).toEqual(8);
+      expect(optionStub.callCount).toEqual(9);
     });
 
     it("should call to convert to number received value in --port option", async () => {
@@ -78,7 +79,7 @@ describe("options", () => {
     it("should omit undefined values", async () => {
       const options = {
         behavior: "foo-behavior",
-        behaviors: undefined
+        path: undefined
       };
       parseStub.returns(options);
       await commandLineArguments.init();

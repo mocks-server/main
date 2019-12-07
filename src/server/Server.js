@@ -79,11 +79,15 @@ class Server {
   }
 
   _startServer(resolve, reject) {
+    const host = this._settings.get("host");
+    const port = this._settings.get("port");
+    const hostName = host === "0.0.0.0" ? "localhost" : host;
+
     try {
       this._server.listen(
         {
-          port: this._settings.get("port"),
-          host: this._settings.get("host")
+          port,
+          host
         },
         error => {
           if (error) {
@@ -93,9 +97,7 @@ class Server {
             this._error = error;
             reject(error);
           } else {
-            tracer.info(
-              `Server started and listening at http://localhost:${this._settings.get("port")}`
-            );
+            tracer.info(`Server started and listening at http://${hostName}:${port}`);
             this._error = null;
             this._serverStarting = false;
             this._serverStarted = true;

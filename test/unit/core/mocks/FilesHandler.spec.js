@@ -156,7 +156,7 @@ describe("Behaviors", () => {
       requireCache
     });
     sandbox.stub(path, "isAbsolute").returns(true);
-    coreInstance.settings.get.withArgs("behaviors").returns("foo-path");
+    coreInstance.settings.get.withArgs("path").returns("foo-path");
   });
 
   afterEach(() => {
@@ -183,17 +183,22 @@ describe("Behaviors", () => {
       });
     });
 
+    it("should ensure that defined mocks folder exists", async () => {
+      await filesHandler.init();
+      expect(libsMocks.stubs.fsExtra.ensureDirSync.calledWith("foo-path")).toEqual(true);
+    });
+
     it("should throw an error if mocks folder is not defined", async () => {
       expect.assertions(1);
       try {
-        coreInstance.settings.get.withArgs("behaviors").returns(undefined);
+        coreInstance.settings.get.withArgs("path").returns(undefined);
         await filesHandler.init();
       } catch (error) {
         expect(error).toEqual(fooBoomError);
       }
     });
 
-    it("should clean require cache for behaviors folder", async () => {
+    it("should clean require cache for mocks folder", async () => {
       const fooCachePath = "foo-path";
 
       expect(requireCache[fooCachePath]).toBeDefined();
@@ -201,7 +206,7 @@ describe("Behaviors", () => {
       expect(requireCache[fooCachePath]).not.toBeDefined();
     });
 
-    it("should require cache in order to found the behaviors folder", async () => {
+    it("should require cache in order to found the mocks folder", async () => {
       filesHandler = new FilesHandler(coreInstance.settings, coreInstance._eventEmitter);
       sandbox.spy(filesHandler, "_cleanRequireCache");
       await filesHandler.init();
@@ -209,7 +214,7 @@ describe("Behaviors", () => {
       expect(filesHandler._cleanRequireCache.callCount).toEqual(0);
     });
 
-    it("should clean require cache for behaviors folder childs", async () => {
+    it("should clean require cache for mocks folder childs", async () => {
       const fooCachePath = "foo-path/foo-children";
 
       expect(requireCache[fooCachePath]).toBeDefined();
@@ -217,7 +222,7 @@ describe("Behaviors", () => {
       expect(requireCache[fooCachePath]).not.toBeDefined();
     });
 
-    it("should clean require cache for behaviors folder childs recursively", async () => {
+    it("should clean require cache for mocks folder childs recursively", async () => {
       const fooCachePath = "foo-path/foo-children-2";
 
       expect(requireCache[fooCachePath]).toBeDefined();
@@ -264,21 +269,21 @@ describe("Behaviors", () => {
   });
 
   describe("when core settings change", () => {
-    it("should load files again if behaviors setting is changed", async () => {
+    it("should load files again if path setting is changed", async () => {
       await filesHandler.init();
       coreInstance._eventEmitter.on.getCall(0).args[1]({
-        behaviors: "foo-path"
+        path: "foo-path"
       });
       await wait();
       expect(requireAll.mock.calls.length).toEqual(2);
     });
 
-    it("should enable watch again if behaviors setting is changed", async () => {
+    it("should enable watch again if path setting is changed", async () => {
       coreInstance.settings.get.withArgs("watch").returns(true);
       await filesHandler.init();
       await filesHandler.start();
       coreInstance._eventEmitter.on.getCall(0).args[1]({
-        behaviors: "foo-path"
+        path: "foo-path"
       });
       await wait();
       expect(libsMocks.stubs.watch.callCount).toEqual(2);
@@ -296,7 +301,7 @@ describe("Behaviors", () => {
       expect(libsMocks.stubs.watchClose.callCount).toEqual(1);
     });
 
-    it("should do nothing if no behaviors or watch settings are changed", async () => {
+    it("should do nothing if no path or watch settings are changed", async () => {
       expect.assertions(3);
       coreInstance.settings.get.withArgs("watch").returns(true);
       await filesHandler.init();

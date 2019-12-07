@@ -21,8 +21,8 @@ class CommandLineArguments {
     this._optionsNames = Object.keys(defaultOptions);
     // TODO, generate initial options dynamically from Options object using "addCustomOption" method
     this._commander = commander
+      .option("--path <path>", "Define folder from which load mocks")
       .option("--behavior <behavior>", "Define current behavior")
-      .option("--behaviors <behaviors>", "Define folder from which load behaviors")
       .option("--delay <delay>", "Define delay time")
       .option("--host <host>", "Host for server")
       .option("--log <log>", "Log level")
@@ -30,7 +30,8 @@ class CommandLineArguments {
       .option("--watch <watch>", "Watch or not", this._stringToBoolean) // TODO, change by --no-watch option
       // TODO, remove deprecated options
       .option("--feature <feature>", "Define current behavior")
-      .option("--features <features>", "Define folder from which load behaviors");
+      .option("--features <features>", "Define folder from which load mocks")
+      .option("--behaviors <behaviors>", "Define folder from which load mocks");
   }
 
   init() {

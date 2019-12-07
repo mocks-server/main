@@ -22,7 +22,7 @@ describe("delay argument", () => {
 
   it("should set delay", async () => {
     expect.assertions(2);
-    cli = new CliRunner([binaryPath, "--behaviors=web-tutorial", "--delay=2000"], {
+    cli = new CliRunner([binaryPath, "--path=web-tutorial", "--delay=2000"], {
       cwd: cwdPath
     });
     await wait();

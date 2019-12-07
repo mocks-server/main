@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const path = require("path");
 const { CliRunner, request, wait } = require("./utils");
 
-describe("path argument", () => {
+describe("behaviors argument", () => {
   const binaryPath = "./starter";
   const cwdPath = path.resolve(__dirname, "fixtures");
   let cli;
@@ -20,15 +20,31 @@ describe("path argument", () => {
     await cli.kill();
   });
 
-  it("should set mocks folder", async () => {
-    cli = new CliRunner([binaryPath, "--path=web-tutorial"], {
-      cwd: cwdPath
+  describe("behaviors argument", () => {
+    it("should set mocks folder", async () => {
+      cli = new CliRunner([binaryPath, "--behaviors=web-tutorial"], {
+        cwd: cwdPath
+      });
+      await wait();
+      const users = await request("/api/users");
+      expect(users).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" }
+      ]);
     });
-    await wait();
-    const users = await request("/api/users");
-    expect(users).toEqual([
-      { id: 1, name: "John Doe" },
-      { id: 2, name: "Jane Doe" }
-    ]);
+  });
+
+  describe("features argument", () => {
+    it("should set mocks folder", async () => {
+      cli = new CliRunner([binaryPath, "--features=web-tutorial"], {
+        cwd: cwdPath
+      });
+      await wait();
+      const users = await request("/api/users");
+      expect(users).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" }
+      ]);
+    });
   });
 });

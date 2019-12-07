@@ -35,8 +35,8 @@
     "lint": "eslint index.js lib test jest.config.js jest.acceptance.config.js",
     "lint-staged": "lint-staged",
     "test": "jest",
-    "test-acceptance": "jest --config=jest.acceptance.config.js --runInBand",
-    "test-ci": "npm run test && npm run test-acceptance",
+    "test:acceptance": "jest --config=jest.acceptance.config.js --runInBand",
+    "test:ci": "npm run test && npm run test:acceptance",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {

@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.1.0] - 2019-12-07
 ### Changed
 - "behaviors" option renamed to "path". Old option still working due to backward compatibility.
+- "path" option has "mocks" value by default. The server will create path if it does not exist.
 
 ### Fixed
 - Fix server started log. Was always printing localhost, without taking into account custom "host" option.

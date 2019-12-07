@@ -5,9 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [To be deprecated]
-- Deprecate options "features" and "feature".
-- Remove "/features" api path.
-- Remove Server and Cli constructors. Use @mocks-server/core instead
+- Remove Server and Cli constructors. @mocks-server/core has to be used instead.
 
 ## [unreleased]
 ### Added
@@ -15,11 +13,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [1.4.0] -
+## [1.4.0] - 2019-12-07
 ### Changed
 - Core code migrated to @mocks-server/core
 - Admin API code migrated to @mocks-server/plugin-admin-api
 - Plugin Inquirer CLI code migrated to @mocks-server/plugin-inquirer-cli
+- Change "behaviors" option by "path", now has "mocks" value by default.
 
 ## [1.3.0] - 2019-11-17
 ### Added

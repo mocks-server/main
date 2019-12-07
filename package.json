@@ -40,9 +40,9 @@
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
-    "@mocks-server/core": "1.0.0",
-    "@mocks-server/plugin-admin-api": "1.0.0",
-    "@mocks-server/plugin-inquirer-cli": "1.0.0"
+    "@mocks-server/core": "1.1.0",
+    "@mocks-server/plugin-admin-api": "1.1.0",
+    "@mocks-server/plugin-inquirer-cli": "1.1.0"
   },
   "devDependencies": {
     "coveralls": "^3.0.7",

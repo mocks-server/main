@@ -2,8 +2,7 @@ const path = require("path");
 const { Cli } = require("../../../../index");
 
 const cli = new Cli({
-  path: path.resolve(__dirname, "..", "web-tutorial"),
-  behavior: "dynamic",
+  behaviors: path.resolve(__dirname, "..", "web-tutorial"),
   port: 3100,
   log: "debug",
   watch: false

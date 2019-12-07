@@ -46,7 +46,26 @@ describe("programmatic Cli", () => {
       ]);
       expect(cli.logs).toEqual(
         expect.stringContaining(
-          "Deprecation warning: --features option will be deprecated. Use --behaviors instead"
+          "Deprecation warning: --features option will be deprecated. Use --path instead"
+        )
+      );
+      expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
+    });
+
+    it("should set mocks folder even when deprecated behaviors option is received", async () => {
+      expect.assertions(3);
+      cli = new CliRunner("start-behaviors.js", {
+        cwd: cwdPath
+      });
+      await wait();
+      const users = await request("/api/users");
+      expect(users).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" }
+      ]);
+      expect(cli.logs).toEqual(
+        expect.stringContaining(
+          "Deprecation warning: --behaviors option will be deprecated. Use --path instead"
         )
       );
       expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
@@ -79,6 +98,19 @@ describe("programmatic Cli", () => {
       it("should set current behavior", async () => {
         expect.assertions(2);
         cli = new CliRunner("start-dynamic-behavior.js", {
+          cwd: cwdPath
+        });
+        await wait();
+        const users = await request("/api/users/2");
+        expect(users).toEqual({ id: 2, name: "Jane Doe" });
+        expect(cli.logs).toEqual(expect.stringContaining("Current behavior: dynamic"));
+      });
+    });
+
+    describe("when provided and exists, and using deprecated behaviors option", () => {
+      it("should set current behavior", async () => {
+        expect.assertions(2);
+        cli = new CliRunner("deprecated-start-dynamic-behavior.js", {
           cwd: cwdPath
         });
         await wait();

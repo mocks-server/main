@@ -21,7 +21,7 @@ describe("command line arguments with cli disabled", () => {
 
   describe("interactive cli", () => {
     it("should not be started", async () => {
-      cli = new CliRunner([BINARY_PATH, "--behaviors=web-tutorial", "--cli=false"], {
+      cli = new CliRunner([BINARY_PATH, "--path=web-tutorial", "--cli=false"], {
         cwd: cwdPath
       });
       await wait(3000);
@@ -29,9 +29,9 @@ describe("command line arguments with cli disabled", () => {
     });
   });
 
-  describe("behaviors option", () => {
+  describe("path option", () => {
     it("should set mocks folder", async () => {
-      cli = new CliRunner([BINARY_PATH, "--behaviors=web-tutorial", "--cli=false"], {
+      cli = new CliRunner([BINARY_PATH, "--path=web-tutorial", "--cli=false"], {
         cwd: cwdPath
       });
       await wait();
@@ -46,7 +46,7 @@ describe("command line arguments with cli disabled", () => {
   describe("behavior option", () => {
     describe("when not provided", () => {
       it("should set as current behavior the first one found", async () => {
-        cli = new CliRunner([BINARY_PATH, "--behaviors=web-tutorial", "--cli=false"], {
+        cli = new CliRunner([BINARY_PATH, "--path=web-tutorial", "--cli=false"], {
           cwd: cwdPath
         });
         await wait();
@@ -58,7 +58,7 @@ describe("command line arguments with cli disabled", () => {
     describe("when provided and exists", () => {
       it("should set current behavior", async () => {
         cli = new CliRunner(
-          [BINARY_PATH, "--behaviors=web-tutorial", "--behavior=dynamic", "--cli=false"],
+          [BINARY_PATH, "--path=web-tutorial", "--behavior=dynamic", "--cli=false"],
           {
             cwd: cwdPath
           }
@@ -72,7 +72,7 @@ describe("command line arguments with cli disabled", () => {
     describe("when provided and does not exist", () => {
       it("should print a warning", async () => {
         cli = new CliRunner(
-          [BINARY_PATH, "--behaviors=web-tutorial", "--behavior=foo", "--cli=false"],
+          [BINARY_PATH, "--path=web-tutorial", "--behavior=foo", "--cli=false"],
           {
             cwd: cwdPath
           }
@@ -83,7 +83,7 @@ describe("command line arguments with cli disabled", () => {
 
       it("should set as current behavior the first one found", async () => {
         cli = new CliRunner(
-          [BINARY_PATH, "--behaviors=web-tutorial", "--behavior=foo", "--cli=false"],
+          [BINARY_PATH, "--path=web-tutorial", "--behavior=foo", "--cli=false"],
           {
             cwd: cwdPath
           }
@@ -164,12 +164,9 @@ describe("command line arguments with cli disabled", () => {
   describe("delay option", () => {
     it("should set delay", async () => {
       expect.assertions(2);
-      cli = new CliRunner(
-        [BINARY_PATH, "--behaviors=web-tutorial", "--delay=2000", "--cli=false"],
-        {
-          cwd: cwdPath
-        }
-      );
+      cli = new CliRunner([BINARY_PATH, "--path=web-tutorial", "--delay=2000", "--cli=false"], {
+        cwd: cwdPath
+      });
       await wait();
       const timeCounter = new TimeCounter();
       const users = await request("/api/users");

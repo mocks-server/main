@@ -9,7 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { CliRunner, request, wait, TimeCounter, BINARY_PATH } = require("./utils");
+const { CliRunner, request, wait, BINARY_PATH } = require("./utils");
 
 describe("command line arguments", () => {
   const cwdPath = path.resolve(__dirname, "fixtures");
@@ -19,10 +19,10 @@ describe("command line arguments", () => {
     await cli.kill();
   });
 
-  describe("path option", () => {
+  describe("behaviors option", () => {
     it("should set mocks folder", async () => {
       expect.assertions(2);
-      cli = new CliRunner([BINARY_PATH, "--path=web-tutorial"], {
+      cli = new CliRunner([BINARY_PATH, "--behaviors=web-tutorial"], {
         cwd: cwdPath
       });
       await wait();
@@ -35,11 +35,27 @@ describe("command line arguments", () => {
     });
   });
 
-  describe("behavior option", () => {
+  describe("features option", () => {
+    it("should set mocks folder", async () => {
+      expect.assertions(2);
+      cli = new CliRunner([BINARY_PATH, "--features=web-tutorial"], {
+        cwd: cwdPath
+      });
+      await wait();
+      const users = await request("/api/users");
+      expect(users).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" }
+      ]);
+      expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
+    });
+  });
+
+  describe("feature option", () => {
     describe("when not provided", () => {
       it("should set as current behavior the first one found", async () => {
         expect.assertions(2);
-        cli = new CliRunner([BINARY_PATH, "--path=web-tutorial"], {
+        cli = new CliRunner([BINARY_PATH, "--features=web-tutorial"], {
           cwd: cwdPath
         });
         await wait();
@@ -52,7 +68,7 @@ describe("command line arguments", () => {
     describe("when provided and exists", () => {
       it("should set current behavior", async () => {
         expect.assertions(2);
-        cli = new CliRunner([BINARY_PATH, "--path=web-tutorial", "--behavior=dynamic"], {
+        cli = new CliRunner([BINARY_PATH, "--features=web-tutorial", "--feature=dynamic"], {
           cwd: cwdPath
         });
         await wait();
@@ -64,7 +80,7 @@ describe("command line arguments", () => {
 
     describe("when provided and does not exist", () => {
       it("should print a warning", async () => {
-        cli = new CliRunner([BINARY_PATH, "--path=web-tutorial", "--behavior=foo"], {
+        cli = new CliRunner([BINARY_PATH, "--features=web-tutorial", "--feature=foo"], {
           cwd: cwdPath
         });
         await wait();
@@ -73,7 +89,7 @@ describe("command line arguments", () => {
 
       it("should set as current behavior the first one found", async () => {
         expect.assertions(2);
-        cli = new CliRunner([BINARY_PATH, "--path=web-tutorial", "--behavior=foo"], {
+        cli = new CliRunner([BINARY_PATH, "--features=web-tutorial", "--feature=foo"], {
           cwd: cwdPath
         });
         await wait();
@@ -81,24 +97,6 @@ describe("command line arguments", () => {
         expect(users).toEqual({ id: 1, name: "John Doe" });
         expect(cli.logs).toEqual(expect.stringContaining("Current behavior: standard"));
       });
-    });
-  });
-
-  describe("delay option", () => {
-    it("should set delay", async () => {
-      expect.assertions(2);
-      cli = new CliRunner([BINARY_PATH, "--path=web-tutorial", "--delay=2000"], {
-        cwd: cwdPath
-      });
-      await wait();
-      const timeCounter = new TimeCounter();
-      const users = await request("/api/users");
-      timeCounter.stop();
-      expect(users).toEqual([
-        { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
-      ]);
-      expect(timeCounter.total).toBeGreaterThan(1999);
     });
   });
 });

@@ -48,7 +48,7 @@ describe("start method", () => {
       await cli.start();
       expect(coreMocks.stubs.instance.init.getCall(0).args[0]).toEqual({
         ...fooOptions,
-        behaviors: fooMocksPath
+        path: fooMocksPath
       });
     });
 

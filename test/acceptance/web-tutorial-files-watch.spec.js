@@ -206,7 +206,7 @@ describe("files watcher", () => {
   beforeAll(async () => {
     fsExtra.removeSync(fixturesFolder("files-watch"));
     fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
-    interactiveCli.cli = new InteractiveCliRunner([BINARY_PATH, "--behaviors=files-watch"], {
+    interactiveCli.cli = new InteractiveCliRunner([BINARY_PATH, "--path=files-watch"], {
       cwd: cwdPath
     });
     await wait();

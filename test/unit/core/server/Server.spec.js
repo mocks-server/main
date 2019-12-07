@@ -154,6 +154,26 @@ describe("Server", () => {
       }
     });
 
+    it("should log the server host and port", async () => {
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      coreInstance.settings.get.withArgs("host").returns("0.0.0.0");
+      coreInstance.settings.get.withArgs("port").returns(3000);
+      await server.start();
+      expect(
+        tracer.info.calledWith("Server started and listening at http://localhost:3000")
+      ).toEqual(true);
+    });
+
+    it("should log the server host and port when host is custom", async () => {
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      coreInstance.settings.get.withArgs("host").returns("foo-host");
+      coreInstance.settings.get.withArgs("port").returns(5000);
+      await server.start();
+      expect(
+        tracer.info.calledWith("Server started and listening at http://foo-host:5000")
+      ).toEqual(true);
+    });
+
     it("should not init httpServer more than once", async () => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
       await server.start();

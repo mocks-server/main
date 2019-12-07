@@ -290,6 +290,20 @@ describe("Cli", () => {
       await cli.start();
       expect(cli._header()[0]).toEqual(expect.stringContaining("Mocks server listening"));
     });
+
+    it("should print localhost as host when it is 0.0.0.0", async () => {
+      coreInstance.serverError = null;
+      coreInstance.settings.get.withArgs("host").returns("0.0.0.0");
+      await cli.start();
+      expect(cli._header()[0]).toEqual(expect.stringContaining("http://localhost"));
+    });
+
+    it("should print custom host as host", async () => {
+      coreInstance.serverError = null;
+      coreInstance.settings.get.withArgs("host").returns("foo-host");
+      await cli.start();
+      expect(cli._header()[0]).toEqual(expect.stringContaining("http://foo-host"));
+    });
   });
 
   describe("when server emits load:mocks event watch has reloaded the features", () => {

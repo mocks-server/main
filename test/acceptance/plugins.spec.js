@@ -113,7 +113,7 @@ describe("plugins", () => {
 
         it("should inform plugin when settings are changed", async () => {
           expect(changeSettingsSpy.getCall(0).args[0]).toEqual({
-            behaviors: fixturesFolder("files-modification")
+            path: fixturesFolder("files-modification")
           });
         });
 

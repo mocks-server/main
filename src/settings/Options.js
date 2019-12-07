@@ -17,7 +17,7 @@ const CommandLineArguments = require("./CommandLineArguments");
 
 const DEFAULT_OPTIONS = {
   behavior: null,
-  behaviors: null,
+  path: null,
   delay: 0,
   host: "0.0.0.0",
   port: 3100,
@@ -25,12 +25,14 @@ const DEFAULT_OPTIONS = {
   log: "info",
   // TODO, remove deprecated options
   feature: null,
-  features: null
+  features: null,
+  behaviors: null
 };
 
 const DEPRECATED_OPTIONS = {
   feature: "behavior",
-  features: "behaviors"
+  behaviors: "path",
+  features: "path"
 };
 
 class Options {

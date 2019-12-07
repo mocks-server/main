@@ -69,9 +69,7 @@ class FilesHandler {
 
   _resolveFolder(folder) {
     if (!folder) {
-      tracer.error(
-        'Please provide a path to a folder containing behaviors using the "behaviors" option'
-      );
+      tracer.error('Please provide a path to the folder containing mocks using the "path" option');
       throw Boom.badData("Invalid mocks folder");
     }
     if (path.isAbsolute(folder)) {
@@ -81,7 +79,7 @@ class FilesHandler {
   }
 
   _loadFiles() {
-    this._path = this._resolveFolder(this._settings.get("behaviors"));
+    this._path = this._resolveFolder(this._settings.get("path"));
     tracer.info(`Loading mocks from folder ${this._path}`);
     this._cleanRequireCacheFolder();
     this._files = requireAll({
@@ -110,7 +108,7 @@ class FilesHandler {
   }
 
   _onChangeSettings(changeDetails) {
-    if (changeDetails.hasOwnProperty("behaviors")) {
+    if (changeDetails.hasOwnProperty("path")) {
       this._loadFiles();
       this._switchWatch();
     } else if (changeDetails.hasOwnProperty("watch")) {

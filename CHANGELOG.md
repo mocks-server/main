@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.1.0] - 2019-12-07
+### Fixed
+- Fix server started log. Was always printing localhost, without taking into account custom "host" option.
+
 ## [1.0.0] - 2019-11-29
 ### Added
 - Emit new load:files event.

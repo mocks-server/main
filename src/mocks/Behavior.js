@@ -11,55 +11,41 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-const { cloneDeep, map, sum } = require("lodash");
-const routeParser = require("route-parser");
-
-const FUNCTION_TYPE = "function";
+const FixturesGroup = require("./FixturesGroup");
 
 class Behavior {
-  constructor(fixtures) {
-    this._fixtures = fixtures;
-    this._methods = this.fixturesToMethods(fixtures);
-    this._fixturesCollection = this.fixturesToCollection(fixtures);
-  }
-
-  fixturesToCollection(fixtures) {
-    return cloneDeep(fixtures).map(fixture => {
-      if (typeof fixture.response === FUNCTION_TYPE) {
-        // TODO, add a fixture property indicating type
-        fixture.response = FUNCTION_TYPE;
-      }
-      delete fixture.route;
-      return fixture;
-    });
-  }
-
-  fixturesToMethods(fixtures, baseFixtures = {}) {
-    const fixturesObject = cloneDeep(baseFixtures);
-    fixtures.forEach(fixtureData => {
-      fixturesObject[fixtureData.method] = fixturesObject[fixtureData.method] || {};
-      fixturesObject[fixtureData.method][fixtureData.url] = {
-        route: routeParser(fixtureData.url),
-        response: fixtureData.response
-      };
-    });
-    return fixturesObject;
+  constructor(fixtures = []) {
+    this._initialFixtures = [...fixtures];
+    this._fixtures = new FixturesGroup(this._initialFixtures);
   }
 
   extend(fixtures) {
-    return new Behavior(this._fixtures.concat(fixtures));
+    return new Behavior(this._initialFixtures.concat(fixtures));
   }
 
-  get methods() {
-    return this._methods;
+  async init(fixturesParser) {
+    await this._fixtures.init(fixturesParser);
+    return Promise.resolve(this);
+  }
+
+  getRequestMatchingFixture(req) {
+    return this._fixtures.collection.find(fixture => fixture.requestMatch(req));
+  }
+
+  get isMocksServerBehavior() {
+    return true;
   }
 
   get fixtures() {
-    return this._fixturesCollection;
+    return this._fixtures.collection;
   }
 
-  get totalFixtures() {
-    return sum(map(this._methods, urls => Object.keys(urls).length));
+  get name() {
+    return this._name; // Prepared for defining behavior names based on property, file name, etc.
+  }
+
+  set name(name) {
+    this._name = name;
   }
 }
 

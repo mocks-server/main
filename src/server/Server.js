@@ -14,7 +14,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const http = require("http");
 
 const express = require("express");
-const { delay, find } = require("lodash");
+const { delay } = require("lodash");
 const tracer = require("../tracer");
 const middlewares = require("./middlewares");
 
@@ -116,27 +116,11 @@ class Server {
     });
   }
 
-  _getFixtureMatching(method, url) {
-    return (
-      this._mocks.behaviors.current &&
-      find(this._mocks.behaviors.current[method], fixture => fixture.route.match(url))
-    );
-  }
-
   _fixturesMiddleware(req, res, next) {
-    const fixture = this._getFixtureMatching(req.method, req.url);
+    const fixture = this._mocks.behaviors.current.getRequestMatchingFixture(req);
     if (fixture) {
       delay(() => {
-        // TODO, add property to fixtures indicating type
-        if (typeof fixture.response === "function") {
-          tracer.debug(`Fixture response is a function, executing response | ${req.id}`);
-          req.params = fixture.route.match(req.url);
-          fixture.response(req, res, next);
-        } else {
-          tracer.debug(`Sending fixture | ${req.id}`);
-          res.status(fixture.response.status);
-          res.send(fixture.response.body);
-        }
+        fixture.handleRequest(req, res, next);
       }, this._settings.get("delay"));
     } else {
       next();

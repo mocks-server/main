@@ -12,8 +12,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const Boom = require("boom");
 
-const FilesHandlerMocks = require("./FilesHandler.mocks.js");
 const CoreMocks = require("../Core.mocks.js");
+const FilesHandlerMocks = require("./FilesHandler.mocks.js");
+const FixturesParserMocks = require("./FixturesParser.mocks.js");
+const AllFixturesMocks = require("./Fixtures.mocks.js");
 
 const Behaviors = require("../../../../src/mocks/Behaviors");
 const tracer = require("../../../../src/tracer");
@@ -25,6 +27,10 @@ describe("Behaviors", () => {
   let coreInstance;
   let filesHandlerMock;
   let filesHandlerInstance;
+  let fixturesParserMock;
+  let fixturesParserInstance;
+  let allFixturesMock;
+  let allFixturesInstance;
   let behaviors;
 
   beforeEach(() => {
@@ -32,11 +38,16 @@ describe("Behaviors", () => {
     sandbox.stub(Boom, "badData").returns(fooBoomError);
     filesHandlerMock = new FilesHandlerMocks();
     filesHandlerInstance = filesHandlerMock.stubs.instance;
+    fixturesParserMock = new FixturesParserMocks();
+    fixturesParserInstance = fixturesParserMock.stubs.instance;
+    allFixturesMock = new AllFixturesMocks();
+    allFixturesInstance = allFixturesMock.stubs.instance;
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
     coreInstance.settings.get.withArgs("behavior").returns("behavior1");
     sandbox.stub(tracer, "warn");
     sandbox.stub(tracer, "silly");
+    sandbox.stub(tracer, "debug");
     behaviors = new Behaviors(
       filesHandlerInstance,
       coreInstance.settings,
@@ -53,30 +64,30 @@ describe("Behaviors", () => {
   describe("when initializated", () => {
     it("should set as current the first one behavior found if no behavior is defined", async () => {
       coreInstance.settings.get.withArgs("behavior").returns(undefined);
-      await behaviors.init();
+      await behaviors.init(fixturesParserInstance, allFixturesInstance);
       expect(behaviors.currentName).toEqual("behavior1");
     });
 
     it("should trace an error if selected behavior is not found in behaviors", async () => {
       coreInstance.settings.get.withArgs("behavior").returns("foo");
-      await behaviors.init();
+      await behaviors.init(fixturesParserInstance, allFixturesInstance);
       expect(tracer.warn.getCall(0).args[0]).toEqual(
         expect.stringContaining('Defined behavior "foo" was not found')
       );
     });
   });
 
-  describe("when core emits load:mocks", () => {
-    it("should process mocks again", async () => {
-      await behaviors.init();
+  describe("when core emits load:fixtures", () => {
+    it("should process behaviors again", async () => {
+      await behaviors.init(fixturesParserInstance, allFixturesInstance);
       coreInstance._eventEmitter.on.getCall(0).args[1]();
-      expect(tracer.silly.callCount).toEqual(2);
+      expect(tracer.debug.getCall(1).args[0]).toEqual("Processing behaviors");
     });
   });
 
   describe("when core emits a change:settings event", () => {
     it("should set new behavior as current one if behavior has changed", async () => {
-      await behaviors.init();
+      await behaviors.init(fixturesParserInstance, allFixturesInstance);
       coreInstance._eventEmitter.on.getCall(1).args[1]({
         behavior: "behavior2"
       });
@@ -84,7 +95,7 @@ describe("Behaviors", () => {
     });
 
     it("should do nothing if behavior has not changed", async () => {
-      await behaviors.init();
+      await behaviors.init(fixturesParserInstance, allFixturesInstance);
       coreInstance._eventEmitter.on.getCall(1).args[1]({});
       expect(behaviors.currentName).toEqual("behavior1");
     });
@@ -92,7 +103,7 @@ describe("Behaviors", () => {
 
   describe("current setter", () => {
     it("should throw an error if behavior to set is not found in behaviors", async () => {
-      await behaviors.init();
+      await behaviors.init(fixturesParserInstance, allFixturesInstance);
       try {
         behaviors.current = "foo";
       } catch (err) {
@@ -101,117 +112,51 @@ describe("Behaviors", () => {
     });
 
     it("should change the current selected behavior", async () => {
-      await behaviors.init();
+      await behaviors.init(fixturesParserInstance, allFixturesInstance);
       behaviors.current = "behavior2";
-      expect(behaviors.current).toEqual({
-        POST: {
-          "/api/foo/foo-uri-2": {
-            route: "foo-route-parser",
-            response: {
-              status: 422,
-              body: {
-                fooProperty2: "foo2"
-              }
-            }
-          }
-        }
-      });
+      expect(behaviors.current.name).toEqual("behavior2");
     });
   });
 
   describe("current getter", () => {
-    it("should return the current selected behavior", async () => {
-      await behaviors.init();
-      expect(behaviors.current).toEqual({
-        POST: {
-          "/api/foo/foo-uri": {
-            route: "foo-route-parser",
-            response: {
-              status: 200,
-              body: {
-                fooProperty: "foo"
-              }
-            }
-          }
-        }
-      });
-    });
-
     it("should return the first behavior if current was not set", async () => {
-      await behaviors.init();
-      expect(behaviors.current).toEqual({
-        POST: {
-          "/api/foo/foo-uri": {
-            route: "foo-route-parser",
-            response: {
-              status: 200,
-              body: {
-                fooProperty: "foo"
-              }
-            }
-          }
-        }
-      });
+      await behaviors.init(fixturesParserInstance, allFixturesInstance);
+      expect(behaviors.current.name).toEqual("behavior1");
     });
   });
 
   describe("count getter", () => {
     it("should return the number of behaviors", async () => {
-      await behaviors.init();
+      await behaviors.init(fixturesParserInstance, allFixturesInstance);
       expect(behaviors.count).toEqual(2);
     });
   });
 
   describe("currentTotalFixtures getter", () => {
     it("should return the total number of fixtures of currently selected behavior", async () => {
-      await behaviors.init();
-      expect(behaviors.currentTotalFixtures).toEqual(1);
+      await behaviors.init(fixturesParserInstance, allFixturesInstance);
+      expect(behaviors.currentTotalFixtures).toEqual(behaviors.current.fixtures.length);
     });
   });
 
   describe("currentFromCollection getter", () => {
-    it("should return the current selected behavior in collection format", async () => {
-      await behaviors.init();
-      expect(behaviors.currentFromCollection).toEqual({
-        fixtures: [
-          {
-            method: "GET",
-            response: { body: { fooProperty: "foo" }, status: 200 },
-            url: "/api/foo/foo-uri"
-          }
-        ],
-        name: "behavior1"
-      });
+    it("should return the current selected behavior", async () => {
+      await behaviors.init(fixturesParserInstance, allFixturesInstance);
+      expect(behaviors.currentFromCollection.name).toEqual("behavior1");
     });
   });
 
   describe("all getter", () => {
-    it("should return all behaviors", async () => {
-      await behaviors.init();
-      expect(behaviors.all).toEqual({
-        behavior1: {
-          POST: {
-            "/api/foo/foo-uri": {
-              response: { body: { fooProperty: "foo" }, status: 200 },
-              route: "foo-route-parser"
-            }
-          }
-        },
-        behavior2: {
-          POST: {
-            "/api/foo/foo-uri-2": {
-              response: { body: { fooProperty2: "foo2" }, status: 422 },
-              route: "foo-route-parser"
-            }
-          }
-        }
-      });
+    it("should return behaviors object", async () => {
+      await behaviors.init(fixturesParserInstance, allFixturesInstance);
+      expect(behaviors.all.behavior1.name).toEqual("behavior1");
+      expect(behaviors.all.behavior2.name).toEqual("behavior2");
     });
   });
 
   describe("names getter", () => {
     it("should return all behaviors names", async () => {
-      await behaviors.init();
+      await behaviors.init(fixturesParserInstance, allFixturesInstance);
       expect(behaviors.names).toEqual(["behavior1", "behavior2"]);
     });
   });
@@ -219,36 +164,15 @@ describe("Behaviors", () => {
   describe("currentName getter", () => {
     it("should return current behavior name", async () => {
       coreInstance.settings.get.withArgs("behavior").returns("behavior2");
-      await behaviors.init();
+      await behaviors.init(fixturesParserInstance, allFixturesInstance);
       expect(behaviors.currentName).toEqual("behavior2");
     });
   });
 
   describe("collection getter", () => {
     it("should return all behaviors in collection format", async () => {
-      await behaviors.init();
-      expect(behaviors.collection).toEqual([
-        {
-          fixtures: [
-            {
-              method: "GET",
-              response: { body: { fooProperty: "foo" }, status: 200 },
-              url: "/api/foo/foo-uri"
-            }
-          ],
-          name: "behavior1"
-        },
-        {
-          fixtures: [
-            {
-              method: "POST",
-              response: { body: { fooProperty2: "foo2" }, status: 422 },
-              url: "/api/foo/foo-uri-2"
-            }
-          ],
-          name: "behavior2"
-        }
-      ]);
+      await behaviors.init(fixturesParserInstance, allFixturesInstance);
+      expect(behaviors.collection.length).toEqual(2);
     });
   });
 });

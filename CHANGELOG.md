@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [To be deprecated]
 - Deprecate options "features", "behaviors" and "feature".
 - Remove "features" getter from Server
+- Remove "currentFromCollection" and "currentTotalFixtures" getters from Behaviors.
 
 ## [unreleased]
 ### Added

@@ -8,12 +8,24 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-module.exports = {
-  INIT: "init",
-  START: "start",
-  LOAD_FILES: "load:files",
-  LOAD_FIXTURES: "load:fixtures",
-  LOAD_MOCKS: "load:mocks",
-  LOAD_BEHAVIORS: "load:behaviors",
-  CHANGE_SETTINGS: "change:settings"
+const INITIAL_USERS = [
+  {
+    id: 1,
+    name: "John Doe"
+  },
+  {
+    id: 2,
+    name: "Jane Doe"
+  }
+];
+
+const getFoo2Users = {
+  url: "/api/users",
+  method: "GET",
+  response: {
+    status: 200,
+    body: INITIAL_USERS
+  }
 };
+
+module.exports = getFoo2Users;

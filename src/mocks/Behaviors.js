@@ -13,45 +13,39 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const Boom = require("boom");
 
-const { flatten, map, each, compact } = require("lodash");
+const { compact } = require("lodash");
 
 const tracer = require("../tracer");
+const Behavior = require("./Behavior");
 
-const { LOAD_MOCKS, LOAD_FILES, CHANGE_SETTINGS } = require("../eventNames");
+const { LOAD_MOCKS, LOAD_BEHAVIORS, LOAD_FIXTURES, CHANGE_SETTINGS } = require("../eventNames");
 
 class Behaviors {
   constructor(filesHandler, settings, eventEmitter) {
     this._filesHandler = filesHandler;
     this._settings = settings;
     this._eventEmitter = eventEmitter;
-    this._onLoadFiles = this._onLoadFiles.bind(this);
+    this._onLoadFixtures = this._onLoadFixtures.bind(this);
     this._onChangeSettings = this._onChangeSettings.bind(this);
+    this._noBehavior = new Behavior();
   }
 
-  init() {
-    this._loadBehaviors();
-    this._eventEmitter.on(LOAD_FILES, this._onLoadFiles);
+  async init(fixturesParser, allFixtures) {
+    this._fixturesParser = fixturesParser;
+    this._allFixtures = allFixtures;
+    this._eventEmitter.on(LOAD_FIXTURES, this._onLoadFixtures);
     this._eventEmitter.on(CHANGE_SETTINGS, this._onChangeSettings);
-    return Promise.resolve();
+    await this._noBehavior.init(this._fixturesParser);
+    return this._loadBehaviors();
   }
 
-  _loadBehaviors() {
-    tracer.debug("Processing mocks");
-    this._behaviors = this._getBehaviors(this._filesHandler.files);
-    this._totalFixtures = this._getTotalFixtures(this._filesHandler.files);
-    this._collection = this._getCollection(this._filesHandler.files);
-    this._names = this._getNames(this._collection);
+  async _loadBehaviors() {
+    tracer.debug("Processing behaviors");
+    this._collection = await this._getBehaviorsCollection();
+    this._allFixtures.addFromBehaviors(this._collection);
+    this._behaviors = this._getBehaviorsObject();
+    this._names = Object.keys(this._behaviors);
     this._current = this._settings.get("behavior") || this._names[0];
-    tracer.silly(
-      `Mocks details: ${JSON.stringify(
-        {
-          totalFixtures: this._totalFixtures,
-          current: this._current
-        },
-        null,
-        2
-      )}`
-    );
 
     try {
       this._checkCurrent(this._current);
@@ -61,10 +55,13 @@ class Behaviors {
       );
       this._current = this._names[0];
     }
-    this._eventEmitter.emit(LOAD_MOCKS, this._behaviors);
+
+    this._eventEmitter.emit(LOAD_BEHAVIORS);
+    this._eventEmitter.emit(LOAD_MOCKS);
+    return Promise.resolve();
   }
 
-  _onLoadFiles() {
+  _onLoadFixtures() {
     this._loadBehaviors();
   }
 
@@ -74,52 +71,40 @@ class Behaviors {
     }
   }
 
-  _getCollection(mocksFolderFiles) {
-    return compact(
-      flatten(
-        map(mocksFolderFiles, mocksFolderFile =>
-          map(mocksFolderFile, (behavior, behaviorName) => {
-            if (behavior.fixtures) {
-              return {
-                name: behaviorName,
-                fixtures: behavior.fixtures
-              };
-            }
-            return null;
-          })
-        )
-      )
-    );
-  }
-
-  _getBehaviors(mocksFolderFiles) {
+  _getBehaviorsCollection() {
+    const mocksFolderContents = this._filesHandler.contents;
+    const initBehaviors = [];
     const behaviors = {};
-    each(mocksFolderFiles, mocksFolderFile => {
-      each(mocksFolderFile, (behavior, behaviorName) => {
-        // TODO, check if current object is a behavior with common method
-        if (behavior.methods) {
-          behaviors[behaviorName] = behavior.methods;
-        }
-      });
+    mocksFolderContents.forEach(object => {
+      // TODO, register more behavior parsers
+      if (object.isMocksServerBehavior) {
+        initBehaviors.push(
+          object
+            .init(this._fixturesParser)
+            .then(initedBehavior => {
+              initedBehavior.name = initedBehavior.name || object._lastPath;
+              behaviors[initedBehavior.name] = initedBehavior.name;
+              return Promise.resolve(initedBehavior);
+            })
+            .catch(err => {
+              tracer.error(`Error initializing behavior ${object}`);
+              tracer.debug(err.toString());
+              return Promise.resolve();
+            })
+        );
+      }
     });
-    return behaviors;
+    return Promise.all(initBehaviors).then(behaviors => {
+      return Promise.resolve(compact(behaviors));
+    });
   }
 
-  _getTotalFixtures(mocksFolderFiles) {
-    const totalFixtures = {};
-    each(mocksFolderFiles, mocksFolderFile => {
-      each(mocksFolderFile, (behavior, behaviorName) => {
-        // TODO, check if current object is a behavior with common method
-        if (behavior.totalFixtures) {
-          totalFixtures[behaviorName] = behavior.totalFixtures;
-        }
-      });
+  _getBehaviorsObject() {
+    const behaviorsByName = {};
+    this._collection.map(behavior => {
+      behaviorsByName[behavior.name] = behavior;
     });
-    return totalFixtures;
-  }
-
-  _getNames(collection) {
-    return collection.map(item => item.name);
+    return behaviorsByName;
   }
 
   _checkCurrent(behaviorName) {
@@ -134,15 +119,7 @@ class Behaviors {
   }
 
   get current() {
-    return this._behaviors[this._current];
-  }
-
-  get currentTotalFixtures() {
-    return this._totalFixtures[this._current];
-  }
-
-  get currentFromCollection() {
-    return this._collection.find(item => item.name === this._current);
+    return this._behaviors[this._current] || this._noBehavior;
   }
 
   get all() {
@@ -163,6 +140,16 @@ class Behaviors {
 
   get collection() {
     return this._collection;
+  }
+
+  // TODO, deprecate
+  get currentFromCollection() {
+    return this.current;
+  }
+
+  // TODO, deprecate
+  get currentTotalFixtures() {
+    return this.current.fixtures.length;
   }
 }
 

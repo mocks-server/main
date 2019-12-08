@@ -11,18 +11,26 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const Behaviors = require("./Behaviors");
 const FilesHandler = require("./FilesHandler");
+const FixturesParser = require("./FixturesParser");
+const FixtureParser = require("./FixtureParser");
+const Fixtures = require("./Fixtures");
 
 class Mocks {
   constructor(settings, eventEmitter) {
     this._settings = settings;
     this._eventEmitter = eventEmitter;
+    this._fixturesParser = new FixturesParser();
+    this._fixturesParser.addParser(FixtureParser);
     this._filesHandler = new FilesHandler(this._settings, this._eventEmitter);
+    this._fixtures = new Fixtures(this._filesHandler, this._settings, this._eventEmitter);
     this._behaviors = new Behaviors(this._filesHandler, this._settings, this._eventEmitter);
   }
 
   async init() {
     await this._filesHandler.init();
-    return this._behaviors.init();
+    await this._fixtures.init(this._fixturesParser);
+    await this._behaviors.init(this._fixturesParser, this._fixtures);
+    return Promise.resolve();
   }
 
   async stop() {
@@ -35,6 +43,10 @@ class Mocks {
 
   get behaviors() {
     return this._behaviors;
+  }
+
+  get fixtures() {
+    return this._fixtures;
   }
 }
 

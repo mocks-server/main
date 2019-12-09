@@ -71,4 +71,11 @@ describe("Behaviors", () => {
       expect(mocks.behaviors).toEqual(behaviorsMocks.stubs.instance);
     });
   });
+
+  describe("fixtures getter", () => {
+    it("should return fixtures", async () => {
+      await mocks.init();
+      expect(mocks.fixtures.collection.length).toEqual(0);
+    });
+  });
 });

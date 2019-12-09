@@ -33,7 +33,7 @@ class FixturesParser {
       fixtures.map(fixture => {
         const Parser = this._getParser(fixture);
         if (Parser) {
-          tracer.silly("Creating fixture from identified object");
+          tracer.debug(`Creating fixture with parser ${Parser.displayName}`);
           return new Parser(fixture);
         } else {
           tracer.silly("Fixture not identified by any registered fixtures parser");

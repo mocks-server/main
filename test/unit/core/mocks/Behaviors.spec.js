@@ -80,7 +80,7 @@ describe("Behaviors", () => {
       const originalInitFunc = FilesHandlerMocks.contents[0].init;
       FilesHandlerMocks.contents[0].init = () => Promise.reject(new Error("foo error"));
       await behaviors.init(fixturesParser, allFixturesInstance);
-      expect(tracer.debug.getCall(1).args[0]).toEqual(expect.stringContaining("foo error"));
+      expect(tracer.debug.getCall(2).args[0]).toEqual(expect.stringContaining("foo error"));
       FilesHandlerMocks.contents[0].init = originalInitFunc;
     });
   });
@@ -89,7 +89,7 @@ describe("Behaviors", () => {
     it("should process behaviors again", async () => {
       await behaviors.init(fixturesParser, allFixturesInstance);
       coreInstance._eventEmitter.on.getCall(0).args[1]();
-      expect(tracer.debug.getCall(1).args[0]).toEqual("Processing behaviors");
+      expect(tracer.debug.getCall(3).args[0]).toEqual("Processing behaviors");
     });
   });
 

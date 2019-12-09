@@ -33,6 +33,10 @@ class Fixture {
     return false;
   }
 
+  static get displayName() {
+    return "mocks-server-fixture";
+  }
+
   constructor(fixture) {
     this._method = fixture.method;
     this._url = fixture.url;

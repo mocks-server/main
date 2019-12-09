@@ -266,88 +266,38 @@ describe("Server", () => {
       method: "get",
       url: "foo-route"
     };
-    let statusSpy;
-    let sendSpy;
     let resMock;
     let nextSpy;
 
     beforeEach(async () => {
-      statusSpy = sandbox.spy();
-      sendSpy = sandbox.spy();
-      resMock = {
-        status: statusSpy,
-        send: sendSpy
-      };
+      resMock = {};
       nextSpy = sandbox.spy();
       libsMocks.stubs.http.createServer.onListen.returns(null);
       coreInstance.settings.get.withArgs("delay").returns(0);
     });
 
-    it("should call next if does not found a fixture in current feature matching the request url", async () => {
+    it("should call to current fixture matching handleRequest method", async () => {
+      expect.assertions(3);
+      const handleRequestSpy = sandbox.spy();
+      mocksMocks.stubs.instance.behaviors.current.getRequestMatchingFixture.returns({
+        handleRequest: handleRequestSpy
+      });
       await server.start();
 
       server._fixturesMiddleware(fooRequest, resMock, nextSpy);
+      await wait(10);
+      expect(handleRequestSpy.getCall(0).args[0]).toEqual(fooRequest);
+      expect(handleRequestSpy.getCall(0).args[1]).toEqual(resMock);
+      expect(handleRequestSpy.getCall(0).args[2]).toEqual(nextSpy);
+    });
+
+    it("should call next if no matching fixture is found", async () => {
+      mocksMocks.stubs.instance.behaviors.current.getRequestMatchingFixture.returns(null);
+      await server.start();
+
+      server._fixturesMiddleware(fooRequest, resMock, nextSpy);
+      await wait(10);
       expect(nextSpy.callCount).toEqual(1);
-    });
-
-    it("should call to response status method to set the matching fixture status code", async () => {
-      await server.start();
-      mocksMocks.stubs.instance.behaviors.current = {
-        get: {
-          "foo-route": {
-            route: {
-              match: () => true
-            },
-            response: {
-              status: 200
-            }
-          }
-        }
-      };
-      server._fixturesMiddleware(fooRequest, resMock, nextSpy);
-      await wait(200);
-      expect(resMock.status.getCall(0).args[0]).toEqual(200);
-    });
-
-    it("should call to response send method passing the matching fixture body", async () => {
-      const fooBody = {
-        foo: "foo-data"
-      };
-      await server.start();
-      mocksMocks.stubs.instance.behaviors.current = {
-        get: {
-          "foo-route": {
-            route: {
-              match: () => true
-            },
-            response: {
-              status: 200,
-              body: fooBody
-            }
-          }
-        }
-      };
-      server._fixturesMiddleware(fooRequest, resMock, nextSpy);
-      await wait(200);
-      expect(resMock.send.getCall(0).args[0]).toEqual(fooBody);
-    });
-
-    it("should call to fixture response method passing all request data if it is a function", async () => {
-      const responseSpy = sandbox.spy();
-      await server.start();
-      mocksMocks.stubs.instance.behaviors.current = {
-        get: {
-          "foo-route": {
-            route: {
-              match: () => true
-            },
-            response: responseSpy
-          }
-        }
-      };
-      server._fixturesMiddleware(fooRequest, resMock, nextSpy);
-      await wait(200);
-      expect(responseSpy.calledWith(fooRequest, resMock, nextSpy)).toEqual(true);
     });
   });
 });

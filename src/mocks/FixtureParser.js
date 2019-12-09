@@ -25,7 +25,6 @@ class Fixture {
     if (
       fixture.url &&
       fixture.method &&
-      fixture.url &&
       fixture.response &&
       (isFunction(fixture.response) || fixture.response.status)
     ) {

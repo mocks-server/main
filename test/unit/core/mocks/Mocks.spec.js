@@ -44,7 +44,7 @@ describe("Behaviors", () => {
   });
 
   describe("init method", () => {
-    it("should init filesHandler and behaviors", async () => {
+    it("should init filesHandler", async () => {
       expect.assertions(2);
       await mocks.init();
       expect(filesHandlerMocks.stubs.instance.init.callCount).toEqual(1);

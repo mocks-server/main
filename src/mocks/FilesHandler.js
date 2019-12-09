@@ -123,7 +123,7 @@ class FilesHandler {
           }
         });
         // Add also the full object, maybe it is a single export
-        this._addPathToLoadedObject(files, fileName);
+        this._addPathToLoadedObject(files, fileName, fileName.split("/").pop());
         contents.push(files);
       }
     } else {

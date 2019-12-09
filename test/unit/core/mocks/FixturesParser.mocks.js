@@ -20,7 +20,7 @@ class Mock {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      getCollection: this._sandbox.stub().returns([])
+      getCollection: this._sandbox.stub()
     };
 
     FixturesParser.mockImplementation(() => this._stubs);

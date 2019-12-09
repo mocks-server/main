@@ -87,7 +87,7 @@ class Behaviors {
               return Promise.resolve(initedBehavior);
             })
             .catch(err => {
-              tracer.error(`Error initializing behavior ${object}`);
+              tracer.error("Error initializing behavior");
               tracer.debug(err.toString());
               return Promise.resolve();
             })

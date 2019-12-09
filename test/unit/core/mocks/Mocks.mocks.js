@@ -23,7 +23,9 @@ class Mock {
       start: this._sandbox.stub().resolves(),
       stop: this._sandbox.stub(),
       behaviors: {
-        current: {}
+        current: {
+          getRequestMatchingFixture: this._sandbox.stub()
+        }
       }
     };
 

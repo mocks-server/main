@@ -32,7 +32,6 @@ class Fixtures {
 
   addFromBehaviors(behaviorsCollection) {
     behaviorsCollection.forEach(behavior => {
-      console.log(behavior);
       behavior.fixtures.forEach(fixture => {
         const existingFixture = this.collection.find(
           allFixturesElement => fixture.id === allFixturesElement.id
@@ -60,7 +59,6 @@ class Fixtures {
   }
 
   _getFixtures() {
-    console.log(this._filesHandler.contents);
     const fixtures = new FixturesGroup(this._filesHandler.contents);
     return fixtures.init(this._fixturesParser);
   }

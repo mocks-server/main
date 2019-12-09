@@ -41,6 +41,10 @@ class Mocks {
     await this._filesHandler.start();
   }
 
+  addFixturesParser(Parser) {
+    this._fixturesParser.addParser(Parser);
+  }
+
   get behaviors() {
     return this._behaviors;
   }

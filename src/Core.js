@@ -66,12 +66,26 @@ class Core {
     return this._startPluginsPromise;
   }
 
+  // TODO, deprecate method, use addRouter
   addCustomRouter(path, router) {
     return this._server.addCustomRouter(path, router);
   }
 
+  addRouter(path, router) {
+    return this.addCustomRouter(path, router);
+  }
+
+  // TODO, deprecate method, use addSetting
   addCustomSetting(option) {
     return this._settings.addCustom(option);
+  }
+
+  addSetting(option) {
+    return this.addCustomSetting(option);
+  }
+
+  addFixturesParser(Parser) {
+    return this._mocks.addFixturesParser(Parser);
   }
 
   // Listeners
@@ -123,6 +137,10 @@ class Core {
 
   get behaviors() {
     return this._mocks.behaviors;
+  }
+
+  get fixtures() {
+    return this._mocks.fixtures;
   }
 
   // TODO, deprecate getter

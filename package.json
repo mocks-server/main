@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/core",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Pluggable mocks server supporting multiple api behaviors",
   "keywords": [
     "mocks",

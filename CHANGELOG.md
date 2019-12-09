@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Deprecate options "features", "behaviors" and "feature".
 - Remove "features" getter from Server
 - Remove "currentFromCollection" and "currentTotalFixtures" getters from Behaviors.
+- Remove "addCustomRouter" method. Use "addRouter".
+- Remove "addCustomSetting" method. Use "addSetting".
 
 ## [unreleased]
 ### Added
@@ -15,9 +17,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.2.0] - 2019-12-09
+### Added
+- Add "fixtures" getter, returning all found fixtures in mocks folder, and inside behaviors.
+- Add "addFixturesParser" method, which allows to use fixtures with custom formats and handle responses.
+- Add "id" property to fixtures, which will be unique for each different fixture.
+- Add "matchId" property to fixtures, which will be the same for fixtures handling same requests.
+
+### Changed
+- Add "fixtures" getter, returning all found fixtures in mocks folder, and inside behaviors.
+- Files handler now supports creating fixtures or behaviors at any folder level.
+- Files handler now supports files exporting a single behavior or fixture.
+- Changed "Behaviors" getters. Data now is not parsed, and returns directly fixtures collections, or, in the case of "all" getter, it returns and object containing behavior names as "keys", containing respective fixtures collections. (It is not considered as a breaking change, as it is an experimental interface yet, as it is indicated in the documentation)
+
 ## [1.1.0] - 2019-12-07
 ### Changed
-- "behaviors" option renamed to "path". Old option still working due to backward compatibility.
 - "path" option has "mocks" value by default. The server will create path if it does not exist.
 
 ### Fixed

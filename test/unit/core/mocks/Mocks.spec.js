@@ -66,6 +66,13 @@ describe("Behaviors", () => {
     });
   });
 
+  describe("addFixturesParser method", () => {
+    it("should add Parser to fixturesParser", async () => {
+      mocks.addFixturesParser({});
+      expect(mocks._fixturesParser._parsers.length).toEqual(2);
+    });
+  });
+
   describe("behaviors getter", () => {
     it("should return behaviors", async () => {
       expect(mocks.behaviors).toEqual(behaviorsMocks.stubs.instance);

@@ -132,10 +132,31 @@ describe("Settings", () => {
     });
   });
 
+  describe("addRouter method", () => {
+    it("should add router to server", () => {
+      core.addRouter();
+      expect(serverInstance.addCustomRouter.callCount).toEqual(1);
+    });
+  });
+
   describe("addCustomSetting method", () => {
     it("should add custom setting to settings", () => {
       core.addCustomSetting();
       expect(settingsInstance.addCustom.callCount).toEqual(1);
+    });
+  });
+
+  describe("addSetting method", () => {
+    it("should add setting to settings", () => {
+      core.addSetting();
+      expect(settingsInstance.addCustom.callCount).toEqual(1);
+    });
+  });
+
+  describe("addFixturesParser method", () => {
+    it("should add fixturesParser to mocks", () => {
+      core.addFixturesParser();
+      expect(mocksInstance.addFixturesParser.callCount).toEqual(1);
     });
   });
 
@@ -240,6 +261,12 @@ describe("Settings", () => {
   describe("features getter", () => {
     it("should return mocks behaviors", () => {
       expect(core.features).toEqual(mocksInstance.behaviors);
+    });
+  });
+
+  describe("fixtures getter", () => {
+    it("should return mocks fixtures", () => {
+      expect(core.fixtures).toEqual(mocksInstance.fixtures);
     });
   });
 });

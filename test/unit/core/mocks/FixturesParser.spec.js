@@ -77,4 +77,47 @@ describe("FixturesParser", () => {
       );
     });
   });
+
+  describe("custom parsers", () => {
+    class CustomParser {
+      static recognize(fixture) {
+        return !!fixture.isCustom;
+      }
+
+      static get displayName() {
+        return "custom-fixture";
+      }
+
+      constructor(fixture) {
+        this._id = "foo-id";
+        this._fixture = fixture;
+      }
+
+      get id() {
+        return this._id;
+      }
+    }
+
+    it("should be used to parse fixtures when recognize them", () => {
+      expect.assertions(2);
+      fixturesParser.addParser(CustomParser);
+      const collection = fixturesParser.getCollection([
+        {
+          isCustom: true
+        },
+        {
+          url: "/api/foo/foo-uri",
+          method: "GET",
+          response: {
+            status: 200,
+            body: {
+              fooProperty: "foo"
+            }
+          }
+        }
+      ]);
+      expect(collection.length).toEqual(2);
+      expect(collection[0].id).toEqual("foo-id");
+    });
+  });
 });

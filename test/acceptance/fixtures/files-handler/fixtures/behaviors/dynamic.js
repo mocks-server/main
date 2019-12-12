@@ -8,51 +8,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const INITIAL_USERS = [
-  {
-    id: 1,
-    name: "John Doe"
-  },
-  {
-    id: 2,
-    name: "Jane Doe"
-  }
-];
+const INITIAL_USERS = require("../initialUsers");
+const standard = require("../../standard");
 
-const getFooUsers = {
-  url: "/api/users",
-  method: "GET",
-  response: {
-    status: 200,
-    body: INITIAL_USERS
-  }
-};
-
-const getFooUser = {
-  url: "/api/users/:id",
-  method: "GET",
-  response: {
-    status: 200,
-    body: {
-      id: 1,
-      name: "John Doe"
-    }
-  }
-};
-
-const getFooUser2 = {
-  url: "/api/users/:id",
-  method: "GET",
-  response: {
-    status: 200,
-    body: {
-      id: 2,
-      name: "Jane Doe"
-    }
-  }
-};
-
-const getFooRealUser = {
+const getRealUser = {
   url: "/api/users/:id",
   method: "GET",
   response: (req, res) => {
@@ -70,9 +29,4 @@ const getFooRealUser = {
   }
 };
 
-module.exports = {
-  getFooUsers,
-  getFooUser,
-  getFooUser2,
-  getFooRealUser
-};
+module.exports = standard.extend([getRealUser]);

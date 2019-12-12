@@ -17,6 +17,7 @@ const FilesHandler = require("../../../../src/mocks/FilesHandler");
 
 const INITIAL_FILES = {
   file1: {
+    _mocksServer_isFile: true,
     behavior1: new Behavior([
       {
         url: "/api/foo/foo-uri",
@@ -31,6 +32,7 @@ const INITIAL_FILES = {
     ])
   },
   file2: {
+    _mocksServer_isFile: true,
     behavior2: new Behavior([
       {
         url: "/api/foo/foo-uri-2",
@@ -47,14 +49,15 @@ const INITIAL_FILES = {
   folder: {
     folder2: {
       file: {
+        _mocksServer_isFile: true,
         fooProperty: ""
       }
     }
   }
 };
 
-INITIAL_FILES.file1.behavior1._lastPath = "behavior1";
-INITIAL_FILES.file2.behavior2._lastPath = "behavior2";
+INITIAL_FILES.file1.behavior1._mocksServer_lastPath = "behavior1";
+INITIAL_FILES.file2.behavior2._mocksServer_lastPath = "behavior2";
 
 const INITIAL_CONTENTS = [INITIAL_FILES.file1.behavior1, INITIAL_FILES.file2.behavior2, {}];
 

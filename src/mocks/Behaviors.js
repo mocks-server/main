@@ -82,7 +82,7 @@ class Behaviors {
           object
             .init(this._fixturesParser)
             .then(initedBehavior => {
-              initedBehavior.name = initedBehavior.name || object._lastPath;
+              initedBehavior.name = initedBehavior.name || object._mocksServer_lastPath;
               behaviors[initedBehavior.name] = initedBehavior.name;
               return Promise.resolve(initedBehavior);
             })
@@ -92,6 +92,10 @@ class Behaviors {
               return Promise.resolve();
             })
         );
+      } else {
+        delete object._mocksServer_lastPath;
+        delete object._mocksServer_fullPath;
+        delete object._mocksServer_isFile;
       }
     });
     return Promise.all(initBehaviors).then(behaviors => {

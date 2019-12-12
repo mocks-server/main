@@ -93,7 +93,7 @@ class FilesHandler {
       recursive: true,
       resolve: fileContent => {
         try {
-          fileContent._isFile = true;
+          fileContent._mocksServer_isFile = true;
         } catch (error) {}
         return fileContent;
       }
@@ -105,15 +105,15 @@ class FilesHandler {
 
   _addPathToLoadedObject(object, fullPath, lastPath) {
     try {
-      object._fullPath = fullPath;
-      object._lastPath = lastPath;
+      object._mocksServer_fullPath = fullPath;
+      object._mocksServer_lastPath = lastPath;
     } catch (error) {}
     return object;
   }
 
   _getContents(files, fileName = "") {
     const contents = [];
-    if (files._isFile || !isObject(files)) {
+    if (files._mocksServer_isFile || !isObject(files)) {
       if (isObject(files)) {
         // module exports is an object, add path to each one.
         Object.keys(files).map(key => {

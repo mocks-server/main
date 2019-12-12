@@ -65,7 +65,7 @@ describe("Behaviors", () => {
 
   const fooFiles = {
     file1: {
-      _isFile: true,
+      _mocksServer_isFile: true,
       behavior1: {
         fixtures: [
           {
@@ -96,7 +96,7 @@ describe("Behaviors", () => {
       }
     },
     file2: {
-      _isFile: true,
+      _mocksServer_isFile: true,
       behavior2: {
         fixtures: [
           {
@@ -129,11 +129,11 @@ describe("Behaviors", () => {
     folder: {
       folder2: {
         file: {
-          _isFile: true,
+          _mocksServer_isFile: true,
           fooProperty: ""
         },
         file2: {
-          _isFile: true,
+          _mocksServer_isFile: true,
           fooProperty: {
             foo: "foo"
           }
@@ -190,11 +190,11 @@ describe("Behaviors", () => {
       expect(requireAll.mock.calls[0][0].dirname).toEqual("foo-path");
     });
 
-    it("should require all files adding an _isFile property to their content", async () => {
+    it("should require all files adding a _mocksServer_isFile property to their content", async () => {
       await filesHandler.init();
       expect(requireAll.mock.calls[0][0].resolve({ foo: "foo" })).toEqual({
         foo: "foo",
-        _isFile: true
+        _mocksServer_isFile: true
       });
     });
 
@@ -258,8 +258,8 @@ describe("Behaviors", () => {
       await filesHandler.init();
       expect(filesHandler.contents).toEqual([
         {
-          _fullPath: "/file1/behavior1",
-          _lastPath: "behavior1",
+          _mocksServer_fullPath: "/file1/behavior1",
+          _mocksServer_lastPath: "behavior1",
           fixtures: [
             {
               url: "/api/foo/foo-uri",
@@ -288,12 +288,12 @@ describe("Behaviors", () => {
           }
         },
         {
-          _isFile: true,
-          _fullPath: "/file1",
-          _lastPath: "file1",
+          _mocksServer_isFile: true,
+          _mocksServer_fullPath: "/file1",
+          _mocksServer_lastPath: "file1",
           behavior1: {
-            _fullPath: "/file1/behavior1",
-            _lastPath: "behavior1",
+            _mocksServer_fullPath: "/file1/behavior1",
+            _mocksServer_lastPath: "behavior1",
             fixtures: [
               {
                 url: "/api/foo/foo-uri",
@@ -323,8 +323,8 @@ describe("Behaviors", () => {
           }
         },
         {
-          _fullPath: "/file2/behavior2",
-          _lastPath: "behavior2",
+          _mocksServer_fullPath: "/file2/behavior2",
+          _mocksServer_lastPath: "behavior2",
           fixtures: [
             {
               url: "/api/foo/foo-uri-2",
@@ -353,12 +353,12 @@ describe("Behaviors", () => {
           }
         },
         {
-          _isFile: true,
-          _fullPath: "/file2",
-          _lastPath: "file2",
+          _mocksServer_isFile: true,
+          _mocksServer_fullPath: "/file2",
+          _mocksServer_lastPath: "file2",
           behavior2: {
-            _fullPath: "/file2/behavior2",
-            _lastPath: "behavior2",
+            _mocksServer_fullPath: "/file2/behavior2",
+            _mocksServer_lastPath: "behavior2",
             fixtures: [
               {
                 url: "/api/foo/foo-uri-2",
@@ -388,23 +388,23 @@ describe("Behaviors", () => {
           }
         },
         {
-          _isFile: true,
-          _fullPath: "/folder/folder2/file",
-          _lastPath: "file",
+          _mocksServer_isFile: true,
+          _mocksServer_fullPath: "/folder/folder2/file",
+          _mocksServer_lastPath: "file",
           fooProperty: ""
         },
         {
-          _fullPath: "/folder/folder2/file2/fooProperty",
-          _lastPath: "fooProperty",
+          _mocksServer_fullPath: "/folder/folder2/file2/fooProperty",
+          _mocksServer_lastPath: "fooProperty",
           foo: "foo"
         },
         {
-          _isFile: true,
-          _fullPath: "/folder/folder2/file2",
-          _lastPath: "file2",
+          _mocksServer_isFile: true,
+          _mocksServer_fullPath: "/folder/folder2/file2",
+          _mocksServer_lastPath: "file2",
           fooProperty: {
-            _fullPath: "/folder/folder2/file2/fooProperty",
-            _lastPath: "fooProperty",
+            _mocksServer_fullPath: "/folder/folder2/file2/fooProperty",
+            _mocksServer_lastPath: "fooProperty",
             foo: "foo"
           }
         }

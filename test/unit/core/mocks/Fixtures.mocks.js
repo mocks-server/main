@@ -20,7 +20,7 @@ class Mock {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      addFromBehaviors: this._sandbox.stub().returns()
+      add: this._sandbox.stub().returns()
     };
 
     Fixtures.mockImplementation(() => this._stubs);

@@ -29,12 +29,18 @@ class FixturesParser {
   }
 
   getCollection(fixtures) {
+    const addedFixtures = [];
     return compact(
       fixtures.map(fixture => {
         const Parser = this._getParser(fixture);
         if (Parser) {
           tracer.debug(`Creating fixture with parser ${Parser.displayName}`);
-          return new Parser(fixture);
+          const newFixture = new Parser(fixture);
+          if (addedFixtures.find(existingFixture => existingFixture.id === newFixture.id)) {
+            return null;
+          }
+          addedFixtures.push(newFixture);
+          return newFixture;
         } else {
           tracer.silly("Fixture not identified by any registered fixtures parser");
           return null;

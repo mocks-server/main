@@ -164,6 +164,14 @@ class FilesHandler {
     return this._customRequireCache || require.cache;
   }
 
+  cleanContentsCustomProperties() {
+    this._contents.forEach(content => {
+      delete content._mocksServer_lastPath;
+      delete content._mocksServer_fullPath;
+      delete content._mocksServer_isFile;
+    });
+  }
+
   get files() {
     return this._files;
   }

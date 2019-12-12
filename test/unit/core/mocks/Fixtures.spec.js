@@ -78,9 +78,9 @@ describe("Fixtures", () => {
       );
       await fixtures.init(fixturesParser);
       await filesHandlerInstance.init();
-      expect(fixtures.collection.length).toEqual(1);
+      expect(fixtures.count).toEqual(1);
       await behaviors.init(fixturesParser, fixtures);
-      expect(fixtures.collection.length).toEqual(2);
+      expect(fixtures.count).toEqual(2);
     });
   });
 });

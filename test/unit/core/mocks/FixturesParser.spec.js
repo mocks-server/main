@@ -59,6 +59,32 @@ describe("FixturesParser", () => {
       expect(collection.length).toEqual(1);
     });
 
+    it("should not add twice duplicated fixtures", async () => {
+      const collection = fixturesParser.getCollection([
+        {
+          url: "/api/foo/foo-uri",
+          method: "GET",
+          response: {
+            status: 200,
+            body: {
+              fooProperty: "foo"
+            }
+          }
+        },
+        {
+          url: "/api/foo/foo-uri",
+          method: "GET",
+          response: {
+            status: 200,
+            body: {
+              fooProperty: "foo"
+            }
+          }
+        }
+      ]);
+      expect(collection.length).toEqual(1);
+    });
+
     it("should trace used parser to parse fixtures", async () => {
       fixturesParser.getCollection([
         {

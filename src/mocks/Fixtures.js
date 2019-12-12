@@ -30,19 +30,15 @@ class Fixtures {
     return this._loadFixtures();
   }
 
-  addFromBehaviors(behaviorsCollection) {
-    behaviorsCollection.forEach(behavior => {
-      behavior.fixtures.forEach(fixture => {
-        const existingFixture = this.collection.find(
-          allFixturesElement => fixture.id === allFixturesElement.id
-        );
-        if (!existingFixture) {
-          tracer.verbose(
-            "Added fixture from behavior that was not registered in fixtures collection"
-          );
-          this._fixtures.collection.push(fixture);
-        }
-      });
+  add(fixtures) {
+    fixtures.forEach(fixture => {
+      const existingFixture = this.collection.find(
+        allFixturesElement => fixture.id === allFixturesElement.id
+      );
+      if (!existingFixture) {
+        tracer.verbose("Added fixture that was not registered in fixtures collection");
+        this._fixtures.collection.push(fixture);
+      }
     });
   }
 
@@ -61,6 +57,10 @@ class Fixtures {
   _getFixtures() {
     const fixtures = new FixturesGroup(this._filesHandler.contents);
     return fixtures.init(this._fixturesParser);
+  }
+
+  get count() {
+    return this._fixtures.collection.length;
   }
 
   get collection() {

@@ -412,6 +412,142 @@ describe("Behaviors", () => {
     });
   });
 
+  describe("contents getter after calling cleanContentsCustomProperties method", () => {
+    it("should return current files contents and file properties in a flatten array wihtout custom properties", async () => {
+      await filesHandler.init();
+      filesHandler.cleanContentsCustomProperties();
+      expect(filesHandler.contents).toEqual([
+        {
+          fixtures: [
+            {
+              url: "/api/foo/foo-uri",
+              method: "GET",
+              response: {
+                status: 200,
+                body: {
+                  fooProperty: "foo"
+                }
+              }
+            }
+          ],
+          totalFixtures: 1,
+          methods: {
+            POST: {
+              "/api/foo/foo-uri": {
+                route: "foo-route-parser",
+                response: {
+                  status: 200,
+                  body: {
+                    fooProperty: "foo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          behavior1: {
+            fixtures: [
+              {
+                url: "/api/foo/foo-uri",
+                method: "GET",
+                response: {
+                  status: 200,
+                  body: {
+                    fooProperty: "foo"
+                  }
+                }
+              }
+            ],
+            totalFixtures: 1,
+            methods: {
+              POST: {
+                "/api/foo/foo-uri": {
+                  route: "foo-route-parser",
+                  response: {
+                    status: 200,
+                    body: {
+                      fooProperty: "foo"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          fixtures: [
+            {
+              url: "/api/foo/foo-uri-2",
+              method: "POST",
+              response: {
+                status: 422,
+                body: {
+                  fooProperty2: "foo2"
+                }
+              }
+            }
+          ],
+          totalFixtures: 1,
+          methods: {
+            POST: {
+              "/api/foo/foo-uri-2": {
+                route: "foo-route-parser",
+                response: {
+                  status: 422,
+                  body: {
+                    fooProperty2: "foo2"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          behavior2: {
+            fixtures: [
+              {
+                url: "/api/foo/foo-uri-2",
+                method: "POST",
+                response: {
+                  status: 422,
+                  body: {
+                    fooProperty2: "foo2"
+                  }
+                }
+              }
+            ],
+            totalFixtures: 1,
+            methods: {
+              POST: {
+                "/api/foo/foo-uri-2": {
+                  route: "foo-route-parser",
+                  response: {
+                    status: 422,
+                    body: {
+                      fooProperty2: "foo2"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          fooProperty: ""
+        },
+        {
+          foo: "foo"
+        },
+        {
+          fooProperty: {
+            foo: "foo"
+          }
+        }
+      ]);
+    });
+  });
+
   describe("start method", () => {
     describe("when starting files watch", () => {
       it("should do nothing if watch was not enabled", async () => {

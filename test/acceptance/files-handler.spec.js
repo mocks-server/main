@@ -9,12 +9,32 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { CliRunner, request, wait } = require("./utils");
+const { CliRunner, startCore, stopCore, request, wait } = require("./utils");
 
-describe("when mocks files are desordered and export single fixtures and behaviors", () => {
+describe("when mocks files are unordered and export single fixtures and behaviors", () => {
   const binaryPath = "./starter";
   const cwdPath = path.resolve(__dirname, "fixtures");
   let cli;
+  let core;
+
+  describe("number of behaviors and fixtures", () => {
+    beforeAll(async () => {
+      core = await startCore("files-handler");
+    });
+
+    afterAll(async () => {
+      await stopCore(core);
+    });
+
+    it("should have three behaviors", async () => {
+      expect(core.behaviors.count).toEqual(3);
+    });
+
+    it("should have four fixtures", async () => {
+      console.log(core.fixtures.collection);
+      expect(core.fixtures.count).toEqual(4);
+    });
+  });
 
   describe('When started with "standard" behavior', () => {
     beforeAll(async () => {

@@ -42,7 +42,7 @@ class Behaviors {
   async _loadBehaviors() {
     tracer.debug("Processing behaviors");
     this._collection = await this._getBehaviorsCollection();
-    this._allFixtures.addFromBehaviors(this._collection);
+    this._filesHandler.cleanContentsCustomProperties();
     this._behaviors = this._getBehaviorsObject();
     this._names = Object.keys(this._behaviors);
     this._current = this._settings.get("behavior") || this._names[0];
@@ -84,6 +84,7 @@ class Behaviors {
             .then(initedBehavior => {
               initedBehavior.name = initedBehavior.name || object._mocksServer_lastPath;
               behaviors[initedBehavior.name] = initedBehavior.name;
+              this._allFixtures.add(initedBehavior.fixtures);
               return Promise.resolve(initedBehavior);
             })
             .catch(err => {
@@ -92,10 +93,6 @@ class Behaviors {
               return Promise.resolve();
             })
         );
-      } else {
-        delete object._mocksServer_lastPath;
-        delete object._mocksServer_fullPath;
-        delete object._mocksServer_isFile;
       }
     });
     return Promise.all(initBehaviors).then(behaviors => {

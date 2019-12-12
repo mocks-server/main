@@ -78,7 +78,8 @@ class Mock {
       contents: INITIAL_CONTENTS,
       init: this._sandbox.stub().resolves(),
       start: this._sandbox.stub().resolves(),
-      stop: this._sandbox.stub()
+      stop: this._sandbox.stub(),
+      cleanContentsCustomProperties: this._sandbox.stub()
     };
 
     FilesHandler.mockImplementation(() => this._stubs);

@@ -104,7 +104,7 @@ describe("Behavior", () => {
         behavior.getRequestMatchingFixture({
           method: "GET",
           url: "/api/foo/foo-uri"
-        }).url
+        })._url
       ).toEqual("/api/foo/foo-uri");
     });
   });

@@ -14,8 +14,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const routeParser = require("route-parser");
 const md5 = require("md5");
 
-const tracer = require("../tracer");
-
 const isFunction = response => {
   return typeof response === "function";
 };
@@ -37,7 +35,8 @@ class Fixture {
     return "mocks-server-fixture";
   }
 
-  constructor(fixture) {
+  constructor(fixture, core) {
+    this._core = core;
     this._method = fixture.method;
     this._url = fixture.url;
     this._response = fixture.response;
@@ -64,13 +63,13 @@ class Fixture {
 
   handleRequest(req, res, next) {
     if (isFunction(this._response)) {
-      tracer.debug(
+      this._core.tracer.debug(
         `Fixture ${this.id} response is a function, executing response | req: ${req.id}`
       );
       req.params = this._route.match(req.url);
       this._response(req, res, next);
     } else {
-      tracer.debug(`Sending fixture ${this.id} | req: ${req.id}`);
+      this._core.tracer.debug(`Sending fixture ${this.id} | req: ${req.id}`);
       res.status(this._response.status);
       res.send(this._response.body);
     }
@@ -82,18 +81,6 @@ class Fixture {
 
   get id() {
     return this._id;
-  }
-
-  get method() {
-    return this._method;
-  }
-
-  get url() {
-    return this._url;
-  }
-
-  get response() {
-    return this._response;
   }
 }
 

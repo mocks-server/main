@@ -16,10 +16,10 @@ const FixtureParser = require("./FixtureParser");
 const Fixtures = require("./Fixtures");
 
 class Mocks {
-  constructor(settings, eventEmitter) {
+  constructor(settings, eventEmitter, core) {
     this._settings = settings;
     this._eventEmitter = eventEmitter;
-    this._fixturesParser = new FixturesParser();
+    this._fixturesParser = new FixturesParser(core);
     this._fixturesParser.addParser(FixtureParser);
     this._filesHandler = new FilesHandler(this._settings, this._eventEmitter);
     this._fixtures = new Fixtures(this._filesHandler, this._settings, this._eventEmitter);

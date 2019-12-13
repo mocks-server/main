@@ -10,18 +10,24 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
+const CoreMocks = require("../Core.mocks.js");
 
 const FixtureParser = require("../../../../src/mocks/FixtureParser");
 
 describe("FixtureParser", () => {
   let sandbox;
+  let coreMocks;
+  let coreInstance;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    coreMocks = new CoreMocks();
+    coreInstance = coreMocks.stubs.instance;
   });
 
   afterEach(() => {
     sandbox.restore();
+    coreMocks.restore();
   });
 
   describe("recognize static method", () => {
@@ -56,58 +62,39 @@ describe("FixtureParser", () => {
     });
   });
 
-  describe("method getter", () => {
-    it("should return fixture method", () => {
-      const fixture = new FixtureParser({
-        url: "foo/:id",
-        method: "GET",
-        response: {
-          status: 200
-        }
-      });
-      expect(fixture.method).toEqual("GET");
-    });
-  });
-
-  describe("response getter", () => {
-    it("should return fixture method", () => {
-      const fixture = new FixtureParser({
-        url: "foo/:id",
-        method: "GET",
-        response: {
-          status: 200
-        }
-      });
-      expect(fixture.response).toEqual({
-        status: 200
-      });
-    });
-  });
-
   describe("matchId getter", () => {
     it("should return unique identifier based on method and url", () => {
       expect.assertions(2);
-      const fixture = new FixtureParser({
-        url: "foo/:id",
-        method: "GET",
-        response: {
-          status: 200
-        }
-      });
-      const fixture2 = new FixtureParser({
-        url: "foo/:id",
-        method: "GET",
-        response: {
-          status: 200
-        }
-      });
-      const fixture3 = new FixtureParser({
-        url: "foo/:id",
-        method: "POST",
-        response: {
-          status: 200
-        }
-      });
+      const fixture = new FixtureParser(
+        {
+          url: "foo/:id",
+          method: "GET",
+          response: {
+            status: 200
+          }
+        },
+        coreInstance
+      );
+      const fixture2 = new FixtureParser(
+        {
+          url: "foo/:id",
+          method: "GET",
+          response: {
+            status: 200
+          }
+        },
+        coreInstance
+      );
+      const fixture3 = new FixtureParser(
+        {
+          url: "foo/:id",
+          method: "POST",
+          response: {
+            status: 200
+          }
+        },
+        coreInstance
+      );
       expect(fixture.matchId).toEqual(fixture2.matchId);
       expect(fixture.matchId).not.toEqual(fixture3.matchId);
     });
@@ -115,13 +102,16 @@ describe("FixtureParser", () => {
 
   describe("requestMatch method", () => {
     it("should return url params if provided request match", async () => {
-      const fixture = new FixtureParser({
-        url: "foo/:id",
-        method: "GET",
-        response: {
-          status: 200
-        }
-      });
+      const fixture = new FixtureParser(
+        {
+          url: "foo/:id",
+          method: "GET",
+          response: {
+            status: 200
+          }
+        },
+        coreInstance
+      );
       expect(
         fixture.requestMatch({
           method: "GET",
@@ -137,11 +127,14 @@ describe("FixtureParser", () => {
     it("should execute response with url params if response is a function", async () => {
       expect.assertions(4);
       const fooResponseMethod = sandbox.spy();
-      const fixture = new FixtureParser({
-        url: "foo/:id",
-        method: "GET",
-        response: fooResponseMethod
-      });
+      const fixture = new FixtureParser(
+        {
+          url: "foo/:id",
+          method: "GET",
+          response: fooResponseMethod
+        },
+        coreInstance
+      );
       const fooRequest = {
         url: "foo/5"
       };
@@ -162,16 +155,19 @@ describe("FixtureParser", () => {
 
     it("should send response with fixture data if response is not a function", async () => {
       expect.assertions(2);
-      const fixture = new FixtureParser({
-        url: "foo/:id",
-        method: "GET",
-        response: {
-          status: 200,
-          body: {
-            "foo-body": "foo"
+      const fixture = new FixtureParser(
+        {
+          url: "foo/:id",
+          method: "GET",
+          response: {
+            status: 200,
+            body: {
+              "foo-body": "foo"
+            }
           }
-        }
-      });
+        },
+        coreInstance
+      );
       const fooRequest = {
         url: "foo/5"
       };

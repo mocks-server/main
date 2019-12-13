@@ -26,7 +26,7 @@ class Core {
       },
       this._eventEmitter
     );
-    this._mocks = new Mocks(this._settings, this._eventEmitter);
+    this._mocks = new Mocks(this._settings, this._eventEmitter, this);
     this._server = new Server(this._mocks, this._settings, this._eventEmitter);
     this._plugins = new Plugins(coreOptions.plugins, this);
     this._inited = false;

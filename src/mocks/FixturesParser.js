@@ -16,7 +16,8 @@ const { compact } = require("lodash");
 const tracer = require("../tracer");
 
 class FixturesParser {
-  constructor() {
+  constructor(core) {
+    this._core = core;
     this._parsers = [];
   }
 
@@ -35,7 +36,7 @@ class FixturesParser {
         const Parser = this._getParser(fixture);
         if (Parser) {
           tracer.debug(`Creating fixture with parser ${Parser.displayName}`);
-          const newFixture = new Parser(fixture);
+          const newFixture = new Parser(fixture, this._core);
           if (addedFixtures.find(existingFixture => existingFixture.id === newFixture.id)) {
             return null;
           }

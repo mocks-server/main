@@ -48,4 +48,23 @@ describe("plugin options", () => {
       expect(behaviorsResponse.statusCode).toEqual(404);
     });
   });
+
+  describe("adminApiPath option", () => {
+    beforeAll(async () => {
+      server = await startServer("web-tutorial", {
+        adminApiPath: "/foo"
+      });
+    });
+
+    afterAll(() => {
+      stopServer(server);
+    });
+
+    it("should change the administration api path", async () => {
+      const adminResponse = await request("/foo");
+      expect(adminResponse).toEqual({
+        listening: true
+      });
+    });
+  });
 });

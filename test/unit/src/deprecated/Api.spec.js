@@ -64,15 +64,14 @@ describe("Api", () => {
       expect(behaviorsMocks.stubs.Constructor).toHaveBeenCalledWith(coreMocks);
     });
 
-    it('should trace a warning each time any path under "/features" is requested', async () => {
-      expect.assertions(3);
+    it('should trace a warning each time any path under "/mocks" is requested', async () => {
+      expect.assertions(2);
       await api.init();
       const nextStub = sandbox.stub();
-      routerUseStub.getCall(0).args[1](null, null, nextStub);
-      expect(routerUseStub.getCall(0).args[0]).toEqual("/features");
+      routerUseStub.getCall(0).args[0](null, null, nextStub);
       expect(nextStub.callCount).toEqual(1);
-      expect(coreMocks.tracer.warn.getCall(0).args[0]).toEqual(
-        expect.stringContaining("Deprecation warning: ")
+      expect(coreMocks.tracer.deprecationWarn.getCall(0).args[0]).toEqual(
+        expect.stringContaining('"/mocks" api path')
       );
     });
 

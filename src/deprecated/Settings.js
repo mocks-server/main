@@ -13,6 +13,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 
+const { PLUGIN_NAME } = require("../constants");
+
 class SettingsApi {
   constructor(settings, tracer) {
     this._tracer = tracer;
@@ -24,13 +26,13 @@ class SettingsApi {
 
   put(req, res) {
     const newDelay = req.body.delay;
-    this._tracer.verbose(`Changing delay to "${newDelay}" | ${req.id}`);
+    this._tracer.verbose(`${PLUGIN_NAME}: Changing delay to "${newDelay}" | ${req.id}`);
     this._settings.set("delay", newDelay);
     this.get(req, res);
   }
 
   get(req, res) {
-    this._tracer.verbose(`Sending delay to | ${req.id}`);
+    this._tracer.verbose(`${PLUGIN_NAME}: Sending delay to | ${req.id}`);
     res.status(200);
     res.send({
       delay: this._settings.get("delay")

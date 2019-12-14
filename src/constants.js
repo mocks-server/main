@@ -11,5 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 module.exports = {
   ADMIN_API_PATH_OPTION: "adminApiPath",
   ADMIN_API_DEPRECATED_PATHS_OPTION: "adminApiDeprecatedPaths",
-  DEFAULT_API_PATH: "/admin"
+  DEFAULT_API_PATH: "/admin",
+  PLUGIN_NAME: "plugin-admin-api",
+  SETTINGS_API_PATH: "/settings"
 };

@@ -18,7 +18,7 @@ const Settings = require("./Settings");
 
 const MOCKS_PATH = "/mocks";
 
-const { DEFAULT_API_PATH } = require("../constants");
+const { DEFAULT_API_PATH, PLUGIN_NAME } = require("../constants");
 
 // TODO, deprecate mocks router
 
@@ -32,7 +32,7 @@ class Api {
     const behaviorsRouter = new Behaviors(this._core).router;
     this._router = express.Router();
     this._router.use((req, res, next) => {
-      this._core.tracer.deprecationWarn(`"${MOCKS_PATH}" api path`, DEFAULT_API_PATH);
+      this._core.tracer.deprecationWarn(`"${MOCKS_PATH}" ${PLUGIN_NAME} path`, DEFAULT_API_PATH);
       next();
     });
 

@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 const path = require("path");
-const { startServer, stopServer, request, CliRunner, wait } = require("./utils");
+const { startServer, stopServer, request, CliRunner, wait, fixturesFolder } = require("./utils");
 
 describe("plugin options", () => {
   let server;
@@ -103,9 +103,17 @@ describe("plugin options", () => {
     });
 
     it("should change the administration api path", async () => {
-      const adminResponse = await request("/foo");
+      const adminResponse = await request("/foo/settings");
       expect(adminResponse).toEqual({
-        listening: true
+        behavior: "standard",
+        path: fixturesFolder("web-tutorial"),
+        delay: 0,
+        host: "0.0.0.0",
+        port: 3100,
+        watch: false,
+        log: "silly",
+        adminApiPath: "/foo",
+        adminApiDeprecatedPaths: true
       });
     });
   });

@@ -13,6 +13,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 
+const { PLUGIN_NAME } = require("../constants");
+
 class BehaviorsApi {
   constructor(core) {
     this._tracer = core.tracer;
@@ -24,20 +26,22 @@ class BehaviorsApi {
   }
 
   getCurrent(req, res) {
-    this._tracer.verbose(`Sending current behavior | ${req.id}`);
+    this._tracer.verbose(`${PLUGIN_NAME}: Sending current behavior | ${req.id}`);
     res.status(200);
     res.send(this._core.behaviors.currentFromCollection);
   }
 
   putCurrent(req, res) {
     const newCurrent = req.body.name;
-    this._tracer.verbose(`Changing current behavior to "${newCurrent}" | ${req.id}`);
+    this._tracer.verbose(
+      `${PLUGIN_NAME}: Changing current behavior to "${newCurrent}" | ${req.id}`
+    );
     this._core.settings.set("behavior", newCurrent);
     this.getCurrent(req, res);
   }
 
   getCollection(req, res) {
-    this._tracer.verbose(`Sending behaviors collection | ${req.id}`);
+    this._tracer.verbose(`${PLUGIN_NAME}: Sending behaviors collection | ${req.id}`);
     res.status(200);
     res.send(this._core.behaviors.collection);
   }

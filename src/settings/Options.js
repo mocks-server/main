@@ -114,10 +114,7 @@ class Options {
       return optionName;
     }
     if (DEPRECATED_OPTIONS[optionName]) {
-      tracer.deprecationWarning(
-        `${optionName} option`,
-        `${DEPRECATED_OPTIONS[optionName]} option`
-      );
+      tracer.deprecationWarn(`${optionName} option`, `${DEPRECATED_OPTIONS[optionName]} option`);
       return DEPRECATED_OPTIONS[optionName];
     }
     throw new Error("Not valid option");
@@ -138,7 +135,7 @@ class Options {
       if (options[newOption] === DEFAULT_OPTIONS[newOption]) {
         options[newOption] = options[optionName];
       }
-      tracer.deprecationWarning(`--${optionName} option`, `--${DEPRECATED_OPTIONS[optionName]}`);
+      tracer.deprecationWarn(`--${optionName} option`, `--${DEPRECATED_OPTIONS[optionName]}`);
     }
     delete options[optionName];
     return options;

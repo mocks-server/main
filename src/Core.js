@@ -68,7 +68,7 @@ class Core {
 
   // TODO, deprecate method, use addRouter
   addCustomRouter(path, router) {
-    tracer.deprecationWarning("addCustomRouter", "addRouter");
+    tracer.deprecationWarn("addCustomRouter", "addRouter");
     return this.addRouter(path, router);
   }
 
@@ -78,7 +78,7 @@ class Core {
 
   // TODO, deprecate method, use addSetting
   addCustomSetting(option) {
-    tracer.deprecationWarning("addCustomSetting", "addSetting");
+    tracer.deprecationWarn("addCustomSetting", "addSetting");
     return this.addSetting(option);
   }
 
@@ -147,7 +147,7 @@ class Core {
 
   // TODO, deprecate getter
   get features() {
-    tracer.deprecationWarning("features getter", "behaviors getter");
+    tracer.deprecationWarn("features getter", "behaviors getter");
     return this._mocks.behaviors;
   }
 

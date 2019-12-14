@@ -24,7 +24,7 @@ describe("options", () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     sandbox.spy(tracer, "warn");
-    sandbox.spy(tracer, "deprecationWarning");
+    sandbox.spy(tracer, "deprecationWarn");
     sandbox.stub(tracer, "error");
     commandLineArgumentsMocks = new CommandLineArgumentsMocks();
     options = new Options();
@@ -55,7 +55,7 @@ describe("options", () => {
         path: "foo/features/path"
       };
       await options.init();
-      expect(tracer.deprecationWarning.getCall(0).args[0]).toEqual(
+      expect(tracer.deprecationWarn.getCall(0).args[0]).toEqual(
         expect.stringContaining("--feature")
       );
     });
@@ -66,7 +66,7 @@ describe("options", () => {
         features: "foo/features/path"
       };
       await options.init();
-      expect(tracer.deprecationWarning.getCall(0).args[0]).toEqual(
+      expect(tracer.deprecationWarn.getCall(0).args[0]).toEqual(
         expect.stringContaining("--features")
       );
     });
@@ -78,7 +78,7 @@ describe("options", () => {
         behaviors: "foo/features/path"
       };
       await options.init();
-      expect(tracer.deprecationWarning.getCall(0).args[0]).toEqual(
+      expect(tracer.deprecationWarn.getCall(0).args[0]).toEqual(
         expect.stringContaining("--behaviors")
       );
     });
@@ -92,10 +92,10 @@ describe("options", () => {
         behaviors: "foo/features/path"
       };
       await options.init();
-      expect(tracer.deprecationWarning.getCall(0).args[0]).toEqual(
+      expect(tracer.deprecationWarn.getCall(0).args[0]).toEqual(
         expect.stringContaining("--behaviors")
       );
-      expect(tracer.deprecationWarning.getCall(1).args[0]).toEqual(
+      expect(tracer.deprecationWarn.getCall(1).args[0]).toEqual(
         expect.stringContaining("--features")
       );
     });
@@ -578,9 +578,7 @@ describe("options", () => {
       expect.assertions(2);
       await options.init();
       const option = options.getValidOptionName("feature");
-      expect(tracer.deprecationWarning.calledWith("feature option", "behavior option")).toEqual(
-        true
-      );
+      expect(tracer.deprecationWarn.calledWith("feature option", "behavior option")).toEqual(true);
       expect(option).toEqual("behavior");
     });
 
@@ -588,9 +586,7 @@ describe("options", () => {
       expect.assertions(2);
       await options.init();
       const option = options.getValidOptionName("behaviors");
-      expect(tracer.deprecationWarning.calledWith("behaviors option", "path option")).toEqual(
-        true
-      );
+      expect(tracer.deprecationWarn.calledWith("behaviors option", "path option")).toEqual(true);
       expect(option).toEqual("path");
     });
 

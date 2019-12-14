@@ -7,11 +7,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
-
-const { startServer, stopServer, request } = require("./utils");
+const path = require("path");
+const { startServer, stopServer, request, CliRunner, wait } = require("./utils");
 
 describe("plugin options", () => {
   let server;
+  let cli;
 
   describe("adminApiDeprecatedPaths option", () => {
     beforeAll(async () => {
@@ -32,8 +33,49 @@ describe("plugin options", () => {
       expect(behaviorsResponse.statusCode).toEqual(404);
     });
 
-    it("should disable deprecated fixtures api path", async () => {
-      const behaviorsResponse = await request("/mocks/fixtures", {
+    it("should disable deprecated features api path", async () => {
+      const behaviorsResponse = await request("/mocks/features", {
+        resolveWithFullResponse: true,
+        simple: false
+      });
+      expect(behaviorsResponse.statusCode).toEqual(404);
+    });
+
+    it("should disable deprecated settings api path", async () => {
+      const behaviorsResponse = await request("/mocks/settings", {
+        resolveWithFullResponse: true,
+        simple: false
+      });
+      expect(behaviorsResponse.statusCode).toEqual(404);
+    });
+  });
+
+  describe("adminApiDeprecatedPaths option used from CLI", () => {
+    beforeAll(async () => {
+      cli = new CliRunner(
+        ["node", "start.js", "--path=web-tutorial", "--no-adminApiDeprecatedPaths"],
+        {
+          cwd: path.resolve(__dirname, "fixtures")
+        }
+      );
+      await wait(1000);
+    });
+
+    afterAll(async () => {
+      await cli.kill();
+    });
+
+    it("should disable deprecated behaviors api path", async () => {
+      console.log(cli.logs);
+      const behaviorsResponse = await request("/mocks/behaviors", {
+        resolveWithFullResponse: true,
+        simple: false
+      });
+      expect(behaviorsResponse.statusCode).toEqual(404);
+    });
+
+    it("should disable deprecated features api path", async () => {
+      const behaviorsResponse = await request("/mocks/features", {
         resolveWithFullResponse: true,
         simple: false
       });

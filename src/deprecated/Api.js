@@ -16,7 +16,11 @@ const express = require("express");
 const Behaviors = require("./Behaviors");
 const Settings = require("./Settings");
 
-const FEATURES_PATH = "/features";
+const MOCKS_PATH = "/mocks";
+
+const { DEFAULT_API_PATH } = require("../constants");
+
+// TODO, deprecate mocks router
 
 class Api {
   constructor(core) {
@@ -27,17 +31,16 @@ class Api {
   init() {
     const behaviorsRouter = new Behaviors(this._core).router;
     this._router = express.Router();
-    // TODO, deprecate features router
-    this._router.use(FEATURES_PATH, (req, res, next) => {
-      this._core.deprecationWarn(`"${FEATURES_PATH}" api path`, "/admin");
+    this._router.use((req, res, next) => {
+      this._core.tracer.deprecationWarn(`"${MOCKS_PATH}" api path`, DEFAULT_API_PATH);
       next();
     });
-    // TODO, deprecate features router
-    this._router.use(FEATURES_PATH, behaviorsRouter);
+
+    this._router.use("/features", behaviorsRouter);
     this._router.use("/behaviors", behaviorsRouter);
     this._router.use("/settings", new Settings(this._core.settings, this._tracer).router);
 
-    this._core.addCustomRouter("/mocks", this._router);
+    this._core.addCustomRouter(MOCKS_PATH, this._router);
     return Promise.resolve();
   }
 }

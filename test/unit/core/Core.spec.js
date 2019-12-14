@@ -153,10 +153,10 @@ describe("Settings", () => {
     });
   });
 
-  describe("addFixturesParser method", () => {
-    it("should add fixturesParser to mocks", () => {
-      core.addFixturesParser();
-      expect(mocksInstance.addFixturesParser.callCount).toEqual(1);
+  describe("addFixturesHandler method", () => {
+    it("should add fixturesHandler to mocks", () => {
+      core.addFixturesHandler();
+      expect(mocksInstance.addFixturesHandler.callCount).toEqual(1);
     });
   });
 

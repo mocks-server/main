@@ -15,35 +15,35 @@ const { compact } = require("lodash");
 
 const tracer = require("../tracer");
 
-class FixturesParser {
+class FixturesHandler {
   constructor(core) {
     this._core = core;
-    this._parsers = [];
+    this._handlers = [];
   }
 
-  addParser(Parser) {
-    this._parsers.push(Parser);
+  addHandler(Handler) {
+    this._handlers.push(Handler);
   }
 
-  _getParser(fixture) {
-    return this._parsers.find(parser => parser.recognize(fixture));
+  _getHandler(fixture) {
+    return this._handlers.find(handler => handler.recognize(fixture));
   }
 
   getCollection(fixtures) {
     const addedFixtures = [];
     return compact(
       fixtures.map(fixture => {
-        const Parser = this._getParser(fixture);
-        if (Parser) {
-          tracer.debug(`Creating fixture with parser ${Parser.displayName}`);
-          const newFixture = new Parser(fixture, this._core);
+        const Handler = this._getHandler(fixture);
+        if (Handler) {
+          tracer.debug(`Creating fixture with handler ${Handler.displayName}`);
+          const newFixture = new Handler(fixture, this._core);
           if (addedFixtures.find(existingFixture => existingFixture.id === newFixture.id)) {
             return null;
           }
           addedFixtures.push(newFixture);
           return newFixture;
         } else {
-          tracer.silly("Fixture not identified by any registered fixtures parser");
+          tracer.silly("Fixture not identified by any registered fixtures handler");
           return null;
         }
       })
@@ -51,4 +51,4 @@ class FixturesParser {
   }
 }
 
-module.exports = FixturesParser;
+module.exports = FixturesHandler;

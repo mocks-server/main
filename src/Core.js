@@ -84,8 +84,8 @@ class Core {
     return this.addCustomSetting(option);
   }
 
-  addFixturesParser(Parser) {
-    return this._mocks.addFixturesParser(Parser);
+  addFixturesHandler(Handler) {
+    return this._mocks.addFixturesHandler(Handler);
   }
 
   // Listeners

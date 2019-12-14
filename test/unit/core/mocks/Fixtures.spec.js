@@ -12,8 +12,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const CoreMocks = require("../Core.mocks.js");
 const FilesHandlerMocks = require("./FilesHandler.mocks.js");
-const FixturesParser = require("../../../../src/mocks/FixturesParser");
-const FixtureParser = require("../../../../src/mocks/FixtureParser");
+const FixturesHandler = require("../../../../src/mocks/FixturesHandler");
+const FixtureHandler = require("../../../../src/mocks/FixtureHandler");
 const Behaviors = require("../../../../src/mocks/Behaviors");
 
 const tracer = require("../../../../src/tracer");
@@ -25,7 +25,7 @@ describe("Fixtures", () => {
   let coreInstance;
   let filesHandlerMocks;
   let filesHandlerInstance;
-  let fixturesParser;
+  let fixturesHandler;
   let fixtures;
 
   beforeEach(() => {
@@ -34,8 +34,8 @@ describe("Fixtures", () => {
     coreInstance = coreMocks.stubs.instance;
     filesHandlerMocks = new FilesHandlerMocks();
     filesHandlerInstance = filesHandlerMocks.stubs.instance;
-    fixturesParser = new FixturesParser();
-    fixturesParser.addParser(FixtureParser);
+    fixturesHandler = new FixturesHandler();
+    fixturesHandler.addHandler(FixtureHandler);
     sandbox.stub(tracer, "debug");
     fixtures = new Fixtures(
       filesHandlerInstance,
@@ -52,7 +52,7 @@ describe("Fixtures", () => {
 
   describe("when core emits load:files", () => {
     it("should process fixtures again", async () => {
-      await fixtures.init(fixturesParser);
+      await fixtures.init(fixturesHandler);
       coreInstance._eventEmitter.on.getCall(0).args[1]();
       expect(tracer.debug.getCall(1).args[0]).toEqual("Processing fixtures");
     });
@@ -76,10 +76,10 @@ describe("Fixtures", () => {
         coreInstance.settings,
         coreInstance._eventEmitter
       );
-      await fixtures.init(fixturesParser);
+      await fixtures.init(fixturesHandler);
       await filesHandlerInstance.init();
       expect(fixtures.count).toEqual(1);
-      await behaviors.init(fixturesParser, fixtures);
+      await behaviors.init(fixturesHandler, fixtures);
       expect(fixtures.count).toEqual(2);
     });
   });

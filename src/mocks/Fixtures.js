@@ -24,8 +24,8 @@ class Fixtures {
     this._onLoadFiles = this._onLoadFiles.bind(this);
   }
 
-  async init(fixturesParser) {
-    this._fixturesParser = fixturesParser;
+  async init(fixturesHandler) {
+    this._fixturesHandler = fixturesHandler;
     this._eventEmitter.on(LOAD_FILES, this._onLoadFiles);
     return this._loadFixtures();
   }
@@ -56,7 +56,7 @@ class Fixtures {
 
   _getFixtures() {
     const fixtures = new FixturesGroup(this._filesHandler.contents);
-    return fixtures.init(this._fixturesParser);
+    return fixtures.init(this._fixturesHandler);
   }
 
   get count() {

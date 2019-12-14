@@ -11,16 +11,16 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const Behaviors = require("./Behaviors");
 const FilesHandler = require("./FilesHandler");
-const FixturesParser = require("./FixturesParser");
-const FixtureParser = require("./FixtureParser");
+const FixturesHandler = require("./FixturesHandler");
+const FixtureHandler = require("./FixtureHandler");
 const Fixtures = require("./Fixtures");
 
 class Mocks {
   constructor(settings, eventEmitter, core) {
     this._settings = settings;
     this._eventEmitter = eventEmitter;
-    this._fixturesParser = new FixturesParser(core);
-    this._fixturesParser.addParser(FixtureParser);
+    this._fixturesHandler = new FixturesHandler(core);
+    this._fixturesHandler.addHandler(FixtureHandler);
     this._filesHandler = new FilesHandler(this._settings, this._eventEmitter);
     this._fixtures = new Fixtures(this._filesHandler, this._settings, this._eventEmitter);
     this._behaviors = new Behaviors(this._filesHandler, this._settings, this._eventEmitter);
@@ -28,8 +28,8 @@ class Mocks {
 
   async init() {
     await this._filesHandler.init();
-    await this._fixtures.init(this._fixturesParser);
-    await this._behaviors.init(this._fixturesParser, this._fixtures);
+    await this._fixtures.init(this._fixturesHandler);
+    await this._behaviors.init(this._fixturesHandler, this._fixtures);
     return Promise.resolve();
   }
 
@@ -41,8 +41,8 @@ class Mocks {
     await this._filesHandler.start();
   }
 
-  addFixturesParser(Parser) {
-    this._fixturesParser.addParser(Parser);
+  addFixturesHandler(Handler) {
+    this._fixturesHandler.addHandler(Handler);
   }
 
   get behaviors() {

@@ -66,10 +66,10 @@ describe("Behaviors", () => {
     });
   });
 
-  describe("addFixturesParser method", () => {
-    it("should add Parser to fixturesParser", async () => {
-      mocks.addFixturesParser({});
-      expect(mocks._fixturesParser._parsers.length).toEqual(2);
+  describe("addFixturesHandler method", () => {
+    it("should add Handler to fixturesHandler", async () => {
+      mocks.addFixturesHandler({});
+      expect(mocks._fixturesHandler._handlers.length).toEqual(2);
     });
   });
 

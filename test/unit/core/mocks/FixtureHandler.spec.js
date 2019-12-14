@@ -12,9 +12,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const CoreMocks = require("../Core.mocks.js");
 
-const FixtureParser = require("../../../../src/mocks/FixtureParser");
+const FixtureHandler = require("../../../../src/mocks/FixtureHandler");
 
-describe("FixtureParser", () => {
+describe("FixtureHandler", () => {
   let sandbox;
   let coreMocks;
   let coreInstance;
@@ -33,7 +33,7 @@ describe("FixtureParser", () => {
   describe("recognize static method", () => {
     it("should return true if fixture is an standard mocks server fixture object", () => {
       expect(
-        FixtureParser.recognize({
+        FixtureHandler.recognize({
           url: "foo",
           method: "GET",
           response: {
@@ -45,7 +45,7 @@ describe("FixtureParser", () => {
 
     it("should return true if fixture is an standard mocks server fixture object with a function as response", () => {
       expect(
-        FixtureParser.recognize({
+        FixtureHandler.recognize({
           url: "foo",
           method: "GET",
           response: () => {}
@@ -55,7 +55,7 @@ describe("FixtureParser", () => {
 
     it("should return false if fixture is not an standard mocks server fixture object", () => {
       expect(
-        FixtureParser.recognize({
+        FixtureHandler.recognize({
           foo: "foo"
         })
       ).toEqual(false);
@@ -65,7 +65,7 @@ describe("FixtureParser", () => {
   describe("matchId getter", () => {
     it("should return unique identifier based on method and url", () => {
       expect.assertions(2);
-      const fixture = new FixtureParser(
+      const fixture = new FixtureHandler(
         {
           url: "foo/:id",
           method: "GET",
@@ -75,7 +75,7 @@ describe("FixtureParser", () => {
         },
         coreInstance
       );
-      const fixture2 = new FixtureParser(
+      const fixture2 = new FixtureHandler(
         {
           url: "foo/:id",
           method: "GET",
@@ -85,7 +85,7 @@ describe("FixtureParser", () => {
         },
         coreInstance
       );
-      const fixture3 = new FixtureParser(
+      const fixture3 = new FixtureHandler(
         {
           url: "foo/:id",
           method: "POST",
@@ -102,7 +102,7 @@ describe("FixtureParser", () => {
 
   describe("requestMatch method", () => {
     it("should return url params if provided request match", async () => {
-      const fixture = new FixtureParser(
+      const fixture = new FixtureHandler(
         {
           url: "foo/:id",
           method: "GET",
@@ -127,7 +127,7 @@ describe("FixtureParser", () => {
     it("should execute response with url params if response is a function", async () => {
       expect.assertions(4);
       const fooResponseMethod = sandbox.spy();
-      const fixture = new FixtureParser(
+      const fixture = new FixtureHandler(
         {
           url: "foo/:id",
           method: "GET",
@@ -155,7 +155,7 @@ describe("FixtureParser", () => {
 
     it("should send response with fixture data if response is not a function", async () => {
       expect.assertions(2);
-      const fixture = new FixtureParser(
+      const fixture = new FixtureHandler(
         {
           url: "foo/:id",
           method: "GET",

@@ -16,8 +16,8 @@ class FixturesGroup {
     this._fixtures = [...fixtures].reverse();
   }
 
-  async init(fixturesParser) {
-    this._collection = await fixturesParser.getCollection(this._fixtures);
+  async init(fixturesHandler) {
+    this._collection = await fixturesHandler.getCollection(this._fixtures);
     return Promise.resolve(this);
   }
 

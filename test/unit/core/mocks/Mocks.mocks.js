@@ -22,7 +22,7 @@ class Mock {
       init: this._sandbox.stub().resolves(),
       start: this._sandbox.stub().resolves(),
       stop: this._sandbox.stub(),
-      addFixturesParser: this._sandbox.stub(),
+      addFixturesHandler: this._sandbox.stub(),
       behaviors: {
         current: {
           getRequestMatchingFixture: this._sandbox.stub()

@@ -82,10 +82,10 @@ class CustomParser {
   }
 }
 
-describe("when using a custom parser", () => {
+describe("when using a custom fixtures handler", () => {
   const plugin = {
     register: serverCore => {
-      serverCore.addFixturesParser(CustomParser);
+      serverCore.addFixturesHandler(CustomParser);
     }
   };
   let core;

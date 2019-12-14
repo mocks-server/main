@@ -12,19 +12,19 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const tracer = require("../../../../src/tracer");
-const FixtureParser = require("../../../../src/mocks/FixtureParser");
+const FixtureHandler = require("../../../../src/mocks/FixtureHandler");
 
-const FixturesParser = require("../../../../src/mocks/FixturesParser");
+const FixturesHandler = require("../../../../src/mocks/FixturesHandler");
 
-describe("FixturesParser", () => {
-  let fixturesParser;
+describe("FixturesHandler", () => {
+  let fixturesHandler;
   let sandbox;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     sandbox.stub(tracer, "debug");
-    fixturesParser = new FixturesParser();
-    fixturesParser.addParser(FixtureParser);
+    fixturesHandler = new FixturesHandler();
+    fixturesHandler.addHandler(FixtureHandler);
     expect.assertions(1);
   });
 
@@ -33,9 +33,9 @@ describe("FixturesParser", () => {
   });
 
   describe("getCollection method", () => {
-    it("should ignore fixtures not recognized by any parser", async () => {
+    it("should ignore fixtures not recognized by any handler", async () => {
       expect(
-        fixturesParser.getCollection([
+        fixturesHandler.getCollection([
           {
             foo: "foo"
           }
@@ -44,7 +44,7 @@ describe("FixturesParser", () => {
     });
 
     it("should parse recognized fixtures", async () => {
-      const collection = fixturesParser.getCollection([
+      const collection = fixturesHandler.getCollection([
         {
           url: "/api/foo/foo-uri",
           method: "GET",
@@ -60,7 +60,7 @@ describe("FixturesParser", () => {
     });
 
     it("should not add twice duplicated fixtures", async () => {
-      const collection = fixturesParser.getCollection([
+      const collection = fixturesHandler.getCollection([
         {
           url: "/api/foo/foo-uri",
           method: "GET",
@@ -85,8 +85,8 @@ describe("FixturesParser", () => {
       expect(collection.length).toEqual(1);
     });
 
-    it("should trace used parser to parse fixtures", async () => {
-      fixturesParser.getCollection([
+    it("should trace used handler to handle fixtures", async () => {
+      fixturesHandler.getCollection([
         {
           url: "/api/foo/foo-uri",
           method: "GET",
@@ -99,12 +99,12 @@ describe("FixturesParser", () => {
         }
       ]);
       expect(tracer.debug.getCall(0).args[0]).toEqual(
-        "Creating fixture with parser mocks-server-fixture"
+        "Creating fixture with handler mocks-server-fixture"
       );
     });
   });
 
-  describe("custom parsers", () => {
+  describe("custom handlers", () => {
     class CustomParser {
       static recognize(fixture) {
         return !!fixture.isCustom;
@@ -124,10 +124,10 @@ describe("FixturesParser", () => {
       }
     }
 
-    it("should be used to parse fixtures when recognize them", () => {
+    it("should be used to handle fixtures when recognize them", () => {
       expect.assertions(2);
-      fixturesParser.addParser(CustomParser);
-      const collection = fixturesParser.getCollection([
+      fixturesHandler.addHandler(CustomParser);
+      const collection = fixturesHandler.getCollection([
         {
           isCustom: true
         },

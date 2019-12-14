@@ -30,12 +30,12 @@ class Behaviors {
     this._noBehavior = new Behavior();
   }
 
-  async init(fixturesParser, allFixtures) {
-    this._fixturesParser = fixturesParser;
+  async init(fixturesHandler, allFixtures) {
+    this._fixturesHandler = fixturesHandler;
     this._allFixtures = allFixtures;
     this._eventEmitter.on(LOAD_FIXTURES, this._onLoadFixtures);
     this._eventEmitter.on(CHANGE_SETTINGS, this._onChangeSettings);
-    await this._noBehavior.init(this._fixturesParser);
+    await this._noBehavior.init(this._fixturesHandler);
     return this._loadBehaviors();
   }
 
@@ -80,7 +80,7 @@ class Behaviors {
       if (object.isMocksServerBehavior) {
         initBehaviors.push(
           object
-            .init(this._fixturesParser)
+            .init(this._fixturesHandler)
             .then(initedBehavior => {
               initedBehavior.name = initedBehavior.name || object._mocksServer_lastPath;
               behaviors[initedBehavior.name] = initedBehavior.name;

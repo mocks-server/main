@@ -23,9 +23,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Add "addFixturesParser" method, which allows to use fixtures with custom formats and handle responses.
 - Add "id" property to fixtures, which will be unique for each different fixture.
 - Add "matchId" property to fixtures, which will be the same for fixtures handling same requests.
+- Add "addRouter" method. "addCustomRouter" is marked for deprecation.
+- Add "addSetting" method. "addCustomSetting" is marked for deprecation.
 
 ### Changed
-- Add "fixtures" getter, returning all found fixtures in mocks folder, and inside behaviors.
 - Files handler now supports creating fixtures or behaviors at any folder level.
 - Files handler now supports files exporting a single behavior or fixture.
 - Changed "Behaviors" getters. Data now is not parsed, and returns directly fixtures collections, or, in the case of "all" getter, it returns and object containing behavior names as "keys", containing respective fixtures collections. (It is not considered as a breaking change, as it is an experimental interface yet, as it is indicated in the documentation)

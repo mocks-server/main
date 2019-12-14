@@ -23,8 +23,8 @@ class Behavior {
     return new Behavior(this._initialFixtures.concat(fixtures));
   }
 
-  async init(fixturesParser) {
-    await this._fixtures.init(fixturesParser);
+  async init(fixturesHandler) {
+    await this._fixtures.init(fixturesHandler);
     return Promise.resolve(this);
   }
 

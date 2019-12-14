@@ -9,8 +9,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const FixturesParser = require("../../../../src/mocks/FixturesParser");
-const FixtureParser = require("../../../../src/mocks/FixtureParser");
+const FixturesHandler = require("../../../../src/mocks/FixturesHandler");
+const FixtureHandler = require("../../../../src/mocks/FixtureHandler");
 
 const Behavior = require("../../../../src/mocks/Behavior");
 
@@ -47,11 +47,11 @@ describe("Behavior", () => {
       }
     }
   ];
-  let fixturesParser;
+  let fixturesHandler;
 
   beforeEach(() => {
-    fixturesParser = new FixturesParser();
-    fixturesParser.addParser(FixtureParser);
+    fixturesHandler = new FixturesHandler();
+    fixturesHandler.addHandler(FixtureHandler);
     expect.assertions(1);
   });
 
@@ -77,13 +77,13 @@ describe("Behavior", () => {
           }
         }
       ]);
-      await extendedBehavior.init(fixturesParser);
+      await extendedBehavior.init(fixturesHandler);
       expect(extendedBehavior.fixtures.length).toEqual(4);
     });
 
     it("should be able to create empty behavior", async () => {
       const behavior = new Behavior();
-      await behavior.init(fixturesParser);
+      await behavior.init(fixturesHandler);
       expect(behavior.fixtures.length).toEqual(0);
     });
   });
@@ -91,7 +91,7 @@ describe("Behavior", () => {
   describe("fixtures getter", () => {
     it("should return current fixtures group collection", async () => {
       const behavior = new Behavior(fooBehaviorData);
-      await behavior.init(fixturesParser);
+      await behavior.init(fixturesHandler);
       expect(behavior.fixtures.length).toEqual(3);
     });
   });
@@ -99,7 +99,7 @@ describe("Behavior", () => {
   describe("getRequestMatchingFixture", () => {
     it("should return fixture matching provided request", async () => {
       const behavior = new Behavior(fooBehaviorData);
-      await behavior.init(fixturesParser);
+      await behavior.init(fixturesHandler);
       expect(
         behavior.getRequestMatchingFixture({
           method: "GET",
@@ -137,8 +137,8 @@ describe("Behavior", () => {
           }
         }
       ]);
-      await behavior.init(fixturesParser);
-      await extendedBehavior.init(fixturesParser);
+      await behavior.init(fixturesHandler);
+      await extendedBehavior.init(fixturesHandler);
       expect(behavior.fixtures.length).toEqual(3);
     });
 
@@ -154,7 +154,7 @@ describe("Behavior", () => {
           }
         }
       ]);
-      await extendedBehavior.init(fixturesParser);
+      await extendedBehavior.init(fixturesHandler);
       expect(extendedBehavior.fixtures.length).toEqual(4);
     });
   });

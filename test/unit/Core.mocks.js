@@ -25,7 +25,8 @@ class CoreMock {
       restart: this._sandbox.stub().resolves(),
       settings: {
         get: this._sandbox.stub(),
-        set: this._sandbox.stub()
+        set: this._sandbox.stub(),
+        all: {}
       },
       tracer: {
         silly: this._sandbox.stub(),

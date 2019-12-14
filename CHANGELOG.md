@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Remove "currentFromCollection" and "currentTotalFixtures" getters from Behaviors.
 - Remove "addCustomRouter" method. Use "addRouter".
 - Remove "addCustomSetting" method. Use "addSetting".
-- Do not provide the core instance to request handlers. This is made only to maintain temporarily backward compatibility with api plugin, because it is responding with full behaviors collection in deprecated api endpoints, which produces a circular reference if the core is saved as a private property of the FixtureHandler Class.
+- Do not provide the core instance to request handlers. This was made only to maintain temporarily backward compatibility with api plugin, because it is responding with full behaviors collection in deprecated api endpoints, producing a circular reference if the core is saved as a private property of the FixtureHandler Class.
 
 ## [unreleased]
 ### Added
@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Add "matchId" property to fixtures, which will be the same for fixtures handling same requests.
 - Add "addRouter" method. "addCustomRouter" is marked for deprecation.
 - Add "addSetting" method. "addCustomSetting" is marked for deprecation.
+- Add "all" getter to settings.
+- Add "extendedFrom" getter to behavior.
 
 ### Changed
 - Files handler now supports creating fixtures or behaviors at any folder level.

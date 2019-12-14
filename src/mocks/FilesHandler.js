@@ -116,7 +116,7 @@ class FilesHandler {
     if (files._mocksServer_isFile || !isObject(files)) {
       if (isObject(files)) {
         // module exports is an object, add path to each one.
-        Object.keys(files).map(key => {
+        Object.keys(files).forEach(key => {
           if (isObject(files[key])) {
             this._addPathToLoadedObject(files[key], `${fileName}/${key}`, key);
             contents.push(files[key]);
@@ -127,7 +127,7 @@ class FilesHandler {
         contents.push(files);
       }
     } else {
-      Object.keys(files).map(childFileName => {
+      Object.keys(files).forEach(childFileName => {
         contents.push(this._getContents(files[childFileName], `${fileName}/${childFileName}`));
       });
     }

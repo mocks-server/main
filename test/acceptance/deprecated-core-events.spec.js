@@ -12,8 +12,8 @@ const path = require("path");
 const fsExtra = require("fs-extra");
 const {
   request,
-  changeBehavior,
-  getBehaviors,
+  deprecatedChangeBehavior,
+  deprecatedGetBehaviors,
   fixturesFolder,
   wait,
   CliRunner
@@ -37,7 +37,7 @@ describe("Plugin listening to core events", () => {
 
   describe("When server is started", () => {
     it("should have 3 behaviors available", async () => {
-      const behaviors = await getBehaviors();
+      const behaviors = await deprecatedGetBehaviors();
       expect(behaviors.length).toEqual(3);
     });
 
@@ -68,7 +68,7 @@ describe("Plugin listening to core events", () => {
 
     describe("without changing current behavior", () => {
       it("should have 4 behaviors available", async () => {
-        const behaviors = await getBehaviors();
+        const behaviors = await deprecatedGetBehaviors();
         expect(behaviors.length).toEqual(4);
       });
 
@@ -93,7 +93,7 @@ describe("Plugin listening to core events", () => {
 
     describe('When changing current behavior to "user2"', () => {
       beforeAll(async () => {
-        await changeBehavior("user2");
+        await deprecatedChangeBehavior("user2");
       });
 
       it("should serve users collection mock under the /api/users path", async () => {
@@ -117,7 +117,7 @@ describe("Plugin listening to core events", () => {
 
     describe('When changing current behavior to "dynamic"', () => {
       beforeAll(async () => {
-        await changeBehavior("dynamic");
+        await deprecatedChangeBehavior("dynamic");
       });
 
       it("should serve users collection mock under the /api/users path", async () => {
@@ -141,7 +141,7 @@ describe("Plugin listening to core events", () => {
 
     describe('When changing current behavior to "newOne"', () => {
       beforeAll(async () => {
-        await changeBehavior("newOne");
+        await deprecatedChangeBehavior("newOne");
       });
 
       it("should serve users collection mock under the /api/users path", async () => {

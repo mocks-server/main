@@ -33,12 +33,15 @@ class CoreMock {
         verbose: this._sandbox.stub(),
         info: this._sandbox.stub(),
         warn: this._sandbox.stub(),
+        deprecationWarn: this._sandbox.stub(),
         error: this._sandbox.stub()
       },
       onChangeSettings: this._sandbox.stub(),
       onLoadMocks: this._sandbox.stub(),
       addCustomRouter: this._sandbox.stub(),
       addCustomSetting: this._sandbox.stub(),
+      addSetting: this._sandbox.stub(),
+      addRouter: this._sandbox.stub(),
       behaviors: {
         currentFromCollection: "foo-current",
         collection: "foo-behaviors-collection"

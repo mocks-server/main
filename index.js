@@ -11,6 +11,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-const PluginAdminApi = require("./src/Api");
+const PluginAdminApi = require("./src/Plugin");
 
 module.exports = PluginAdminApi;

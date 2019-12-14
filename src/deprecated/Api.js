@@ -29,9 +29,7 @@ class Api {
     this._router = express.Router();
     // TODO, deprecate features router
     this._router.use(FEATURES_PATH, (req, res, next) => {
-      this._tracer.warn(
-        `Deprecation warning: "${FEATURES_PATH}" api path will be deprecated. Use "/behaviors" instead`
-      );
+      this._core.deprecationWarn(`"${FEATURES_PATH}" api path`, "/admin");
       next();
     });
     // TODO, deprecate features router

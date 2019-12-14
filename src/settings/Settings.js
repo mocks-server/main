@@ -56,6 +56,10 @@ class Settings {
     return this._settings[this._optionsHandler.getValidOptionName(option)];
   }
 
+  get all() {
+    return { ...this._settings };
+  }
+
   addCustom(option) {
     return this._optionsHandler.addCustom(option);
   }

@@ -17,7 +17,7 @@ const tracer = require("../tracer");
 
 class FixturesHandler {
   constructor(core) {
-    this._core = core;
+    this._core = core; // Use this reference only to provide it to external functions for customization purposes
     this._handlers = [];
   }
 

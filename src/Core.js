@@ -27,7 +27,7 @@ class Core {
       this._eventEmitter
     );
     this._mocks = new Mocks(this._settings, this._eventEmitter, this);
-    this._server = new Server(this._mocks, this._settings, this._eventEmitter);
+    this._server = new Server(this._mocks, this._settings, this._eventEmitter, this);
     this._plugins = new Plugins(coreOptions.plugins, this);
     this._inited = false;
     this._startPluginsPromise = null;
@@ -68,20 +68,22 @@ class Core {
 
   // TODO, deprecate method, use addRouter
   addCustomRouter(path, router) {
-    return this._server.addCustomRouter(path, router);
+    tracer.deprecationWarning("addCustomRouter", "addRouter");
+    return this.addRouter(path, router);
   }
 
   addRouter(path, router) {
-    return this.addCustomRouter(path, router);
+    return this._server.addCustomRouter(path, router);
   }
 
   // TODO, deprecate method, use addSetting
   addCustomSetting(option) {
-    return this._settings.addCustom(option);
+    tracer.deprecationWarning("addCustomSetting", "addSetting");
+    return this.addSetting(option);
   }
 
   addSetting(option) {
-    return this.addCustomSetting(option);
+    return this._settings.addCustom(option);
   }
 
   addFixturesHandler(Handler) {
@@ -145,6 +147,7 @@ class Core {
 
   // TODO, deprecate getter
   get features() {
+    tracer.deprecationWarning("features getter", "behaviors getter");
     return this._mocks.behaviors;
   }
 

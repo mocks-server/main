@@ -88,6 +88,23 @@ describe("Behavior", () => {
     });
   });
 
+  describe("extendedFrom getter", () => {
+    it("should return null if behavior was not created extending", async () => {
+      const behavior = new Behavior(fooBehaviorData);
+      await behavior.init(fixturesHandler);
+      expect(behavior.extendedFrom).toEqual(null);
+    });
+
+    it("should return parent name", async () => {
+      const behavior = new Behavior(fooBehaviorData);
+      behavior.name = "foo-behavior";
+      const behavior2 = behavior.extend();
+      await behavior.init(fixturesHandler);
+      await behavior2.init(fixturesHandler);
+      expect(behavior2.extendedFrom).toEqual("foo-behavior");
+    });
+  });
+
   describe("fixtures getter", () => {
     it("should return current fixtures group collection", async () => {
       const behavior = new Behavior(fooBehaviorData);

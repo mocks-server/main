@@ -24,6 +24,7 @@ describe("options", () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     sandbox.spy(tracer, "warn");
+    sandbox.spy(tracer, "deprecationWarning");
     sandbox.stub(tracer, "error");
     commandLineArgumentsMocks = new CommandLineArgumentsMocks();
     options = new Options();
@@ -54,8 +55,8 @@ describe("options", () => {
         path: "foo/features/path"
       };
       await options.init();
-      expect(tracer.warn.getCall(0).args[0]).toEqual(
-        expect.stringContaining("Deprecation warning: --feature")
+      expect(tracer.deprecationWarning.getCall(0).args[0]).toEqual(
+        expect.stringContaining("--feature")
       );
     });
 
@@ -65,8 +66,8 @@ describe("options", () => {
         features: "foo/features/path"
       };
       await options.init();
-      expect(tracer.warn.getCall(0).args[0]).toEqual(
-        expect.stringContaining("Deprecation warning: --features")
+      expect(tracer.deprecationWarning.getCall(0).args[0]).toEqual(
+        expect.stringContaining("--features")
       );
     });
 
@@ -77,8 +78,8 @@ describe("options", () => {
         behaviors: "foo/features/path"
       };
       await options.init();
-      expect(tracer.warn.getCall(0).args[0]).toEqual(
-        expect.stringContaining("Deprecation warning: --behaviors")
+      expect(tracer.deprecationWarning.getCall(0).args[0]).toEqual(
+        expect.stringContaining("--behaviors")
       );
     });
 
@@ -91,11 +92,11 @@ describe("options", () => {
         behaviors: "foo/features/path"
       };
       await options.init();
-      expect(tracer.warn.getCall(0).args[0]).toEqual(
-        expect.stringContaining("Deprecation warning: --behaviors")
+      expect(tracer.deprecationWarning.getCall(0).args[0]).toEqual(
+        expect.stringContaining("--behaviors")
       );
-      expect(tracer.warn.getCall(1).args[0]).toEqual(
-        expect.stringContaining("Deprecation warning: --features")
+      expect(tracer.deprecationWarning.getCall(1).args[0]).toEqual(
+        expect.stringContaining("--features")
       );
     });
   });
@@ -577,11 +578,9 @@ describe("options", () => {
       expect.assertions(2);
       await options.init();
       const option = options.getValidOptionName("feature");
-      expect(
-        tracer.warn.calledWith(
-          "Deprecation warning: feature option will be deprecated. Use behavior instead"
-        )
-      ).toEqual(true);
+      expect(tracer.deprecationWarning.calledWith("feature option", "behavior option")).toEqual(
+        true
+      );
       expect(option).toEqual("behavior");
     });
 
@@ -589,11 +588,9 @@ describe("options", () => {
       expect.assertions(2);
       await options.init();
       const option = options.getValidOptionName("behaviors");
-      expect(
-        tracer.warn.calledWith(
-          "Deprecation warning: behaviors option will be deprecated. Use path instead"
-        )
-      ).toEqual(true);
+      expect(tracer.deprecationWarning.calledWith("behaviors option", "path option")).toEqual(
+        true
+      );
       expect(option).toEqual("path");
     });
 

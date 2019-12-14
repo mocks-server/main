@@ -21,6 +21,7 @@ const isFunction = response => {
 class Fixture {
   static recognize(fixture) {
     if (
+      fixture &&
       fixture.url &&
       fixture.method &&
       fixture.response &&
@@ -35,8 +36,7 @@ class Fixture {
     return "mocks-server-fixture";
   }
 
-  constructor(fixture, core) {
-    this._core = core;
+  constructor(fixture) {
     this._method = fixture.method;
     this._url = fixture.url;
     this._response = fixture.response;
@@ -61,15 +61,15 @@ class Fixture {
     return req.method === this._method && this._route.match(req.url);
   }
 
-  handleRequest(req, res, next) {
+  handleRequest(req, res, next, core) {
     if (isFunction(this._response)) {
-      this._core.tracer.debug(
+      core.tracer.debug(
         `Fixture ${this.id} response is a function, executing response | req: ${req.id}`
       );
       req.params = this._route.match(req.url);
       this._response(req, res, next);
     } else {
-      this._core.tracer.debug(`Sending fixture ${this.id} | req: ${req.id}`);
+      core.tracer.debug(`Sending fixture ${this.id} | req: ${req.id}`);
       res.status(this._response.status);
       res.send(this._response.body);
     }

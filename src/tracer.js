@@ -48,6 +48,12 @@ const set = (transport, level) => {
   }
 };
 
+const deprecationWarning = (deprecatedMethod, newMethod) => {
+  logger.warn(
+    `Deprecation warning: ${deprecatedMethod} will be deprecated. Use ${newMethod} instead`
+  );
+};
+
 module.exports = {
   silly: logger.silly,
   debug: logger.debug,
@@ -55,5 +61,6 @@ module.exports = {
   info: logger.info,
   warn: logger.warn,
   error: logger.error,
-  set: set
+  set,
+  deprecationWarning
 };

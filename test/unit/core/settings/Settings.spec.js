@@ -102,6 +102,20 @@ describe("Settings", () => {
     });
   });
 
+  describe("all getter", () => {
+    it("should return all current settings", () => {
+      expect(settings.all).toEqual({
+        log: "foo-log-level",
+        behavior: "foo-behavior"
+      });
+    });
+
+    it("should change when set is called", () => {
+      settings.set("log", "foo-new-value");
+      expect(settings.all.log).toEqual("foo-new-value");
+    });
+  });
+
   describe("addCustom method", () => {
     it("should pass custom option to options Class", () => {
       const fooOption = {

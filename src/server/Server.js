@@ -21,7 +21,9 @@ const middlewares = require("./middlewares");
 const { CHANGE_SETTINGS } = require("../eventNames");
 
 class Server {
-  constructor(mocks, settings, eventEmitter) {
+  constructor(mocks, settings, eventEmitter, core) {
+    // TODO, deprecate, the core is being passed only to maintain temporarily backward retrocompaitbility with API. This is not published in documentation.
+    this._core = core; // Use this reference only to provide it to external functions for customization purposes
     this._mocks = mocks;
     this._eventEmitter = eventEmitter;
     this._customRouters = [];
@@ -120,7 +122,8 @@ class Server {
     const fixture = this._mocks.behaviors.current.getRequestMatchingFixture(req);
     if (fixture) {
       delay(() => {
-        fixture.handleRequest(req, res, next);
+        // TODO, deprecate passing the core to handlers. Fixtures handlers already have a reference that is passed to the constructor.
+        fixture.handleRequest(req, res, next, this._core);
       }, this._settings.get("delay"));
     } else {
       next();

@@ -14,13 +14,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const FixturesGroup = require("./FixturesGroup");
 
 class Behavior {
-  constructor(fixtures = []) {
+  constructor(fixtures = [], parent) {
     this._initialFixtures = [...fixtures];
     this._fixtures = new FixturesGroup(this._initialFixtures);
+    this._parent = parent;
   }
 
   extend(fixtures) {
-    return new Behavior(this._initialFixtures.concat(fixtures));
+    return new Behavior(this._initialFixtures.concat(fixtures), this);
   }
 
   async init(fixturesHandler) {
@@ -38,6 +39,10 @@ class Behavior {
 
   get fixtures() {
     return this._fixtures.collection;
+  }
+
+  get extendedFrom() {
+    return this._parent ? this._parent.name : null;
   }
 
   get name() {

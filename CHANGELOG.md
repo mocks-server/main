@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Remove "currentFromCollection" and "currentTotalFixtures" getters from Behaviors.
 - Remove "addCustomRouter" method. Use "addRouter".
 - Remove "addCustomSetting" method. Use "addSetting".
+- Do not provide the core instance to request handlers. This is made only to maintain temporarily backward compatibility with api plugin, because it is responding with full behaviors collection in deprecated api endpoints, which produces a circular reference if the core is saved as a private property of the FixtureHandler Class.
 
 ## [unreleased]
 ### Added

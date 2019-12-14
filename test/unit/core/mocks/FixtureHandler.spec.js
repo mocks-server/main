@@ -143,7 +143,7 @@ describe("FixtureHandler", () => {
         status: sandbox.spy(),
         send: sandbox.spy()
       };
-      fixture.handleRequest(fooRequest, fooResponse, fooNext);
+      fixture.handleRequest(fooRequest, fooResponse, fooNext, coreInstance);
 
       expect(fooRequest.params).toEqual({
         id: "5"
@@ -176,7 +176,7 @@ describe("FixtureHandler", () => {
         status: sandbox.spy(),
         send: sandbox.spy()
       };
-      fixture.handleRequest(fooRequest, fooResponse, fooNext);
+      fixture.handleRequest(fooRequest, fooResponse, fooNext, coreInstance);
 
       expect(fooResponse.status.getCall(0).args[0]).toEqual(200);
       expect(fooResponse.send.getCall(0).args[0]).toEqual({

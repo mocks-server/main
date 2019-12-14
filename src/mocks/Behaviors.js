@@ -95,8 +95,8 @@ class Behaviors {
         );
       }
     });
-    return Promise.all(initBehaviors).then(behaviors => {
-      return Promise.resolve(compact(behaviors));
+    return Promise.all(initBehaviors).then(initedBehaviors => {
+      return Promise.resolve(compact(initedBehaviors));
     });
   }
 

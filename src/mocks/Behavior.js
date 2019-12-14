@@ -14,7 +14,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const FixturesGroup = require("./FixturesGroup");
 
 class Behavior {
-  constructor(fixtures = [], parent) {
+  constructor(fixtures = [], parent = null) {
     this._initialFixtures = [...fixtures];
     this._fixtures = new FixturesGroup(this._initialFixtures);
     this._parent = parent;

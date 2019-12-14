@@ -38,7 +38,7 @@
     "express": "4.17.1"
   },
   "devDependencies": {
-    "@mocks-server/core": "file:../core",
+    "@mocks-server/core": "^1.1.0",
     "coveralls": "^3.0.7",
     "eslint": "6.6.0",
     "eslint-config-prettier": "6.5.0",
@@ -70,10 +70,5 @@
   "engines": {
     "node": ">8.0.0",
     "npm": ">6.0.0"
-  },
-  "npm-file-link": {
-    "original_versions": {
-      "@mocks-server/core": "^1.1.0"
-    }
   }
 }

@@ -29,7 +29,7 @@ describe("Settings", () => {
     sandbox = sinon.createSandbox();
     optionsMocks = new OptionsMocks();
     optionsInstance = optionsMocks.stubs.instance;
-    optionsInstance.getValidOptionName.callsFake(name => name);
+    optionsInstance.checkValidOptionName.callsFake(name => name);
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
     sandbox.stub(tracer, "set");
@@ -60,7 +60,7 @@ describe("Settings", () => {
     });
 
     it("should return current deprecated option value", () => {
-      optionsInstance.getValidOptionName.returns("behavior");
+      optionsInstance.checkValidOptionName.returns("behavior");
       expect(settings.get("log")).toEqual("foo-behavior");
     });
 
@@ -77,7 +77,7 @@ describe("Settings", () => {
     });
 
     it("should set new option if provided one is deprecated", () => {
-      optionsInstance.getValidOptionName.returns("behavior");
+      optionsInstance.checkValidOptionName.returns("behavior");
       settings.set("log", "foo");
       expect(settings.get("behavior")).toEqual("foo");
     });

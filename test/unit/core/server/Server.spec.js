@@ -53,6 +53,7 @@ describe("Server", () => {
       coreInstance._eventEmitter
     );
     expect.assertions(1);
+    libsMocks.stubs.http.createServer.onListen.delay(200);
   });
 
   afterEach(() => {
@@ -86,7 +87,7 @@ describe("Server", () => {
       coreInstance._eventEmitter.on.getCall(0).args[1]({
         port: 4540
       });
-      await wait();
+      await wait(2000);
       expect(libsMocks.stubs.http.createServer.close.callCount).toEqual(1);
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
     });

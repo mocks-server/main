@@ -559,14 +559,10 @@ describe("options", () => {
   });
 
   describe("getValidOptionName method", () => {
-    it("should throw an error if option is not valid", async () => {
+    it("should return null if option is not valid", async () => {
       expect.assertions(1);
       await options.init();
-      try {
-        options.getValidOptionName("foo");
-      } catch (error) {
-        expect(error.message).toEqual(expect.stringContaining("Not valid option"));
-      }
+      expect(options.getValidOptionName("foo")).toEqual(null);
     });
 
     it("should return option name if option is valid", async () => {
@@ -590,13 +586,55 @@ describe("options", () => {
       expect(option).toEqual("path");
     });
 
-    it("should return true if option is custom option", async () => {
+    it("should return option name is custom option", async () => {
       options.addCustom({
         name: "foo",
         type: "boolean"
       });
       await options.init();
       expect(options.getValidOptionName("foo")).toEqual("foo");
+    });
+  });
+
+  describe("checkValidOptionName method", () => {
+    it("should throw an error if option is not valid", async () => {
+      expect.assertions(1);
+      await options.init();
+      try {
+        options.checkValidOptionName("foo");
+      } catch (error) {
+        expect(error.message).toEqual(expect.stringContaining("Not valid option"));
+      }
+    });
+
+    it("should return option name if option is valid", async () => {
+      await options.init();
+      expect(options.checkValidOptionName("behavior")).toEqual("behavior");
+    });
+
+    it("should return new option name if option is deprecated", async () => {
+      expect.assertions(2);
+      await options.init();
+      const option = options.checkValidOptionName("feature");
+      expect(tracer.deprecationWarn.calledWith("feature option", "behavior option")).toEqual(true);
+      expect(option).toEqual("behavior");
+    });
+
+    it("should return new option name if option is deprecated", async () => {
+      expect.assertions(2);
+      await options.init();
+      const option = options.checkValidOptionName("behaviors");
+      expect(tracer.deprecationWarn.calledWith("behaviors option", "path option")).toEqual(true);
+      expect(option).toEqual("path");
+    });
+
+    it("should return option name is custom option", async () => {
+      options.addCustom({
+        name: "foo",
+        type: "boolean"
+      });
+      await options.init();
+      expect(options.checkValidOptionName("foo")).toEqual("foo");
     });
   });
 });

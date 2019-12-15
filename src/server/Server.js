@@ -170,6 +170,7 @@ class Server {
   async start() {
     this._initServer();
     if (this._serverStarting) {
+      tracer.debug("Server is already starting, returning same promise");
       return this._serverStarting;
     }
     this._serverStarting = new Promise(this._startServer);

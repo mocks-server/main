@@ -62,7 +62,7 @@ describe("FixtureHandler", () => {
     });
   });
 
-  describe("matchId getter", () => {
+  describe("requestMatchId getter", () => {
     it("should return unique identifier based on method and url", () => {
       expect.assertions(2);
       const fixture = new FixtureHandler(
@@ -95,8 +95,8 @@ describe("FixtureHandler", () => {
         },
         coreInstance
       );
-      expect(fixture.matchId).toEqual(fixture2.matchId);
-      expect(fixture.matchId).not.toEqual(fixture3.matchId);
+      expect(fixture.requestMatchId).toEqual(fixture2.requestMatchId);
+      expect(fixture.requestMatchId).not.toEqual(fixture3.requestMatchId);
     });
   });
 

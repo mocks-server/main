@@ -15,6 +15,7 @@ const DeprecatedApi = require("./deprecated/Api");
 
 const Settings = require("./Settings");
 const Behaviors = require("./Behaviors");
+const Fixtures = require("./Fixtures");
 
 const {
   ADMIN_API_PATH_OPTION,
@@ -23,6 +24,7 @@ const {
   PLUGIN_NAME,
   SETTINGS_API_PATH,
   BEHAVIORS_API_PATH,
+  FIXTURES_API_PATH,
   DEPRECATED_API_PATH
 } = require("./constants");
 
@@ -34,6 +36,7 @@ class Plugin {
     this._deprecatedApi = new DeprecatedApi(core);
     this._settingsApi = new Settings(this._core);
     this._behaviorsApi = new Behaviors(this._core);
+    this._fixturesApi = new Fixtures(this._core);
     core.addSetting({
       name: ADMIN_API_PATH_OPTION,
       type: "string",
@@ -63,6 +66,7 @@ class Plugin {
     this._router = express.Router();
     this._router.use(SETTINGS_API_PATH, this._settingsApi.router);
     this._router.use(BEHAVIORS_API_PATH, this._behaviorsApi.router);
+    this._router.use(FIXTURES_API_PATH, this._fixturesApi.router);
   }
 
   _addDeprecatedRouter() {

@@ -22,8 +22,8 @@ describe("behaviors api", () => {
 
   describe("get /", () => {
     it("should return current behaviors", async () => {
-      const settingsResponse = await request("/admin/behaviors");
-      expect(settingsResponse).toEqual([
+      const response = await request("/admin/behaviors");
+      expect(response).toEqual([
         {
           extendedFrom: null,
           fixtures: ["12e5f429b92f67d4ec2bf90940ec1135", "0dbc954f9d9c9f3f7996c60e63384c9e"],
@@ -53,8 +53,8 @@ describe("behaviors api", () => {
 
   describe("get /standard", () => {
     it("should return standard behavior", async () => {
-      const settingsResponse = await request("/admin/behaviors/standard");
-      expect(settingsResponse).toEqual({
+      const response = await request("/admin/behaviors/standard");
+      expect(response).toEqual({
         extendedFrom: null,
         fixtures: ["12e5f429b92f67d4ec2bf90940ec1135", "0dbc954f9d9c9f3f7996c60e63384c9e"],
         name: "standard"
@@ -64,8 +64,8 @@ describe("behaviors api", () => {
 
   describe("get /dynamic", () => {
     it("should return standard behavior", async () => {
-      const settingsResponse = await request("/admin/behaviors/dynamic");
-      expect(settingsResponse).toEqual({
+      const response = await request("/admin/behaviors/dynamic");
+      expect(response).toEqual({
         extendedFrom: "standard",
         fixtures: [
           "e82af88532da929b0592925899eb056e",
@@ -79,12 +79,12 @@ describe("behaviors api", () => {
 
   describe("get unexistant behavior", () => {
     it("should return a not found error", async () => {
-      const settingsResponse = await request("/admin/behaviors/foo", {
+      const response = await request("/admin/behaviors/foo", {
         resolveWithFullResponse: true,
         simple: false
       });
-      expect(settingsResponse.statusCode).toEqual(404);
-      expect(settingsResponse.body.message).toEqual('Behavior with name "foo" was not found');
+      expect(response.statusCode).toEqual(404);
+      expect(response.body.message).toEqual('Behavior with name "foo" was not found');
     });
   });
 });

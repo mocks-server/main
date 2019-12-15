@@ -15,5 +15,6 @@ module.exports = {
   PLUGIN_NAME: "plugin-admin-api",
   SETTINGS_API_PATH: "/settings",
   BEHAVIORS_API_PATH: "/behaviors",
+  FIXTURES_API_PATH: "/fixtures",
   DEPRECATED_API_PATH: "/mocks"
 };

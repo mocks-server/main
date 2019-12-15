@@ -42,10 +42,19 @@ class Fixture {
     this._response = fixture.response;
     this._route = routeParser(fixture.url);
     this._id = fixture.id || this._getId();
-    this._matchId = this._getMatchId();
+    this._requestMatchId = this._getRequestMatchId();
+    this._responsePreview = isFunction(this._response)
+      ? {
+          type: "dynamic",
+          function: this._response.toString()
+        }
+      : {
+          type: "static",
+          ...this._response
+        };
   }
 
-  _getMatchId() {
+  _getRequestMatchId() {
     return md5(`${this._method}-${this._url}`);
   }
 
@@ -75,12 +84,23 @@ class Fixture {
     }
   }
 
-  get matchId() {
-    return this._matchId;
+  get requestMatchId() {
+    return this._requestMatchId;
   }
 
   get id() {
     return this._id;
+  }
+
+  get request() {
+    return {
+      url: this._url,
+      method: this._method
+    };
+  }
+
+  get response() {
+    return this._responsePreview;
   }
 }
 

@@ -117,6 +117,14 @@ class Options {
       tracer.deprecationWarn(`${optionName} option`, `${DEPRECATED_OPTIONS[optionName]} option`);
       return DEPRECATED_OPTIONS[optionName];
     }
+    return null;
+  }
+
+  checkValidOptionName(optionName) {
+    const validOptionName = this.getValidOptionName(optionName);
+    if (validOptionName) {
+      return validOptionName;
+    }
     throw new Error("Not valid option");
   }
 

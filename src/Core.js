@@ -76,6 +76,10 @@ class Core {
     return this._server.addCustomRouter(path, router);
   }
 
+  removeRouter(path, router) {
+    return this._server.removeCustomRouter(path, router);
+  }
+
   // TODO, deprecate method, use addSetting
   addCustomSetting(option) {
     tracer.deprecationWarn("addCustomSetting", "addSetting");

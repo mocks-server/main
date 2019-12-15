@@ -55,6 +55,7 @@ class Server {
     if (this._serverInitted) {
       return;
     }
+    tracer.debug("Initializing server");
     this._serverInitted = true;
     this._express = express();
 
@@ -78,6 +79,21 @@ class Server {
       this._error = error;
       throw error;
     });
+  }
+
+  _reinitServer() {
+    if (this._serverInitted) {
+      this._serverInitted = false;
+      if (this._serverStarted) {
+        return this.restart();
+      }
+      if (this._serverStarting) {
+        return this._serverStarting.then(() => {
+          return this.restart();
+        });
+      }
+    }
+    return Promise.resolve();
   }
 
   _startServer(resolve, reject) {
@@ -113,7 +129,9 @@ class Server {
   }
 
   _registerCustomRouters() {
+    tracer.debug("Adding custom routers to server");
     this._customRouters.forEach(customRouter => {
+      tracer.silly(`Adding custom router with path ${customRouter.path}`);
       this._express.use(customRouter.path, customRouter.router);
     });
   }
@@ -131,21 +149,41 @@ class Server {
   }
 
   stop() {
+    if (this._serverStopping) {
+      return this._serverStopping;
+    }
     if (this._server) {
-      return new Promise(resolve => {
+      this._serverStopping = new Promise(resolve => {
         tracer.verbose("Stopping server");
         this._server.close(() => {
           tracer.info("Server stopped");
+          this._serverStarted = false;
+          this._serverStopping = false;
           resolve();
         });
       });
+      return this._serverStopping;
     }
     return Promise.resolve();
   }
 
   async start() {
     this._initServer();
-    return new Promise(this._startServer);
+    if (this._serverStarting) {
+      return this._serverStarting;
+    }
+    this._serverStarting = new Promise(this._startServer);
+    return this._serverStarting;
+  }
+
+  _getCustomRouterIndex(path, router) {
+    let routerIndex = null;
+    this._customRouters.forEach((customRouter, index) => {
+      if (customRouter.path === path && customRouter.router === router) {
+        routerIndex = index;
+      }
+    });
+    return routerIndex;
   }
 
   addCustomRouter(path, router) {
@@ -153,6 +191,21 @@ class Server {
       path,
       router
     });
+    this._reinitServer().catch(err => {
+      tracer.error("Error reinitializing server after adding custom router");
+      tracer.debug(err.toString());
+    });
+  }
+
+  removeCustomRouter(path, router) {
+    let indexToRemove = this._getCustomRouterIndex(path, router);
+    if (indexToRemove !== null) {
+      this._customRouters.splice(indexToRemove, 1);
+      this._reinitServer().catch(err => {
+        tracer.error("Error reinitializing server after removing custom router");
+        tracer.debug(err.toString());
+      });
+    }
   }
 
   async restart() {

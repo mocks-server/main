@@ -45,15 +45,19 @@ class Behaviors {
     this._filesHandler.cleanContentsCustomProperties();
     this._behaviors = this._getBehaviorsObject();
     this._names = Object.keys(this._behaviors);
-    this._current = this._settings.get("behavior") || this._names[0];
+    this._current = this._settings.get("behavior");
+
+    tracer.verbose(`Loaded ${this._collection.length} behaviors`);
 
     try {
       this._checkCurrent(this._current);
     } catch (error) {
-      tracer.warn(
-        `Defined behavior "${this._current}" was not found. Inititializing with first found behavior`
-      );
+      tracer.warn(`Defined behavior "${this._current}" was not found.`);
       this._current = this._names[0];
+      if (this._current) {
+        tracer.warn(`Inititializing with first found behavior: "${this._names[0]}"`);
+        this._settings.set("behavior", this._current);
+      }
     }
 
     this._eventEmitter.emit(LOAD_BEHAVIORS);

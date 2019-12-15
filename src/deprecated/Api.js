@@ -9,16 +9,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-"use strict";
-
 const express = require("express");
 
 const Behaviors = require("./Behaviors");
 const Settings = require("./Settings");
 
-const MOCKS_PATH = "/mocks";
-
-const { DEFAULT_API_PATH, PLUGIN_NAME } = require("../constants");
+const { DEFAULT_API_PATH, DEPRECATED_API_PATH, PLUGIN_NAME } = require("../constants");
 
 // TODO, deprecate mocks router
 
@@ -32,16 +28,20 @@ class Api {
     const behaviorsRouter = new Behaviors(this._core).router;
     this._router = express.Router();
     this._router.use((req, res, next) => {
-      this._core.tracer.deprecationWarn(`"${MOCKS_PATH}" ${PLUGIN_NAME} path`, DEFAULT_API_PATH);
+      this._core.tracer.deprecationWarn(
+        `"${DEPRECATED_API_PATH}" ${PLUGIN_NAME} path`,
+        DEFAULT_API_PATH
+      );
       next();
     });
 
     this._router.use("/features", behaviorsRouter);
     this._router.use("/behaviors", behaviorsRouter);
     this._router.use("/settings", new Settings(this._core.settings, this._tracer).router);
+  }
 
-    this._core.addCustomRouter(MOCKS_PATH, this._router);
-    return Promise.resolve();
+  get router() {
+    return this._router;
   }
 }
 

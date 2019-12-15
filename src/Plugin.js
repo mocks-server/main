@@ -20,7 +20,8 @@ const {
   ADMIN_API_DEPRECATED_PATHS_OPTION,
   DEFAULT_API_PATH,
   PLUGIN_NAME,
-  SETTINGS_API_PATH
+  SETTINGS_API_PATH,
+  DEPRECATED_API_PATH
 } = require("./constants");
 
 class Plugin {
@@ -43,21 +44,55 @@ class Plugin {
       description: `Disable deprecated paths of ${PLUGIN_NAME}`,
       default: true
     });
+
+    this._onChangeSettings = this._onChangeSettings.bind(this);
   }
 
   async init() {
-    if (this._settings.get(ADMIN_API_DEPRECATED_PATHS_OPTION) === true) {
-      await this._deprecatedApi.init();
-    }
+    await this._deprecatedApi.init();
+    this._core.onChangeSettings(this._onChangeSettings);
+    this._initRouter();
+    this._addDeprecatedRouter();
     this._addRouter();
   }
 
-  _addRouter() {
+  _initRouter() {
     this._router = express.Router();
     this._router.use(SETTINGS_API_PATH, this._settingsApi.router);
+  }
 
-    this._core.addRouter(this._settings.get(ADMIN_API_PATH_OPTION), this._router);
-    return Promise.resolve();
+  _addDeprecatedRouter() {
+    if (
+      this._settings.get(ADMIN_API_DEPRECATED_PATHS_OPTION) === false &&
+      this._addedDeprecatedRouter
+    ) {
+      this._core.removeRouter(DEPRECATED_API_PATH, this._deprecatedApi.router);
+      this._addedDeprecatedRouter = false;
+    }
+    if (
+      this._settings.get(ADMIN_API_DEPRECATED_PATHS_OPTION) === true &&
+      !this._addedDeprecatedRouter
+    ) {
+      this._core.addRouter(DEPRECATED_API_PATH, this._deprecatedApi.router);
+      this._addedDeprecatedRouter = true;
+    }
+  }
+
+  _addRouter() {
+    if (this._previousRoutersPath) {
+      this._core.removeRouter(this._previousRoutersPath, this._router);
+    }
+    this._previousRoutersPath = this._settings.get(ADMIN_API_PATH_OPTION);
+    this._core.addRouter(this._previousRoutersPath, this._router);
+  }
+
+  _onChangeSettings(newSettings) {
+    if (newSettings.hasOwnProperty(ADMIN_API_DEPRECATED_PATHS_OPTION)) {
+      this._addDeprecatedRouter();
+    }
+    if (newSettings.hasOwnProperty(ADMIN_API_PATH_OPTION)) {
+      this._addRouter();
+    }
   }
 }
 

@@ -153,7 +153,7 @@ describe("settings api", () => {
         await request("/admin/settings", {
           method: "PATCH",
           body: {
-            port: 3001
+            port: 3101
           }
         });
         await wait(1000);
@@ -161,9 +161,10 @@ describe("settings api", () => {
 
       afterAll(async () => {
         await request("/admin/settings", {
+          port: 3101,
           method: "PATCH",
           body: {
-            port: 3000
+            port: 3100
           }
         });
         await wait(1000);
@@ -171,16 +172,80 @@ describe("settings api", () => {
 
       it("should return new port option when getting settings, using new port", async () => {
         const settingsResponse = await request("/admin/settings", {
-          port: 3001
+          port: 3101
         });
-        expect(settingsResponse.port).toEqual(3001);
+        expect(settingsResponse.port).toEqual(3101);
       });
 
       it("should serve user 2 under the /api/users/1 path using new port", async () => {
         const users = await request("/api/users/1", {
-          port: 3001
+          port: 3101
         });
         expect(users).toEqual({ id: 2, name: "Jane Doe" });
+      });
+    });
+
+    describe("when changing adminApiPath option", () => {
+      beforeAll(async () => {
+        await request("/admin/settings", {
+          method: "PATCH",
+          body: {
+            adminApiPath: "/administration"
+          }
+        });
+        await wait(1000);
+      });
+
+      afterAll(async () => {
+        await request("/administration/settings", {
+          method: "PATCH",
+          body: {
+            adminApiPath: "/admin"
+          }
+        });
+        await wait(1000);
+      });
+
+      it("should return new port adminApiPath when getting settings, using new admin api path", async () => {
+        const settingsResponse = await request("/administration/settings");
+        expect(settingsResponse.adminApiPath).toEqual("/administration");
+      });
+
+      it("should return not found adminApiPath when getting settings in old admin api path", async () => {
+        const settingsResponse = await request("/admin/settings", {
+          resolveWithFullResponse: true,
+          simple: false
+        });
+        expect(settingsResponse.statusCode).toEqual(404);
+      });
+    });
+
+    describe("without changing adminApiDeprecatedPaths option", () => {
+      it("should return current delay option in deprecated api path", async () => {
+        const settingsResponse = await request("/mocks/settings");
+        expect(settingsResponse).toEqual({
+          delay: 0
+        });
+      });
+    });
+
+    describe("when changing adminApiDeprecatedPaths option", () => {
+      beforeAll(async () => {
+        await request("/admin/settings", {
+          method: "PATCH",
+          body: {
+            adminApiDeprecatedPaths: false
+          }
+        });
+        await wait(1000);
+      });
+
+      it("should return not found when getting settings in deprecated admin api path", async () => {
+        const settingsResponse = await request("/mocks/settings", {
+          resolveWithFullResponse: true,
+          simple: false
+        });
+        expect(settingsResponse.statusCode).toEqual(404);
       });
     });
   });

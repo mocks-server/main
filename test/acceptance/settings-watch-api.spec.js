@@ -51,7 +51,7 @@ describe("watch option modified through api", () => {
         }
       });
       fsExtra.copySync(fixturesFolder("files-modification"), fixturesFolder("files-watch"));
-      await wait(1000);
+      await wait(2000);
     });
 
     it("should return watch enabled when getting settings", async () => {
@@ -77,7 +77,7 @@ describe("watch option modified through api", () => {
         }
       });
       fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
-      await wait(1000);
+      await wait(2000);
     });
 
     it("should return watch disabled when getting settings", async () => {

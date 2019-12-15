@@ -38,6 +38,45 @@ describe("settings api", () => {
   });
 
   describe("patch", () => {
+    describe("when changing an unexistant option", () => {
+      it("should response with a bad request containing errors", async () => {
+        expect.assertions(2);
+        const settingsResponse = await request("/admin/settings", {
+          method: "PATCH",
+          body: {
+            foo: "foo-value",
+            anotherFoo: 45,
+            third: {
+              foo: "foo"
+            }
+          },
+          resolveWithFullResponse: true,
+          simple: false
+        });
+        expect(settingsResponse.statusCode).toEqual(400);
+        expect(settingsResponse.body.message).toEqual(
+          'Invalid option name "foo". Invalid option name "anotherFoo". Invalid option name "third"'
+        );
+      });
+
+      it("should not apply any change if request contains any error", async () => {
+        expect.assertions(3);
+        const settingsUpdateResponse = await request("/admin/settings", {
+          method: "PATCH",
+          body: {
+            foo: "foo-value",
+            delay: 1000
+          },
+          resolveWithFullResponse: true,
+          simple: false
+        });
+        const settingsResponse = await request("/admin/settings");
+        expect(settingsUpdateResponse.statusCode).toEqual(400);
+        expect(settingsUpdateResponse.body.message).toEqual('Invalid option name "foo"');
+        expect(settingsResponse.delay).toEqual(0);
+      });
+    });
+
     describe("when changing delay option", () => {
       it("should respond with no delay", async () => {
         const timeCounter = new TimeCounter();

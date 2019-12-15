@@ -14,5 +14,6 @@ module.exports = {
   DEFAULT_API_PATH: "/admin",
   PLUGIN_NAME: "plugin-admin-api",
   SETTINGS_API_PATH: "/settings",
+  BEHAVIORS_API_PATH: "/behaviors",
   DEPRECATED_API_PATH: "/mocks"
 };

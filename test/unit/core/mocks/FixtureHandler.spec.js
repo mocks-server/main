@@ -80,7 +80,7 @@ describe("FixtureHandler", () => {
           url: "foo/:id",
           method: "GET",
           response: {
-            status: 200
+            status: 300
           }
         },
         coreInstance
@@ -97,6 +97,114 @@ describe("FixtureHandler", () => {
       );
       expect(fixture.requestMatchId).toEqual(fixture2.requestMatchId);
       expect(fixture.requestMatchId).not.toEqual(fixture3.requestMatchId);
+    });
+  });
+
+  describe("id getter", () => {
+    it("should return unique identifier based on method, url and response", () => {
+      expect.assertions(3);
+      const fixture = new FixtureHandler(
+        {
+          url: "foo/:id",
+          method: "GET",
+          response: {
+            status: 200
+          }
+        },
+        coreInstance
+      );
+      const fixture2 = new FixtureHandler(
+        {
+          url: "foo/:id",
+          method: "GET",
+          response: {
+            status: 200
+          }
+        },
+        coreInstance
+      );
+      const fixture3 = new FixtureHandler(
+        {
+          url: "foo/:id",
+          method: "GET",
+          response: {
+            status: 300
+          }
+        },
+        coreInstance
+      );
+      const fixture4 = new FixtureHandler(
+        {
+          url: "foo/:id",
+          method: "GET",
+          response: {
+            status: 300
+          }
+        },
+        coreInstance
+      );
+      expect(fixture.id).toEqual(fixture2.id);
+      expect(fixture2.id).not.toEqual(fixture3.id);
+      expect(fixture3.id).toEqual(fixture4.id);
+    });
+  });
+
+  describe("request getter", () => {
+    it("should return an object containing url and method", () => {
+      const fixture = new FixtureHandler(
+        {
+          url: "foo/:id",
+          method: "GET",
+          response: {
+            status: 200
+          }
+        },
+        coreInstance
+      );
+      expect(fixture.request).toEqual({
+        url: "foo/:id",
+        method: "GET"
+      });
+    });
+  });
+
+  describe("response getter", () => {
+    it("should return an object containing response type and response details", () => {
+      const fixture = new FixtureHandler(
+        {
+          url: "foo/:id",
+          method: "GET",
+          response: {
+            status: 200,
+            body: {
+              foo: "foo"
+            }
+          }
+        },
+        coreInstance
+      );
+      expect(fixture.response).toEqual({
+        type: "static",
+        status: 200,
+        body: {
+          foo: "foo"
+        }
+      });
+    });
+
+    it("should return an object containing response type and response function stringified", () => {
+      const fixture = new FixtureHandler(
+        {
+          url: "foo/:id",
+          method: "GET",
+          response: () => {}
+        },
+        coreInstance
+      );
+      expect(fixture.response).toEqual({
+        type: "dynamic",
+        function: "() => {}"
+      });
     });
   });
 

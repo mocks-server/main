@@ -139,6 +139,13 @@ describe("Settings", () => {
     });
   });
 
+  describe("removeRouter method", () => {
+    it("should remove router from server", () => {
+      core.removeRouter();
+      expect(serverInstance.removeCustomRouter.callCount).toEqual(1);
+    });
+  });
+
   describe("addCustomSetting method", () => {
     it("should add custom setting to settings", () => {
       core.addCustomSetting();

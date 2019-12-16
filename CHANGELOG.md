@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Remove "addCustomRouter" method. Use "addRouter".
 - Remove "addCustomSetting" method. Use "addSetting".
 - Do not provide the core instance to request handlers. This was made only to maintain temporarily backward compatibility with api plugin, because it is responding with full behaviors collection in deprecated api endpoints, producing a circular reference if the core is saved as a private property of the FixtureHandler Class.
+- Remove "booleanString" option type (--cli=false). Use commander boolean type, which is used appending "--no-" to the option name (--no-cli);
 
 ## [unreleased]
 ### Added
@@ -18,7 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [1.2.0] - 2019-12-15
+## [1.2.0] - 2019-12-17
 ### Added
 - Add "fixtures" getter, returning all found fixtures in mocks folder, and inside behaviors.
 - Add "addFixturesParser" method, which allows to use fixtures with custom formats and handle responses.

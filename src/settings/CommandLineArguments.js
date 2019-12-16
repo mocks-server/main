@@ -19,7 +19,7 @@ class CommandLineArguments {
   constructor(defaultOptions) {
     this._options = {};
     this._optionsNames = Object.keys(defaultOptions);
-    // TODO, generate initial options dynamically from Options object using "addCustomOption" method
+    // TODO, generate initial options dynamically from Options object using the "addCustom" method
     this._commander = commander
       .option("--path <path>", "Define folder from which load mocks")
       .option("--behavior <behavior>", "Define current behavior")
@@ -39,7 +39,7 @@ class CommandLineArguments {
     return Promise.resolve();
   }
 
-  // TODO, deprecate "stringBoolean" options. Use --no- commander feature
+  // TODO, deprecate "booleanString" options. Use --no- commander feature (boolean type)
   _stringToBoolean(val) {
     if (isUndefined(val) || val === "true") {
       return true;
@@ -57,7 +57,7 @@ class CommandLineArguments {
       ? optionDetails.parse
       : optionDetails.type === "number"
       ? parseInt
-      : optionDetails.type === "booleanString"
+      : optionDetails.type === "booleanString" // TODO, deprecate
       ? this._stringToBoolean
       : undefined;
 

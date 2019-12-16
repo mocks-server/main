@@ -102,6 +102,13 @@ describe("Settings", () => {
     });
   });
 
+  describe("getValidOptionName method", () => {
+    it("should return the result of getValidOptionName options method", () => {
+      optionsInstance.getValidOptionName.returns("foo");
+      expect(settings.getValidOptionName("behavior")).toEqual("foo");
+    });
+  });
+
   describe("all getter", () => {
     it("should return all current settings", () => {
       expect(settings.all).toEqual({

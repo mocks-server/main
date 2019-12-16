@@ -95,9 +95,7 @@ class Options {
       !optionDetails.type ||
       !["string", "number", "boolean", "booleanString"].includes(optionDetails.type)
     ) {
-      this._rejectCustomOption(
-        "Please provide a valid option type between: string, number, boolean"
-      );
+      this._rejectCustomOption("Please provide a valid option type: string, number, boolean");
     }
     if (!optionDetails.description) {
       tracer.warn("Please provide option description when adding a new option");

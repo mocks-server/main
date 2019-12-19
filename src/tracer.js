@@ -39,7 +39,7 @@ logger.info = logger.info.bind(logger);
 logger.warn = logger.warn.bind(logger);
 logger.error = logger.error.bind(logger);
 
-const set = (transport, level) => {
+const set = (level, transport = "console") => {
   if (level === "silent") {
     transports[transport].silent = true;
   } else {

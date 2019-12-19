@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const EventEmitter = require("events");
 
-const { INIT, START, LOAD_FILES, LOAD_MOCKS, CHANGE_SETTINGS } = require("./eventNames");
+const { INIT, START, LOAD_FILES, CHANGE_MOCKS, CHANGE_SETTINGS } = require("./eventNames");
 const Server = require("./server/Server");
 const tracer = require("./tracer");
 const Mocks = require("./mocks/Mocks");
@@ -96,6 +96,7 @@ class Core {
 
   // Listeners
 
+  // TODO, deprecate method
   onLoadFiles(cb) {
     const removeCallback = () => {
       this._eventEmitter.removeListener(LOAD_FILES, cb);
@@ -104,11 +105,17 @@ class Core {
     return removeCallback;
   }
 
+  // TODO, deprecate method, use onChangeMocks
   onLoadMocks(cb) {
+    tracer.deprecationWarn("onLoadMocks", "onChangeMocks");
+    return this.onChangeMocks(cb);
+  }
+
+  onChangeMocks(cb) {
     const removeCallback = () => {
-      this._eventEmitter.removeListener(LOAD_MOCKS, cb);
+      this._eventEmitter.removeListener(CHANGE_MOCKS, cb);
     };
-    this._eventEmitter.on(LOAD_MOCKS, cb);
+    this._eventEmitter.on(CHANGE_MOCKS, cb);
     return removeCallback;
   }
 

@@ -28,13 +28,13 @@ describe("tracer", () => {
 
   describe("set method", () => {
     it("should call to set log level", () => {
-      tracer.set("console", "error");
+      tracer.set("error");
       tracer.debug("foo debug");
       expect(console.log.callCount).toEqual(0);
     });
 
     it("should deactivate logs if called with level silent", () => {
-      tracer.set("console", "silent");
+      tracer.set("silent");
       tracer.error("foo error");
       expect(console.log.callCount).toEqual(0);
     });

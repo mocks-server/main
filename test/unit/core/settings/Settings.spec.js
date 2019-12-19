@@ -50,7 +50,7 @@ describe("Settings", () => {
     });
 
     it("should set current tracer level", () => {
-      expect(tracer.set.calledWith("console", "foo-log-level")).toEqual(true);
+      expect(tracer.set.calledWith("foo-log-level")).toEqual(true);
     });
   });
 
@@ -73,7 +73,7 @@ describe("Settings", () => {
   describe("set method", () => {
     it("should set log level if setting is log", () => {
       settings.set("log", "foo-new-value");
-      expect(tracer.set.calledWith("console", "foo-new-value")).toEqual(true);
+      expect(tracer.set.calledWith("foo-new-value")).toEqual(true);
     });
 
     it("should set new option if provided one is deprecated", () => {

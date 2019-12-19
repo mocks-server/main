@@ -18,7 +18,7 @@ const { compact } = require("lodash");
 const tracer = require("../tracer");
 const Behavior = require("./Behavior");
 
-const { LOAD_MOCKS, LOAD_BEHAVIORS, LOAD_FIXTURES, CHANGE_SETTINGS } = require("../eventNames");
+const { CHANGE_MOCKS, CHANGE_FIXTURES, CHANGE_SETTINGS } = require("../eventNames");
 
 class Behaviors {
   constructor(filesHandler, settings, eventEmitter) {
@@ -33,7 +33,7 @@ class Behaviors {
   async init(fixturesHandler, allFixtures) {
     this._fixturesHandler = fixturesHandler;
     this._allFixtures = allFixtures;
-    this._eventEmitter.on(LOAD_FIXTURES, this._onLoadFixtures);
+    this._eventEmitter.on(CHANGE_FIXTURES, this._onLoadFixtures);
     this._eventEmitter.on(CHANGE_SETTINGS, this._onChangeSettings);
     await this._noBehavior.init(this._fixturesHandler);
     return this._loadBehaviors();
@@ -60,8 +60,7 @@ class Behaviors {
       }
     }
 
-    this._eventEmitter.emit(LOAD_BEHAVIORS);
-    this._eventEmitter.emit(LOAD_MOCKS);
+    this._eventEmitter.emit(CHANGE_MOCKS);
     return Promise.resolve();
   }
 

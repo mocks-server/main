@@ -31,7 +31,6 @@ describe("when mocks files are unordered and export single fixtures and behavior
     });
 
     it("should have four fixtures", async () => {
-      console.log(core.fixtures.collection);
       expect(core.fixtures.count).toEqual(4);
     });
   });

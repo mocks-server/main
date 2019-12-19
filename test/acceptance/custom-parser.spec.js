@@ -106,7 +106,6 @@ describe("when using a custom fixtures handler", () => {
     });
 
     it("should have four fixtures", async () => {
-      console.log(core.fixtures.collection);
       expect(core.fixtures.count).toEqual(4);
     });
   });

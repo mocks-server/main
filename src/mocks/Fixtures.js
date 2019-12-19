@@ -14,7 +14,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const tracer = require("../tracer");
 const FixturesGroup = require("./FixturesGroup");
 
-const { LOAD_FILES, LOAD_FIXTURES } = require("../eventNames");
+const { LOAD_FILES, CHANGE_FIXTURES } = require("../eventNames");
 
 class Fixtures {
   constructor(filesHandler, settings, eventEmitter) {
@@ -46,7 +46,7 @@ class Fixtures {
     tracer.debug("Processing fixtures");
     this._fixtures = await this._getFixtures();
 
-    this._eventEmitter.emit(LOAD_FIXTURES);
+    this._eventEmitter.emit(CHANGE_FIXTURES);
     return Promise.resolve();
   }
 

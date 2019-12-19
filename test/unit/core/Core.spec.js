@@ -171,7 +171,7 @@ describe("Settings", () => {
     it("should add listener to eventEmitter", () => {
       const spy = sandbox.spy();
       core.onLoadMocks(spy);
-      core._eventEmitter.emit("load:mocks");
+      core._eventEmitter.emit("change:mocks");
       expect(spy.callCount).toEqual(1);
     });
 
@@ -179,10 +179,10 @@ describe("Settings", () => {
       expect.assertions(2);
       const spy = sandbox.spy();
       const removeCallback = core.onLoadMocks(spy);
-      core._eventEmitter.emit("load:mocks");
+      core._eventEmitter.emit("change:mocks");
       expect(spy.callCount).toEqual(1);
       removeCallback();
-      core._eventEmitter.emit("load:mocks");
+      core._eventEmitter.emit("change:mocks");
       expect(spy.callCount).toEqual(1);
     });
   });

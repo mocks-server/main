@@ -32,7 +32,7 @@ class Settings {
   }
 
   _setTracerLevel() {
-    tracer.set("console", this._settings.log);
+    tracer.set(this._settings.log);
   }
 
   _emitChange() {

@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Remove "addCustomSetting" method. Use "addSetting".
 - Do not provide the core instance to request handlers. This was made only to maintain temporarily backward compatibility with api plugin, because it is responding with full behaviors collection in deprecated api endpoints, producing a circular reference if the core is saved as a private property of the FixtureHandler Class.
 - Remove "booleanString" option type (--cli=false). Use commander boolean type, which is used appending "--no-" to the option name (--no-cli);
+- Remove "onLoadFiles" method
+- Remove "onLoadMocks" method, use "onChangeMocks"
 
 ## [unreleased]
 ### Added
@@ -22,7 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.2.0] - 2019-12-17
 ### Added
 - Add "fixtures" getter, returning all found fixtures in mocks folder, and inside behaviors.
-- Add "addFixturesParser" method, which allows to use fixtures with custom formats and handle responses.
+- Add "addFixturesHandler" method, which allows to use fixtures with custom formats and handle responses.
 - Add "id" property to fixtures, which will be unique for each different fixture.
 - Add "requestMatchId" property to fixtures, which should be the same for fixtures handling same requests.
 - Add "request" getter to fixtures, which returns an object describing which requests will handle.
@@ -40,6 +42,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Changed "Behaviors" getters. Data now is not parsed, and returns directly fixtures collections, or, in the case of "all" getter, it returns and object containing behavior names as "keys", containing respective fixtures collections. (It is not considered as a breaking change, as it is an experimental interface yet, as it is indicated in the documentation)
 - Change settings automatically to first found behavior if no one is defined.
 - Improve start, init and stop server methods. Now support multiple concurrent calls.
+- tracer.set method "transport" argument now is passed as second argument. Default value is "console".
 
 ## [1.1.0] - 2019-12-07
 ### Changed

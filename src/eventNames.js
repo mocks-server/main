@@ -12,8 +12,7 @@ module.exports = {
   INIT: "init",
   START: "start",
   LOAD_FILES: "load:files",
-  LOAD_FIXTURES: "load:fixtures",
-  LOAD_MOCKS: "load:mocks",
-  LOAD_BEHAVIORS: "load:behaviors",
+  CHANGE_FIXTURES: "change:fixtures",
+  CHANGE_MOCKS: "change:mocks",
   CHANGE_SETTINGS: "change:settings"
 };

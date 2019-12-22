@@ -35,11 +35,11 @@ describe("and registering it before initializating the server", () => {
 
   beforeAll(async () => {
     core = new Core({
-      onlyProgrammaticOptions: true,
-      watch: false
+      onlyProgrammaticOptions: true
     });
     //await core.addRouter("/api/custom", customRouter);
     await core.init({
+      watch: false,
       log: "silly",
       path: fixturesFolder("web-tutorial")
     });

@@ -7,8 +7,6 @@ module.exports = {
 
   testMatch: [
     "**/test/acceptance/**/?(*.)+(spec|test).js?(x)",
-    "!**/test/acceptance/custom-parser.spec.js",
-    "!**/test/acceptance/custom-router.spec.js",
     "!**/test/acceptance/files-handler.spec.js"
   ],
 

@@ -13,7 +13,17 @@ const express = require("express");
 const { Core } = require("../../index");
 const { stopCore, request, fixturesFolder } = require("./utils");
 
-describe("when using custom router", () => {
+/*describe("when using custom router", () => {
+  const customRouter = express.Router();
+  customRouter.get("/", (req, res) => {
+    res.status(200);
+    res.send({
+      customRouterListening: true
+    });
+  });
+  let core;*/
+
+describe("and registering it before initializating the server", () => {
   const customRouter = express.Router();
   customRouter.get("/", (req, res) => {
     res.status(200);
@@ -23,37 +33,36 @@ describe("when using custom router", () => {
   });
   let core;
 
-  describe("and registering it before initializating the server", () => {
-    beforeAll(async () => {
-      core = new Core({
-        onlyProgrammaticOptions: true
-      });
-      await core.addRouter("/api/custom", customRouter);
-      await core.init({
-        log: "silly",
-        path: fixturesFolder("web-tutorial")
-      });
-      await core.start();
+  beforeAll(async () => {
+    core = new Core({
+      onlyProgrammaticOptions: true
     });
-
-    afterAll(async () => {
-      await stopCore(core);
+    await core.addRouter("/api/custom", customRouter);
+    await core.init({
+      log: "silly",
+      path: fixturesFolder("web-tutorial")
     });
+    await core.start();
+  });
 
-    it("custom router should be listening", async () => {
-      const response = await request("/api/custom");
-      expect(response.customRouterListening).toEqual(true);
-    });
+  afterAll(async () => {
+    await stopCore(core);
+  });
 
-    it("fixtures routers should be listening", async () => {
-      const users = await request("/api/users");
-      expect(users).toEqual([
-        { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
-      ]);
-    });
+  it("custom router should be listening", async () => {
+    const response = await request("/api/custom");
+    expect(response.customRouterListening).toEqual(true);
+  });
 
-    /*it("custom router should stop listening when is removed", async () => {
+  it("fixtures routers should be listening", async () => {
+    const users = await request("/api/users");
+    expect(users).toEqual([
+      { id: 1, name: "John Doe" },
+      { id: 2, name: "Jane Doe" }
+    ]);
+  });
+
+  /*it("custom router should stop listening when is removed", async () => {
       await core.removeRouter("/api/custom", customRouter);
       const response = await request("/api/custom", {
         resolveWithFullResponse: true,
@@ -61,9 +70,9 @@ describe("when using custom router", () => {
       });
       expect(response.statusCode).toEqual(404);
     });*/
-  });
+});
 
-  /* describe("and registering it after server is started", () => {
+/* describe("and registering it after server is started", () => {
     beforeAll(async () => {
       core = new Core({
         onlyProgrammaticOptions: true
@@ -101,4 +110,4 @@ describe("when using custom router", () => {
       expect(response.statusCode).toEqual(404);
     });
   }); */
-});
+//});

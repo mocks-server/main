@@ -10,6 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
+const http = require("http");
 
 const LibsMocks = require("../../Libs.mocks.js");
 const MocksMocks = require("../mocks/Mocks.mocks.js");
@@ -53,6 +54,7 @@ describe("Server", () => {
       coreInstance._eventEmitter
     );
     expect.assertions(1);
+    libsMocks.stubs.http.createServer.onListen.delay(200);
   });
 
   afterEach(() => {
@@ -86,7 +88,7 @@ describe("Server", () => {
       coreInstance._eventEmitter.on.getCall(0).args[1]({
         port: 4540
       });
-      await wait();
+      await wait(2000);
       expect(libsMocks.stubs.http.createServer.close.callCount).toEqual(1);
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
     });
@@ -118,7 +120,7 @@ describe("Server", () => {
     });
   });
 
-  describe("custom routers", () => {
+  describe("add custom routers method", () => {
     it("should be registered when initializating http server", async () => {
       const fooRouter = sandbox.spy();
       server.addCustomRouter("fooPath", fooRouter);
@@ -126,9 +128,144 @@ describe("Server", () => {
       await server.start();
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
     });
+
+    it("should reinit and restart the server if it was already started", async () => {
+      expect.assertions(3);
+      const fooRouter = sandbox.spy();
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      await server.start();
+      await server.addCustomRouter("fooPath", fooRouter);
+      expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
+      expect(http.createServer.callCount).toEqual(2);
+      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
+    });
+
+    it("should wait for the server to start, then reinit and restart the server if it was already starting", async () => {
+      expect.assertions(3);
+      const fooRouter = sandbox.spy();
+      libsMocks.stubs.http.createServer.onListen.delay(500);
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      server.start();
+      server.start();
+      server.start();
+      await server.addCustomRouter("fooPath", fooRouter);
+      expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
+      expect(http.createServer.callCount).toEqual(2);
+      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
+    });
+
+    it("should add the router next time server is started if it is stopped", async () => {
+      expect.assertions(4);
+      const fooRouter = sandbox.spy();
+      libsMocks.stubs.http.createServer.onListen.delay(500);
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      await server.start();
+      await server.stop();
+      await server.addCustomRouter("fooPath", fooRouter);
+      expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(false);
+      await server.start();
+      expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
+      expect(http.createServer.callCount).toEqual(2);
+      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
+    });
+  });
+
+  describe("remove custom routers method", () => {
+    it("should not be registered when initializating http server if called before it is started", async () => {
+      const fooRouter = sandbox.spy();
+      server.addCustomRouter("fooPath", fooRouter);
+      server.removeCustomRouter("fooPath", fooRouter);
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      await server.start();
+      expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(false);
+    });
+
+    it("should remove router, reinit and restart the server if it was already started", async () => {
+      expect.assertions(4);
+      const fooRouter = sandbox.spy();
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      server.addCustomRouter("fooPath", fooRouter);
+      await server.start();
+      expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
+      libsMocks.stubs.express.use.reset();
+      await server.removeCustomRouter("fooPath", fooRouter);
+      expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(false);
+      expect(http.createServer.callCount).toEqual(2);
+      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
+    });
+
+    it("should do nothing if router to remove was not registered in same path", async () => {
+      expect.assertions(3);
+      const fooRouter = sandbox.spy();
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      server.addCustomRouter("fooPath", fooRouter);
+      await server.start();
+      expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
+      libsMocks.stubs.express.use.reset();
+      await server.removeCustomRouter("foooooPath", fooRouter);
+      expect(http.createServer.callCount).toEqual(1);
+      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(1);
+    });
+
+    it("should do nothing if router to remove was not the same registered in the path", async () => {
+      expect.assertions(3);
+      const fooRouter = sandbox.spy();
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      server.addCustomRouter("fooPath", fooRouter);
+      await server.start();
+      expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
+      libsMocks.stubs.express.use.reset();
+      await server.removeCustomRouter("fooPath", () => {});
+      expect(http.createServer.callCount).toEqual(1);
+      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(1);
+    });
+
+    it("should remove router, wait for the server to start, then reinit and restart the server if it was already starting", async () => {
+      expect.assertions(4);
+      const fooRouter = sandbox.spy();
+      libsMocks.stubs.http.createServer.onListen.delay(500);
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      server.addCustomRouter("fooPath", fooRouter);
+      server.start();
+      await server.start();
+      expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
+      libsMocks.stubs.express.use.reset();
+      await server.stop();
+      server.start();
+      await server.removeCustomRouter("fooPath", fooRouter);
+      expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(false);
+      expect(http.createServer.callCount).toEqual(2);
+      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(3);
+    });
+
+    it("should add the router next time server is started if it is stopped", async () => {
+      expect.assertions(4);
+      const fooRouter = sandbox.spy();
+      libsMocks.stubs.http.createServer.onListen.delay(500);
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      server.addCustomRouter("fooPath", fooRouter);
+      await server.start();
+      expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
+      libsMocks.stubs.express.use.reset();
+      await server.stop();
+      await server.removeCustomRouter("fooPath", fooRouter);
+      await server.start();
+      expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(false);
+      expect(http.createServer.callCount).toEqual(2);
+      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
+    });
   });
 
   describe("when started", () => {
+    it("should init server only once", async () => {
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      await server.init();
+      await server.start();
+      await server.start();
+      await server.start();
+      expect(http.createServer.callCount).toEqual(1);
+    });
+
     it("should reject the promise if an error occurs when calling to server listen method", async () => {
       const error = new Error("Foo error");
       libsMocks.stubs.http.createServer.listen.throws(error);
@@ -140,6 +277,17 @@ describe("Server", () => {
       } catch (err) {
         expect(err).toEqual(error);
       }
+    });
+
+    it("should call to start only once even when called multiple times in parallel", async () => {
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      libsMocks.stubs.http.createServer.onListen.delay(200);
+      await server.init();
+      server.start();
+      server.start();
+      server.start();
+      await server.start();
+      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(1);
     });
 
     it("should be listening to server errors and throw an error if occurs", async () => {
@@ -215,6 +363,16 @@ describe("Server", () => {
       expect(libsMocks.stubs.http.createServer.close.callCount).toEqual(1);
     });
 
+    it("should call to stop the server only once while it is stopping", async () => {
+      await server.init();
+      await server.start();
+      server.stop();
+      server.stop();
+      server.stop();
+      await server.stop();
+      expect(libsMocks.stubs.http.createServer.close.callCount).toEqual(1);
+    });
+
     it("should not call to stop server if it has not been initialized", async () => {
       await server.init();
       await server.stop();
@@ -266,88 +424,38 @@ describe("Server", () => {
       method: "get",
       url: "foo-route"
     };
-    let statusSpy;
-    let sendSpy;
     let resMock;
     let nextSpy;
 
     beforeEach(async () => {
-      statusSpy = sandbox.spy();
-      sendSpy = sandbox.spy();
-      resMock = {
-        status: statusSpy,
-        send: sendSpy
-      };
+      resMock = {};
       nextSpy = sandbox.spy();
       libsMocks.stubs.http.createServer.onListen.returns(null);
       coreInstance.settings.get.withArgs("delay").returns(0);
     });
 
-    it("should call next if does not found a fixture in current feature matching the request url", async () => {
+    it("should call to current fixture matching handleRequest method", async () => {
+      expect.assertions(3);
+      const handleRequestSpy = sandbox.spy();
+      mocksMocks.stubs.instance.behaviors.current.getRequestMatchingFixture.returns({
+        handleRequest: handleRequestSpy
+      });
       await server.start();
 
       server._fixturesMiddleware(fooRequest, resMock, nextSpy);
+      await wait(10);
+      expect(handleRequestSpy.getCall(0).args[0]).toEqual(fooRequest);
+      expect(handleRequestSpy.getCall(0).args[1]).toEqual(resMock);
+      expect(handleRequestSpy.getCall(0).args[2]).toEqual(nextSpy);
+    });
+
+    it("should call next if no matching fixture is found", async () => {
+      mocksMocks.stubs.instance.behaviors.current.getRequestMatchingFixture.returns(null);
+      await server.start();
+
+      server._fixturesMiddleware(fooRequest, resMock, nextSpy);
+      await wait(10);
       expect(nextSpy.callCount).toEqual(1);
-    });
-
-    it("should call to response status method to set the matching fixture status code", async () => {
-      await server.start();
-      mocksMocks.stubs.instance.behaviors.current = {
-        get: {
-          "foo-route": {
-            route: {
-              match: () => true
-            },
-            response: {
-              status: 200
-            }
-          }
-        }
-      };
-      server._fixturesMiddleware(fooRequest, resMock, nextSpy);
-      await wait(200);
-      expect(resMock.status.getCall(0).args[0]).toEqual(200);
-    });
-
-    it("should call to response send method passing the matching fixture body", async () => {
-      const fooBody = {
-        foo: "foo-data"
-      };
-      await server.start();
-      mocksMocks.stubs.instance.behaviors.current = {
-        get: {
-          "foo-route": {
-            route: {
-              match: () => true
-            },
-            response: {
-              status: 200,
-              body: fooBody
-            }
-          }
-        }
-      };
-      server._fixturesMiddleware(fooRequest, resMock, nextSpy);
-      await wait(200);
-      expect(resMock.send.getCall(0).args[0]).toEqual(fooBody);
-    });
-
-    it("should call to fixture response method passing all request data if it is a function", async () => {
-      const responseSpy = sandbox.spy();
-      await server.start();
-      mocksMocks.stubs.instance.behaviors.current = {
-        get: {
-          "foo-route": {
-            route: {
-              match: () => true
-            },
-            response: responseSpy
-          }
-        }
-      };
-      server._fixturesMiddleware(fooRequest, resMock, nextSpy);
-      await wait(200);
-      expect(responseSpy.calledWith(fooRequest, resMock, nextSpy)).toEqual(true);
     });
   });
 });

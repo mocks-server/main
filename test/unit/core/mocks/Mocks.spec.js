@@ -9,7 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
-const Boom = require("boom");
+const Boom = require("@hapi/boom");
 
 const BehaviorsMocks = require("./Behaviors.mocks.js");
 const FilesHandlerMocks = require("./FilesHandler.mocks.js");
@@ -44,7 +44,7 @@ describe("Behaviors", () => {
   });
 
   describe("init method", () => {
-    it("should init filesHandler and behaviors", async () => {
+    it("should init filesHandler", async () => {
       expect.assertions(2);
       await mocks.init();
       expect(filesHandlerMocks.stubs.instance.init.callCount).toEqual(1);
@@ -66,9 +66,23 @@ describe("Behaviors", () => {
     });
   });
 
+  describe("addFixturesHandler method", () => {
+    it("should add Handler to fixturesHandler", async () => {
+      mocks.addFixturesHandler({});
+      expect(mocks._fixturesHandler._handlers.length).toEqual(2);
+    });
+  });
+
   describe("behaviors getter", () => {
     it("should return behaviors", async () => {
       expect(mocks.behaviors).toEqual(behaviorsMocks.stubs.instance);
+    });
+  });
+
+  describe("fixtures getter", () => {
+    it("should return fixtures", async () => {
+      await mocks.init();
+      expect(mocks.fixtures.collection.length).toEqual(0);
     });
   });
 });

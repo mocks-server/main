@@ -29,7 +29,7 @@ describe("Settings", () => {
     sandbox = sinon.createSandbox();
     optionsMocks = new OptionsMocks();
     optionsInstance = optionsMocks.stubs.instance;
-    optionsInstance.getValidOptionName.callsFake(name => name);
+    optionsInstance.checkValidOptionName.callsFake(name => name);
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
     sandbox.stub(tracer, "set");
@@ -50,7 +50,7 @@ describe("Settings", () => {
     });
 
     it("should set current tracer level", () => {
-      expect(tracer.set.calledWith("console", "foo-log-level")).toEqual(true);
+      expect(tracer.set.calledWith("foo-log-level")).toEqual(true);
     });
   });
 
@@ -60,7 +60,7 @@ describe("Settings", () => {
     });
 
     it("should return current deprecated option value", () => {
-      optionsInstance.getValidOptionName.returns("behavior");
+      optionsInstance.checkValidOptionName.returns("behavior");
       expect(settings.get("log")).toEqual("foo-behavior");
     });
 
@@ -73,11 +73,11 @@ describe("Settings", () => {
   describe("set method", () => {
     it("should set log level if setting is log", () => {
       settings.set("log", "foo-new-value");
-      expect(tracer.set.calledWith("console", "foo-new-value")).toEqual(true);
+      expect(tracer.set.calledWith("foo-new-value")).toEqual(true);
     });
 
     it("should set new option if provided one is deprecated", () => {
-      optionsInstance.getValidOptionName.returns("behavior");
+      optionsInstance.checkValidOptionName.returns("behavior");
       settings.set("log", "foo");
       expect(settings.get("behavior")).toEqual("foo");
     });
@@ -99,6 +99,27 @@ describe("Settings", () => {
       setFoo();
       setFoo();
       expect(coreInstance._eventEmitter.emit.callCount).toEqual(1);
+    });
+  });
+
+  describe("getValidOptionName method", () => {
+    it("should return the result of getValidOptionName options method", () => {
+      optionsInstance.getValidOptionName.returns("foo");
+      expect(settings.getValidOptionName("behavior")).toEqual("foo");
+    });
+  });
+
+  describe("all getter", () => {
+    it("should return all current settings", () => {
+      expect(settings.all).toEqual({
+        log: "foo-log-level",
+        behavior: "foo-behavior"
+      });
+    });
+
+    it("should change when set is called", () => {
+      settings.set("log", "foo-new-value");
+      expect(settings.all.log).toEqual("foo-new-value");
     });
   });
 

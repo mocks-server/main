@@ -10,12 +10,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const Boom = require("boom");
+const Boom = require("@hapi/boom");
 const requireAll = require("require-all");
 const watch = require("node-watch");
 const fsExtra = require("fs-extra");
 
-const { map, debounce } = require("lodash");
+const { map, debounce, flatten, isObject } = require("lodash");
 
 const tracer = require("../tracer");
 const { LOAD_FILES, CHANGE_SETTINGS } = require("../eventNames");
@@ -86,14 +86,52 @@ class FilesHandler {
 
   _loadFiles() {
     this._path = this._ensureFolder(this._resolveFolder(this._settings.get("path")));
-    tracer.info(`Loading mocks from folder ${this._path}`);
+    tracer.info(`Loading files from folder ${this._path}`);
     this._cleanRequireCacheFolder();
     this._files = requireAll({
       dirname: this._path,
-      recursive: true
+      recursive: true,
+      resolve: fileContent => {
+        try {
+          fileContent._mocksServer_isFile = true;
+        } catch (error) {}
+        return fileContent;
+      }
     });
-    tracer.silly(`Loaded mocks from folder ${this._path}`);
-    this._eventEmitter.emit(LOAD_FILES, this._files);
+    tracer.silly(`Loaded files from folder ${this._path}`);
+    this._contents = this._getContents(this._files);
+    this._eventEmitter.emit(LOAD_FILES);
+  }
+
+  _addPathToLoadedObject(object, fullPath, lastPath) {
+    try {
+      object._mocksServer_fullPath = fullPath;
+      object._mocksServer_lastPath = lastPath;
+    } catch (error) {}
+    return object;
+  }
+
+  _getContents(files, fileName = "") {
+    const contents = [];
+    if (files._mocksServer_isFile || !isObject(files)) {
+      if (isObject(files)) {
+        // module exports is an object, add path to each one.
+        Object.keys(files).forEach(key => {
+          if (isObject(files[key])) {
+            this._addPathToLoadedObject(files[key], `${fileName}/${key}`, key);
+            contents.push(files[key]);
+          }
+        });
+        // Add also the full object, maybe it is a single export
+        this._addPathToLoadedObject(files, fileName, fileName.split("/").pop());
+        contents.push(files);
+      }
+    } else {
+      Object.keys(files).forEach(childFileName => {
+        contents.push(this._getContents(files[childFileName], `${fileName}/${childFileName}`));
+      });
+    }
+    return flatten(contents);
   }
 
   _switchWatch() {
@@ -126,8 +164,20 @@ class FilesHandler {
     return this._customRequireCache || require.cache;
   }
 
+  cleanContentsCustomProperties() {
+    this._contents.forEach(content => {
+      delete content._mocksServer_lastPath;
+      delete content._mocksServer_fullPath;
+      delete content._mocksServer_isFile;
+    });
+  }
+
   get files() {
     return this._files;
+  }
+
+  get contents() {
+    return this._contents;
   }
 }
 

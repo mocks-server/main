@@ -15,18 +15,22 @@ describe("delay argument", () => {
   const binaryPath = "./starter";
   const cwdPath = path.resolve(__dirname, "fixtures");
   let cli;
+  let timeCounter;
 
-  afterEach(async () => {
+  beforeAll(async () => {
+    timeCounter = new TimeCounter();
+    cli = new CliRunner([binaryPath, "--path=web-tutorial", "--delay=2000"], {
+      cwd: cwdPath
+    });
+    await wait();
+  });
+
+  afterAll(async () => {
     await cli.kill();
   });
 
   it("should set delay", async () => {
     expect.assertions(2);
-    cli = new CliRunner([binaryPath, "--path=web-tutorial", "--delay=2000"], {
-      cwd: cwdPath
-    });
-    await wait();
-    const timeCounter = new TimeCounter();
     const users = await request("/api/users");
     timeCounter.stop();
     expect(users).toEqual([

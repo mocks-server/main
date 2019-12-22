@@ -32,7 +32,7 @@ class Settings {
   }
 
   _setTracerLevel() {
-    tracer.set("console", this._settings.log);
+    tracer.set(this._settings.log);
   }
 
   _emitChange() {
@@ -41,8 +41,9 @@ class Settings {
   }
 
   set(option, value) {
-    const optionName = this._optionsHandler.getValidOptionName(option);
+    const optionName = this._optionsHandler.checkValidOptionName(option);
     if (this._settings[optionName] !== value) {
+      tracer.debug(`Changing setting "${optionName}" to new value ${value}`);
       this._settings[optionName] = value;
       this._newSettings[optionName] = value;
       this._emitChange();
@@ -53,7 +54,15 @@ class Settings {
   }
 
   get(option) {
-    return this._settings[this._optionsHandler.getValidOptionName(option)];
+    return this._settings[this._optionsHandler.checkValidOptionName(option)];
+  }
+
+  getValidOptionName(optionName) {
+    return this._optionsHandler.getValidOptionName(optionName);
+  }
+
+  get all() {
+    return { ...this._settings };
   }
 
   addCustom(option) {

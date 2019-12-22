@@ -39,13 +39,19 @@ logger.info = logger.info.bind(logger);
 logger.warn = logger.warn.bind(logger);
 logger.error = logger.error.bind(logger);
 
-const set = (transport, level) => {
+const set = (level, transport = "console") => {
   if (level === "silent") {
     transports[transport].silent = true;
   } else {
     transports[transport].silent = false;
     transports[transport].level = level;
   }
+};
+
+const deprecationWarn = (deprecatedMethod, newMethod) => {
+  logger.warn(
+    `Deprecation warning: ${deprecatedMethod} will be deprecated. Use ${newMethod} instead`
+  );
 };
 
 module.exports = {
@@ -55,5 +61,6 @@ module.exports = {
   info: logger.info,
   warn: logger.warn,
   error: logger.error,
-  set: set
+  set,
+  deprecationWarn
 };

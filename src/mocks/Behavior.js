@@ -11,55 +11,46 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-const { cloneDeep, map, sum } = require("lodash");
-const routeParser = require("route-parser");
-
-const FUNCTION_TYPE = "function";
+const FixturesGroup = require("./FixturesGroup");
 
 class Behavior {
-  constructor(fixtures) {
-    this._fixtures = fixtures;
-    this._methods = this.fixturesToMethods(fixtures);
-    this._fixturesCollection = this.fixturesToCollection(fixtures);
-  }
-
-  fixturesToCollection(fixtures) {
-    return cloneDeep(fixtures).map(fixture => {
-      if (typeof fixture.response === FUNCTION_TYPE) {
-        // TODO, add a fixture property indicating type
-        fixture.response = FUNCTION_TYPE;
-      }
-      delete fixture.route;
-      return fixture;
-    });
-  }
-
-  fixturesToMethods(fixtures, baseFixtures = {}) {
-    const fixturesObject = cloneDeep(baseFixtures);
-    fixtures.forEach(fixtureData => {
-      fixturesObject[fixtureData.method] = fixturesObject[fixtureData.method] || {};
-      fixturesObject[fixtureData.method][fixtureData.url] = {
-        route: routeParser(fixtureData.url),
-        response: fixtureData.response
-      };
-    });
-    return fixturesObject;
+  constructor(fixtures = [], parent = null) {
+    this._initialFixtures = [...fixtures];
+    this._fixtures = new FixturesGroup(this._initialFixtures);
+    this._parent = parent;
   }
 
   extend(fixtures) {
-    return new Behavior(this._fixtures.concat(fixtures));
+    return new Behavior(this._initialFixtures.concat(fixtures), this);
   }
 
-  get methods() {
-    return this._methods;
+  async init(fixturesHandler) {
+    await this._fixtures.init(fixturesHandler);
+    return Promise.resolve(this);
+  }
+
+  getRequestMatchingFixture(req) {
+    return this._fixtures.collection.find(fixture => fixture.requestMatch(req));
+  }
+
+  get isMocksServerBehavior() {
+    return true;
   }
 
   get fixtures() {
-    return this._fixturesCollection;
+    return this._fixtures.collection;
   }
 
-  get totalFixtures() {
-    return sum(map(this._methods, urls => Object.keys(urls).length));
+  get extendedFrom() {
+    return this._parent ? this._parent.name : null;
+  }
+
+  get name() {
+    return this._name; // Prepared for defining behavior names based on property, file name, etc.
+  }
+
+  set name(name) {
+    this._name = name;
   }
 }
 

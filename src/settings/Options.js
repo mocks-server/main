@@ -95,9 +95,7 @@ class Options {
       !optionDetails.type ||
       !["string", "number", "boolean", "booleanString"].includes(optionDetails.type)
     ) {
-      this._rejectCustomOption(
-        "Please provide a valid option type between: string, number, boolean"
-      );
+      this._rejectCustomOption("Please provide a valid option type: string, number, boolean");
     }
     if (!optionDetails.description) {
       tracer.warn("Please provide option description when adding a new option");
@@ -114,10 +112,16 @@ class Options {
       return optionName;
     }
     if (DEPRECATED_OPTIONS[optionName]) {
-      tracer.warn(
-        `Deprecation warning: ${optionName} option will be deprecated. Use ${DEPRECATED_OPTIONS[optionName]} instead`
-      );
+      tracer.deprecationWarn(`${optionName} option`, `${DEPRECATED_OPTIONS[optionName]} option`);
       return DEPRECATED_OPTIONS[optionName];
+    }
+    return null;
+  }
+
+  checkValidOptionName(optionName) {
+    const validOptionName = this.getValidOptionName(optionName);
+    if (validOptionName) {
+      return validOptionName;
     }
     throw new Error("Not valid option");
   }
@@ -137,9 +141,7 @@ class Options {
       if (options[newOption] === DEFAULT_OPTIONS[newOption]) {
         options[newOption] = options[optionName];
       }
-      tracer.warn(
-        `Deprecation warning: --${optionName} option will be deprecated. Use --${DEPRECATED_OPTIONS[optionName]} instead`
-      );
+      tracer.deprecationWarn(`--${optionName} option`, `--${DEPRECATED_OPTIONS[optionName]}`);
     }
     delete options[optionName];
     return options;

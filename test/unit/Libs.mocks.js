@@ -26,12 +26,22 @@ class CallBackRunner {
 
   runner(eventName, cb) {
     if (this._returns !== undefined) {
-      cb(this._returns);
+      if (!this._delay) {
+        cb(this._returns);
+      } else {
+        setTimeout(() => {
+          cb(this._returns);
+        }, this._delay);
+      }
     }
   }
 
   returns(code) {
     this._returns = code;
+  }
+
+  delay(time) {
+    this._delay = time;
   }
 }
 

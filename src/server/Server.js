@@ -14,14 +14,16 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const http = require("http");
 
 const express = require("express");
-const { delay, find } = require("lodash");
+const { delay } = require("lodash");
 const tracer = require("../tracer");
 const middlewares = require("./middlewares");
 
 const { CHANGE_SETTINGS } = require("../eventNames");
 
 class Server {
-  constructor(mocks, settings, eventEmitter) {
+  constructor(mocks, settings, eventEmitter, core) {
+    // TODO, deprecate, the core is being passed only to maintain temporarily backward retrocompaitbility with API. This is not published in documentation.
+    this._core = core; // Use this reference only to provide it to external functions for customization purposes
     this._mocks = mocks;
     this._eventEmitter = eventEmitter;
     this._customRouters = [];
@@ -53,6 +55,7 @@ class Server {
     if (this._serverInitted) {
       return;
     }
+    tracer.debug("Initializing server");
     this._serverInitted = true;
     this._express = express();
 
@@ -76,6 +79,21 @@ class Server {
       this._error = error;
       throw error;
     });
+  }
+
+  _reinitServer() {
+    if (this._serverInitted) {
+      this._serverInitted = false;
+      if (this._serverStarted) {
+        return this.restart();
+      }
+      if (this._serverStarting) {
+        return this._serverStarting.then(() => {
+          return this.restart();
+        });
+      }
+    }
+    return Promise.resolve();
   }
 
   _startServer(resolve, reject) {
@@ -111,32 +129,19 @@ class Server {
   }
 
   _registerCustomRouters() {
+    tracer.debug("Adding custom routers to server");
     this._customRouters.forEach(customRouter => {
+      tracer.silly(`Adding custom router with path ${customRouter.path}`);
       this._express.use(customRouter.path, customRouter.router);
     });
   }
 
-  _getFixtureMatching(method, url) {
-    return (
-      this._mocks.behaviors.current &&
-      find(this._mocks.behaviors.current[method], fixture => fixture.route.match(url))
-    );
-  }
-
   _fixturesMiddleware(req, res, next) {
-    const fixture = this._getFixtureMatching(req.method, req.url);
+    const fixture = this._mocks.behaviors.current.getRequestMatchingFixture(req);
     if (fixture) {
       delay(() => {
-        // TODO, add property to fixtures indicating type
-        if (typeof fixture.response === "function") {
-          tracer.debug(`Fixture response is a function, executing response | ${req.id}`);
-          req.params = fixture.route.match(req.url);
-          fixture.response(req, res, next);
-        } else {
-          tracer.debug(`Sending fixture | ${req.id}`);
-          res.status(fixture.response.status);
-          res.send(fixture.response.body);
-        }
+        // TODO, deprecate passing the core to handlers. Fixtures handlers already have a reference that is passed to the constructor.
+        fixture.handleRequest(req, res, next, this._core);
       }, this._settings.get("delay"));
     } else {
       next();
@@ -144,21 +149,42 @@ class Server {
   }
 
   stop() {
+    if (this._serverStopping) {
+      return this._serverStopping;
+    }
     if (this._server) {
-      return new Promise(resolve => {
+      this._serverStopping = new Promise(resolve => {
         tracer.verbose("Stopping server");
         this._server.close(() => {
           tracer.info("Server stopped");
+          this._serverStarted = false;
+          this._serverStopping = false;
           resolve();
         });
       });
+      return this._serverStopping;
     }
     return Promise.resolve();
   }
 
   async start() {
     this._initServer();
-    return new Promise(this._startServer);
+    if (this._serverStarting) {
+      tracer.debug("Server is already starting, returning same promise");
+      return this._serverStarting;
+    }
+    this._serverStarting = new Promise(this._startServer);
+    return this._serverStarting;
+  }
+
+  _getCustomRouterIndex(path, router) {
+    let routerIndex = null;
+    this._customRouters.forEach((customRouter, index) => {
+      if (customRouter.path === path && customRouter.router === router) {
+        routerIndex = index;
+      }
+    });
+    return routerIndex;
   }
 
   addCustomRouter(path, router) {
@@ -166,6 +192,16 @@ class Server {
       path,
       router
     });
+    return this._reinitServer();
+  }
+
+  removeCustomRouter(path, router) {
+    let indexToRemove = this._getCustomRouterIndex(path, router);
+    if (indexToRemove !== null) {
+      this._customRouters.splice(indexToRemove, 1);
+      return this._reinitServer();
+    }
+    return Promise.resolve();
   }
 
   async restart() {

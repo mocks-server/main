@@ -16,15 +16,18 @@ describe("path argument", () => {
   const cwdPath = path.resolve(__dirname, "fixtures");
   let cli;
 
-  afterEach(async () => {
-    await cli.kill();
-  });
-
-  it("should set mocks folder", async () => {
+  beforeAll(async () => {
     cli = new CliRunner([binaryPath, "--path=web-tutorial"], {
       cwd: cwdPath
     });
     await wait();
+  });
+
+  afterAll(async () => {
+    await cli.kill();
+  });
+
+  it("should set mocks folder", async () => {
     const users = await request("/api/users");
     expect(users).toEqual([
       { id: 1, name: "John Doe" },

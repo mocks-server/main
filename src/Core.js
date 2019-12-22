@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const EventEmitter = require("events");
 
-const { INIT, START, LOAD_FILES, LOAD_MOCKS, CHANGE_SETTINGS } = require("./eventNames");
+const { INIT, START, LOAD_FILES, CHANGE_MOCKS, CHANGE_SETTINGS } = require("./eventNames");
 const Server = require("./server/Server");
 const tracer = require("./tracer");
 const Mocks = require("./mocks/Mocks");
@@ -26,8 +26,8 @@ class Core {
       },
       this._eventEmitter
     );
-    this._mocks = new Mocks(this._settings, this._eventEmitter);
-    this._server = new Server(this._mocks, this._settings, this._eventEmitter);
+    this._mocks = new Mocks(this._settings, this._eventEmitter, this);
+    this._server = new Server(this._mocks, this._settings, this._eventEmitter, this);
     this._plugins = new Plugins(coreOptions.plugins, this);
     this._inited = false;
     this._startPluginsPromise = null;
@@ -66,16 +66,37 @@ class Core {
     return this._startPluginsPromise;
   }
 
+  // TODO, deprecate method, use addRouter
   addCustomRouter(path, router) {
+    tracer.deprecationWarn("addCustomRouter", "addRouter");
+    return this.addRouter(path, router);
+  }
+
+  addRouter(path, router) {
     return this._server.addCustomRouter(path, router);
   }
 
+  removeRouter(path, router) {
+    return this._server.removeCustomRouter(path, router);
+  }
+
+  // TODO, deprecate method, use addSetting
   addCustomSetting(option) {
+    tracer.deprecationWarn("addCustomSetting", "addSetting");
+    return this.addSetting(option);
+  }
+
+  addSetting(option) {
     return this._settings.addCustom(option);
+  }
+
+  addFixturesHandler(Handler) {
+    return this._mocks.addFixturesHandler(Handler);
   }
 
   // Listeners
 
+  // TODO, deprecate method
   onLoadFiles(cb) {
     const removeCallback = () => {
       this._eventEmitter.removeListener(LOAD_FILES, cb);
@@ -84,11 +105,17 @@ class Core {
     return removeCallback;
   }
 
+  // TODO, deprecate method, use onChangeMocks
   onLoadMocks(cb) {
+    tracer.deprecationWarn("onLoadMocks", "onChangeMocks");
+    return this.onChangeMocks(cb);
+  }
+
+  onChangeMocks(cb) {
     const removeCallback = () => {
-      this._eventEmitter.removeListener(LOAD_MOCKS, cb);
+      this._eventEmitter.removeListener(CHANGE_MOCKS, cb);
     };
-    this._eventEmitter.on(LOAD_MOCKS, cb);
+    this._eventEmitter.on(CHANGE_MOCKS, cb);
     return removeCallback;
   }
 
@@ -125,8 +152,13 @@ class Core {
     return this._mocks.behaviors;
   }
 
+  get fixtures() {
+    return this._mocks.fixtures;
+  }
+
   // TODO, deprecate getter
   get features() {
+    tracer.deprecationWarn("features getter", "behaviors getter");
     return this._mocks.behaviors;
   }
 

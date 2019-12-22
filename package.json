@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/core",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Pluggable mocks server supporting multiple api behaviors",
   "keywords": [
     "mocks",
@@ -34,19 +34,20 @@
     "lint": "eslint index.js src test jest.config.js jest.acceptance.config.js",
     "lint-staged": "lint-staged",
     "test": "jest",
-    "test:acceptance": "jest --config=jest.acceptance.config.js --runInBand",
+    "test:acceptance": "jest --config=jest.acceptance.config.js --runInBand --detectOpenHandles",
     "test:ci": "npm run test && npm run test:acceptance",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
     "body-parser": "1.19.0",
-    "boom": "7.3.0",
+    "@hapi/boom": "8.0.1",
     "commander": "4.0.1",
     "cors": "2.8.5",
     "express": "4.17.1",
     "express-request-id": "1.4.1",
     "fs-extra": "^8.1.0",
     "lodash": "4.17.15",
+    "md5": "^2.2.1",
     "node-watch": "0.6.3",
     "require-all": "3.0.0",
     "route-parser": "0.0.5",

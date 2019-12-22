@@ -9,6 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
+const Behavior = require("../../../../src/mocks/Behavior");
 
 jest.mock("../../../../src/mocks/FilesHandler");
 
@@ -16,77 +17,57 @@ const FilesHandler = require("../../../../src/mocks/FilesHandler");
 
 const INITIAL_FILES = {
   file1: {
-    behavior1: {
-      fixtures: [
-        {
-          url: "/api/foo/foo-uri",
-          method: "GET",
-          response: {
-            status: 200,
-            body: {
-              fooProperty: "foo"
-            }
-          }
-        }
-      ],
-      totalFixtures: 1,
-      methods: {
-        POST: {
-          "/api/foo/foo-uri": {
-            route: "foo-route-parser",
-            response: {
-              status: 200,
-              body: {
-                fooProperty: "foo"
-              }
-            }
+    _mocksServer_isFile: true,
+    behavior1: new Behavior([
+      {
+        url: "/api/foo/foo-uri",
+        method: "GET",
+        response: {
+          status: 200,
+          body: {
+            fooProperty: "foo"
           }
         }
       }
-    }
+    ])
   },
   file2: {
-    behavior2: {
-      fixtures: [
-        {
-          url: "/api/foo/foo-uri-2",
-          method: "POST",
-          response: {
-            status: 422,
-            body: {
-              fooProperty2: "foo2"
-            }
-          }
-        }
-      ],
-      totalFixtures: 1,
-      methods: {
-        POST: {
-          "/api/foo/foo-uri-2": {
-            route: "foo-route-parser",
-            response: {
-              status: 422,
-              body: {
-                fooProperty2: "foo2"
-              }
-            }
+    _mocksServer_isFile: true,
+    behavior2: new Behavior([
+      {
+        url: "/api/foo/foo-uri-2",
+        method: "POST",
+        response: {
+          status: 422,
+          body: {
+            fooProperty2: "foo2"
           }
         }
       }
-    }
+    ])
   },
   folder: {
     folder2: {
       file: {
+        _mocksServer_isFile: true,
         fooProperty: ""
       }
     }
   }
 };
 
+INITIAL_FILES.file1.behavior1._mocksServer_lastPath = "behavior1";
+INITIAL_FILES.file2.behavior2._mocksServer_lastPath = "behavior2";
+
+const INITIAL_CONTENTS = [INITIAL_FILES.file1.behavior1, INITIAL_FILES.file2.behavior2, {}];
+
 class Mock {
   static get files() {
     return INITIAL_FILES;
+  }
+
+  static get contents() {
+    return INITIAL_CONTENTS;
   }
 
   constructor() {
@@ -94,9 +75,11 @@ class Mock {
 
     this._stubs = {
       files: INITIAL_FILES,
+      contents: INITIAL_CONTENTS,
       init: this._sandbox.stub().resolves(),
       start: this._sandbox.stub().resolves(),
-      stop: this._sandbox.stub()
+      stop: this._sandbox.stub(),
+      cleanContentsCustomProperties: this._sandbox.stub()
     };
 
     FilesHandler.mockImplementation(() => this._stubs);
@@ -111,6 +94,7 @@ class Mock {
 
   restore() {
     this._stubs.files = INITIAL_FILES;
+    this._stubs.contents = INITIAL_CONTENTS;
     this._sandbox.restore();
   }
 }

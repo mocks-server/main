@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 const sinon = require("sinon");
-const Boom = require("boom");
+const Boom = require("@hapi/boom");
 const { cloneDeep } = require("lodash");
 
 jest.mock("require-all");
@@ -65,6 +65,7 @@ describe("Behaviors", () => {
 
   const fooFiles = {
     file1: {
+      _mocksServer_isFile: true,
       behavior1: {
         fixtures: [
           {
@@ -95,6 +96,7 @@ describe("Behaviors", () => {
       }
     },
     file2: {
+      _mocksServer_isFile: true,
       behavior2: {
         fixtures: [
           {
@@ -127,9 +129,20 @@ describe("Behaviors", () => {
     folder: {
       folder2: {
         file: {
+          _mocksServer_isFile: true,
           fooProperty: ""
+        },
+        file2: {
+          _mocksServer_isFile: true,
+          fooProperty: {
+            foo: "foo"
+          }
         }
-      }
+      },
+      folder3: {
+        file2: 3
+      },
+      file5: "foo"
     }
   };
 
@@ -169,17 +182,19 @@ describe("Behaviors", () => {
     it("should require all files from mocks folders calculating it from cwd", async () => {
       path.isAbsolute.returns(false);
       await filesHandler.init();
-      expect(requireAll).toHaveBeenCalledWith({
-        dirname: path.resolve(process.cwd(), "foo-path"),
-        recursive: true
-      });
+      expect(requireAll.mock.calls[0][0].dirname).toEqual(path.resolve(process.cwd(), "foo-path"));
     });
 
     it("should require all files from exactly mocks folder if it is absolute", async () => {
       await filesHandler.init();
-      expect(requireAll).toHaveBeenCalledWith({
-        dirname: "foo-path",
-        recursive: true
+      expect(requireAll.mock.calls[0][0].dirname).toEqual("foo-path");
+    });
+
+    it("should require all files adding a _mocksServer_isFile property to their content", async () => {
+      await filesHandler.init();
+      expect(requireAll.mock.calls[0][0].resolve({ foo: "foo" })).toEqual({
+        foo: "foo",
+        _mocksServer_isFile: true
       });
     });
 
@@ -235,6 +250,301 @@ describe("Behaviors", () => {
     it("should return current files", async () => {
       await filesHandler.init();
       expect(filesHandler.files).toEqual(fooFiles);
+    });
+  });
+
+  describe("contents getter", () => {
+    it("should return current files contents and file properties in a flatten array", async () => {
+      await filesHandler.init();
+      expect(filesHandler.contents).toEqual([
+        {
+          _mocksServer_fullPath: "/file1/behavior1",
+          _mocksServer_lastPath: "behavior1",
+          fixtures: [
+            {
+              url: "/api/foo/foo-uri",
+              method: "GET",
+              response: {
+                status: 200,
+                body: {
+                  fooProperty: "foo"
+                }
+              }
+            }
+          ],
+          totalFixtures: 1,
+          methods: {
+            POST: {
+              "/api/foo/foo-uri": {
+                route: "foo-route-parser",
+                response: {
+                  status: 200,
+                  body: {
+                    fooProperty: "foo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          _mocksServer_isFile: true,
+          _mocksServer_fullPath: "/file1",
+          _mocksServer_lastPath: "file1",
+          behavior1: {
+            _mocksServer_fullPath: "/file1/behavior1",
+            _mocksServer_lastPath: "behavior1",
+            fixtures: [
+              {
+                url: "/api/foo/foo-uri",
+                method: "GET",
+                response: {
+                  status: 200,
+                  body: {
+                    fooProperty: "foo"
+                  }
+                }
+              }
+            ],
+            totalFixtures: 1,
+            methods: {
+              POST: {
+                "/api/foo/foo-uri": {
+                  route: "foo-route-parser",
+                  response: {
+                    status: 200,
+                    body: {
+                      fooProperty: "foo"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          _mocksServer_fullPath: "/file2/behavior2",
+          _mocksServer_lastPath: "behavior2",
+          fixtures: [
+            {
+              url: "/api/foo/foo-uri-2",
+              method: "POST",
+              response: {
+                status: 422,
+                body: {
+                  fooProperty2: "foo2"
+                }
+              }
+            }
+          ],
+          totalFixtures: 1,
+          methods: {
+            POST: {
+              "/api/foo/foo-uri-2": {
+                route: "foo-route-parser",
+                response: {
+                  status: 422,
+                  body: {
+                    fooProperty2: "foo2"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          _mocksServer_isFile: true,
+          _mocksServer_fullPath: "/file2",
+          _mocksServer_lastPath: "file2",
+          behavior2: {
+            _mocksServer_fullPath: "/file2/behavior2",
+            _mocksServer_lastPath: "behavior2",
+            fixtures: [
+              {
+                url: "/api/foo/foo-uri-2",
+                method: "POST",
+                response: {
+                  status: 422,
+                  body: {
+                    fooProperty2: "foo2"
+                  }
+                }
+              }
+            ],
+            totalFixtures: 1,
+            methods: {
+              POST: {
+                "/api/foo/foo-uri-2": {
+                  route: "foo-route-parser",
+                  response: {
+                    status: 422,
+                    body: {
+                      fooProperty2: "foo2"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          _mocksServer_isFile: true,
+          _mocksServer_fullPath: "/folder/folder2/file",
+          _mocksServer_lastPath: "file",
+          fooProperty: ""
+        },
+        {
+          _mocksServer_fullPath: "/folder/folder2/file2/fooProperty",
+          _mocksServer_lastPath: "fooProperty",
+          foo: "foo"
+        },
+        {
+          _mocksServer_isFile: true,
+          _mocksServer_fullPath: "/folder/folder2/file2",
+          _mocksServer_lastPath: "file2",
+          fooProperty: {
+            _mocksServer_fullPath: "/folder/folder2/file2/fooProperty",
+            _mocksServer_lastPath: "fooProperty",
+            foo: "foo"
+          }
+        }
+      ]);
+    });
+  });
+
+  describe("contents getter after calling cleanContentsCustomProperties method", () => {
+    it("should return current files contents and file properties in a flatten array wihtout custom properties", async () => {
+      await filesHandler.init();
+      filesHandler.cleanContentsCustomProperties();
+      expect(filesHandler.contents).toEqual([
+        {
+          fixtures: [
+            {
+              url: "/api/foo/foo-uri",
+              method: "GET",
+              response: {
+                status: 200,
+                body: {
+                  fooProperty: "foo"
+                }
+              }
+            }
+          ],
+          totalFixtures: 1,
+          methods: {
+            POST: {
+              "/api/foo/foo-uri": {
+                route: "foo-route-parser",
+                response: {
+                  status: 200,
+                  body: {
+                    fooProperty: "foo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          behavior1: {
+            fixtures: [
+              {
+                url: "/api/foo/foo-uri",
+                method: "GET",
+                response: {
+                  status: 200,
+                  body: {
+                    fooProperty: "foo"
+                  }
+                }
+              }
+            ],
+            totalFixtures: 1,
+            methods: {
+              POST: {
+                "/api/foo/foo-uri": {
+                  route: "foo-route-parser",
+                  response: {
+                    status: 200,
+                    body: {
+                      fooProperty: "foo"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          fixtures: [
+            {
+              url: "/api/foo/foo-uri-2",
+              method: "POST",
+              response: {
+                status: 422,
+                body: {
+                  fooProperty2: "foo2"
+                }
+              }
+            }
+          ],
+          totalFixtures: 1,
+          methods: {
+            POST: {
+              "/api/foo/foo-uri-2": {
+                route: "foo-route-parser",
+                response: {
+                  status: 422,
+                  body: {
+                    fooProperty2: "foo2"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          behavior2: {
+            fixtures: [
+              {
+                url: "/api/foo/foo-uri-2",
+                method: "POST",
+                response: {
+                  status: 422,
+                  body: {
+                    fooProperty2: "foo2"
+                  }
+                }
+              }
+            ],
+            totalFixtures: 1,
+            methods: {
+              POST: {
+                "/api/foo/foo-uri-2": {
+                  route: "foo-route-parser",
+                  response: {
+                    status: 422,
+                    body: {
+                      fooProperty2: "foo2"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          fooProperty: ""
+        },
+        {
+          foo: "foo"
+        },
+        {
+          fooProperty: {
+            foo: "foo"
+          }
+        }
+      ]);
     });
   });
 

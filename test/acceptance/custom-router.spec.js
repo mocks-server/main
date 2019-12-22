@@ -53,14 +53,14 @@ describe("when using custom router", () => {
       ]);
     });
 
-    it("custom router should stop listening when is removed", async () => {
+    /*it("custom router should stop listening when is removed", async () => {
       await core.removeRouter("/api/custom", customRouter);
       const response = await request("/api/custom", {
         resolveWithFullResponse: true,
         simple: false
       });
       expect(response.statusCode).toEqual(404);
-    });
+    });*/
   });
 
   /* describe("and registering it after server is started", () => {

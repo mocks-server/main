@@ -31,13 +31,14 @@ describe("and registering it before initializating the server", () => {
       customRouterListening: true
     });
   });
-  //let core;
+  let core;
 
-  /* beforeEach(async () => {
+  beforeAll(async () => {
     core = new Core({
-      onlyProgrammaticOptions: true
+      onlyProgrammaticOptions: true,
+      watch: false
     });
-    await core.addRouter("/api/custom", customRouter);
+    //await core.addRouter("/api/custom", customRouter);
     await core.init({
       log: "silly",
       path: fixturesFolder("web-tutorial")
@@ -45,32 +46,22 @@ describe("and registering it before initializating the server", () => {
     await core.start();
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     await stopCore(core);
-  });*/
+  });
 
-  it("custom router should be listening", async () => {
-    const core = new Core({
-      onlyProgrammaticOptions: true
-    });
-    await core.addRouter("/api/custom", customRouter);
-    await core.init({
-      log: "silly",
-      path: fixturesFolder("web-tutorial")
-    });
-    await core.start();
+  /*it("custom router should be listening", async () => {
     const response = await request("/api/custom");
     expect(response.customRouterListening).toEqual(true);
-    await stopCore(core);
-  });
+  });*/
 
-  /* it("fixtures routers should be listening", async () => {
+  it("fixtures routers should be listening", async () => {
     const users = await request("/api/users");
     expect(users).toEqual([
       { id: 1, name: "John Doe" },
       { id: 2, name: "Jane Doe" }
     ]);
-  }); */
+  });
 
   /*it("custom router should stop listening when is removed", async () => {
       await core.removeRouter("/api/custom", customRouter);

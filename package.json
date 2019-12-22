@@ -34,7 +34,7 @@
     "lint": "eslint index.js src test jest.config.js jest.acceptance.config.js",
     "lint-staged": "lint-staged",
     "test": "jest",
-    "test:acceptance": "jest --config=jest.acceptance.config.js --runInBand",
+    "test:acceptance": "jest --config=jest.acceptance.config.js --runInBand --detectOpenHandles",
     "test:ci": "npm run test && npm run test:acceptance",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },

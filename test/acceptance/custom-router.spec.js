@@ -30,6 +30,7 @@ describe("when using custom router", () => {
       });
       await core.addRouter("/api/custom", customRouter);
       await core.init({
+        log: "silly",
         path: fixturesFolder("web-tutorial")
       });
       await core.start();

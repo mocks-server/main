@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Change settings automatically to first found behavior if no one is defined.
 - Improve start, init and stop server methods. Now support multiple concurrent calls.
 - tracer.set method "transport" argument now is passed as second argument. Default value is "console".
+- Change "boom" dependency. Now "@hapi/boom" is used.
 
 ## [1.1.0] - 2019-12-07
 ### Changed

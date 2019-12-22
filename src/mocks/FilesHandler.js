@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const Boom = require("boom");
+const Boom = require("@hapi/boom");
 const requireAll = require("require-all");
 const watch = require("node-watch");
 const fsExtra = require("fs-extra");

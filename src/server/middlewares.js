@@ -12,7 +12,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 "use strict";
 
 const bodyParser = require("body-parser");
-const Boom = require("boom");
+const Boom = require("@hapi/boom");
 const cors = require("cors");
 const expressRequestId = require("express-request-id");
 

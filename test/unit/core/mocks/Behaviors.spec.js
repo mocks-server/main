@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
-const Boom = require("boom");
+const Boom = require("@hapi/boom");
 
 const CoreMocks = require("../Core.mocks.js");
 const FilesHandlerMocks = require("./FilesHandler.mocks.js");

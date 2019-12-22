@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 const sinon = require("sinon");
-const Boom = require("boom");
+const Boom = require("@hapi/boom");
 const { cloneDeep } = require("lodash");
 
 jest.mock("require-all");

@@ -37,7 +37,7 @@ describe("and registering it before initializating the server", () => {
     core = new Core({
       onlyProgrammaticOptions: true
     });
-    //await core.addRouter("/api/custom", customRouter);
+    await core.addRouter("/api/custom", customRouter);
     await core.init({
       watch: false,
       log: "silly",

@@ -11,6 +11,10 @@ module.exports = {
     "!**/test/acceptance/custom-router.spec.js"
     //"!**/test/acceptance/files-handler.spec.js"
   ],
+  testMatch: [
+    "**/test/acceptance/custom-parser.spec.js",
+    "**/test/acceptance/custom-router.spec.js"
+  ],
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: false,

@@ -50,6 +50,7 @@ describe("watch option modified through api", () => {
           watch: true
         }
       });
+      await wait(500);
       fsExtra.copySync(fixturesFolder("files-modification"), fixturesFolder("files-watch"));
       await wait(6000);
     }, 7000);
@@ -76,6 +77,7 @@ describe("watch option modified through api", () => {
           watch: false
         }
       });
+      await wait(500);
       fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
       await wait(6000);
     }, 7000);

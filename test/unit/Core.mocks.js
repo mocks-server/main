@@ -24,6 +24,7 @@ class CoreMock {
       stop: this._sandbox.stub().resolves(),
       restart: this._sandbox.stub().resolves(),
       settings: {
+        getValidOptionName: this._sandbox.stub(),
         get: this._sandbox.stub(),
         set: this._sandbox.stub(),
         all: {}

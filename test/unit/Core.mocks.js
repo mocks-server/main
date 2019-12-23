@@ -43,6 +43,7 @@ class CoreMock {
       addCustomSetting: this._sandbox.stub(),
       addSetting: this._sandbox.stub(),
       addRouter: this._sandbox.stub(),
+      removeRouter: this._sandbox.stub(),
       behaviors: {
         currentFromCollection: "foo-current",
         collection: "foo-behaviors-collection"

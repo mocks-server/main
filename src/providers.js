@@ -28,16 +28,6 @@ export const behaviorsModel = new Api(`${adminApiPaths.BEHAVIORS}/:name`, {
   tags: [TAG]
 });
 
-behaviorsModel.onChangeAny(changeDetails => {
-  if (
-    [behaviorsModel.actions.delete.success, behaviorsModel.actions.update.success].includes(
-      changeDetails.action
-    )
-  ) {
-    behaviorsCollection.clean();
-  }
-});
-
 export const fixturesCollection = new Api(adminApiPaths.FIXTURES, {
   defaultValue: [],
   uuid: "fixtures-collection",
@@ -48,14 +38,4 @@ export const fixturesModel = new Api(`${adminApiPaths.FIXTURES}/:id`, {
   defaultValue: {},
   uuid: "fixtures-model",
   tags: [TAG]
-});
-
-fixturesModel.onChangeAny(changeDetails => {
-  if (
-    [fixturesModel.actions.delete.success, fixturesModel.actions.update.success].includes(
-      changeDetails.action
-    )
-  ) {
-    fixturesCollection.clean();
-  }
 });

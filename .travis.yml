@@ -22,7 +22,7 @@ addons:
 
 script:
   - npm run lint
-  #- npm run test
+  - npm run test
   - npm run build
   - cd test-e2e/react-app
   - npm ci

@@ -13,10 +13,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [1.2.0] - 2019-12-15
+## [1.2.0] - 2019-12-24
 ### Added
 - Add "adminApiPath" option, which allows to change the new API path ("/admin").
 - Add "adminApiDeprecatedPaths" option, which allows to disable the deprecated API path ("/mocks").
+- Add new api resources under "/admin" path.
 
 ## [1.1.0] - 2019-12-07
 ### Changed

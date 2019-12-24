@@ -24,19 +24,27 @@
   "module": "dist/index.esm.js",
   "scripts": {
     "build": "rollup --config",
-    "lint": "eslint index.js test src jest.config.js",
+    "lint": "eslint index.js test src jest.config.js test-e2e/react-app/src test-e2e/react-app/cypress",
     "lint-staged": "lint-staged",
     "test": "jest",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
+  },
+  "dependencies": {
+    "@data-provider/axios": "^1.5.0",
+    "@data-provider/core": "^1.7.0",
+    "@mocks-server/admin-api-paths": "^1.0.1"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.7.7",
     "@rollup/plugin-commonjs": "^11.0.0",
     "@rollup/plugin-node-resolve": "^6.0.0",
+    "babel-jest": "^24.9.0",
+    "babel-polyfill": "^6.26.0",
     "coveralls": "^3.0.7",
     "eslint": "6.6.0",
     "eslint-config-prettier": "6.5.0",
     "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-react": "^7.17.0",
     "husky": "3.0.9",
     "jest": "24.9.0",
     "lint-staged": "^9.4.2",
@@ -49,7 +57,9 @@
     "test/**/*.js": "eslint",
     "src/**/*.js": "eslint",
     "index.js": "eslint",
-    "jest.config.js": "eslint"
+    "jest.config.js": "eslint",
+    "test-e2e/react-app/src/**/*.js": "eslint",
+    "test-e2e/react-app/cypress/**/*.js": "eslint"
   },
   "husky": {
     "hooks": {

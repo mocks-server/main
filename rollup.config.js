@@ -4,16 +4,25 @@ const resolve = require("@rollup/plugin-node-resolve");
 const babel = require("rollup-plugin-babel");
 
 const BASE_CONFIG = {
-  input: "index.js"
+  input: "index.js",
+  external: ["@data-provider/core", "@data-provider/axios", "@mocks-server/admin-api-paths"]
+};
+
+const GLOBALS = {
+  "@data-provider/core": "dataProvider",
+  "@data-provider/axios": "dataProviderAxios",
+  "@mocks-server/admin-api-paths": "pluginAdminApiPaths"
 };
 
 const BASE_PLUGINS = [
   resolve({
-    mainFields: ["module", "main"],
+    mainFields: ["module", "main", "jsnext"],
     browser: true,
     preferBuiltins: true
   }),
-  commonjs(),
+  commonjs({
+    include: "node_modules/**"
+  }),
   babel({
     babelrc: false,
     presets: ["@babel/env"]
@@ -34,7 +43,8 @@ module.exports = [
     output: {
       file: "dist/index.umd.js",
       format: "umd",
-      name: "mocksServerAdminApiClient"
+      name: "mocksServerAdminApiClient",
+      globals: GLOBALS
     },
     plugins: [...BASE_PLUGINS, uglifier.uglify()]
   },
@@ -42,7 +52,8 @@ module.exports = [
     ...BASE_CONFIG,
     output: {
       file: "dist/index.esm.js",
-      format: "esm"
+      format: "esm",
+      globals: GLOBALS
     },
     plugins: BASE_PLUGINS
   }

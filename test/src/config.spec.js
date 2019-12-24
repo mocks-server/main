@@ -1,9 +1,7 @@
-const config = require("../../src/config");
+const { config } = require("../../src/config");
 
-describe("config methods", () => {
-  describe("setBaseUrl", () => {
-    it("should do nothing", () => {
-      expect(config.setBaseUrl()).not.toBeDefined();
-    });
+describe("config method", () => {
+  it("should be defined", () => {
+    expect(config).toBeDefined();
   });
 });

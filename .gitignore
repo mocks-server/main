@@ -5,6 +5,10 @@
 
 # dependencies
 /node_modules
+/test-e2e/react-app/node_modules
+/test-e2e/react-app/build
+/test-e2e/react-app/cypress/fixtures
+/test-e2e/react-app/cypress/screenshots
 
 # tests
 /coverage

@@ -1,7 +1,7 @@
 const index = require("../index");
 
 describe("Exported methods", () => {
-  it("should include setBaseUrl", () => {
-    expect(index.setBaseUrl).toBeDefined();
+  it("should include config", () => {
+    expect(index.config).toBeDefined();
   });
 });

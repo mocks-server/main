@@ -1,7 +1,4 @@
-const { setBaseUrl } = require("./src/config");
+import configuration from "./src/config";
+export * from "./src/providers";
 
-const main = {
-  setBaseUrl
-};
-
-module.exports = main;
+export const config = configuration;

@@ -24,19 +24,19 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 
 [plugin-admin-api-url]: https://github.com/mocks-server/plugin-admin-api
 
-[coveralls-image]: https://coveralls.io/repos/github/mocks-server/admin-api-path/badge.svg
-[coveralls-url]: https://coveralls.io/github/mocks-server/admin-api-path
-[travisci-image]: https://travis-ci.com/mocks-server/admin-api-path.svg?branch=master
-[travisci-url]: https://travis-ci.com/mocks-server/admin-api-path
-[last-commit-image]: https://img.shields.io/github/last-commit/mocks-server/admin-api-path.svg
-[last-commit-url]: https://github.com/mocks-server/admin-api-path/commits
-[license-image]: https://img.shields.io/npm/l/@mocks-server/admin-api-path.svg
-[license-url]: https://github.com/mocks-server/admin-api-path/blob/master/LICENSE
-[npm-downloads-image]: https://img.shields.io/npm/dm/@mocks-server/admin-api-path.svg
-[npm-downloads-url]: https://www.npmjs.com/package/@mocks-server/admin-api-path
-[npm-dependencies-image]: https://img.shields.io/david/mocks-server/admin-api-path.svg
-[npm-dependencies-url]: https://david-dm.org/mocks-server/admin-api-path
-[quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=mocks-server-admin-api-path&metric=alert_status
-[quality-gate-url]: https://sonarcloud.io/dashboard?id=mocks-server-admin-api-path
-[release-image]: https://img.shields.io/github/release-date/mocks-server/admin-api-path.svg
-[release-url]: https://github.com/mocks-server/admin-api-path/releases
+[coveralls-image]: https://coveralls.io/repos/github/mocks-server/admin-api-paths/badge.svg
+[coveralls-url]: https://coveralls.io/github/mocks-server/admin-api-paths
+[travisci-image]: https://travis-ci.com/mocks-server/admin-api-paths.svg?branch=master
+[travisci-url]: https://travis-ci.com/mocks-server/admin-api-paths
+[last-commit-image]: https://img.shields.io/github/last-commit/mocks-server/admin-api-paths.svg
+[last-commit-url]: https://github.com/mocks-server/admin-api-paths/commits
+[license-image]: https://img.shields.io/npm/l/@mocks-server/admin-api-paths.svg
+[license-url]: https://github.com/mocks-server/admin-api-paths/blob/master/LICENSE
+[npm-downloads-image]: https://img.shields.io/npm/dm/@mocks-server/admin-api-paths.svg
+[npm-downloads-url]: https://www.npmjs.com/package/@mocks-server/admin-api-paths
+[npm-dependencies-image]: https://img.shields.io/david/mocks-server/admin-api-paths.svg
+[npm-dependencies-url]: https://david-dm.org/mocks-server/admin-api-paths
+[quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=mocks-server-admin-api-paths&metric=alert_status
+[quality-gate-url]: https://sonarcloud.io/dashboard?id=mocks-server-admin-api-paths
+[release-image]: https://img.shields.io/github/release-date/mocks-server/admin-api-paths.svg
+[release-url]: https://github.com/mocks-server/admin-api-paths/releases

@@ -15,17 +15,29 @@ This is __very useful when running acceptance tests, as you can change the behav
 
 This plugin is included in the [main distribution of the Mocks Server project][main-distribution-url], so you can refer to the [official documentation website][website-url].
 
+## Options
+
+* `adminApiPath` - Base path for the administration api. Default is "/admin". You should change it only if there is any conflict with the api you are mocking.
+* `adminApiDeprecatedPaths` - Boolean option, disables deprecated "/mocks" api path, which is still enabled by default.
+
+Read more about [how to define options for the mocks-server plugins here](https://www.mocks-server.org/docs/configuration-options).
+
 ## API Resources
 
 Available api resources are:
 
-* `GET` `/mocks/behaviors/current` Returns current behavior.
-* `PUT` `/mocks/behaviors/current` Set current behavior.
-  * Request body example: `{ "name": "behavior-name" }`
-* `GET` `/mocks/settings` Returns current server settings.
-  * Response body example: `{ "delay": 0 }`
-* `PUT` `/mocks/settings` Changes current server settings.
+* `GET` `/admin/about` Returns plugin information.
+  * Response body example: `{ "version": "1.2.0" }`
+* `GET` `/admin/behaviors` Returns behaviors collection.
+* `GET` `/admin/behaviors/:name` Returns an specific behavior.
+* `GET` `/admin/fixtures` Returns fixtures collection.
+* `GET` `/admin/fixtures/:id` Returns an specific fixture.
+* `GET` `/admin/settings` Returns current server settings.
+  * Response body example: `{ "delay": 0, behavior: "foo-behavior", path: "mocks" }`
+* `PATCH` `/admin/settings` Changes current server settings.
   * Request body example: `{ "delay": 3000 }`
+
+> Deprecated api resources under "/mocks" api path are still available.
 
 ## Contributing
 

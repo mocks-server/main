@@ -9,7 +9,7 @@
 
 This package provides a server that simulates API behaviors. It can be added as a dependency of your project, and started simply running an NPM command.
 
-It is simple to use out-of-the-box, but powerful and very customizable through the usage of [plugins](https://www.mocks-server.org/docs/advanced-developing-plugins)
+It is simple to use out-of-the-box, but powerful and very customizable through the usage of [plugins and other customization methods](https://www.mocks-server.org/docs/advanced-developing-plugins).
 
 ## Documentation
 

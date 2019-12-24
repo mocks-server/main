@@ -1,15 +1,20 @@
 language: node_js
 
 node_js:
-  - "10"
+  - 10.8
 
 cache:
   directories:
     - ~/.npm
+    - ~/.cache
     - node_modules
+    - test-e2e/react-app/node_modules
     - ~/.sonar/cache
 
 addons:
+  apt:
+    packages:
+      - libgconf-2-4
   sonarcloud:
     organization: "mocks-server"
     branch:

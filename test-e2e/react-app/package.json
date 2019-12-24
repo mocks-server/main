@@ -11,6 +11,7 @@
   },
   "scripts": {
     "mocks": "mocks-server",
+    "mocks:ci": "mocks-server --cli=false",
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "eject": "react-scripts eject",
@@ -20,7 +21,8 @@
     "cypress:verify": "cypress verify",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "test:ci": "start-server-and-test build:serve http-get://localhost:3000 cypress:run"
+    "mocks:ci-and-build:serve": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about build:serve",
+    "test:ci": "start-server-and-test mocks:ci-and-build:serve http-get://localhost:3000 cypress:run"
   },
   "browserslist": {
     "production": [
@@ -36,6 +38,7 @@
   },
   "devDependencies": {
     "@mocks-server/main": "^1.6.0",
+    "@testing-library/cypress": "^5.0.2",
     "cypress": "3.1.5",
     "react-app-rewired": "^2.1.5",
     "serve": "^11.2.0",

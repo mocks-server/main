@@ -13,7 +13,7 @@ const AboutView = ({ about }) => {
         {Object.keys(about).map(key => {
           return (
             <li key={key}>
-              <b>{key}</b>: {format(about[key])}
+              <b>{key}</b>: <span data-testid={`about-${key}`}>{format(about[key])}</span>
             </li>
           );
         })}

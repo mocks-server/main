@@ -17,9 +17,15 @@ addons:
 
 script:
   - npm run lint
-  - npm run test
-  - npm run coveralls
+  #- npm run test
   - npm run build
+  - cd test-e2e/react-app
+  - npm ci
+  - npm run cypress:install
+  - npm run cypress:verify
+  - npm run test:ci
+  - cd ../..
+  - npm run coveralls
   - 'if [ -n "$SONAR_TOKEN" ]; then sonar-scanner -Dsonar.login=${SONAR_TOKEN}; fi'
 
 deploy:

@@ -21,6 +21,7 @@ ul li {
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  padding-bottom: 100px;
 }
 
 .content {
@@ -31,4 +32,11 @@ ul li {
   font-size: 1.4rem;
   font-weight:600;
   text-decoration: underline;
+}
+
+button {
+  padding: 10px;
+  margin: 10px;
+  font-size: 1rem;
+  cursor: pointer;
 }

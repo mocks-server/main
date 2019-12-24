@@ -18,6 +18,7 @@ const DeprecatedApiMocks = require("./deprecated/Api.mocks");
 const SettingsMocks = require("./Settings.mocks");
 const BehaviorsMocks = require("./Behaviors.mocks");
 const FixturesMock = require("./Fixtures.mocks");
+const AboutMock = require("./About.mocks");
 
 const Plugin = require("../../../src/Plugin");
 
@@ -31,6 +32,7 @@ describe("Plugin", () => {
   let deprecatedApiInstance;
   let coreMock;
   let coreInstance;
+  let aboutMock;
   let plugin;
 
   beforeEach(() => {
@@ -38,6 +40,7 @@ describe("Plugin", () => {
     libMocks = new LibMocks();
     settingsMocks = new SettingsMocks();
     behaviorsMocks = new BehaviorsMocks();
+    aboutMock = new AboutMock();
     fixturesMock = new FixturesMock();
     deprecatedApiMock = new DeprecatedApiMocks();
     deprecatedApiInstance = deprecatedApiMock.stubs.instance;
@@ -54,6 +57,7 @@ describe("Plugin", () => {
     behaviorsMocks.restore();
     fixturesMock.restore();
     coreMock.restore();
+    aboutMock.restore();
     deprecatedApiMock.restore();
   });
 

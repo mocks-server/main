@@ -1,7 +1,7 @@
-const index = require("../index");
+import { config } from "../index";
 
 describe("Exported methods", () => {
   it("should include config", () => {
-    expect(index.config).toBeDefined();
+    expect(config).toBeDefined();
   });
 });

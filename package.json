@@ -38,6 +38,7 @@
     "@babel/preset-env": "^7.7.7",
     "@rollup/plugin-commonjs": "^11.0.0",
     "@rollup/plugin-node-resolve": "^6.0.0",
+    "babel-eslint": "^10.0.3",
     "babel-jest": "^24.9.0",
     "babel-polyfill": "^6.26.0",
     "coveralls": "^3.0.7",
@@ -51,7 +52,8 @@
     "prettier": "^1.19.1",
     "rollup": "^1.27.14",
     "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-uglify": "^6.0.4"
+    "rollup-plugin-uglify": "^6.0.4",
+    "sinon": "^8.0.1"
   },
   "lint-staged": {
     "test/**/*.js": "eslint",

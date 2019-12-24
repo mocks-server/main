@@ -1,7 +1,37 @@
-const { config } = require("../../src/config");
+import sinon from "sinon";
+import { instances } from "@data-provider/core";
+
+import config from "../../src/config";
+import TAG from "../../src/tag";
 
 describe("config method", () => {
-  it("should be defined", () => {
-    expect(config).toBeDefined();
+  const BASE_URL = "http://localhost:3001";
+  const API_PATH = "/foo-admin";
+
+  let sandbox;
+  beforeAll(() => {
+    sandbox = sinon.createSandbox();
+    sandbox.spy(instances.getByTag(TAG), "config");
+  });
+
+  afterAll(() => {
+    sandbox.restore();
+  });
+
+  it("should set baseUrl in admin-api-client tagged providers", () => {
+    config({
+      baseUrl: BASE_URL
+    });
+    expect(instances.getByTag(TAG).config.getCall(0).args[0].baseUrl).toEqual(`${BASE_URL}/admin`);
+  });
+
+  it("should set apiPath in admin-api-client tagged providers", () => {
+    config({
+      baseUrl: BASE_URL,
+      apiPath: API_PATH
+    });
+    expect(instances.getByTag(TAG).config.getCall(1).args[0].baseUrl).toEqual(
+      `${BASE_URL}${API_PATH}`
+    );
   });
 });

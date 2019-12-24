@@ -26,6 +26,7 @@ deploy:
   provider: npm
   email: "javier.brea@gmail.com"
   api_key: "$NPM_TOKEN"
+  edge: true
   on:
     tags: true
   skip_cleanup: true

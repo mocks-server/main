@@ -8,7 +8,8 @@ cache:
     - ~/.npm
     - ~/.cache
     - node_modules
-    - test-e2e/react-app/node_modules
+    - test-e2e/browser/node_modules
+    - test-e2e/browser/react-app/node_modules
     - ~/.sonar/cache
 
 addons:
@@ -25,10 +26,10 @@ script:
   - npm run test
   - npm run build
   - cd test-e2e/browser
-  - npm ci
   - cd react-app
   - npm ci
   - cd ..
+  - npm ci
   - npm run cypress:install
   - npm run cypress:verify
   - npm run test:react-app:ci

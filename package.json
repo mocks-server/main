@@ -35,6 +35,7 @@
     "@mocks-server/core": "^1.1.0"
   },
   "dependencies": {
+    "@mocks-server/admin-api-paths": "1.0.0",
     "@hapi/boom": "8.0.1",
     "express": "4.17.1"
   },

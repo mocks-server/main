@@ -10,6 +10,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const express = require("express");
+const {
+  DEFAULT_BASE_PATH,
+  SETTINGS,
+  BEHAVIORS,
+  ABOUT,
+  FIXTURES
+} = require("@mocks-server/admin-api-paths");
 
 const DeprecatedApi = require("./deprecated/Api");
 
@@ -21,13 +28,8 @@ const About = require("./About");
 const {
   ADMIN_API_PATH_OPTION,
   ADMIN_API_DEPRECATED_PATHS_OPTION,
-  DEFAULT_API_PATH,
   PLUGIN_NAME,
-  SETTINGS_API_PATH,
-  BEHAVIORS_API_PATH,
-  FIXTURES_API_PATH,
-  DEPRECATED_API_PATH,
-  ABOUT_API_PATH
+  DEPRECATED_API_PATH
 } = require("./constants");
 
 class Plugin {
@@ -44,7 +46,7 @@ class Plugin {
       name: ADMIN_API_PATH_OPTION,
       type: "string",
       description: `Api path for ${PLUGIN_NAME}`,
-      default: DEFAULT_API_PATH
+      default: DEFAULT_BASE_PATH
     });
 
     core.addSetting({
@@ -67,10 +69,10 @@ class Plugin {
 
   _initRouter() {
     this._router = express.Router();
-    this._router.use(SETTINGS_API_PATH, this._settingsApi.router);
-    this._router.use(BEHAVIORS_API_PATH, this._behaviorsApi.router);
-    this._router.use(ABOUT_API_PATH, this._aboutApi.router);
-    this._router.use(FIXTURES_API_PATH, this._fixturesApi.router);
+    this._router.use(SETTINGS, this._settingsApi.router);
+    this._router.use(BEHAVIORS, this._behaviorsApi.router);
+    this._router.use(ABOUT, this._aboutApi.router);
+    this._router.use(FIXTURES, this._fixturesApi.router);
   }
 
   _addDeprecatedRouter() {

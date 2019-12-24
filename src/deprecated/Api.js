@@ -10,11 +10,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const express = require("express");
+const { DEFAULT_BASE_PATH } = require("@mocks-server/admin-api-paths");
 
 const Behaviors = require("./Behaviors");
 const Settings = require("./Settings");
 
-const { DEFAULT_API_PATH, DEPRECATED_API_PATH, PLUGIN_NAME } = require("../constants");
+const { DEPRECATED_API_PATH, PLUGIN_NAME } = require("../constants");
 
 // TODO, deprecate mocks router
 
@@ -30,7 +31,7 @@ class Api {
     this._router.use((req, res, next) => {
       this._core.tracer.deprecationWarn(
         `"${DEPRECATED_API_PATH}" ${PLUGIN_NAME} path`,
-        DEFAULT_API_PATH
+        DEFAULT_BASE_PATH
       );
       next();
     });

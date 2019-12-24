@@ -1,0 +1,32 @@
+language: node_js
+
+node_js:
+  - "10"
+
+cache:
+  directories:
+    - ~/.npm
+    - node_modules
+    - ~/.sonar/cache
+
+addons:
+  sonarcloud:
+    organization: "mocks-server"
+    branch:
+      name: "$TRAVIS_CURRENT_BRANCH"
+
+script:
+  - npm run lint
+  - npm run test
+  - npm run coveralls
+  - npm run build
+  - 'if [ -n "$SONAR_TOKEN" ]; then sonar-scanner -Dsonar.login=${SONAR_TOKEN}; fi'
+
+deploy:
+  provider: npm
+  email: "javier.brea@gmail.com"
+  api_key: "$NPM_TOKEN"
+  edge: true
+  on:
+    tags: true
+  skip_cleanup: true

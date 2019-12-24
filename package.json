@@ -1,0 +1,54 @@
+{
+  "name": "@mocks-server/admin-api-paths",
+  "version": "1.0.0",
+  "description": "Api paths of @mocks-server/plugin-admin-api",
+  "keywords": [
+    "mocks-server-plugin",
+    "administration",
+    "admin",
+    "api",
+    "rest",
+    "client"
+  ],
+  "author": "Javier Brea",
+  "license": "Apache-2.0",
+  "repository": "https://github.com/mocks-server/admin-api-paths",
+  "homepage": "https://www.mocks-server.org",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.cjs.js",
+  "scripts": {
+    "lint": "eslint index.js test jest.config.js",
+    "lint-staged": "lint-staged",
+    "test": "jest",
+    "coveralls": "cat ./coverage/lcov.info | coveralls"
+  },
+  "devDependencies": {
+    "coveralls": "^3.0.7",
+    "eslint": "6.6.0",
+    "eslint-config-prettier": "6.5.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "husky": "3.0.9",
+    "jest": "24.9.0",
+    "lint-staged": "^9.4.2",
+    "prettier": "^1.19.1"
+  },
+  "lint-staged": {
+    "test/**/*.js": "eslint",
+    "index.js": "eslint",
+    "jest.config.js": "eslint"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint-staged"
+    }
+  },
+  "engines": {
+    "node": ">8.0.0",
+    "npm": ">6.0.0"
+  }
+}

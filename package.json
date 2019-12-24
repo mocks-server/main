@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@mocks-server/core": "1.2.0",
-    "@mocks-server/plugin-admin-api": "1.1.0",
+    "@mocks-server/plugin-admin-api": "1.2.0",
     "@mocks-server/plugin-inquirer-cli": "1.1.0"
   },
   "devDependencies": {

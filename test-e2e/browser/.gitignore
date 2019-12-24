@@ -1,3 +1,5 @@
+
+
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 #environment variables
@@ -5,6 +7,8 @@
 
 # dependencies
 /node_modules
+/cypress/fixtures
+/cypress/screenshots
 
 # tests
 /coverage

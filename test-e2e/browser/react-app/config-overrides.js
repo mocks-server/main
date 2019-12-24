@@ -7,7 +7,7 @@ module.exports = config => {
   );
   config.resolve.alias = {
     ...config.resolve.alias,
-    "mocks-server-admin-api-client": path.resolve(__dirname, "..", "..")
+    "mocks-server-admin-api-client": path.resolve(__dirname, "..", "..", "..")
   };
   return config;
 };

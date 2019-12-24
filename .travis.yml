@@ -24,11 +24,14 @@ script:
   - npm run lint
   - npm run test
   - npm run build
-  - cd test-e2e/react-app
+  - cd test-e2e/browser
   - npm ci
+  - cd react-app
+  - npm ci
+  - cd ..
   - npm run cypress:install
   - npm run cypress:verify
-  - npm run test:ci
+  - npm run test:react-app:ci
   - cd ../..
   - npm run coveralls
   - 'if [ -n "$SONAR_TOKEN" ]; then sonar-scanner -Dsonar.login=${SONAR_TOKEN}; fi'

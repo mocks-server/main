@@ -1,0 +1,19 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "parser": "babel-eslint",
+  "extends": ["plugin:react/recommended"],
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "globals": {
+  },
+  "settings": {
+    "react": {
+      "pragma": "React",
+      "version": "^16.7.0"
+    }
+  }
+}

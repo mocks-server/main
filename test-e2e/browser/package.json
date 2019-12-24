@@ -1,0 +1,34 @@
+{
+  "name": "browser-tests",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "mocks": "mocks-server",
+    "mocks:ci": "mocks-server --cli=false",
+    "cypress:install": "cypress install",
+    "cypress:verify": "cypress verify",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "start:react-app": "cd react-app && npm run build-and-serve",
+    "mocks:ci-and-start:react-app": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about start:react-app",
+    "test:react-app:ci": "start-server-and-test mocks:ci-and-start:react-app http-get://localhost:3000 cypress:run"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@mocks-server/main": "^1.6.0",
+    "@testing-library/cypress": "^5.0.2",
+    "cypress": "3.1.5",
+    "start-server-and-test": "^1.10.6"
+  }
+}

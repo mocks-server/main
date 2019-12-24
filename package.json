@@ -24,7 +24,7 @@
   "module": "dist/index.esm.js",
   "scripts": {
     "build": "rollup --config",
-    "lint": "eslint index.js test src jest.config.js test-e2e/react-app/src test-e2e/react-app/cypress",
+    "lint": "eslint index.js test src jest.config.js test-e2e/browser/react-app/src test-e2e/browser/cypress",
     "lint-staged": "lint-staged",
     "test": "jest",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
@@ -60,8 +60,8 @@
     "src/**/*.js": "eslint",
     "index.js": "eslint",
     "jest.config.js": "eslint",
-    "test-e2e/react-app/src/**/*.js": "eslint",
-    "test-e2e/react-app/cypress/**/*.js": "eslint"
+    "test-e2e/browser/react-app/src/**/*.js": "eslint",
+    "test-e2e/browser/cypress/**/*.js": "eslint"
   },
   "husky": {
     "hooks": {

@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "react-app",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
@@ -10,19 +10,11 @@
     "react-scripts": "3.2.0"
   },
   "scripts": {
-    "mocks": "mocks-server",
-    "mocks:ci": "mocks-server --cli=false",
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "eject": "react-scripts eject",
     "serve": "serve -l 3000",
-    "build:serve": "npm run build && npm run serve",
-    "cypress:install": "cypress install",
-    "cypress:verify": "cypress verify",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "mocks:ci-and-build:serve": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about build:serve",
-    "test:ci": "start-server-and-test mocks:ci-and-build:serve http-get://localhost:3000 cypress:run"
+    "build-and-serve": "npm run build && npm run serve"
   },
   "browserslist": {
     "production": [
@@ -37,9 +29,6 @@
     ]
   },
   "devDependencies": {
-    "@mocks-server/main": "^1.6.0",
-    "@testing-library/cypress": "^5.0.2",
-    "cypress": "3.1.5",
     "react-app-rewired": "^2.1.5",
     "serve": "^11.2.0",
     "start-server-and-test": "^1.10.6"

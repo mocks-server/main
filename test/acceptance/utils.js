@@ -60,7 +60,7 @@ const request = (uri, options = {}) => {
   });
 };
 
-const changeBehavior = behavior => {
+const deprecatedChangeBehavior = behavior => {
   return request("/mocks/behaviors/current", {
     method: "PUT",
     body: {
@@ -69,11 +69,33 @@ const changeBehavior = behavior => {
   });
 };
 
+const changeBehavior = behavior => {
+  return request("/admin/settings", {
+    method: "PATCH",
+    body: {
+      behavior: behavior
+    }
+  });
+};
+
 const getBehaviors = () => {
+  return request("/admin/behaviors");
+};
+
+const deprecatedGetBehaviors = () => {
   return request("/mocks/behaviors");
 };
 
 const changeDelay = delay => {
+  return request("/admin/settings", {
+    method: "PATCH",
+    body: {
+      delay: delay
+    }
+  });
+};
+
+const deprecatedChangeDelay = delay => {
   return request("/mocks/settings", {
     method: "PUT",
     body: {
@@ -110,12 +132,15 @@ const wait = (time = 1000) => {
 };
 
 module.exports = {
+  changeBehavior,
   startServer,
   stopServer,
   request,
-  changeBehavior,
+  deprecatedChangeBehavior,
   getBehaviors,
+  deprecatedGetBehaviors,
   changeDelay,
+  deprecatedChangeDelay,
   TimeCounter,
   CliRunner,
   wait,

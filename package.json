@@ -11,7 +11,7 @@
     "client"
   ],
   "author": "Javier Brea",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "repository": "https://github.com/mocks-server/admin-api-paths",
   "homepage": "https://www.mocks-server.org",
   "publishConfig": {
@@ -20,14 +20,17 @@
   "files": [
     "dist"
   ],
-  "main": "dist/index.cjs.js",
+  "main": "dist/index.umd.js",
+  "module": "dist/index.esm.js",
   "scripts": {
+    "build": "rollup --config",
     "lint": "eslint index.js test jest.config.js",
     "lint-staged": "lint-staged",
     "test": "jest",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.7.7",
     "coveralls": "^3.0.7",
     "eslint": "6.6.0",
     "eslint-config-prettier": "6.5.0",
@@ -35,7 +38,12 @@
     "husky": "3.0.9",
     "jest": "24.9.0",
     "lint-staged": "^9.4.2",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "rollup": "^1.27.14",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-uglify": "^6.0.4"
   },
   "lint-staged": {
     "test/**/*.js": "eslint",

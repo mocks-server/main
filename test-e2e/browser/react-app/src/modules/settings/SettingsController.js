@@ -3,8 +3,8 @@ import { settings } from "mocks-server-admin-api-client";
 
 import SettingsView from "./SettingsView";
 
-const Controller = connect(() => ({
+const SettingsController = connect(() => ({
   settings: settings.read.getters.value
 }))(SettingsView);
 
-export default Controller;
+export default SettingsController;

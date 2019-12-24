@@ -3,8 +3,8 @@ import { behaviorsCollection } from "mocks-server-admin-api-client";
 
 import BehaviorsView from "./BehaviorsView";
 
-const Controller = connect(() => ({
+const BehaviorsController = connect(() => ({
   behaviors: behaviorsCollection.read.getters.value
 }))(BehaviorsView);
 
-export default Controller;
+export default BehaviorsController;

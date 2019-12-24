@@ -44,9 +44,9 @@ const currentFixture = new Selector(
   }
 );
 
-const Controller = connect(() => ({
+const CurrentBehaviorController = connect(() => ({
   behavior: currentBehavior.read.getters.value,
   fixture: currentFixture.read.getters.value
 }))(CurrentBehaviorView);
 
-export default Controller;
+export default CurrentBehaviorController;

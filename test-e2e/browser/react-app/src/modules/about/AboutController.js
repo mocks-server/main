@@ -3,8 +3,8 @@ import { about } from "mocks-server-admin-api-client";
 
 import AboutView from "./AboutView";
 
-const Controller = connect(() => ({
+const AboutController = connect(() => ({
   about: about.read.getters.value
 }))(AboutView);
 
-export default Controller;
+export default AboutController;

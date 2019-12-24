@@ -3,8 +3,8 @@ import { fixturesCollection } from "mocks-server-admin-api-client";
 
 import FixturesView from "./FixturesView";
 
-const Controller = connect(() => ({
+const FixturesController = connect(() => ({
   fixtures: fixturesCollection.read.getters.value
 }))(FixturesView);
 
-export default Controller;
+export default FixturesController;

@@ -11,16 +11,19 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../../src/Behaviors");
+jest.mock("../../../../src/deprecated/Behaviors");
 
-const Behaviors = require("../../../src/Behaviors");
+const Behaviors = require("../../../../src/deprecated/Behaviors");
 
 const Mock = class Mock {
   constructor() {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      init: this._sandbox.stub()
+      getCurrent: this._sandbox.stub(),
+      putCurrent: this._sandbox.stub(),
+      getCollection: this._sandbox.stub(),
+      router: "foo-behaviors-router"
     };
 
     Behaviors.mockImplementation(() => this._stubs);

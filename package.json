@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/plugin-admin-api",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Plugin for Mocks Server. Provides a REST API for administrating settings, fixtures and behaviors",
   "keywords": [
     "mocks-server-plugin",
@@ -35,10 +35,12 @@
     "@mocks-server/core": "^1.1.0"
   },
   "dependencies": {
+    "@mocks-server/admin-api-paths": "1.0.1",
+    "@hapi/boom": "8.0.1",
     "express": "4.17.1"
   },
   "devDependencies": {
-    "@mocks-server/core": "^1.1.0",
+    "@mocks-server/core": "^1.2.0",
     "coveralls": "^3.0.7",
     "eslint": "6.6.0",
     "eslint-config-prettier": "6.5.0",

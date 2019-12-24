@@ -20,9 +20,7 @@ const Mock = class Mock {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      get: this._sandbox.stub(),
-      put: this._sandbox.stub(),
-      router: "foo-settings-router"
+      init: this._sandbox.stub()
     };
 
     Settings.mockImplementation(() => this._stubs);

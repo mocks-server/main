@@ -9,11 +9,33 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const index = require("../../index");
-const Plugin = require("../../src/Plugin");
+const sinon = require("sinon");
 
-describe("index", () => {
-  it("should export the Plugin constructor", () => {
-    expect(index).toEqual(Plugin);
-  });
-});
+jest.mock("../../../src/About");
+
+const About = require("../../../src/About");
+
+const Mock = class Mock {
+  constructor() {
+    this._sandbox = sinon.createSandbox();
+
+    this._stubs = {
+      init: this._sandbox.stub()
+    };
+
+    About.mockImplementation(() => this._stubs);
+  }
+
+  get stubs() {
+    return {
+      Constructor: About,
+      instance: this._stubs
+    };
+  }
+
+  restore() {
+    this._sandbox.restore();
+  }
+};
+
+module.exports = Mock;

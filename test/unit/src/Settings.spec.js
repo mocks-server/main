@@ -11,104 +11,126 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 const sinon = require("sinon");
+const Boom = require("@hapi/boom");
 
-const CoreMocks = require("../Core.mocks.js");
+const LibMocks = require("../Libs.mocks");
+const CoreMocks = require("../Core.mocks");
 
 const Settings = require("../../../src/Settings");
 
-describe("Settings Api", () => {
+describe("Fixtures", () => {
   let sandbox;
-  let routerStubs;
+  let libMocks;
+  let coreMock;
+  let coreInstance;
   let resMock;
-  let statusSpy;
-  let sendSpy;
-  let coreMocks;
-  let settingsMock;
-  let tracerMock;
+  let nextStub;
+  let settings;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    routerStubs = {
-      get: sandbox.stub(),
-      put: sandbox.stub()
-    };
-    coreMocks = new CoreMocks();
-    settingsMock = coreMocks.stubs.instance.settings;
-    tracerMock = coreMocks.stubs.instance.tracer;
-    sandbox.stub(express, "Router").returns(routerStubs);
-    statusSpy = sandbox.spy();
-    sendSpy = sandbox.spy();
+    nextStub = sandbox.stub();
     resMock = {
-      status: statusSpy,
-      send: sendSpy
+      status: sandbox.stub(),
+      send: sandbox.stub()
     };
+    libMocks = new LibMocks();
+    coreMock = new CoreMocks();
+    coreInstance = coreMock.stubs.instance;
+    settings = new Settings(coreInstance);
     expect.assertions(1);
   });
 
   afterEach(() => {
     sandbox.restore();
-    coreMocks.restore();
+    libMocks.restore();
+    coreMock.restore();
   });
 
-  describe("when instanciated", () => {
-    it("should create an express Router", () => {
-      new Settings(settingsMock, tracerMock);
+  describe("when created", () => {
+    it("should create an express Router", async () => {
       expect(express.Router.calledOnce).toEqual(true);
     });
-  });
 
-  describe("get route", () => {
-    it("should set response status as 200", () => {
-      const settings = new Settings(settingsMock, tracerMock);
-      settings.get({}, resMock);
-      expect(statusSpy.getCall(0).args[0]).toEqual(200);
+    it("should have added a patch router at /", async () => {
+      expect(libMocks.stubs.express.get.getCall(0).args[0]).toEqual("/");
     });
 
-    it("should send current settings", () => {
-      settingsMock.get.withArgs("delay").returns(3000);
-      const settings = new Settings(settingsMock, tracerMock);
-      settings.get({}, resMock);
-      expect(sendSpy.getCall(0).args[0]).toEqual({
-        delay: 3000
-      });
+    it("should have added a get router at /", async () => {
+      expect(libMocks.stubs.express.get.getCall(0).args[0]).toEqual("/");
     });
   });
 
-  describe("put route", () => {
-    it("should set current delay", () => {
-      const settings = new Settings(settingsMock, tracerMock);
-      settings.put(
+  describe("patch router", () => {
+    it("should set new settings", () => {
+      expect.assertions(4);
+      coreInstance.settings.getValidOptionName.withArgs("log").returns("log");
+      coreInstance.settings.getValidOptionName.withArgs("delay").returns("delay");
+      settings = new Settings(coreInstance);
+      settings.patch(
         {
           body: {
-            delay: 5000
+            log: "foo",
+            delay: 4000
           }
         },
-        resMock
+        resMock,
+        nextStub
       );
-      expect(settingsMock.set.getCall(0).args).toEqual(["delay", 5000]);
+      expect(coreInstance.settings.set.getCall(0).args[0]).toEqual("log");
+      expect(coreInstance.settings.set.getCall(0).args[1]).toEqual("foo");
+      expect(coreInstance.settings.set.getCall(1).args[0]).toEqual("delay");
+      expect(coreInstance.settings.set.getCall(1).args[1]).toEqual(4000);
     });
 
-    it("should send current settings", () => {
-      const settings = new Settings(settingsMock, tracerMock);
-      settingsMock.get.withArgs("delay").returns(2000);
-      settings.put(
+    it("should send a badRequest error if there is any invalid option", () => {
+      sandbox.stub(Boom, "badRequest").returns("foo-error");
+      coreInstance.settings.getValidOptionName.withArgs("log").returns(null);
+      coreInstance.settings.getValidOptionName.withArgs("delay").returns("delay");
+      settings = new Settings(coreInstance);
+      settings.patch(
         {
           body: {
-            delay: 2000
+            log: "foo",
+            delay: 4000
           }
         },
-        resMock
+        resMock,
+        nextStub
       );
-      expect(sendSpy.getCall(0).args[0]).toEqual({
-        delay: 2000
-      });
+      expect(nextStub.getCall(0).args[0]).toEqual("foo-error");
+    });
+
+    it("should not set any option if one is invalid", () => {
+      sandbox.stub(Boom, "badRequest").returns("foo-error");
+      coreInstance.settings.getValidOptionName.withArgs("log").returns("log");
+      coreInstance.settings.getValidOptionName.withArgs("delay").returns(null);
+      settings = new Settings(coreInstance);
+      settings.patch(
+        {
+          body: {
+            log: "foo",
+            delay: 4000
+          }
+        },
+        resMock,
+        nextStub
+      );
+      expect(coreInstance.settings.set.callCount).toEqual(0);
+    });
+  });
+
+  describe("get router", () => {
+    it("should return all settings", () => {
+      settings = new Settings(coreInstance);
+      settings.get({}, resMock, nextStub);
+      expect(resMock.send.getCall(0).args[0]).toEqual(coreInstance.settings.all);
     });
   });
 
   describe("router getter", () => {
-    it("should return the express router", () => {
-      const settings = new Settings(settingsMock, tracerMock);
-      expect(settings.router).toEqual(routerStubs);
+    it("should return express created router", async () => {
+      expect(settings.router).toEqual(libMocks.stubs.express);
     });
   });
 });

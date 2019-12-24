@@ -16,15 +16,15 @@ const Boom = require("@hapi/boom");
 const LibMocks = require("../Libs.mocks");
 const CoreMocks = require("../Core.mocks");
 
-const Behaviors = require("../../../src/Behaviors");
+const Fixtures = require("../../../src/Fixtures");
 
-describe("Behavior", () => {
+describe("Fixtures", () => {
   let sandbox;
   let libMocks;
   let coreMock;
   let coreInstance;
   let resMock;
-  let behaviors;
+  let fixtures;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -35,7 +35,7 @@ describe("Behavior", () => {
     libMocks = new LibMocks();
     coreMock = new CoreMocks();
     coreInstance = coreMock.stubs.instance;
-    behaviors = new Behaviors(coreInstance);
+    fixtures = new Fixtures(coreInstance);
     expect.assertions(1);
   });
 
@@ -54,98 +54,104 @@ describe("Behavior", () => {
       expect(libMocks.stubs.express.get.getCall(0).args[0]).toEqual("/");
     });
 
-    it("should register a get router for behavior names", async () => {
-      expect(libMocks.stubs.express.get.getCall(1).args[0]).toEqual("/:name");
+    it("should register a get router for fixtures ids", async () => {
+      expect(libMocks.stubs.express.get.getCall(1).args[0]).toEqual("/:id");
     });
   });
 
   describe("getCollection router", () => {
-    it("should return the behaviors collection parsed", () => {
-      coreInstance.behaviors = {
+    it("should return the fixtures collection parsed", () => {
+      coreInstance.fixtures = {
         collection: [
           {
-            name: "foo",
-            fixtures: [{ id: "foo-fixture-id-1" }, { id: "foo-fixture-id-2" }],
-            extendedFrom: "foo-base-behavior"
+            id: "foo-id",
+            requestMatchId: "request-match-id",
+            request: "foo-request",
+            response: "foo-response"
           },
           {
-            name: "foo2",
-            fixtures: [{ id: "foo-fixture-id-3" }],
-            extendedFrom: null
+            id: "foo-id-2",
+            requestMatchId: "request-match-id-2",
+            request: "foo-request-2",
+            response: "foo-response-2"
           }
         ]
       };
-      behaviors = new Behaviors(coreInstance);
-      behaviors.getCollection({}, resMock);
+      fixtures = new Fixtures(coreInstance);
+      fixtures.getCollection({}, resMock);
       expect(resMock.send.getCall(0).args[0]).toEqual([
         {
-          name: "foo",
-          fixtures: ["foo-fixture-id-1", "foo-fixture-id-2"],
-          extendedFrom: "foo-base-behavior"
+          id: "foo-id",
+          requestMatchId: "request-match-id",
+          handler: undefined,
+          request: "foo-request",
+          response: "foo-response"
         },
         {
-          name: "foo2",
-          fixtures: ["foo-fixture-id-3"],
-          extendedFrom: null
+          id: "foo-id-2",
+          requestMatchId: "request-match-id-2",
+          handler: undefined,
+          request: "foo-request-2",
+          response: "foo-response-2"
         }
       ]);
     });
   });
 
   describe("getModel router", () => {
-    it("should return the requested behavior model parsed", () => {
-      coreInstance.behaviors = {
+    it("should return the requested fixture model parsed", () => {
+      coreInstance.fixtures = {
         collection: [
           {
-            name: "foo",
-            fixtures: [{ id: "foo-fixture-id-1" }, { id: "foo-fixture-id-2" }],
-            extendedFrom: "foo-base-behavior"
+            id: "foo-id",
+            requestMatchId: "request-match-id",
+            request: "foo-request",
+            response: "foo-response"
           },
           {
-            name: "foo2",
-            fixtures: [{ id: "foo-fixture-id-3" }],
-            extendedFrom: null
+            id: "foo-id-2",
+            requestMatchId: "request-match-id-2",
+            request: "foo-request-2",
+            response: "foo-response-2"
           }
         ]
       };
-      behaviors = new Behaviors(coreInstance);
-      behaviors.getModel(
+      fixtures = new Fixtures(coreInstance);
+      fixtures.getModel(
         {
           params: {
-            name: "foo"
+            id: "foo-id"
           }
         },
         resMock
       );
       expect(resMock.send.getCall(0).args[0]).toEqual({
-        name: "foo",
-        fixtures: ["foo-fixture-id-1", "foo-fixture-id-2"],
-        extendedFrom: "foo-base-behavior"
+        id: "foo-id",
+        requestMatchId: "request-match-id",
+        handler: undefined,
+        request: "foo-request",
+        response: "foo-response"
       });
     });
 
-    it("should return a not found error if behavior is not found", () => {
+    it("should return a not found error if fixture is not found", () => {
       const nextStub = sandbox.stub();
       sandbox.stub(Boom, "notFound").returns("foo-error");
-      coreInstance.behaviors = {
+      coreInstance.fixtures = {
         collection: [
           {
-            name: "foo",
-            fixtures: [{ id: "foo-fixture-id-1" }, { id: "foo-fixture-id-2" }],
-            extendedFrom: "foo-base-behavior"
-          },
-          {
-            name: "foo2",
-            fixtures: [{ id: "foo-fixture-id-3" }],
-            extendedFrom: null
+            id: "foo-id",
+            requestMatchId: "request-match-id",
+            request: "foo-request",
+            response: "foo-response"
           }
         ]
       };
-      behaviors = new Behaviors(coreInstance);
-      behaviors.getModel(
+      fixtures = new Fixtures(coreInstance);
+      fixtures.getModel(
         {
           params: {
-            name: "foo3"
+            id: "foo3"
           }
         },
         resMock,
@@ -157,7 +163,7 @@ describe("Behavior", () => {
 
   describe("router getter", () => {
     it("should return express created router", async () => {
-      expect(behaviors.router).toEqual(libMocks.stubs.express);
+      expect(fixtures.router).toEqual(libMocks.stubs.express);
     });
   });
 });

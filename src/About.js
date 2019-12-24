@@ -9,32 +9,33 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const sinon = require("sinon");
+"use strict";
 
 const express = require("express");
 
-class Mock {
-  constructor() {
-    this._sandbox = sinon.createSandbox();
+const { PLUGIN_NAME } = require("./constants");
+const { version } = require("../package.json");
 
-    this._stubs = {
-      express: {
-        use: this._sandbox.stub(),
-        patch: this._sandbox.stub(),
-        get: this._sandbox.stub()
-      }
-    };
-
-    this._sandbox.stub(express, "Router").returns(this._stubs.express);
+class AboutApi {
+  constructor(core) {
+    this._core = core;
+    this._tracer = core.tracer;
+    this._fixtures = this._core.fixtures;
+    this._router = express.Router();
+    this._router.get("/", this.getAbout.bind(this));
   }
 
-  get stubs() {
-    return this._stubs;
+  getAbout(req, res) {
+    this._tracer.verbose(`${PLUGIN_NAME}: Sending about | ${req.id}`);
+    res.status(200);
+    res.send({
+      version
+    });
   }
 
-  restore() {
-    this._sandbox.restore();
+  get router() {
+    return this._router;
   }
 }
 
-module.exports = Mock;
+module.exports = AboutApi;

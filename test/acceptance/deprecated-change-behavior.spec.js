@@ -8,9 +8,15 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startServer, stopServer, request, changeBehavior, getBehaviors } = require("./utils");
+const {
+  startServer,
+  stopServer,
+  request,
+  deprecatedChangeBehavior,
+  deprecatedGetBehaviors
+} = require("./utils");
 
-describe("API for changing current behavior", () => {
+describe("deprecated API for changing current behavior", () => {
   let server;
 
   beforeAll(async () => {
@@ -23,7 +29,7 @@ describe("API for changing current behavior", () => {
 
   describe("When started", () => {
     it("should have 3 behaviors available", async () => {
-      const behaviors = await getBehaviors();
+      const behaviors = await deprecatedGetBehaviors();
       expect(behaviors.length).toEqual(3);
     });
 
@@ -48,7 +54,7 @@ describe("API for changing current behavior", () => {
 
   describe('When changing current behavior to "user2"', () => {
     beforeAll(async () => {
-      await changeBehavior("user2");
+      await deprecatedChangeBehavior("user2");
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -72,7 +78,7 @@ describe("API for changing current behavior", () => {
 
   describe('When changing current behavior to "dynamic"', () => {
     beforeAll(async () => {
-      await changeBehavior("dynamic");
+      await deprecatedChangeBehavior("dynamic");
     });
 
     it("should serve users collection mock under the /api/users path", async () => {

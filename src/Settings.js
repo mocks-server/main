@@ -12,29 +12,51 @@ Unless required by applicable law or agreed to in writing, software distributed 
 "use strict";
 
 const express = require("express");
+const Boom = require("@hapi/boom");
+
+const { PLUGIN_NAME } = require("./constants");
 
 class SettingsApi {
-  constructor(settings, tracer) {
-    this._tracer = tracer;
-    this._settings = settings;
+  constructor(core) {
+    this._core = core;
+    this._tracer = core.tracer;
+    this._settings = this._core.settings;
     this._router = express.Router();
-    this._router.put("/", this.put.bind(this));
+    this._router.patch("/", this.patch.bind(this));
     this._router.get("/", this.get.bind(this));
   }
 
-  put(req, res) {
-    const newDelay = req.body.delay;
-    this._tracer.verbose(`Changing delay to "${newDelay}" | ${req.id}`);
-    this._settings.set("delay", newDelay);
-    this.get(req, res);
+  _validateNewSettings(newSettings) {
+    const errors = [];
+    Object.keys(newSettings).forEach(newSettingKey => {
+      if (!this._settings.getValidOptionName(newSettingKey)) {
+        errors.push(`Invalid option name "${newSettingKey}"`);
+      }
+    });
+    return errors;
+  }
+
+  patch(req, res, next) {
+    const newSettings = req.body;
+    const errors = this._validateNewSettings(newSettings);
+    if (errors.length) {
+      next(Boom.badRequest(errors.join(". ")));
+    } else {
+      Object.keys(newSettings).forEach(newSettingKey => {
+        this._tracer.verbose(
+          `${PLUGIN_NAME}: Changing setting "${newSettingKey}" to "${newSettings[newSettingKey]}" | ${req.id}`
+        );
+        this._settings.set(newSettingKey, newSettings[newSettingKey]);
+      });
+      res.status(204);
+      res.send();
+    }
   }
 
   get(req, res) {
-    this._tracer.verbose(`Sending delay to | ${req.id}`);
+    this._tracer.verbose(`${PLUGIN_NAME}: Sending settings | ${req.id}`);
     res.status(200);
-    res.send({
-      delay: this._settings.get("delay")
-    });
+    res.send(this._settings.all);
   }
 
   get router() {

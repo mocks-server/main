@@ -61,13 +61,13 @@ const request = (uri, options = {}) => {
   };
 
   return requestPromise({
-    uri: `http://localhost:${SERVER_PORT}${uri}`,
+    uri: `http://localhost:${options.port || SERVER_PORT}${uri}`,
     json: true,
     ...requestOptions
   });
 };
 
-const changeBehavior = behavior => {
+const deprecatedChangeBehavior = behavior => {
   return request("/mocks/behaviors/current", {
     method: "PUT",
     body: {
@@ -76,11 +76,11 @@ const changeBehavior = behavior => {
   });
 };
 
-const getBehaviors = () => {
+const deprecatedGetBehaviors = () => {
   return request("/mocks/behaviors");
 };
 
-const changeDelay = delay => {
+const deprecatedChangeDelay = delay => {
   return request("/mocks/settings", {
     method: "PUT",
     body: {
@@ -120,9 +120,9 @@ module.exports = {
   startServer,
   stopServer,
   request,
-  changeBehavior,
-  getBehaviors,
-  changeDelay,
+  deprecatedChangeBehavior,
+  deprecatedGetBehaviors,
+  deprecatedChangeDelay,
   TimeCounter,
   wait,
   fixturesFolder,

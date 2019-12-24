@@ -9,14 +9,15 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-"use strict";
-
 const express = require("express");
+const { DEFAULT_BASE_PATH } = require("@mocks-server/admin-api-paths");
 
 const Behaviors = require("./Behaviors");
 const Settings = require("./Settings");
 
-const FEATURES_PATH = "/features";
+const { DEPRECATED_API_PATH, PLUGIN_NAME } = require("../constants");
+
+// TODO, deprecate mocks router
 
 class Api {
   constructor(core) {
@@ -27,20 +28,21 @@ class Api {
   init() {
     const behaviorsRouter = new Behaviors(this._core).router;
     this._router = express.Router();
-    // TODO, deprecate features router
-    this._router.use(FEATURES_PATH, (req, res, next) => {
-      this._tracer.warn(
-        `Deprecation warning: "${FEATURES_PATH}" api path will be deprecated. Use "/behaviors" instead`
+    this._router.use((req, res, next) => {
+      this._core.tracer.deprecationWarn(
+        `"${DEPRECATED_API_PATH}" ${PLUGIN_NAME} path`,
+        DEFAULT_BASE_PATH
       );
       next();
     });
-    // TODO, deprecate features router
-    this._router.use(FEATURES_PATH, behaviorsRouter);
+
+    this._router.use("/features", behaviorsRouter);
     this._router.use("/behaviors", behaviorsRouter);
     this._router.use("/settings", new Settings(this._core.settings, this._tracer).router);
+  }
 
-    this._core.addCustomRouter("/mocks", this._router);
-    return Promise.resolve();
+  get router() {
+    return this._router;
   }
 }
 

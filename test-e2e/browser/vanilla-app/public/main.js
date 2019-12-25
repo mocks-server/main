@@ -56,7 +56,7 @@ var currentFixture = new dataProvider.Selector(
 var loadAbout = function() {
   return adminApiClient.about.read().then(function(about) {
     $aboutContainer.empty();
-    Object.keys(about).map(function(key) {
+    Object.keys(about).forEach(function(key) {
       $aboutContainer.append(
         `<li><b>version</b>:&nbsp;<span data-testid="about-${key}" id="about-${key}">${about[key]}</span></li>`
       );
@@ -67,7 +67,7 @@ var loadAbout = function() {
 var loadSettings = function() {
   return adminApiClient.settings.read().then(function(settings) {
     $settingsContainer.empty();
-    Object.keys(settings).map(function(key) {
+    Object.keys(settings).forEach(function(key) {
       $settingsContainer.append(
         `<li><b>${key}</b>:&nbsp;<span data-testid="settings-${key}">${settings[key]}</span></li>`
       );
@@ -78,7 +78,7 @@ var loadSettings = function() {
 var loadBehaviors = function() {
   return adminApiClient.behaviorsCollection.read().then(function(behaviorsCollection) {
     $behaviorsContainer.empty();
-    behaviorsCollection.map(function(behavior) {
+    behaviorsCollection.forEach(function(behavior) {
       $behaviorsContainer.append(
         `<li data-testid="behavior-${
           behavior.name
@@ -91,7 +91,7 @@ var loadBehaviors = function() {
 var loadFixtures = function() {
   return adminApiClient.fixturesCollection.read().then(function(fixturesCollection) {
     $fixturesContainer.empty();
-    fixturesCollection.map(function(fixture) {
+    fixturesCollection.forEach(function(fixture) {
       $fixturesContainer.append(
         `<li data-testid="fixture-${fixture.id}" class="fixtures-collection-item">${JSON.stringify(
           fixture

@@ -8,6 +8,6 @@ describe("About section", () => {
   });
 
   it("should display current version", () => {
-    cy.findByTestId(SELECTORS.VERSION).should("have.text", "1.2.0");
+    cy.findByTestId(SELECTORS.VERSION).should("have.text", "1.2.1");
   });
 });

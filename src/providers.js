@@ -28,6 +28,14 @@ export const behaviorsModel = new Api(`${adminApiPaths.BEHAVIORS}/:name`, {
   tags: [TAG]
 });
 
+behaviorsModel.addCustomQuery({
+  findByName: name => ({
+    urlParams: {
+      name
+    }
+  })
+});
+
 export const fixturesCollection = new Api(adminApiPaths.FIXTURES, {
   defaultValue: [],
   uuid: "fixtures-collection",
@@ -38,4 +46,12 @@ export const fixturesModel = new Api(`${adminApiPaths.FIXTURES}/:id`, {
   defaultValue: {},
   uuid: "fixtures-model",
   tags: [TAG]
+});
+
+fixturesModel.addCustomQuery({
+  findById: id => ({
+    urlParams: {
+      id
+    }
+  })
 });

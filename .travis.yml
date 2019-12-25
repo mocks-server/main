@@ -7,9 +7,6 @@ cache:
   directories:
     - ~/.npm
     - ~/.cache
-    - node_modules
-    - test-e2e/browser/node_modules
-    - test-e2e/browser/react-app/node_modules
     - ~/.sonar/cache
 
 addons:
@@ -25,15 +22,7 @@ script:
   - npm run lint
   - npm run test
   - npm run build
-  - cd test-e2e/browser
-  - cd react-app
-  - npm ci
-  - cd ..
-  - npm ci
-  - npm run cypress:install
-  - npm run cypress:verify
-  - npm run test:react-app:ci
-  - cd ../..
+  - npm run test:e2e:ci
   - npm run coveralls
   - 'if [ -n "$SONAR_TOKEN" ]; then sonar-scanner -Dsonar.login=${SONAR_TOKEN}; fi'
 

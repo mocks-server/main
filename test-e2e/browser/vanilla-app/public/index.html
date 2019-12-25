@@ -1,0 +1,83 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="admin-api-client vanilla tests">
+    <title>Vanilla App</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="https://unpkg.com/lodash@4.17.15/lodash.min.js"></script>
+    <script>
+        // TODO, rename lodash global in data-provider/core (Ideally avoid lodash usage)
+        window.lodash = window._;
+    </script>
+    <script src="https://unpkg.com/is-promise@2.1.0/index.js"></script>
+    <script src="https://unpkg.com/@data-provider/core@1.7.0/dist/core.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+    <script src="https://unpkg.com/axios-retry@3.1.2/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/path-to-regexp@3.0.0/index.min.js"></script>
+    <script>
+        // Workaround. pathToRegexp is not exported as UMD. Fix some exportation problems.
+        pathToRegexp.compile = compile;
+        pathToRegexp.parse = parse;
+
+        var DEFAULT_DELIMITER = '/';
+        var PATH_REGEXP = new RegExp([
+          // Match escaped characters that would otherwise appear in future matches.
+          // This allows the user to escape special characters that won't transform.
+          '(\\\\.)',
+          // Match Express-style parameters and un-named parameters with a prefix
+          // and optional suffixes. Matches appear as:
+          //
+          // ":test(\\d+)?" => ["test", "\d+", undefined, "?"]
+          // "(\\d+)"  => [undefined, undefined, "\d+", undefined]
+          '(?:\\:(\\w+)(?:\\(((?:\\\\.|[^\\\\()])+)\\))?|\\(((?:\\\\.|[^\\\\()])+)\\))([+*?])?'
+        ].join('|'), 'g')
+    </script>
+    <script src="https://unpkg.com/@data-provider/axios@1.5.0/dist/data-provider-axios.umd.js"></script>
+    <script src="https://unpkg.com/@mocks-server/admin-api-paths@1.0.1/dist/index.umd.js"></script>
+    <script src="js/admin-api-client.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+    <script src="main.js"></script>
+</head>
+
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root">
+        <div class="App">
+            <header class="App-header">
+                <div class="content">
+                    <p class="content__title">About</p>
+                    <ul id="about-container">
+                    </ul>
+                </div>
+                <div class="content">
+                    <p class="content__title">Current Settings</p>
+                    <ul id="settings-container">
+                    </ul>
+                </div>
+                <div class="content">
+                    <p class="content__title">Behaviors</p>
+                    <ul id="behaviors-container">
+                    </ul>
+                </div>
+                <div class="content">
+                    <p class="content__title">Current Behavior: <span data-testid="current-behavior-name" id="current-behavior-name"></span></p>
+                    <p data-testid="current-behavior" id="current-behavior"></p>
+                    <p class="content__title">Current Fixture: <span data-testid="current-fixture-id" id="current-fixture-id"></span></p>
+                    <p data-testid="current-fixture" id="current-fixture"></p>
+                    <button data-testid="set-behavior-base" id="set-behavior-base">Set behavior base</button>
+                    <button data-testid="set-behavior-user2" id="set-behavior-user2">Set behavior user2</button>
+                </div>
+                <div class="content">
+                    <p class="content__title">Fixtures</p>
+                    <ul id="fixtures-container">
+                    </ul>
+                </div>
+            </header>
+        </div>
+    </div>
+</body>
+
+</html>

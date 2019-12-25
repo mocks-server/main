@@ -27,7 +27,9 @@
     "lint": "eslint index.js test src jest.config.js test-e2e/browser/react-app/src test-e2e/browser/cypress",
     "lint-staged": "lint-staged",
     "test": "jest",
-    "coveralls": "cat ./coverage/lcov.info | coveralls"
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "test:e2e": "cd test-e2e/browser && npm run test:react-app:ci && npm run test:vanilla-app:ci",
+    "test:e2e:ci": "cd test-e2e/browser && npm i && npm run cypress:install && npm run test:react-app:ci && npm run test:vanilla-app:ci"
   },
   "dependencies": {
     "@data-provider/axios": "^1.5.0",

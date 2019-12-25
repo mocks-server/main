@@ -4,6 +4,7 @@
     "es6": true
   },
   "globals": {
+    "Cypress": true,
     "cy": true,
     "afterEach": true,
     "after": true,

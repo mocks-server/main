@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/plugin-admin-api",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Plugin for Mocks Server. Provides a REST API for administrating settings, fixtures and behaviors",
   "keywords": [
     "mocks-server-plugin",
@@ -35,7 +35,7 @@
     "@mocks-server/core": "^1.1.0"
   },
   "dependencies": {
-    "@mocks-server/admin-api-paths": "1.0.1",
+    "@mocks-server/admin-api-paths": "1.0.2",
     "@hapi/boom": "8.0.1",
     "express": "4.17.1"
   },

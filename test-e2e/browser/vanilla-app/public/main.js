@@ -76,7 +76,7 @@ var loadSettings = function() {
 };
 
 var loadBehaviors = function() {
-  return adminApiClient.behaviorsCollection.read().then(function(behaviorsCollection) {
+  return adminApiClient.behaviors.read().then(function(behaviorsCollection) {
     $behaviorsContainer.empty();
     behaviorsCollection.forEach(function(behavior) {
       $behaviorsContainer.append(
@@ -89,7 +89,7 @@ var loadBehaviors = function() {
 };
 
 var loadFixtures = function() {
-  return adminApiClient.fixturesCollection.read().then(function(fixturesCollection) {
+  return adminApiClient.fixtures.read().then(function(fixturesCollection) {
     $fixturesContainer.empty();
     fixturesCollection.forEach(function(fixture) {
       $fixturesContainer.append(

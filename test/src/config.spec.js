@@ -1,7 +1,8 @@
 import sinon from "sinon";
 import { instances } from "@data-provider/core";
+import { DEFAULT_BASE_PATH } from "@mocks-server/admin-api-paths";
 
-import config from "../../src/config";
+import { config } from "../../src/config";
 import TAG from "../../src/tag";
 
 describe("config method", () => {
@@ -22,7 +23,9 @@ describe("config method", () => {
     config({
       baseUrl: BASE_URL
     });
-    expect(instances.getByTag(TAG).config.getCall(0).args[0].baseUrl).toEqual(`${BASE_URL}/admin`);
+    expect(instances.getByTag(TAG).config.getCall(0).args[0].baseUrl).toEqual(
+      `${BASE_URL}${DEFAULT_BASE_PATH}`
+    );
   });
 
   it("should set apiPath in admin-api-client tagged providers", () => {

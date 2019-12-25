@@ -16,9 +16,9 @@ export const settings = new Api(SETTINGS, {
   tags: [TAG]
 });
 
-export const behaviorsCollection = new Api(BEHAVIORS, {
+export const behaviors = new Api(BEHAVIORS, {
   defaultValue: [],
-  uuid: "behaviors-collection",
+  uuid: "behaviors",
   tags: [TAG]
 });
 
@@ -29,16 +29,20 @@ export const behaviorsModel = new Api(`${BEHAVIORS}/:name`, {
 });
 
 behaviorsModel.addCustomQuery({
-  findByName: name => ({
+  byName: name => ({
     urlParams: {
       name
     }
   })
 });
 
-export const fixturesCollection = new Api(FIXTURES, {
+export const behavior = name => {
+  return behaviorsModel.byName(name);
+};
+
+export const fixtures = new Api(FIXTURES, {
   defaultValue: [],
-  uuid: "fixtures-collection",
+  uuid: "fixtures",
   tags: [TAG]
 });
 
@@ -49,9 +53,13 @@ export const fixturesModel = new Api(`${FIXTURES}/:id`, {
 });
 
 fixturesModel.addCustomQuery({
-  findById: id => ({
+  byId: id => ({
     urlParams: {
       id
     }
   })
 });
+
+export const fixture = id => {
+  return fixturesModel.byId(id);
+};

@@ -1,9 +1,9 @@
 const {
   about,
-  behaviorsCollection,
-  behaviorsModel,
-  fixturesCollection,
-  fixturesModel,
+  behaviors,
+  behavior,
+  fixtures,
+  fixture,
   settings
 } = require("../../../dist/index.cjs");
 
@@ -12,19 +12,19 @@ const readAbout = () => {
 };
 
 const readBehaviors = () => {
-  return behaviorsCollection.read();
+  return behaviors.read();
 };
 
 const readBehavior = name => {
-  return behaviorsModel.findByName(name).read();
+  return behavior(name).read();
 };
 
 const readFixtures = () => {
-  return fixturesCollection.read();
+  return fixtures.read();
 };
 
 const readFixture = id => {
-  return fixturesModel.findById(id).read();
+  return fixture(id).read();
 };
 
 const readSettings = () => {

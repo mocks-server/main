@@ -5,21 +5,64 @@
 [![NPM downloads][npm-downloads-image]][npm-downloads-url] [![License][license-image]][license-url]
 
 
-# Mocks-server administration API client.
+# Mocks-server administration api client
 
-This package contains methods for administrating the mocks-server (using the plugin-admin-api RESTful API).
+This package contains methods for administrating the mocks-server _(through the [@mocks-server/plugin-admin-api](https://github.com/mocks-server/plugin-admin-api) RESTful API)_.
 
-It can be used both from Browsers or from Node.js.
+Built using [@data-provider](https://github.com/data-provider), it can be used in Node.js, browsers, and is also compatible with @data-provider connectors, such as [@data-provider/connector-react](https://github.com/data-provider/connector-react), so can be easily integrated with frameworks.
 
-## Usage
+## Usage with promises
+
+All methods described in the [Api](#api) (expect the `config` method) return Promises when executed:
 
 ```js
-import { setBaseUrl, changeDelay } from "@mocks-server/admin-api-client";
+import { about, settings } from "@mocks-server/admin-api-client";
 
-setBaseUrl("http://localhost:3100");
+const example = async () => {
+  const { version } = await about.read();
+  console.log(`Current plugin-admin-api version is ${version}`);
 
-changeDelay(1000).then(() => {
-  console.log("Delay setting changed!");
+  const currentSettings = await settings.read();
+  console.log("Current mocks-server settings are", currentSettings);
+
+  await settings.update({
+    behavior: "user-super-admin",
+    delay: 1000
+  });
+  console.log("Behavior and delay changed");
+};
+
+example();
+```
+
+## Usage with data-provider
+
+Exported properties `about`, `settings`, `behaviors`, `behaviorsModel`, `fixtures` and `fixturesModel` are [@data-provider/axios](https://github.com/data-provider/axios) providers, so can be used to define @data-provider Selectors. Methods can also be connected to frameworks using @data-provider connectors, such as [@data-provider/connector-react](https://github.com/data-provider/connector-react).
+
+## Api
+
+* `about.read()` - Returns info about mocks-server/plugin-admin-api, such as current version.
+* `settings.read()` - Returns current @mocks-server settings.
+* `settings.update(settingsObject)` - Updates @mocks-server settings. A settings object has to be provided. Read the [@mocks-server configuration documentation](https://www.mocks-server.org/docs/configuration-options) for further info.
+* `behaviors.read()` - Returns collection of available behaviors.
+* `behavior(behaviorName).read()` - Returns an specific behavior.
+* `behaviorsModel.byName(behaviorName).read()` - Returns an specific behavior.
+* `fixtures.read()` - Returns collection of available fixtures.
+* `fixture(fixtureId).read()` - Returns an specific fixture.
+* `fixturesModel.byId(fixtureId).read()` - Returns an specific fixture.
+
+## Configuration
+
+By default, the client is configured to request to http://localhost:3100/admin, based in the [default options of @mocks-server](https://www.mocks-server.org/docs/configuration-options)
+
+You can change both the base url of the "@mocks-server", and the base api path of the "@mocks-server/plugin-admin-api" using the `config` method:
+
+```js
+import { config } from "@mocks-server/admin-api-client";
+
+config({
+  apiPath: "/foo-admin",
+  baseUrl: "http://my-mocks-server:3000"
 });
 ```
 

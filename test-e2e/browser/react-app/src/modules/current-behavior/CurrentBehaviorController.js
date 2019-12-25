@@ -9,7 +9,7 @@ const currentBehavior = new Selector(
   {
     provider: behaviorsModel,
     query: (query, prevResults) => {
-      return behaviorsModel.customQueries.findByName(prevResults[0].behavior);
+      return behaviorsModel.customQueries.byName(prevResults[0].behavior);
     }
   },
   (settingsResults, behaviorResult) => {
@@ -25,7 +25,7 @@ const currentFixture = new Selector(
   {
     provider: fixturesModel,
     query: (query, prevResults) => {
-      return fixturesModel.customQueries.findById(
+      return fixturesModel.customQueries.byId(
         prevResults[0].fixtures[prevResults[0].fixtures.length - 1]
       );
     }

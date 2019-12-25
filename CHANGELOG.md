@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.6.1] - 2019-12-25
+### Changed
+- Upgrade plugin-admin-api dependency to 1.2.1
+
 ## [1.6.0] - 2019-12-24
 ### Changed
 - Upgrade plugin-admin-api dependency to 1.2.0

@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 ## [1.2.1] - 2019-12-25
-### Added
+### Changed
 - Upgrade admin-api-paths dependency.
 
 ## [1.2.0] - 2019-12-24

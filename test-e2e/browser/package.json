@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "mocks": "mocks-server",
-    "mocks:ci": "mocks-server --cli=false",
+    "mocks:ci": "cd ../mocks && npm run mocks:ci",
     "cypress:install": "cypress install",
     "cypress:verify": "cypress verify",
     "cypress:open": "cypress open",
@@ -14,28 +13,9 @@
     "mocks:ci-and-start:react-app": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about start:react-app",
     "mocks:ci-and-start:vanilla-app": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about start:vanilla-app",
     "test:react-app": "start-server-and-test mocks:ci-and-start:react-app http-get://localhost:3000 cypress:run",
-    "test:vanilla-app": "start-server-and-test mocks:ci-and-start:vanilla-app http-get://localhost:3000 cypress:run",
-    "start:react-app:ci": "cd react-app && npm i && npm run build-and-serve",
-    "start:vanilla-app:ci": "cd vanilla-app && npm i && npm run build-and-serve",
-    "mocks:ci-and-start:react-app:ci": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about start:react-app:ci",
-    "mocks:ci-and-start:vanilla-app:ci": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about start:vanilla-app:ci",
-    "test:react-app:ci": "start-server-and-test mocks:ci-and-start:react-app:ci http-get://localhost:3000 cypress:run",
-    "test:vanilla-app:ci": "start-server-and-test mocks:ci-and-start:vanilla-app:ci http-get://localhost:3000 cypress:run"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "test:vanilla-app": "start-server-and-test mocks:ci-and-start:vanilla-app http-get://localhost:3000 cypress:run"
   },
   "devDependencies": {
-    "@mocks-server/main": "^1.6.0",
     "@testing-library/cypress": "^5.0.2",
     "cypress": "3.1.5",
     "start-server-and-test": "^1.10.6"

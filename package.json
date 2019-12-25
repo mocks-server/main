@@ -28,8 +28,11 @@
     "lint-staged": "lint-staged",
     "test": "jest",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "test:e2e": "cd test-e2e/browser && npm run test:react-app && npm run test:vanilla-app",
-    "test:e2e:ci": "cd test-e2e/browser && npm i && npm run cypress:install && npm run test:react-app:ci && npm run test:vanilla-app:ci"
+    "test:e2e:install": "cd test-e2e/mocks && npm i && cd ../nodejs/es6 && npm i && cd ../../browser && npm i && npm run cypress:install && cd react-app && npm i && cd ../vanilla-app && npm i",
+    "test:e2e:browser": "cd test-e2e/browser && npm run test:react-app && npm run test:vanilla-app",
+    "test:e2e:nodejs": "cd test-e2e/nodejs/es6 && npm run test:ci",
+    "test:e2e": "npm run test:e2e:browser && npm run test:e2e:nodejs",
+    "test:e2e:ci": "npm run test:e2e:install && npm run test:e2e"
   },
   "dependencies": {
     "@data-provider/axios": "^1.5.0",

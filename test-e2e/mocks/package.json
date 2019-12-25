@@ -1,0 +1,12 @@
+{
+  "name": "mocks",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "mocks": "mocks-server",
+    "mocks:ci": "mocks-server --cli=false"
+  },
+  "devDependencies": {
+    "@mocks-server/main": "^1.6.0"
+  }
+}

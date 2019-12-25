@@ -1,0 +1,14 @@
+{
+  "name": "node-es6-tests",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "mocks:ci": "cd ../../mocks && npm run mocks:ci",
+    "test": "jest",
+    "test:ci": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about test"
+  },
+  "devDependencies": {
+    "jest": "24.9.0",
+    "start-server-and-test": "^1.10.6"
+  }
+}

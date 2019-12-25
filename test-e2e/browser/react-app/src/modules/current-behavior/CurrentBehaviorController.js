@@ -9,11 +9,7 @@ const currentBehavior = new Selector(
   {
     provider: behaviorsModel,
     query: (query, prevResults) => {
-      return {
-        urlParams: {
-          name: prevResults[0].behavior
-        }
-      };
+      return behaviorsModel.customQueries.findByName(prevResults[0].behavior);
     }
   },
   (settingsResults, behaviorResult) => {
@@ -29,11 +25,9 @@ const currentFixture = new Selector(
   {
     provider: fixturesModel,
     query: (query, prevResults) => {
-      return {
-        urlParams: {
-          id: prevResults[0].fixtures[prevResults[0].fixtures.length - 1]
-        }
-      };
+      return fixturesModel.customQueries.findById(
+        prevResults[0].fixtures[prevResults[0].fixtures.length - 1]
+      );
     }
   },
   (currentBehaviorResult, fixtureResult) => {

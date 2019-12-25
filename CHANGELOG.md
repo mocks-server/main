@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.0.2] - 2019-12-25
+### Fixed
+- Fix export format
+
 ## [1.0.1] - 2019-12-24
 ### Fixed
 - Fix README badges

@@ -1,9 +1,5 @@
-const PATHS = {
-  DEFAULT_BASE_PATH: "/admin",
-  SETTINGS: "/settings",
-  BEHAVIORS: "/behaviors",
-  FIXTURES: "/fixtures",
-  ABOUT: "/about"
-};
-
-module.exports = PATHS;
+export const DEFAULT_BASE_PATH = "/admin";
+export const SETTINGS = "/settings";
+export const BEHAVIORS = "/behaviors";
+export const FIXTURES = "/fixtures";
+export const ABOUT = "/about";

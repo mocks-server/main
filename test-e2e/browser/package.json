@@ -9,12 +9,18 @@
     "cypress:verify": "cypress verify",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "start:react-app": "cd react-app && npm i && npm run build-and-serve",
-    "start:vanilla-app": "cd vanilla-app && npm i && npm run build-and-serve",
+    "start:react-app": "cd react-app && npm run build-and-serve",
+    "start:vanilla-app": "cd vanilla-app && npm run build-and-serve",
     "mocks:ci-and-start:react-app": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about start:react-app",
     "mocks:ci-and-start:vanilla-app": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about start:vanilla-app",
-    "test:react-app:ci": "start-server-and-test mocks:ci-and-start:react-app http-get://localhost:3000 cypress:run",
-    "test:vanilla-app:ci": "start-server-and-test mocks:ci-and-start:vanilla-app http-get://localhost:3000 cypress:run"
+    "test:react-app": "start-server-and-test mocks:ci-and-start:react-app http-get://localhost:3000 cypress:run",
+    "test:vanilla-app": "start-server-and-test mocks:ci-and-start:vanilla-app http-get://localhost:3000 cypress:run",
+    "start:react-app:ci": "cd react-app && npm i && npm run build-and-serve",
+    "start:vanilla-app:ci": "cd vanilla-app && npm i && npm run build-and-serve",
+    "mocks:ci-and-start:react-app:ci": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about start:react-app:ci",
+    "mocks:ci-and-start:vanilla-app:ci": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about start:vanilla-app:ci",
+    "test:react-app:ci": "start-server-and-test mocks:ci-and-start:react-app:ci http-get://localhost:3000 cypress:run",
+    "test:vanilla-app:ci": "start-server-and-test mocks:ci-and-start:vanilla-app:ci http-get://localhost:3000 cypress:run"
   },
   "browserslist": {
     "production": [

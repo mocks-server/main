@@ -28,7 +28,7 @@
     "lint-staged": "lint-staged",
     "test": "jest",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "test:e2e": "cd test-e2e/browser && npm run test:react-app:ci && npm run test:vanilla-app:ci",
+    "test:e2e": "cd test-e2e/browser && npm run test:react-app && npm run test:vanilla-app",
     "test:e2e:ci": "cd test-e2e/browser && npm i && npm run cypress:install && npm run test:react-app:ci && npm run test:vanilla-app:ci"
   },
   "dependencies": {

@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.2.1] - 2019-12-25
+### Changed
+- Upgrade admin-api-paths dependency.
+
 ## [1.2.0] - 2019-12-24
 ### Added
 - Add "adminApiPath" option, which allows to change the new API path ("/admin").

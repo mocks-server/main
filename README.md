@@ -34,7 +34,7 @@ You can now use all next commands:
 Change current behavior:
 
 ```js
-cy.mocksServerChangeBehavior("superadmin-user");
+cy.mocksServerChangeBehavior("admin-user");
 ```
 
 Change delay time:
@@ -73,7 +73,7 @@ config({
 You should usually change the mock server settings in a `before` statement:
 
 ```js
-describe("default user role", () => {
+describe("user with default role", () => {
   before(() => {
     cy.mocksServerChangeBehavior("normal-user");
     cy.visit("/");
@@ -84,9 +84,9 @@ describe("default user role", () => {
   });
 });
 
-describe("super admin user", () => {
+describe("user with admin role", () => {
   before(() => {
-    cy.mocksServerChangeBehavior("superadmin-user");
+    cy.mocksServerChangeBehavior("admin-user");
     cy.visit("/");
   });
 

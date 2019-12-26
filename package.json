@@ -1,0 +1,62 @@
+{
+  "name": "@mocks-server/cypress-commands",
+  "version": "1.0.0",
+  "description": "Extends Cypress' cy commands with methods for administrating mocks-server",
+  "keywords": [
+    "cypress",
+    "commands",
+    "mocks-server",
+    "mock-server",
+    "administration",
+    "admin",
+    "api",
+    "rest",
+    "client"
+  ],
+  "author": "Javier Brea",
+  "license": "MIT",
+  "repository": "https://github.com/mocks-server/cypress-commands",
+  "homepage": "https://www.mocks-server.org",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "index.js",
+    "src"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "lint": "eslint src test",
+    "lint-staged": "lint-staged",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@data-provider/core": "^1.7.0",
+    "@mocks-server/admin-api-client": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.3",
+    "coveralls": "^3.0.9",
+    "eslint": "6.8.0",
+    "eslint-config-prettier": "^6.8.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^3.1.0",
+    "jest": "^24.9.0",
+    "lint-staged": "^9.5.0",
+    "prettier": "^1.19.1",
+    "sinon": "^8.0.1"
+  },
+  "peerDependencies": {
+    "cypress": "^2.1.0 || ^3.0.0"
+  },
+  "lint-staged": {
+    "src/**/*.js": "eslint",
+    "test/**/*.js": "eslint"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint-staged"
+    }
+  }
+}

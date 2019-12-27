@@ -27,9 +27,11 @@
   "main": "index.js",
   "scripts": {
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "lint": "eslint src test index.js jest.config.js",
+    "lint": "eslint src test index.js jest.config.js test-e2e/cypress test-e2e/mocks test-e2e/app-fetch/public",
     "lint-staged": "lint-staged",
-    "test": "jest"
+    "test": "jest",
+    "test-e2e": "cd test-e2e && npm run test:app-fetch",
+    "test-e2e:ci": "cd test-e2e && npm i && npm run cypress:install && cd app-fetch && npm i && cd .. && npm run test:app-fetch"
   },
   "dependencies": {
     "@data-provider/core": "^1.7.0",
@@ -51,6 +53,9 @@
     "cypress": "^2.1.0 || ^3.0.0"
   },
   "lint-staged": {
+    "test-e2e/app-fetch/public/*.js": "eslint",
+    "test-e2e/mocks/**/*.js": "eslint",
+    "test-e2e/cypress/**/*.js": "eslint",
     "jest.config.js": "eslint",
     "index.js": "eslint",
     "src/**/*.js": "eslint",

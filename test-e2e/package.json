@@ -1,0 +1,23 @@
+{
+  "name": "cypress-tests",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "mocks": "mocks-server",
+    "mocks:ci": "mocks-server --cli=false",
+    "cypress:install": "cypress install",
+    "cypress:verify": "cypress verify",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "start:app-fetch": "cd app-fetch && npm run serve",
+    "mocks:ci-and-start:app-fetch": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about start:app-fetch",
+    "test:app-fetch": "start-server-and-test mocks:ci-and-start:app-fetch http-get://localhost:3000 cypress:run"
+  },
+  "devDependencies": {
+    "babel-plugin-module-resolver": "^3.2.0",
+    "@mocks-server/main": "^1.6.1",
+    "@testing-library/cypress": "^5.0.2",
+    "cypress": "3.1.5",
+    "start-server-and-test": "^1.10.6"
+  }
+}

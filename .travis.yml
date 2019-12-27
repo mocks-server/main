@@ -22,6 +22,7 @@ script:
   - npm run lint
   - npm run test
   - npm run coveralls
+  - npm run test-e2e:ci
   - 'if [ -n "$SONAR_TOKEN" ]; then sonar-scanner -Dsonar.login=${SONAR_TOKEN}; fi'
 
 deploy:

@@ -1,4 +1,4 @@
-const { settings } = require("@mocks-server/admin-api-client");
+const { settings, config } = require("@mocks-server/admin-api-client");
 
 const setBehavior = behavior => {
   return settings.update({
@@ -19,5 +19,6 @@ const setSettings = newSettings => {
 module.exports = {
   setBehavior,
   setDelay,
-  setSettings
+  setSettings,
+  config
 };

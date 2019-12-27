@@ -15,16 +15,16 @@ describe("register", () => {
   });
 
   describe("commands", () => {
-    it("should register mocksServerChangeBehavior command", () => {
-      expect(cypressMock.stubs.Commands.add.calledWith("mocksServerChangeBehavior")).toBe(true);
+    it("should register mocksServerSetBehavior command", () => {
+      expect(cypressMock.stubs.Commands.add.calledWith("mocksServerSetBehavior")).toBe(true);
     });
 
-    it("should register mocksServerChangeDelay command", () => {
-      expect(cypressMock.stubs.Commands.add.calledWith("mocksServerChangeDelay")).toBe(true);
+    it("should register mocksServerSetDelay command", () => {
+      expect(cypressMock.stubs.Commands.add.calledWith("mocksServerSetDelay")).toBe(true);
     });
 
-    it("should register mocksServerChangeSettings command", () => {
-      expect(cypressMock.stubs.Commands.add.calledWith("mocksServerChangeSettings")).toBe(true);
+    it("should register mocksServerSetSettings command", () => {
+      expect(cypressMock.stubs.Commands.add.calledWith("mocksServerSetSettings")).toBe(true);
     });
   });
 });

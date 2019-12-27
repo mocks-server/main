@@ -31,22 +31,22 @@ You can now use all next commands:
 
 ### Commands
 
-Change current behavior:
+Set current behavior:
 
 ```js
-cy.mocksServerChangeBehavior("admin-user");
+cy.mocksServerSetBehavior("admin-user");
 ```
 
-Change delay time:
+Set delay time:
 
 ```js
-cy.mocksServerChangeDelay(2000);
+cy.mocksServerSetDelay(2000);
 ```
 
-Change any other setting:
+Set any setting:
 
 ```js
-cy.mocksServerChangeSettings({
+cy.mocksServerSetSettings({
   watch: false,
   delay: 0,
   behavior: "catalog-error"
@@ -75,7 +75,7 @@ You should usually change the mock server settings in a `before` statement:
 ```js
 describe("user with default role", () => {
   before(() => {
-    cy.mocksServerChangeBehavior("normal-user");
+    cy.mocksServerSetBehavior("normal-user");
     cy.visit("/");
   });
 
@@ -86,7 +86,7 @@ describe("user with default role", () => {
 
 describe("user with admin role", () => {
   before(() => {
-    cy.mocksServerChangeBehavior("admin-user");
+    cy.mocksServerSetBehavior("admin-user");
     cy.visit("/");
   });
 

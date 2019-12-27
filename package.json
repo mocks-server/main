@@ -27,7 +27,7 @@
   "main": "index.js",
   "scripts": {
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "lint": "eslint src test",
+    "lint": "eslint src test index.js jest.config.js",
     "lint-staged": "lint-staged",
     "test": "jest"
   },
@@ -51,6 +51,8 @@
     "cypress": "^2.1.0 || ^3.0.0"
   },
   "lint-staged": {
+    "jest.config.js": "eslint",
+    "index.js": "eslint",
     "src/**/*.js": "eslint",
     "test/**/*.js": "eslint"
   },

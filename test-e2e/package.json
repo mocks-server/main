@@ -1,0 +1,34 @@
+{
+  "name": "cypress-tests",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "mocks": "mocks-server",
+    "mocks:ci": "mocks-server --cli=false",
+    "mocks:ci:custom-config": "mocks-server --cli=false --port=3200 --adminApiPath=/foo",
+    "cypress:install": "cypress install",
+    "cypress:verify": "cypress verify",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "cypress:run:custom-config": "cross-env CYPRESS_MOCKS_URL=http://localhost:3200 CYPRESS_MOCKS_ADMIN_API_PATH=/foo cypress run",
+    "start:app-fetch": "cd app-fetch && npm run serve",
+    "start:app-data-provider": "cd app-data-provider && npm run build-and-serve",
+    "start:app-data-provider:custom-config": "cd app-data-provider && cross-env PORT=3200 npm run build-and-serve",
+    "mocks:ci-and-start:app-fetch": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about start:app-fetch",
+    "mocks:ci-and-start:app-data-provider": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about start:app-data-provider",
+    "mocks:ci:custom-config-and-start:app-data-provider:custom-config": "start-server-and-test mocks:ci:custom-config http-get://localhost:3200/foo/about start:app-data-provider:custom-config",
+    "test:app-fetch": "start-server-and-test mocks:ci-and-start:app-fetch http-get://localhost:3000 cypress:run",
+    "test:app-data-provider": "start-server-and-test mocks:ci-and-start:app-data-provider http-get://localhost:3000 cypress:run",
+    "test:app-data-provider-custom-config": "start-server-and-test mocks:ci:custom-config-and-start:app-data-provider:custom-config http-get://localhost:3000 cypress:run:custom-config",
+    "apps:install": "cd app-fetch && npm i && cd ../app-data-provider && npm i",
+    "test:ci": "npm run test:app-fetch && npm run test:app-data-provider && npm run test:app-data-provider-custom-config"
+  },
+  "devDependencies": {
+    "@mocks-server/main": "^1.6.1",
+    "@testing-library/cypress": "^5.0.2",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "cross-env": "^6.0.3",
+    "cypress": "3.1.5",
+    "start-server-and-test": "^1.10.6"
+  }
+}

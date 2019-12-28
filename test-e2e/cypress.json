@@ -1,0 +1,8 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "video": false,
+  "env": {
+    "MOCKS_ADMIN_API_PATH": "/admin",
+    "MOCKS_URL": "http://localhost:3100"
+  }
+}

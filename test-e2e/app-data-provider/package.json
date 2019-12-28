@@ -1,5 +1,5 @@
 {
-  "name": "app-fetch",
+  "name": "app-data-provider",
   "version": "1.0.0",
   "private": true,
   "dependencies": {

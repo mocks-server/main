@@ -57,7 +57,7 @@ cy.mocksServerSetSettings({
 
 By default, the client is configured to request to http://localhost:3100/admin, based in the [default options of @mocks-server][mocks-server-options-url]
 
-You can change both the base url of the "@mocks-server", and the base api path of the "@mocks-server/plugin-admin-api" using the `config` method in your project's `cypress/support/commands.js`:
+You can change both the base url of the "@mocks-server", and the admin api path of the "@mocks-server/plugin-admin-api" using the `config` method in your project's `cypress/support/commands.js`:
 
 ```js
 import { config } from "@mocks-server/cypress-commands";

@@ -10,8 +10,13 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "start:app-fetch": "cd app-fetch && npm run serve",
+    "start:app-data-provider": "cd app-data-provider && npm run build-and-serve",
     "mocks:ci-and-start:app-fetch": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about start:app-fetch",
-    "test:app-fetch": "start-server-and-test mocks:ci-and-start:app-fetch http-get://localhost:3000 cypress:run"
+    "mocks:ci-and-start:app-data-provider": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about start:app-data-provider",
+    "test:app-fetch": "start-server-and-test mocks:ci-and-start:app-fetch http-get://localhost:3000 cypress:run",
+    "test:app-data-provider": "start-server-and-test mocks:ci-and-start:app-data-provider http-get://localhost:3000 cypress:run",
+    "apps:install": "cd app-fetch && npm i && cd ../app-data-provider && npm i",
+    "test:ci": "npm run test:app-fetch && npm run test:app-data-provider"
   },
   "devDependencies": {
     "babel-plugin-module-resolver": "^3.2.0",

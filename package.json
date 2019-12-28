@@ -27,11 +27,11 @@
   "main": "index.js",
   "scripts": {
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "lint": "eslint src test index.js jest.config.js test-e2e/cypress test-e2e/mocks test-e2e/app-fetch/public",
+    "lint": "eslint src test index.js jest.config.js test-e2e/cypress test-e2e/mocks test-e2e/app-fetch/public test-e2e/app-data-provider/src test-e2e/app-data-provider/webpack.config.js",
     "lint-staged": "lint-staged",
     "test": "jest",
-    "test-e2e": "cd test-e2e && npm run test:app-fetch",
-    "test-e2e:ci": "cd test-e2e && npm i && npm run cypress:install && cd app-fetch && npm i && cd .. && npm run test:app-fetch"
+    "test-e2e": "cd test-e2e && npm run test:ci",
+    "test-e2e:ci": "cd test-e2e && npm i && npm run apps:install && npm run test:ci"
   },
   "dependencies": {
     "@data-provider/core": "^1.7.0",
@@ -53,6 +53,8 @@
     "cypress": "^2.1.0 || ^3.0.0"
   },
   "lint-staged": {
+    "test-e2e/app-data-provider/*.js": "eslint",
+    "test-e2e/app-data-provider/src/*.js": "eslint",
     "test-e2e/app-fetch/public/*.js": "eslint",
     "test-e2e/mocks/**/*.js": "eslint",
     "test-e2e/cypress/**/*.js": "eslint",

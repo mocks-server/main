@@ -6,7 +6,7 @@ let $response;
 let $responseTime;
 
 const response = new Api("/api/response", {
-  baseUrl: "http://localhost:3100"
+  baseUrl: `http://localhost:${process.env.PORT}`
 });
 
 const loadResponse = async function() {

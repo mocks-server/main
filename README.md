@@ -63,7 +63,7 @@ You can change both the base url of the "@mocks-server", and the base api path o
 import { config } from "@mocks-server/cypress-commands";
 
 config({
-  apiPath: "/foo-admin",
+  adminApiPath: "/foo-admin",
   baseUrl: "http://my-mocks-server:3200"
 });
 ```

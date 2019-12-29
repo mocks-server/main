@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Remove "booleanString" option type (--cli=false). Use commander boolean type, which is used appending "--no-" to the option name (--no-cli);
 - Remove "onLoadFiles" method
 - Remove "onLoadMocks" method, use "onChangeMocks"
+- Remove the addition of extra properties when reading files. Define a name for the behavior with a mandatory option.
 
 ## [unreleased]
 ### Added
@@ -22,6 +23,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 ## [1.3.0] - 
+### Added
+- Add stop method to plugins.
+- Pass new method "load" to plugins, which allows to load fixtures or behaviors definitions.
+
+### Changed
+- Convert filesHandler into a plugin. Load it always.
 
 ## [1.2.0] - 2019-12-22
 ### Added

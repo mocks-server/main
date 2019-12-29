@@ -11,6 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 module.exports = {
   INIT: "init",
   START: "start",
+  STOP: "stop",
   LOAD_FILES: "load:files",
   CHANGE_FIXTURES: "change:fixtures",
   CHANGE_MOCKS: "change:mocks",

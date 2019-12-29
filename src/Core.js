@@ -10,27 +10,36 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const EventEmitter = require("events");
 
-const { INIT, START, LOAD_FILES, CHANGE_MOCKS, CHANGE_SETTINGS } = require("./eventNames");
-const Server = require("./server/Server");
+const { INIT, START, STOP, LOAD_FILES, CHANGE_MOCKS, CHANGE_SETTINGS } = require("./eventNames");
 const tracer = require("./tracer");
+
+const Orchestrator = require("./Orchestrator");
+
+const Plugins = require("./plugins/Plugins");
+const Server = require("./server/Server");
 const Mocks = require("./mocks/Mocks");
 const Settings = require("./settings/Settings");
-const Plugins = require("./Plugins");
 
 class Core {
   constructor(coreOptions = {}) {
     this._eventEmitter = new EventEmitter();
-    this._settings = new Settings(
-      {
-        onlyProgrammaticOptions: coreOptions.onlyProgrammaticOptions
-      },
-      this._eventEmitter
-    );
-    this._mocks = new Mocks(this._settings, this._eventEmitter, this);
-    this._server = new Server(this._mocks, this._settings, this._eventEmitter, this);
+    this._settings = new Settings(this._eventEmitter, {
+      onlyProgrammaticOptions: coreOptions.onlyProgrammaticOptions
+    });
+
     this._plugins = new Plugins(coreOptions.plugins, this);
+
+    this._mocks = new Mocks(this._eventEmitter, this._settings, this._plugins.loaders, this);
+    this._server = new Server(this._eventEmitter, this._settings, this._mocks, this);
+
+    this._orchestrator = new Orchestrator(this._eventEmitter, this._mocks, this._server);
+
     this._inited = false;
     this._startPluginsPromise = null;
+  }
+
+  _emit(eventName, data) {
+    this._eventEmitter.emit(eventName, data);
   }
 
   async init(options) {
@@ -52,7 +61,6 @@ class Core {
 
   async start() {
     await this.init(); // in case it has not been initializated manually before
-    await this._mocks.start();
     await this._server.start();
     return this._startPlugins().then(() => {
       this._eventEmitter.emit(START, this);
@@ -64,6 +72,13 @@ class Core {
       this._startPluginsPromise = this._plugins.start();
     }
     return this._startPluginsPromise;
+  }
+
+  async _stopPlugins() {
+    if (!this._stopPluginsPromise) {
+      this._stopPluginsPromise = this._plugins.stop();
+    }
+    return this._stopPluginsPromise;
   }
 
   // TODO, deprecate method, use addRouter
@@ -129,9 +144,11 @@ class Core {
 
   // Expose Server methods and getters
 
-  stop() {
-    this._mocks.stop();
-    return this._server.stop();
+  async stop() {
+    await this._server.stop();
+    return this._stopPlugins().then(() => {
+      this._eventEmitter.emit(STOP, this);
+    });
   }
 
   restart() {

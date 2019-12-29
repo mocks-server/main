@@ -21,8 +21,8 @@ const Behavior = require("./Behavior");
 const { CHANGE_MOCKS, CHANGE_FIXTURES, CHANGE_SETTINGS } = require("../eventNames");
 
 class Behaviors {
-  constructor(filesHandler, settings, eventEmitter) {
-    this._filesHandler = filesHandler;
+  constructor(loaders, settings, eventEmitter) {
+    this._loaders = loaders;
     this._settings = settings;
     this._eventEmitter = eventEmitter;
     this._onLoadFixtures = this._onLoadFixtures.bind(this);
@@ -42,7 +42,6 @@ class Behaviors {
   async _loadBehaviors() {
     tracer.debug("Processing behaviors");
     this._collection = await this._getBehaviorsCollection();
-    this._filesHandler.cleanContentsCustomProperties();
     this._behaviors = this._getBehaviorsObject();
     this._names = Object.keys(this._behaviors);
     this._current = this._settings.get("behavior");
@@ -75,7 +74,7 @@ class Behaviors {
   }
 
   _getBehaviorsCollection() {
-    const mocksFolderContents = this._filesHandler.contents;
+    const mocksFolderContents = this._loaders.contents;
     const initBehaviors = [];
     const behaviors = {};
     mocksFolderContents.forEach(object => {
@@ -85,6 +84,7 @@ class Behaviors {
           object
             .init(this._fixturesHandler)
             .then(initedBehavior => {
+              // TODO, remove the addition of extra properties when reading files. Define a name for the behavior.
               initedBehavior.name = initedBehavior.name || object._mocksServer_lastPath;
               behaviors[initedBehavior.name] = initedBehavior.name;
               this._allFixtures.add(initedBehavior.fixtures);
@@ -99,6 +99,12 @@ class Behaviors {
       }
     });
     return Promise.all(initBehaviors).then(initedBehaviors => {
+      // TODO, remove the addition of extra properties when reading files. Define a name for the behavior.
+      mocksFolderContents.forEach(content => {
+        if (content._mocksServer_lastPath) {
+          delete content._mocksServer_lastPath;
+        }
+      });
       return Promise.resolve(compact(initedBehaviors));
     });
   }

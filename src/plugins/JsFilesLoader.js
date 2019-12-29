@@ -17,19 +17,19 @@ const fsExtra = require("fs-extra");
 
 const { map, debounce, flatten, isObject } = require("lodash");
 
-const tracer = require("../tracer");
-const { LOAD_FILES, CHANGE_SETTINGS } = require("../eventNames");
-
 class FilesHandler {
-  constructor(settings, eventEmitter, extraOptions = {}) {
+  constructor(core, load, extraOptions = {}) {
+    this._core = core;
+    this._load = load;
+    this._tracer = core.tracer;
+    this._settings = this._core.settings;
     this._customRequireCache = extraOptions.requireCache;
-    this._settings = settings;
-    this._eventEmitter = eventEmitter;
+
     this._onChangeSettings = this._onChangeSettings.bind(this);
   }
 
   init() {
-    this._eventEmitter.on(CHANGE_SETTINGS, this._onChangeSettings);
+    this._core.onChangeSettings(this._onChangeSettings);
     try {
       this._loadFiles();
       return Promise.resolve();
@@ -44,7 +44,7 @@ class FilesHandler {
 
   stop() {
     if (this._watcher) {
-      tracer.debug("Stopping files watch");
+      this._tracer.debug("Stopping files watch");
       this._watcher.close();
     }
   }
@@ -70,7 +70,9 @@ class FilesHandler {
 
   _resolveFolder(folder) {
     if (!folder) {
-      tracer.error('Please provide a path to the folder containing mocks using the "path" option');
+      this._tracer.error(
+        'Please provide a path to the folder containing mocks using the "path" option'
+      );
       throw Boom.badData("Invalid mocks folder");
     }
     if (path.isAbsolute(folder)) {
@@ -86,7 +88,7 @@ class FilesHandler {
 
   _loadFiles() {
     this._path = this._ensureFolder(this._resolveFolder(this._settings.get("path")));
-    tracer.info(`Loading files from folder ${this._path}`);
+    this._tracer.info(`Loading files from folder ${this._path}`);
     this._cleanRequireCacheFolder();
     this._files = requireAll({
       dirname: this._path,
@@ -98,9 +100,14 @@ class FilesHandler {
         return fileContent;
       }
     });
-    tracer.silly(`Loaded files from folder ${this._path}`);
-    this._contents = this._getContents(this._files);
-    this._eventEmitter.emit(LOAD_FILES);
+    this._tracer.silly(`Loaded files from folder ${this._path}`);
+    this._contents = this._getContents(this._files).map(content => {
+      // TODO, remove the addition of extra properties when reading files. Define a name for the behavior.
+      delete content._mocksServer_isFile;
+      delete content._mocksServer_fullPath;
+      return content;
+    });
+    this._load(this._contents);
   }
 
   _addPathToLoadedObject(object, fullPath, lastPath) {
@@ -138,12 +145,12 @@ class FilesHandler {
     const enabled = this._settings.get("watch");
     this.stop();
     if (enabled) {
-      tracer.debug("Starting files watcher");
+      this._tracer.debug("Starting files watcher");
       this._watcher = watch(
         this._path,
         { recursive: true },
         debounce(() => {
-          tracer.info("Files changed detected");
+          this._tracer.info("File change detected");
           this._loadFiles();
         }),
         1000
@@ -162,22 +169,6 @@ class FilesHandler {
 
   _cache() {
     return this._customRequireCache || require.cache;
-  }
-
-  cleanContentsCustomProperties() {
-    this._contents.forEach(content => {
-      delete content._mocksServer_lastPath;
-      delete content._mocksServer_fullPath;
-      delete content._mocksServer_isFile;
-    });
-  }
-
-  get files() {
-    return this._files;
-  }
-
-  get contents() {
-    return this._contents;
   }
 }
 

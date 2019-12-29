@@ -21,7 +21,7 @@ const middlewares = require("./middlewares");
 const { CHANGE_SETTINGS } = require("../eventNames");
 
 class Server {
-  constructor(mocks, settings, eventEmitter, core) {
+  constructor(eventEmitter, settings, mocks, core) {
     // TODO, deprecate, the core is being passed only to maintain temporarily backward retrocompaitbility with API. This is not published in documentation.
     this._core = core; // Use this reference only to provide it to external functions for customization purposes
     this._mocks = mocks;

@@ -17,9 +17,8 @@ const FixturesGroup = require("./FixturesGroup");
 const { LOAD_FILES, CHANGE_FIXTURES } = require("../eventNames");
 
 class Fixtures {
-  constructor(filesHandler, settings, eventEmitter) {
-    this._filesHandler = filesHandler;
-    this._settings = settings;
+  constructor(loaders, eventEmitter) {
+    this._loaders = loaders;
     this._eventEmitter = eventEmitter;
     this._onLoadFiles = this._onLoadFiles.bind(this);
   }
@@ -55,7 +54,7 @@ class Fixtures {
   }
 
   _getFixtures() {
-    const fixtures = new FixturesGroup(this._filesHandler.contents);
+    const fixtures = new FixturesGroup(this._loaders.contents);
     return fixtures.init(this._fixturesHandler);
   }
 

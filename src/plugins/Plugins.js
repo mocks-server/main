@@ -11,16 +11,24 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const isPromise = require("is-promise");
 const { isObject, isFunction } = require("lodash");
 
-const tracer = require("./tracer");
+const tracer = require("../tracer");
+
+// JsFilesLoader built-in plugin
+const Loaders = require("./Loaders");
+const JsFilesLoader = require("./JsFilesLoader");
 
 class Plugins {
   constructor(plugins, core) {
+    this._loaders = new Loaders(core);
     this._core = core;
     this._plugins = plugins || [];
     this._pluginsInstances = [];
     this._pluginsRegistered = 0;
     this._pluginsInitialized = 0;
     this._pluginsStarted = 0;
+    this._pluginsStopped = 0;
+
+    this._plugins.push(JsFilesLoader);
   }
 
   register() {
@@ -44,6 +52,13 @@ class Plugins {
     });
   }
 
+  stop() {
+    return this._stopPlugins().then(() => {
+      tracer.verbose(`Stopped ${this._pluginsStopped} plugins`);
+      return Promise.resolve();
+    });
+  }
+
   _catchRegisterError(error) {
     console.log("Error registering plugin");
     console.log(error);
@@ -51,19 +66,20 @@ class Plugins {
   }
 
   _registerPlugin(Plugin) {
+    const load = this._loaders.new();
     let pluginInstance;
     if (isObject(Plugin) && !isFunction(Plugin)) {
       pluginInstance = Plugin;
       this._pluginsRegistered++;
     } else {
       try {
-        pluginInstance = new Plugin(this._core);
+        pluginInstance = new Plugin(this._core, load);
         this._pluginsRegistered++;
       } catch (error) {
         if (error.message.includes("is not a constructor")) {
           try {
             const pluginFunc = Plugin;
-            pluginInstance = pluginFunc(this._core) || {};
+            pluginInstance = pluginFunc(this._core, load) || {};
             this._pluginsRegistered++;
           } catch (err) {
             return this._catchRegisterError(err);
@@ -75,7 +91,7 @@ class Plugins {
     }
     if (typeof pluginInstance.register === "function") {
       try {
-        pluginInstance.register(this._core);
+        pluginInstance.register(this._core, load);
       } catch (error) {
         this._catchRegisterError(error);
         this._pluginsRegistered = this._pluginsRegistered - 1;
@@ -168,6 +184,48 @@ class Plugins {
         return this._catchStartError(error, pluginIndex);
       })
       .then(startNextPlugin);
+  }
+
+  _catchStopError(error, index) {
+    this._pluginsStopped = this._pluginsStopped - 1;
+    tracer.error(`Error stopping plugin ${index}`);
+    tracer.debug(error.toString());
+    return Promise.resolve();
+  }
+
+  _stopPlugins(pluginIndex = 0) {
+    if (pluginIndex === this._pluginsInstances.length) {
+      return Promise.resolve();
+    }
+    this._pluginsStopped++;
+    tracer.debug(`Stopping plugin ${pluginIndex}`);
+    const stopNextPlugin = () => {
+      return this._stopPlugins(pluginIndex + 1);
+    };
+
+    if (!this._pluginsInstances[pluginIndex].stop) {
+      this._pluginsStopped = this._pluginsStopped - 1;
+      return stopNextPlugin();
+    }
+    let pluginStop;
+    try {
+      pluginStop = this._pluginsInstances[pluginIndex].stop();
+    } catch (error) {
+      return this._catchStopError(error, pluginIndex).then(stopNextPlugin);
+    }
+
+    if (!isPromise(pluginStop)) {
+      return stopNextPlugin();
+    }
+    return pluginStop
+      .catch(error => {
+        return this._catchStopError(error, pluginIndex);
+      })
+      .then(stopNextPlugin);
+  }
+
+  get loaders() {
+    return this._loaders;
   }
 }
 

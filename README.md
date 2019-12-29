@@ -18,6 +18,7 @@ Please refer to the [project documentation website][website-url]:
 * [Get started](https://www.mocks-server.org/docs/get-started-intro)
 * [Tutorials](https://www.mocks-server.org/docs/tutorials-static)
 * [Configuration](https://www.mocks-server.org/docs/configuration-options)
+* [Customization](https://www.mocks-server.org/docs/advanced-developing-plugins)
 
 ## Contributing
 

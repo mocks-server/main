@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.3.0] - 
+
 ## [1.2.0] - 2019-12-22
 ### Added
 - Add "fixtures" getter, returning all found fixtures in mocks folder, and inside behaviors.

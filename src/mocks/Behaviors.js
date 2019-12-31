@@ -68,9 +68,19 @@ class Behaviors {
     );
   }
 
+  _factorial(number) {
+    if (number <= 1) return 1;
+    return number * this._factorial(number - 1);
+  }
+
+  _areAllCandidatesChecked() {
+    return this._behaviorsCandidates.length > this._factorial(this._loaders.contents.length);
+  }
+
   _initBehavior(index, initedBehaviors) {
     const object = this._behaviorsCandidates[index];
     let behaviorCandidate = object;
+    // Behaviors defined in json file
     if (this._isBehaviorDefinition(object)) {
       if (object.from) {
         const parentBehavior = initedBehaviors.find(
@@ -80,7 +90,9 @@ class Behaviors {
           behaviorCandidate = parentBehavior.extend(object.fixtures);
           behaviorCandidate.name = object.id;
         } else {
-          // TODO, move to the end of candidates list. Implement a check to stop bucle
+          if (!this._areAllCandidatesChecked()) {
+            this._behaviorsCandidates.push(object);
+          }
           return Promise.resolve();
         }
       } else {

@@ -19,7 +19,7 @@ const OrchestratorMocks = require("./Orchestrator.mocks.js");
 const Core = require("../../src/Core");
 const tracer = require("../../src/tracer");
 
-describe("Settings", () => {
+describe("Core", () => {
   let sandbox;
   let settingsMocks;
   let settingsInstance;
@@ -115,12 +115,19 @@ describe("Settings", () => {
       expect(pluginsInstance.start.callCount).toEqual(1);
     });
 
-    it("should start plugins only once", async () => {
+    it("should start plugins only once when called in parallel", async () => {
       core.start();
       core.start();
       core.start();
       await core.start();
       expect(pluginsInstance.start.callCount).toEqual(1);
+    });
+
+    it("should start plugins again", async () => {
+      core.start();
+      await core.start();
+      await core.start();
+      expect(pluginsInstance.start.callCount).toEqual(2);
     });
   });
 
@@ -237,12 +244,21 @@ describe("Settings", () => {
       expect(pluginsInstance.stop.callCount).toEqual(1);
     });
 
-    it("should stop plugins only once", async () => {
+    it("should stop plugins only once when called in parallel", async () => {
       core.stop();
       core.stop();
       core.stop();
       await core.stop();
       expect(pluginsInstance.stop.callCount).toEqual(1);
+    });
+
+    it("should stop plugins again", async () => {
+      core.stop();
+      core.stop();
+      core.stop();
+      await core.stop();
+      await core.stop();
+      expect(pluginsInstance.stop.callCount).toEqual(2);
     });
   });
 

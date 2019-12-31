@@ -11,6 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const CoreMocks = require("../Core.mocks.js");
+const LoadersMocks = require("./Loaders.mocks.js");
 
 const Plugins = require("../../../src/plugins/Plugins");
 const tracer = require("../../../src/tracer");
@@ -23,6 +24,7 @@ describe("Settings", () => {
   let sandbox;
   let coreMocks;
   let coreInstance;
+  let loaderMocks;
   let plugins;
 
   beforeEach(async () => {
@@ -32,10 +34,12 @@ describe("Settings", () => {
     sandbox.stub(tracer, "error");
     sandbox.spy(console, "log");
     coreMocks = new CoreMocks();
+    loaderMocks = new LoadersMocks();
     coreInstance = coreMocks.stubs.instance;
   });
 
   afterEach(() => {
+    loaderMocks.restore();
     sandbox.restore();
     coreMocks.restore();
   });
@@ -319,7 +323,7 @@ describe("Settings", () => {
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
     });
 
-    it("should start object plugins with an init property", async () => {
+    it("should start object plugins with an start property", async () => {
       expect.assertions(2);
       const fooPlugin = {
         start: sinon.spy()
@@ -398,6 +402,105 @@ describe("Settings", () => {
       await plugins.register();
       await plugins.start();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
+    });
+  });
+
+  describe("stop method", () => {
+    const METHOD = "Stopp";
+
+    it("should do nothing if there are no plugins to stop", async () => {
+      plugins = new Plugins(null, coreInstance);
+      await plugins.register();
+      await plugins.stop();
+      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
+    });
+
+    it("should stop object plugins with an stop property", async () => {
+      expect.assertions(2);
+      const fooPlugin = {
+        stop: sinon.spy()
+      };
+      plugins = new Plugins([fooPlugin], coreInstance);
+      await plugins.register();
+      await plugins.stop();
+      expect(fooPlugin.stop.callCount).toEqual(1);
+      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
+    });
+
+    it("should accept stop methods non returning a Promise", async () => {
+      expect.assertions(1);
+      const fooPlugin = {
+        stop: () => true
+      };
+      const fooPlugin2 = {
+        stop: () => Promise.resolve()
+      };
+      plugins = new Plugins([fooPlugin, fooPlugin2], coreInstance);
+      await plugins.register();
+      await plugins.stop();
+      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
+    });
+
+    it("should catch stop method errors", async () => {
+      expect.assertions(1);
+      const fooPlugin = {
+        stop: () => {
+          throw new Error();
+        }
+      };
+      const fooPlugin2 = {
+        stop: () => Promise.resolve()
+      };
+      const fooPlugin3 = {
+        stop: () => Promise.resolve()
+      };
+      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      await plugins.register();
+      await plugins.stop();
+      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
+    });
+
+    it("should catch stop method rejected", async () => {
+      expect.assertions(1);
+      const fooPlugin = {
+        stop: () => {
+          return new Promise((resolve, reject) => {
+            reject(new Error());
+          });
+        }
+      };
+      const fooPlugin2 = {
+        stop: () => Promise.resolve()
+      };
+      const fooPlugin3 = {
+        stop: () => Promise.resolve()
+      };
+      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      await plugins.register();
+      await plugins.stop();
+      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
+    });
+
+    it("should accept plugins with no stop method", async () => {
+      expect.assertions(1);
+      const fooPlugin = {};
+      const fooPlugin2 = {
+        stop: () => Promise.resolve()
+      };
+      const fooPlugin3 = {
+        stop: () => Promise.resolve()
+      };
+      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      await plugins.register();
+      await plugins.stop();
+      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
+    });
+  });
+
+  describe("loaders getter", () => {
+    it("should return loaders instance", () => {
+      plugins = new Plugins(null, coreInstance);
+      expect(plugins.loaders).toEqual(loaderMocks.stubs.instance);
     });
   });
 });

@@ -55,7 +55,7 @@ class Plugins {
 
   stop() {
     return this._stopPlugins().then(() => {
-      tracer.verbose(`Stopped ${this._pluginsStopped} plugins`);
+      tracer.verbose(`Stopped ${this._pluginsStopped} plugins without errors`);
       return Promise.resolve();
     });
   }

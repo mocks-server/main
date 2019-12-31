@@ -39,6 +39,7 @@ class Fixtures {
   async processFixtures() {
     tracer.debug("Processing fixtures");
     this._fixtures = await this._getFixtures();
+    tracer.verbose(`Processed ${this._fixtures.collection.length} fixtures`);
     return Promise.resolve();
   }
 

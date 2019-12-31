@@ -13,7 +13,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const Boom = require("@hapi/boom");
 
-const { compact } = require("lodash");
+const { compact, uniqBy } = require("lodash");
 
 const tracer = require("../tracer");
 const Behavior = require("./Behavior");
@@ -31,7 +31,7 @@ class Behaviors {
   async init(fixturesHandler, allFixtures) {
     this._fixturesHandler = fixturesHandler;
     this._allFixtures = allFixtures;
-    await this._noBehavior.init(this._fixturesHandler);
+    await this._noBehavior.init(this._fixturesHandler, allFixtures);
     return this.processBehaviors();
   }
 
@@ -42,7 +42,7 @@ class Behaviors {
     this._names = Object.keys(this._behaviors);
     this._current = this._settings.get("behavior");
 
-    tracer.verbose(`Loaded ${this._collection.length} behaviors`);
+    tracer.verbose(`Processed ${this._collection.length} behaviors`);
 
     try {
       this._checkCurrent(this._current);
@@ -59,18 +59,32 @@ class Behaviors {
     return Promise.resolve();
   }
 
+  _isBehaviorDefinition(object) {
+    return !!(
+      !(object instanceof Behavior) &&
+      object.fixtures &&
+      Array.isArray(object.fixtures) &&
+      object.id
+    );
+  }
+
   _getBehaviorsCollection() {
     const mocksFolderContents = this._loaders.contents;
     const initBehaviors = [];
     const behaviors = {};
     mocksFolderContents.forEach(object => {
-      // TODO, register more behavior parsers
-      if (object.isMocksServerBehavior) {
+      let behaviorCandidate = object;
+      if (this._isBehaviorDefinition(object)) {
+        behaviorCandidate = new Behavior(object.fixtures);
+        behaviorCandidate.name = object.id;
+      }
+      // Behaviors instantiated directly in JS files
+      if (behaviorCandidate.isBehaviorInstance) {
         initBehaviors.push(
-          object
-            .init(this._fixturesHandler)
+          behaviorCandidate
+            .init(this._fixturesHandler, this._allFixtures)
             .then(initedBehavior => {
-              // TODO, remove the addition of extra properties when reading files. Define a name for the behavior.
+              // TODO, remove the addition of extra properties when reading files. Define a mandatory id for the behavior.
               initedBehavior.name = initedBehavior.name || object._mocksServer_lastPath;
               behaviors[initedBehavior.name] = initedBehavior.name;
               this._allFixtures.add(initedBehavior.fixtures);
@@ -85,13 +99,13 @@ class Behaviors {
       }
     });
     return Promise.all(initBehaviors).then(initedBehaviors => {
-      // TODO, remove the addition of extra properties when reading files. Define a name for the behavior.
+      // TODO, remove the addition of extra properties when reading files. Define mandatory id for the behavior.
       mocksFolderContents.forEach(content => {
         if (content._mocksServer_lastPath) {
           delete content._mocksServer_lastPath;
         }
       });
-      return Promise.resolve(compact(initedBehaviors));
+      return Promise.resolve(uniqBy(compact(initedBehaviors), behavior => behavior.name));
     });
   }
 

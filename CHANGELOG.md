@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Pass new method "load" to plugins, which allows to load fixtures or behaviors definitions.
 - Add "restartServer" method, which should be used instead of "restart".
 - Accept "displayName" property in plugins, which improves traces.
+- Accept "id" property in fixtures.
 
 ### Changed
 - Convert filesHandler into a plugin. Load it always.

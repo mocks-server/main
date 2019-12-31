@@ -33,6 +33,9 @@ class FixturesHandler {
     const addedFixtures = [];
     return compact(
       fixtures.map(fixture => {
+        if (fixture && fixture.isFixtureHandler) {
+          return fixture;
+        }
         const Handler = this._getHandler(fixture);
         if (Handler) {
           tracer.debug(`Creating fixture with handler ${Handler.displayName}`);
@@ -40,6 +43,7 @@ class FixturesHandler {
           if (addedFixtures.find(existingFixture => existingFixture.id === newFixture.id)) {
             return null;
           }
+          newFixture.isFixtureHandler = true;
           addedFixtures.push(newFixture);
           return newFixture;
         } else {

@@ -24,8 +24,8 @@ class Behavior {
     return new Behavior(this._initialFixtures.concat(fixtures), this);
   }
 
-  async init(fixturesHandler) {
-    await this._fixtures.init(fixturesHandler);
+  async init(fixturesHandler, allFixtures) {
+    await this._fixtures.init(fixturesHandler, allFixtures);
     return Promise.resolve(this);
   }
 
@@ -33,7 +33,7 @@ class Behavior {
     return this._fixtures.collection.find(fixture => fixture.requestMatch(req));
   }
 
-  get isMocksServerBehavior() {
+  get isBehaviorInstance() {
     return true;
   }
 

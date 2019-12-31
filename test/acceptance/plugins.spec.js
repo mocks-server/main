@@ -112,17 +112,17 @@ describe("plugins", () => {
         });
 
         it("should inform plugin when settings are changed", async () => {
-          expect(changeSettingsSpy.getCall(0).args[0]).toEqual({
+          expect(changeSettingsSpy.getCall(1).args[0]).toEqual({
             path: fixturesFolder("files-modification")
           });
         });
 
         it("should inform plugin when files are loaded", async () => {
-          expect(filesLoadedSpy.callCount).toEqual(1);
+          expect(filesLoadedSpy.callCount).toEqual(2);
         });
 
         it("should inform plugin when mocks are loaded", async () => {
-          expect(mocksLoadedSpy.callCount).toEqual(1);
+          expect(mocksLoadedSpy.callCount).toEqual(2);
         });
       });
     });

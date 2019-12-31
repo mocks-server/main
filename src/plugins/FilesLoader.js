@@ -18,9 +18,9 @@ const fsExtra = require("fs-extra");
 const { map, debounce, flatten, isObject } = require("lodash");
 
 class FilesHandler {
-  constructor(core, load, extraOptions = {}) {
+  constructor(core, methods, extraOptions = {}) {
     this._core = core;
-    this._load = load;
+    this._load = methods.loadMocks;
     this._tracer = core.tracer;
     this._settings = this._core.settings;
     this._customRequireCache = extraOptions.requireCache;

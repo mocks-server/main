@@ -11,20 +11,20 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 const CoreMocks = require("../Core.mocks.js");
-const FilesHandlerMocks = require("./FilesHandler.mocks.js");
-const FixturesHandler = require("../../../../src/mocks/FixturesHandler");
-const FixtureHandler = require("../../../../src/mocks/FixtureHandler");
-const Behaviors = require("../../../../src/mocks/Behaviors");
+const LoadersMocks = require("../plugins/Loaders.mocks");
+const FixturesHandler = require("../../../src/mocks/FixturesHandler");
+const FixtureHandler = require("../../../src/mocks/FixtureHandler");
+const Behaviors = require("../../../src/mocks/Behaviors");
 
-const tracer = require("../../../../src/tracer");
-const Fixtures = require("../../../../src/mocks/Fixtures");
+const tracer = require("../../../src/tracer");
+const Fixtures = require("../../../src/mocks/Fixtures");
 
 describe("Fixtures", () => {
   let sandbox;
   let coreMocks;
   let coreInstance;
-  let filesHandlerMocks;
-  let filesHandlerInstance;
+  let loadersMocks;
+  let loadersInstance;
   let fixturesHandler;
   let fixtures;
 
@@ -32,21 +32,17 @@ describe("Fixtures", () => {
     sandbox = sinon.createSandbox();
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
-    filesHandlerMocks = new FilesHandlerMocks();
-    filesHandlerInstance = filesHandlerMocks.stubs.instance;
+    loadersMocks = new LoadersMocks();
+    loadersInstance = loadersMocks.stubs.instance;
     fixturesHandler = new FixturesHandler();
     fixturesHandler.addHandler(FixtureHandler);
     sandbox.stub(tracer, "debug");
-    fixtures = new Fixtures(
-      filesHandlerInstance,
-      coreInstance.settings,
-      coreInstance._eventEmitter
-    );
+    fixtures = new Fixtures(loadersInstance, coreInstance._eventEmitter);
   });
 
   afterEach(() => {
     sandbox.restore();
-    filesHandlerMocks.restore();
+    loadersMocks.restore();
     coreMocks.restore();
   });
 
@@ -61,23 +57,22 @@ describe("Fixtures", () => {
   describe("addFromBehaviors method", () => {
     let originalContents;
     beforeEach(() => {
-      originalContents = filesHandlerInstance.contents;
-      filesHandlerInstance.contents.push(filesHandlerInstance.contents[0]._initialFixtures[0]);
+      originalContents = loadersInstance.contents;
+      loadersInstance.contents.push(loadersInstance.contents[0]._initialFixtures[0]);
     });
 
     afterEach(() => {
-      filesHandlerInstance.contents = originalContents;
+      loadersInstance.contents = originalContents;
     });
 
     it("should add fixtures existing in behaviors and not exiting in fixtures collection", async () => {
       expect.assertions(2);
       const behaviors = new Behaviors(
-        filesHandlerInstance,
+        loadersInstance,
         coreInstance.settings,
         coreInstance._eventEmitter
       );
       await fixtures.init(fixturesHandler);
-      await filesHandlerInstance.init();
       expect(fixtures.count).toEqual(1);
       await behaviors.init(fixturesHandler, fixtures);
       expect(fixtures.count).toEqual(2);

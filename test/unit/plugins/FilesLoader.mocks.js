@@ -9,11 +9,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
-const Behavior = require("../../../../src/mocks/Behavior");
+const Behavior = require("../../../src/mocks/Behavior");
 
-jest.mock("../../../../src/mocks/FilesHandler");
+jest.mock("../../../src/plugins/FilesLoader");
 
-const FilesHandler = require("../../../../src/mocks/FilesHandler");
+const FilesLoader = require("../../../src/plugins/FilesLoader");
 
 const INITIAL_FILES = {
   file1: {
@@ -82,12 +82,12 @@ class Mock {
       cleanContentsCustomProperties: this._sandbox.stub()
     };
 
-    FilesHandler.mockImplementation(() => this._stubs);
+    FilesLoader.mockImplementation(() => this._stubs);
   }
 
   get stubs() {
     return {
-      Constructor: FilesHandler,
+      Constructor: FilesLoader,
       instance: this._stubs
     };
   }

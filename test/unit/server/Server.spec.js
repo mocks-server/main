@@ -12,12 +12,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const http = require("http");
 
-const LibsMocks = require("../../Libs.mocks.js");
+const LibsMocks = require("../Libs.mocks.js");
 const MocksMocks = require("../mocks/Mocks.mocks.js");
 const CoreMocks = require("../Core.mocks.js");
 
-const Server = require("../../../../src/server/Server");
-const tracer = require("../../../../src/tracer");
+const Server = require("../../../src/server/Server");
+const tracer = require("../../../src/tracer");
 
 const wait = (time = 1000) => {
   return new Promise(resolve => {
@@ -49,9 +49,9 @@ describe("Server", () => {
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
     server = new Server(
-      mocksMocks.stubs.instance,
+      coreInstance._eventEmitter,
       coreInstance.settings,
-      coreInstance._eventEmitter
+      mocksMocks.stubs.instance
     );
     expect.assertions(1);
     libsMocks.stubs.http.createServer.onListen.delay(200);

@@ -11,36 +11,37 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../../src/Plugins");
+jest.mock("../../../src/settings/Options");
 
-const Plugins = require("../../../src/Plugins");
+const Options = require("../../../src/settings/Options");
 
 class Mock {
   constructor() {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      init: this._sandbox.stub().resolves(),
-      register: this._sandbox.stub().resolves(),
-      start: this._sandbox.stub().resolves()
+      init: this._sandbox.stub(),
+      addCustom: this._sandbox.stub(),
+      getValidOptionName: this._sandbox.stub(),
+      checkValidOptionName: this._sandbox.stub(),
+      options: {
+        log: "foo-log-level",
+        behavior: "foo-behavior"
+      }
     };
 
-    Plugins.mockImplementation(() => this._stubs);
+    Options.mockImplementation(() => this._stubs);
   }
 
   get stubs() {
     return {
-      Constructor: Plugins,
+      Constructor: Options,
       instance: this._stubs
     };
   }
 
   restore() {
     this._sandbox.restore();
-  }
-
-  reset() {
-    this._sandbox.reset();
   }
 }
 

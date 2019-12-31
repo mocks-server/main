@@ -13,8 +13,8 @@ const sinon = require("sinon");
 
 const CommandLineArgumentsMocks = require("./CommandLineArguments.mocks.js");
 
-const Options = require("../../../../src/settings/Options");
-const tracer = require("../../../../src/tracer");
+const Options = require("../../../src/settings/Options");
+const tracer = require("../../../src/tracer");
 
 describe("options", () => {
   let sandbox;

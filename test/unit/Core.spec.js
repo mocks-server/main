@@ -13,10 +13,10 @@ const sinon = require("sinon");
 const SettingsMocks = require("./settings/Settings.mocks.js");
 const MocksMocks = require("./mocks/Mocks.mocks.js");
 const ServerMocks = require("./server/Server.mocks.js");
-const PluginsMocks = require("./Plugins.mocks.js");
+const PluginsMocks = require("./plugins/Plugins.mocks.js");
 
-const Core = require("../../../src/Core");
-const tracer = require("../../../src/tracer");
+const Core = require("../../src/Core");
+const tracer = require("../../src/tracer");
 
 describe("Settings", () => {
   let sandbox;
@@ -99,11 +99,6 @@ describe("Settings", () => {
     it("should not init if it has been done before", async () => {
       await core.start();
       expect(pluginsInstance.register.callCount).toEqual(1);
-    });
-
-    it("should start mocks", async () => {
-      await core.start();
-      expect(mocksInstance.start.callCount).toEqual(1);
     });
 
     it("should start server", async () => {
@@ -231,6 +226,19 @@ describe("Settings", () => {
     it("should stop server", async () => {
       await core.stop();
       expect(serverInstance.stop.callCount).toEqual(1);
+    });
+
+    it("should stop plugins", async () => {
+      await core.stop();
+      expect(pluginsInstance.stop.callCount).toEqual(1);
+    });
+
+    it("should stop plugins only once", async () => {
+      core.stop();
+      core.stop();
+      core.stop();
+      await core.stop();
+      expect(pluginsInstance.stop.callCount).toEqual(1);
     });
   });
 

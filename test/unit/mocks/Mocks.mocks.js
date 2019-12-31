@@ -1,6 +1,5 @@
 /*
 Copyright 2019 Javier Brea
-Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -11,26 +10,35 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../../../src/settings/CommandLineArguments");
+jest.mock("../../../src/mocks/Mocks");
 
-const CommandLineArguments = require("../../../../src/settings/CommandLineArguments");
+const Mocks = require("../../../src/mocks/Mocks");
 
 class Mock {
   constructor() {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      init: this._sandbox.stub(),
-      addCustom: this._sandbox.stub(),
-      options: {}
+      init: this._sandbox.stub().resolves(),
+      start: this._sandbox.stub().resolves(),
+      stop: this._sandbox.stub(),
+      addFixturesHandler: this._sandbox.stub(),
+      behaviors: {
+        current: {
+          getRequestMatchingFixture: this._sandbox.stub()
+        }
+      },
+      fixtures: {
+        collection: []
+      }
     };
 
-    CommandLineArguments.mockImplementation(() => this._stubs);
+    Mocks.mockImplementation(() => this._stubs);
   }
 
   get stubs() {
     return {
-      Constructor: CommandLineArguments,
+      Constructor: Mocks,
       instance: this._stubs
     };
   }

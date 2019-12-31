@@ -38,10 +38,6 @@ class Core {
     this._startPluginsPromise = null;
   }
 
-  _emit(eventName, data) {
-    this._eventEmitter.emit(eventName, data);
-  }
-
   async init(options) {
     if (this._inited) {
       return Promise.resolve();
@@ -113,6 +109,7 @@ class Core {
 
   // TODO, deprecate method
   onLoadFiles(cb) {
+    tracer.deprecationWarn("onLoadFiles", "onChangeMocks");
     const removeCallback = () => {
       this._eventEmitter.removeListener(LOAD_FILES, cb);
     };

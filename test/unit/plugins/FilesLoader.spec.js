@@ -18,11 +18,11 @@ jest.mock("require-all");
 
 const requireAll = require("require-all");
 
-const LibsMocks = require("../../Libs.mocks.js");
+const LibsMocks = require("../Libs.mocks.js");
 const CoreMocks = require("../Core.mocks.js");
 
-const FilesHandler = require("../../../../src/mocks/FilesHandler");
-const tracer = require("../../../../src/tracer");
+const FilesLoader = require("../../../src/plugins/FilesLoader");
+const tracer = require("../../../src/tracer");
 
 const wait = () => {
   return new Promise(resolve => {
@@ -32,7 +32,7 @@ const wait = () => {
   });
 };
 
-describe("Behaviors", () => {
+describe("FilesLoader", () => {
   const fooRequireCache = {
     "foo-path": {
       id: "foo-path",
@@ -151,8 +151,9 @@ describe("Behaviors", () => {
   let coreMocks;
   let coreInstance;
   let requireCache;
-  let filesHandler;
+  let filesLoader;
   let libsMocks;
+  let pluginMethods;
 
   beforeEach(async () => {
     requireCache = cloneDeep(fooRequireCache);
@@ -160,105 +161,33 @@ describe("Behaviors", () => {
     sandbox.stub(Boom, "badData").returns(fooBoomError);
     coreMocks = new CoreMocks();
     libsMocks = new LibsMocks();
+    pluginMethods = {
+      loadMocks: sandbox.stub()
+    };
     coreInstance = coreMocks.stubs.instance;
     sandbox.stub(tracer, "error");
     sandbox.stub(tracer, "info");
     sandbox.stub(tracer, "debug");
     requireAll.mockImplementation(() => fooFiles);
-    filesHandler = new FilesHandler(coreInstance.settings, coreInstance._eventEmitter, {
+    filesLoader = new FilesLoader(coreInstance, pluginMethods, {
       requireCache
     });
     sandbox.stub(path, "isAbsolute").returns(true);
     coreInstance.settings.get.withArgs("path").returns("foo-path");
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await filesLoader.stop();
     libsMocks.restore();
     sandbox.restore();
     coreMocks.restore();
   });
 
   describe("when initialized", () => {
-    it("should require all files from mocks folders calculating it from cwd", async () => {
-      path.isAbsolute.returns(false);
-      await filesHandler.init();
-      expect(requireAll.mock.calls[0][0].dirname).toEqual(path.resolve(process.cwd(), "foo-path"));
-    });
-
-    it("should require all files from exactly mocks folder if it is absolute", async () => {
-      await filesHandler.init();
-      expect(requireAll.mock.calls[0][0].dirname).toEqual("foo-path");
-    });
-
-    it("should require all files adding a _mocksServer_isFile property to their content", async () => {
-      await filesHandler.init();
-      expect(requireAll.mock.calls[0][0].resolve({ foo: "foo" })).toEqual({
-        foo: "foo",
-        _mocksServer_isFile: true
-      });
-    });
-
-    it("should ensure that defined mocks folder exists", async () => {
-      await filesHandler.init();
-      expect(libsMocks.stubs.fsExtra.ensureDirSync.calledWith("foo-path")).toEqual(true);
-    });
-
-    it("should throw an error if mocks folder is not defined", async () => {
-      expect.assertions(1);
-      try {
-        coreInstance.settings.get.withArgs("path").returns(undefined);
-        await filesHandler.init();
-      } catch (error) {
-        expect(error).toEqual(fooBoomError);
-      }
-    });
-
-    it("should clean require cache for mocks folder", async () => {
-      const fooCachePath = "foo-path";
-
-      expect(requireCache[fooCachePath]).toBeDefined();
-      await filesHandler.init();
-      expect(requireCache[fooCachePath]).not.toBeDefined();
-    });
-
-    it("should require cache in order to found the mocks folder", async () => {
-      filesHandler = new FilesHandler(coreInstance.settings, coreInstance._eventEmitter);
-      sandbox.spy(filesHandler, "_cleanRequireCache");
-      await filesHandler.init();
-      // it seems like require cache is empty in jest environment
-      expect(filesHandler._cleanRequireCache.callCount).toEqual(0);
-    });
-
-    it("should clean require cache for mocks folder childs", async () => {
-      const fooCachePath = "foo-path/foo-children";
-
-      expect(requireCache[fooCachePath]).toBeDefined();
-      await filesHandler.init();
-      expect(requireCache[fooCachePath]).not.toBeDefined();
-    });
-
-    it("should clean require cache for mocks folder childs recursively", async () => {
-      const fooCachePath = "foo-path/foo-children-2";
-
-      expect(requireCache[fooCachePath]).toBeDefined();
-      await filesHandler.init();
-      expect(requireCache[fooCachePath]).not.toBeDefined();
-    });
-  });
-
-  describe("files getter", () => {
-    it("should return current files", async () => {
-      await filesHandler.init();
-      expect(filesHandler.files).toEqual(fooFiles);
-    });
-  });
-
-  describe("contents getter", () => {
-    it("should return current files contents and file properties in a flatten array", async () => {
-      await filesHandler.init();
-      expect(filesHandler.contents).toEqual([
+    it("should call to loadMocks method with current files contents in a flatten array", async () => {
+      await filesLoader.init();
+      expect(pluginMethods.loadMocks.getCall(0).args[0]).toEqual([
         {
-          _mocksServer_fullPath: "/file1/behavior1",
           _mocksServer_lastPath: "behavior1",
           fixtures: [
             {
@@ -288,11 +217,8 @@ describe("Behaviors", () => {
           }
         },
         {
-          _mocksServer_isFile: true,
-          _mocksServer_fullPath: "/file1",
           _mocksServer_lastPath: "file1",
           behavior1: {
-            _mocksServer_fullPath: "/file1/behavior1",
             _mocksServer_lastPath: "behavior1",
             fixtures: [
               {
@@ -323,7 +249,6 @@ describe("Behaviors", () => {
           }
         },
         {
-          _mocksServer_fullPath: "/file2/behavior2",
           _mocksServer_lastPath: "behavior2",
           fixtures: [
             {
@@ -353,11 +278,8 @@ describe("Behaviors", () => {
           }
         },
         {
-          _mocksServer_isFile: true,
-          _mocksServer_fullPath: "/file2",
           _mocksServer_lastPath: "file2",
           behavior2: {
-            _mocksServer_fullPath: "/file2/behavior2",
             _mocksServer_lastPath: "behavior2",
             fixtures: [
               {
@@ -388,163 +310,87 @@ describe("Behaviors", () => {
           }
         },
         {
-          _mocksServer_isFile: true,
-          _mocksServer_fullPath: "/folder/folder2/file",
           _mocksServer_lastPath: "file",
           fooProperty: ""
         },
         {
-          _mocksServer_fullPath: "/folder/folder2/file2/fooProperty",
           _mocksServer_lastPath: "fooProperty",
           foo: "foo"
         },
         {
-          _mocksServer_isFile: true,
-          _mocksServer_fullPath: "/folder/folder2/file2",
           _mocksServer_lastPath: "file2",
           fooProperty: {
-            _mocksServer_fullPath: "/folder/folder2/file2/fooProperty",
             _mocksServer_lastPath: "fooProperty",
             foo: "foo"
           }
         }
       ]);
     });
-  });
 
-  describe("contents getter after calling cleanContentsCustomProperties method", () => {
-    it("should return current files contents and file properties in a flatten array wihtout custom properties", async () => {
-      await filesHandler.init();
-      filesHandler.cleanContentsCustomProperties();
-      expect(filesHandler.contents).toEqual([
-        {
-          fixtures: [
-            {
-              url: "/api/foo/foo-uri",
-              method: "GET",
-              response: {
-                status: 200,
-                body: {
-                  fooProperty: "foo"
-                }
-              }
-            }
-          ],
-          totalFixtures: 1,
-          methods: {
-            POST: {
-              "/api/foo/foo-uri": {
-                route: "foo-route-parser",
-                response: {
-                  status: 200,
-                  body: {
-                    fooProperty: "foo"
-                  }
-                }
-              }
-            }
-          }
-        },
-        {
-          behavior1: {
-            fixtures: [
-              {
-                url: "/api/foo/foo-uri",
-                method: "GET",
-                response: {
-                  status: 200,
-                  body: {
-                    fooProperty: "foo"
-                  }
-                }
-              }
-            ],
-            totalFixtures: 1,
-            methods: {
-              POST: {
-                "/api/foo/foo-uri": {
-                  route: "foo-route-parser",
-                  response: {
-                    status: 200,
-                    body: {
-                      fooProperty: "foo"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        {
-          fixtures: [
-            {
-              url: "/api/foo/foo-uri-2",
-              method: "POST",
-              response: {
-                status: 422,
-                body: {
-                  fooProperty2: "foo2"
-                }
-              }
-            }
-          ],
-          totalFixtures: 1,
-          methods: {
-            POST: {
-              "/api/foo/foo-uri-2": {
-                route: "foo-route-parser",
-                response: {
-                  status: 422,
-                  body: {
-                    fooProperty2: "foo2"
-                  }
-                }
-              }
-            }
-          }
-        },
-        {
-          behavior2: {
-            fixtures: [
-              {
-                url: "/api/foo/foo-uri-2",
-                method: "POST",
-                response: {
-                  status: 422,
-                  body: {
-                    fooProperty2: "foo2"
-                  }
-                }
-              }
-            ],
-            totalFixtures: 1,
-            methods: {
-              POST: {
-                "/api/foo/foo-uri-2": {
-                  route: "foo-route-parser",
-                  response: {
-                    status: 422,
-                    body: {
-                      fooProperty2: "foo2"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        {
-          fooProperty: ""
-        },
-        {
-          foo: "foo"
-        },
-        {
-          fooProperty: {
-            foo: "foo"
-          }
-        }
-      ]);
+    it("should require all files from mocks folders calculating it from cwd", async () => {
+      path.isAbsolute.returns(false);
+      await filesLoader.init();
+      expect(requireAll.mock.calls[0][0].dirname).toEqual(path.resolve(process.cwd(), "foo-path"));
+    });
+
+    it("should require all files from exactly mocks folder if it is absolute", async () => {
+      await filesLoader.init();
+      expect(requireAll.mock.calls[0][0].dirname).toEqual("foo-path");
+    });
+
+    it("should require all files adding a _mocksServer_isFile property to their content", async () => {
+      await filesLoader.init();
+      expect(requireAll.mock.calls[0][0].resolve({ foo: "foo" })).toEqual({
+        foo: "foo",
+        _mocksServer_isFile: true
+      });
+    });
+
+    it("should ensure that defined mocks folder exists", async () => {
+      await filesLoader.init();
+      expect(libsMocks.stubs.fsExtra.ensureDirSync.calledWith("foo-path")).toEqual(true);
+    });
+
+    it("should throw an error if mocks folder is not defined", async () => {
+      expect.assertions(1);
+      try {
+        coreInstance.settings.get.withArgs("path").returns(undefined);
+        await filesLoader.init();
+      } catch (error) {
+        expect(error).toEqual(fooBoomError);
+      }
+    });
+
+    it("should clean require cache for mocks folder", async () => {
+      const fooCachePath = "foo-path";
+
+      expect(requireCache[fooCachePath]).toBeDefined();
+      await filesLoader.init();
+      expect(requireCache[fooCachePath]).not.toBeDefined();
+    });
+
+    it("should require cache in order to found the mocks folder", async () => {
+      filesLoader = new FilesLoader(coreInstance, pluginMethods);
+      sandbox.spy(filesLoader, "_cleanRequireCache");
+      await filesLoader.init();
+      // it seems like require cache is empty in jest environment
+      expect(filesLoader._cleanRequireCache.callCount).toEqual(0);
+    });
+
+    it("should clean require cache for mocks folder childs", async () => {
+      const fooCachePath = "foo-path/foo-children";
+
+      expect(requireCache[fooCachePath]).toBeDefined();
+      await filesLoader.init();
+      expect(requireCache[fooCachePath]).not.toBeDefined();
+    });
+
+    it("should clean require cache for mocks folder childs recursively", async () => {
+      const fooCachePath = "foo-path/foo-children-2";
+
+      expect(requireCache[fooCachePath]).toBeDefined();
+      await filesLoader.init();
+      expect(requireCache[fooCachePath]).not.toBeDefined();
     });
   });
 
@@ -552,16 +398,16 @@ describe("Behaviors", () => {
     describe("when starting files watch", () => {
       it("should do nothing if watch was not enabled", async () => {
         coreInstance.settings.get.withArgs("watch").returns(false);
-        await filesHandler.init();
-        await filesHandler.start();
+        await filesLoader.init();
+        await filesLoader.start();
         expect(libsMocks.stubs.watch.callCount).toEqual(0);
       });
 
       it("should call to close watcher if watch was enabled previously", async () => {
         coreInstance.settings.get.withArgs("watch").returns(true);
-        await filesHandler.init();
-        await filesHandler.start();
-        await filesHandler.start();
+        await filesLoader.init();
+        await filesLoader.start();
+        await filesLoader.start();
         expect(libsMocks.stubs.watchClose.callCount).toEqual(1);
       });
     });
@@ -570,8 +416,8 @@ describe("Behaviors", () => {
   describe("when a file is changed", () => {
     it("should load files again", async () => {
       coreInstance.settings.get.withArgs("watch").returns(true);
-      await filesHandler.init();
-      await filesHandler.start();
+      await filesLoader.init();
+      await filesLoader.start();
       libsMocks.stubs.watch.getCall(0).args[2]();
       await wait();
       expect(requireAll.mock.calls.length).toEqual(2);
@@ -580,8 +426,8 @@ describe("Behaviors", () => {
 
   describe("when core settings change", () => {
     it("should load files again if path setting is changed", async () => {
-      await filesHandler.init();
-      coreInstance._eventEmitter.on.getCall(0).args[1]({
+      await filesLoader.init();
+      coreInstance.onChangeSettings.getCall(0).args[0]({
         path: "foo-path"
       });
       await wait();
@@ -590,9 +436,9 @@ describe("Behaviors", () => {
 
     it("should enable watch again if path setting is changed", async () => {
       coreInstance.settings.get.withArgs("watch").returns(true);
-      await filesHandler.init();
-      await filesHandler.start();
-      coreInstance._eventEmitter.on.getCall(0).args[1]({
+      await filesLoader.init();
+      await filesLoader.start();
+      coreInstance.onChangeSettings.getCall(0).args[0]({
         path: "foo-path"
       });
       await wait();
@@ -601,10 +447,10 @@ describe("Behaviors", () => {
 
     it("should disable watch if watch is changed", async () => {
       coreInstance.settings.get.withArgs("watch").returns(true);
-      await filesHandler.init();
-      await filesHandler.start();
+      await filesLoader.init();
+      await filesLoader.start();
       coreInstance.settings.get.withArgs("watch").returns(false);
-      coreInstance._eventEmitter.on.getCall(0).args[1]({
+      coreInstance.onChangeSettings.getCall(0).args[0]({
         watch: false
       });
       await wait();
@@ -614,9 +460,9 @@ describe("Behaviors", () => {
     it("should do nothing if no path or watch settings are changed", async () => {
       expect.assertions(3);
       coreInstance.settings.get.withArgs("watch").returns(true);
-      await filesHandler.init();
-      await filesHandler.start();
-      coreInstance._eventEmitter.on.getCall(0).args[1]({});
+      await filesLoader.init();
+      await filesLoader.start();
+      coreInstance.onChangeSettings.getCall(0).args[0]({});
       await wait();
       expect(requireAll.mock.calls.length).toEqual(1);
       expect(libsMocks.stubs.watch.callCount).toEqual(1);

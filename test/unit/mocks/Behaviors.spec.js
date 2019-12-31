@@ -13,13 +13,13 @@ const sinon = require("sinon");
 const Boom = require("@hapi/boom");
 
 const CoreMocks = require("../Core.mocks.js");
-const FilesHandlerMocks = require("./FilesHandler.mocks.js");
-const AllFixturesMocks = require("./Fixtures.mocks.js");
-const FixturesHandler = require("../../../../src/mocks/FixturesHandler");
-const FixtureHandler = require("../../../../src/mocks/FixtureHandler");
+const FilesHandlerMocks = require("../plugins/FilesLoader.mocks");
+const AllFixturesMocks = require("./Fixtures.mocks");
+const FixturesHandler = require("../../../src/mocks/FixturesHandler");
+const FixtureHandler = require("../../../src/mocks/FixtureHandler");
 
-const Behaviors = require("../../../../src/mocks/Behaviors");
-const tracer = require("../../../../src/tracer");
+const Behaviors = require("../../../src/mocks/Behaviors");
+const tracer = require("../../../src/tracer");
 
 describe("Behaviors", () => {
   const fooBoomError = new Error("foo boom error");

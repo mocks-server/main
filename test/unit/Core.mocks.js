@@ -10,9 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../../src/Core");
+jest.mock("../../src/Core");
 
-const Core = require("../../../src/Core");
+const Core = require("../../src/Core");
 
 class CoreMock {
   constructor() {
@@ -52,7 +52,8 @@ class CoreMock {
         on: this._sandbox.stub(),
         removeListener: this._sandbox.stub(),
         emit: this._sandbox.stub()
-      }
+      },
+      loadMocks: this._sandbox.stub()
     };
 
     Core.mockImplementation(() => this._stubs);

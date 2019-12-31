@@ -11,9 +11,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../../../src/settings/Options");
+jest.mock("../../../src/settings/CommandLineArguments");
 
-const Options = require("../../../../src/settings/Options");
+const CommandLineArguments = require("../../../src/settings/CommandLineArguments");
 
 class Mock {
   constructor() {
@@ -22,20 +22,15 @@ class Mock {
     this._stubs = {
       init: this._sandbox.stub(),
       addCustom: this._sandbox.stub(),
-      getValidOptionName: this._sandbox.stub(),
-      checkValidOptionName: this._sandbox.stub(),
-      options: {
-        log: "foo-log-level",
-        behavior: "foo-behavior"
-      }
+      options: {}
     };
 
-    Options.mockImplementation(() => this._stubs);
+    CommandLineArguments.mockImplementation(() => this._stubs);
   }
 
   get stubs() {
     return {
-      Constructor: Options,
+      Constructor: CommandLineArguments,
       instance: this._stubs
     };
   }

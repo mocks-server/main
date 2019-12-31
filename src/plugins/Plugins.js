@@ -13,9 +13,9 @@ const { isObject, isFunction } = require("lodash");
 
 const tracer = require("../tracer");
 
-// JsFilesLoader built-in plugin
+// FilesLoader built-in plugin
 const Loaders = require("./Loaders");
-const JsFilesLoader = require("./JsFilesLoader");
+const FilesLoader = require("./FilesLoader");
 
 class Plugins {
   constructor(plugins, core) {
@@ -23,12 +23,13 @@ class Plugins {
     this._core = core;
     this._plugins = plugins || [];
     this._pluginsInstances = [];
+    this._pluginsMethods = [];
     this._pluginsRegistered = 0;
     this._pluginsInitialized = 0;
     this._pluginsStarted = 0;
     this._pluginsStopped = 0;
 
-    this._plugins.push(JsFilesLoader);
+    this._plugins.push(FilesLoader);
   }
 
   register() {
@@ -65,21 +66,20 @@ class Plugins {
     return {};
   }
 
-  _registerPlugin(Plugin) {
-    const load = this._loaders.new();
+  _registerPlugin(Plugin, pluginMethods) {
     let pluginInstance;
     if (isObject(Plugin) && !isFunction(Plugin)) {
       pluginInstance = Plugin;
       this._pluginsRegistered++;
     } else {
       try {
-        pluginInstance = new Plugin(this._core, load);
+        pluginInstance = new Plugin(this._core, pluginMethods);
         this._pluginsRegistered++;
       } catch (error) {
         if (error.message.includes("is not a constructor")) {
           try {
             const pluginFunc = Plugin;
-            pluginInstance = pluginFunc(this._core, load) || {};
+            pluginInstance = pluginFunc(this._core, pluginMethods) || {};
             this._pluginsRegistered++;
           } catch (err) {
             return this._catchRegisterError(err);
@@ -91,7 +91,7 @@ class Plugins {
     }
     if (typeof pluginInstance.register === "function") {
       try {
-        pluginInstance.register(this._core, load);
+        pluginInstance.register(this._core, pluginMethods);
       } catch (error) {
         this._catchRegisterError(error);
         this._pluginsRegistered = this._pluginsRegistered - 1;
@@ -104,7 +104,12 @@ class Plugins {
     if (pluginIndex === this._plugins.length) {
       return Promise.resolve();
     }
-    const plugin = this._registerPlugin(this._plugins[pluginIndex]);
+    const loadMocks = this._loaders.new();
+    const pluginMethods = {
+      loadMocks
+    };
+    this._pluginsMethods.push(pluginMethods);
+    const plugin = this._registerPlugin(this._plugins[pluginIndex], pluginMethods);
     this._pluginsInstances.push(plugin);
     return this._registerPlugins(pluginIndex + 1);
   }
@@ -132,7 +137,10 @@ class Plugins {
     }
     let pluginInit;
     try {
-      pluginInit = this._pluginsInstances[pluginIndex].init(this._core);
+      pluginInit = this._pluginsInstances[pluginIndex].init(
+        this._core,
+        this._pluginsMethods[pluginIndex]
+      );
     } catch (error) {
       console.log(error);
       return this._catchInitError(error, pluginIndex).then(initNextPlugin);
@@ -171,7 +179,10 @@ class Plugins {
     }
     let pluginStart;
     try {
-      pluginStart = this._pluginsInstances[pluginIndex].start(this._core);
+      pluginStart = this._pluginsInstances[pluginIndex].start(
+        this._core,
+        this._pluginsMethods[pluginIndex]
+      );
     } catch (error) {
       return this._catchStartError(error, pluginIndex).then(startNextPlugin);
     }

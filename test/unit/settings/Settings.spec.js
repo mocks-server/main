@@ -14,8 +14,8 @@ const sinon = require("sinon");
 const OptionsMocks = require("./Options.mocks.js");
 const CoreMocks = require("../Core.mocks.js");
 
-const Settings = require("../../../../src/settings/Settings");
-const tracer = require("../../../../src/tracer");
+const Settings = require("../../../src/settings/Settings");
+const tracer = require("../../../src/tracer");
 
 describe("Settings", () => {
   let optionsMocks;
@@ -34,7 +34,7 @@ describe("Settings", () => {
     coreInstance = coreMocks.stubs.instance;
     sandbox.stub(tracer, "set");
     sandbox.stub(tracer, "info");
-    settings = new Settings({}, coreInstance._eventEmitter);
+    settings = new Settings(coreInstance._eventEmitter, {});
     await settings.init();
   });
 

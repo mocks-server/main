@@ -145,8 +145,6 @@ class Core {
     return removeCallback;
   }
 
-  // Expose Server methods and getters
-
   async stop() {
     await this._server.stop();
     return this._stopPlugins().then(() => {
@@ -154,7 +152,15 @@ class Core {
     });
   }
 
+  // Expose Server methods and getters
+
+  // TODO, deprecate method, use restartServer
   restart() {
+    tracer.deprecationWarn("restart", "restartServer");
+    return this.restartServer();
+  }
+
+  restartServer() {
     return this._server.restart();
   }
 

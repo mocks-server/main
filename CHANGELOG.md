@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Remove "onLoadFiles" method
 - Remove "onLoadMocks" method, use "onChangeMocks"
 - Remove the addition of extra properties when reading files. Define a name for the behavior with a mandatory option.
+- Remove "restart" method, use "restartServer"
 
 ## [unreleased]
 ### Added
@@ -26,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Add stop method to plugins.
 - Pass new method "load" to plugins, which allows to load fixtures or behaviors definitions.
+- Add "restartServer" method, which should be used instead of "restart".
 
 ### Changed
 - Convert filesHandler into a plugin. Load it always.

@@ -68,11 +68,21 @@ class Behaviors {
     );
   }
 
-  _initBehavior(index) {
+  _initBehavior(index, initedBehaviors) {
     const object = this._behaviorsCandidates[index];
     let behaviorCandidate = object;
     if (this._isBehaviorDefinition(object)) {
       if (object.from) {
+        const parentBehavior = initedBehaviors.find(
+          behavior => behavior && behavior.name === object.from
+        );
+        if (parentBehavior) {
+          behaviorCandidate = parentBehavior.extend(object.fixtures);
+          behaviorCandidate.name = object.id;
+        } else {
+          // TODO, move to the end of candidates list. Implement a check to stop bucle
+          return Promise.resolve();
+        }
       } else {
         behaviorCandidate = new Behavior(object.fixtures);
         behaviorCandidate.name = object.id;
@@ -101,7 +111,7 @@ class Behaviors {
     if (index >= this._behaviorsCandidates.length) {
       return Promise.resolve(initedBehaviors);
     }
-    return this._initBehavior(index).then(initedBehavior => {
+    return this._initBehavior(index, initedBehaviors).then(initedBehavior => {
       initedBehaviors.push(initedBehavior);
       return this._initBehaviors(index + 1, initedBehaviors);
     });

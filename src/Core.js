@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const EventEmitter = require("events");
 
-const { INIT, START, STOP, LOAD_FILES, CHANGE_MOCKS, CHANGE_SETTINGS } = require("./eventNames");
+const { INIT, START, STOP, LOAD_MOCKS, CHANGE_MOCKS, CHANGE_SETTINGS } = require("./eventNames");
 const tracer = require("./tracer");
 
 const Orchestrator = require("./Orchestrator");
@@ -111,9 +111,9 @@ class Core {
   onLoadFiles(cb) {
     tracer.deprecationWarn("onLoadFiles", "onChangeMocks");
     const removeCallback = () => {
-      this._eventEmitter.removeListener(LOAD_FILES, cb);
+      this._eventEmitter.removeListener(LOAD_MOCKS, cb);
     };
-    this._eventEmitter.on(LOAD_FILES, cb);
+    this._eventEmitter.on(LOAD_MOCKS, cb);
     return removeCallback;
   }
 

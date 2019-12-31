@@ -14,18 +14,18 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const tracer = require("../tracer");
 const FixturesGroup = require("./FixturesGroup");
 
-const { LOAD_FILES, CHANGE_FIXTURES } = require("../eventNames");
+const { LOAD_MOCKS, CHANGE_FIXTURES } = require("../eventNames");
 
 class Fixtures {
   constructor(loaders, eventEmitter) {
     this._loaders = loaders;
     this._eventEmitter = eventEmitter;
-    this._onLoadFiles = this._onLoadFiles.bind(this);
+    this._onLoadMocks = this._onLoadMocks.bind(this);
   }
 
   async init(fixturesHandler) {
     this._fixturesHandler = fixturesHandler;
-    this._eventEmitter.on(LOAD_FILES, this._onLoadFiles);
+    this._eventEmitter.on(LOAD_MOCKS, this._onLoadMocks);
     return this._loadFixtures();
   }
 
@@ -49,7 +49,7 @@ class Fixtures {
     return Promise.resolve();
   }
 
-  _onLoadFiles() {
+  _onLoadMocks() {
     this._loadFixtures();
   }
 

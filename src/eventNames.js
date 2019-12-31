@@ -12,7 +12,7 @@ module.exports = {
   INIT: "init",
   START: "start",
   STOP: "stop",
-  LOAD_FILES: "load:files",
+  LOAD_MOCKS: "load:mocks",
   CHANGE_FIXTURES: "change:fixtures",
   CHANGE_MOCKS: "change:mocks",
   CHANGE_SETTINGS: "change:settings"

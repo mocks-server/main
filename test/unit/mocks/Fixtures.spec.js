@@ -46,7 +46,7 @@ describe("Fixtures", () => {
     coreMocks.restore();
   });
 
-  describe("when core emits load:files", () => {
+  describe("when core emits load:mocks", () => {
     it("should process fixtures again", async () => {
       await fixtures.init(fixturesHandler);
       coreInstance._eventEmitter.on.getCall(0).args[1]();

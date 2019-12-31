@@ -22,7 +22,6 @@ const LibsMocks = require("../Libs.mocks.js");
 const CoreMocks = require("../Core.mocks.js");
 
 const FilesLoader = require("../../../src/plugins/FilesLoader");
-const tracer = require("../../../src/tracer");
 
 const wait = () => {
   return new Promise(resolve => {
@@ -165,9 +164,6 @@ describe("FilesLoader", () => {
       loadMocks: sandbox.stub()
     };
     coreInstance = coreMocks.stubs.instance;
-    sandbox.stub(tracer, "error");
-    sandbox.stub(tracer, "info");
-    sandbox.stub(tracer, "debug");
     requireAll.mockImplementation(() => fooFiles);
     filesLoader = new FilesLoader(coreInstance, pluginMethods, {
       requireCache
@@ -331,6 +327,12 @@ describe("FilesLoader", () => {
       path.isAbsolute.returns(false);
       await filesLoader.init();
       expect(requireAll.mock.calls[0][0].dirname).toEqual(path.resolve(process.cwd(), "foo-path"));
+    });
+
+    it("should not throw and trace error if there is an error loading files", async () => {
+      coreInstance.tracer.silly.throws(new Error());
+      await filesLoader.init();
+      expect(coreInstance.tracer.error.callCount).toEqual(1);
     });
 
     it("should require all files from exactly mocks folder if it is absolute", async () => {

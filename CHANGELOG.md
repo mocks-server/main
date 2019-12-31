@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - Plugins start method was not being called again when core "start" method was called.
+- Prevent exit process when there is an error loading files.
 
 ## [1.2.0] - 2019-12-22
 ### Added

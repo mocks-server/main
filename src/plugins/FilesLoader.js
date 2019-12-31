@@ -90,24 +90,28 @@ class FilesHandler {
     this._path = this._ensureFolder(this._resolveFolder(this._settings.get("path")));
     this._tracer.info(`Loading files from folder ${this._path}`);
     this._cleanRequireCacheFolder();
-    this._files = requireAll({
-      dirname: this._path,
-      recursive: true,
-      resolve: fileContent => {
-        try {
-          fileContent._mocksServer_isFile = true;
-        } catch (error) {}
-        return fileContent;
-      }
-    });
-    this._tracer.silly(`Loaded files from folder ${this._path}`);
-    this._contents = this._getContents(this._files).map(content => {
-      // TODO, remove the addition of extra properties when reading files. Define a name for the behavior.
-      delete content._mocksServer_isFile;
-      delete content._mocksServer_fullPath;
-      return content;
-    });
-    this._load(this._contents);
+    try {
+      this._files = requireAll({
+        dirname: this._path,
+        recursive: true,
+        resolve: fileContent => {
+          try {
+            fileContent._mocksServer_isFile = true;
+          } catch (error) {}
+          return fileContent;
+        }
+      });
+      this._tracer.silly(`Loaded files from folder ${this._path}`);
+      this._contents = this._getContents(this._files).map(content => {
+        // TODO, remove the addition of extra properties when reading files. Define a name for the behavior.
+        delete content._mocksServer_isFile;
+        delete content._mocksServer_fullPath;
+        return content;
+      });
+      this._load(this._contents);
+    } catch (error) {
+      this._tracer.error(`Error loading files from folder ${this._path}`);
+    }
   }
 
   _addPathToLoadedObject(object, fullPath, lastPath) {

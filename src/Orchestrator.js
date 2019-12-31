@@ -22,11 +22,13 @@ class Orchestrator {
     this._eventEmitter.on(CHANGE_SETTINGS, this._onChangeSettings);
   }
 
-  _onChangeSettings(/* newSettings */) {
-    /* this._loaders.changeSettings(newSettings);
-    this._mocks.changeSettings(newSettings);
-    this._server.changeSettings(newSettings);
-    */
+  _onChangeSettings(changeDetails) {
+    if (changeDetails.hasOwnProperty("port") || changeDetails.hasOwnProperty("host")) {
+      this._server.restart();
+    }
+    if (changeDetails.hasOwnProperty("behavior")) {
+      this._mocks.behaviors.current = changeDetails.behavior;
+    }
   }
 }
 

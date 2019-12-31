@@ -93,22 +93,6 @@ describe("Behaviors", () => {
     });
   });
 
-  describe("when core emits a change:settings event", () => {
-    it("should set new behavior as current one if behavior has changed", async () => {
-      await behaviors.init(fixturesHandler, allFixturesInstance);
-      coreInstance._eventEmitter.on.getCall(1).args[1]({
-        behavior: "behavior2"
-      });
-      expect(behaviors.currentName).toEqual("behavior2");
-    });
-
-    it("should do nothing if behavior has not changed", async () => {
-      await behaviors.init(fixturesHandler, allFixturesInstance);
-      coreInstance._eventEmitter.on.getCall(1).args[1]({});
-      expect(behaviors.currentName).toEqual("behavior1");
-    });
-  });
-
   describe("current setter", () => {
     it("should throw an error if behavior to set is not found in behaviors", async () => {
       await behaviors.init(fixturesHandler, allFixturesInstance);

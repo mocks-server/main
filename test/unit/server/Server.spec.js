@@ -79,47 +79,6 @@ describe("Server", () => {
     });
   });
 
-  describe("when settings change", () => {
-    it("should restart the server when port changes", async () => {
-      expect.assertions(2);
-      libsMocks.stubs.http.createServer.onListen.returns(null);
-      await server.init();
-      await server.start();
-      coreInstance._eventEmitter.on.getCall(0).args[1]({
-        port: 4540
-      });
-      await wait(2000);
-      expect(libsMocks.stubs.http.createServer.close.callCount).toEqual(1);
-      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
-    });
-
-    it("should restart the server when host changes", async () => {
-      expect.assertions(2);
-      libsMocks.stubs.http.createServer.onListen.returns(null);
-      await server.init();
-      await server.start();
-      coreInstance._eventEmitter.on.getCall(0).args[1]({
-        host: "foo-new-host"
-      });
-      await wait();
-      expect(libsMocks.stubs.http.createServer.close.callCount).toEqual(1);
-      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
-    });
-
-    it("should do nothing when no port nor host are changed", async () => {
-      expect.assertions(2);
-      libsMocks.stubs.http.createServer.onListen.returns(null);
-      await server.init();
-      await server.start();
-      coreInstance._eventEmitter.on.getCall(0).args[1]({
-        foo: true
-      });
-      await wait();
-      expect(libsMocks.stubs.http.createServer.close.callCount).toEqual(0);
-      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(1);
-    });
-  });
-
   describe("add custom routers method", () => {
     it("should be registered when initializating http server", async () => {
       const fooRouter = sandbox.spy();

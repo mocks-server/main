@@ -14,6 +14,7 @@ const SettingsMocks = require("./settings/Settings.mocks.js");
 const MocksMocks = require("./mocks/Mocks.mocks.js");
 const ServerMocks = require("./server/Server.mocks.js");
 const PluginsMocks = require("./plugins/Plugins.mocks.js");
+const OrchestratorMocks = require("./Orchestrator.mocks.js");
 
 const Core = require("../../src/Core");
 const tracer = require("../../src/tracer");
@@ -23,6 +24,7 @@ describe("Settings", () => {
   let settingsMocks;
   let settingsInstance;
   let mocksMocks;
+  let orchestratorMocks;
   let mocksInstance;
   let serverMocks;
   let serverInstance;
@@ -40,6 +42,7 @@ describe("Settings", () => {
     serverInstance = serverMocks.stubs.instance;
     pluginsMocks = new PluginsMocks();
     pluginsInstance = pluginsMocks.stubs.instance;
+    orchestratorMocks = new OrchestratorMocks();
 
     core = new Core();
     await core.init();
@@ -49,6 +52,7 @@ describe("Settings", () => {
     sandbox.restore();
     settingsMocks.restore();
     mocksMocks.restore();
+    orchestratorMocks.restore();
     serverMocks.restore();
     pluginsMocks.restore();
   });

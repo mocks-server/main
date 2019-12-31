@@ -18,7 +18,7 @@ const { compact } = require("lodash");
 const tracer = require("../tracer");
 const Behavior = require("./Behavior");
 
-const { CHANGE_MOCKS, CHANGE_FIXTURES, CHANGE_SETTINGS } = require("../eventNames");
+const { CHANGE_MOCKS, CHANGE_FIXTURES } = require("../eventNames");
 
 class Behaviors {
   constructor(loaders, settings, eventEmitter) {
@@ -26,7 +26,6 @@ class Behaviors {
     this._settings = settings;
     this._eventEmitter = eventEmitter;
     this._onLoadFixtures = this._onLoadFixtures.bind(this);
-    this._onChangeSettings = this._onChangeSettings.bind(this);
     this._noBehavior = new Behavior();
   }
 
@@ -34,7 +33,6 @@ class Behaviors {
     this._fixturesHandler = fixturesHandler;
     this._allFixtures = allFixtures;
     this._eventEmitter.on(CHANGE_FIXTURES, this._onLoadFixtures);
-    this._eventEmitter.on(CHANGE_SETTINGS, this._onChangeSettings);
     await this._noBehavior.init(this._fixturesHandler);
     return this._loadBehaviors();
   }
@@ -65,12 +63,6 @@ class Behaviors {
 
   _onLoadFixtures() {
     this._loadBehaviors();
-  }
-
-  _onChangeSettings(changeDetails) {
-    if (changeDetails.hasOwnProperty("behavior")) {
-      this.current = changeDetails.behavior;
-    }
   }
 
   _getBehaviorsCollection() {

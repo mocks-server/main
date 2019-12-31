@@ -126,10 +126,10 @@ describe("Behavior", () => {
     });
   });
 
-  describe("isMocksServerBehavior getter", () => {
+  describe("isBehaviorInstance getter", () => {
     it("should return true", async () => {
       const behavior = new Behavior(fooBehaviorData);
-      expect(behavior.isMocksServerBehavior).toEqual(true);
+      expect(behavior.isBehaviorInstance).toEqual(true);
     });
   });
 

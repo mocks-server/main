@@ -269,6 +269,13 @@ describe("Core", () => {
     });
   });
 
+  describe("restartServer method", () => {
+    it("should restart server", async () => {
+      await core.restartServer();
+      expect(serverInstance.restart.callCount).toEqual(1);
+    });
+  });
+
   describe("tracer getter", () => {
     it("should return tracer instance", () => {
       expect(core.tracer).toEqual(tracer);

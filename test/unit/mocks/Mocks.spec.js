@@ -12,6 +12,7 @@ const sinon = require("sinon");
 const Boom = require("@hapi/boom");
 
 const BehaviorsMocks = require("./Behaviors.mocks.js");
+const FixturesMocks = require("./Fixtures.mocks.js");
 const LoadersMocks = require("../Loaders.mocks");
 const CoreMocks = require("../Core.mocks.js");
 
@@ -23,6 +24,7 @@ describe("Behaviors", () => {
   let coreMocks;
   let loadersMocks;
   let behaviorsMocks;
+  let fixturesMocks;
   let coreInstance;
   let mocks;
 
@@ -33,6 +35,7 @@ describe("Behaviors", () => {
     coreInstance = coreMocks.stubs.instance;
     loadersMocks = new LoadersMocks();
     behaviorsMocks = new BehaviorsMocks();
+    fixturesMocks = new FixturesMocks();
     mocks = new Mocks(
       coreInstance._eventEmitter,
       coreInstance.settings,
@@ -44,6 +47,7 @@ describe("Behaviors", () => {
     sandbox.restore();
     loadersMocks.restore();
     behaviorsMocks.restore();
+    fixturesMocks.restore();
     coreMocks.restore();
   });
 
@@ -64,6 +68,16 @@ describe("Behaviors", () => {
     it("should return fixtures", async () => {
       await mocks.init();
       expect(mocks.fixtures.collection.length).toEqual(0);
+    });
+  });
+
+  describe("processLoadedMocks method", () => {
+    it("should call to process fixtures and behaviors", async () => {
+      expect.assertions(2);
+      await mocks.init();
+      await mocks.processLoadedMocks();
+      expect(behaviorsMocks.stubs.instance.processBehaviors.callCount).toEqual(1);
+      expect(fixturesMocks.stubs.instance.processFixtures.callCount).toEqual(1);
     });
   });
 });

@@ -22,7 +22,7 @@ class Mocks {
 
     this._fixturesHandler = new FixturesHandler(core);
     this._fixturesHandler.addHandler(FixtureHandler);
-    this._fixtures = new Fixtures(this._loaders, this._eventEmitter);
+    this._fixtures = new Fixtures(this._loaders);
     this._behaviors = new Behaviors(this._loaders, this._settings, this._eventEmitter);
   }
 
@@ -34,6 +34,11 @@ class Mocks {
 
   addFixturesHandler(Handler) {
     this._fixturesHandler.addHandler(Handler);
+  }
+
+  async processLoadedMocks() {
+    await this._fixtures.processFixtures();
+    return this._behaviors.processBehaviors();
   }
 
   get behaviors() {

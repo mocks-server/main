@@ -74,4 +74,11 @@ describe("Orchestrator", () => {
       expect(mocksMock.stubs.instance.behaviors.current).toEqual("behavior2");
     });
   });
+
+  describe("when core emits load:mocks", () => {
+    it("should process fixtures and behaviors again", async () => {
+      coreInstance._eventEmitter.on.getCall(1).args[1]();
+      expect(mocksMock.stubs.instance.processLoadedMocks.callCount).toEqual(1);
+    });
+  });
 });

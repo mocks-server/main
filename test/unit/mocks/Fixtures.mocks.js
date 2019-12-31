@@ -20,7 +20,10 @@ class Mock {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      add: this._sandbox.stub().returns()
+      add: this._sandbox.stub().returns(),
+      init: this._sandbox.stub().resolves(),
+      processFixtures: this._sandbox.stub().resolves(),
+      collection: []
     };
 
     Fixtures.mockImplementation(() => this._stubs);

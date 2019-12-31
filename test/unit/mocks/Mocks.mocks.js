@@ -30,7 +30,8 @@ class Mock {
       },
       fixtures: {
         collection: []
-      }
+      },
+      processLoadedMocks: this._sandbox.stub().resolves()
     };
 
     Mocks.mockImplementation(() => this._stubs);

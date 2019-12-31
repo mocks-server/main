@@ -85,14 +85,6 @@ describe("Behaviors", () => {
     });
   });
 
-  describe("when core emits load:fixtures", () => {
-    it("should process behaviors again", async () => {
-      await behaviors.init(fixturesHandler, allFixturesInstance);
-      coreInstance._eventEmitter.on.getCall(0).args[1]();
-      expect(tracer.debug.getCall(3).args[0]).toEqual("Processing behaviors");
-    });
-  });
-
   describe("current setter", () => {
     it("should throw an error if behavior to set is not found in behaviors", async () => {
       await behaviors.init(fixturesHandler, allFixturesInstance);

@@ -37,21 +37,13 @@ describe("Fixtures", () => {
     fixturesHandler = new FixturesHandler();
     fixturesHandler.addHandler(FixtureHandler);
     sandbox.stub(tracer, "debug");
-    fixtures = new Fixtures(loadersInstance, coreInstance._eventEmitter);
+    fixtures = new Fixtures(loadersInstance);
   });
 
   afterEach(() => {
     sandbox.restore();
     loadersMocks.restore();
     coreMocks.restore();
-  });
-
-  describe("when core emits load:mocks", () => {
-    it("should process fixtures again", async () => {
-      await fixtures.init(fixturesHandler);
-      coreInstance._eventEmitter.on.getCall(0).args[1]();
-      expect(tracer.debug.getCall(1).args[0]).toEqual("Processing fixtures");
-    });
   });
 
   describe("addFromBehaviors method", () => {

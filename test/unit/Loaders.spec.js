@@ -10,9 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-const CoreMocks = require("../Core.mocks.js");
+const CoreMocks = require("./Core.mocks.js");
 
-const Loaders = require("../../../src/plugins/Loaders");
+const Loaders = require("../../src/Loaders");
 
 describe("Loaders", () => {
   let sandbox;

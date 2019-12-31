@@ -14,13 +14,12 @@ const { isObject, isFunction } = require("lodash");
 const tracer = require("../tracer");
 
 // FilesLoader built-in plugin
-const Loaders = require("./Loaders");
 const FilesLoader = require("./FilesLoader");
 
 class Plugins {
-  constructor(plugins, core) {
-    this._loaders = new Loaders(core);
+  constructor(plugins, loaders, core) {
     this._core = core;
+    this._loaders = loaders;
     this._plugins = plugins || [];
     this._pluginsInstances = [];
     this._pluginsMethods = [];
@@ -233,10 +232,6 @@ class Plugins {
         return this._catchStopError(error, pluginIndex);
       })
       .then(stopNextPlugin);
-  }
-
-  get loaders() {
-    return this._loaders;
   }
 }
 

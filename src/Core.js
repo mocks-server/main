@@ -14,6 +14,7 @@ const { INIT, START, STOP, LOAD_MOCKS, CHANGE_MOCKS, CHANGE_SETTINGS } = require
 const tracer = require("./tracer");
 
 const Orchestrator = require("./Orchestrator");
+const Loaders = require("./Loaders");
 
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
@@ -27,9 +28,10 @@ class Core {
       onlyProgrammaticOptions: coreOptions.onlyProgrammaticOptions
     });
 
-    this._plugins = new Plugins(coreOptions.plugins, this);
+    this._loaders = new Loaders(this);
+    this._plugins = new Plugins(coreOptions.plugins, this._loaders, this);
 
-    this._mocks = new Mocks(this._eventEmitter, this._settings, this._plugins.loaders, this);
+    this._mocks = new Mocks(this._eventEmitter, this._settings, this._loaders, this);
     this._server = new Server(this._eventEmitter, this._settings, this._mocks, this);
 
     this._orchestrator = new Orchestrator(this._eventEmitter, this._mocks, this._server);

@@ -12,7 +12,7 @@ const sinon = require("sinon");
 const Boom = require("@hapi/boom");
 
 const BehaviorsMocks = require("./Behaviors.mocks.js");
-const LoadersMocks = require("../plugins/Loaders.mocks");
+const LoadersMocks = require("../Loaders.mocks");
 const CoreMocks = require("../Core.mocks.js");
 
 const Mocks = require("../../../src/mocks/Mocks");

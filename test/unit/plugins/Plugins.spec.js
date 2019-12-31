@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const CoreMocks = require("../Core.mocks.js");
-const LoadersMocks = require("./Loaders.mocks.js");
+const LoadersMocks = require("../Loaders.mocks.js");
 
 const Plugins = require("../../../src/plugins/Plugins");
 const tracer = require("../../../src/tracer");
@@ -20,7 +20,7 @@ const pluginsQuantity = (method, quantity) => {
   return `${method}ed ${quantity} plugins without errors`;
 };
 
-describe("Settings", () => {
+describe("Plugins", () => {
   let sandbox;
   let coreMocks;
   let coreInstance;
@@ -47,14 +47,14 @@ describe("Settings", () => {
   describe("register method", () => {
     const METHOD = "Register";
     it("should do nothing if there are no plugins to register", async () => {
-      plugins = new Plugins(null, coreInstance);
+      plugins = new Plugins(null, loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
     });
 
     it("should register object plugins", async () => {
       const fooPlugin = {};
-      plugins = new Plugins([fooPlugin], coreInstance);
+      plugins = new Plugins([fooPlugin], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
     });
@@ -63,7 +63,7 @@ describe("Settings", () => {
       const fooPlugin = {
         register: () => {}
       };
-      plugins = new Plugins([fooPlugin], coreInstance);
+      plugins = new Plugins([fooPlugin], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
     });
@@ -72,7 +72,7 @@ describe("Settings", () => {
       const fooPlugin = {
         register: sinon.spy()
       };
-      plugins = new Plugins([fooPlugin], coreInstance);
+      plugins = new Plugins([fooPlugin], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       expect(fooPlugin.register.calledWith(coreInstance)).toEqual(true);
     });
@@ -83,14 +83,14 @@ describe("Settings", () => {
           throw new Error();
         }
       };
-      plugins = new Plugins([fooPlugin], coreInstance);
+      plugins = new Plugins([fooPlugin], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
     });
 
     it("should not register strings as plugins", async () => {
       expect.assertions(2);
-      plugins = new Plugins(["foo"], coreInstance);
+      plugins = new Plugins(["foo"], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       expect(console.log.calledWith("Error registering plugin")).toEqual(true);
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
@@ -98,7 +98,7 @@ describe("Settings", () => {
 
     it("should not register booleans as plugins", async () => {
       expect.assertions(2);
-      plugins = new Plugins([true], coreInstance);
+      plugins = new Plugins([true], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       expect(console.log.calledWith("Error registering plugin")).toEqual(true);
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
@@ -107,7 +107,7 @@ describe("Settings", () => {
     it("should register function plugins executing them passing the core", async () => {
       expect.assertions(3);
       const fooPlugin = sinon.spy();
-      plugins = new Plugins([fooPlugin], coreInstance);
+      plugins = new Plugins([fooPlugin], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       expect(fooPlugin.calledWith(coreInstance)).toEqual(true);
       expect(fooPlugin.callCount).toEqual(1);
@@ -120,7 +120,7 @@ describe("Settings", () => {
       const fooPlugin = () => ({
         register: spy
       });
-      plugins = new Plugins([fooPlugin], coreInstance);
+      plugins = new Plugins([fooPlugin], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       expect(spy.calledWith(coreInstance)).toEqual(true);
       expect(spy.callCount).toEqual(1);
@@ -133,7 +133,7 @@ describe("Settings", () => {
           throw new Error();
         }
       });
-      plugins = new Plugins([fooPlugin], coreInstance);
+      plugins = new Plugins([fooPlugin], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
     });
@@ -149,7 +149,7 @@ describe("Settings", () => {
           instantiated = true;
         }
       }
-      plugins = new Plugins([FooPlugin], coreInstance);
+      plugins = new Plugins([FooPlugin], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       expect(receivedCore).toEqual(coreInstance);
       expect(instantiated).toEqual(true);
@@ -163,7 +163,7 @@ describe("Settings", () => {
           throw new Error();
         }
       }
-      plugins = new Plugins([FooPlugin], coreInstance);
+      plugins = new Plugins([FooPlugin], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       expect(console.log.calledWith("Error registering plugin")).toEqual(true);
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
@@ -182,7 +182,7 @@ describe("Settings", () => {
           instantiated = true;
         }
       }
-      plugins = new Plugins([FooPlugin], coreInstance);
+      plugins = new Plugins([FooPlugin], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       expect(receivedCore).toEqual(coreInstance);
       expect(instantiated).toEqual(true);
@@ -199,7 +199,7 @@ describe("Settings", () => {
           throw new Error();
         }
       }
-      plugins = new Plugins([FooPlugin], coreInstance);
+      plugins = new Plugins([FooPlugin], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
     });
@@ -214,6 +214,7 @@ describe("Settings", () => {
       class FooPlugin2 {}
       plugins = new Plugins(
         [FooPlugin, FooPlugin2, () => {}, true, false, "foo", { foo: "foo" }],
+        loaderMocks.stubs.instance,
         coreInstance
       );
       await plugins.register();
@@ -225,7 +226,7 @@ describe("Settings", () => {
   describe("init method", () => {
     const METHOD = "Initializat";
     it("should do nothing if there are no plugins to register", async () => {
-      plugins = new Plugins(null, coreInstance);
+      plugins = new Plugins(null, loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       await plugins.init();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 0))).toEqual(true);
@@ -236,7 +237,7 @@ describe("Settings", () => {
       const fooPlugin = {
         init: sinon.spy()
       };
-      plugins = new Plugins([fooPlugin], coreInstance);
+      plugins = new Plugins([fooPlugin], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       await plugins.init();
       expect(fooPlugin.init.callCount).toEqual(1);
@@ -251,7 +252,7 @@ describe("Settings", () => {
       const fooPlugin2 = {
         init: () => Promise.resolve()
       };
-      plugins = new Plugins([fooPlugin, fooPlugin2], coreInstance);
+      plugins = new Plugins([fooPlugin, fooPlugin2], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       await plugins.init();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
@@ -270,7 +271,11 @@ describe("Settings", () => {
       const fooPlugin3 = {
         init: () => Promise.resolve()
       };
-      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      plugins = new Plugins(
+        [fooPlugin, fooPlugin2, fooPlugin3],
+        loaderMocks.stubs.instance,
+        coreInstance
+      );
       await plugins.register();
       await plugins.init();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
@@ -291,7 +296,11 @@ describe("Settings", () => {
       const fooPlugin3 = {
         init: () => Promise.resolve()
       };
-      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      plugins = new Plugins(
+        [fooPlugin, fooPlugin2, fooPlugin3],
+        loaderMocks.stubs.instance,
+        coreInstance
+      );
       await plugins.register();
       await plugins.init();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
@@ -306,7 +315,11 @@ describe("Settings", () => {
       const fooPlugin3 = {
         init: () => Promise.resolve()
       };
-      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      plugins = new Plugins(
+        [fooPlugin, fooPlugin2, fooPlugin3],
+        loaderMocks.stubs.instance,
+        coreInstance
+      );
       await plugins.register();
       await plugins.init();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
@@ -317,7 +330,7 @@ describe("Settings", () => {
     const METHOD = "Start";
 
     it("should do nothing if there are no plugins to register", async () => {
-      plugins = new Plugins(null, coreInstance);
+      plugins = new Plugins(null, loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       await plugins.start();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
@@ -328,7 +341,7 @@ describe("Settings", () => {
       const fooPlugin = {
         start: sinon.spy()
       };
-      plugins = new Plugins([fooPlugin], coreInstance);
+      plugins = new Plugins([fooPlugin], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       await plugins.start();
       expect(fooPlugin.start.callCount).toEqual(1);
@@ -343,7 +356,7 @@ describe("Settings", () => {
       const fooPlugin2 = {
         start: () => Promise.resolve()
       };
-      plugins = new Plugins([fooPlugin, fooPlugin2], coreInstance);
+      plugins = new Plugins([fooPlugin, fooPlugin2], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       await plugins.start();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
@@ -362,7 +375,11 @@ describe("Settings", () => {
       const fooPlugin3 = {
         start: () => Promise.resolve()
       };
-      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      plugins = new Plugins(
+        [fooPlugin, fooPlugin2, fooPlugin3],
+        loaderMocks.stubs.instance,
+        coreInstance
+      );
       await plugins.register();
       await plugins.start();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
@@ -383,7 +400,11 @@ describe("Settings", () => {
       const fooPlugin3 = {
         start: () => Promise.resolve()
       };
-      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      plugins = new Plugins(
+        [fooPlugin, fooPlugin2, fooPlugin3],
+        loaderMocks.stubs.instance,
+        coreInstance
+      );
       await plugins.register();
       await plugins.start();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
@@ -398,7 +419,11 @@ describe("Settings", () => {
       const fooPlugin3 = {
         start: () => Promise.resolve()
       };
-      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      plugins = new Plugins(
+        [fooPlugin, fooPlugin2, fooPlugin3],
+        loaderMocks.stubs.instance,
+        coreInstance
+      );
       await plugins.register();
       await plugins.start();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
@@ -409,7 +434,7 @@ describe("Settings", () => {
     const METHOD = "Stopp";
 
     it("should do nothing if there are no plugins to stop", async () => {
-      plugins = new Plugins(null, coreInstance);
+      plugins = new Plugins(null, loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       await plugins.stop();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
@@ -420,7 +445,7 @@ describe("Settings", () => {
       const fooPlugin = {
         stop: sinon.spy()
       };
-      plugins = new Plugins([fooPlugin], coreInstance);
+      plugins = new Plugins([fooPlugin], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       await plugins.stop();
       expect(fooPlugin.stop.callCount).toEqual(1);
@@ -435,7 +460,7 @@ describe("Settings", () => {
       const fooPlugin2 = {
         stop: () => Promise.resolve()
       };
-      plugins = new Plugins([fooPlugin, fooPlugin2], coreInstance);
+      plugins = new Plugins([fooPlugin, fooPlugin2], loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
       await plugins.stop();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
@@ -454,7 +479,11 @@ describe("Settings", () => {
       const fooPlugin3 = {
         stop: () => Promise.resolve()
       };
-      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      plugins = new Plugins(
+        [fooPlugin, fooPlugin2, fooPlugin3],
+        loaderMocks.stubs.instance,
+        coreInstance
+      );
       await plugins.register();
       await plugins.stop();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
@@ -475,7 +504,11 @@ describe("Settings", () => {
       const fooPlugin3 = {
         stop: () => Promise.resolve()
       };
-      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      plugins = new Plugins(
+        [fooPlugin, fooPlugin2, fooPlugin3],
+        loaderMocks.stubs.instance,
+        coreInstance
+      );
       await plugins.register();
       await plugins.stop();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
@@ -490,17 +523,14 @@ describe("Settings", () => {
       const fooPlugin3 = {
         stop: () => Promise.resolve()
       };
-      plugins = new Plugins([fooPlugin, fooPlugin2, fooPlugin3], coreInstance);
+      plugins = new Plugins(
+        [fooPlugin, fooPlugin2, fooPlugin3],
+        loaderMocks.stubs.instance,
+        coreInstance
+      );
       await plugins.register();
       await plugins.stop();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
-    });
-  });
-
-  describe("loaders getter", () => {
-    it("should return loaders instance", () => {
-      plugins = new Plugins(null, coreInstance);
-      expect(plugins.loaders).toEqual(loaderMocks.stubs.instance);
     });
   });
 });

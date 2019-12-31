@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 const CoreMocks = require("../Core.mocks.js");
-const LoadersMocks = require("../plugins/Loaders.mocks");
+const LoadersMocks = require("../Loaders.mocks");
 const FixturesHandler = require("../../../src/mocks/FixturesHandler");
 const FixtureHandler = require("../../../src/mocks/FixtureHandler");
 const Behaviors = require("../../../src/mocks/Behaviors");

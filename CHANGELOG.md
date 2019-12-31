@@ -30,6 +30,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Convert filesHandler into a plugin. Load it always.
 
+### Fixed
+- Plugins start method were not being called again when core "start" method was called.
+
 ## [1.2.0] - 2019-12-22
 ### Added
 - Add "fixtures" getter, returning all found fixtures in mocks folder, and inside behaviors.

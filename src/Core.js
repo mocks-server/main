@@ -69,14 +69,18 @@ class Core {
     if (!this._startPluginsPromise) {
       this._startPluginsPromise = this._plugins.start();
     }
-    return this._startPluginsPromise;
+    return this._startPluginsPromise.then(() => {
+      this._startPluginsPromise = null;
+    });
   }
 
   async _stopPlugins() {
     if (!this._stopPluginsPromise) {
       this._stopPluginsPromise = this._plugins.stop();
     }
-    return this._stopPluginsPromise;
+    return this._stopPluginsPromise.then(() => {
+      this._stopPluginsPromise = null;
+    });
   }
 
   // TODO, deprecate method, use addRouter

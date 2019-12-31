@@ -68,39 +68,50 @@ class Behaviors {
     );
   }
 
-  _getBehaviorsCollection() {
-    const mocksFolderContents = this._loaders.contents;
-    const initBehaviors = [];
-    const behaviors = {};
-    mocksFolderContents.forEach(object => {
-      let behaviorCandidate = object;
-      if (this._isBehaviorDefinition(object)) {
+  _initBehavior(index) {
+    const object = this._behaviorsCandidates[index];
+    let behaviorCandidate = object;
+    if (this._isBehaviorDefinition(object)) {
+      if (object.from) {
+      } else {
         behaviorCandidate = new Behavior(object.fixtures);
         behaviorCandidate.name = object.id;
       }
-      // Behaviors instantiated directly in JS files
-      if (behaviorCandidate.isBehaviorInstance) {
-        initBehaviors.push(
-          behaviorCandidate
-            .init(this._fixturesHandler, this._allFixtures)
-            .then(initedBehavior => {
-              // TODO, remove the addition of extra properties when reading files. Define a mandatory id for the behavior.
-              initedBehavior.name = initedBehavior.name || object._mocksServer_lastPath;
-              behaviors[initedBehavior.name] = initedBehavior.name;
-              this._allFixtures.add(initedBehavior.fixtures);
-              return Promise.resolve(initedBehavior);
-            })
-            .catch(err => {
-              tracer.error("Error initializing behavior");
-              tracer.debug(err.toString());
-              return Promise.resolve();
-            })
-        );
-      }
+    }
+    // Behaviors instantiated directly in JS files
+    if (behaviorCandidate.isBehaviorInstance) {
+      return behaviorCandidate
+        .init(this._fixturesHandler, this._allFixtures)
+        .then(initedBehavior => {
+          // TODO, remove the addition of extra properties when reading files. Define a mandatory id for the behavior.
+          initedBehavior.name = initedBehavior.name || object._mocksServer_lastPath;
+          this._allFixtures.add(initedBehavior.fixtures);
+          return Promise.resolve(initedBehavior);
+        })
+        .catch(err => {
+          tracer.error("Error initializing behavior");
+          tracer.debug(err.toString());
+          return Promise.resolve();
+        });
+    }
+    return Promise.resolve();
+  }
+
+  _initBehaviors(index = 0, initedBehaviors = []) {
+    if (index >= this._behaviorsCandidates.length) {
+      return Promise.resolve(initedBehaviors);
+    }
+    return this._initBehavior(index).then(initedBehavior => {
+      initedBehaviors.push(initedBehavior);
+      return this._initBehaviors(index + 1, initedBehaviors);
     });
-    return Promise.all(initBehaviors).then(initedBehaviors => {
+  }
+
+  _getBehaviorsCollection() {
+    this._behaviorsCandidates = [...this._loaders.contents];
+    return this._initBehaviors().then(initedBehaviors => {
       // TODO, remove the addition of extra properties when reading files. Define mandatory id for the behavior.
-      mocksFolderContents.forEach(content => {
+      this._loaders.contents.forEach(content => {
         if (content._mocksServer_lastPath) {
           delete content._mocksServer_lastPath;
         }

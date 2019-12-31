@@ -170,6 +170,10 @@ class FilesHandler {
   _cache() {
     return this._customRequireCache || require.cache;
   }
+
+  get displayName() {
+    return "@mocks-server/plugin-files-loader";
+  }
 }
 
 module.exports = FilesHandler;

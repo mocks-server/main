@@ -28,12 +28,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Add stop method to plugins.
 - Pass new method "load" to plugins, which allows to load fixtures or behaviors definitions.
 - Add "restartServer" method, which should be used instead of "restart".
+- Accept "displayName" property in plugins, which improves traces.
 
 ### Changed
 - Convert filesHandler into a plugin. Load it always.
 
 ### Fixed
-- Plugins start method were not being called again when core "start" method was called.
+- Plugins start method was not being called again when core "start" method was called.
 
 ## [1.2.0] - 2019-12-22
 ### Added

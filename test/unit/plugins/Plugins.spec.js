@@ -244,6 +244,17 @@ describe("Plugins", () => {
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
     });
 
+    it("should trace the plugin displayName", async () => {
+      const fooPlugin = {
+        init: sinon.spy(),
+        displayName: "foo-plugin"
+      };
+      plugins = new Plugins([fooPlugin], loaderMocks.stubs.instance, coreInstance);
+      await plugins.register();
+      await plugins.init();
+      expect(tracer.debug.calledWith('Initializing plugin "foo-plugin"')).toEqual(true);
+    });
+
     it("should accept init methods non returning a Promise", async () => {
       expect.assertions(1);
       const fooPlugin = {
@@ -348,6 +359,17 @@ describe("Plugins", () => {
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
     });
 
+    it("should trace the plugin displayName", async () => {
+      const fooPlugin = {
+        start: sinon.spy(),
+        displayName: "foo-plugin"
+      };
+      plugins = new Plugins([fooPlugin], loaderMocks.stubs.instance, coreInstance);
+      await plugins.register();
+      await plugins.start();
+      expect(tracer.debug.calledWith('Starting plugin "foo-plugin"')).toEqual(true);
+    });
+
     it("should accept start methods non returning a Promise", async () => {
       expect.assertions(1);
       const fooPlugin = {
@@ -450,6 +472,17 @@ describe("Plugins", () => {
       await plugins.stop();
       expect(fooPlugin.stop.callCount).toEqual(1);
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
+    });
+
+    it("should trace the plugin displayName", async () => {
+      const fooPlugin = {
+        stop: sinon.spy(),
+        displayName: "foo-plugin"
+      };
+      plugins = new Plugins([fooPlugin], loaderMocks.stubs.instance, coreInstance);
+      await plugins.register();
+      await plugins.stop();
+      expect(tracer.debug.calledWith('Stopping plugin "foo-plugin"')).toEqual(true);
     });
 
     it("should accept stop methods non returning a Promise", async () => {

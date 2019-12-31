@@ -59,6 +59,10 @@ class Plugins {
     });
   }
 
+  pluginDisplayName(index) {
+    return this._pluginsInstances[index].displayName || index;
+  }
+
   _catchRegisterError(error) {
     console.log("Error registering plugin");
     console.log(error);
@@ -115,7 +119,7 @@ class Plugins {
 
   _catchInitError(error, index) {
     this._pluginsInitialized = this._pluginsInitialized - 1;
-    tracer.error(`Error initializating plugin ${index}`);
+    tracer.error(`Error initializating plugin ${this.pluginDisplayName(index)}`);
     tracer.debug(error.toString());
     return Promise.resolve();
   }
@@ -125,7 +129,7 @@ class Plugins {
       return Promise.resolve();
     }
     this._pluginsInitialized++;
-    tracer.debug(`Initializing plugin ${pluginIndex}`);
+    tracer.debug(`Initializing plugin "${this.pluginDisplayName(pluginIndex)}"`);
     const initNextPlugin = () => {
       return this._initPlugins(pluginIndex + 1);
     };
@@ -141,7 +145,6 @@ class Plugins {
         this._pluginsMethods[pluginIndex]
       );
     } catch (error) {
-      console.log(error);
       return this._catchInitError(error, pluginIndex).then(initNextPlugin);
     }
 
@@ -157,7 +160,7 @@ class Plugins {
 
   _catchStartError(error, index) {
     this._pluginsStarted = this._pluginsStarted - 1;
-    tracer.error(`Error starting plugin ${index}`);
+    tracer.error(`Error starting plugin "${this.pluginDisplayName(index)}"`);
     tracer.debug(error.toString());
     return Promise.resolve();
   }
@@ -167,7 +170,7 @@ class Plugins {
       return Promise.resolve();
     }
     this._pluginsStarted++;
-    tracer.debug(`Starting plugin ${pluginIndex}`);
+    tracer.debug(`Starting plugin "${this.pluginDisplayName(pluginIndex)}"`);
     const startNextPlugin = () => {
       return this._startPlugins(pluginIndex + 1);
     };
@@ -198,7 +201,7 @@ class Plugins {
 
   _catchStopError(error, index) {
     this._pluginsStopped = this._pluginsStopped - 1;
-    tracer.error(`Error stopping plugin ${index}`);
+    tracer.error(`Error stopping plugin "${this.pluginDisplayName(index)}"`);
     tracer.debug(error.toString());
     return Promise.resolve();
   }
@@ -208,7 +211,7 @@ class Plugins {
       return Promise.resolve();
     }
     this._pluginsStopped++;
-    tracer.debug(`Stopping plugin ${pluginIndex}`);
+    tracer.debug(`Stopping plugin "${this.pluginDisplayName(pluginIndex)}"`);
     const stopNextPlugin = () => {
       return this._stopPlugins(pluginIndex + 1);
     };

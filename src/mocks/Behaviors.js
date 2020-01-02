@@ -96,8 +96,7 @@ class Behaviors {
           return Promise.resolve();
         }
       } else {
-        behaviorCandidate = new Behavior(object.fixtures);
-        behaviorCandidate.id = object.id;
+        behaviorCandidate = new Behavior(object.fixtures, { id: object.id });
       }
     }
     // Behaviors instantiated directly in JS files

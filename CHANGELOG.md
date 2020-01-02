@@ -30,15 +30,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Behaviors can now be defined in json format.
 - Add behavior "id" property, to be used instead of "name".
+- Accept new options object as second argument when defining behaviors programmatically. "id" can be provided as an option.
 - Add behaviors "currentId" and "ids" getters, to be used instead of "currentName" and "names"
 - Add stop method to plugins.
-- Pass new method "load" to plugins, which allows to load fixtures or behaviors definitions.
+- Pass new method "load" to plugins, which allows to load fixtures or behaviors definitions programmatically.
 - Add "restartServer" method, which should be used instead of "restart".
 - Accept "displayName" property in plugins, which improves traces.
-- Accept "id" property to fixtures.
+- Accept "id" property in fixtures.
 
 ### Changed
-- Convert filesHandler into a plugin. Load it always.
+- Convert filesHandler into a plugin. Load it always internally.
 
 ### Fixed
 - Plugins start method was not being called again when core "start" method was called.

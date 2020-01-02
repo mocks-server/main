@@ -155,6 +155,13 @@ describe("Behavior", () => {
       behavior.id = "foo";
       expect(behavior.id).toEqual("foo");
     });
+
+    it("should return id when passed as an option", async () => {
+      const behavior = new Behavior(fooBehaviorData, {
+        id: "foo"
+      });
+      expect(behavior.id).toEqual("foo");
+    });
   });
 
   describe("extend method", () => {
@@ -189,6 +196,14 @@ describe("Behavior", () => {
       ]);
       await extendedBehavior.init(fixturesHandler);
       expect(extendedBehavior.fixtures.length).toEqual(4);
+    });
+
+    it("should define id when passed as an option", async () => {
+      const behavior = new Behavior(fooBehaviorData);
+      const extendedBehavior = behavior.extend([], {
+        id: "foo"
+      });
+      expect(extendedBehavior.id).toEqual("foo");
     });
   });
 });

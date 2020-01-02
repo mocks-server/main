@@ -14,18 +14,16 @@ const { Behavior } = require("../../../../index");
 
 const { getUsers, getUser, getUser2, getRealUser } = require("./fixtures/users");
 
-const behavior1 = new Behavior([getUsers, getUser], {
-  id: "standard"
-});
+const standard = new Behavior([getUsers, getUser]);
 
 // Extends the standard behavior adding "getUser2" fixture.
-const behavior2 = behavior1.extend([getUser2], {
-  id: "user2"
-});
+const user2 = standard.extend([getUser2]);
 
 // Extends the standard behavior adding "getRealUser" dynamic fixture.
-const behavior3 = behavior1.extend([getRealUser], {
-  id: "dynamic"
-});
+const dynamic = standard.extend([getRealUser]);
 
-module.exports = [behavior1, behavior2, behavior3];
+module.exports = {
+  standard,
+  user2,
+  dynamic
+};

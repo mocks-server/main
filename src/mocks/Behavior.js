@@ -11,17 +11,20 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
+const tracer = require("../tracer");
+
 const FixturesGroup = require("./FixturesGroup");
 
 class Behavior {
-  constructor(fixtures = [], parent = null) {
+  constructor(fixtures = [], options = {}, parent = null) {
+    this._id = options.id;
     this._initialFixtures = [...fixtures];
     this._fixtures = new FixturesGroup(this._initialFixtures);
     this._parent = parent;
   }
 
-  extend(fixtures) {
-    return new Behavior(this._initialFixtures.concat(fixtures), this);
+  extend(fixtures, options) {
+    return new Behavior(this._initialFixtures.concat(fixtures), options, this);
   }
 
   async init(fixturesHandler, allFixtures) {
@@ -47,11 +50,13 @@ class Behavior {
 
   // TODO, deprecate. Use id instead
   get name() {
+    tracer.deprecationWarn("name", "id");
     return this._id;
   }
 
   // TODO, deprecate. Use id instead
   set name(id) {
+    tracer.deprecationWarn("name", "id");
     this._id = id;
   }
 

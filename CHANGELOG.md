@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.3.0] - 
 ### Added
+- Behaviors can now be defined in json format.
 - Add stop method to plugins.
 - Pass new method "load" to plugins, which allows to load fixtures or behaviors definitions.
 - Add "restartServer" method, which should be used instead of "restart".

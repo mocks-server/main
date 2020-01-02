@@ -13,7 +13,7 @@ const sinon = require("sinon");
 const Boom = require("@hapi/boom");
 
 const CoreMocks = require("../Core.mocks.js");
-const FilesHandlerMocks = require("../plugins/FilesLoader.mocks");
+const FilesLoaderMocks = require("../plugins/FilesLoader.mocks");
 const AllFixturesMocks = require("./Fixtures.mocks");
 const FixturesHandler = require("../../../src/mocks/FixturesHandler");
 const FixtureHandler = require("../../../src/mocks/FixtureHandler");
@@ -26,8 +26,8 @@ describe("Behaviors", () => {
   let sandbox;
   let coreMocks;
   let coreInstance;
-  let filesHandlerMock;
-  let filesHandlerInstance;
+  let filesLoaderMock;
+  let filesLoaderInstance;
   let allFixturesMock;
   let allFixturesInstance;
   let fixturesHandler;
@@ -36,8 +36,8 @@ describe("Behaviors", () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     sandbox.stub(Boom, "badData").returns(fooBoomError);
-    filesHandlerMock = new FilesHandlerMocks();
-    filesHandlerInstance = filesHandlerMock.stubs.instance;
+    filesLoaderMock = new FilesLoaderMocks();
+    filesLoaderInstance = filesLoaderMock.stubs.instance;
     allFixturesMock = new AllFixturesMocks();
     allFixturesInstance = allFixturesMock.stubs.instance;
     coreMocks = new CoreMocks();
@@ -49,7 +49,7 @@ describe("Behaviors", () => {
     fixturesHandler = new FixturesHandler();
     fixturesHandler.addHandler(FixtureHandler);
     behaviors = new Behaviors(
-      filesHandlerInstance,
+      filesLoaderInstance,
       coreInstance.settings,
       coreInstance._eventEmitter
     );
@@ -57,7 +57,7 @@ describe("Behaviors", () => {
 
   afterEach(() => {
     sandbox.restore();
-    filesHandlerMock.restore();
+    filesLoaderMock.restore();
     coreMocks.restore();
   });
 
@@ -76,12 +76,166 @@ describe("Behaviors", () => {
       );
     });
 
-    it("should trace an error a behavior throws an error during inititalization", async () => {
-      const originalInitFunc = FilesHandlerMocks.contents[0].init;
-      FilesHandlerMocks.contents[0].init = () => Promise.reject(new Error("foo error"));
+    it("should trace an error if a behavior throws an error during inititalization", async () => {
+      const originalInitFunc = FilesLoaderMocks.contents[0].init;
+      FilesLoaderMocks.contents[0].init = () => Promise.reject(new Error("foo error"));
       await behaviors.init(fixturesHandler, allFixturesInstance);
-      expect(tracer.debug.getCall(2).args[0]).toEqual(expect.stringContaining("foo error"));
-      FilesHandlerMocks.contents[0].init = originalInitFunc;
+      FilesLoaderMocks.contents[0].init = originalInitFunc;
+      expect(tracer.debug.getCall(1).args[0]).toEqual(expect.stringContaining("foo error"));
+    });
+  });
+
+  describe("when initializated with json behavior definitions", () => {
+    let originalFilesLoaderContents;
+    beforeEach(() => {
+      originalFilesLoaderContents = FilesLoaderMocks.contents;
+      FilesLoaderMocks.contents = [
+        {
+          from: "behavior2",
+          id: "behavior3",
+          fixtures: ["get-user-3"]
+        },
+        {
+          from: "behavior1",
+          id: "behavior2",
+          fixtures: ["get-user-2"]
+        },
+        "foo",
+        5,
+        false,
+        {
+          id: "get-user-1",
+          url: "/api/users/:id",
+          method: "GET",
+          response: {
+            status: 200,
+            body: {}
+          }
+        },
+        {
+          id: "get-user-2",
+          url: "/api/users/:id",
+          method: "GET",
+          response: {
+            status: 200,
+            body: {}
+          }
+        },
+        {
+          id: "get-user-3",
+          url: "/api/users/:id",
+          method: "GET",
+          response: {
+            status: 200,
+            body: {}
+          }
+        },
+        {
+          id: "behavior1",
+          fixtures: ["get-user-1"]
+        }
+      ];
+      filesLoaderMock = new FilesLoaderMocks();
+      filesLoaderInstance = filesLoaderMock.stubs.instance;
+      behaviors = new Behaviors(
+        filesLoaderInstance,
+        coreInstance.settings,
+        coreInstance._eventEmitter
+      );
+    });
+
+    afterEach(() => {
+      FilesLoaderMocks.contents = originalFilesLoaderContents;
+    });
+
+    it("should create behaviors", async () => {
+      await behaviors.init(fixturesHandler, allFixturesInstance);
+      expect(behaviors.count).toEqual(3);
+    });
+  });
+
+  describe("when initializated with json behavior definitions containing wrong extend properties", () => {
+    let originalFilesLoaderContents;
+    beforeEach(() => {
+      originalFilesLoaderContents = FilesLoaderMocks.contents;
+      FilesLoaderMocks.contents = [
+        {
+          from: "behavior2",
+          id: "behavior3",
+          fixtures: ["get-user-3"]
+        },
+        {
+          from: "behavior1",
+          id: "behavior2",
+          fixtures: ["get-user-2"]
+        },
+        {
+          from: "behavior5",
+          id: "behavior5",
+          fixtures: ["get-user-1"]
+        },
+        {
+          id: "behavior1",
+          fixtures: ["get-user-1"]
+        }
+      ];
+      filesLoaderMock = new FilesLoaderMocks();
+      filesLoaderInstance = filesLoaderMock.stubs.instance;
+      behaviors = new Behaviors(
+        filesLoaderInstance,
+        coreInstance.settings,
+        coreInstance._eventEmitter
+      );
+    });
+
+    afterEach(() => {
+      FilesLoaderMocks.contents = originalFilesLoaderContents;
+    });
+
+    it("should create only behaviors with right definitions", async () => {
+      await behaviors.init(fixturesHandler, allFixturesInstance);
+      expect(behaviors.count).toEqual(3);
+    });
+  });
+
+  describe("when initializated with json behavior definitions containing duplicated ids", () => {
+    let originalFilesLoaderContents;
+    beforeEach(() => {
+      originalFilesLoaderContents = FilesLoaderMocks.contents;
+      FilesLoaderMocks.contents = [
+        {
+          id: "behavior1",
+          fixtures: ["get-user-3"]
+        },
+        {
+          id: "behavior2",
+          fixtures: ["get-user-2"]
+        },
+        {
+          id: "behavior1",
+          fixtures: ["get-user-3"]
+        },
+        {
+          id: "behavior2",
+          fixtures: ["get-user-2"]
+        }
+      ];
+      filesLoaderMock = new FilesLoaderMocks();
+      filesLoaderInstance = filesLoaderMock.stubs.instance;
+      behaviors = new Behaviors(
+        filesLoaderInstance,
+        coreInstance.settings,
+        coreInstance._eventEmitter
+      );
+    });
+
+    afterEach(() => {
+      FilesLoaderMocks.contents = originalFilesLoaderContents;
+    });
+
+    it("should create behaviors with same id only once", async () => {
+      await behaviors.init(fixturesHandler, allFixturesInstance);
+      expect(behaviors.count).toEqual(2);
     });
   });
 
@@ -109,7 +263,7 @@ describe("Behaviors", () => {
     });
 
     it("should return an empty behavior if current was not found", async () => {
-      filesHandlerInstance.contents = [];
+      filesLoaderInstance.contents = [];
       await behaviors.init(fixturesHandler, allFixturesInstance);
       expect(behaviors.current.fixtures.length).toEqual(0);
     });

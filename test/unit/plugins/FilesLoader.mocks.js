@@ -15,7 +15,7 @@ jest.mock("../../../src/plugins/FilesLoader");
 
 const FilesLoader = require("../../../src/plugins/FilesLoader");
 
-const INITIAL_FILES = {
+let INITIAL_FILES = {
   file1: {
     _mocksServer_isFile: true,
     behavior1: new Behavior([
@@ -59,11 +59,15 @@ const INITIAL_FILES = {
 INITIAL_FILES.file1.behavior1._mocksServer_lastPath = "behavior1";
 INITIAL_FILES.file2.behavior2._mocksServer_lastPath = "behavior2";
 
-const INITIAL_CONTENTS = [INITIAL_FILES.file1.behavior1, INITIAL_FILES.file2.behavior2, {}];
+let INITIAL_CONTENTS = [INITIAL_FILES.file1.behavior1, INITIAL_FILES.file2.behavior2, {}];
 
 class Mock {
   static get files() {
     return INITIAL_FILES;
+  }
+
+  static set contents(newContents) {
+    INITIAL_CONTENTS = newContents;
   }
 
   static get contents() {

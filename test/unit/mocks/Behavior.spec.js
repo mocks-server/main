@@ -95,9 +95,9 @@ describe("Behavior", () => {
       expect(behavior.extendedFrom).toEqual(null);
     });
 
-    it("should return parent name", async () => {
+    it("should return parent id", async () => {
       const behavior = new Behavior(fooBehaviorData);
-      behavior.name = "foo-behavior";
+      behavior.id = "foo-behavior";
       const behavior2 = behavior.extend();
       await behavior.init(fixturesHandler);
       await behavior2.init(fixturesHandler);
@@ -134,10 +134,26 @@ describe("Behavior", () => {
   });
 
   describe("name getter", () => {
-    it("should return name", async () => {
+    it("should return id", async () => {
+      const behavior = new Behavior(fooBehaviorData);
+      behavior.id = "foo";
+      expect(behavior.name).toEqual("foo");
+    });
+  });
+
+  describe("name setter", () => {
+    it("should set id", async () => {
       const behavior = new Behavior(fooBehaviorData);
       behavior.name = "foo";
-      expect(behavior.name).toEqual("foo");
+      expect(behavior.id).toEqual("foo");
+    });
+  });
+
+  describe("id getter", () => {
+    it("should return id", async () => {
+      const behavior = new Behavior(fooBehaviorData);
+      behavior.id = "foo";
+      expect(behavior.id).toEqual("foo");
     });
   });
 

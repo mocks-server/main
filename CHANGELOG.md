@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Remove "onLoadMocks" method, use "onChangeMocks"
 - Remove the addition of extra properties when reading files. Define a name for the behavior with a mandatory option.
 - Remove "restart" method, use "restartServer"
+- Remove behavior "name" property. Use id instead.
+- Remove behaviors "currentName" getter. Use "currentId" instead
+- Remove behaviors "names" getter. Use "ids" instead
 
 ## [unreleased]
 ### Added
@@ -26,11 +29,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.3.0] - 
 ### Added
 - Behaviors can now be defined in json format.
+- Add behavior "id" property, to be used instead of "name".
+- Add behaviors "currentId" and "ids" getters, to be used instead of "currentName" and "names"
 - Add stop method to plugins.
 - Pass new method "load" to plugins, which allows to load fixtures or behaviors definitions.
 - Add "restartServer" method, which should be used instead of "restart".
 - Accept "displayName" property in plugins, which improves traces.
-- Accept "id" property in fixtures.
+- Accept "id" property to fixtures.
 
 ### Changed
 - Convert filesHandler into a plugin. Load it always.

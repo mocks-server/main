@@ -260,7 +260,7 @@ describe("Behaviors", () => {
       await behaviors.init(fixturesHandler, allFixturesInstance);
       await behaviors.process();
       behaviors.current = "behavior2";
-      expect(behaviors.current.name).toEqual("behavior2");
+      expect(behaviors.current.id).toEqual("behavior2");
     });
   });
 
@@ -268,7 +268,7 @@ describe("Behaviors", () => {
     it("should return the first behavior if current was not set", async () => {
       await behaviors.init(fixturesHandler, allFixturesInstance);
       await behaviors.process();
-      expect(behaviors.current.name).toEqual("behavior1");
+      expect(behaviors.current.id).toEqual("behavior1");
     });
 
     it("should return an empty behavior if current was not found", async () => {
@@ -299,7 +299,7 @@ describe("Behaviors", () => {
     it("should return the current selected behavior", async () => {
       await behaviors.init(fixturesHandler, allFixturesInstance);
       await behaviors.process();
-      expect(behaviors.currentFromCollection.name).toEqual("behavior1");
+      expect(behaviors.currentFromCollection.id).toEqual("behavior1");
     });
   });
 
@@ -307,13 +307,30 @@ describe("Behaviors", () => {
     it("should return behaviors object", async () => {
       await behaviors.init(fixturesHandler, allFixturesInstance);
       await behaviors.process();
-      expect(behaviors.all.behavior1.name).toEqual("behavior1");
-      expect(behaviors.all.behavior2.name).toEqual("behavior2");
+      expect(behaviors.all.behavior1.id).toEqual("behavior1");
+      expect(behaviors.all.behavior2.id).toEqual("behavior2");
+    });
+  });
+
+  describe("ids getter", () => {
+    it("should return all behaviors ids", async () => {
+      await behaviors.init(fixturesHandler, allFixturesInstance);
+      await behaviors.process();
+      expect(behaviors.ids).toEqual(["behavior1", "behavior2"]);
+    });
+  });
+
+  describe("currentId getter", () => {
+    it("should return current behavior id", async () => {
+      coreInstance.settings.get.withArgs("behavior").returns("behavior2");
+      await behaviors.init(fixturesHandler, allFixturesInstance);
+      await behaviors.process();
+      expect(behaviors.currentId).toEqual("behavior2");
     });
   });
 
   describe("names getter", () => {
-    it("should return all behaviors names", async () => {
+    it("should return all behaviors ids", async () => {
       await behaviors.init(fixturesHandler, allFixturesInstance);
       await behaviors.process();
       expect(behaviors.names).toEqual(["behavior1", "behavior2"]);
@@ -321,7 +338,7 @@ describe("Behaviors", () => {
   });
 
   describe("currentName getter", () => {
-    it("should return current behavior name", async () => {
+    it("should return current behavior id", async () => {
       coreInstance.settings.get.withArgs("behavior").returns("behavior2");
       await behaviors.init(fixturesHandler, allFixturesInstance);
       await behaviors.process();

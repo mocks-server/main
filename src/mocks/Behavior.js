@@ -42,15 +42,25 @@ class Behavior {
   }
 
   get extendedFrom() {
-    return this._parent ? this._parent.name : null;
+    return this._parent ? this._parent.id : null;
   }
 
+  // TODO, deprecate. Use id instead
   get name() {
-    return this._name; // Prepared for defining behavior names based on property, file name, etc.
+    return this._id;
   }
 
-  set name(name) {
-    this._name = name;
+  // TODO, deprecate. Use id instead
+  set name(id) {
+    this._id = id;
+  }
+
+  get id() {
+    return this._id;
+  }
+
+  set id(id) {
+    this._id = id;
   }
 }
 

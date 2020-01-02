@@ -39,7 +39,7 @@ class Behaviors {
     tracer.debug("Processing behaviors");
     this._collection = await this._getBehaviorsCollection();
     this._behaviors = this._getBehaviorsObject();
-    this._names = Object.keys(this._behaviors);
+    this._ids = Object.keys(this._behaviors);
     this._current = this._settings.get("behavior");
 
     tracer.verbose(`Processed ${this._collection.length} behaviors`);
@@ -48,9 +48,9 @@ class Behaviors {
       this._checkCurrent(this._current);
     } catch (error) {
       tracer.warn(`Defined behavior "${this._current}" was not found.`);
-      this._current = this._names[0];
+      this._current = this._ids[0];
       if (this._current) {
-        tracer.warn(`Inititializing with first found behavior: "${this._names[0]}"`);
+        tracer.warn(`Inititializing with first found behavior: "${this._ids[0]}"`);
         this._settings.set("behavior", this._current);
       }
     }
@@ -84,11 +84,11 @@ class Behaviors {
     if (this._isBehaviorDefinition(object)) {
       if (object.from) {
         const parentBehavior = initedBehaviors.find(
-          behavior => behavior && behavior.name === object.from
+          behavior => behavior && behavior.id === object.from
         );
         if (parentBehavior) {
           behaviorCandidate = parentBehavior.extend(object.fixtures);
-          behaviorCandidate.name = object.id;
+          behaviorCandidate.id = object.id;
         } else {
           if (!this._areAllCandidatesChecked()) {
             this._behaviorsCandidates.push(object);
@@ -97,7 +97,7 @@ class Behaviors {
         }
       } else {
         behaviorCandidate = new Behavior(object.fixtures);
-        behaviorCandidate.name = object.id;
+        behaviorCandidate.id = object.id;
       }
     }
     // Behaviors instantiated directly in JS files
@@ -106,7 +106,7 @@ class Behaviors {
         .init(this._fixturesHandler, this._allFixtures)
         .then(initedBehavior => {
           // TODO, remove the addition of extra properties when reading files. Define a mandatory id for the behavior.
-          initedBehavior.name = initedBehavior.name || object._mocksServer_lastPath;
+          initedBehavior.id = initedBehavior.id || object._mocksServer_lastPath;
           this._allFixtures.add(initedBehavior.fixtures);
           return Promise.resolve(initedBehavior);
         })
@@ -138,27 +138,27 @@ class Behaviors {
           delete content._mocksServer_lastPath;
         }
       });
-      return Promise.resolve(uniqBy(compact(initedBehaviors), behavior => behavior.name));
+      return Promise.resolve(uniqBy(compact(initedBehaviors), behavior => behavior.id));
     });
   }
 
   _getBehaviorsObject() {
-    const behaviorsByName = {};
+    const behaviorsById = {};
     this._collection.map(behavior => {
-      behaviorsByName[behavior.name] = behavior;
+      behaviorsById[behavior.id] = behavior;
     });
-    return behaviorsByName;
+    return behaviorsById;
   }
 
-  _checkCurrent(behaviorName) {
-    if (!this._names.includes(behaviorName)) {
-      throw Boom.badData(`Behavior not found: ${behaviorName}`);
+  _checkCurrent(behaviorId) {
+    if (!this._ids.includes(behaviorId)) {
+      throw Boom.badData(`Behavior not found: ${behaviorId}`);
     }
   }
 
-  set current(behaviorName) {
-    this._checkCurrent(behaviorName);
-    this._current = behaviorName;
+  set current(behaviorId) {
+    this._checkCurrent(behaviorId);
+    this._current = behaviorId;
   }
 
   get current() {
@@ -169,15 +169,27 @@ class Behaviors {
     return this._behaviors;
   }
 
+  // TODO, deprecate, use ids instead
   get names() {
-    return this._names;
+    tracer.deprecationWarn("names", "ids");
+    return this._ids;
+  }
+
+  get ids() {
+    return this._ids;
   }
 
   get count() {
-    return this._names.length;
+    return this._ids.length;
   }
 
+  // TODO, deprecate, use currentId instead
   get currentName() {
+    tracer.deprecationWarn("currentName", "currentId");
+    return this._current;
+  }
+
+  get currentId() {
     return this._current;
   }
 

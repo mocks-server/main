@@ -32,10 +32,10 @@ class Behaviors {
     this._fixturesHandler = fixturesHandler;
     this._allFixtures = allFixtures;
     await this._noBehavior.init(this._fixturesHandler, allFixtures);
-    return this.processBehaviors();
+    return Promise.resolve();
   }
 
-  async processBehaviors() {
+  async process() {
     tracer.debug("Processing behaviors");
     this._collection = await this._getBehaviorsCollection();
     this._behaviors = this._getBehaviorsObject();

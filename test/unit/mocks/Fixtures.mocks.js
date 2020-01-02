@@ -22,7 +22,7 @@ class Mock {
     this._stubs = {
       add: this._sandbox.stub().returns(),
       init: this._sandbox.stub().resolves(),
-      processFixtures: this._sandbox.stub().resolves(),
+      process: this._sandbox.stub().resolves(),
       collection: []
     };
 

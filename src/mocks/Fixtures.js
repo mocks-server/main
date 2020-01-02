@@ -21,7 +21,7 @@ class Fixtures {
 
   async init(fixturesHandler) {
     this._fixturesHandler = fixturesHandler;
-    return this.processFixtures();
+    return Promise.resolve();
   }
 
   add(fixtures) {
@@ -36,7 +36,7 @@ class Fixtures {
     });
   }
 
-  async processFixtures() {
+  async process() {
     tracer.debug("Processing fixtures");
     this._fixtures = await this._getFixtures();
     tracer.verbose(`Processed ${this._fixtures.collection.length} fixtures`);

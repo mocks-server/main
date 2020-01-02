@@ -65,8 +65,10 @@ describe("Fixtures", () => {
         coreInstance._eventEmitter
       );
       await fixtures.init(fixturesHandler);
+      await fixtures.process();
       expect(fixtures.count).toEqual(1);
       await behaviors.init(fixturesHandler, fixtures);
+      await behaviors.process();
       expect(fixtures.count).toEqual(2);
     });
   });

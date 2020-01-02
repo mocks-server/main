@@ -37,8 +37,8 @@ class Mocks {
   }
 
   async processLoadedMocks() {
-    await this._fixtures.processFixtures();
-    return this._behaviors.processBehaviors();
+    await this._fixtures.process();
+    return this._behaviors.process();
   }
 
   get behaviors() {

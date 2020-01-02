@@ -76,8 +76,8 @@ describe("Behaviors", () => {
       expect.assertions(2);
       await mocks.init();
       await mocks.processLoadedMocks();
-      expect(behaviorsMocks.stubs.instance.processBehaviors.callCount).toEqual(1);
-      expect(fixturesMocks.stubs.instance.processFixtures.callCount).toEqual(1);
+      expect(behaviorsMocks.stubs.instance.process.callCount).toEqual(1);
+      expect(fixturesMocks.stubs.instance.process.callCount).toEqual(1);
     });
   });
 });

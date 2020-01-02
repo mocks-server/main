@@ -24,7 +24,7 @@ class Mock {
       current: {},
       init: this._sandbox.stub().resolves(),
       start: this._sandbox.stub().resolves(),
-      processBehaviors: this._sandbox.stub().resolves()
+      process: this._sandbox.stub().resolves()
     };
 
     Behaviors.mockImplementation(() => this._stubs);

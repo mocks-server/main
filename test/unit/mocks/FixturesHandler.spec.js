@@ -59,6 +59,33 @@ describe("FixturesHandler", () => {
       expect(collection.length).toEqual(1);
     });
 
+    it("should accept already parsed fixtures", async () => {
+      const collection = fixturesHandler.getCollection([
+        {
+          url: "/api/foo/foo-uri",
+          method: "GET",
+          response: {
+            status: 200,
+            body: {
+              fooProperty: "foo"
+            }
+          }
+        },
+        {
+          url: "/api/foo/foo-uri-2",
+          method: "POST",
+          response: {
+            status: 200,
+            body: {
+              fooProperty: "foo"
+            }
+          }
+        }
+      ]);
+      const secondCollection = fixturesHandler.getCollection(collection);
+      expect(secondCollection.length).toEqual(2);
+    });
+
     it("should not add twice duplicated fixtures", async () => {
       const collection = fixturesHandler.getCollection([
         {

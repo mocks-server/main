@@ -12,7 +12,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 "use strict";
 
 const { compact } = require("lodash");
-const { debug } = require("../tracer");
+const tracer = require("../tracer");
 
 class FixturesGroup {
   constructor(fixtures = []) {
@@ -28,7 +28,7 @@ class FixturesGroup {
               return existantFixture.id === fixture;
             });
             if (!realFixture) {
-              debug(`Fixture with id "${fixture}" was not found and will be omitted`);
+              tracer.debug(`Fixture with id "${fixture}" was not found and will be ignored`);
             }
             return realFixture;
           }

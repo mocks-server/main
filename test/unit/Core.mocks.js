@@ -36,6 +36,7 @@ class CoreMock {
         error: this._sandbox.stub()
       },
       onChangeSettings: this._sandbox.stub(),
+      onChangeMocks: this._sandbox.stub(),
       onLoadMocks: this._sandbox.stub(),
       addCustomRouter: this._sandbox.stub(),
       addCustomSetting: this._sandbox.stub(),

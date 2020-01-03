@@ -71,7 +71,7 @@ describe("start method", () => {
 
     it("should emit a watch-reload event when core emits a load:mocks event", async () => {
       await cli.start();
-      coreMocks.stubs.instance.onChangeSettings.getCall(0).args[0]();
+      coreMocks.stubs.instance.onChangeMocks.getCall(0).args[0]();
       expect(coreMocks.stubs.instance._eventEmitter.emit.getCall(0).args[0]).toEqual(
         "watch-reload"
       );

@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [1.3.0] - 
+## [1.3.0] - 2020-01-03
 ### Added
 - Behaviors can now be defined in json format.
 - Add behavior "id" property, to be used instead of "name".

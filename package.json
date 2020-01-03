@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/plugin-admin-api",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Plugin for Mocks Server. Provides a REST API for administrating settings, fixtures and behaviors",
   "keywords": [
     "mocks-server-plugin",
@@ -32,7 +32,7 @@
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "peerDependencies": {
-    "@mocks-server/core": "^1.1.0"
+    "@mocks-server/core": "^1.3.0"
   },
   "dependencies": {
     "@mocks-server/admin-api-paths": "1.0.2",

@@ -23,12 +23,13 @@ class BehaviorsApi {
     this._behaviors = this._core.behaviors;
     this._router = express.Router();
     this._router.get("/", this.getCollection.bind(this));
-    this._router.get("/:name", this.getModel.bind(this));
+    this._router.get("/:id", this.getModel.bind(this));
   }
 
   _parseModel(behavior) {
     return {
-      name: behavior.name,
+      id: behavior.id,
+      name: behavior.name, // TODO, deprecate name property
       fixtures: behavior.fixtures.map(fixture => fixture.id),
       extendedFrom: behavior.extendedFrom
     };
@@ -45,14 +46,14 @@ class BehaviorsApi {
   }
 
   getModel(req, res, next) {
-    const name = req.params.name;
-    this._tracer.verbose(`${PLUGIN_NAME}: Sending behavior ${name} | ${req.id}`);
-    const foundBehavior = this._behaviors.collection.find(behavior => behavior.name === name);
+    const id = req.params.id;
+    this._tracer.verbose(`${PLUGIN_NAME}: Sending behavior ${id} | ${req.id}`);
+    const foundBehavior = this._behaviors.collection.find(behavior => behavior.id === id);
     if (foundBehavior) {
       res.status(200);
       res.send(this._parseModel(foundBehavior));
     } else {
-      next(Boom.notFound(`Behavior with name "${name}" was not found`));
+      next(Boom.notFound(`Behavior with id "${id}" was not found`));
     }
   }
 

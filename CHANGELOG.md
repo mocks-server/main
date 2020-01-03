@@ -6,12 +6,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [To be deprecated]
 - Remove deprecated "/mocks" api path.
+- Remove property "name" from behavior model.
 
 ## [unreleased]
 ### Added
 ### Changed
 ### Fixed
 ### Removed
+
+## [1.3.0] - 2019-01-03
+### Added
+- Add property id to behaviors model.
+
+### Changed
+- Upgrade dependencies.
 
 ## [1.2.1] - 2019-12-25
 ### Changed

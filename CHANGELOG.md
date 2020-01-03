@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.2.0] - 2020-01-04
+
 ## [1.1.0] - 2019-12-07
 ### Changed
 - Upgrade "@mocks-server" core dependency. Use new "path" option.

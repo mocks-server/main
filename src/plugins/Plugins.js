@@ -222,7 +222,10 @@ class Plugins {
     }
     let pluginStop;
     try {
-      pluginStop = this._pluginsInstances[pluginIndex].stop();
+      pluginStop = this._pluginsInstances[pluginIndex].stop(
+        this._core,
+        this._pluginsMethods[pluginIndex]
+      );
     } catch (error) {
       return this._catchStopError(error, pluginIndex).then(stopNextPlugin);
     }

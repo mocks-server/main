@@ -13,49 +13,44 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const Boom = require("@hapi/boom");
 
-const { compact } = require("lodash");
+const { compact, uniqBy } = require("lodash");
 
 const tracer = require("../tracer");
 const Behavior = require("./Behavior");
 
-const { CHANGE_MOCKS, CHANGE_FIXTURES, CHANGE_SETTINGS } = require("../eventNames");
+const { CHANGE_MOCKS } = require("../eventNames");
 
 class Behaviors {
-  constructor(filesHandler, settings, eventEmitter) {
-    this._filesHandler = filesHandler;
+  constructor(loaders, settings, eventEmitter) {
+    this._loaders = loaders;
     this._settings = settings;
     this._eventEmitter = eventEmitter;
-    this._onLoadFixtures = this._onLoadFixtures.bind(this);
-    this._onChangeSettings = this._onChangeSettings.bind(this);
     this._noBehavior = new Behavior();
   }
 
   async init(fixturesHandler, allFixtures) {
     this._fixturesHandler = fixturesHandler;
     this._allFixtures = allFixtures;
-    this._eventEmitter.on(CHANGE_FIXTURES, this._onLoadFixtures);
-    this._eventEmitter.on(CHANGE_SETTINGS, this._onChangeSettings);
-    await this._noBehavior.init(this._fixturesHandler);
-    return this._loadBehaviors();
+    await this._noBehavior.init(this._fixturesHandler, allFixtures);
+    return Promise.resolve();
   }
 
-  async _loadBehaviors() {
+  async process() {
     tracer.debug("Processing behaviors");
     this._collection = await this._getBehaviorsCollection();
-    this._filesHandler.cleanContentsCustomProperties();
     this._behaviors = this._getBehaviorsObject();
-    this._names = Object.keys(this._behaviors);
+    this._ids = Object.keys(this._behaviors);
     this._current = this._settings.get("behavior");
 
-    tracer.verbose(`Loaded ${this._collection.length} behaviors`);
+    tracer.verbose(`Processed ${this._collection.length} behaviors`);
 
     try {
       this._checkCurrent(this._current);
     } catch (error) {
       tracer.warn(`Defined behavior "${this._current}" was not found.`);
-      this._current = this._names[0];
+      this._current = this._ids[0];
       if (this._current) {
-        tracer.warn(`Inititializing with first found behavior: "${this._names[0]}"`);
+        tracer.warn(`Inititializing with first found behavior: "${this._ids[0]}"`);
         this._settings.set("behavior", this._current);
       }
     }
@@ -64,62 +59,105 @@ class Behaviors {
     return Promise.resolve();
   }
 
-  _onLoadFixtures() {
-    this._loadBehaviors();
+  _isBehaviorDefinition(object) {
+    return !!(
+      !(object instanceof Behavior) &&
+      object.fixtures &&
+      Array.isArray(object.fixtures) &&
+      object.id
+    );
   }
 
-  _onChangeSettings(changeDetails) {
-    if (changeDetails.hasOwnProperty("behavior")) {
-      this.current = changeDetails.behavior;
+  _factorial(number) {
+    if (number <= 1) return 1;
+    return number * this._factorial(number - 1);
+  }
+
+  _areAllCandidatesChecked() {
+    return this._behaviorsCandidates.length > this._factorial(this._loaders.contents.length);
+  }
+
+  _initBehavior(index, initedBehaviors) {
+    const object = this._behaviorsCandidates[index];
+    let behaviorCandidate = object;
+    // Behaviors defined in json file
+    if (this._isBehaviorDefinition(object)) {
+      if (object.from) {
+        const parentBehavior = initedBehaviors.find(
+          behavior => behavior && behavior.id === object.from
+        );
+        if (parentBehavior) {
+          behaviorCandidate = parentBehavior.extend(object.fixtures);
+          behaviorCandidate.id = object.id;
+        } else {
+          if (!this._areAllCandidatesChecked()) {
+            this._behaviorsCandidates.push(object);
+          }
+          return Promise.resolve();
+        }
+      } else {
+        behaviorCandidate = new Behavior(object.fixtures, { id: object.id });
+      }
     }
+    // Behaviors instantiated directly in JS files
+    if (behaviorCandidate.isBehaviorInstance) {
+      return behaviorCandidate
+        .init(this._fixturesHandler, this._allFixtures)
+        .then(initedBehavior => {
+          // TODO, remove the addition of extra properties when reading files. Define a mandatory id for the behavior.
+          initedBehavior.id = initedBehavior.id || object._mocksServer_lastPath;
+          this._allFixtures.add(initedBehavior.fixtures);
+          return Promise.resolve(initedBehavior);
+        })
+        .catch(err => {
+          tracer.error("Error initializing behavior");
+          tracer.debug(err.toString());
+          return Promise.resolve();
+        });
+    }
+    return Promise.resolve();
+  }
+
+  _initBehaviors(index = 0, initedBehaviors = []) {
+    if (index >= this._behaviorsCandidates.length) {
+      return Promise.resolve(initedBehaviors);
+    }
+    return this._initBehavior(index, initedBehaviors).then(initedBehavior => {
+      initedBehaviors.push(initedBehavior);
+      return this._initBehaviors(index + 1, initedBehaviors);
+    });
   }
 
   _getBehaviorsCollection() {
-    const mocksFolderContents = this._filesHandler.contents;
-    const initBehaviors = [];
-    const behaviors = {};
-    mocksFolderContents.forEach(object => {
-      // TODO, register more behavior parsers
-      if (object.isMocksServerBehavior) {
-        initBehaviors.push(
-          object
-            .init(this._fixturesHandler)
-            .then(initedBehavior => {
-              initedBehavior.name = initedBehavior.name || object._mocksServer_lastPath;
-              behaviors[initedBehavior.name] = initedBehavior.name;
-              this._allFixtures.add(initedBehavior.fixtures);
-              return Promise.resolve(initedBehavior);
-            })
-            .catch(err => {
-              tracer.error("Error initializing behavior");
-              tracer.debug(err.toString());
-              return Promise.resolve();
-            })
-        );
-      }
-    });
-    return Promise.all(initBehaviors).then(initedBehaviors => {
-      return Promise.resolve(compact(initedBehaviors));
+    this._behaviorsCandidates = [...this._loaders.contents];
+    return this._initBehaviors().then(initedBehaviors => {
+      // TODO, remove the addition of extra properties when reading files. Define mandatory id for the behavior.
+      this._loaders.contents.forEach(content => {
+        if (content._mocksServer_lastPath) {
+          delete content._mocksServer_lastPath;
+        }
+      });
+      return Promise.resolve(uniqBy(compact(initedBehaviors), behavior => behavior.id));
     });
   }
 
   _getBehaviorsObject() {
-    const behaviorsByName = {};
+    const behaviorsById = {};
     this._collection.map(behavior => {
-      behaviorsByName[behavior.name] = behavior;
+      behaviorsById[behavior.id] = behavior;
     });
-    return behaviorsByName;
+    return behaviorsById;
   }
 
-  _checkCurrent(behaviorName) {
-    if (!this._names.includes(behaviorName)) {
-      throw Boom.badData(`Behavior not found: ${behaviorName}`);
+  _checkCurrent(behaviorId) {
+    if (!this._ids.includes(behaviorId)) {
+      throw Boom.badData(`Behavior not found: ${behaviorId}`);
     }
   }
 
-  set current(behaviorName) {
-    this._checkCurrent(behaviorName);
-    this._current = behaviorName;
+  set current(behaviorId) {
+    this._checkCurrent(behaviorId);
+    this._current = behaviorId;
   }
 
   get current() {
@@ -130,15 +168,27 @@ class Behaviors {
     return this._behaviors;
   }
 
+  // TODO, deprecate, use ids instead
   get names() {
-    return this._names;
+    tracer.deprecationWarn("names", "ids");
+    return this._ids;
+  }
+
+  get ids() {
+    return this._ids;
   }
 
   get count() {
-    return this._names.length;
+    return this._ids.length;
   }
 
+  // TODO, deprecate, use currentId instead
   get currentName() {
+    tracer.deprecationWarn("currentName", "currentId");
+    return this._current;
+  }
+
+  get currentId() {
     return this._current;
   }
 

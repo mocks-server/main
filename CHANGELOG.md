@@ -14,12 +14,36 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Remove "booleanString" option type (--cli=false). Use commander boolean type, which is used appending "--no-" to the option name (--no-cli);
 - Remove "onLoadFiles" method
 - Remove "onLoadMocks" method, use "onChangeMocks"
+- Remove the addition of extra properties when reading files. Define a name for the behavior with a mandatory option.
+- Remove "restart" method, use "restartServer"
+- Remove behavior "name" property. Use id instead.
+- Remove behaviors "currentName" getter. Use "currentId" instead
+- Remove behaviors "names" getter. Use "ids" instead
 
 ## [unreleased]
 ### Added
 ### Changed
 ### Fixed
 ### Removed
+
+## [1.3.0] - 2020-01-03
+### Added
+- Behaviors can now be defined in json format.
+- Add behavior "id" property, to be used instead of "name".
+- Accept new options object as second argument when defining behaviors programmatically. "id" can be provided as an option.
+- Add behaviors "currentId" and "ids" getters, to be used instead of "currentName" and "names"
+- Add stop method to plugins.
+- Pass new method "load" to plugins, which allows to load fixtures or behaviors definitions programmatically.
+- Add "restartServer" method, which should be used instead of "restart".
+- Accept "displayName" property in plugins, which improves traces.
+- Accept "id" property in fixtures.
+
+### Changed
+- Convert filesHandler into a plugin. Load it always internally.
+
+### Fixed
+- Plugins start method was not being called again when core "start" method was called.
+- Prevent exit process when there is an error loading files.
 
 ## [1.2.0] - 2019-12-22
 ### Added

@@ -18,11 +18,9 @@ const { delay } = require("lodash");
 const tracer = require("../tracer");
 const middlewares = require("./middlewares");
 
-const { CHANGE_SETTINGS } = require("../eventNames");
-
 class Server {
-  constructor(mocks, settings, eventEmitter, core) {
-    // TODO, deprecate, the core is being passed only to maintain temporarily backward retrocompaitbility with API. This is not published in documentation.
+  constructor(eventEmitter, settings, mocks, core) {
+    // TODO, deprecate, the core is being passed only to maintain temporarily backward retrocompaitbility with API plugin. This is not published in documentation.
     this._core = core; // Use this reference only to provide it to external functions for customization purposes
     this._mocks = mocks;
     this._eventEmitter = eventEmitter;
@@ -31,7 +29,6 @@ class Server {
     this._error = null;
 
     this._startServer = this._startServer.bind(this);
-    this._onChangeSettings = this._onChangeSettings.bind(this);
   }
 
   init() {
@@ -41,14 +38,7 @@ class Server {
       });
       process.exit();
     });
-    this._eventEmitter.on(CHANGE_SETTINGS, this._onChangeSettings);
     return Promise.resolve();
-  }
-
-  _onChangeSettings(changeDetails) {
-    if (changeDetails.hasOwnProperty("port") || changeDetails.hasOwnProperty("host")) {
-      this.restart();
-    }
   }
 
   _initServer() {

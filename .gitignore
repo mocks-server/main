@@ -11,6 +11,7 @@
 /mocks
 /test/acceptance/fixtures/files-watch
 /test/acceptance/fixtures/mocks
+/testing.js
 
 # misc
 .DS_Store

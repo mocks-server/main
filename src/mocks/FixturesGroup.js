@@ -11,12 +11,35 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
+const { compact } = require("lodash");
+const tracer = require("../tracer");
+
 class FixturesGroup {
   constructor(fixtures = []) {
     this._fixtures = [...fixtures].reverse();
   }
 
-  async init(fixturesHandler) {
+  _convertStringReferences(allFixtures) {
+    if (allFixtures) {
+      this._fixtures = compact(
+        this._fixtures.map(fixture => {
+          if (typeof fixture === "string") {
+            const realFixture = allFixtures.collection.find(existantFixture => {
+              return existantFixture.id === fixture;
+            });
+            if (!realFixture) {
+              tracer.debug(`Fixture with id "${fixture}" was not found and will be ignored`);
+            }
+            return realFixture;
+          }
+          return fixture;
+        })
+      );
+    }
+  }
+
+  async init(fixturesHandler, allFixtures) {
+    this._convertStringReferences(allFixtures);
     this._collection = await fixturesHandler.getCollection(this._fixtures);
     return Promise.resolve(this);
   }

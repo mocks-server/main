@@ -11,21 +11,24 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
+const tracer = require("../tracer");
+
 const FixturesGroup = require("./FixturesGroup");
 
 class Behavior {
-  constructor(fixtures = [], parent = null) {
+  constructor(fixtures = [], options = {}, parent = null) {
+    this._id = options.id;
     this._initialFixtures = [...fixtures];
     this._fixtures = new FixturesGroup(this._initialFixtures);
     this._parent = parent;
   }
 
-  extend(fixtures) {
-    return new Behavior(this._initialFixtures.concat(fixtures), this);
+  extend(fixtures, options) {
+    return new Behavior(this._initialFixtures.concat(fixtures), options, this);
   }
 
-  async init(fixturesHandler) {
-    await this._fixtures.init(fixturesHandler);
+  async init(fixturesHandler, allFixtures) {
+    await this._fixtures.init(fixturesHandler, allFixtures);
     return Promise.resolve(this);
   }
 
@@ -33,7 +36,7 @@ class Behavior {
     return this._fixtures.collection.find(fixture => fixture.requestMatch(req));
   }
 
-  get isMocksServerBehavior() {
+  get isBehaviorInstance() {
     return true;
   }
 
@@ -42,15 +45,27 @@ class Behavior {
   }
 
   get extendedFrom() {
-    return this._parent ? this._parent.name : null;
+    return this._parent ? this._parent.id : null;
   }
 
+  // TODO, deprecate. Use id instead
   get name() {
-    return this._name; // Prepared for defining behavior names based on property, file name, etc.
+    tracer.deprecationWarn("name", "id");
+    return this._id;
   }
 
-  set name(name) {
-    this._name = name;
+  // TODO, deprecate. Use id instead
+  set name(id) {
+    tracer.deprecationWarn("name", "id");
+    this._id = id;
+  }
+
+  get id() {
+    return this._id;
+  }
+
+  set id(id) {
+    this._id = id;
   }
 }
 

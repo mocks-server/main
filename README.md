@@ -16,8 +16,11 @@ Use it if you want to start the mocks-server programmatically by your own, or ev
 Please refer to the [project documentation website][website-url]:
 
 * [Get started](https://www.mocks-server.org/docs/get-started-intro)
-* [Tutorials](https://www.mocks-server.org/docs/tutorials-static)
+* [Guides](https://www.mocks-server.org/docs/guides-defining-fixtures)
 * [Configuration](https://www.mocks-server.org/docs/configuration-options)
+* [Plugins](https://www.mocks-server.org/docs/plugins-inquirer-cli)
+* [Integrations](https://www.mocks-server.org/docs/integrations-cypress)
+* [Api](https://www.mocks-server.org/docs/advanced-programmatic-usage)
 
 ## Contributing
 

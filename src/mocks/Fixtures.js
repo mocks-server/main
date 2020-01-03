@@ -14,20 +14,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const tracer = require("../tracer");
 const FixturesGroup = require("./FixturesGroup");
 
-const { LOAD_FILES, CHANGE_FIXTURES } = require("../eventNames");
-
 class Fixtures {
-  constructor(filesHandler, settings, eventEmitter) {
-    this._filesHandler = filesHandler;
-    this._settings = settings;
-    this._eventEmitter = eventEmitter;
-    this._onLoadFiles = this._onLoadFiles.bind(this);
+  constructor(loaders) {
+    this._loaders = loaders;
   }
 
   async init(fixturesHandler) {
     this._fixturesHandler = fixturesHandler;
-    this._eventEmitter.on(LOAD_FILES, this._onLoadFiles);
-    return this._loadFixtures();
+    return Promise.resolve();
   }
 
   add(fixtures) {
@@ -42,20 +36,15 @@ class Fixtures {
     });
   }
 
-  async _loadFixtures() {
+  async process() {
     tracer.debug("Processing fixtures");
     this._fixtures = await this._getFixtures();
-
-    this._eventEmitter.emit(CHANGE_FIXTURES);
+    tracer.verbose(`Processed ${this._fixtures.collection.length} fixtures`);
     return Promise.resolve();
   }
 
-  _onLoadFiles() {
-    this._loadFixtures();
-  }
-
   _getFixtures() {
-    const fixtures = new FixturesGroup(this._filesHandler.contents);
+    const fixtures = new FixturesGroup(this._loaders.contents);
     return fixtures.init(this._fixturesHandler);
   }
 

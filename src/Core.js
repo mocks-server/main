@@ -10,25 +10,32 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const EventEmitter = require("events");
 
-const { INIT, START, LOAD_FILES, CHANGE_MOCKS, CHANGE_SETTINGS } = require("./eventNames");
-const Server = require("./server/Server");
+const { INIT, START, STOP, LOAD_MOCKS, CHANGE_MOCKS, CHANGE_SETTINGS } = require("./eventNames");
 const tracer = require("./tracer");
+
+const Orchestrator = require("./Orchestrator");
+const Loaders = require("./Loaders");
+
+const Plugins = require("./plugins/Plugins");
+const Server = require("./server/Server");
 const Mocks = require("./mocks/Mocks");
 const Settings = require("./settings/Settings");
-const Plugins = require("./Plugins");
 
 class Core {
   constructor(coreOptions = {}) {
     this._eventEmitter = new EventEmitter();
-    this._settings = new Settings(
-      {
-        onlyProgrammaticOptions: coreOptions.onlyProgrammaticOptions
-      },
-      this._eventEmitter
-    );
-    this._mocks = new Mocks(this._settings, this._eventEmitter, this);
-    this._server = new Server(this._mocks, this._settings, this._eventEmitter, this);
-    this._plugins = new Plugins(coreOptions.plugins, this);
+    this._settings = new Settings(this._eventEmitter, {
+      onlyProgrammaticOptions: coreOptions.onlyProgrammaticOptions
+    });
+
+    this._loaders = new Loaders(this);
+    this._plugins = new Plugins(coreOptions.plugins, this._loaders, this);
+
+    this._mocks = new Mocks(this._eventEmitter, this._settings, this._loaders, this);
+    this._server = new Server(this._eventEmitter, this._settings, this._mocks, this);
+
+    this._orchestrator = new Orchestrator(this._eventEmitter, this._mocks, this._server);
+
     this._inited = false;
     this._startPluginsPromise = null;
   }
@@ -52,7 +59,6 @@ class Core {
 
   async start() {
     await this.init(); // in case it has not been initializated manually before
-    await this._mocks.start();
     await this._server.start();
     return this._startPlugins().then(() => {
       this._eventEmitter.emit(START, this);
@@ -63,7 +69,18 @@ class Core {
     if (!this._startPluginsPromise) {
       this._startPluginsPromise = this._plugins.start();
     }
-    return this._startPluginsPromise;
+    return this._startPluginsPromise.then(() => {
+      this._startPluginsPromise = null;
+    });
+  }
+
+  async _stopPlugins() {
+    if (!this._stopPluginsPromise) {
+      this._stopPluginsPromise = this._plugins.stop();
+    }
+    return this._stopPluginsPromise.then(() => {
+      this._stopPluginsPromise = null;
+    });
   }
 
   // TODO, deprecate method, use addRouter
@@ -98,10 +115,11 @@ class Core {
 
   // TODO, deprecate method
   onLoadFiles(cb) {
+    tracer.deprecationWarn("onLoadFiles", "onChangeMocks");
     const removeCallback = () => {
-      this._eventEmitter.removeListener(LOAD_FILES, cb);
+      this._eventEmitter.removeListener(LOAD_MOCKS, cb);
     };
-    this._eventEmitter.on(LOAD_FILES, cb);
+    this._eventEmitter.on(LOAD_MOCKS, cb);
     return removeCallback;
   }
 
@@ -127,14 +145,22 @@ class Core {
     return removeCallback;
   }
 
-  // Expose Server methods and getters
-
-  stop() {
-    this._mocks.stop();
-    return this._server.stop();
+  async stop() {
+    await this._server.stop();
+    return this._stopPlugins().then(() => {
+      this._eventEmitter.emit(STOP, this);
+    });
   }
 
+  // Expose Server methods and getters
+
+  // TODO, deprecate method, use restartServer
   restart() {
+    tracer.deprecationWarn("restart", "restartServer");
+    return this.restartServer();
+  }
+
+  restartServer() {
     return this._server.restart();
   }
 

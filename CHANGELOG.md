@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.3.1] - 2019-01-03
+### Fixed
+- Change @mocks-server/core peerDependency to ^1.3.0, which is the first one with behavior id property.
+
 ## [1.3.0] - 2019-01-03
 ### Added
 - Add property id to behaviors model.

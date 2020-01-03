@@ -89,12 +89,12 @@ class Cli {
     this._inited = false;
     this._currentScreen = null;
 
-    this._onLoadMocks = this._onLoadMocks.bind(this);
+    this._onChangeMocks = this._onChangeMocks.bind(this);
     this._onChangeSettings = this._onChangeSettings.bind(this);
 
-    this._core.addCustomSetting({
+    this._core.addSetting({
       name: "cli",
-      type: "booleanString", // Workaround to maintain retrocompatibility with --cli=false
+      type: "booleanString", // Workaround to maintain backward compaitbility with --cli=false
       description: "Start interactive CLI plugin",
       default: true
     });
@@ -119,12 +119,12 @@ class Cli {
     if (!this._inited || !this._settings.get("cli")) {
       return Promise.resolve();
     }
-    this._stopListeningFilesLoad = this._core.onLoadMocks(this._onLoadMocks);
+    this._stopListeningChangeMocks = this._core.onChangeMocks(this._onChangeMocks);
     this._silentTraces();
     return this._displayMainMenu();
   }
 
-  _onLoadMocks() {
+  _onChangeMocks() {
     this._cli.removeListeners();
     this._cli.exitLogsMode();
     return this._displayMainMenu();
@@ -148,8 +148,8 @@ class Cli {
       `Mocks server listening at: ${chalk.cyan(this._serverUrl)}`,
       `Delay: ${chalk.cyan(this._settings.get("delay"))}`,
       `Behaviors: ${chalk.cyan(this._core.behaviors.count)}`,
-      `Current behavior: ${chalk.cyan(this._core.behaviors.currentName || "-")}`,
-      `Current fixtures: ${chalk.cyan(this._core.behaviors.currentTotalFixtures || 0)}`,
+      `Current behavior: ${chalk.cyan(this._core.behaviors.currentId || "-")}`,
+      `Current fixtures: ${chalk.cyan(this._core.fixtures.count || 0)}`,
       `Log level: ${chalk.cyan(this._logLevel)}`,
       `Watch enabled: ${chalk.cyan(this._settings.get("watch"))}`
     ];
@@ -186,14 +186,14 @@ class Cli {
   async _changeCurrentBehavior() {
     this._currentScreen = SCREENS.BEHAVIOR;
     this._cli.clearScreen();
-    const behaviorsNames = this._core.behaviors.names;
+    const behaviorsIds = this._core.behaviors.ids;
     const behavior = await this._cli.inquire("behavior", {
       source: (answers, input) => {
         if (!input || !input.length) {
-          return Promise.resolve(behaviorsNames);
+          return Promise.resolve(behaviorsIds);
         }
         return Promise.resolve(
-          behaviorsNames.filter(currentBehavior => currentBehavior.includes(input))
+          behaviorsIds.filter(currentBehavior => currentBehavior.includes(input))
         );
       }
     });
@@ -211,7 +211,7 @@ class Cli {
 
   async _restartServer() {
     try {
-      await this._core.restart();
+      await this._core.restartServer();
     } catch (err) {}
     return this._displayMainMenu();
   }
@@ -243,8 +243,8 @@ class Cli {
   }
 
   stopListeningServerWatch() {
-    if (this._stopListeningFilesLoad) {
-      this._stopListeningFilesLoad();
+    if (this._stopListeningChangeMocks) {
+      this._stopListeningChangeMocks();
     }
   }
 }

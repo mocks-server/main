@@ -27,7 +27,8 @@ describe("behaviors api", () => {
         {
           extendedFrom: null,
           fixtures: ["12e5f429b92f67d4ec2bf90940ec1135", "0dbc954f9d9c9f3f7996c60e63384c9e"],
-          name: "standard"
+          name: "standard",
+          id: "standard"
         },
         {
           extendedFrom: "standard",
@@ -36,7 +37,8 @@ describe("behaviors api", () => {
             "12e5f429b92f67d4ec2bf90940ec1135",
             "0dbc954f9d9c9f3f7996c60e63384c9e"
           ],
-          name: "user2"
+          name: "user2",
+          id: "user2"
         },
         {
           extendedFrom: "standard",
@@ -45,7 +47,8 @@ describe("behaviors api", () => {
             "12e5f429b92f67d4ec2bf90940ec1135",
             "0dbc954f9d9c9f3f7996c60e63384c9e"
           ],
-          name: "dynamic"
+          name: "dynamic",
+          id: "dynamic"
         }
       ]);
     });
@@ -57,7 +60,8 @@ describe("behaviors api", () => {
       expect(response).toEqual({
         extendedFrom: null,
         fixtures: ["12e5f429b92f67d4ec2bf90940ec1135", "0dbc954f9d9c9f3f7996c60e63384c9e"],
-        name: "standard"
+        name: "standard",
+        id: "standard"
       });
     });
   });
@@ -72,7 +76,8 @@ describe("behaviors api", () => {
           "12e5f429b92f67d4ec2bf90940ec1135",
           "0dbc954f9d9c9f3f7996c60e63384c9e"
         ],
-        name: "dynamic"
+        name: "dynamic",
+        id: "dynamic"
       });
     });
   });
@@ -84,7 +89,7 @@ describe("behaviors api", () => {
         simple: false
       });
       expect(response.statusCode).toEqual(404);
-      expect(response.body.message).toEqual('Behavior with name "foo" was not found');
+      expect(response.body.message).toEqual('Behavior with id "foo" was not found');
     });
   });
 });

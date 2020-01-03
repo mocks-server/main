@@ -55,7 +55,7 @@ describe("Behavior", () => {
     });
 
     it("should register a get router for behavior names", async () => {
-      expect(libMocks.stubs.express.get.getCall(1).args[0]).toEqual("/:name");
+      expect(libMocks.stubs.express.get.getCall(1).args[0]).toEqual("/:id");
     });
   });
 
@@ -64,11 +64,13 @@ describe("Behavior", () => {
       coreInstance.behaviors = {
         collection: [
           {
+            id: "foo",
             name: "foo",
             fixtures: [{ id: "foo-fixture-id-1" }, { id: "foo-fixture-id-2" }],
             extendedFrom: "foo-base-behavior"
           },
           {
+            id: "foo2",
             name: "foo2",
             fixtures: [{ id: "foo-fixture-id-3" }],
             extendedFrom: null
@@ -79,11 +81,13 @@ describe("Behavior", () => {
       behaviors.getCollection({}, resMock);
       expect(resMock.send.getCall(0).args[0]).toEqual([
         {
+          id: "foo",
           name: "foo",
           fixtures: ["foo-fixture-id-1", "foo-fixture-id-2"],
           extendedFrom: "foo-base-behavior"
         },
         {
+          id: "foo2",
           name: "foo2",
           fixtures: ["foo-fixture-id-3"],
           extendedFrom: null
@@ -97,11 +101,13 @@ describe("Behavior", () => {
       coreInstance.behaviors = {
         collection: [
           {
+            id: "foo",
             name: "foo",
             fixtures: [{ id: "foo-fixture-id-1" }, { id: "foo-fixture-id-2" }],
             extendedFrom: "foo-base-behavior"
           },
           {
+            id: "foo2",
             name: "foo2",
             fixtures: [{ id: "foo-fixture-id-3" }],
             extendedFrom: null
@@ -112,12 +118,13 @@ describe("Behavior", () => {
       behaviors.getModel(
         {
           params: {
-            name: "foo"
+            id: "foo"
           }
         },
         resMock
       );
       expect(resMock.send.getCall(0).args[0]).toEqual({
+        id: "foo",
         name: "foo",
         fixtures: ["foo-fixture-id-1", "foo-fixture-id-2"],
         extendedFrom: "foo-base-behavior"
@@ -130,11 +137,13 @@ describe("Behavior", () => {
       coreInstance.behaviors = {
         collection: [
           {
+            id: "foo",
             name: "foo",
             fixtures: [{ id: "foo-fixture-id-1" }, { id: "foo-fixture-id-2" }],
             extendedFrom: "foo-base-behavior"
           },
           {
+            id: "foo2",
             name: "foo2",
             fixtures: [{ id: "foo-fixture-id-3" }],
             extendedFrom: null
@@ -145,7 +154,7 @@ describe("Behavior", () => {
       behaviors.getModel(
         {
           params: {
-            name: "foo3"
+            id: "foo3"
           }
         },
         resMock,

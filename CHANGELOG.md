@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.7.1] - 2020-01-03
 ### Changed
-- Upgrade plugin-admin-api version to [1.3.0](https://github.com/mocks-server/plugin-admin-api/releases/tag/v1.3.0)
+- Upgrade plugin-admin-api version to [1.3.1](https://github.com/mocks-server/plugin-admin-api/releases/tag/v1.3.1)
 
 ## [1.7.0] - 2020-01-03
 ### Changed

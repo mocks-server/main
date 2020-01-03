@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { startServer, stopServer, request } = require("./utils");
 
-describe("deprecated API for changing current behavior", () => {
+describe("API for changing current behavior", () => {
   let server;
 
   beforeAll(async () => {

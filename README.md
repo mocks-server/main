@@ -29,7 +29,7 @@ Available api resources are:
 * `GET` `/admin/about` Returns plugin information.
   * Response body example: `{ "version": "1.2.0" }`
 * `GET` `/admin/behaviors` Returns behaviors collection.
-* `GET` `/admin/behaviors/:name` Returns an specific behavior.
+* `GET` `/admin/behaviors/:id` Returns an specific behavior.
 * `GET` `/admin/fixtures` Returns fixtures collection.
 * `GET` `/admin/fixtures/:id` Returns an specific fixture.
 * `GET` `/admin/settings` Returns current server settings.

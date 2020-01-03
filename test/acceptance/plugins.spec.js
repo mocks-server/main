@@ -118,7 +118,7 @@ describe("plugins", () => {
         });
 
         it("should inform plugin when files are loaded", async () => {
-          expect(filesLoadedSpy.callCount).toEqual(2);
+          expect(filesLoadedSpy.callCount).toEqual(1);
         });
 
         it("should inform plugin when mocks are loaded", async () => {

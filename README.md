@@ -7,9 +7,9 @@
 
 # [![Mocks Server][logo-url]][website-url] Mocks Server
 
-This package provides a server that simulates API behaviors. It can be added as a dependency of your project, and started simply running an NPM command.
+This package provides a server that simulates multiple API behaviors. It can be added as a dependency of your project, and started simply running an NPM command.
 
-It is simple to use out-of-the-box, but powerful and very customizable through the usage of [plugins and other customization methods](https://www.mocks-server.org/docs/advanced-developing-plugins).
+It is simple and easy out-of-the-box, but powerful and very customizable through the usage of [plugins and other customization methods](https://www.mocks-server.org/docs/advanced-developing-plugins).
 
 ## Documentation
 

@@ -196,7 +196,7 @@ const runTests = interactiveCli => {
   });
 };
 
-describe("files watcher", () => {
+describe("files watcher started using cli", () => {
   const BINARY_PATH = "../../../bin/mocks-server";
   const cwdPath = path.resolve(__dirname, "fixtures");
   const interactiveCli = {

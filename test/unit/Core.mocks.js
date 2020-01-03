@@ -22,7 +22,7 @@ class CoreMock {
       init: this._sandbox.stub().resolves(),
       start: this._sandbox.stub().resolves(),
       stop: this._sandbox.stub().resolves(),
-      restart: this._sandbox.stub().resolves(),
+      restartServer: this._sandbox.stub().resolves(),
       settings: {
         get: this._sandbox.stub(),
         set: this._sandbox.stub()
@@ -36,13 +36,14 @@ class CoreMock {
         error: this._sandbox.stub()
       },
       onChangeSettings: this._sandbox.stub(),
-      onLoadMocks: this._sandbox.stub(),
-      addCustomRouter: this._sandbox.stub(),
-      addCustomSetting: this._sandbox.stub(),
+      onChangeMocks: this._sandbox.stub(),
+      addRouter: this._sandbox.stub(),
+      addSetting: this._sandbox.stub(),
       behaviors: {
         currentFromCollection: "foo-current",
         collection: "foo-behaviors-collection"
       },
+      fixtures: {},
       serverError: null,
       _eventEmitter: {
         on: this._sandbox.stub(),

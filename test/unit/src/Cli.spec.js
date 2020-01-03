@@ -45,7 +45,7 @@ describe("Cli", () => {
     it("should have added cli custom setting to core", () => {
       coreMocks.reset();
       cli = new Cli(coreInstance);
-      expect(coreInstance.addCustomSetting.getCall(0).args[0].name).toEqual("cli");
+      expect(coreInstance.addSetting.getCall(0).args[0].name).toEqual("cli");
     });
   });
 
@@ -144,7 +144,7 @@ describe("Cli", () => {
       inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.behaviors.names = fooBehaviorsNames;
+      coreInstance.behaviors.ids = fooBehaviorsNames;
       await cli._changeCurrentBehavior();
       expect(coreInstance.settings.set.getCall(0).args).toEqual(["behavior", fooBehaviorsNames]);
     });
@@ -156,7 +156,7 @@ describe("Cli", () => {
       inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.behaviors.names = fooBehaviorsNames;
+      coreInstance.behaviors.ids = fooBehaviorsNames;
       await cli._changeCurrentBehavior();
       expect(coreInstance.settings.set.getCall(0).args).toEqual(["behavior", fooBehaviorsNames]);
     });
@@ -168,7 +168,7 @@ describe("Cli", () => {
       inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.behaviors.names = fooBehaviorsNames;
+      coreInstance.behaviors.ids = fooBehaviorsNames;
       await cli._changeCurrentBehavior();
       expect(coreInstance.settings.set.getCall(0).args).toEqual(["behavior", ["foo1", "foo2"]]);
     });
@@ -212,7 +212,7 @@ describe("Cli", () => {
 
     it("should call to restart server", async () => {
       await cli.start();
-      expect(coreInstance.restart.callCount).toEqual(1);
+      expect(coreInstance.restartServer.callCount).toEqual(1);
     });
   });
 
@@ -309,7 +309,7 @@ describe("Cli", () => {
   describe("when server emits load:mocks event watch has reloaded the features", () => {
     beforeEach(async () => {
       await cli.start();
-      coreInstance.onLoadMocks.getCall(0).args[0]();
+      coreInstance.onChangeMocks.getCall(0).args[0]();
     });
 
     it("should remove all base-cli listeners", async () => {
@@ -324,7 +324,7 @@ describe("Cli", () => {
   describe("stopListeningServerWatch method", () => {
     it("should remove load:mocks listener if cli has been started", async () => {
       const spy = sandbox.spy();
-      coreInstance.onLoadMocks.returns(spy);
+      coreInstance.onChangeMocks.returns(spy);
       await cli.start();
       cli.stopListeningServerWatch();
       expect(spy.callCount).toEqual(1);
@@ -332,7 +332,7 @@ describe("Cli", () => {
 
     it("should not remove load:mocks listener if cli has not been started", () => {
       const spy = sandbox.spy();
-      coreInstance.onLoadMocks.returns(spy);
+      coreInstance.onChangeMocks.returns(spy);
       cli.stopListeningServerWatch();
       expect(spy.callCount).toEqual(0);
     });

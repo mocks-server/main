@@ -16,9 +16,11 @@ It is simple to use out-of-the-box, but powerful and very customizable through t
 Please refer to the [project documentation website][website-url]:
 
 * [Get started](https://www.mocks-server.org/docs/get-started-intro)
-* [Tutorials](https://www.mocks-server.org/docs/tutorials-static)
+* [Guides](https://www.mocks-server.org/docs/guides-defining-fixtures)
 * [Configuration](https://www.mocks-server.org/docs/configuration-options)
-* [Customization](https://www.mocks-server.org/docs/advanced-developing-plugins)
+* [Plugins](https://www.mocks-server.org/docs/plugins-inquirer-cli)
+* [Integrations](https://www.mocks-server.org/docs/integrations-cypress)
+* [Api](https://www.mocks-server.org/docs/advanced-programmatic-usage)
 
 ## Why a mocks server?
 

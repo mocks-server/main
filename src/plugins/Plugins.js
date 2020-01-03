@@ -28,7 +28,7 @@ class Plugins {
     this._pluginsStarted = 0;
     this._pluginsStopped = 0;
 
-    this._plugins.push(FilesLoader);
+    this._plugins.unshift(FilesLoader);
   }
 
   register() {

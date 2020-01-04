@@ -7,19 +7,29 @@
 
 # [![Mocks Server][logo-url]][website-url] Mocks Server Plugin Inquirer CLI
 
-Plugin for [Mocks Server][website-url] that provides an interactive CLI that allows to change the current behavior, change delay time, and another [Mocks Server options][options-url].
+Plugin for [Mocks Server][website-url] that provides an interactive CLI that allows to change the server settings while it is running.
 
 ## Usage
 
 This plugin is included in the [main distribution of the Mocks Server project][main-distribution-url], so you can refer to the [official documentation website][website-url].
 
-![Interactive CLI](./assets/cli_animation.gif)
+![Interactive CLI](assets/cli_animation.gif)
+
+## Options
+
+* `cli`: `<String>` Start interactive CLI or not. Default is `true`. Use `false` to disable it.
+
+## Support
+
+[Inquirer][inquirer-url] is used for displaying the interactive CLI. You can [consult his OS Terminals support here][inquirer-support].
 
 ## Contributing
 
 Contributors are welcome.
 Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of conduct](.github/CODE_OF_CONDUCT.md).
 
+[inquirer-url]: https://www.npmjs.com/package/inquirer
+[inquirer-support]: https://www.npmjs.com/package/inquirer#support-os-terminals
 [website-url]: https://www.mocks-server.org
 [main-distribution-url]: https://www.npmjs.com/package/@mocks-server/main
 [options-url]: https://www.mocks-server.org/docs/configuration-options

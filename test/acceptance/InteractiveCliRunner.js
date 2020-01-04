@@ -51,6 +51,10 @@ module.exports = class InteractiveCliRunner {
     return this._cli.kill();
   }
 
+  flush() {
+    this._cli.flush();
+  }
+
   get logs() {
     return this._cli.logs;
   }

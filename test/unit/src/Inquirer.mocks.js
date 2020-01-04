@@ -76,6 +76,7 @@ class Mock {
 
   reset() {
     this._sandbox.reset();
+    inquirer.Inquirer.returns(this._stubs.inquirer);
   }
 }
 

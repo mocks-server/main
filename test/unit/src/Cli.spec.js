@@ -45,7 +45,7 @@ describe("Cli", () => {
     it("should have added cli custom setting to core", () => {
       coreMocks.reset();
       cli = new Cli(coreInstance);
-      expect(coreInstance.addCustomSetting.getCall(0).args[0].name).toEqual("cli");
+      expect(coreInstance.addSetting.getCall(0).args[0].name).toEqual("cli");
     });
   });
 
@@ -62,25 +62,145 @@ describe("Cli", () => {
       expect(inquirerMocks.stubs.Inquirer.callCount).toEqual(0);
     });
 
-    it("should save current log log level", () => {
-      expect(cli._logLevel).toEqual("info");
+    it("should start cli when core cli setting is true and cli was not started", async () => {
+      expect.assertions(2);
+      coreInstance.onChangeSettings.getCall(0).args[0]({
+        cli: true
+      });
+      expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(0).args[0]).toEqual("main");
+    });
+  });
+
+  describe("when settings are changed", () => {
+    beforeEach(async () => {
+      await cli.start();
     });
 
-    it("should display main menu when core settings are changed and current screen is main menu", async () => {
-      await cli.start();
+    it("should refresh main menu when behavior option is changed and current screen is main menu", async () => {
       expect.assertions(2);
-      coreInstance.onChangeSettings.getCall(0).args[0]();
+      coreInstance.onChangeSettings.getCall(0).args[0]({
+        behavior: "foo"
+      });
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
-    it("should not display main menu when core settings are changed and current screen is not main menu", async () => {
-      await cli.start();
+    it("should refresh main menu when delay option is changed and current screen is main menu", async () => {
       expect.assertions(2);
-      cli._changeCurrentBehavior();
-      coreInstance.onChangeSettings.getCall(0).args[0]();
+      coreInstance.onChangeSettings.getCall(0).args[0]({
+        delay: "foo"
+      });
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
-      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("behavior");
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
+    });
+
+    it("should refresh main menu when host option is changed and current screen is main menu", async () => {
+      expect.assertions(2);
+      coreInstance.onChangeSettings.getCall(0).args[0]({
+        host: "foo"
+      });
+      expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
+    });
+
+    it("should refresh main menu when log option is changed and current screen is main menu", async () => {
+      expect.assertions(2);
+      coreInstance.onChangeSettings.getCall(0).args[0]({
+        log: "foo"
+      });
+      expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
+    });
+
+    it("should refresh main menu when watch option is changed and current screen is main menu", async () => {
+      expect.assertions(2);
+      coreInstance.onChangeSettings.getCall(0).args[0]({
+        watch: false
+      });
+      expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
+    });
+
+    it("should do nothing when a not recognized option is changed", async () => {
+      coreInstance.onChangeSettings.getCall(0).args[0]({
+        foo: false
+      });
+      expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
+    });
+
+    it("should not display main menu when core settings are changed and current screen is not main menu", async () => {
+      cli._currentScreen = "FOO";
+      coreInstance.onChangeSettings.getCall(0).args[0]({
+        behavior: "foo"
+      });
+      expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
+    });
+
+    it("should start cli if it was not started and cli option is true", async () => {
+      await cli.stop();
+      inquirerMocks.reset();
+      expect.assertions(2);
+      coreInstance.settings.get.withArgs("cli").returns(true);
+      coreInstance.onChangeSettings.getCall(0).args[0]({
+        cli: true
+      });
+      expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(0).args[0]).toEqual("main");
+    });
+
+    it("should not start cli if it was not started and cli option is false", async () => {
+      await cli.stop();
+      inquirerMocks.reset();
+      coreInstance.settings.get.withArgs("cli").returns(false);
+      coreInstance.onChangeSettings.getCall(0).args[0]({
+        cli: false
+      });
+      expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(0);
+    });
+
+    it("should stop cli if it was started and cli option is false", async () => {
+      inquirerMocks.reset();
+      expect.assertions(2);
+      coreInstance.settings.get.withArgs("cli").returns(false);
+      coreInstance.onChangeSettings.getCall(0).args[0]({
+        cli: false
+      });
+      expect(inquirerMocks.stubs.inquirer.removeListeners.callCount).toEqual(1);
+      expect(inquirerMocks.stubs.inquirer.clearScreen.getCall(0).args[0]).toEqual({
+        header: false
+      });
+    });
+
+    it("should silent traces again if log setting changes and cli is not in logs mode", async () => {
+      coreInstance.settings.set.reset();
+      expect.assertions(3);
+      cli._isOverwritingLogLevel = false;
+      coreInstance.onChangeSettings.getCall(0).args[0]({
+        log: "debug"
+      });
+      expect(cli._logLevel).toEqual("debug");
+      expect(coreInstance.settings.set.getCall(0).args[0]).toEqual("log");
+      expect(coreInstance.settings.set.getCall(0).args[1]).toEqual("silent");
+    });
+
+    it("should not silent traces if log setting changes and cli is in logs mode", async () => {
+      coreInstance.settings.set.reset();
+      cli._isOverwritingLogLevel = false;
+      cli._currentScreen = "logs";
+      coreInstance.onChangeSettings.getCall(0).args[0]({
+        log: "debug"
+      });
+      expect(coreInstance.settings.set.callCount).toEqual(0);
+    });
+
+    it("should ignore changes in log level dispatched by his own silentTraces method", async () => {
+      cli._silentTraces();
+      coreInstance.settings.set.reset();
+      coreInstance.onChangeSettings.getCall(0).args[0]({
+        log: "silent"
+      });
+      expect(coreInstance.settings.set.callCount).toEqual(0);
     });
   });
 
@@ -89,15 +209,19 @@ describe("Cli", () => {
       await cli.start();
     });
 
-    it("should do nothing if it cli has not been inited", async () => {
+    it("should save current log level", () => {
+      expect(cli._logLevel).toEqual("info");
+    });
+
+    it("should init if it has not been inited before", async () => {
       inquirerMocks.reset();
       cli = new Cli(coreInstance);
       coreInstance.settings.get.withArgs("cli").returns(true);
       await cli.start();
-      expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(0);
+      expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
     });
 
-    it("should do nothing if it cli is disabled", async () => {
+    it("should do nothing if cli is disabled", async () => {
       inquirerMocks.reset();
       cli = new Cli(coreInstance);
       coreInstance.settings.get.withArgs("cli").returns(false);
@@ -115,16 +239,52 @@ describe("Cli", () => {
     });
   });
 
+  describe("when stopped", () => {
+    beforeEach(async () => {
+      await cli.start();
+    });
+
+    it("should clear screen", async () => {
+      inquirerMocks.reset();
+      expect.assertions(2);
+      await cli.stop();
+      expect(inquirerMocks.stubs.inquirer.removeListeners.callCount).toEqual(1);
+      expect(inquirerMocks.stubs.inquirer.clearScreen.getCall(0).args[0]).toEqual({
+        header: false
+      });
+    });
+
+    it("should not stop if it was already stopped", async () => {
+      await cli.stop();
+      await cli.stop();
+      expect(inquirerMocks.stubs.inquirer.removeListeners.callCount).toEqual(1);
+    });
+  });
+
   describe('when user selects "Change current behavior"', () => {
     const fooSelectedBehavior = "foo behavior";
+    let originalIds;
+
     beforeEach(() => {
+      originalIds = coreInstance.behaviors.ids;
+      coreInstance.behaviors.ids = ["foo-behavior"];
       inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("behavior");
       inquirerMocks.stubs.inquirer.inquire.onCall(1).resolves(fooSelectedBehavior);
+    });
+
+    afterEach(() => {
+      coreInstance.behaviors.ids = originalIds;
     });
 
     it("should call to clear screen", async () => {
       await cli.start();
       expect(inquirerMocks.stubs.inquirer.clearScreen.callCount).toEqual(3);
+    });
+
+    it("should display main menu if there are not behaviors", async () => {
+      coreInstance.behaviors.ids = [];
+      await cli.start();
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
     it("should call to display behavior menu", async () => {
@@ -144,7 +304,7 @@ describe("Cli", () => {
       inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.behaviors.names = fooBehaviorsNames;
+      coreInstance.behaviors.ids = fooBehaviorsNames;
       await cli._changeCurrentBehavior();
       expect(coreInstance.settings.set.getCall(0).args).toEqual(["behavior", fooBehaviorsNames]);
     });
@@ -156,7 +316,7 @@ describe("Cli", () => {
       inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.behaviors.names = fooBehaviorsNames;
+      coreInstance.behaviors.ids = fooBehaviorsNames;
       await cli._changeCurrentBehavior();
       expect(coreInstance.settings.set.getCall(0).args).toEqual(["behavior", fooBehaviorsNames]);
     });
@@ -168,7 +328,7 @@ describe("Cli", () => {
       inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.behaviors.names = fooBehaviorsNames;
+      coreInstance.behaviors.ids = fooBehaviorsNames;
       await cli._changeCurrentBehavior();
       expect(coreInstance.settings.set.getCall(0).args).toEqual(["behavior", ["foo1", "foo2"]]);
     });
@@ -212,7 +372,7 @@ describe("Cli", () => {
 
     it("should call to restart server", async () => {
       await cli.start();
-      expect(coreInstance.restart.callCount).toEqual(1);
+      expect(coreInstance.restartServer.callCount).toEqual(1);
     });
   });
 
@@ -306,10 +466,10 @@ describe("Cli", () => {
     });
   });
 
-  describe("when server emits load:mocks event watch has reloaded the features", () => {
+  describe("when server emits change:mocks event", () => {
     beforeEach(async () => {
       await cli.start();
-      coreInstance.onLoadMocks.getCall(0).args[0]();
+      coreInstance.onChangeMocks.getCall(0).args[0]();
     });
 
     it("should remove all base-cli listeners", async () => {
@@ -317,14 +477,14 @@ describe("Cli", () => {
     });
 
     it("should exit logs mode", async () => {
-      expect(inquirerMocks.stubs.inquirer.exitLogsMode.callCount).toEqual(1);
+      expect(inquirerMocks.stubs.inquirer.exitLogsMode.callCount).toEqual(2);
     });
   });
 
   describe("stopListeningServerWatch method", () => {
     it("should remove load:mocks listener if cli has been started", async () => {
       const spy = sandbox.spy();
-      coreInstance.onLoadMocks.returns(spy);
+      coreInstance.onChangeMocks.returns(spy);
       await cli.start();
       cli.stopListeningServerWatch();
       expect(spy.callCount).toEqual(1);
@@ -332,7 +492,7 @@ describe("Cli", () => {
 
     it("should not remove load:mocks listener if cli has not been started", () => {
       const spy = sandbox.spy();
-      coreInstance.onLoadMocks.returns(spy);
+      coreInstance.onChangeMocks.returns(spy);
       cli.stopListeningServerWatch();
       expect(spy.callCount).toEqual(0);
     });

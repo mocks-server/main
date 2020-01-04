@@ -87,20 +87,22 @@ class Cli {
     this._tracer = core.tracer;
     this._settings = core.settings;
     this._inited = false;
+    this._started = false;
     this._currentScreen = null;
 
-    this._onLoadMocks = this._onLoadMocks.bind(this);
+    this._onChangeMocks = this._onChangeMocks.bind(this);
     this._onChangeSettings = this._onChangeSettings.bind(this);
 
-    this._core.addCustomSetting({
+    this._core.addSetting({
       name: "cli",
-      type: "booleanString", // Workaround to maintain retrocompatibility with --cli=false
+      type: "booleanString", // Workaround to maintain backward compaitbility with --cli=false
       description: "Start interactive CLI plugin",
       default: true
     });
   }
 
   init() {
+    this._stopListeningChangeSettings = this._core.onChangeSettings(this._onChangeSettings);
     if (!this._settings.get("cli")) {
       return Promise.resolve();
     }
@@ -109,31 +111,80 @@ class Cli {
       this._questions,
       this._header.bind(this) // TODO, deprecate quit method
     );
-    this._logLevel = this._settings.get("log");
     this._inited = true;
-    this._core.onChangeSettings(this._onChangeSettings);
     return Promise.resolve();
   }
 
-  start() {
-    if (!this._inited || !this._settings.get("cli")) {
+  async start() {
+    if (!this._inited) {
+      await this.init();
+    }
+    if (!this._settings.get("cli") || this._started) {
       return Promise.resolve();
     }
-    this._stopListeningFilesLoad = this._core.onLoadMocks(this._onLoadMocks);
+    this._started = true;
+    if (this._stopListeningChangeMocks) {
+      this._stopListeningChangeMocks();
+    }
+    this._stopListeningChangeMocks = this._core.onChangeMocks(this._onChangeMocks);
+    this._logLevel = this._settings.get("log");
     this._silentTraces();
     return this._displayMainMenu();
   }
 
-  _onLoadMocks() {
+  stop() {
+    if (!this._started) {
+      return Promise.resolve();
+    }
+    this._started = false;
+    this._stopListeningChangeMocks();
+    this._settings.set("log", this._logLevel);
     this._cli.removeListeners();
-    this._cli.exitLogsMode();
-    return this._displayMainMenu();
+    this._cli.logsMode();
+    this._cli.clearScreen({
+      header: false
+    });
+    return Promise.resolve();
   }
 
-  _onChangeSettings() {
+  _refreshMainMenu() {
     if (this._currentScreen === SCREENS.MAIN) {
       this._cli.removeListeners();
       return this._displayMainMenu();
+    }
+    return Promise.resolve();
+  }
+
+  _onChangeMocks() {
+    return this._refreshMainMenu();
+  }
+
+  _onChangeSettings(newSettings) {
+    if (this._started) {
+      if (newSettings.hasOwnProperty("cli") && newSettings.cli === false) {
+        return this.stop();
+      }
+      if (newSettings.hasOwnProperty("log")) {
+        if (!this._isOverwritingLogLevel) {
+          this._logLevel = newSettings.log;
+          if (this._currentScreen !== SCREENS.LOGS) {
+            this._silentTraces();
+          }
+        } else {
+          this._isOverwritingLogLevel = false;
+        }
+      }
+      if (
+        newSettings.hasOwnProperty("behavior") ||
+        newSettings.hasOwnProperty("delay") ||
+        newSettings.hasOwnProperty("host") ||
+        newSettings.hasOwnProperty("log") ||
+        newSettings.hasOwnProperty("watch")
+      ) {
+        return this._refreshMainMenu();
+      }
+    } else if (newSettings.hasOwnProperty("cli") && newSettings.cli === true) {
+      return this.start();
     }
   }
 
@@ -148,8 +199,8 @@ class Cli {
       `Mocks server listening at: ${chalk.cyan(this._serverUrl)}`,
       `Delay: ${chalk.cyan(this._settings.get("delay"))}`,
       `Behaviors: ${chalk.cyan(this._core.behaviors.count)}`,
-      `Current behavior: ${chalk.cyan(this._core.behaviors.currentName || "-")}`,
-      `Current fixtures: ${chalk.cyan(this._core.behaviors.currentTotalFixtures || 0)}`,
+      `Current behavior: ${chalk.cyan(this._core.behaviors.currentId || "-")}`,
+      `Current fixtures: ${chalk.cyan(this._core.fixtures.count || 0)}`,
       `Log level: ${chalk.cyan(this._logLevel)}`,
       `Watch enabled: ${chalk.cyan(this._settings.get("watch"))}`
     ];
@@ -165,6 +216,7 @@ class Cli {
 
   async _displayMainMenu() {
     this._cli.clearScreen();
+    this._cli.exitLogsMode();
     this._currentScreen = SCREENS.MAIN;
     const action = await this._cli.inquire("main");
     switch (action) {
@@ -186,14 +238,17 @@ class Cli {
   async _changeCurrentBehavior() {
     this._currentScreen = SCREENS.BEHAVIOR;
     this._cli.clearScreen();
-    const behaviorsNames = this._core.behaviors.names;
+    const behaviorsIds = this._core.behaviors.ids;
+    if (!behaviorsIds.length) {
+      return this._displayMainMenu();
+    }
     const behavior = await this._cli.inquire("behavior", {
       source: (answers, input) => {
         if (!input || !input.length) {
-          return Promise.resolve(behaviorsNames);
+          return Promise.resolve(behaviorsIds);
         }
         return Promise.resolve(
-          behaviorsNames.filter(currentBehavior => currentBehavior.includes(input))
+          behaviorsIds.filter(currentBehavior => currentBehavior.includes(input))
         );
       }
     });
@@ -211,7 +266,7 @@ class Cli {
 
   async _restartServer() {
     try {
-      await this._core.restart();
+      await this._core.restartServer();
     } catch (err) {}
     return this._displayMainMenu();
   }
@@ -239,12 +294,13 @@ class Cli {
   }
 
   _silentTraces() {
+    this._isOverwritingLogLevel = true;
     this._settings.set("log", "silent");
   }
 
   stopListeningServerWatch() {
-    if (this._stopListeningFilesLoad) {
-      this._stopListeningFilesLoad();
+    if (this._stopListeningChangeMocks) {
+      this._stopListeningChangeMocks();
     }
   }
 }

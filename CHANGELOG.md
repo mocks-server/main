@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.2.0] - 2020-01-04
+### Added
+- Add stop method.
+- Add reactivity to cli option changes. Cli is automatically started or stopped when cli option changes.
+
+### Changed
+- Upgrade "@mocks-server" core dependency to v1.3.0.
+- Upgrade devDependencies.
+- Remove usage of core deprecated methods.
+
+### Fixed
+- Do not display behaviors inquirer if there are no behaviors to select.
+
 ## [1.1.0] - 2019-12-07
 ### Changed
 - Upgrade "@mocks-server" core dependency. Use new "path" option.

@@ -87,6 +87,7 @@ class Cli {
     this._tracer = core.tracer;
     this._settings = core.settings;
     this._inited = false;
+    this._started = false;
     this._currentScreen = null;
 
     this._onChangeMocks = this._onChangeMocks.bind(this);
@@ -101,6 +102,7 @@ class Cli {
   }
 
   init() {
+    this._stopListeningChangeSettings = this._core.onChangeSettings(this._onChangeSettings);
     if (!this._settings.get("cli")) {
       return Promise.resolve();
     }
@@ -109,31 +111,80 @@ class Cli {
       this._questions,
       this._header.bind(this) // TODO, deprecate quit method
     );
-    this._logLevel = this._settings.get("log");
     this._inited = true;
-    this._core.onChangeSettings(this._onChangeSettings);
     return Promise.resolve();
   }
 
-  start() {
-    if (!this._inited || !this._settings.get("cli")) {
+  async start() {
+    if (!this._inited) {
+      await this.init();
+    }
+    if (!this._settings.get("cli") || this._started) {
       return Promise.resolve();
     }
+    this._started = true;
+    if (this._stopListeningChangeMocks) {
+      this._stopListeningChangeMocks();
+    }
     this._stopListeningChangeMocks = this._core.onChangeMocks(this._onChangeMocks);
+    this._logLevel = this._settings.get("log");
     this._silentTraces();
     return this._displayMainMenu();
   }
 
-  _onChangeMocks() {
+  stop() {
+    if (!this._started) {
+      return Promise.resolve();
+    }
+    this._started = false;
+    this._stopListeningChangeMocks();
+    this._settings.set("log", this._logLevel);
     this._cli.removeListeners();
-    this._cli.exitLogsMode();
-    return this._displayMainMenu();
+    this._cli.logsMode();
+    this._cli.clearScreen({
+      header: false
+    });
+    return Promise.resolve();
   }
 
-  _onChangeSettings() {
+  _refreshMainMenu() {
     if (this._currentScreen === SCREENS.MAIN) {
       this._cli.removeListeners();
       return this._displayMainMenu();
+    }
+    return Promise.resolve();
+  }
+
+  _onChangeMocks() {
+    return this._refreshMainMenu();
+  }
+
+  _onChangeSettings(newSettings) {
+    if (this._started) {
+      if (newSettings.hasOwnProperty("cli") && newSettings.cli === false) {
+        return this.stop();
+      }
+      if (newSettings.hasOwnProperty("log")) {
+        if (!this._isOverwritingLogLevel) {
+          this._logLevel = newSettings.log;
+          if (this._currentScreen !== SCREENS.LOGS) {
+            this._silentTraces();
+          }
+        } else {
+          this._isOverwritingLogLevel = false;
+        }
+      }
+      if (
+        newSettings.hasOwnProperty("behavior") ||
+        newSettings.hasOwnProperty("delay") ||
+        newSettings.hasOwnProperty("host") ||
+        newSettings.hasOwnProperty("log") ||
+        newSettings.hasOwnProperty("watch")
+      ) {
+        return this._refreshMainMenu();
+      }
+    } else if (newSettings.hasOwnProperty("cli") && newSettings.cli === true) {
+      return this.start();
     }
   }
 
@@ -165,6 +216,7 @@ class Cli {
 
   async _displayMainMenu() {
     this._cli.clearScreen();
+    this._cli.exitLogsMode();
     this._currentScreen = SCREENS.MAIN;
     const action = await this._cli.inquire("main");
     switch (action) {
@@ -187,6 +239,9 @@ class Cli {
     this._currentScreen = SCREENS.BEHAVIOR;
     this._cli.clearScreen();
     const behaviorsIds = this._core.behaviors.ids;
+    if (!behaviorsIds.length) {
+      return this._displayMainMenu();
+    }
     const behavior = await this._cli.inquire("behavior", {
       source: (answers, input) => {
         if (!input || !input.length) {
@@ -239,6 +294,7 @@ class Cli {
   }
 
   _silentTraces() {
+    this._isOverwritingLogLevel = true;
     this._settings.set("log", "silent");
   }
 

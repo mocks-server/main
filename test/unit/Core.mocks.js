@@ -35,11 +35,12 @@ class CoreMock {
         warn: this._sandbox.stub(),
         error: this._sandbox.stub()
       },
-      onChangeSettings: this._sandbox.stub(),
-      onChangeMocks: this._sandbox.stub(),
+      onChangeSettings: this._sandbox.stub().returns(() => {}),
+      onChangeMocks: this._sandbox.stub().returns(() => {}),
       addRouter: this._sandbox.stub(),
       addSetting: this._sandbox.stub(),
       behaviors: {
+        ids: [],
         currentFromCollection: "foo-current",
         collection: "foo-behaviors-collection"
       },

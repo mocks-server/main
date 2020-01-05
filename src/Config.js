@@ -111,8 +111,12 @@ class Config {
     if (config.hasOwnProperty("disableConfigFile")) {
       this._coreOptions.disableConfigFile = config.disableConfigFile;
     }
-    this._coreOptions.plugins = config.plugins;
-    this._coreOptions.configFile = config.configFile;
+    if (config.hasOwnProperty("plugins")) {
+      this._coreOptions.plugins = config.plugins;
+    }
+    if (config.hasOwnProperty("configFile")) {
+      this._coreOptions.configFile = config.configFile;
+    }
   }
 
   get coreOptions() {

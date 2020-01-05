@@ -262,6 +262,22 @@ describe("Config", () => {
       });
     });
 
+    it("should read configuration when defined as an async function", async () => {
+      expect.assertions(2);
+      config = new Config({
+        configFile: "config.async.js"
+      });
+      await config.init();
+      expect(config.coreOptions).toEqual({
+        configFile: "config.async.js",
+        plugins: ["foo"]
+      });
+      expect(config.options).toEqual({
+        log: "silly",
+        delay: 1000
+      });
+    });
+
     it("should pass programmatic config to function to allow modify it", async () => {
       expect.assertions(2);
       config = new Config({

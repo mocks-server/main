@@ -26,6 +26,11 @@ class Config {
     return Promise.resolve({});
   }
 
+  _readConfigFileSuccess(configFileResult) {
+    tracer.info(`Configuration file successfully loaded`);
+    return Promise.resolve(configFileResult);
+  }
+
   _readFileConfig(configFilePath) {
     tracer.info("Reading configuration file");
     try {
@@ -40,17 +45,17 @@ class Config {
                   new Error("Configuration file promise should return an object")
                 );
               }
-              return Promise.resolve(fileConfig);
+              return this._readConfigFileSuccess(fileConfig);
             })
             .catch(error => {
               return this._catchFileConfigError(error);
             });
         } else if (isObject(configFileResult)) {
-          return Promise.resolve(configFileResult);
+          return this._readConfigFileSuccess(configFileResult);
         }
         throw new Error("Configuration file function should return an object or a promise");
       } else if (isObject(configFile)) {
-        return Promise.resolve(configFile);
+        return this._readConfigFileSuccess(configFile);
       }
       throw new Error("Configuration file should export an object or a function");
     } catch (error) {
@@ -77,7 +82,6 @@ class Config {
         return Promise.resolve();
       }
       return this._readFileConfig(configFilePath).then(fileConfig => {
-        tracer.info(`Configuration file successfully loaded`);
         this._getCoreOptions(fileConfig);
         this._getOptions(fileConfig.options);
         tracer.debug(`Config in file: ${JSON.stringify(fileConfig, null, 2)}`);

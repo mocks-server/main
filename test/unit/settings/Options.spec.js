@@ -12,6 +12,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const CommandLineArgumentsMocks = require("./CommandLineArguments.mocks.js");
+const ConfigMocks = require("../Config.mocks.js");
 
 const Options = require("../../../src/settings/Options");
 const tracer = require("../../../src/tracer");
@@ -20,6 +21,7 @@ describe("options", () => {
   let sandbox;
   let options;
   let commandLineArgumentsMocks;
+  let configMocks;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -27,11 +29,15 @@ describe("options", () => {
     sandbox.spy(tracer, "deprecationWarn");
     sandbox.stub(tracer, "error");
     commandLineArgumentsMocks = new CommandLineArgumentsMocks();
-    options = new Options();
+    configMocks = new ConfigMocks();
+    options = new Options(configMocks.stubs.instance);
   });
 
   afterEach(() => {
     sandbox.restore();
+    configMocks.restore();
+    configMocks.stubs.instance.coreOptions = {};
+    configMocks.stubs.instance.options = {};
     commandLineArgumentsMocks.restore();
   });
 
@@ -101,11 +107,10 @@ describe("options", () => {
     });
   });
 
-  describe("init method when using programmatic options", () => {
+  describe("init method when command line arguments are disabled", () => {
     it("should not call to get command line arguments", async () => {
-      options = new Options({
-        onlyProgrammaticOptions: true
-      });
+      configMocks.stubs.instance.coreOptions.disableCommandLineArguments = true;
+      options = new Options(configMocks.stubs.instance);
       await options.init();
       expect(commandLineArgumentsMocks.stubs.instance.init.callCount).toEqual(0);
     });
@@ -390,21 +395,21 @@ describe("options", () => {
     });
   });
 
-  describe("options getter when using programmatic options", () => {
+  describe("options getter when config return options", () => {
     beforeEach(() => {
-      options = new Options({
-        onlyProgrammaticOptions: true
-      });
+      configMocks.stubs.instance.disableCommandLineArguments = true;
+      options = new Options(configMocks.stubs.instance);
     });
 
     it("should only get values from keys defined in default values", async () => {
-      await options.init({
+      configMocks.stubs.instance.options = {
         behavior: "foo-behavior",
         cli: true,
         path: "foo/behaviors/path",
         foo: undefined,
         foo2: "foooo"
-      });
+      };
+      await options.init();
       expect(options.options).toEqual({
         port: 3100,
         host: "0.0.0.0",
@@ -417,7 +422,7 @@ describe("options", () => {
     });
 
     it("should remove deprecated options", async () => {
-      await options.init({
+      configMocks.stubs.instance.options = {
         behavior: "foo-behavior",
         cli: true,
         features: "foo/features/path",
@@ -426,7 +431,8 @@ describe("options", () => {
         foo: undefined,
         foo2: "foooo",
         recursive: false
-      });
+      };
+      await options.init();
       expect(options.options).toEqual({
         port: 3100,
         host: "0.0.0.0",
@@ -447,12 +453,13 @@ describe("options", () => {
         name: "foo",
         type: "string"
       });
-      await options.init({
+      configMocks.stubs.instance.options = {
         behavior: "foo-behavior",
         cli: true,
         path: "foo/behaviors/path",
         foo: "foo"
-      });
+      };
+      await options.init();
       expect(options.options).toEqual({
         port: 3100,
         host: "0.0.0.0",
@@ -467,12 +474,13 @@ describe("options", () => {
     });
 
     it("should extend default options with user options, ommiting undefined values", async () => {
-      await options.init({
+      configMocks.stubs.instance.options = {
         behavior: "foo-behavior",
         cli: true,
         path: "foo/behaviors/path",
         foo: undefined
-      });
+      };
+      await options.init();
       expect(options.options).toEqual({
         port: 3100,
         host: "0.0.0.0",
@@ -485,11 +493,12 @@ describe("options", () => {
     });
 
     it("should convert feature and features options to behavior and path", async () => {
-      await options.init({
+      configMocks.stubs.instance.options = {
         feature: "foo-feature",
         cli: true,
         features: "foo/features/path"
-      });
+      };
+      await options.init();
       expect(options.options).toEqual({
         port: 3100,
         host: "0.0.0.0",
@@ -502,11 +511,12 @@ describe("options", () => {
     });
 
     it("should convert behaviors option to path", async () => {
-      await options.init({
+      configMocks.stubs.instance.options = {
         feature: "foo-feature",
         cli: true,
         behaviors: "foo/features/path"
-      });
+      };
+      await options.init();
       expect(options.options).toEqual({
         port: 3100,
         host: "0.0.0.0",
@@ -519,13 +529,14 @@ describe("options", () => {
     });
 
     it("should apply behavior and path options if feature and features options are received too", async () => {
-      await options.init({
+      configMocks.stubs.instance.options = {
         behavior: "foo-behavior",
         feature: "foo-feature",
         cli: true,
         path: "foo/behaviors/path",
         features: "foo-feature"
-      });
+      };
+      await options.init();
       expect(options.options).toEqual({
         port: 3100,
         host: "0.0.0.0",
@@ -538,14 +549,15 @@ describe("options", () => {
     });
 
     it("should apply path option if behaviors and features options are received too", async () => {
-      await options.init({
+      configMocks.stubs.instance.options = {
         behavior: "foo-behavior",
         feature: "foo-feature",
         cli: true,
         path: "foo/path",
         features: "foo/features/path",
         behaviors: "foo/behaviors/path"
-      });
+      };
+      await options.init();
       expect(options.options).toEqual({
         port: 3100,
         host: "0.0.0.0",

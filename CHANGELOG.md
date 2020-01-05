@@ -26,8 +26,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [1.4.0] - 2020-01-07
+## [1.4.0] - 2020-01-06
 ### Added
+- Add "addPlugins" configuration.
+- Add "disableCommandLineArguments" configuration.
+- Add "disableConfigFile" configuration.
+- Load configuration and options from file.
 
 ## [1.3.0] - 2020-01-03
 ### Added

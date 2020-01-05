@@ -243,6 +243,29 @@ describe("Config", () => {
       });
     });
 
+    it("should pass programmatic config to function to allow modify it", async () => {
+      expect.assertions(2);
+      config = new Config({
+        configFile: "config.modify.js",
+        disableCommandLineArguments: true,
+        plugins: ["foo"],
+        options: {
+          foo: "foo"
+        }
+      });
+      await config.init({
+        foo2: "foo2"
+      });
+      expect(config.coreOptions).toEqual({
+        configFile: "config.modify.js",
+        plugins: ["foo", "foo2"]
+      });
+      expect(config.options).toEqual({
+        foo2: "foo2",
+        foo3: "foo3"
+      });
+    });
+
     it("should trace error when file export a not valid object", async () => {
       expect.assertions(2);
       config = new Config({

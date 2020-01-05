@@ -27,6 +27,7 @@ class Config {
   }
 
   _readConfigFileSuccess(configFileResult) {
+    delete this._coreOptions.options;
     tracer.info(`Configuration file successfully loaded`);
     return Promise.resolve(configFileResult);
   }
@@ -36,7 +37,8 @@ class Config {
     try {
       const configFile = require(configFilePath);
       if (isFunction(configFile)) {
-        const configFileResult = configFile(this.coreOptions);
+        this._coreOptions.options = this._options;
+        const configFileResult = configFile(this._coreOptions);
         if (isPromise(configFileResult)) {
           return configFileResult
             .then(fileConfig => {

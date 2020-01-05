@@ -77,7 +77,14 @@ describe("Config", () => {
       expect(config.coreOptions.plugins).toEqual("foo");
     });
 
-    it("should set plugins received programmatically", async () => {
+    it("should add plugins received programmatically", async () => {
+      config = new Config({
+        addPlugins: ["foo"]
+      });
+      expect(config.coreOptions.plugins).toEqual(["foo"]);
+    });
+
+    it("should set configFile received programmatically", async () => {
       config = new Config({
         configFile: "/foo"
       });
@@ -192,6 +199,18 @@ describe("Config", () => {
         foo3: "foo3",
         log: "silly",
         delay: 1000
+      });
+    });
+
+    it("should add plugins received in addPlugins option", async () => {
+      config = new Config({
+        configFile: "config.add-plugins.js",
+        plugins: ["foo"]
+      });
+      await config.init();
+      expect(config.coreOptions).toEqual({
+        configFile: "config.add-plugins.js",
+        plugins: ["foo", "foo2"]
       });
     });
 

@@ -116,6 +116,10 @@ class Config {
     if (config.hasOwnProperty("plugins")) {
       this._coreOptions.plugins = config.plugins;
     }
+    if (config.hasOwnProperty("addPlugins")) {
+      this._coreOptions.plugins = this._coreOptions.plugins || [];
+      this._coreOptions.plugins = this._coreOptions.plugins.concat(config.addPlugins);
+    }
     if (config.hasOwnProperty("configFile")) {
       this._coreOptions.configFile = config.configFile;
     }

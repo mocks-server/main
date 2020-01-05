@@ -17,21 +17,21 @@ const tracer = require("../tracer");
 const FilesLoader = require("./FilesLoader");
 
 class Plugins {
-  constructor(plugins, loaders, core) {
+  constructor(config, loaders, core) {
+    this._config = config;
     this._core = core;
     this._loaders = loaders;
-    this._plugins = plugins || [];
     this._pluginsInstances = [];
     this._pluginsMethods = [];
     this._pluginsRegistered = 0;
     this._pluginsInitialized = 0;
     this._pluginsStarted = 0;
     this._pluginsStopped = 0;
-
-    this._plugins.unshift(FilesLoader);
   }
 
   register() {
+    this._plugins = this._config.coreOptions.plugins || [];
+    this._plugins.unshift(FilesLoader);
     return this._registerPlugins().then(() => {
       tracer.verbose(`Registered ${this._pluginsRegistered} plugins without errors`);
       return Promise.resolve();

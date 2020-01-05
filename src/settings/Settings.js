@@ -15,9 +15,9 @@ const tracer = require("../tracer");
 const { CHANGE_SETTINGS } = require("../eventNames");
 
 class Settings {
-  constructor(eventEmitter, coreOptions) {
+  constructor(eventEmitter, config) {
     this._eventEmitter = eventEmitter;
-    this._optionsHandler = new Options(coreOptions);
+    this._optionsHandler = new Options(config);
     this._emitChange = this._emitChange.bind(this); //Add debounce here to group change events
     this._newSettings = {};
   }

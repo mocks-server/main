@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.8.0] - 2020-01-06
+### Changed
+- Upgrade core version to [1.4.0](https://github.com/mocks-server/core/releases/tag/v1.4.0)
+
 ## [1.7.2] - 2020-01-04
 ### Changed
 - Upgrade plugin-inquirer-cli version to [1.2.0](https://github.com/mocks-server/plugin-inquirer-cli/releases/tag/v1.2.0)

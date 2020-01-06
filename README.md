@@ -18,7 +18,7 @@ Please refer to the [project documentation website][website-url]:
 * [Get started](https://www.mocks-server.org/docs/get-started-intro)
 * [Guides](https://www.mocks-server.org/docs/guides-defining-fixtures)
 * [Configuration](https://www.mocks-server.org/docs/configuration-options)
-* [Plugins](https://www.mocks-server.org/docs/plugins-inquirer-cli)
+* [Plugins](https://www.mocks-server.org/docs/plugins-adding-plugins)
 * [Integrations](https://www.mocks-server.org/docs/integrations-cypress)
 * [Api](https://www.mocks-server.org/docs/advanced-programmatic-usage)
 

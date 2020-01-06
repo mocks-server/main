@@ -32,7 +32,7 @@ describe("delay setting", () => {
       const timeCounter = new TimeCounter();
       await request("/api/users");
       timeCounter.stop();
-      expect(timeCounter.total).toBeLessThan(300);
+      expect(timeCounter.total).toBeLessThan(350);
     });
   });
 

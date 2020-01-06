@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/main",
-  "version": "1.7.2",
+  "version": "1.8.0",
   "description": "Mocks server supporting multiple api behaviors",
   "keywords": [
     "mocks",
@@ -40,7 +40,7 @@
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
-    "@mocks-server/core": "1.3.0",
+    "@mocks-server/core": "1.4.0",
     "@mocks-server/plugin-admin-api": "1.3.1",
     "@mocks-server/plugin-inquirer-cli": "1.2.0"
   },

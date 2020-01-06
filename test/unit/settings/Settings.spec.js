@@ -13,6 +13,7 @@ const sinon = require("sinon");
 
 const OptionsMocks = require("./Options.mocks.js");
 const CoreMocks = require("../Core.mocks.js");
+const ConfigMocks = require("../Config.mocks.js");
 
 const Settings = require("../../../src/settings/Settings");
 const tracer = require("../../../src/tracer");
@@ -22,6 +23,7 @@ describe("Settings", () => {
   let optionsInstance;
   let coreMocks;
   let coreInstance;
+  let configMocks;
   let sandbox;
   let settings;
 
@@ -31,10 +33,11 @@ describe("Settings", () => {
     optionsInstance = optionsMocks.stubs.instance;
     optionsInstance.checkValidOptionName.callsFake(name => name);
     coreMocks = new CoreMocks();
+    configMocks = new ConfigMocks();
     coreInstance = coreMocks.stubs.instance;
     sandbox.stub(tracer, "set");
     sandbox.stub(tracer, "info");
-    settings = new Settings(coreInstance._eventEmitter, {});
+    settings = new Settings(coreInstance._eventEmitter, configMocks.stubs.instance);
     await settings.init();
   });
 
@@ -42,6 +45,7 @@ describe("Settings", () => {
     sandbox.restore();
     optionsMocks.restore();
     coreMocks.restore();
+    configMocks.restore();
   });
 
   describe("when initializated", () => {

@@ -36,8 +36,8 @@ const DEPRECATED_OPTIONS = {
 };
 
 class Options {
-  constructor(coreOptions = {}) {
-    this._onlyProgrammaticOptions = coreOptions.onlyProgrammaticOptions;
+  constructor(config) {
+    this._config = config;
     this._options = {};
     this._optionsNames = Object.keys(DEFAULT_OPTIONS);
     this._customDefaults = {};
@@ -46,15 +46,15 @@ class Options {
     this._commandLineArguments = new CommandLineArguments(DEFAULT_OPTIONS);
   }
 
-  async init(options) {
+  async init() {
     if (!this._initialized) {
       this._initialized = true;
       const baseOptions = {
         ...DEFAULT_OPTIONS,
         ...this._customDefaults,
-        ...options
+        ...this._config.options
       };
-      if (!this._onlyProgrammaticOptions) {
+      if (!this._config.coreOptions.disableCommandLineArguments) {
         await this._commandLineArguments.init();
         this._options = this._getValidOptions(
           this._removeDeprecatedOptions({

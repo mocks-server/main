@@ -13,6 +13,7 @@ const EventEmitter = require("events");
 const { INIT, START, STOP, LOAD_MOCKS, CHANGE_MOCKS, CHANGE_SETTINGS } = require("./eventNames");
 const tracer = require("./tracer");
 
+const Config = require("./Config");
 const Orchestrator = require("./Orchestrator");
 const Loaders = require("./Loaders");
 
@@ -22,14 +23,15 @@ const Mocks = require("./mocks/Mocks");
 const Settings = require("./settings/Settings");
 
 class Core {
-  constructor(coreOptions = {}) {
+  constructor(config) {
     this._eventEmitter = new EventEmitter();
-    this._settings = new Settings(this._eventEmitter, {
-      onlyProgrammaticOptions: coreOptions.onlyProgrammaticOptions
-    });
 
     this._loaders = new Loaders(this);
-    this._plugins = new Plugins(coreOptions.plugins, this._loaders, this);
+    this._config = new Config(config);
+
+    this._settings = new Settings(this._eventEmitter, this._config);
+
+    this._plugins = new Plugins(this._config, this._loaders, this);
 
     this._mocks = new Mocks(this._eventEmitter, this._settings, this._loaders, this);
     this._server = new Server(this._eventEmitter, this._settings, this._mocks, this);
@@ -37,6 +39,7 @@ class Core {
     this._orchestrator = new Orchestrator(this._eventEmitter, this._mocks, this._server);
 
     this._inited = false;
+    this._stopPluginsPromise = null;
     this._startPluginsPromise = null;
   }
 
@@ -44,11 +47,12 @@ class Core {
     if (this._inited) {
       return Promise.resolve();
     }
+    await this._config.init(options);
     this._inited = true;
     // Register plugins, let them add their custom settings
     await this._plugins.register();
     // Init settings, read command line arguments, etc.
-    await this._settings.init(options);
+    await this._settings.init(this._config.options);
     // Settings are ready, init all
     await this._mocks.init();
     await this._server.init();

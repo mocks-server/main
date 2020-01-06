@@ -15,6 +15,7 @@ const MocksMocks = require("./mocks/Mocks.mocks.js");
 const ServerMocks = require("./server/Server.mocks.js");
 const PluginsMocks = require("./plugins/Plugins.mocks.js");
 const OrchestratorMocks = require("./Orchestrator.mocks.js");
+const ConfigMocks = require("./Config.mocks.js");
 
 const Core = require("../../src/Core");
 const tracer = require("../../src/tracer");
@@ -30,6 +31,7 @@ describe("Core", () => {
   let serverInstance;
   let pluginsMocks;
   let pluginsInstance;
+  let configMocks;
   let core;
 
   beforeEach(async () => {
@@ -43,6 +45,7 @@ describe("Core", () => {
     pluginsMocks = new PluginsMocks();
     pluginsInstance = pluginsMocks.stubs.instance;
     orchestratorMocks = new OrchestratorMocks();
+    configMocks = new ConfigMocks();
 
     core = new Core();
     await core.init();
@@ -54,7 +57,16 @@ describe("Core", () => {
     mocksMocks.restore();
     orchestratorMocks.restore();
     serverMocks.restore();
+    configMocks.restore();
     pluginsMocks.restore();
+  });
+
+  describe("when created", () => {
+    it("should create Config with received config", () => {
+      const fooConfig = { foo: "foo" };
+      core = new Core(fooConfig);
+      expect(configMocks.stubs.Constructor.mock.calls[1][0]).toEqual(fooConfig);
+    });
   });
 
   describe("init method", () => {
@@ -68,13 +80,10 @@ describe("Core", () => {
       expect(pluginsInstance.register.callCount).toEqual(1);
     });
 
-    it("should init settings with received options", async () => {
-      const fooOptions = {
-        foo: "foo"
-      };
+    it("should init settings with config options", async () => {
       core = new Core();
-      await core.init(fooOptions);
-      expect(settingsInstance.init.calledWith(fooOptions)).toEqual(true);
+      await core.init();
+      expect(settingsInstance.init.calledWith(configMocks.stubs.instance.options)).toEqual(true);
     });
 
     it("should init mocks", () => {

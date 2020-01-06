@@ -26,6 +26,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.4.0] - 2020-01-06
+### Added
+- Add "addPlugins" configuration.
+- Add "disableCommandLineArguments" configuration.
+- Add "disableConfigFile" configuration.
+- Load configuration and options from file.
+- Options can also be passed to the Core Constructor, using the "options" key in the config object.
+
 ## [1.3.0] - 2020-01-03
 ### Added
 - Behaviors can now be defined in json format.

@@ -7,6 +7,8 @@
 
 # Mocks-server administration api client
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/mocks-server/admin-api-client.svg)](https://greenkeeper.io/)
+
 This package contains methods for administrating the mocks-server _(through the [@mocks-server/plugin-admin-api](https://github.com/mocks-server/plugin-admin-api) RESTful API)_.
 
 Built using [@data-provider](https://github.com/data-provider), it can be used in Node.js, browsers, and is also compatible with @data-provider connectors, such as [@data-provider/connector-react](https://github.com/data-provider/connector-react), so can be easily integrated with frameworks.

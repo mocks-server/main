@@ -7,6 +7,8 @@
 
 # Mocks server Cypress commands
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/mocks-server/cypress-commands.svg)](https://greenkeeper.io/)
+
 This solution provides you commands for easily changing [@mocks-server settings][mocks-server-options-url], such as current behavior, delay time, etc.
 
 ## Installation

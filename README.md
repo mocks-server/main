@@ -7,6 +7,8 @@
 
 # [![Mocks Server][logo-url]][website-url] Mocks Server Plugin Admin Api
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/mocks-server/plugin-admin-api.svg)](https://greenkeeper.io/)
+
 Plugin for [Mocks Server][website-url] that provides an API REST that allows to change dinamically the current behavior, change delay time, and another [Mocks Server options][options-url].
 
 This is __very useful when running acceptance tests, as you can change the behavior of the api__ simply making an HTTP request in your tests `before` method, for example.

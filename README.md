@@ -7,6 +7,8 @@
 
 # Api paths of the Mocks-Server Plugin Admin Api
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/mocks-server/admin-api-paths.svg)](https://greenkeeper.io/)
+
 Constants defining API paths of the [Mocks Server plugin-admin-api][plugin-admin-api-url]. Use them to build plugin clients.
 
 ## Usage

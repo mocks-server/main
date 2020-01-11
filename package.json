@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "chalk": "^3.0.0",
-    "inquirer": "7.0.1",
+    "inquirer": "7.0.3",
     "inquirer-autocomplete-prompt": "^1.0.1",
     "lodash": "4.17.15"
   },
@@ -47,7 +47,7 @@
     "eslint-config-prettier": "6.9.0",
     "eslint-plugin-prettier": "^3.1.2",
     "fs-extra": "^8.1.0",
-    "husky": "3.0.9",
+    "husky": "4.0.6",
     "is-promise": "^2.1.0",
     "jest": "24.9.0",
     "lint-staged": "^9.5.0",

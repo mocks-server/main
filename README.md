@@ -7,6 +7,8 @@
 
 # [![Mocks Server][logo-url]][website-url] Mocks Server Core
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/mocks-server/core.svg)](https://greenkeeper.io/)
+
 This package provides the plugabble core of the [@mocks-server][website-url] project.
 
 Use it if you want to start the mocks-server programmatically by your own, or even create your own mocks-server distribution with your desired plugins. Until that, you'll probably should prefer using the [main distribution of the @mocks-server project][main-url].

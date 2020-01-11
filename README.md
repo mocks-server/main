@@ -7,6 +7,8 @@
 
 # [![Mocks Server][logo-url]][website-url] Mocks Server
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/mocks-server/main.svg)](https://greenkeeper.io/)
+
 This package provides a server that simulates multiple API behaviors. It can be added as a dependency of your project, and started simply running an NPM command.
 
 It is simple and easy out-of-the-box, but powerful and very customizable through the usage of [plugins and other customization methods](https://www.mocks-server.org/docs/advanced-developing-plugins).

@@ -95,11 +95,11 @@ class FilesHandler {
       this._files = requireAll({
         dirname: this._path,
         recursive: true,
-        map: (name, path) => {
-          if (JS_FILES_REGEXP.test(path)) {
-            return `${name}.json`;
+        map: (fileName, filePath) => {
+          if (JS_FILES_REGEXP.test(filePath)) {
+            return `${fileName}.json`;
           }
-          return name;
+          return fileName;
         },
         resolve: fileContent => {
           try {

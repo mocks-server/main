@@ -1,0 +1,14 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "package.json",
+        "test-e2e/browser/package.json",
+        "test-e2e/browser/react-app/package.json",
+        "test-e2e/browser/vanilla-app/package.json",
+        "test-e2e/mocks/package.json",
+        "test-e2e/nodejs/es6/package.json"
+      ]
+    }
+  }
+}

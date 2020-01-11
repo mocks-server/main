@@ -7,6 +7,8 @@
 
 # [![Mocks Server][logo-url]][website-url] Mocks Server Plugin Inquirer CLI
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/mocks-server/plugin-inquirer-cli.svg)](https://greenkeeper.io/)
+
 Plugin for [Mocks Server][website-url] that provides an interactive CLI that allows to change the server settings while it is running.
 
 ## Usage

@@ -6,7 +6,6 @@ module.exports = {
   clearMocks: true,
 
   testMatch: ["**/test/acceptance/**/?(*.)+(spec|test).js?(x)"],
-  // testMatch: ["**/test/acceptance/config-file-add-plugins.spec.js"],
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: false,

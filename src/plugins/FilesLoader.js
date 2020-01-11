@@ -16,6 +16,7 @@ const watch = require("node-watch");
 const fsExtra = require("fs-extra");
 
 const { map, debounce, flatten, isObject } = require("lodash");
+const JS_FILES_REGEXP = /\.json$/;
 
 class FilesHandler {
   constructor(core, methods, extraOptions = {}) {
@@ -94,6 +95,12 @@ class FilesHandler {
       this._files = requireAll({
         dirname: this._path,
         recursive: true,
+        map: (fileName, filePath) => {
+          if (JS_FILES_REGEXP.test(filePath)) {
+            return `${fileName}.json`;
+          }
+          return fileName;
+        },
         resolve: fileContent => {
           try {
             fileContent._mocksServer_isFile = true;

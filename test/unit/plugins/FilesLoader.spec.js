@@ -340,6 +340,16 @@ describe("FilesLoader", () => {
       expect(requireAll.mock.calls[0][0].dirname).toEqual("foo-path");
     });
 
+    it("should add extension to json files to avoid conflicts", async () => {
+      await filesLoader.init();
+      expect(requireAll.mock.calls[0][0].map("foo", "foo-path/foo.json")).toEqual("foo.json");
+    });
+
+    it("should not add extension to js files", async () => {
+      await filesLoader.init();
+      expect(requireAll.mock.calls[0][0].map("foo", "foo-path/foo.js")).toEqual("foo");
+    });
+
     it("should require all files adding a _mocksServer_isFile property to their content", async () => {
       await filesLoader.init();
       expect(requireAll.mock.calls[0][0].resolve({ foo: "foo" })).toEqual({

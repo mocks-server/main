@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.4.2] - 2020-01-11
+### Changed
+- Update dependencies
+
 ## [1.4.1] - 2020-01-11
 ### Fixed
 - Conflicts between files with same name and different extension

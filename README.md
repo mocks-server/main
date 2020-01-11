@@ -1,13 +1,11 @@
 [![Build status][travisci-image]][travisci-url] [![Coverage Status][coveralls-image]][coveralls-url] [![Quality Gate][quality-gate-image]][quality-gate-url]
 
-[![NPM dependencies][npm-dependencies-image]][npm-dependencies-url] [![Last commit][last-commit-image]][last-commit-url] [![Last release][release-image]][release-url] 
+[![NPM dependencies][npm-dependencies-image]][npm-dependencies-url] [![Greenkeeper badge][greenkeeper-image]][greenkeeper-url] [![Last commit][last-commit-image]][last-commit-url] [![Last release][release-image]][release-url] 
 
 [![NPM downloads][npm-downloads-image]][npm-downloads-url] [![License][license-image]][license-url]
 
 
 # [![Mocks Server][logo-url]][website-url] Mocks Server Core
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/mocks-server/core.svg)](https://greenkeeper.io/)
 
 This package provides the plugabble core of the [@mocks-server][website-url] project.
 
@@ -45,6 +43,8 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [npm-downloads-url]: https://www.npmjs.com/package/@mocks-server/core
 [npm-dependencies-image]: https://img.shields.io/david/mocks-server/core.svg
 [npm-dependencies-url]: https://david-dm.org/mocks-server/core
+[greenkeeper-image]: https://badges.greenkeeper.io/mocks-server/core.svg
+[greenkeeper-url]: https://greenkeeper.io/
 [quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=mocks-server-core&metric=alert_status
 [quality-gate-url]: https://sonarcloud.io/dashboard?id=mocks-server-core
 [release-image]: https://img.shields.io/github/release-date/mocks-server/core.svg

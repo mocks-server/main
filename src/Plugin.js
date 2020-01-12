@@ -18,6 +18,7 @@ const {
   FIXTURES
 } = require("@mocks-server/admin-api-paths");
 
+const packageInfo = require("../package.json");
 const DeprecatedApi = require("./deprecated/Api");
 
 const Settings = require("./Settings");
@@ -57,6 +58,10 @@ class Plugin {
     });
 
     this._onChangeSettings = this._onChangeSettings.bind(this);
+  }
+
+  get displayName() {
+    return packageInfo.name;
   }
 
   async init() {

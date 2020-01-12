@@ -1,13 +1,11 @@
 [![Build status][travisci-image]][travisci-url] [![Coverage Status][coveralls-image]][coveralls-url] [![Quality Gate][quality-gate-image]][quality-gate-url]
 
-[![NPM dependencies][npm-dependencies-image]][npm-dependencies-url] [![Last commit][last-commit-image]][last-commit-url] [![Last release][release-image]][release-url] 
+[![NPM dependencies][npm-dependencies-image]][npm-dependencies-url] [![Greenkeeper badge](https://badges.greenkeeper.io/mocks-server/plugin-admin-api.svg)](https://greenkeeper.io/) [![Last commit][last-commit-image]][last-commit-url] [![Last release][release-image]][release-url] 
 
 [![NPM downloads][npm-downloads-image]][npm-downloads-url] [![License][license-image]][license-url]
 
 
 # [![Mocks Server][logo-url]][website-url] Mocks Server Plugin Admin Api
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/mocks-server/plugin-admin-api.svg)](https://greenkeeper.io/)
 
 Plugin for [Mocks Server][website-url] that provides an API REST that allows to change dinamically the current behavior, change delay time, and another [Mocks Server options][options-url].
 

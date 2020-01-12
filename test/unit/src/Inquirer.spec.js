@@ -40,6 +40,13 @@ describe("Inquirer", () => {
     sandbox.restore();
   });
 
+  describe("display name", () => {
+    it("should return package name", async () => {
+      const cli = new Inquirer(fooQuestions);
+      expect(cli.displayName).toEqual("@mocks-server/plugin-inquirer-cli");
+    });
+  });
+
   describe("when initing questions", () => {
     it("should add an extra exit option to main menu", () => {
       const cli = new Inquirer(fooQuestions);

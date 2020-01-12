@@ -15,6 +15,8 @@ const inquirer = require("inquirer");
 const autocomplete = require("inquirer-autocomplete-prompt");
 const { cloneDeep, map } = require("lodash");
 
+const packageInfo = require("../package.json");
+
 inquirer.registerPrompt("autocomplete", autocomplete);
 
 const STDIN_ENCODING = "utf8";
@@ -35,6 +37,10 @@ const Inquirer = class Inquirer {
     this._header = header;
     this._questions = this._initQuestions(questions, quitMethod);
     this._exitLogsMode = this._exitLogsMode.bind(this);
+  }
+
+  get displayName() {
+    return packageInfo.name;
   }
 
   _initQuestions(questions, quitMethod) {

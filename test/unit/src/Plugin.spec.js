@@ -61,6 +61,12 @@ describe("Plugin", () => {
     deprecatedApiMock.restore();
   });
 
+  describe("display name", () => {
+    it("should return package name", async () => {
+      expect(plugin.displayName).toEqual("@mocks-server/plugin-admin-api");
+    });
+  });
+
   describe("when initializated", () => {
     it("should create an express Router", async () => {
       await plugin.init();

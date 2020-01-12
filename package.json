@@ -38,30 +38,30 @@
     "@data-provider/core": "^1.7.0"
   },
   "dependencies": {
-    "@data-provider/axios": "^1.6.0",
-    "@mocks-server/admin-api-paths": "^1.0.3"
+    "@data-provider/axios": "1.6.1",
+    "@mocks-server/admin-api-paths": "1.0.4"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.7.7",
-    "@data-provider/core": "^1.7.0",
-    "@rollup/plugin-commonjs": "^11.0.0",
-    "@rollup/plugin-node-resolve": "^7.0.0",
-    "babel-eslint": "^10.0.3",
-    "babel-jest": "^24.9.0",
-    "babel-polyfill": "^6.26.0",
-    "coveralls": "^3.0.7",
+    "@babel/preset-env": "7.7.7",
+    "@data-provider/core": "1.7.0",
+    "@rollup/plugin-commonjs": "11.0.0",
+    "@rollup/plugin-node-resolve": "7.0.0",
+    "babel-eslint": "10.0.3",
+    "babel-jest": "24.9.0",
+    "babel-polyfill": "6.26.0",
+    "coveralls": "3.0.7",
     "eslint": "6.8.0",
     "eslint-config-prettier": "6.9.0",
-    "eslint-plugin-prettier": "^3.1.1",
-    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-prettier": "3.1.1",
+    "eslint-plugin-react": "7.17.0",
     "husky": "4.0.6",
     "jest": "24.9.0",
-    "lint-staged": "^9.4.2",
-    "prettier": "^1.19.1",
-    "rollup": "^1.27.14",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-uglify": "^6.0.4",
-    "sinon": "^8.0.1"
+    "lint-staged": "9.4.2",
+    "prettier": "1.19.1",
+    "rollup": "1.27.14",
+    "rollup-plugin-babel": "4.3.3",
+    "rollup-plugin-uglify": "6.0.4",
+    "sinon": "8.0.1"
   },
   "lint-staged": {
     "test/**/*.js": "eslint",

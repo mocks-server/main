@@ -40,22 +40,22 @@
     "express": "4.17.1"
   },
   "devDependencies": {
-    "@mocks-server/core": "^1.4.2",
-    "coveralls": "^3.0.9",
+    "@mocks-server/core": "1.4.2",
+    "coveralls": "3.0.9",
     "eslint": "6.8.0",
     "eslint-config-prettier": "6.9.0",
-    "eslint-plugin-prettier": "^3.1.2",
-    "fs-extra": "^8.1.0",
+    "eslint-plugin-prettier": "3.1.2",
+    "fs-extra": "8.1.0",
     "husky": "4.0.6",
-    "is-promise": "^2.1.0",
+    "is-promise": "2.1.0",
     "jest": "24.9.0",
-    "lint-staged": "^9.5.0",
-    "prettier": "^1.19.1",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.5",
-    "sinon": "^8.0.1",
+    "lint-staged": "9.5.0",
+    "prettier": "1.19.1",
+    "request": "2.88.0",
+    "request-promise": "4.2.5",
+    "sinon": "8.0.1",
     "strip-ansi": "6.0.0",
-    "tree-kill-sync": "^1.0.0"
+    "tree-kill-sync": "1.0.0"
   },
   "lint-staged": {
     "src/**/*.js": "eslint",

@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/cypress-commands",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Extends Cypress' cy commands with methods for administrating mocks-server",
   "keywords": [
     "cypress",
@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@data-provider/core": "^1.7.0",
-    "@mocks-server/admin-api-client": "^1.0.0"
+    "@mocks-server/admin-api-client": "^1.0.1"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
@@ -43,7 +43,7 @@
     "eslint": "6.8.0",
     "eslint-config-prettier": "^6.8.0",
     "eslint-plugin-prettier": "^3.1.2",
-    "husky": "^3.1.0",
+    "husky": "^4.0.6",
     "jest": "^24.9.0",
     "lint-staged": "^9.5.0",
     "prettier": "^1.19.1",

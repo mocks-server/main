@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@data-provider/core": "^1.7.0",
-    "@mocks-server/admin-api-client": "^1.0.0"
+    "@mocks-server/admin-api-client": "^1.0.1"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",

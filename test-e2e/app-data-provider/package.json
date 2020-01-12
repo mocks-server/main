@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@data-provider/axios": "^1.5.0",
+    "@data-provider/core": "^1.7.0",
+    "@data-provider/axios": "^1.6.0",
     "jquery": "^3.4.1"
   },
   "scripts": {
@@ -12,7 +13,6 @@
     "serve": "serve -l 3000"
   },
   "devDependencies": {
-    "@data-provider/core": "^1.7.0",
     "serve": "^11.2.0",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"

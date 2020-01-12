@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.4.1] - 2020-01-12
+### Changed
+- Update dependencies
+- Use fixed versioning in dependencies
+
 ## [1.4.0] - 2020-01-12
 ### Added
 - Add display name

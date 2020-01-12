@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/admin-api-paths",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Api paths of @mocks-server/plugin-admin-api",
   "keywords": [
     "mocks-server-plugin",
@@ -33,10 +33,10 @@
     "@babel/preset-env": "^7.7.7",
     "babel-jest": "^24.9.0",
     "coveralls": "^3.0.7",
-    "eslint": "6.6.0",
-    "eslint-config-prettier": "6.5.0",
+    "eslint": "6.8.0",
+    "eslint-config-prettier": "6.9.0",
     "eslint-plugin-prettier": "^3.1.1",
-    "husky": "3.0.9",
+    "husky": "4.0.6",
     "jest": "24.9.0",
     "lint-staged": "^9.4.2",
     "prettier": "^1.19.1",

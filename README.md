@@ -1,13 +1,10 @@
 [![Build status][travisci-image]][travisci-url] [![Coverage Status][coveralls-image]][coveralls-url] [![Quality Gate][quality-gate-image]][quality-gate-url]
 
-[![NPM dependencies][npm-dependencies-image]][npm-dependencies-url] [![Last commit][last-commit-image]][last-commit-url] [![Last release][release-image]][release-url] 
+[![NPM dependencies][npm-dependencies-image]][npm-dependencies-url] [![Greenkeeper badge](https://badges.greenkeeper.io/mocks-server/main.svg)](https://greenkeeper.io/) [![Last commit][last-commit-image]][last-commit-url] [![Last release][release-image]][release-url] 
 
 [![NPM downloads][npm-downloads-image]][npm-downloads-url] [![License][license-image]][license-url]
 
-
 # [![Mocks Server][logo-url]][website-url] Mocks Server
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/mocks-server/main.svg)](https://greenkeeper.io/)
 
 This package provides a server that simulates multiple API behaviors. It can be added as a dependency of your project, and started simply running an NPM command.
 

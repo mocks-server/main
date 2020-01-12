@@ -2,19 +2,19 @@
   "name": "app-data-provider",
   "version": "1.0.0",
   "private": true,
-  "dependencies": {
-    "@data-provider/core": "^1.7.0",
-    "@data-provider/axios": "^1.6.0",
-    "jquery": "^3.4.1"
-  },
   "scripts": {
     "build": "webpack",
     "build-and-serve": "npm run build && npm run serve",
     "serve": "serve -l 3000"
   },
+  "dependencies": {
+    "@data-provider/core": "1.7.2",
+    "@data-provider/axios": "1.6.1",
+    "jquery": "^3.4.1"
+  },
   "devDependencies": {
-    "serve": "^11.2.0",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "serve": "11.3.0",
+    "webpack": "4.41.5",
+    "webpack-cli": "3.3.10"
   }
 }

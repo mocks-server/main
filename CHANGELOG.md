@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.2] - 2020-01-12
 ### Changed
 - Update dependencies
-- Usef fixed versioning in dependencies.
+- Use fixed versioning in dependencies.
 
 ## [1.0.1] - 2020-01-12
 ### Changed

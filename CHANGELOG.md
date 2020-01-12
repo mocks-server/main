@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.3.1] - 2020-01-12
+### Changed
+- Use fixed versioning
+
 ## [1.3.0] - 2020-01-12
 ### Added
 - Add display name

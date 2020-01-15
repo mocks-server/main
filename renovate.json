@@ -2,13 +2,7 @@
   "extends": [
     "config:base"
   ],
-  "travis": { "enabled": true },
-  "node": {
-    "supportPolicy": ["lts"]
-  },
-  "engines": {
-    "rangeStrategy": "widen"
-  },
+  "baseBranches": ["release"],
   "automerge": true,
   "major": {
     "automerge": false,
@@ -17,15 +11,21 @@
   "minor": {
     "automerge": false
   },
-  "baseBranches": ["release"],
+  "separateMultipleMajor": true,
   "rangeStrategy": "pin",
+  "node": {
+    "supportPolicy": ["lts"]
+  },
+  "travis": { "enabled": true },
+  "engines": {
+    "rangeStrategy": "widen"
+  },
   "packageRules": [
     {
       "depTypeList": ["devDependencies"],
       "rangeStrategy": "widen"
     }
   ],
-  "separateMultipleMajor": true,
   "labels": [
     "dependencies",
     "renovate"

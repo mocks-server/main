@@ -1,0 +1,30 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "automerge": true,
+  "major": {
+    "automerge": false
+  },
+  "minor": {
+    "automerge": false
+  },
+  "baseBranches": ["release"],
+  "rangeStrategy": "pin",
+  "packageRules": [
+    {
+      "depTypeList": ["devDependencies"],
+      "rangeStrategy": "widen"
+    }
+  ],
+  "separateMultipleMajor": true,
+  "labels": [
+    "dependencies",
+    "renovate"
+  ],
+  "commitMessage": "{{semanticPrefix}}Update {{depName}} to {{newVersion}} 🌟",
+  "prTitle": "{{semanticPrefix}}{{#if isPin}}Pin{{else}}Update{{/if}} dependency {{depName}} to version {{#if isRange}}{{newVersion}}{{else}}{{#if isMajor}}{{newVersionMajor}}.x{{else}}{{newVersion}}{{/if}}{{/if}} 🌟",
+  "prHourlyLimit": 1,
+  "prConcurrentLimit": 3,
+  "masterIssue": true
+}

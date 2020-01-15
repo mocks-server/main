@@ -17,12 +17,9 @@
     "supportPolicy": ["lts"]
   },
   "travis": { "enabled": true },
-  "engines": {
-    "rangeStrategy": "widen"
-  },
   "packageRules": [
     {
-      "depTypeList": ["devDependencies"],
+      "depTypeList": ["devDependencies", "engines"],
       "rangeStrategy": "widen"
     }
   ],

@@ -6,6 +6,9 @@
   "node": {
     "supportPolicy": ["lts"]
   },
+  "engines": {
+    "rangeStrategy": "widen"
+  },
   "automerge": true,
   "major": {
     "automerge": false,

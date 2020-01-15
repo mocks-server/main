@@ -2,6 +2,10 @@
   "extends": [
     "config:base"
   ],
+  "travis": { "enabled": true },
+  "node": {
+    "supportPolicy": ["lts"]
+  },
   "automerge": true,
   "major": {
     "automerge": false

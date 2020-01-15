@@ -27,8 +27,7 @@
     "dependencies",
     "renovate"
   ],
-  "commitMessage": "{{semanticPrefix}}Update {{depName}} to {{newVersion}} 🌟",
-  "prTitle": "{{#if isPin}}Pin{{else}}Update{{/if}} dependency {{depName}} to version {{#if isRange}}{{newVersion}}{{else}}{{#if isMajor}}{{newVersionMajor}}.x{{else}}{{newVersion}}{{/if}}{{/if}} 🌟",
+  "prHourlyLimit": 2,
   "prConcurrentLimit": 5,
   "rebaseStalePrs": true,
   "masterIssue": true

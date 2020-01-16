@@ -14,7 +14,7 @@
   "separateMultipleMajor": true,
   "rangeStrategy": "pin",
   "node": {
-    "supportPolicy": ["lts"]
+    "supportPolicy": ["lts", "active"]
   },
   "travis": { "enabled": true },
   "packageRules": [

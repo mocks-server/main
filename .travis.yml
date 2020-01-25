@@ -15,13 +15,12 @@ addons:
     branch:
       name: "$TRAVIS_CURRENT_BRANCH"
 
-node_js:
-  - "v12.14.1"
-  - "v10.18.1"
-
 jobs:
   include:
     - name: test
+      node: v10.18.1
+    - name: test
+      node: v12.14.1
     - name: sonar
       node: v12.14.1
     - name: deploy

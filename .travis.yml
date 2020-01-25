@@ -15,37 +15,31 @@ addons:
     branch:
       name: "$TRAVIS_CURRENT_BRANCH"
 
+node_js:
+  - "v12.14.1"
+  - "v10.18.1"
+
+script:
+  - npm run lint
+  - npm run test:ci
+  - npm run coveralls
+
 jobs:
   include:
-    - test
-      node: v10.18.1
-    - test
-      node: v12.14.1
-    - sonar
-      node: v12.14.1
-    - deploy
-      node: v12.14.1
+    - stage: sonar
+      script:
+        - npm run test:ci
+        - sonar-scanner -Dsonar.login=${SONAR_TOKEN};
+      if: env(SONAR_TOKEN) IS present
+    - name: deploy
+      script:
+      - echo "Deploying"
+      deploy:
+        provider: npm
+        email: "javier.brea@gmail.com"
+        api_key: "$NPM_TOKEN"
+        on:
+          tags: true
+        skip_cleanup: true
   allow_failures:
     - name: sonar
-
-stages:
-  - name: test
-    script:
-      - npm run lint
-      - npm run test:ci
-      - npm run coveralls
-  - name: sonar
-    script:
-      - npm run test:ci
-      - sonar-scanner -Dsonar.login=${SONAR_TOKEN};
-    if: env(SONAR_TOKEN) IS present
-  - name: deploy
-    script:
-      - echo "Deploying"
-    deploy:
-      provider: npm
-      email: "javier.brea@gmail.com"
-      api_key: "$NPM_TOKEN"
-      on:
-        tags: true
-      skip_cleanup: true

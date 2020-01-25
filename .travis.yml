@@ -33,7 +33,6 @@ jobs:
         - 'if [ -n "$SONAR_TOKEN" ]; then sonar-scanner -Dsonar.login=${SONAR_TOKEN}; fi'
       if: env(SONAR_TOKEN) IS present
     - stage: deploy
-      if: language
       deploy:
         provider: npm
         email: "javier.brea@gmail.com"

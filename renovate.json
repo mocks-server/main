@@ -5,8 +5,7 @@
   "baseBranches": ["release"],
   "automerge": true,
   "major": {
-    "automerge": false,
-    "masterIssueApproval": true
+    "automerge": false
   },
   "minor": {
     "automerge": false

@@ -1,33 +1,5 @@
 {
   "extends": [
-    "config:base"
-  ],
-  "baseBranches": ["release"],
-  "automerge": true,
-  "major": {
-    "automerge": false
-  },
-  "minor": {
-    "automerge": false
-  },
-  "separateMultipleMajor": true,
-  "rangeStrategy": "pin",
-  "node": {
-    "supportPolicy": ["active"]
-  },
-  "travis": { "enabled": true },
-  "packageRules": [
-    {
-      "depTypeList": ["devDependencies", "engines"],
-      "rangeStrategy": "widen"
-    }
-  ],
-  "labels": [
-    "dependencies",
-    "renovate"
-  ],
-  "prHourlyLimit": 2,
-  "prConcurrentLimit": 5,
-  "rebaseStalePrs": true,
-  "masterIssue": true
+    "github>mocks-server/ci-cd"
+  ]
 }

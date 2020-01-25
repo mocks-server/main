@@ -3,10 +3,6 @@ os:
 
 language: node_js
 
-node_js:
-  - "v10.18.1"
-  - "v12.14.1"
-
 cache:
   directories:
     - ~/.npm
@@ -24,15 +20,23 @@ jobs:
     - name: sonar
   include:
     - stage: test
+      node_js:
+        - "v12.14.1"
+        - "v10.18.1"
       script:
         - npm run lint
         - npm run test:ci
         - npm run coveralls
     - stage: sonar
+      node_js:
+        - "v12.14.1"
       script:
-        - 'if [ -n "$SONAR_TOKEN" ]; then sonar-scanner -Dsonar.login=${SONAR_TOKEN}; fi'
+        - npm run test:ci
+        - sonar-scanner -Dsonar.login=${SONAR_TOKEN};
       if: env(SONAR_TOKEN) IS present
     - stage: deploy
+      script:
+        - echo "Deploying"
       deploy:
         provider: npm
         email: "javier.brea@gmail.com"

@@ -1,2 +1,2 @@
 version: ~> 1.0
-import: mocks-server/ci-cd:.travis.yml@main
+import: mocks-server/ci-cd:.travis.yml@master

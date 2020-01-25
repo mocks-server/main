@@ -17,13 +17,13 @@ addons:
 
 jobs:
   include:
-    - name: test
+    - test
       node: v10.18.1
-    - name: test
+    - test
       node: v12.14.1
-    - name: sonar
+    - sonar
       node: v12.14.1
-    - name: deploy
+    - deploy
       node: v12.14.1
   allow_failures:
     - name: sonar

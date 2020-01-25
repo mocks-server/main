@@ -31,7 +31,7 @@ jobs:
         - npm run test:ci
         - sonar-scanner -Dsonar.login=${SONAR_TOKEN};
       if: env(SONAR_TOKEN) IS present
-    - name: deploy
+    - stage: deploy
       script:
       - echo "Deploying"
       deploy:

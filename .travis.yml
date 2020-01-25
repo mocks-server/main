@@ -19,16 +19,26 @@ addons:
     branch:
       name: "$TRAVIS_CURRENT_BRANCH"
 
-script:
-  - npm run lint
-  - npm run test:ci
-  - npm run coveralls
-  - 'if [ -n "$SONAR_TOKEN" ]; then sonar-scanner -Dsonar.login=${SONAR_TOKEN}; fi'
-
-deploy:
-  provider: npm
-  email: "javier.brea@gmail.com"
-  api_key: "$NPM_TOKEN"
-  on:
-    tags: true
-  skip_cleanup: true
+jobs:
+  allow_failures:
+    - name: sonar
+  include:
+    - stage: test
+      script:
+        - npm run lint
+        - npm run test:ci
+        - npm run coveralls
+    - stage: sonar
+      script:
+        - 'if [ -n "$SONAR_TOKEN" ]; then sonar-scanner -Dsonar.login=${SONAR_TOKEN}; fi'
+      if: env(SONAR_TOKEN) IS present
+    - stage: deploy
+      if: language
+      deploy:
+        provider: npm
+        email: "javier.brea@gmail.com"
+        api_key: "$NPM_TOKEN"
+        on:
+          tags: true
+          node: v12.14.1
+        skip_cleanup: true

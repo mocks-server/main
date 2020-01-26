@@ -53,7 +53,7 @@
     "fs-extra": "8.1.0",
     "husky": "4.0.7",
     "is-promise": "2.1.0",
-    "jest": "24.9.0",
+    "jest": "25.1.0",
     "lint-staged": "9.5.0",
     "lodash": "4.17.15",
     "prettier": "1.19.1",

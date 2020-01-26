@@ -32,7 +32,8 @@
     "test:e2e:browser": "cd test-e2e/browser && npm run test:react-app && npm run test:vanilla-app",
     "test:e2e:nodejs": "cd test-e2e/nodejs/es6 && npm run test:ci",
     "test:e2e": "npm run test:e2e:browser && npm run test:e2e:nodejs",
-    "test:e2e:ci": "npm run test:e2e:install && npm run test:e2e"
+    "test:e2e:ci": "npm run test:e2e:install && npm run test:e2e",
+    "test:ci": "npm run test && npm run test:e2e:ci"
   },
   "peerDependencies": {
     "@data-provider/core": "^1.7.0"

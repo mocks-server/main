@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/core",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "Pluggable mock server supporting multiple api behaviors",
   "keywords": [
     "mocks",
@@ -35,6 +35,7 @@
     "lint-staged": "lint-staged",
     "test": "jest",
     "test:acceptance": "jest --config=jest.acceptance.config.js --runInBand --detectOpenHandles",
+    "test:coverage": "npm run test",
     "test:ci": "npm run test && npm run test:acceptance",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },

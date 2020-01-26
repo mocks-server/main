@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/admin-api-client",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Client of @mocks-server/plugin-admin-api",
   "keywords": [
     "mocks-server-plugin",
@@ -27,13 +27,14 @@
     "lint": "eslint index.js test src jest.config.js test-e2e/browser/react-app/src test-e2e/browser/cypress test-e2e/browser/vanilla-app/public/main.js test-e2e/nodejs/es6/test test-e2e/nodejs/es6/index.js",
     "lint-staged": "lint-staged",
     "test": "jest",
+    "test:coverage": "npm run test",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "test:e2e:install": "cd test-e2e/mocks && npm i && cd ../nodejs/es6 && npm i && cd ../../browser && npm i && npm run cypress:install && cd react-app && npm i && cd ../vanilla-app && npm i",
     "test:e2e:browser": "cd test-e2e/browser && npm run test:react-app && npm run test:vanilla-app",
     "test:e2e:nodejs": "cd test-e2e/nodejs/es6 && npm run test:ci",
     "test:e2e": "npm run test:e2e:browser && npm run test:e2e:nodejs",
     "test:e2e:ci": "npm run test:e2e:install && npm run test:e2e",
-    "test:ci": "npm run build && npm run test && npm run test:e2e:ci"
+    "test:ci": "npm run build && npm run test:coverage && npm run test:e2e:ci"
   },
   "peerDependencies": {
     "@data-provider/core": "^1.7.0"

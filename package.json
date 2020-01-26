@@ -27,7 +27,8 @@
     "lint": "eslint index.js test jest.config.js",
     "lint-staged": "lint-staged",
     "test": "jest",
-    "coveralls": "cat ./coverage/lcov.info | coveralls"
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "test:ci": "npm run test"
   },
   "devDependencies": {
     "@babel/preset-env": "7.8.2",
@@ -57,7 +58,6 @@
     }
   },
   "engines": {
-    "node": ">8.0.0",
-    "npm": ">6.0.0"
+    "node": "10.x || 12.x || 13.x"
   }
 }

@@ -12,7 +12,7 @@ const path = require("path");
 const fsExtra = require("fs-extra")
 
 const tracer = require("./tracer")
-const isPromise = require("is-promise");
+const isPromise = require("is-promise")
 const { isFunction, isObject } = require("lodash");
 
 const CONFIG_FILE = "mocks-server.config.js";

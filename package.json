@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/cypress-commands",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Extends Cypress' cy commands with methods for administrating mocks-server",
   "keywords": [
     "cypress",
@@ -32,6 +32,7 @@
     "test": "jest",
     "test-e2e": "cd test-e2e && npm run test:ci",
     "test-e2e:ci": "cd test-e2e && npm i && npm run apps:install && npm run test:ci",
+    "test:coverage": "npm run test",
     "test:ci": "npm run test && npm run test-e2e:ci"
   },
   "dependencies": {

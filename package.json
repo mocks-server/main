@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/admin-api-paths",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Api paths of @mocks-server/plugin-admin-api",
   "keywords": [
     "mocks-server-plugin",
@@ -28,6 +28,7 @@
     "lint-staged": "lint-staged",
     "test": "jest",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "test:coverage": "npm run test",
     "test:ci": "npm run test"
   },
   "devDependencies": {

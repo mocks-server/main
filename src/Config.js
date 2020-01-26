@@ -9,10 +9,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const fsExtra = require("fs-extra")
+const fsExtra = require("fs-extra");
 
-const tracer = require("./tracer")
-const isPromise = require("is-promise")
+const tracer = require("./tracer");
+const isPromise = require("is-promise");
 const { isFunction, isObject } = require("lodash");
 
 const CONFIG_FILE = "mocks-server.config.js";

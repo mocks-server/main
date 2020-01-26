@@ -31,7 +31,8 @@
     "lint-staged": "lint-staged",
     "test": "jest",
     "test-e2e": "cd test-e2e && npm run test:ci",
-    "test-e2e:ci": "cd test-e2e && npm i && npm run apps:install && npm run test:ci"
+    "test-e2e:ci": "cd test-e2e && npm i && npm run apps:install && npm run test:ci",
+    "test:ci": "npm run test && npm run test-e2e:ci"
   },
   "dependencies": {
     "@data-provider/core": "1.7.3",
@@ -67,5 +68,8 @@
     "hooks": {
       "pre-commit": "npm run lint-staged"
     }
+  },
+  "engines": {
+    "node": "10.x || 12.x || 13.x"
   }
 }

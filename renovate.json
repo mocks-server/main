@@ -1,0 +1,5 @@
+{
+  "extends": [
+    "github>mocks-server/ci-cd"
+  ]
+}

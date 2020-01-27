@@ -10,7 +10,7 @@
   "dependencies": {
     "@data-provider/core": "1.7.3",
     "@data-provider/axios": "1.6.1",
-    "jquery": "^3.4.1"
+    "jquery": "3.4.1"
   },
   "devDependencies": {
     "serve": "11.3.0",

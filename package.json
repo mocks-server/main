@@ -48,7 +48,7 @@
     "eslint-config-prettier": "6.9.0",
     "eslint-plugin-prettier": "3.1.2",
     "fs-extra": "8.1.0",
-    "husky": "4.0.7",
+    "husky": "4.2.1",
     "is-promise": "2.1.0",
     "jest": "24.9.0",
     "lint-staged": "10.0.3",

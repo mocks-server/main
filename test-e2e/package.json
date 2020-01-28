@@ -28,7 +28,7 @@
     "@testing-library/cypress": "5.0.2",
     "babel-plugin-module-resolver": "4.0.0",
     "cross-env": "6.0.3",
-    "cypress": "3.8.2",
+    "cypress": "3.8.3",
     "start-server-and-test": "1.10.7"
   }
 }

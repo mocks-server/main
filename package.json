@@ -42,7 +42,7 @@
     "lodash": "4.17.15"
   },
   "devDependencies": {
-    "@mocks-server/core": "1.4.3",
+    "@mocks-server/core": "1.4.4",
     "coveralls": "3.0.9",
     "eslint": "6.8.0",
     "eslint-config-prettier": "6.9.0",

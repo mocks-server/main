@@ -55,7 +55,7 @@
     "prettier": "1.19.1",
     "request": "2.88.0",
     "request-promise": "4.2.5",
-    "sinon": "8.0.4",
+    "sinon": "8.1.1",
     "strip-ansi": "6.0.0",
     "tree-kill-sync": "1.0.0"
   },

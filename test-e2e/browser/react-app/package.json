@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@data-provider/connector-react": "1.4.1",
+    "@data-provider/connector-react": "1.4.2",
     "prop-types": "15.7.2",
     "react": "16.11.0",
     "react-dom": "16.11.0",

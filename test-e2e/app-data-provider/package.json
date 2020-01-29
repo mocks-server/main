@@ -8,7 +8,7 @@
     "serve": "serve -l 3000"
   },
   "dependencies": {
-    "@data-provider/core": "1.7.3",
+    "@data-provider/core": "1.8.0",
     "@data-provider/axios": "1.6.1",
     "jquery": "3.4.1"
   },

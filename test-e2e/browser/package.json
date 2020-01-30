@@ -18,6 +18,6 @@
   "devDependencies": {
     "@testing-library/cypress": "5.0.2",
     "cypress": "3.8.3",
-    "start-server-and-test": "1.10.6"
+    "start-server-and-test": "1.10.8"
   }
 }

@@ -45,7 +45,7 @@
     "@mocks-server/core": "1.4.4",
     "coveralls": "3.0.9",
     "eslint": "6.8.0",
-    "eslint-config-prettier": "6.9.0",
+    "eslint-config-prettier": "6.10.0",
     "eslint-plugin-prettier": "3.1.2",
     "fs-extra": "8.1.0",
     "husky": "4.2.1",

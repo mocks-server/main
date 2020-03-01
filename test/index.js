@@ -1,11 +1,8 @@
-const {
-  about,
-  behaviors,
-  behavior,
-  fixtures,
-  fixture,
-  settings
-} = require("../../../dist/index.cjs");
+import { about, behaviors, behavior, fixtures, fixture, settings, config } from "../index";
+
+config({
+  baseUrl: "http://localhost:3200"
+});
 
 const readAbout = () => {
   return about.read();

@@ -24,28 +24,21 @@
   "module": "dist/index.esm.js",
   "scripts": {
     "build": "rollup --config",
-    "lint": "eslint index.js test src jest.config.js test-e2e/browser/react-app/src test-e2e/browser/cypress test-e2e/browser/vanilla-app/public/main.js test-e2e/nodejs/es6/test test-e2e/nodejs/es6/index.js",
+    "lint": "eslint index.js test src jest.config.js",
     "lint-staged": "lint-staged",
+    "mocks:install": "cd mocks && npm i",
+    "mocks:ci": "cd mocks && npm run mocks:ci",
     "test": "jest",
-    "test:coverage": "npm run test",
+    "test:coverage": "start-server-and-test mocks:ci tcp:3200 test",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "test:e2e:install": "cd test-e2e/mocks && npm i && cd ../nodejs/es6 && npm i && cd ../../browser && npm i && npm run cypress:install && cd react-app && npm i && cd ../vanilla-app && npm i",
-    "test:e2e:browser": "cd test-e2e/browser && npm run test:react-app && npm run test:vanilla-app",
-    "test:e2e:nodejs": "cd test-e2e/nodejs/es6 && npm run test:ci",
-    "test:e2e": "npm run test:e2e:browser && npm run test:e2e:nodejs",
-    "test:e2e:ci": "npm run test:e2e:install && npm run test:e2e",
-    "test:ci": "npm run build && npm run test:coverage && npm run test:e2e:ci"
-  },
-  "peerDependencies": {
-    "@data-provider/core": "^1.7.0"
+    "test:ci": "npm run test:coverage"
   },
   "dependencies": {
-    "@data-provider/axios": "1.6.1",
+    "cross-fetch": "3.0.4",
     "@mocks-server/admin-api-paths": "1.0.4"
   },
   "devDependencies": {
     "@babel/preset-env": "7.8.4",
-    "@data-provider/core": "1.8.0",
     "@rollup/plugin-commonjs": "11.0.1",
     "@rollup/plugin-node-resolve": "7.0.0",
     "babel-eslint": "10.0.3",
@@ -63,18 +56,14 @@
     "rollup": "1.31.0",
     "rollup-plugin-babel": "4.3.3",
     "rollup-plugin-uglify": "6.0.4",
-    "sinon": "8.1.1"
+    "sinon": "8.1.1",
+    "start-server-and-test": "1.10.8"
   },
   "lint-staged": {
     "test/**/*.js": "eslint",
     "src/**/*.js": "eslint",
     "index.js": "eslint",
-    "jest.config.js": "eslint",
-    "test-e2e/browser/react-app/src/**/*.js": "eslint",
-    "test-e2e/browser/cypress/**/*.js": "eslint",
-    "test-e2e/browser/vanilla-app/public/main.js": "eslint",
-    "test-e2e/nodejs/es6/test/**/*.js": "eslint",
-    "test-e2e/nodejs/es6/index.js": "eslint"
+    "jest.config.js": "eslint"
   },
   "husky": {
     "hooks": {

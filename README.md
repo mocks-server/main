@@ -1,17 +1,32 @@
 [![Build status][travisci-image]][travisci-url] [![Coverage Status][coveralls-image]][coveralls-url] [![Quality Gate][quality-gate-image]][quality-gate-url]
 
-[![NPM dependencies][npm-dependencies-image]][npm-dependencies-url] [![Greenkeeper badge](https://badges.greenkeeper.io/mocks-server/admin-api-client.svg)](https://greenkeeper.io/) [![Last commit][last-commit-image]][last-commit-url] [![Last release][release-image]][release-url] 
+[![NPM dependencies][npm-dependencies-image]][npm-dependencies-url] [![Renovate](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com) [![Last commit][last-commit-image]][last-commit-url] [![Last release][release-image]][release-url] 
 
 [![NPM downloads][npm-downloads-image]][npm-downloads-url] [![License][license-image]][license-url]
 
 
 # Mocks-server administration api client
 
-This package contains methods for administrating the mocks-server _(through the [@mocks-server/plugin-admin-api](https://github.com/mocks-server/plugin-admin-api) RESTful API)_.
+This package contains methods for administrating the mocks-server _(through the [@mocks-server/plugin-admin-api](https://github.com/mocks-server/plugin-admin-api) REST API)_.
 
-Built using [@data-provider](https://github.com/data-provider), it can be used in Node.js, browsers, and is also compatible with @data-provider connectors, such as [@data-provider/connector-react](https://github.com/data-provider/connector-react), so can be easily integrated with frameworks.
+Requests to the @mocks-server are made using [cross-fetch](https://www.npmjs.com/package/cross-fetch), which makes this package compatible with browsers and nodejs environments, but, if you are going to build a browser application, you'll probably prefer to use the [@mocks-server/admin-api-client-data-provider package](https://www.npmjs.com/package/@mocks-server/admin-api-client-data-provider), which uses [@data-provider](https://github.com/data-provider), and works well with Redux, React, etc.
 
-## Usage with promises
+## Install
+
+```bash
+npm install --save @mocks-server/admin-api-client
+```
+
+The UMD build is also available on unpkg:
+
+```html
+<script src="https://unpkg.com/@mocks-server/admin-api-paths/dist/index.umd.js"></script>
+<script src="https://unpkg.com/@mocks-server/admin-api-client/dist/index.umd.js"></script>
+```
+
+> The umd distribution is bundled with the "cross-env" dependency, but requires the "@mocks-server/admin-api-paths" dependency to be added separately.
+
+## Usage
 
 All methods described in the [Api](#api) (expect the `config` method) return Promises when executed:
 
@@ -35,10 +50,6 @@ const example = async () => {
 example();
 ```
 
-## Usage with data-provider
-
-Exported properties `about`, `settings`, `behaviors`, `behaviorsModel`, `fixtures` and `fixturesModel` are [@data-provider/axios](https://github.com/data-provider/axios) providers, so can be used to define @data-provider Selectors. Methods can also be connected to frameworks using @data-provider connectors, such as [@data-provider/connector-react](https://github.com/data-provider/connector-react).
-
 ## Api
 
 * `about.read()` - Returns info about mocks-server/plugin-admin-api, such as current version.
@@ -46,10 +57,8 @@ Exported properties `about`, `settings`, `behaviors`, `behaviorsModel`, `fixture
 * `settings.update(settingsObject)` - Updates @mocks-server settings. A settings object has to be provided. Read the [@mocks-server configuration documentation](https://www.mocks-server.org/docs/configuration-options) for further info.
 * `behaviors.read()` - Returns collection of available behaviors.
 * `behavior(behaviorName).read()` - Returns an specific behavior.
-* `behaviorsModel.byName(behaviorName).read()` - Returns an specific behavior.
 * `fixtures.read()` - Returns collection of available fixtures.
 * `fixture(fixtureId).read()` - Returns an specific fixture.
-* `fixturesModel.byId(fixtureId).read()` - Returns an specific fixture.
 
 ## Configuration
 

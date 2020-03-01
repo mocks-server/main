@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/admin-api-client",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Client of @mocks-server/plugin-admin-api",
   "keywords": [
     "mocks-server-plugin",
@@ -24,55 +24,46 @@
   "module": "dist/index.esm.js",
   "scripts": {
     "build": "rollup --config",
-    "lint": "eslint index.js test src jest.config.js test-e2e/browser/react-app/src test-e2e/browser/cypress test-e2e/browser/vanilla-app/public/main.js test-e2e/nodejs/es6/test test-e2e/nodejs/es6/index.js",
+    "lint": "eslint index.js test src jest.config.js",
     "lint-staged": "lint-staged",
+    "mocks:install": "cd mocks && npm i",
+    "mocks:ci": "cd mocks && npm run mocks:ci",
     "test": "jest",
+    "test:coverage": "npm run mocks:install && start-server-and-test mocks:ci tcp:3200 test",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "test:e2e:install": "cd test-e2e/mocks && npm i && cd ../nodejs/es6 && npm i && cd ../../browser && npm i && npm run cypress:install && cd react-app && npm i && cd ../vanilla-app && npm i",
-    "test:e2e:browser": "cd test-e2e/browser && npm run test:react-app && npm run test:vanilla-app",
-    "test:e2e:nodejs": "cd test-e2e/nodejs/es6 && npm run test:ci",
-    "test:e2e": "npm run test:e2e:browser && npm run test:e2e:nodejs",
-    "test:e2e:ci": "npm run test:e2e:install && npm run test:e2e"
-  },
-  "peerDependencies": {
-    "@data-provider/core": "^1.7.0"
+    "test:ci": "npm run test:coverage"
   },
   "dependencies": {
-    "@data-provider/axios": "1.6.1",
+    "cross-fetch": "3.0.4",
     "@mocks-server/admin-api-paths": "1.0.4"
   },
   "devDependencies": {
-    "@babel/preset-env": "7.7.7",
-    "@data-provider/core": "1.7.0",
-    "@rollup/plugin-commonjs": "11.0.0",
+    "@babel/preset-env": "7.8.4",
+    "@rollup/plugin-commonjs": "11.0.1",
     "@rollup/plugin-node-resolve": "7.0.0",
     "babel-eslint": "10.0.3",
     "babel-jest": "24.9.0",
     "babel-polyfill": "6.26.0",
-    "coveralls": "3.0.7",
+    "coveralls": "3.0.9",
     "eslint": "6.8.0",
-    "eslint-config-prettier": "6.9.0",
-    "eslint-plugin-prettier": "3.1.1",
-    "eslint-plugin-react": "7.17.0",
-    "husky": "4.0.6",
+    "eslint-config-prettier": "6.10.0",
+    "eslint-plugin-prettier": "3.1.2",
+    "eslint-plugin-react": "7.18.0",
+    "husky": "4.2.1",
     "jest": "24.9.0",
-    "lint-staged": "9.4.2",
+    "lint-staged": "9.5.0",
     "prettier": "1.19.1",
-    "rollup": "1.27.14",
+    "rollup": "1.31.0",
     "rollup-plugin-babel": "4.3.3",
     "rollup-plugin-uglify": "6.0.4",
-    "sinon": "8.0.1"
+    "sinon": "8.1.1",
+    "start-server-and-test": "1.10.8"
   },
   "lint-staged": {
     "test/**/*.js": "eslint",
     "src/**/*.js": "eslint",
     "index.js": "eslint",
-    "jest.config.js": "eslint",
-    "test-e2e/browser/react-app/src/**/*.js": "eslint",
-    "test-e2e/browser/cypress/**/*.js": "eslint",
-    "test-e2e/browser/vanilla-app/public/main.js": "eslint",
-    "test-e2e/nodejs/es6/test/**/*.js": "eslint",
-    "test-e2e/nodejs/es6/index.js": "eslint"
+    "jest.config.js": "eslint"
   },
   "husky": {
     "hooks": {
@@ -80,7 +71,6 @@
     }
   },
   "engines": {
-    "node": ">8.0.0",
-    "npm": ">6.0.0"
+    "node": "10.x || 12.x || 13.x"
   }
 }

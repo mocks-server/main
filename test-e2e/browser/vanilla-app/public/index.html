@@ -7,13 +7,13 @@
     <meta name="description" content="admin-api-client vanilla tests">
     <title>Vanilla App</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
-    <script src="https://unpkg.com/lodash@4.17.15/lodash.min.js"></script>
     <script>
         // TODO, rename lodash global in data-provider/core (Ideally avoid lodash usage)
         window.lodash = window._;
     </script>
+    <script src="https://unpkg.com/redux@4.0.5/dist/redux.js"></script>
     <script src="https://unpkg.com/is-promise@2.1.0/index.js"></script>
-    <script src="https://unpkg.com/@data-provider/core@1.7.0/dist/core.umd.js"></script>
+    <script src="https://unpkg.com/@data-provider/core@2.0.0-alpha.6/dist/core.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
     <script src="https://unpkg.com/axios-retry@3.1.2/lib/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/path-to-regexp@3.0.0/index.min.js"></script>
@@ -35,7 +35,7 @@
           '(?:\\:(\\w+)(?:\\(((?:\\\\.|[^\\\\()])+)\\))?|\\(((?:\\\\.|[^\\\\()])+)\\))([+*?])?'
         ].join('|'), 'g')
     </script>
-    <script src="https://unpkg.com/@data-provider/axios@1.5.0/dist/data-provider-axios.umd.js"></script>
+    <script src="https://unpkg.com/@data-provider/axios@2.0.0-alpha.2/dist/index.umd.js"></script>
     <script src="https://unpkg.com/@mocks-server/admin-api-paths@1.0.2/dist/index.umd.js"></script>
     <script src="js/admin-api-client.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>

@@ -1,10 +1,8 @@
-import { connect } from "@data-provider/connector-react";
-import { fixtures } from "mocks-server-admin-api-client";
+import { withData } from "@data-provider/react";
+import { fixtures } from "@mocks-server/admin-api-client-data-provider";
 
 import FixturesView from "./FixturesView";
 
-const FixturesController = connect(() => ({
-  fixtures: fixtures.read.getters.value
-}))(FixturesView);
+const FixturesController = withData(fixtures, "fixtures")(FixturesView);
 
 export default FixturesController;

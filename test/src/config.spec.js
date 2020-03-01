@@ -1,5 +1,5 @@
 import sinon from "sinon";
-import { instances } from "@data-provider/core";
+import { providers } from "@data-provider/core";
 import { DEFAULT_BASE_PATH } from "@mocks-server/admin-api-paths";
 
 import { config } from "../../src/config";
@@ -12,7 +12,7 @@ describe("config method", () => {
   let sandbox;
   beforeAll(() => {
     sandbox = sinon.createSandbox();
-    sandbox.spy(instances.getByTag(TAG), "config");
+    sandbox.spy(providers.getByTag(TAG), "config");
   });
 
   afterAll(() => {
@@ -23,7 +23,7 @@ describe("config method", () => {
     config({
       baseUrl: BASE_URL
     });
-    expect(instances.getByTag(TAG).config.getCall(0).args[0].baseUrl).toEqual(
+    expect(providers.getByTag(TAG).config.getCall(0).args[0].baseUrl).toEqual(
       `${BASE_URL}${DEFAULT_BASE_PATH}`
     );
   });
@@ -33,7 +33,7 @@ describe("config method", () => {
       baseUrl: BASE_URL,
       apiPath: API_PATH
     });
-    expect(instances.getByTag(TAG).config.getCall(1).args[0].baseUrl).toEqual(
+    expect(providers.getByTag(TAG).config.getCall(1).args[0].baseUrl).toEqual(
       `${BASE_URL}${API_PATH}`
     );
   });

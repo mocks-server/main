@@ -1,5 +1,5 @@
 var $ = window.$;
-var adminApiClient = window.mocksServerAdminApiClient;
+var adminApiClient = window.mocksServerAdminApiClientDataProvider;
 var dataProvider = window.dataProvider;
 
 var $behaviorsContainer;
@@ -29,7 +29,9 @@ var currentBehavior = new dataProvider.Selector(
     return behaviorResult;
   },
   {
-    defaultValue: {}
+    initialState: {
+      data: {}
+    }
   }
 );
 
@@ -49,7 +51,9 @@ var currentFixture = new dataProvider.Selector(
     return fixtureResult;
   },
   {
-    defaultValue: {}
+    initialState: {
+      data: {}
+    }
   }
 );
 
@@ -138,15 +142,15 @@ $.when($.ready).then(function() {
     });
   });
 
-  adminApiClient.settings.onClean(function() {
+  adminApiClient.settings.on("cleanCache", function() {
     loadSettings();
   });
 
-  currentBehavior.onClean(function() {
+  currentBehavior.on("cleanCache", function() {
     loadCurrentBehavior();
   });
 
-  currentFixture.onClean(function() {
+  currentFixture.on("cleanCache", function() {
     loadCurrentFixture();
   });
 

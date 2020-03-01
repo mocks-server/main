@@ -35,5 +35,7 @@ module.exports = {
   },
 
   // The test environment that will be used for testing
-  testEnvironment: "node"
+  testEnvironment: "node",
+
+  setupFiles: ["<rootDir>/jest.init.js"]
 };

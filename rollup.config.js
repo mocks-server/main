@@ -5,12 +5,10 @@ const babel = require("rollup-plugin-babel");
 
 const BASE_CONFIG = {
   input: "index.js",
-  external: ["@data-provider/core", "@data-provider/axios", "@mocks-server/admin-api-paths"]
+  external: ["cross-fetch", "@mocks-server/admin-api-paths"]
 };
 
 const GLOBALS = {
-  "@data-provider/core": "dataProvider",
-  "@data-provider/axios": "dataProviderAxios",
   "@mocks-server/admin-api-paths": "pluginAdminApiPaths"
 };
 
@@ -39,12 +37,15 @@ module.exports = [
     plugins: BASE_PLUGINS
   },
   {
-    ...BASE_CONFIG,
+    input: "index.js",
+    external: ["@mocks-server/admin-api-paths"],
     output: {
       file: "dist/index.umd.js",
       format: "umd",
       name: "mocksServerAdminApiClient",
-      globals: GLOBALS
+      globals: {
+        "@mocks-server/admin-api-paths": "pluginAdminApiPaths"
+      }
     },
     plugins: [...BASE_PLUGINS, uglifier.uglify()]
   },

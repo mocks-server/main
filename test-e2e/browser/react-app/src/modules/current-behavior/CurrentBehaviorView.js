@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { settings } from "mocks-server-admin-api-client";
+import { settings } from "@mocks-server/admin-api-client-data-provider";
 
 const CurrentBehaviorView = ({ behavior, fixture }) => {
   const setBehaviorBase = () => {

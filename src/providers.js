@@ -1,65 +1,68 @@
 import { ABOUT, SETTINGS, BEHAVIORS, FIXTURES } from "@mocks-server/admin-api-paths";
-import { Api } from "@data-provider/axios";
+import { Axios } from "@data-provider/axios";
 
 import TAG from "./tag";
 
-export const about = new Api(ABOUT, {
-  defaultValue: {},
-  uuid: "about",
-  tags: [TAG]
+const initialState = data => ({
+  initialState: {
+    data,
+    loading: true
+  }
 });
 
-export const settings = new Api(SETTINGS, {
-  defaultValue: {},
-  uuid: "settings",
+export const about = new Axios("about", {
+  url: ABOUT,
+  tags: [TAG],
+  ...initialState({})
+});
+
+export const settings = new Axios("settings", {
+  url: SETTINGS,
   updateMethod: "patch",
-  tags: [TAG]
+  tags: [TAG],
+  ...initialState({})
 });
 
-export const behaviors = new Api(BEHAVIORS, {
-  defaultValue: [],
-  uuid: "behaviors",
-  tags: [TAG]
+export const behaviors = new Axios("behaviors", {
+  url: BEHAVIORS,
+  tags: [TAG],
+  ...initialState([])
 });
 
-export const behaviorsModel = new Api(`${BEHAVIORS}/:name`, {
-  defaultValue: {},
-  uuid: "behaviors-model",
-  tags: [TAG]
+export const behaviorsModel = new Axios("behaviors-model", {
+  url: `${BEHAVIORS}/:name`,
+  tags: [TAG],
+  ...initialState({})
 });
 
-behaviorsModel.addCustomQuery({
-  byName: name => ({
-    urlParams: {
-      name
-    }
-  })
-});
+behaviorsModel.addQuery("byName", name => ({
+  urlParams: {
+    name
+  }
+}));
 
 export const behavior = name => {
-  return behaviorsModel.byName(name);
+  return behaviorsModel.queries.byName(name);
 };
 
-export const fixtures = new Api(FIXTURES, {
-  defaultValue: [],
-  uuid: "fixtures",
-  tags: [TAG]
+export const fixtures = new Axios("fixtures", {
+  url: FIXTURES,
+  tags: [TAG],
+  ...initialState([])
 });
 
-export const fixturesModel = new Api(`${FIXTURES}/:id`, {
-  defaultValue: {},
-  uuid: "fixtures-model",
-  tags: [TAG]
+export const fixturesModel = new Axios("fixtures-model", {
+  url: `${FIXTURES}/:id`,
+  tags: [TAG],
+  ...initialState({})
 });
 
-fixturesModel.addCustomQuery({
-  byId: id => ({
-    urlParams: {
-      id
-    }
-  })
-});
+fixturesModel.addQuery("byId", id => ({
+  urlParams: {
+    id
+  }
+}));
 
 export const fixture = id => {
-  return fixturesModel.byId(id);
+  return fixturesModel.queries.byId(id);
 };

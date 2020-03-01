@@ -2,7 +2,7 @@ import { behaviorsModel, behavior, fixturesModel, fixture } from "../../src/prov
 
 describe("behaviorsModel findByName custom query", () => {
   it("should return name urlParam", () => {
-    expect(behaviorsModel.test.customQueries.byName("foo")).toEqual({
+    expect(behaviorsModel.queryMethods.byName("foo")).toEqual({
       urlParams: {
         name: "foo"
       }
@@ -12,13 +12,13 @@ describe("behaviorsModel findByName custom query", () => {
 
 describe("behavior alias", () => {
   it("should return queried behaviorsModel", () => {
-    expect(behavior("foo")).toEqual(behaviorsModel.byName("foo"));
+    expect(behavior("foo")).toEqual(behaviorsModel.queries.byName("foo"));
   });
 });
 
 describe("fixturesModel findById custom query", () => {
   it("should return name urlParam", () => {
-    expect(fixturesModel.test.customQueries.byId("foo")).toEqual({
+    expect(fixturesModel.queryMethods.byId("foo")).toEqual({
       urlParams: {
         id: "foo"
       }
@@ -28,6 +28,6 @@ describe("fixturesModel findById custom query", () => {
 
 describe("fixture alias", () => {
   it("should return queried fixturesModel", () => {
-    expect(fixture("foo")).toEqual(fixturesModel.byId("foo"));
+    expect(fixture("foo")).toEqual(fixturesModel.queries.byId("foo"));
   });
 });

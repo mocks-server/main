@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@data-provider/connector-react": "1.4.2",
+    "@data-provider/axios": "2.0.0-alpha.2",
+    "@data-provider/core": "2.0.0-alpha.6",
+    "@data-provider/react": "1.0.0-alpha.2",
     "prop-types": "15.7.2",
     "react": "16.12.0",
     "react-dom": "16.12.0",
-    "react-scripts": "3.3.1"
+    "react-redux": "7.2.0",
+    "react-scripts": "3.3.1",
+    "redux": "4.0.5"
   },
   "scripts": {
     "start": "react-app-rewired start",

@@ -1,10 +1,8 @@
-import { connect } from "@data-provider/connector-react";
-import { about } from "mocks-server-admin-api-client";
+import { withData } from "@data-provider/react";
+import { about } from "@mocks-server/admin-api-client-data-provider";
 
 import AboutView from "./AboutView";
 
-const AboutController = connect(() => ({
-  about: about.read.getters.value
-}))(AboutView);
+const AboutController = withData(about, "about")(AboutView);
 
 export default AboutController;

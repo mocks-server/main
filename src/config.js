@@ -1,4 +1,4 @@
-import { instances } from "@data-provider/core";
+import { providers } from "@data-provider/core";
 import { DEFAULT_BASE_PATH } from "@mocks-server/admin-api-paths";
 import TAG from "./tag";
 
@@ -13,7 +13,7 @@ export const config = options => {
     ...options
   };
 
-  instances.getByTag(TAG).config({
+  providers.getByTag(TAG).config({
     baseUrl: `${finalOptions.baseUrl}${finalOptions.apiPath}`
   });
 };

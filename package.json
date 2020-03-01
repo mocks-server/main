@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/cypress-commands",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Extends Cypress' cy commands with methods for administrating mocks-server",
   "keywords": [
     "cypress",
@@ -31,26 +31,27 @@
     "lint-staged": "lint-staged",
     "test": "jest",
     "test-e2e": "cd test-e2e && npm run test:ci",
-    "test-e2e:ci": "cd test-e2e && npm i && npm run apps:install && npm run test:ci"
+    "test-e2e:ci": "cd test-e2e && npm i && npm run apps:install && npm run test:ci",
+    "test:coverage": "npm run test",
+    "test:ci": "npm run test && npm run test-e2e:ci"
   },
   "dependencies": {
-    "@data-provider/core": "1.7.2",
-    "@mocks-server/admin-api-client": "1.0.2"
+    "@mocks-server/admin-api-client": "2.0.0"
   },
   "devDependencies": {
     "babel-eslint": "10.0.3",
     "coveralls": "3.0.9",
     "eslint": "6.8.0",
-    "eslint-config-prettier": "6.8.0",
+    "eslint-config-prettier": "6.9.0",
     "eslint-plugin-prettier": "3.1.2",
-    "husky": "4.0.6",
-    "jest": "24.9.0",
+    "husky": "4.2.1",
+    "jest": "25.1.0",
     "lint-staged": "9.5.0",
     "prettier": "1.19.1",
-    "sinon": "8.0.1"
+    "sinon": "8.1.1"
   },
   "peerDependencies": {
-    "cypress": "^2.1.0 || ^3.0.0"
+    "cypress": "^2.1.0 || ^3.0.0 || ^4.0.0"
   },
   "lint-staged": {
     "test-e2e/app-data-provider/*.js": "eslint",
@@ -67,5 +68,8 @@
     "hooks": {
       "pre-commit": "npm run lint-staged"
     }
+  },
+  "engines": {
+    "node": "10.x || 12.x || 13.x"
   }
 }

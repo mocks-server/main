@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - feat: [BREAKING CHANGE] Stop using @data-provider. (admin-api-client-data-provider package available for that purpose).
 - feat: Use cross-fetch for making requests.
+- chore(deps): Update dev-dependencies
 
 ## [1.0.3] - 2020-01-26
 ### Changed

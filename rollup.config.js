@@ -43,7 +43,7 @@ module.exports = [
     output: {
       file: "dist/index.umd.js",
       format: "umd",
-      name: "mocksServerAdminApiClient",
+      name: "mocksServerAdminApiClientDataProvider",
       globals: GLOBALS
     },
     plugins: [...BASE_PLUGINS, uglifier.uglify()]

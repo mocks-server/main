@@ -10,6 +10,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [2.0.0] - 2020-03-01
+### Changed
+- chore: Project migrated from @mocks-server/admin-api-client
+- chore(deps): [BREAKING CHANGE] Updated @data-provider/core to v2. Not compatible with projects using v1.
+- chore(deps): [BREAKING CHANGE] Moved @data-provider/axios dependency to peer-dependencies.
+- chore(umd): [BREAKING CHANGE] Renamed umd global variable to "mocksServerAdminApiClientDataProvider"
+
+## [1.0.3] - 2020-01-26
+### Changed
+- Update dependencies
+
 ## [1.0.2] - 2020-01-12
 ### Changed
 - Update dependencies

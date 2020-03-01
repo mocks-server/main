@@ -52,10 +52,10 @@ Exported properties `about`, `settings`, `behaviors`, `behaviorsModel`, `fixture
 * `settings.update(settingsObject)` - Updates @mocks-server settings. A settings object has to be provided. Read the [@mocks-server configuration documentation](https://www.mocks-server.org/docs/configuration-options) for further info.
 * `behaviors.read()` - Returns collection of available behaviors.
 * `behavior(behaviorName).read()` - Returns an specific behavior.
-* `behaviorsModel.byName(behaviorName).read()` - Returns an specific behavior.
+* `behaviorsModel.queries.byName(behaviorName).read()` - Returns an specific behavior.
 * `fixtures.read()` - Returns collection of available fixtures.
 * `fixture(fixtureId).read()` - Returns an specific fixture.
-* `fixturesModel.byId(fixtureId).read()` - Returns an specific fixture.
+* `fixturesModel.queries.byId(fixtureId).read()` - Returns an specific fixture.
 
 ## Configuration
 

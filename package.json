@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/cypress-commands",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Extends Cypress' cy commands with methods for administrating mocks-server",
   "keywords": [
     "cypress",
@@ -36,8 +36,7 @@
     "test:ci": "npm run test && npm run test-e2e:ci"
   },
   "dependencies": {
-    "@data-provider/core": "1.8.0",
-    "@mocks-server/admin-api-client": "1.0.2"
+    "@mocks-server/admin-api-client": "2.0.0"
   },
   "devDependencies": {
     "babel-eslint": "10.0.3",
@@ -52,7 +51,7 @@
     "sinon": "8.1.1"
   },
   "peerDependencies": {
-    "cypress": "^2.1.0 || ^3.0.0"
+    "cypress": "^2.1.0 || ^3.0.0 || ^4.0.0"
   },
   "lint-staged": {
     "test-e2e/app-data-provider/*.js": "eslint",

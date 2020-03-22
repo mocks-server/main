@@ -10,5 +10,5 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 module.exports = {
   id: 1,
-  name: "John Doe"
+  name: "John Doe",
 };

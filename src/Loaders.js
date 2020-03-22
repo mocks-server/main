@@ -41,7 +41,7 @@ class Loaders {
 
   get contents() {
     let allContents = [];
-    this._loaders.forEach(loader => {
+    this._loaders.forEach((loader) => {
       allContents = allContents.concat(loader.contents);
     });
     return allContents;

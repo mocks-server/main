@@ -19,12 +19,12 @@ describe("plugins load method", () => {
       this.load([
         {
           id: "standard",
-          fixtures: ["users", "user-1"]
+          fixtures: ["users", "user-1"],
         },
         {
           from: "standard",
           id: "user2",
-          fixtures: ["user-2"]
+          fixtures: ["user-2"],
         },
         {
           id: "users",
@@ -35,14 +35,14 @@ describe("plugins load method", () => {
             body: [
               {
                 id: 1,
-                name: "John Doe"
+                name: "John Doe",
               },
               {
                 id: 2,
-                name: "Jane Doe"
-              }
-            ]
-          }
+                name: "Jane Doe",
+              },
+            ],
+          },
         },
         {
           id: "user-1",
@@ -52,9 +52,9 @@ describe("plugins load method", () => {
             status: 200,
             body: {
               id: 1,
-              name: "John Doe"
-            }
-          }
+              name: "John Doe",
+            },
+          },
         },
         {
           id: "user-2",
@@ -64,10 +64,10 @@ describe("plugins load method", () => {
             status: 200,
             body: {
               id: 2,
-              name: "Jane Doe"
-            }
-          }
-        }
+              name: "Jane Doe",
+            },
+          },
+        },
       ]);
     }
   }
@@ -75,7 +75,7 @@ describe("plugins load method", () => {
 
   beforeAll(async () => {
     core = await startCore("mocks", {
-      plugins: [Plugin]
+      plugins: [Plugin],
     });
   });
 
@@ -97,12 +97,12 @@ describe("plugins load method", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
       const user = await request("/api/users/1");
       expect(user).toEqual({
         id: 1,
-        name: "John Doe"
+        name: "John Doe",
       });
     });
 
@@ -113,12 +113,12 @@ describe("plugins load method", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
       const user = await request("/api/users/1");
       expect(user).toEqual({
         id: 2,
-        name: "Jane Doe"
+        name: "Jane Doe",
       });
     });
   });

@@ -13,5 +13,5 @@ const Behavior = require("./src/mocks/Behavior");
 
 module.exports = {
   Core,
-  Behavior
+  Behavior,
 };

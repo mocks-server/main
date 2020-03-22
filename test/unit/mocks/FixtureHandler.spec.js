@@ -37,8 +37,8 @@ describe("FixtureHandler", () => {
           url: "foo",
           method: "GET",
           response: {
-            status: 200
-          }
+            status: 200,
+          },
         })
       ).toEqual(true);
     });
@@ -48,7 +48,7 @@ describe("FixtureHandler", () => {
         FixtureHandler.recognize({
           url: "foo",
           method: "GET",
-          response: () => {}
+          response: () => {},
         })
       ).toEqual(true);
     });
@@ -56,7 +56,7 @@ describe("FixtureHandler", () => {
     it("should return false if fixture is not an standard mocks server fixture object", () => {
       expect(
         FixtureHandler.recognize({
-          foo: "foo"
+          foo: "foo",
         })
       ).toEqual(false);
     });
@@ -70,8 +70,8 @@ describe("FixtureHandler", () => {
           url: "foo/:id",
           method: "GET",
           response: {
-            status: 200
-          }
+            status: 200,
+          },
         },
         coreInstance
       );
@@ -80,8 +80,8 @@ describe("FixtureHandler", () => {
           url: "foo/:id",
           method: "GET",
           response: {
-            status: 300
-          }
+            status: 300,
+          },
         },
         coreInstance
       );
@@ -90,8 +90,8 @@ describe("FixtureHandler", () => {
           url: "foo/:id",
           method: "POST",
           response: {
-            status: 200
-          }
+            status: 200,
+          },
         },
         coreInstance
       );
@@ -108,8 +108,8 @@ describe("FixtureHandler", () => {
           url: "foo/:id",
           method: "GET",
           response: {
-            status: 200
-          }
+            status: 200,
+          },
         },
         coreInstance
       );
@@ -118,8 +118,8 @@ describe("FixtureHandler", () => {
           url: "foo/:id",
           method: "GET",
           response: {
-            status: 200
-          }
+            status: 200,
+          },
         },
         coreInstance
       );
@@ -128,8 +128,8 @@ describe("FixtureHandler", () => {
           url: "foo/:id",
           method: "GET",
           response: {
-            status: 300
-          }
+            status: 300,
+          },
         },
         coreInstance
       );
@@ -138,8 +138,8 @@ describe("FixtureHandler", () => {
           url: "foo/:id",
           method: "GET",
           response: {
-            status: 300
-          }
+            status: 300,
+          },
         },
         coreInstance
       );
@@ -156,14 +156,14 @@ describe("FixtureHandler", () => {
           url: "foo/:id",
           method: "GET",
           response: {
-            status: 200
-          }
+            status: 200,
+          },
         },
         coreInstance
       );
       expect(fixture.request).toEqual({
         url: "foo/:id",
-        method: "GET"
+        method: "GET",
       });
     });
   });
@@ -177,9 +177,9 @@ describe("FixtureHandler", () => {
           response: {
             status: 200,
             body: {
-              foo: "foo"
-            }
-          }
+              foo: "foo",
+            },
+          },
         },
         coreInstance
       );
@@ -187,8 +187,8 @@ describe("FixtureHandler", () => {
         type: "static",
         status: 200,
         body: {
-          foo: "foo"
-        }
+          foo: "foo",
+        },
       });
     });
 
@@ -197,13 +197,13 @@ describe("FixtureHandler", () => {
         {
           url: "foo/:id",
           method: "GET",
-          response: () => {}
+          response: () => {},
         },
         coreInstance
       );
       expect(fixture.response).toEqual({
         type: "dynamic",
-        function: "() => {}"
+        function: "() => {}",
       });
     });
   });
@@ -215,18 +215,18 @@ describe("FixtureHandler", () => {
           url: "foo/:id",
           method: "GET",
           response: {
-            status: 200
-          }
+            status: 200,
+          },
         },
         coreInstance
       );
       expect(
         fixture.requestMatch({
           method: "GET",
-          url: "foo/5"
+          url: "foo/5",
         })
       ).toEqual({
-        id: "5"
+        id: "5",
       });
     });
   });
@@ -239,22 +239,22 @@ describe("FixtureHandler", () => {
         {
           url: "foo/:id",
           method: "GET",
-          response: fooResponseMethod
+          response: fooResponseMethod,
         },
         coreInstance
       );
       const fooRequest = {
-        url: "foo/5"
+        url: "foo/5",
       };
       const fooNext = sandbox.spy();
       const fooResponse = {
         status: sandbox.spy(),
-        send: sandbox.spy()
+        send: sandbox.spy(),
       };
       fixture.handleRequest(fooRequest, fooResponse, fooNext, coreInstance);
 
       expect(fooRequest.params).toEqual({
-        id: "5"
+        id: "5",
       });
       expect(fooResponseMethod.getCall(0).args[0]).toEqual(fooRequest);
       expect(fooResponseMethod.getCall(0).args[1]).toEqual(fooResponse);
@@ -270,25 +270,25 @@ describe("FixtureHandler", () => {
           response: {
             status: 200,
             body: {
-              "foo-body": "foo"
-            }
-          }
+              "foo-body": "foo",
+            },
+          },
         },
         coreInstance
       );
       const fooRequest = {
-        url: "foo/5"
+        url: "foo/5",
       };
       const fooNext = sandbox.spy();
       const fooResponse = {
         status: sandbox.spy(),
-        send: sandbox.spy()
+        send: sandbox.spy(),
       };
       fixture.handleRequest(fooRequest, fooResponse, fooNext, coreInstance);
 
       expect(fooResponse.status.getCall(0).args[0]).toEqual(200);
       expect(fooResponse.send.getCall(0).args[0]).toEqual({
-        "foo-body": "foo"
+        "foo-body": "foo",
       });
     });
   });

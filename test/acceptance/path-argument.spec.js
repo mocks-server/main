@@ -18,7 +18,7 @@ describe("path argument", () => {
 
   beforeAll(async () => {
     cli = new CliRunner([binaryPath, "--path=web-tutorial"], {
-      cwd: cwdPath
+      cwd: cwdPath,
     });
     await wait();
   });
@@ -31,7 +31,7 @@ describe("path argument", () => {
     const users = await request("/api/users");
     expect(users).toEqual([
       { id: 1, name: "John Doe" },
-      { id: 2, name: "Jane Doe" }
+      { id: 2, name: "Jane Doe" },
     ]);
   });
 });

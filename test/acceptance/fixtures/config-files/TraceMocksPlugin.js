@@ -4,7 +4,7 @@ class Plugin {
       name: "traceMocks",
       type: "boolean",
       description: "Trace mocks changes",
-      default: true
+      default: true,
     });
 
     this._core = core;

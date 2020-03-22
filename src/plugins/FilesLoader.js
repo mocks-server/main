@@ -60,7 +60,7 @@ class FilesHandler {
 
   _cleanRequireCache(requireModule) {
     if (requireModule) {
-      map(requireModule.children, moduleData => {
+      map(requireModule.children, (moduleData) => {
         if (moduleData.id.indexOf(this._path) === 0) {
           this._cleanRequireCache(this._cache()[moduleData.id]);
         }
@@ -101,15 +101,15 @@ class FilesHandler {
           }
           return fileName;
         },
-        resolve: fileContent => {
+        resolve: (fileContent) => {
           try {
             fileContent._mocksServer_isFile = true;
           } catch (error) {}
           return fileContent;
-        }
+        },
       });
       this._tracer.silly(`Loaded files from folder ${this._path}`);
-      this._contents = this._getContents(this._files).map(content => {
+      this._contents = this._getContents(this._files).map((content) => {
         // TODO, remove the addition of extra properties when reading files. Define a name for the behavior.
         delete content._mocksServer_isFile;
         delete content._mocksServer_fullPath;
@@ -134,7 +134,7 @@ class FilesHandler {
     if (files._mocksServer_isFile || !isObject(files)) {
       if (isObject(files)) {
         // module exports is an object, add path to each one.
-        Object.keys(files).forEach(key => {
+        Object.keys(files).forEach((key) => {
           if (isObject(files[key])) {
             this._addPathToLoadedObject(files[key], `${fileName}/${key}`, key);
             contents.push(files[key]);
@@ -145,7 +145,7 @@ class FilesHandler {
         contents.push(files);
       }
     } else {
-      Object.keys(files).forEach(childFileName => {
+      Object.keys(files).forEach((childFileName) => {
         contents.push(this._getContents(files[childFileName], `${fileName}/${childFileName}`));
       });
     }

@@ -16,17 +16,17 @@ const getRealUser = {
   method: "GET",
   response: (req, res) => {
     const userId = req.params.id;
-    const user = INITIAL_USERS.find(userData => userData.id === Number(userId));
+    const user = INITIAL_USERS.find((userData) => userData.id === Number(userId));
     if (user) {
       res.status(200);
       res.send(user);
     } else {
       res.status(404);
       res.send({
-        message: "User not found"
+        message: "User not found",
       });
     }
-  }
+  },
 };
 
 module.exports = standard.extend([getRealUser]);

@@ -19,7 +19,7 @@ describe("when using config file", () => {
   describe("When started", () => {
     beforeAll(async () => {
       cli = new CliRunner([binaryPath], {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
     });
@@ -46,7 +46,7 @@ describe("when using config file", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 

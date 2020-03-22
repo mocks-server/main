@@ -20,7 +20,7 @@ describe("delay argument", () => {
   beforeAll(async () => {
     timeCounter = new TimeCounter();
     cli = new CliRunner([binaryPath, "--path=web-tutorial", "--delay=2000"], {
-      cwd: cwdPath
+      cwd: cwdPath,
     });
     await wait();
   });
@@ -35,7 +35,7 @@ describe("delay argument", () => {
     timeCounter.stop();
     expect(users).toEqual([
       { id: 1, name: "John Doe" },
-      { id: 2, name: "Jane Doe" }
+      { id: 2, name: "Jane Doe" },
     ]);
     expect(timeCounter.total).toBeGreaterThan(1999);
   });

@@ -25,13 +25,13 @@ class Mock {
       addFixturesHandler: this._sandbox.stub(),
       behaviors: {
         current: {
-          getRequestMatchingFixture: this._sandbox.stub()
-        }
+          getRequestMatchingFixture: this._sandbox.stub(),
+        },
       },
       fixtures: {
-        collection: []
+        collection: [],
       },
-      processLoadedMocks: this._sandbox.stub().resolves()
+      processLoadedMocks: this._sandbox.stub().resolves(),
     };
 
     Mocks.mockImplementation(() => this._stubs);
@@ -40,7 +40,7 @@ class Mock {
   get stubs() {
     return {
       Constructor: Mocks,
-      instance: this._stubs
+      instance: this._stubs,
     };
   }
 

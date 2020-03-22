@@ -58,7 +58,7 @@ class WatchRunner {
       return cb();
     }
     return {
-      close: this._closeStub
+      close: this._closeStub,
     };
   }
 
@@ -86,7 +86,7 @@ class Mock {
       watchClose,
       express: {
         use: this._sandbox.stub(),
-        options: this._sandbox.stub()
+        options: this._sandbox.stub(),
       },
       http: {
         createServer: {
@@ -94,12 +94,12 @@ class Mock {
           onError: httpCreateServerOnError,
           listen: this._sandbox.stub().callsFake(httpCreateServerOnListen.runner),
           onListen: httpCreateServerOnListen,
-          close: this._sandbox.stub().callsFake(cb => cb())
-        }
+          close: this._sandbox.stub().callsFake((cb) => cb()),
+        },
       },
       fsExtra: {
-        ensureDirSync: ensureDirSyncStub
-      }
+        ensureDirSync: ensureDirSyncStub,
+      },
     };
 
     express.mockImplementation(() => this._stubs.express);

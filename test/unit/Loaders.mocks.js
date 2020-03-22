@@ -26,11 +26,11 @@ const INITIAL_FILES = {
         response: {
           status: 200,
           body: {
-            fooProperty: "foo"
-          }
-        }
-      }
-    ])
+            fooProperty: "foo",
+          },
+        },
+      },
+    ]),
   },
   file2: {
     _mocksServer_isFile: true,
@@ -41,20 +41,20 @@ const INITIAL_FILES = {
         response: {
           status: 422,
           body: {
-            fooProperty2: "foo2"
-          }
-        }
-      }
-    ])
+            fooProperty2: "foo2",
+          },
+        },
+      },
+    ]),
   },
   folder: {
     folder2: {
       file: {
         _mocksServer_isFile: true,
-        fooProperty: ""
-      }
-    }
-  }
+        fooProperty: "",
+      },
+    },
+  },
 };
 
 INITIAL_FILES.file1.behavior1._mocksServer_lastPath = "behavior1";
@@ -76,7 +76,7 @@ class Mock {
 
     this._stubs = {
       new: this._sandbox.stub(),
-      contents: INITIAL_CONTENTS
+      contents: INITIAL_CONTENTS,
     };
 
     Loaders.mockImplementation(() => this._stubs);
@@ -85,7 +85,7 @@ class Mock {
   get stubs() {
     return {
       Constructor: Loaders,
-      instance: this._stubs
+      instance: this._stubs,
     };
   }
 

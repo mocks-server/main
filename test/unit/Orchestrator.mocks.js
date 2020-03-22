@@ -26,7 +26,7 @@ class OrchestratorMock {
   get stubs() {
     return {
       Constructor: Orchestrator,
-      instance: this._stubs
+      instance: this._stubs,
     };
   }
 

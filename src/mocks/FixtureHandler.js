@@ -14,7 +14,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const routeParser = require("route-parser");
 const md5 = require("md5");
 
-const isFunction = response => {
+const isFunction = (response) => {
   return typeof response === "function";
 };
 
@@ -46,11 +46,11 @@ class Fixture {
     this._responsePreview = isFunction(this._response)
       ? {
           type: "dynamic",
-          function: this._response.toString()
+          function: this._response.toString(),
         }
       : {
           type: "static",
-          ...this._response
+          ...this._response,
         };
   }
 
@@ -95,7 +95,7 @@ class Fixture {
   get request() {
     return {
       url: this._url,
-      method: this._method
+      method: this._method,
     };
   }
 

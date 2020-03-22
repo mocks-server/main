@@ -51,7 +51,7 @@ class Config {
         const configFileResult = configFile(this._coreOptions);
         if (isPromise(configFileResult)) {
           return configFileResult
-            .then(fileConfig => {
+            .then((fileConfig) => {
               if (!isObject(fileConfig)) {
                 return Promise.reject(
                   new Error("Configuration file promise should return an object")
@@ -59,7 +59,7 @@ class Config {
               }
               return this._readConfigFileSuccess(fileConfig);
             })
-            .catch(error => {
+            .catch((error) => {
               return this._catchFileConfigError(error);
             });
         } else if (isObject(configFileResult)) {
@@ -88,12 +88,12 @@ class Config {
       return Promise.resolve();
     }
     const configFilePath = this._getFileConfigPath(this._coreOptions.configFile || CONFIG_FILE);
-    return fsExtra.pathExists(configFilePath).then(exists => {
+    return fsExtra.pathExists(configFilePath).then((exists) => {
       if (!exists) {
         tracer.info(`Configuration file not found`);
         return Promise.resolve();
       }
-      return this._readFileConfig(configFilePath).then(fileConfig => {
+      return this._readFileConfig(configFilePath).then((fileConfig) => {
         this._getCoreOptions(fileConfig);
         this._getOptions(fileConfig.options);
         tracer.debug(`Config in file: ${JSON.stringify(fileConfig, null, 2)}`);
@@ -105,7 +105,7 @@ class Config {
   _getOptions(options) {
     this._options = {
       ...this._options,
-      ...options
+      ...options,
     };
     if (this._options.log) {
       tracer.set(this._options.log);

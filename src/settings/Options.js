@@ -26,13 +26,13 @@ const DEFAULT_OPTIONS = {
   // TODO, remove deprecated options
   feature: null,
   features: null,
-  behaviors: null
+  behaviors: null,
 };
 
 const DEPRECATED_OPTIONS = {
   feature: "behavior",
   behaviors: "path",
-  features: "path"
+  features: "path",
 };
 
 class Options {
@@ -52,14 +52,14 @@ class Options {
       const baseOptions = {
         ...DEFAULT_OPTIONS,
         ...this._customDefaults,
-        ...this._config.options
+        ...this._config.options,
       };
       if (!this._config.coreOptions.disableCommandLineArguments) {
         await this._commandLineArguments.init();
         this._options = this._getValidOptions(
           this._removeDeprecatedOptions({
             ...baseOptions,
-            ...this._commandLineArguments.options
+            ...this._commandLineArguments.options,
           })
         );
       } else {
@@ -149,7 +149,7 @@ class Options {
 
   _removeDeprecatedOptions(options) {
     let newOptions = options;
-    Object.keys(DEPRECATED_OPTIONS).forEach(optionName => {
+    Object.keys(DEPRECATED_OPTIONS).forEach((optionName) => {
       newOptions = this._removeDeprecatedOption(newOptions, optionName);
     });
 

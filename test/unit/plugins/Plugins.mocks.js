@@ -23,7 +23,7 @@ class Mock {
       init: this._sandbox.stub().resolves(),
       register: this._sandbox.stub().resolves(),
       start: this._sandbox.stub().resolves(),
-      stop: this._sandbox.stub().resolves()
+      stop: this._sandbox.stub().resolves(),
     };
 
     Plugins.mockImplementation(() => this._stubs);
@@ -32,7 +32,7 @@ class Mock {
   get stubs() {
     return {
       Constructor: Plugins,
-      instance: this._stubs
+      instance: this._stubs,
     };
   }
 

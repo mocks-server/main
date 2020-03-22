@@ -15,8 +15,8 @@ const getUsers = {
   method: "GET",
   response: {
     status: 200,
-    body: INITIAL_USERS
-  }
+    body: INITIAL_USERS,
+  },
 };
 
 module.exports = getUsers;

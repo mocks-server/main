@@ -58,7 +58,7 @@ describe("options", () => {
       commandLineArgumentsMocks.stubs.instance.options = {
         feature: "foo-feature",
         cli: true,
-        path: "foo/features/path"
+        path: "foo/features/path",
       };
       await options.init();
       expect(tracer.deprecationWarn.getCall(0).args[0]).toEqual(
@@ -69,7 +69,7 @@ describe("options", () => {
     it("should print a warning if --features option is received", async () => {
       commandLineArgumentsMocks.stubs.instance.options = {
         cli: true,
-        features: "foo/features/path"
+        features: "foo/features/path",
       };
       await options.init();
       expect(tracer.deprecationWarn.getCall(0).args[0]).toEqual(
@@ -81,7 +81,7 @@ describe("options", () => {
       commandLineArgumentsMocks.stubs.instance.options = {
         behavior: "foo-feature",
         cli: true,
-        behaviors: "foo/features/path"
+        behaviors: "foo/features/path",
       };
       await options.init();
       expect(tracer.deprecationWarn.getCall(0).args[0]).toEqual(
@@ -95,7 +95,7 @@ describe("options", () => {
         behavior: "foo-feature",
         cli: true,
         features: "foo/features/path",
-        behaviors: "foo/features/path"
+        behaviors: "foo/features/path",
       };
       await options.init();
       expect(tracer.deprecationWarn.getCall(0).args[0]).toEqual(
@@ -148,7 +148,7 @@ describe("options", () => {
       expect.assertions(2);
       try {
         options.addCustom({
-          description: "foo"
+          description: "foo",
         });
       } catch (error) {
         const errorMessageContains = "provide option name";
@@ -163,7 +163,7 @@ describe("options", () => {
       expect.assertions(2);
       try {
         options.addCustom({
-          name: "behaviors"
+          name: "behaviors",
         });
       } catch (error) {
         const errorMessageContains = "already registered";
@@ -179,7 +179,7 @@ describe("options", () => {
       try {
         options.addCustom({
           name: "foo",
-          type: "foo"
+          type: "foo",
         });
       } catch (error) {
         const errorMessageContains = "provide a valid option type";
@@ -194,7 +194,7 @@ describe("options", () => {
       expect.assertions(1);
       options.addCustom({
         name: "foo",
-        type: "string"
+        type: "string",
       });
       const errorMessageContains = "provide option description";
       expect(tracer.warn.getCall(0).args[0]).toEqual(
@@ -207,7 +207,7 @@ describe("options", () => {
       options.addCustom({
         name: "foo",
         type: "string",
-        description: "foo-description"
+        description: "foo-description",
       });
       expect(tracer.warn.callCount).toEqual(0);
     });
@@ -220,7 +220,7 @@ describe("options", () => {
         cli: true,
         path: "foo/behaviors/path",
         foo: undefined,
-        foo2: "foooo"
+        foo2: "foooo",
       };
       await options.init();
       expect(options.options).toEqual({
@@ -230,7 +230,7 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: "foo-behavior",
-        path: "foo/behaviors/path"
+        path: "foo/behaviors/path",
       });
     });
 
@@ -241,7 +241,7 @@ describe("options", () => {
         path: "foo/behaviors/path",
         foo: undefined,
         foo2: "foooo",
-        recursive: false
+        recursive: false,
       };
       await options.init();
       expect(options.options).toEqual({
@@ -251,7 +251,7 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: "foo-behavior",
-        path: "foo/behaviors/path"
+        path: "foo/behaviors/path",
       });
     });
 
@@ -260,15 +260,15 @@ describe("options", () => {
         behavior: "foo-behavior",
         cli: true,
         path: "foo/behaviors/path",
-        foo: "foo"
+        foo: "foo",
       };
       options.addCustom({
         name: "cli",
-        type: "boolean"
+        type: "boolean",
       });
       options.addCustom({
         name: "foo",
-        type: "string"
+        type: "string",
       });
       await options.init();
       expect(options.options).toEqual({
@@ -280,7 +280,7 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: "foo-behavior",
-        path: "foo/behaviors/path"
+        path: "foo/behaviors/path",
       });
     });
 
@@ -294,7 +294,7 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: null,
-        path: "mocks"
+        path: "mocks",
       });
     });
 
@@ -303,7 +303,7 @@ describe("options", () => {
         behavior: "foo-behavior",
         cli: true,
         path: "foo/behaviors/path",
-        foo: undefined
+        foo: undefined,
       };
       await options.init();
       expect(options.options).toEqual({
@@ -313,7 +313,7 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: "foo-behavior",
-        path: "foo/behaviors/path"
+        path: "foo/behaviors/path",
       });
     });
 
@@ -321,7 +321,7 @@ describe("options", () => {
       commandLineArgumentsMocks.stubs.instance.options = {
         feature: "foo-feature",
         cli: true,
-        features: "foo/features/path"
+        features: "foo/features/path",
       };
       await options.init();
       expect(options.options).toEqual({
@@ -331,7 +331,7 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: "foo-feature",
-        path: "foo/features/path"
+        path: "foo/features/path",
       });
     });
 
@@ -339,7 +339,7 @@ describe("options", () => {
       commandLineArgumentsMocks.stubs.instance.options = {
         feature: "foo-feature",
         cli: true,
-        behaviors: "foo/features/path"
+        behaviors: "foo/features/path",
       };
       await options.init();
       expect(options.options).toEqual({
@@ -349,7 +349,7 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: "foo-feature",
-        path: "foo/features/path"
+        path: "foo/features/path",
       });
     });
 
@@ -359,7 +359,7 @@ describe("options", () => {
         feature: "foo-feature",
         cli: true,
         features: "foo/features/path",
-        behaviors: "foo/behaviors/path"
+        behaviors: "foo/behaviors/path",
       };
       await options.init();
       expect(options.options).toEqual({
@@ -369,7 +369,7 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: "foo-behavior",
-        path: "foo/behaviors/path"
+        path: "foo/behaviors/path",
       });
     });
 
@@ -380,7 +380,7 @@ describe("options", () => {
         cli: true,
         behaviors: "foo/behaviors/path",
         features: "foo/features/path",
-        path: "foo/path"
+        path: "foo/path",
       };
       await options.init();
       expect(options.options).toEqual({
@@ -390,7 +390,7 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: "foo-behavior",
-        path: "foo/path"
+        path: "foo/path",
       });
     });
   });
@@ -407,7 +407,7 @@ describe("options", () => {
         cli: true,
         path: "foo/behaviors/path",
         foo: undefined,
-        foo2: "foooo"
+        foo2: "foooo",
       };
       await options.init();
       expect(options.options).toEqual({
@@ -417,7 +417,7 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: "foo-behavior",
-        path: "foo/behaviors/path"
+        path: "foo/behaviors/path",
       });
     });
 
@@ -430,7 +430,7 @@ describe("options", () => {
         path: "foo/path",
         foo: undefined,
         foo2: "foooo",
-        recursive: false
+        recursive: false,
       };
       await options.init();
       expect(options.options).toEqual({
@@ -440,24 +440,24 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: "foo-behavior",
-        path: "foo/path"
+        path: "foo/path",
       });
     });
 
     it("should get values from keys defined in new options", async () => {
       options.addCustom({
         name: "cli",
-        type: "boolean"
+        type: "boolean",
       });
       options.addCustom({
         name: "foo",
-        type: "string"
+        type: "string",
       });
       configMocks.stubs.instance.options = {
         behavior: "foo-behavior",
         cli: true,
         path: "foo/behaviors/path",
-        foo: "foo"
+        foo: "foo",
       };
       await options.init();
       expect(options.options).toEqual({
@@ -469,7 +469,7 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: "foo-behavior",
-        path: "foo/behaviors/path"
+        path: "foo/behaviors/path",
       });
     });
 
@@ -478,7 +478,7 @@ describe("options", () => {
         behavior: "foo-behavior",
         cli: true,
         path: "foo/behaviors/path",
-        foo: undefined
+        foo: undefined,
       };
       await options.init();
       expect(options.options).toEqual({
@@ -488,7 +488,7 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: "foo-behavior",
-        path: "foo/behaviors/path"
+        path: "foo/behaviors/path",
       });
     });
 
@@ -496,7 +496,7 @@ describe("options", () => {
       configMocks.stubs.instance.options = {
         feature: "foo-feature",
         cli: true,
-        features: "foo/features/path"
+        features: "foo/features/path",
       };
       await options.init();
       expect(options.options).toEqual({
@@ -506,7 +506,7 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: "foo-feature",
-        path: "foo/features/path"
+        path: "foo/features/path",
       });
     });
 
@@ -514,7 +514,7 @@ describe("options", () => {
       configMocks.stubs.instance.options = {
         feature: "foo-feature",
         cli: true,
-        behaviors: "foo/features/path"
+        behaviors: "foo/features/path",
       };
       await options.init();
       expect(options.options).toEqual({
@@ -524,7 +524,7 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: "foo-feature",
-        path: "foo/features/path"
+        path: "foo/features/path",
       });
     });
 
@@ -534,7 +534,7 @@ describe("options", () => {
         feature: "foo-feature",
         cli: true,
         path: "foo/behaviors/path",
-        features: "foo-feature"
+        features: "foo-feature",
       };
       await options.init();
       expect(options.options).toEqual({
@@ -544,7 +544,7 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: "foo-behavior",
-        path: "foo/behaviors/path"
+        path: "foo/behaviors/path",
       });
     });
 
@@ -555,7 +555,7 @@ describe("options", () => {
         cli: true,
         path: "foo/path",
         features: "foo/features/path",
-        behaviors: "foo/behaviors/path"
+        behaviors: "foo/behaviors/path",
       };
       await options.init();
       expect(options.options).toEqual({
@@ -565,7 +565,7 @@ describe("options", () => {
         delay: 0,
         watch: true,
         behavior: "foo-behavior",
-        path: "foo/path"
+        path: "foo/path",
       });
     });
   });
@@ -601,7 +601,7 @@ describe("options", () => {
     it("should return option name is custom option", async () => {
       options.addCustom({
         name: "foo",
-        type: "boolean"
+        type: "boolean",
       });
       await options.init();
       expect(options.getValidOptionName("foo")).toEqual("foo");
@@ -643,7 +643,7 @@ describe("options", () => {
     it("should return option name is custom option", async () => {
       options.addCustom({
         name: "foo",
-        type: "boolean"
+        type: "boolean",
       });
       await options.init();
       expect(options.checkValidOptionName("foo")).toEqual("foo");

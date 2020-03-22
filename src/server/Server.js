@@ -64,7 +64,7 @@ class Server {
     // Create server
     this._server = http.createServer(this._express);
 
-    this._server.on("error", error => {
+    this._server.on("error", (error) => {
       tracer.error(`Server error: ${error.message}`);
       this._error = error;
       throw error;
@@ -95,9 +95,9 @@ class Server {
       this._server.listen(
         {
           port,
-          host
+          host,
         },
-        error => {
+        (error) => {
           if (error) {
             tracer.error(`Error starting server: ${error.message}`);
             this._serverStarting = false;
@@ -120,7 +120,7 @@ class Server {
 
   _registerCustomRouters() {
     tracer.debug("Adding custom routers to server");
-    this._customRouters.forEach(customRouter => {
+    this._customRouters.forEach((customRouter) => {
       tracer.silly(`Adding custom router with path ${customRouter.path}`);
       this._express.use(customRouter.path, customRouter.router);
     });
@@ -143,7 +143,7 @@ class Server {
       return this._serverStopping;
     }
     if (this._server) {
-      this._serverStopping = new Promise(resolve => {
+      this._serverStopping = new Promise((resolve) => {
         tracer.verbose("Stopping server");
         this._server.close(() => {
           tracer.info("Server stopped");
@@ -180,7 +180,7 @@ class Server {
   addCustomRouter(path, router) {
     this._customRouters.push({
       path,
-      router
+      router,
     });
     return this._reinitServer();
   }

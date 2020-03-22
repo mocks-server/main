@@ -21,7 +21,7 @@ class ConfigMock {
     this._stubs = {
       init: this._sandbox.stub().resolves(),
       coreOptions: {},
-      options: {}
+      options: {},
     };
 
     Config.mockImplementation(() => this._stubs);
@@ -30,7 +30,7 @@ class ConfigMock {
   get stubs() {
     return {
       Constructor: Config,
-      instance: this._stubs
+      instance: this._stubs,
     };
   }
 

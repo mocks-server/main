@@ -31,7 +31,7 @@ describe("middlewares", () => {
     resMock = {
       status: statusSpy,
       header: headerSpy,
-      send: sendSpy
+      send: sendSpy,
     };
     nextSpy = sandbox.spy();
   });
@@ -61,7 +61,7 @@ describe("middlewares", () => {
     const fooRequest = {
       method: "foo-method",
       url: "foo-url",
-      id: "foo-id"
+      id: "foo-id",
     };
     let tracerStub;
 
@@ -93,7 +93,7 @@ describe("middlewares", () => {
   describe("notFound", () => {
     const fooNotFoundError = new Error("foo");
     const fooRequest = {
-      id: "foo-id"
+      id: "foo-id",
     };
     let tracerStub;
 
@@ -117,17 +117,17 @@ describe("middlewares", () => {
     const fooError = new Error("foo error message");
     const fooBadImplementationError = new Error("foo bad implementation error message");
     const fooRequest = {
-      id: "foo-id"
+      id: "foo-id",
     };
 
     beforeEach(() => {
       fooError.output = {
         statusCode: "foo-status-code",
-        payload: "foo-payload"
+        payload: "foo-payload",
       };
       fooBadImplementationError.output = {
         statusCode: "foo-bad-implementation-status-code",
-        payload: "foo-bad-implementation-payload"
+        payload: "foo-bad-implementation-payload",
       };
       sandbox.stub(tracer, "error");
       sandbox.stub(tracer, "silly");

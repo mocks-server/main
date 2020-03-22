@@ -109,7 +109,7 @@ class Plugins {
     }
     const loadMocks = this._loaders.new();
     const pluginMethods = {
-      loadMocks
+      loadMocks,
     };
     this._pluginsMethods.push(pluginMethods);
     const plugin = this._registerPlugin(this._plugins[pluginIndex], pluginMethods);
@@ -152,7 +152,7 @@ class Plugins {
       return initNextPlugin();
     }
     return pluginInit
-      .catch(error => {
+      .catch((error) => {
         return this._catchInitError(error, pluginIndex);
       })
       .then(initNextPlugin);
@@ -193,7 +193,7 @@ class Plugins {
       return startNextPlugin();
     }
     return pluginStart
-      .catch(error => {
+      .catch((error) => {
         return this._catchStartError(error, pluginIndex);
       })
       .then(startNextPlugin);
@@ -234,7 +234,7 @@ class Plugins {
       return stopNextPlugin();
     }
     return pluginStop
-      .catch(error => {
+      .catch((error) => {
         return this._catchStopError(error, pluginIndex);
       })
       .then(stopNextPlugin);

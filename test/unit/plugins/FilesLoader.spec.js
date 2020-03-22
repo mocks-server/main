@@ -24,7 +24,7 @@ const CoreMocks = require("../Core.mocks.js");
 const FilesLoader = require("../../../src/plugins/FilesLoader");
 
 const wait = () => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve();
     }, 1000);
@@ -37,29 +37,29 @@ describe("FilesLoader", () => {
       id: "foo-path",
       children: {
         "foo-path/foo-children": {
-          id: "foo-path/foo-children"
-        }
-      }
+          id: "foo-path/foo-children",
+        },
+      },
     },
     "foo-path/foo-children": {
       id: "foo-path/foo-children",
       children: {
         "foo-path/foo-children-2": {
-          id: "foo-path/foo-children-2"
-        }
-      }
+          id: "foo-path/foo-children-2",
+        },
+      },
     },
     "foo-path/foo-children-2": {
       id: "foo-path/foo-children-2",
       children: {
         "foo-children-3": {
-          id: "foo-children-3"
-        }
-      }
+          id: "foo-children-3",
+        },
+      },
     },
     "foo-not-children": {
-      id: "foo-not-children"
-    }
+      id: "foo-not-children",
+    },
   };
 
   const fooFiles = {
@@ -73,10 +73,10 @@ describe("FilesLoader", () => {
             response: {
               status: 200,
               body: {
-                fooProperty: "foo"
-              }
-            }
-          }
+                fooProperty: "foo",
+              },
+            },
+          },
         ],
         totalFixtures: 1,
         methods: {
@@ -86,13 +86,13 @@ describe("FilesLoader", () => {
               response: {
                 status: 200,
                 body: {
-                  fooProperty: "foo"
-                }
-              }
-            }
-          }
-        }
-      }
+                  fooProperty: "foo",
+                },
+              },
+            },
+          },
+        },
+      },
     },
     file2: {
       _mocksServer_isFile: true,
@@ -104,10 +104,10 @@ describe("FilesLoader", () => {
             response: {
               status: 422,
               body: {
-                fooProperty2: "foo2"
-              }
-            }
-          }
+                fooProperty2: "foo2",
+              },
+            },
+          },
         ],
         totalFixtures: 1,
         methods: {
@@ -117,32 +117,32 @@ describe("FilesLoader", () => {
               response: {
                 status: 422,
                 body: {
-                  fooProperty2: "foo2"
-                }
-              }
-            }
-          }
-        }
-      }
+                  fooProperty2: "foo2",
+                },
+              },
+            },
+          },
+        },
+      },
     },
     folder: {
       folder2: {
         file: {
           _mocksServer_isFile: true,
-          fooProperty: ""
+          fooProperty: "",
         },
         file2: {
           _mocksServer_isFile: true,
           fooProperty: {
-            foo: "foo"
-          }
-        }
+            foo: "foo",
+          },
+        },
       },
       folder3: {
-        file2: 3
+        file2: 3,
       },
-      file5: "foo"
-    }
+      file5: "foo",
+    },
   };
 
   const fooBoomError = new Error("foo boom error");
@@ -161,12 +161,12 @@ describe("FilesLoader", () => {
     coreMocks = new CoreMocks();
     libsMocks = new LibsMocks();
     pluginMethods = {
-      loadMocks: sandbox.stub()
+      loadMocks: sandbox.stub(),
     };
     coreInstance = coreMocks.stubs.instance;
     requireAll.mockImplementation(() => fooFiles);
     filesLoader = new FilesLoader(coreInstance, pluginMethods, {
-      requireCache
+      requireCache,
     });
     sandbox.stub(path, "isAbsolute").returns(true);
     coreInstance.settings.get.withArgs("path").returns("foo-path");
@@ -192,10 +192,10 @@ describe("FilesLoader", () => {
               response: {
                 status: 200,
                 body: {
-                  fooProperty: "foo"
-                }
-              }
-            }
+                  fooProperty: "foo",
+                },
+              },
+            },
           ],
           totalFixtures: 1,
           methods: {
@@ -205,12 +205,12 @@ describe("FilesLoader", () => {
                 response: {
                   status: 200,
                   body: {
-                    fooProperty: "foo"
-                  }
-                }
-              }
-            }
-          }
+                    fooProperty: "foo",
+                  },
+                },
+              },
+            },
+          },
         },
         {
           _mocksServer_lastPath: "file1",
@@ -223,10 +223,10 @@ describe("FilesLoader", () => {
                 response: {
                   status: 200,
                   body: {
-                    fooProperty: "foo"
-                  }
-                }
-              }
+                    fooProperty: "foo",
+                  },
+                },
+              },
             ],
             totalFixtures: 1,
             methods: {
@@ -236,13 +236,13 @@ describe("FilesLoader", () => {
                   response: {
                     status: 200,
                     body: {
-                      fooProperty: "foo"
-                    }
-                  }
-                }
-              }
-            }
-          }
+                      fooProperty: "foo",
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         {
           _mocksServer_lastPath: "behavior2",
@@ -253,10 +253,10 @@ describe("FilesLoader", () => {
               response: {
                 status: 422,
                 body: {
-                  fooProperty2: "foo2"
-                }
-              }
-            }
+                  fooProperty2: "foo2",
+                },
+              },
+            },
           ],
           totalFixtures: 1,
           methods: {
@@ -266,12 +266,12 @@ describe("FilesLoader", () => {
                 response: {
                   status: 422,
                   body: {
-                    fooProperty2: "foo2"
-                  }
-                }
-              }
-            }
-          }
+                    fooProperty2: "foo2",
+                  },
+                },
+              },
+            },
+          },
         },
         {
           _mocksServer_lastPath: "file2",
@@ -284,10 +284,10 @@ describe("FilesLoader", () => {
                 response: {
                   status: 422,
                   body: {
-                    fooProperty2: "foo2"
-                  }
-                }
-              }
+                    fooProperty2: "foo2",
+                  },
+                },
+              },
             ],
             totalFixtures: 1,
             methods: {
@@ -297,29 +297,29 @@ describe("FilesLoader", () => {
                   response: {
                     status: 422,
                     body: {
-                      fooProperty2: "foo2"
-                    }
-                  }
-                }
-              }
-            }
-          }
+                      fooProperty2: "foo2",
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         {
           _mocksServer_lastPath: "file",
-          fooProperty: ""
+          fooProperty: "",
         },
         {
           _mocksServer_lastPath: "fooProperty",
-          foo: "foo"
+          foo: "foo",
         },
         {
           _mocksServer_lastPath: "file2",
           fooProperty: {
             _mocksServer_lastPath: "fooProperty",
-            foo: "foo"
-          }
-        }
+            foo: "foo",
+          },
+        },
       ]);
     });
 
@@ -354,7 +354,7 @@ describe("FilesLoader", () => {
       await filesLoader.init();
       expect(requireAll.mock.calls[0][0].resolve({ foo: "foo" })).toEqual({
         foo: "foo",
-        _mocksServer_isFile: true
+        _mocksServer_isFile: true,
       });
     });
 
@@ -440,7 +440,7 @@ describe("FilesLoader", () => {
     it("should load files again if path setting is changed", async () => {
       await filesLoader.init();
       coreInstance.onChangeSettings.getCall(0).args[0]({
-        path: "foo-path"
+        path: "foo-path",
       });
       await wait();
       expect(requireAll.mock.calls.length).toEqual(2);
@@ -451,7 +451,7 @@ describe("FilesLoader", () => {
       await filesLoader.init();
       await filesLoader.start();
       coreInstance.onChangeSettings.getCall(0).args[0]({
-        path: "foo-path"
+        path: "foo-path",
       });
       await wait();
       expect(libsMocks.stubs.watch.callCount).toEqual(2);
@@ -463,7 +463,7 @@ describe("FilesLoader", () => {
       await filesLoader.start();
       coreInstance.settings.get.withArgs("watch").returns(false);
       coreInstance.onChangeSettings.getCall(0).args[0]({
-        watch: false
+        watch: false,
       });
       await wait();
       expect(libsMocks.stubs.watchClose.callCount).toEqual(1);

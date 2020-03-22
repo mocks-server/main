@@ -20,7 +20,7 @@ const Server = require("../../../src/server/Server");
 const tracer = require("../../../src/tracer");
 
 const wait = (time = 1000) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve();
     }, time);
@@ -381,7 +381,7 @@ describe("Server", () => {
   describe("behaviors middleware", () => {
     const fooRequest = {
       method: "get",
-      url: "foo-route"
+      url: "foo-route",
     };
     let resMock;
     let nextSpy;
@@ -397,7 +397,7 @@ describe("Server", () => {
       expect.assertions(3);
       const handleRequestSpy = sandbox.spy();
       mocksMocks.stubs.instance.behaviors.current.getRequestMatchingFixture.returns({
-        handleRequest: handleRequestSpy
+        handleRequest: handleRequestSpy,
       });
       await server.start();
 

@@ -2,6 +2,6 @@ module.exports = {
   plugins: ["foo"],
   options: {
     log: "silly",
-    delay: 1000
-  }
+    delay: 1000,
+  },
 };

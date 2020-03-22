@@ -15,5 +15,5 @@ module.exports = {
   LOAD_MOCKS: "load:mocks",
   CHANGE_FIXTURES: "change:fixtures",
   CHANGE_MOCKS: "change:mocks",
-  CHANGE_SETTINGS: "change:settings"
+  CHANGE_SETTINGS: "change:settings",
 };

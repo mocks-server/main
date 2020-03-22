@@ -23,7 +23,7 @@ class Mock {
       get: this._sandbox.stub(),
       set: this._sandbox.stub(),
       init: this._sandbox.stub().resolves(),
-      addCustom: this._sandbox.stub()
+      addCustom: this._sandbox.stub(),
     };
 
     Settings.mockImplementation(() => this._stubs);
@@ -32,7 +32,7 @@ class Mock {
   get stubs() {
     return {
       Constructor: Settings,
-      instance: this._stubs
+      instance: this._stubs,
     };
   }
 

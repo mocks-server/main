@@ -18,7 +18,7 @@ describe("when using custom router", () => {
   customRouter.get("/", (req, res) => {
     res.status(200);
     res.send({
-      customRouterListening: true
+      customRouterListening: true,
     });
   });
   let core;
@@ -26,12 +26,12 @@ describe("when using custom router", () => {
   describe("and registering it before initializating the server", () => {
     beforeAll(async () => {
       core = new Core({
-        onlyProgrammaticOptions: true
+        onlyProgrammaticOptions: true,
       });
       core.addRouter("/api/custom", customRouter);
       await core.init({
         path: fixturesFolder("web-tutorial"),
-        watch: false
+        watch: false,
       });
       await core.start();
     });
@@ -49,7 +49,7 @@ describe("when using custom router", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -57,7 +57,7 @@ describe("when using custom router", () => {
       await core.removeRouter("/api/custom", customRouter);
       const response = await request("/api/custom", {
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       });
       expect(response.statusCode).toEqual(404);
     });
@@ -66,11 +66,11 @@ describe("when using custom router", () => {
   describe("and registering it after server is started", () => {
     beforeAll(async () => {
       core = new Core({
-        onlyProgrammaticOptions: true
+        onlyProgrammaticOptions: true,
       });
       await core.init({
         path: fixturesFolder("web-tutorial"),
-        watch: false
+        watch: false,
       });
       await core.start();
       await core.addRouter("/api/custom", customRouter);
@@ -89,7 +89,7 @@ describe("when using custom router", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -97,7 +97,7 @@ describe("when using custom router", () => {
       await core.removeRouter("/api/custom", customRouter);
       const response = await request("/api/custom", {
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       });
       expect(response.statusCode).toEqual(404);
     });

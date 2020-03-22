@@ -38,7 +38,7 @@ describe("when mocks files are defined as json and js", () => {
   describe('When started with "standard" behavior', () => {
     beforeAll(async () => {
       cli = new CliRunner([binaryPath, "--path=json-and-js", "--behavior=standard"], {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
     });
@@ -51,7 +51,7 @@ describe("when mocks files are defined as json and js", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -69,7 +69,7 @@ describe("when mocks files are defined as json and js", () => {
   describe('When started with "user2" behavior', () => {
     beforeAll(async () => {
       cli = new CliRunner([binaryPath, "--path=json-and-js", "--behavior=user2"], {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
     });
@@ -82,7 +82,7 @@ describe("when mocks files are defined as json and js", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -100,7 +100,7 @@ describe("when mocks files are defined as json and js", () => {
   describe('When started with "dynamic" behavior', () => {
     beforeAll(async () => {
       cli = new CliRunner([binaryPath, "--path=json-and-js", "--behavior=dynamic"], {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
     });
@@ -113,7 +113,7 @@ describe("when mocks files are defined as json and js", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -130,7 +130,7 @@ describe("when mocks files are defined as json and js", () => {
     it("should return not found for /api/users/3 path", async () => {
       const usersResponse = await request("/api/users/3", {
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       });
       expect(usersResponse.statusCode).toEqual(404);
     });

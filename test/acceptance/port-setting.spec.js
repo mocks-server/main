@@ -26,7 +26,7 @@ describe("port setting", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
   });
@@ -36,11 +36,11 @@ describe("port setting", () => {
       core.settings.set("port", 3005);
       await wait(3000);
       const users = await request("/api/users", {
-        port: 3005
+        port: 3005,
       });
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
   });

@@ -22,9 +22,9 @@ describe("Behavior", () => {
       response: {
         status: 200,
         body: {
-          fooProperty: "foo"
-        }
-      }
+          fooProperty: "foo",
+        },
+      },
     },
     {
       url: "/api/foo/foo-uri-2",
@@ -32,9 +32,9 @@ describe("Behavior", () => {
       response: {
         status: 422,
         body: {
-          fooProperty2: "foo2"
-        }
-      }
+          fooProperty2: "foo2",
+        },
+      },
     },
     {
       url: "/api/foo/foo-uri-3",
@@ -42,10 +42,10 @@ describe("Behavior", () => {
       response: {
         status: 500,
         body: {
-          foo: "foo"
-        }
-      }
-    }
+          foo: "foo",
+        },
+      },
+    },
   ];
   let fixturesHandler;
 
@@ -64,8 +64,8 @@ describe("Behavior", () => {
         method: "GET",
         response: {
           status: 200,
-          body: {}
-        }
+          body: {},
+        },
       });
       const extendedBehavior = behavior.extend([
         {
@@ -73,9 +73,9 @@ describe("Behavior", () => {
           method: "GET",
           response: {
             status: 200,
-            body: {}
-          }
-        }
+            body: {},
+          },
+        },
       ]);
       await extendedBehavior.init(fixturesHandler);
       expect(extendedBehavior.fixtures.length).toEqual(4);
@@ -120,7 +120,7 @@ describe("Behavior", () => {
       expect(
         behavior.getRequestMatchingFixture({
           method: "GET",
-          url: "/api/foo/foo-uri"
+          url: "/api/foo/foo-uri",
         })._url
       ).toEqual("/api/foo/foo-uri");
     });
@@ -158,7 +158,7 @@ describe("Behavior", () => {
 
     it("should return id when passed as an option", async () => {
       const behavior = new Behavior(fooBehaviorData, {
-        id: "foo"
+        id: "foo",
       });
       expect(behavior.id).toEqual("foo");
     });
@@ -173,9 +173,9 @@ describe("Behavior", () => {
           method: "GET",
           response: {
             status: 200,
-            body: {}
-          }
-        }
+            body: {},
+          },
+        },
       ]);
       await behavior.init(fixturesHandler);
       await extendedBehavior.init(fixturesHandler);
@@ -190,9 +190,9 @@ describe("Behavior", () => {
           method: "GET",
           response: {
             status: 200,
-            body: {}
-          }
-        }
+            body: {},
+          },
+        },
       ]);
       await extendedBehavior.init(fixturesHandler);
       expect(extendedBehavior.fixtures.length).toEqual(4);
@@ -201,7 +201,7 @@ describe("Behavior", () => {
     it("should define id when passed as an option", async () => {
       const behavior = new Behavior(fooBehaviorData);
       const extendedBehavior = behavior.extend([], {
-        id: "foo"
+        id: "foo",
       });
       expect(extendedBehavior.id).toEqual("foo");
     });

@@ -69,7 +69,7 @@ describe("Plugins", () => {
 
     it("should register object plugins with register method", async () => {
       const fooPlugin = {
-        register: () => {}
+        register: () => {},
       };
       configInstance.coreOptions.plugins = [fooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -79,7 +79,7 @@ describe("Plugins", () => {
 
     it("should register object plugins with register method passing to it the core itself", async () => {
       const fooPlugin = {
-        register: sinon.spy()
+        register: sinon.spy(),
       };
       configInstance.coreOptions.plugins = [fooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -91,7 +91,7 @@ describe("Plugins", () => {
       const fooPlugin = {
         register: () => {
           throw new Error();
-        }
+        },
       };
       configInstance.coreOptions.plugins = [fooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -132,7 +132,7 @@ describe("Plugins", () => {
       expect.assertions(3);
       const spy = sinon.spy();
       const fooPlugin = () => ({
-        register: spy
+        register: spy,
       });
       configInstance.coreOptions.plugins = [fooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -146,7 +146,7 @@ describe("Plugins", () => {
       const fooPlugin = () => ({
         register: () => {
           throw new Error();
-        }
+        },
       });
       configInstance.coreOptions.plugins = [fooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -239,7 +239,7 @@ describe("Plugins", () => {
         true,
         false,
         "foo",
-        { foo: "foo" }
+        { foo: "foo" },
       ];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
       await plugins.register();
@@ -261,7 +261,7 @@ describe("Plugins", () => {
     it("should init object plugins with an init property", async () => {
       expect.assertions(2);
       const fooPlugin = {
-        init: sinon.spy()
+        init: sinon.spy(),
       };
       configInstance.coreOptions.plugins = [fooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -274,7 +274,7 @@ describe("Plugins", () => {
     it("should trace the plugin displayName", async () => {
       const fooPlugin = {
         init: sinon.spy(),
-        displayName: "foo-plugin"
+        displayName: "foo-plugin",
       };
       configInstance.coreOptions.plugins = [fooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -286,10 +286,10 @@ describe("Plugins", () => {
     it("should accept init methods non returning a Promise", async () => {
       expect.assertions(1);
       const fooPlugin = {
-        init: () => true
+        init: () => true,
       };
       const fooPlugin2 = {
-        init: () => Promise.resolve()
+        init: () => Promise.resolve(),
       };
       configInstance.coreOptions.plugins = [fooPlugin, fooPlugin2];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -303,13 +303,13 @@ describe("Plugins", () => {
       const fooPlugin = {
         init: () => {
           throw new Error();
-        }
+        },
       };
       const fooPlugin2 = {
-        init: () => Promise.resolve()
+        init: () => Promise.resolve(),
       };
       const fooPlugin3 = {
-        init: () => Promise.resolve()
+        init: () => Promise.resolve(),
       };
       configInstance.coreOptions.plugins = [fooPlugin, fooPlugin2, fooPlugin3];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -325,13 +325,13 @@ describe("Plugins", () => {
           return new Promise((resolve, reject) => {
             reject(new Error());
           });
-        }
+        },
       };
       const fooPlugin2 = {
-        init: () => Promise.resolve()
+        init: () => Promise.resolve(),
       };
       const fooPlugin3 = {
-        init: () => Promise.resolve()
+        init: () => Promise.resolve(),
       };
       configInstance.coreOptions.plugins = [fooPlugin, fooPlugin2, fooPlugin3];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -344,10 +344,10 @@ describe("Plugins", () => {
       expect.assertions(1);
       const fooPlugin = {};
       const fooPlugin2 = {
-        init: () => Promise.resolve()
+        init: () => Promise.resolve(),
       };
       const fooPlugin3 = {
-        init: () => Promise.resolve()
+        init: () => Promise.resolve(),
       };
       configInstance.coreOptions.plugins = [fooPlugin, fooPlugin2, fooPlugin3];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -371,7 +371,7 @@ describe("Plugins", () => {
     it("should start object plugins with an start property", async () => {
       expect.assertions(2);
       const fooPlugin = {
-        start: sinon.spy()
+        start: sinon.spy(),
       };
       configInstance.coreOptions.plugins = [fooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -384,7 +384,7 @@ describe("Plugins", () => {
     it("should trace the plugin displayName", async () => {
       const fooPlugin = {
         start: sinon.spy(),
-        displayName: "foo-plugin"
+        displayName: "foo-plugin",
       };
       configInstance.coreOptions.plugins = [fooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -396,10 +396,10 @@ describe("Plugins", () => {
     it("should accept start methods non returning a Promise", async () => {
       expect.assertions(1);
       const fooPlugin = {
-        start: () => true
+        start: () => true,
       };
       const fooPlugin2 = {
-        start: () => Promise.resolve()
+        start: () => Promise.resolve(),
       };
       configInstance.coreOptions.plugins = [fooPlugin, fooPlugin2];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -413,13 +413,13 @@ describe("Plugins", () => {
       const fooPlugin = {
         start: () => {
           throw new Error();
-        }
+        },
       };
       const fooPlugin2 = {
-        start: () => Promise.resolve()
+        start: () => Promise.resolve(),
       };
       const fooPlugin3 = {
-        start: () => Promise.resolve()
+        start: () => Promise.resolve(),
       };
       configInstance.coreOptions.plugins = [fooPlugin, fooPlugin2, fooPlugin3];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -435,13 +435,13 @@ describe("Plugins", () => {
           return new Promise((resolve, reject) => {
             reject(new Error());
           });
-        }
+        },
       };
       const fooPlugin2 = {
-        start: () => Promise.resolve()
+        start: () => Promise.resolve(),
       };
       const fooPlugin3 = {
-        start: () => Promise.resolve()
+        start: () => Promise.resolve(),
       };
       configInstance.coreOptions.plugins = [fooPlugin, fooPlugin2, fooPlugin3];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -454,10 +454,10 @@ describe("Plugins", () => {
       expect.assertions(1);
       const fooPlugin = {};
       const fooPlugin2 = {
-        start: () => Promise.resolve()
+        start: () => Promise.resolve(),
       };
       const fooPlugin3 = {
-        start: () => Promise.resolve()
+        start: () => Promise.resolve(),
       };
       configInstance.coreOptions.plugins = [fooPlugin, fooPlugin2, fooPlugin3];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -481,7 +481,7 @@ describe("Plugins", () => {
     it("should stop object plugins with an stop property", async () => {
       expect.assertions(2);
       const fooPlugin = {
-        stop: sinon.spy()
+        stop: sinon.spy(),
       };
       configInstance.coreOptions.plugins = [fooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -494,7 +494,7 @@ describe("Plugins", () => {
     it("should trace the plugin displayName", async () => {
       const fooPlugin = {
         stop: sinon.spy(),
-        displayName: "foo-plugin"
+        displayName: "foo-plugin",
       };
       configInstance.coreOptions.plugins = [fooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -506,10 +506,10 @@ describe("Plugins", () => {
     it("should accept stop methods non returning a Promise", async () => {
       expect.assertions(1);
       const fooPlugin = {
-        stop: () => true
+        stop: () => true,
       };
       const fooPlugin2 = {
-        stop: () => Promise.resolve()
+        stop: () => Promise.resolve(),
       };
       configInstance.coreOptions.plugins = [fooPlugin, fooPlugin2];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -523,13 +523,13 @@ describe("Plugins", () => {
       const fooPlugin = {
         stop: () => {
           throw new Error();
-        }
+        },
       };
       const fooPlugin2 = {
-        stop: () => Promise.resolve()
+        stop: () => Promise.resolve(),
       };
       const fooPlugin3 = {
-        stop: () => Promise.resolve()
+        stop: () => Promise.resolve(),
       };
       configInstance.coreOptions.plugins = [fooPlugin, fooPlugin2, fooPlugin3];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -545,13 +545,13 @@ describe("Plugins", () => {
           return new Promise((resolve, reject) => {
             reject(new Error());
           });
-        }
+        },
       };
       const fooPlugin2 = {
-        stop: () => Promise.resolve()
+        stop: () => Promise.resolve(),
       };
       const fooPlugin3 = {
-        stop: () => Promise.resolve()
+        stop: () => Promise.resolve(),
       };
       configInstance.coreOptions.plugins = [fooPlugin, fooPlugin2, fooPlugin3];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);
@@ -564,10 +564,10 @@ describe("Plugins", () => {
       expect.assertions(1);
       const fooPlugin = {};
       const fooPlugin2 = {
-        stop: () => Promise.resolve()
+        stop: () => Promise.resolve(),
       };
       const fooPlugin3 = {
-        stop: () => Promise.resolve()
+        stop: () => Promise.resolve(),
       };
       configInstance.coreOptions.plugins = [fooPlugin, fooPlugin2, fooPlugin3];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance);

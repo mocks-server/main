@@ -96,12 +96,12 @@ describe("Behaviors", () => {
         {
           from: "behavior2",
           id: "behavior3",
-          fixtures: ["get-user-3"]
+          fixtures: ["get-user-3"],
         },
         {
           from: "behavior1",
           id: "behavior2",
-          fixtures: ["get-user-2"]
+          fixtures: ["get-user-2"],
         },
         "foo",
         5,
@@ -112,8 +112,8 @@ describe("Behaviors", () => {
           method: "GET",
           response: {
             status: 200,
-            body: {}
-          }
+            body: {},
+          },
         },
         {
           id: "get-user-2",
@@ -121,8 +121,8 @@ describe("Behaviors", () => {
           method: "GET",
           response: {
             status: 200,
-            body: {}
-          }
+            body: {},
+          },
         },
         {
           id: "get-user-3",
@@ -130,13 +130,13 @@ describe("Behaviors", () => {
           method: "GET",
           response: {
             status: 200,
-            body: {}
-          }
+            body: {},
+          },
         },
         {
           id: "behavior1",
-          fixtures: ["get-user-1"]
-        }
+          fixtures: ["get-user-1"],
+        },
       ];
       filesLoaderMock = new FilesLoaderMocks();
       filesLoaderInstance = filesLoaderMock.stubs.instance;
@@ -166,22 +166,22 @@ describe("Behaviors", () => {
         {
           from: "behavior2",
           id: "behavior3",
-          fixtures: ["get-user-3"]
+          fixtures: ["get-user-3"],
         },
         {
           from: "behavior1",
           id: "behavior2",
-          fixtures: ["get-user-2"]
+          fixtures: ["get-user-2"],
         },
         {
           from: "behavior5",
           id: "behavior5",
-          fixtures: ["get-user-1"]
+          fixtures: ["get-user-1"],
         },
         {
           id: "behavior1",
-          fixtures: ["get-user-1"]
-        }
+          fixtures: ["get-user-1"],
+        },
       ];
       filesLoaderMock = new FilesLoaderMocks();
       filesLoaderInstance = filesLoaderMock.stubs.instance;
@@ -210,20 +210,20 @@ describe("Behaviors", () => {
       FilesLoaderMocks.contents = [
         {
           id: "behavior1",
-          fixtures: ["get-user-3"]
+          fixtures: ["get-user-3"],
         },
         {
           id: "behavior2",
-          fixtures: ["get-user-2"]
+          fixtures: ["get-user-2"],
         },
         {
           id: "behavior1",
-          fixtures: ["get-user-3"]
+          fixtures: ["get-user-3"],
         },
         {
           id: "behavior2",
-          fixtures: ["get-user-2"]
-        }
+          fixtures: ["get-user-2"],
+        },
       ];
       filesLoaderMock = new FilesLoaderMocks();
       filesLoaderInstance = filesLoaderMock.stubs.instance;

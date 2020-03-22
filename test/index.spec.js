@@ -5,7 +5,7 @@ import {
   readFixtures,
   readFixture,
   readSettings,
-  updateSettings
+  updateSettings,
 } from "./index";
 
 describe("react-admin-client methods used through node", () => {
@@ -95,7 +95,7 @@ describe("react-admin-client methods used through node", () => {
   describe("whe updating settings", () => {
     it("should update current behavior", async () => {
       await updateSettings({
-        behavior: "user2"
+        behavior: "user2",
       });
       const settings = await readSettings();
       expect(settings.behavior).toEqual("user2");
@@ -103,7 +103,7 @@ describe("react-admin-client methods used through node", () => {
 
     it("should update current delay", async () => {
       await updateSettings({
-        delay: 1000
+        delay: 1000,
       });
       const settings = await readSettings();
       expect(settings.delay).toEqual(1000);
@@ -111,7 +111,7 @@ describe("react-admin-client methods used through node", () => {
 
     it("should update current behavior", async () => {
       await updateSettings({
-        behavior: "base"
+        behavior: "base",
       });
       const settings = await readSettings();
       expect(settings.behavior).toEqual("base");

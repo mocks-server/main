@@ -17,7 +17,7 @@ describe("plugin options", () => {
   describe("adminApiDeprecatedPaths option", () => {
     beforeAll(async () => {
       server = await startServer("web-tutorial", {
-        adminApiDeprecatedPaths: false
+        adminApiDeprecatedPaths: false,
       });
     });
 
@@ -28,7 +28,7 @@ describe("plugin options", () => {
     it("should disable deprecated behaviors api path", async () => {
       const behaviorsResponse = await request("/mocks/behaviors", {
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       });
       expect(behaviorsResponse.statusCode).toEqual(404);
     });
@@ -36,7 +36,7 @@ describe("plugin options", () => {
     it("should disable deprecated features api path", async () => {
       const behaviorsResponse = await request("/mocks/features", {
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       });
       expect(behaviorsResponse.statusCode).toEqual(404);
     });
@@ -44,7 +44,7 @@ describe("plugin options", () => {
     it("should disable deprecated settings api path", async () => {
       const behaviorsResponse = await request("/mocks/settings", {
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       });
       expect(behaviorsResponse.statusCode).toEqual(404);
     });
@@ -55,7 +55,7 @@ describe("plugin options", () => {
       cli = new CliRunner(
         ["node", "start.js", "--path=web-tutorial", "--no-adminApiDeprecatedPaths"],
         {
-          cwd: path.resolve(__dirname, "fixtures")
+          cwd: path.resolve(__dirname, "fixtures"),
         }
       );
       await wait(1000);
@@ -69,7 +69,7 @@ describe("plugin options", () => {
       console.log(cli.logs);
       const behaviorsResponse = await request("/mocks/behaviors", {
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       });
       expect(behaviorsResponse.statusCode).toEqual(404);
     });
@@ -77,7 +77,7 @@ describe("plugin options", () => {
     it("should disable deprecated features api path", async () => {
       const behaviorsResponse = await request("/mocks/features", {
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       });
       expect(behaviorsResponse.statusCode).toEqual(404);
     });
@@ -85,7 +85,7 @@ describe("plugin options", () => {
     it("should disable deprecated settings api path", async () => {
       const behaviorsResponse = await request("/mocks/settings", {
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       });
       expect(behaviorsResponse.statusCode).toEqual(404);
     });
@@ -94,7 +94,7 @@ describe("plugin options", () => {
   describe("adminApiPath option", () => {
     beforeAll(async () => {
       server = await startServer("web-tutorial", {
-        adminApiPath: "/foo"
+        adminApiPath: "/foo",
       });
     });
 
@@ -113,7 +113,7 @@ describe("plugin options", () => {
         watch: false,
         log: "silly",
         adminApiPath: "/foo",
-        adminApiDeprecatedPaths: true
+        adminApiDeprecatedPaths: true,
       });
     });
   });

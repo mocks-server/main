@@ -32,7 +32,7 @@ class FixturesApi {
       requestMatchId: fixture.requestMatchId,
       handler: fixture.constructor.displayName,
       request: fixture.request,
-      response: fixture.response
+      response: fixture.response,
     };
   }
 
@@ -49,7 +49,7 @@ class FixturesApi {
   getModel(req, res, next) {
     const id = req.params.id;
     this._tracer.verbose(`${PLUGIN_NAME}: Sending fixture ${id} | ${req.id}`);
-    const foundFixture = this._fixtures.collection.find(fixture => fixture.id === id);
+    const foundFixture = this._fixtures.collection.find((fixture) => fixture.id === id);
     if (foundFixture) {
       res.status(200);
       res.send(this._parseModel(foundFixture));

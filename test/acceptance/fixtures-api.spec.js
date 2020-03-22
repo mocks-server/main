@@ -32,22 +32,22 @@ describe("fixtures api", () => {
           response: {
             type: "dynamic",
             function:
-              '(req, res) => {\n    const userId = req.params.id;\n    const user = INITIAL_USERS.find(userData => userData.id === Number(userId));\n\n    if (user) {\n      res.status(200);\n      res.send(user);\n    } else {\n      res.status(404);\n      res.send({\n        message: "User not found"\n      });\n    }\n  }'
-          }
+              '(req, res) => {\n    const userId = req.params.id;\n    const user = INITIAL_USERS.find(userData => userData.id === Number(userId));\n\n    if (user) {\n      res.status(200);\n      res.send(user);\n    } else {\n      res.status(404);\n      res.send({\n        message: "User not found"\n      });\n    }\n  }',
+          },
         },
         {
           id: "bd5292849ee3fda9fa8383837bb908e7",
           requestMatchId: "9989c8c9766561cd432c625deabca48b",
           handler: "mocks-server-fixture",
           request: { url: "/api/users/:id", method: "GET" },
-          response: { type: "static", status: 200, body: { id: 2, name: "Jane Doe" } }
+          response: { type: "static", status: 200, body: { id: 2, name: "Jane Doe" } },
         },
         {
           id: "12e5f429b92f67d4ec2bf90940ec1135",
           requestMatchId: "9989c8c9766561cd432c625deabca48b",
           handler: "mocks-server-fixture",
           request: { url: "/api/users/:id", method: "GET" },
-          response: { type: "static", status: 200, body: { id: 1, name: "John Doe" } }
+          response: { type: "static", status: 200, body: { id: 1, name: "John Doe" } },
         },
         {
           id: "0dbc954f9d9c9f3f7996c60e63384c9e",
@@ -59,10 +59,10 @@ describe("fixtures api", () => {
             status: 200,
             body: [
               { id: 1, name: "John Doe" },
-              { id: 2, name: "Jane Doe" }
-            ]
-          }
-        }
+              { id: 2, name: "Jane Doe" },
+            ],
+          },
+        },
       ]);
     });
   });
@@ -78,8 +78,8 @@ describe("fixtures api", () => {
         response: {
           type: "dynamic",
           function:
-            '(req, res) => {\n    const userId = req.params.id;\n    const user = INITIAL_USERS.find(userData => userData.id === Number(userId));\n\n    if (user) {\n      res.status(200);\n      res.send(user);\n    } else {\n      res.status(404);\n      res.send({\n        message: "User not found"\n      });\n    }\n  }'
-        }
+            '(req, res) => {\n    const userId = req.params.id;\n    const user = INITIAL_USERS.find(userData => userData.id === Number(userId));\n\n    if (user) {\n      res.status(200);\n      res.send(user);\n    } else {\n      res.status(404);\n      res.send({\n        message: "User not found"\n      });\n    }\n  }',
+        },
       });
     });
   });
@@ -92,7 +92,7 @@ describe("fixtures api", () => {
         requestMatchId: "9989c8c9766561cd432c625deabca48b",
         handler: "mocks-server-fixture",
         request: { url: "/api/users/:id", method: "GET" },
-        response: { type: "static", status: 200, body: { id: 2, name: "Jane Doe" } }
+        response: { type: "static", status: 200, body: { id: 2, name: "Jane Doe" } },
       });
     });
   });
@@ -101,7 +101,7 @@ describe("fixtures api", () => {
     it("should return a not found error", async () => {
       const response = await request("/admin/fixtures/foo", {
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       });
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual('Fixture with id "foo" was not found');

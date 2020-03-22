@@ -11,12 +11,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const INITIAL_USERS = [
   {
     id: 1,
-    name: "John Doe new"
+    name: "John Doe new",
   },
   {
     id: 2,
-    name: "Jane Doe new"
-  }
+    name: "Jane Doe new",
+  },
 ];
 
 const getNewUsers = {
@@ -24,8 +24,8 @@ const getNewUsers = {
   method: "GET",
   response: {
     status: 200,
-    body: INITIAL_USERS
-  }
+    body: INITIAL_USERS,
+  },
 };
 
 const getNewUser = {
@@ -33,11 +33,11 @@ const getNewUser = {
   method: "GET",
   response: {
     status: 200,
-    body: INITIAL_USERS[0]
-  }
+    body: INITIAL_USERS[0],
+  },
 };
 
 module.exports = {
   getNewUsers,
-  getNewUser
+  getNewUser,
 };

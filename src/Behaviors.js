@@ -30,8 +30,8 @@ class BehaviorsApi {
     return {
       id: behavior.id,
       name: behavior.name, // TODO, deprecate name property
-      fixtures: behavior.fixtures.map(fixture => fixture.id),
-      extendedFrom: behavior.extendedFrom
+      fixtures: behavior.fixtures.map((fixture) => fixture.id),
+      extendedFrom: behavior.extendedFrom,
     };
   }
 
@@ -48,7 +48,7 @@ class BehaviorsApi {
   getModel(req, res, next) {
     const id = req.params.id;
     this._tracer.verbose(`${PLUGIN_NAME}: Sending behavior ${id} | ${req.id}`);
-    const foundBehavior = this._behaviors.collection.find(behavior => behavior.id === id);
+    const foundBehavior = this._behaviors.collection.find((behavior) => behavior.id === id);
     if (foundBehavior) {
       res.status(200);
       res.send(this._parseModel(foundBehavior));

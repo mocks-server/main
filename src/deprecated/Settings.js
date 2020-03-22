@@ -35,7 +35,7 @@ class SettingsApi {
     this._tracer.verbose(`${PLUGIN_NAME}: Sending delay to | ${req.id}`);
     res.status(200);
     res.send({
-      delay: this._settings.get("delay")
+      delay: this._settings.get("delay"),
     });
   }
 

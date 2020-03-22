@@ -20,7 +20,7 @@ const Mock = class Mock {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      init: this._sandbox.stub()
+      init: this._sandbox.stub(),
     };
 
     Behaviors.mockImplementation(() => this._stubs);
@@ -29,7 +29,7 @@ const Mock = class Mock {
   get stubs() {
     return {
       Constructor: Behaviors,
-      instance: this._stubs
+      instance: this._stubs,
     };
   }
 

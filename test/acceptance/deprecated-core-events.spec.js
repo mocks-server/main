@@ -16,7 +16,7 @@ const {
   deprecatedGetBehaviors,
   fixturesFolder,
   wait,
-  CliRunner
+  CliRunner,
 } = require("./utils");
 
 describe("Plugin listening to core events", () => {
@@ -26,7 +26,7 @@ describe("Plugin listening to core events", () => {
     fsExtra.removeSync(fixturesFolder("files-watch"));
     fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
     cli = new CliRunner(["node", "start-files-watch.js"], {
-      cwd: path.resolve(__dirname, "fixtures")
+      cwd: path.resolve(__dirname, "fixtures"),
     });
     await wait(1000);
   });
@@ -45,7 +45,7 @@ describe("Plugin listening to core events", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -76,7 +76,7 @@ describe("Plugin listening to core events", () => {
         const users = await request("/api/users");
         expect(users).toEqual([
           { id: 1, name: "John Doe modified" },
-          { id: 2, name: "Jane Doe modified" }
+          { id: 2, name: "Jane Doe modified" },
         ]);
       });
 
@@ -100,7 +100,7 @@ describe("Plugin listening to core events", () => {
         const users = await request("/api/users");
         expect(users).toEqual([
           { id: 1, name: "John Doe modified" },
-          { id: 2, name: "Jane Doe modified" }
+          { id: 2, name: "Jane Doe modified" },
         ]);
       });
 
@@ -124,7 +124,7 @@ describe("Plugin listening to core events", () => {
         const users = await request("/api/users");
         expect(users).toEqual([
           { id: 1, name: "John Doe modified" },
-          { id: 2, name: "Jane Doe modified" }
+          { id: 2, name: "Jane Doe modified" },
         ]);
       });
 
@@ -148,7 +148,7 @@ describe("Plugin listening to core events", () => {
         const users = await request("/api/new-users");
         expect(users).toEqual([
           { id: 1, name: "John Doe new" },
-          { id: 2, name: "Jane Doe new" }
+          { id: 2, name: "Jane Doe new" },
         ]);
       });
 

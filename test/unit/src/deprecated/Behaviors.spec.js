@@ -31,7 +31,7 @@ describe("Behaviors Api", () => {
     sandbox = sinon.createSandbox();
     routerStubs = {
       get: sandbox.stub(),
-      put: sandbox.stub()
+      put: sandbox.stub(),
     };
     coreMock = new CoreMocks();
     coreMocks = coreMock.stubs.instance;
@@ -41,7 +41,7 @@ describe("Behaviors Api", () => {
     sendSpy = sandbox.spy();
     resMock = {
       status: statusSpy,
-      send: sendSpy
+      send: sendSpy,
     };
     behaviors = new Behaviors(coreMocks, tracerMock);
     expect.assertions(1);
@@ -75,8 +75,8 @@ describe("Behaviors Api", () => {
       behaviors.putCurrent(
         {
           body: {
-            name: "foo-name"
-          }
+            name: "foo-name",
+          },
         },
         resMock
       );
@@ -87,8 +87,8 @@ describe("Behaviors Api", () => {
       behaviors.putCurrent(
         {
           body: {
-            name: "foo-name"
-          }
+            name: "foo-name",
+          },
         },
         resMock
       );

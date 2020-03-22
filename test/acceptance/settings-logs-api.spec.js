@@ -16,7 +16,7 @@ describe("log option modified through api", () => {
   let cli;
   beforeAll(async () => {
     cli = new CliRunner(["node", "start.js", "--path=web-tutorial", "--log=info"], {
-      cwd: path.resolve(__dirname, "fixtures")
+      cwd: path.resolve(__dirname, "fixtures"),
     });
     await wait(1000);
   });
@@ -41,8 +41,8 @@ describe("log option modified through api", () => {
       await request("/admin/settings", {
         method: "PATCH",
         body: {
-          log: "verbose"
-        }
+          log: "verbose",
+        },
       });
       fsExtra.copySync(fixturesFolder("files-modification"), fixturesFolder("files-watch"));
       await wait(1000);

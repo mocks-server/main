@@ -25,5 +25,5 @@ const dynamic = standard.extend([getRealUser]);
 module.exports = {
   standard,
   user2,
-  dynamic
+  dynamic,
 };

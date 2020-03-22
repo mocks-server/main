@@ -31,7 +31,7 @@ describe("API for changing current behavior", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -51,8 +51,8 @@ describe("API for changing current behavior", () => {
       await request("/admin/settings", {
         method: "PATCH",
         body: {
-          behavior: "user2"
-        }
+          behavior: "user2",
+        },
       });
     });
 
@@ -60,7 +60,7 @@ describe("API for changing current behavior", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -80,8 +80,8 @@ describe("API for changing current behavior", () => {
       await request("/admin/settings", {
         method: "PATCH",
         body: {
-          behavior: "dynamic"
-        }
+          behavior: "dynamic",
+        },
       });
     });
 
@@ -89,7 +89,7 @@ describe("API for changing current behavior", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -106,7 +106,7 @@ describe("API for changing current behavior", () => {
     it("should return not found for /api/users/3 path", async () => {
       const usersResponse = await request("/api/users/3", {
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       });
       expect(usersResponse.statusCode).toEqual(404);
     });

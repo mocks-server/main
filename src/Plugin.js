@@ -15,7 +15,7 @@ const {
   SETTINGS,
   BEHAVIORS,
   ABOUT,
-  FIXTURES
+  FIXTURES,
 } = require("@mocks-server/admin-api-paths");
 
 const packageInfo = require("../package.json");
@@ -30,7 +30,7 @@ const {
   ADMIN_API_PATH_OPTION,
   ADMIN_API_DEPRECATED_PATHS_OPTION,
   PLUGIN_NAME,
-  DEPRECATED_API_PATH
+  DEPRECATED_API_PATH,
 } = require("./constants");
 
 class Plugin {
@@ -47,14 +47,14 @@ class Plugin {
       name: ADMIN_API_PATH_OPTION,
       type: "string",
       description: `Api path for ${PLUGIN_NAME}`,
-      default: DEFAULT_BASE_PATH
+      default: DEFAULT_BASE_PATH,
     });
 
     core.addSetting({
       name: ADMIN_API_DEPRECATED_PATHS_OPTION,
       type: "boolean",
       description: `Disable deprecated paths of ${PLUGIN_NAME}`,
-      default: true
+      default: true,
     });
 
     this._onChangeSettings = this._onChangeSettings.bind(this);

@@ -30,7 +30,7 @@ describe("Behavior", () => {
     sandbox = sinon.createSandbox();
     resMock = {
       status: sandbox.stub(),
-      send: sandbox.stub()
+      send: sandbox.stub(),
     };
     libMocks = new LibMocks();
     coreMock = new CoreMocks();
@@ -67,15 +67,15 @@ describe("Behavior", () => {
             id: "foo",
             name: "foo",
             fixtures: [{ id: "foo-fixture-id-1" }, { id: "foo-fixture-id-2" }],
-            extendedFrom: "foo-base-behavior"
+            extendedFrom: "foo-base-behavior",
           },
           {
             id: "foo2",
             name: "foo2",
             fixtures: [{ id: "foo-fixture-id-3" }],
-            extendedFrom: null
-          }
-        ]
+            extendedFrom: null,
+          },
+        ],
       };
       behaviors = new Behaviors(coreInstance);
       behaviors.getCollection({}, resMock);
@@ -84,14 +84,14 @@ describe("Behavior", () => {
           id: "foo",
           name: "foo",
           fixtures: ["foo-fixture-id-1", "foo-fixture-id-2"],
-          extendedFrom: "foo-base-behavior"
+          extendedFrom: "foo-base-behavior",
         },
         {
           id: "foo2",
           name: "foo2",
           fixtures: ["foo-fixture-id-3"],
-          extendedFrom: null
-        }
+          extendedFrom: null,
+        },
       ]);
     });
   });
@@ -104,22 +104,22 @@ describe("Behavior", () => {
             id: "foo",
             name: "foo",
             fixtures: [{ id: "foo-fixture-id-1" }, { id: "foo-fixture-id-2" }],
-            extendedFrom: "foo-base-behavior"
+            extendedFrom: "foo-base-behavior",
           },
           {
             id: "foo2",
             name: "foo2",
             fixtures: [{ id: "foo-fixture-id-3" }],
-            extendedFrom: null
-          }
-        ]
+            extendedFrom: null,
+          },
+        ],
       };
       behaviors = new Behaviors(coreInstance);
       behaviors.getModel(
         {
           params: {
-            id: "foo"
-          }
+            id: "foo",
+          },
         },
         resMock
       );
@@ -127,7 +127,7 @@ describe("Behavior", () => {
         id: "foo",
         name: "foo",
         fixtures: ["foo-fixture-id-1", "foo-fixture-id-2"],
-        extendedFrom: "foo-base-behavior"
+        extendedFrom: "foo-base-behavior",
       });
     });
 
@@ -140,22 +140,22 @@ describe("Behavior", () => {
             id: "foo",
             name: "foo",
             fixtures: [{ id: "foo-fixture-id-1" }, { id: "foo-fixture-id-2" }],
-            extendedFrom: "foo-base-behavior"
+            extendedFrom: "foo-base-behavior",
           },
           {
             id: "foo2",
             name: "foo2",
             fixtures: [{ id: "foo-fixture-id-3" }],
-            extendedFrom: null
-          }
-        ]
+            extendedFrom: null,
+          },
+        ],
       };
       behaviors = new Behaviors(coreInstance);
       behaviors.getModel(
         {
           params: {
-            id: "foo3"
-          }
+            id: "foo3",
+          },
         },
         resMock,
         nextStub

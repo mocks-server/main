@@ -30,7 +30,7 @@ describe("Fixtures", () => {
     sandbox = sinon.createSandbox();
     resMock = {
       status: sandbox.stub(),
-      send: sandbox.stub()
+      send: sandbox.stub(),
     };
     libMocks = new LibMocks();
     coreMock = new CoreMocks();
@@ -67,15 +67,15 @@ describe("Fixtures", () => {
             id: "foo-id",
             requestMatchId: "request-match-id",
             request: "foo-request",
-            response: "foo-response"
+            response: "foo-response",
           },
           {
             id: "foo-id-2",
             requestMatchId: "request-match-id-2",
             request: "foo-request-2",
-            response: "foo-response-2"
-          }
-        ]
+            response: "foo-response-2",
+          },
+        ],
       };
       fixtures = new Fixtures(coreInstance);
       fixtures.getCollection({}, resMock);
@@ -85,15 +85,15 @@ describe("Fixtures", () => {
           requestMatchId: "request-match-id",
           handler: undefined,
           request: "foo-request",
-          response: "foo-response"
+          response: "foo-response",
         },
         {
           id: "foo-id-2",
           requestMatchId: "request-match-id-2",
           handler: undefined,
           request: "foo-request-2",
-          response: "foo-response-2"
-        }
+          response: "foo-response-2",
+        },
       ]);
     });
   });
@@ -106,22 +106,22 @@ describe("Fixtures", () => {
             id: "foo-id",
             requestMatchId: "request-match-id",
             request: "foo-request",
-            response: "foo-response"
+            response: "foo-response",
           },
           {
             id: "foo-id-2",
             requestMatchId: "request-match-id-2",
             request: "foo-request-2",
-            response: "foo-response-2"
-          }
-        ]
+            response: "foo-response-2",
+          },
+        ],
       };
       fixtures = new Fixtures(coreInstance);
       fixtures.getModel(
         {
           params: {
-            id: "foo-id"
-          }
+            id: "foo-id",
+          },
         },
         resMock
       );
@@ -130,7 +130,7 @@ describe("Fixtures", () => {
         requestMatchId: "request-match-id",
         handler: undefined,
         request: "foo-request",
-        response: "foo-response"
+        response: "foo-response",
       });
     });
 
@@ -143,16 +143,16 @@ describe("Fixtures", () => {
             id: "foo-id",
             requestMatchId: "request-match-id",
             request: "foo-request",
-            response: "foo-response"
-          }
-        ]
+            response: "foo-response",
+          },
+        ],
       };
       fixtures = new Fixtures(coreInstance);
       fixtures.getModel(
         {
           params: {
-            id: "foo3"
-          }
+            id: "foo3",
+          },
         },
         resMock,
         nextStub

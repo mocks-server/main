@@ -18,23 +18,23 @@ const SERVER_PORT = 3100;
 const BINARY_PATH = "../../mocks-server";
 
 const defaultRequestOptions = {
-  method: "GET"
+  method: "GET",
 };
 
-const fixturesFolder = folderName => {
+const fixturesFolder = (folderName) => {
   return path.resolve(__dirname, "fixtures", folderName);
 };
 
 const request = (uri, options = {}) => {
   const requestOptions = {
     ...defaultRequestOptions,
-    ...options
+    ...options,
   };
 
   return requestPromise({
     uri: `http://localhost:${SERVER_PORT}${uri}`,
     json: true,
-    ...requestOptions
+    ...requestOptions,
   });
 };
 
@@ -58,7 +58,7 @@ class TimeCounter {
 }
 
 const wait = (time = 1000) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve();
     }, time);
@@ -71,5 +71,5 @@ module.exports = {
   CliRunner,
   wait,
   fixturesFolder,
-  BINARY_PATH
+  BINARY_PATH,
 };

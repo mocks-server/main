@@ -59,8 +59,8 @@ class Mock {
         clearScreen: this._sandbox.stub(),
         inquire: this._sandbox.stub().resolves(),
         inquireFake: inquireFake,
-        logsMode: logsModeStub
-      }
+        logsMode: logsModeStub,
+      },
     };
 
     this._stubs.Inquirer = this._sandbox.stub(inquirer, "Inquirer").returns(this._stubs.inquirer);

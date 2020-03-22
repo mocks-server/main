@@ -19,17 +19,17 @@ const questions = {
     choices: [
       {
         name: "Option 1",
-        value: "option1"
-      }
-    ]
-  }
+        value: "option1",
+      },
+    ],
+  },
 };
 
 const MyCli = class MyCli {
   constructor() {
     this._cli = new Inquirer(questions, this.header.bind(this), {
       name: "Custom Quit",
-      action: this.customExitSelected.bind(this)
+      action: this.customExitSelected.bind(this),
     });
     this._selectedOption = "None";
   }

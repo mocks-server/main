@@ -14,7 +14,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const { Core } = require("@mocks-server/core");
 const InquirerCli = require("../../index");
 
-const handleError = error => {
+const handleError = (error) => {
   console.error(`Error: ${error.message}`);
   process.exitCode = 1;
 };
@@ -22,7 +22,7 @@ const handleError = error => {
 const start = () => {
   try {
     const mocksServer = new Core({
-      plugins: [InquirerCli]
+      plugins: [InquirerCli],
     });
 
     return mocksServer.start().catch(handleError);
@@ -32,5 +32,5 @@ const start = () => {
 };
 
 module.exports = {
-  start
+  start,
 };

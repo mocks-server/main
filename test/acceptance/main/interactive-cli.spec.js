@@ -18,7 +18,7 @@ describe("interactive CLI", () => {
 
   beforeAll(async () => {
     cli = new InteractiveCliRunner([BINARY_PATH, "--path=web-tutorial"], {
-      cwd: cwdPath
+      cwd: cwdPath,
     });
     await wait();
   });
@@ -36,7 +36,7 @@ describe("interactive CLI", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -63,7 +63,7 @@ describe("interactive CLI", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -80,7 +80,7 @@ describe("interactive CLI", () => {
     it("should return not found for /api/users/3 path", async () => {
       const usersResponse = await request("/api/users/3", {
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       });
       expect(usersResponse.statusCode).toEqual(404);
     });
@@ -126,7 +126,7 @@ describe("interactive CLI", () => {
       expect(timeCounter.total).toBeGreaterThan(1999);
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
   });

@@ -19,14 +19,14 @@ const questions = {
     choices: [
       {
         name: "Main option 1",
-        value: "option1"
+        value: "option1",
       },
       {
         name: "Main option 2",
-        value: "option2"
-      }
-    ]
-  }
+        value: "option2",
+      },
+    ],
+  },
 };
 
 const MyCli = class MyCli {

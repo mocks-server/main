@@ -30,5 +30,5 @@ module.exports = {
   standard,
   user2,
   dynamic,
-  newOne
+  newOne,
 };

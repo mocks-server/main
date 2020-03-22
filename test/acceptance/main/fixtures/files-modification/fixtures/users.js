@@ -11,12 +11,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const INITIAL_USERS = [
   {
     id: 1,
-    name: "John Doe modified"
+    name: "John Doe modified",
   },
   {
     id: 2,
-    name: "Jane Doe modified"
-  }
+    name: "Jane Doe modified",
+  },
 ];
 
 const getUsers = {
@@ -24,8 +24,8 @@ const getUsers = {
   method: "GET",
   response: {
     status: 200,
-    body: INITIAL_USERS
-  }
+    body: INITIAL_USERS,
+  },
 };
 
 const getUser = {
@@ -35,9 +35,9 @@ const getUser = {
     status: 200,
     body: {
       id: 1,
-      name: "John Doe modified"
-    }
-  }
+      name: "John Doe modified",
+    },
+  },
 };
 
 const getUser2 = {
@@ -47,9 +47,9 @@ const getUser2 = {
     status: 200,
     body: {
       id: 2,
-      name: "Jane Doe modified"
-    }
-  }
+      name: "Jane Doe modified",
+    },
+  },
 };
 
 const getRealUser = {
@@ -57,22 +57,22 @@ const getRealUser = {
   method: "GET",
   response: (req, res) => {
     const userId = req.params.id;
-    const user = INITIAL_USERS.find(userData => userData.id === Number(userId));
+    const user = INITIAL_USERS.find((userData) => userData.id === Number(userId));
     if (user) {
       res.status(200);
       res.send(user);
     } else {
       res.status(404);
       res.send({
-        message: "User not found"
+        message: "User not found",
       });
     }
-  }
+  },
 };
 
 module.exports = {
   getUsers,
   getUser,
   getUser2,
-  getRealUser
+  getRealUser,
 };

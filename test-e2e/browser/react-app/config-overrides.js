@@ -21,7 +21,7 @@ module.exports = config => {
       "@data-provider",
       "core",
       "dist",
-      "core.cjs"
+      "index.cjs"
     )
   };
   return config;

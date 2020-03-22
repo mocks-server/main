@@ -9,8 +9,8 @@
     "build-and-serve": "npm run build && npm run serve"
   },
   "devDependencies": {
-    "cross-env": "7.0.0",
-    "fs-extra": "8.1.0",
+    "cross-env": "7.0.2",
+    "fs-extra": "9.0.0",
     "serve": "11.3.0"
   }
 }

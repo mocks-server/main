@@ -12,7 +12,7 @@ const routeParser = require("route-parser");
 const md5 = require("md5");
 const { startCore, stopCore, request, wait } = require("./utils");
 
-const isFunction = response => {
+const isFunction = (response) => {
   return typeof response === "function";
 };
 
@@ -84,16 +84,16 @@ class CustomParser {
 
 describe("when using a custom fixtures handler", () => {
   const plugin = {
-    register: serverCore => {
+    register: (serverCore) => {
       serverCore.addFixturesHandler(CustomParser);
-    }
+    },
   };
   let core;
 
   describe("number of behaviors and fixtures", () => {
     beforeAll(async () => {
       core = await startCore("custom-parser", {
-        plugins: [plugin]
+        plugins: [plugin],
       });
     });
 
@@ -114,7 +114,7 @@ describe("when using a custom fixtures handler", () => {
     beforeAll(async () => {
       core = await startCore("custom-parser", {
         behavior: "standard",
-        plugins: [plugin]
+        plugins: [plugin],
       });
     });
 
@@ -126,7 +126,7 @@ describe("when using a custom fixtures handler", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -145,7 +145,7 @@ describe("when using a custom fixtures handler", () => {
     beforeAll(async () => {
       core = await startCore("custom-parser", {
         behavior: "user2",
-        plugins: [plugin]
+        plugins: [plugin],
       });
     });
 
@@ -157,7 +157,7 @@ describe("when using a custom fixtures handler", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -176,7 +176,7 @@ describe("when using a custom fixtures handler", () => {
     beforeAll(async () => {
       core = await startCore("custom-parser", {
         behavior: "dynamic",
-        plugins: [plugin]
+        plugins: [plugin],
       });
       await wait();
     });
@@ -189,7 +189,7 @@ describe("when using a custom fixtures handler", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -206,7 +206,7 @@ describe("when using a custom fixtures handler", () => {
     it("should return not found for /api/users/3 path", async () => {
       const usersResponse = await request("/api/users/3", {
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       });
       expect(usersResponse.statusCode).toEqual(404);
     });

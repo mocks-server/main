@@ -1,3 +1,3 @@
 module.exports = {
-  addPlugins: ["foo2"]
+  addPlugins: ["foo2"],
 };

@@ -84,7 +84,7 @@ class Behaviors {
     if (this._isBehaviorDefinition(object)) {
       if (object.from) {
         const parentBehavior = initedBehaviors.find(
-          behavior => behavior && behavior.id === object.from
+          (behavior) => behavior && behavior.id === object.from
         );
         if (parentBehavior) {
           behaviorCandidate = parentBehavior.extend(object.fixtures);
@@ -103,13 +103,13 @@ class Behaviors {
     if (behaviorCandidate.isBehaviorInstance) {
       return behaviorCandidate
         .init(this._fixturesHandler, this._allFixtures)
-        .then(initedBehavior => {
+        .then((initedBehavior) => {
           // TODO, remove the addition of extra properties when reading files. Define a mandatory id for the behavior.
           initedBehavior.id = initedBehavior.id || object._mocksServer_lastPath;
           this._allFixtures.add(initedBehavior.fixtures);
           return Promise.resolve(initedBehavior);
         })
-        .catch(err => {
+        .catch((err) => {
           tracer.error("Error initializing behavior");
           tracer.debug(err.toString());
           return Promise.resolve();
@@ -122,7 +122,7 @@ class Behaviors {
     if (index >= this._behaviorsCandidates.length) {
       return Promise.resolve(initedBehaviors);
     }
-    return this._initBehavior(index, initedBehaviors).then(initedBehavior => {
+    return this._initBehavior(index, initedBehaviors).then((initedBehavior) => {
       initedBehaviors.push(initedBehavior);
       return this._initBehaviors(index + 1, initedBehaviors);
     });
@@ -130,20 +130,20 @@ class Behaviors {
 
   _getBehaviorsCollection() {
     this._behaviorsCandidates = [...this._loaders.contents];
-    return this._initBehaviors().then(initedBehaviors => {
+    return this._initBehaviors().then((initedBehaviors) => {
       // TODO, remove the addition of extra properties when reading files. Define mandatory id for the behavior.
-      this._loaders.contents.forEach(content => {
+      this._loaders.contents.forEach((content) => {
         if (content._mocksServer_lastPath) {
           delete content._mocksServer_lastPath;
         }
       });
-      return Promise.resolve(uniqBy(compact(initedBehaviors), behavior => behavior.id));
+      return Promise.resolve(uniqBy(compact(initedBehaviors), (behavior) => behavior.id));
     });
   }
 
   _getBehaviorsObject() {
     const behaviorsById = {};
-    this._collection.map(behavior => {
+    this._collection.map((behavior) => {
       behaviorsById[behavior.id] = behavior;
     });
     return behaviorsById;

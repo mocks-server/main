@@ -8,13 +8,13 @@ module.exports = [
       body: [
         {
           id: 1,
-          name: "John Doe"
+          name: "John Doe",
         },
         {
           id: 2,
-          name: "Jane Doe"
-        }
-      ]
-    }
-  }
+          name: "Jane Doe",
+        },
+      ],
+    },
+  },
 ];

@@ -23,13 +23,13 @@ describe("behaviors argument", () => {
   describe("behaviors argument", () => {
     it("should set mocks folder", async () => {
       cli = new CliRunner([binaryPath, "--behaviors=web-tutorial"], {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
   });
@@ -37,13 +37,13 @@ describe("behaviors argument", () => {
   describe("features argument", () => {
     it("should set mocks folder", async () => {
       cli = new CliRunner([binaryPath, "--features=web-tutorial"], {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
   });

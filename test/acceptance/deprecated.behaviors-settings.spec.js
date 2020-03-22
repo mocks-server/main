@@ -26,7 +26,7 @@ describe("behaviors setting", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
   });
@@ -41,7 +41,7 @@ describe("behaviors setting", () => {
       const users = await request("/api/new-users");
       expect(users).toEqual([
         { id: 1, name: "John Doe new" },
-        { id: 2, name: "Jane Doe new" }
+        { id: 2, name: "Jane Doe new" },
       ]);
     });
   });

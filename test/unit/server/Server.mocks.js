@@ -26,7 +26,7 @@ class Mock {
       stop: this._sandbox.stub().resolves(),
       init: this._sandbox.stub().resolves(),
       addCustomRouter: this._sandbox.stub().resolves(),
-      removeCustomRouter: this._sandbox.stub().resolves()
+      removeCustomRouter: this._sandbox.stub().resolves(),
     };
 
     Server.mockImplementation(() => this._stubs);
@@ -35,7 +35,7 @@ class Mock {
   get stubs() {
     return {
       Constructor: Server,
-      instance: this._stubs
+      instance: this._stubs,
     };
   }
 

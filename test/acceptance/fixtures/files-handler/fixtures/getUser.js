@@ -15,9 +15,9 @@ const getUser = {
     status: 200,
     body: {
       id: 1,
-      name: "John Doe"
-    }
-  }
+      name: "John Doe",
+    },
+  },
 };
 
 module.exports = getUser;

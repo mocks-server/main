@@ -26,7 +26,7 @@ describe("options", () => {
     // TODO, remove deprecated options
     feature: null,
     features: null,
-    behaviors: null
+    behaviors: null,
   };
   let sandbox;
   let optionStub;
@@ -41,11 +41,11 @@ describe("options", () => {
 
     optionStub.returns({
       option: optionStub,
-      parse: parseStub
+      parse: parseStub,
     });
 
     sandbox.stub(commander, "option").returns({
-      option: optionStub
+      option: optionStub,
     });
 
     commandLineArguments = new CommandLineArguments(DEFAULT_OPTIONS);
@@ -69,7 +69,7 @@ describe("options", () => {
         }
         return {
           option: optionStub,
-          parse: parseStub
+          parse: parseStub,
         };
       });
       commandLineArguments = new CommandLineArguments({});
@@ -79,12 +79,12 @@ describe("options", () => {
     it("should omit undefined values", async () => {
       const options = {
         behavior: "foo-behavior",
-        path: undefined
+        path: undefined,
       };
       parseStub.returns(options);
       await commandLineArguments.init();
       expect(commandLineArguments.options).toEqual({
-        behavior: "foo-behavior"
+        behavior: "foo-behavior",
       });
     });
   });
@@ -98,7 +98,7 @@ describe("options", () => {
         }
         return {
           option: optionStub,
-          parse: parseStub
+          parse: parseStub,
         };
       });
       commandLineArguments = new CommandLineArguments({});
@@ -113,7 +113,7 @@ describe("options", () => {
         }
         return {
           option: optionStub,
-          parse: parseStub
+          parse: parseStub,
         };
       });
       commandLineArguments = new CommandLineArguments({});
@@ -128,7 +128,7 @@ describe("options", () => {
         }
         return {
           option: optionStub,
-          parse: parseStub
+          parse: parseStub,
         };
       });
       commandLineArguments = new CommandLineArguments({});
@@ -147,7 +147,7 @@ describe("options", () => {
         }
         return {
           option: optionStub,
-          parse: parseStub
+          parse: parseStub,
         };
       });
       commandLineArguments = new CommandLineArguments({});
@@ -162,7 +162,7 @@ describe("options", () => {
         const option = {
           name: "foo",
           description: "foo description",
-          type: "string"
+          type: "string",
         };
         optionStub.callsFake((commandName, description) => {
           if (commandName.includes("--foo")) {
@@ -171,7 +171,7 @@ describe("options", () => {
           }
           return {
             option: optionStub,
-            parse: parseStub
+            parse: parseStub,
           };
         });
         commandLineArguments.addCustom(option);
@@ -183,7 +183,7 @@ describe("options", () => {
         const option = {
           name: "foo",
           type: "string",
-          parse: () => {}
+          parse: () => {},
         };
         optionStub.callsFake((commandName, description, parser) => {
           if (commandName.includes("--foo")) {
@@ -191,7 +191,7 @@ describe("options", () => {
           }
           return {
             option: optionStub,
-            parse: parseStub
+            parse: parseStub,
           };
         });
         commandLineArguments.addCustom(option);
@@ -205,7 +205,7 @@ describe("options", () => {
         const option = {
           name: "foo",
           description: "foo description",
-          type: "booleanString"
+          type: "booleanString",
         };
         optionStub.callsFake((commandName, description) => {
           if (commandName.includes("--foo")) {
@@ -214,7 +214,7 @@ describe("options", () => {
           }
           return {
             option: optionStub,
-            parse: parseStub
+            parse: parseStub,
           };
         });
         commandLineArguments.addCustom(option);
@@ -226,7 +226,7 @@ describe("options", () => {
         const option = {
           name: "foo",
           description: "foo description",
-          type: "booleanString"
+          type: "booleanString",
         };
         optionStub.callsFake((commandName, description, parser) => {
           if (commandName.includes("--foo")) {
@@ -234,7 +234,7 @@ describe("options", () => {
           }
           return {
             option: optionStub,
-            parse: parseStub
+            parse: parseStub,
           };
         });
         commandLineArguments.addCustom(option);
@@ -247,7 +247,7 @@ describe("options", () => {
           name: "foo",
           description: "foo description",
           type: "booleanString",
-          parse: val => val
+          parse: (val) => val,
         };
         sandbox.spy(option, "parse");
         optionStub.callsFake((commandName, description, parser) => {
@@ -257,7 +257,7 @@ describe("options", () => {
           }
           return {
             option: optionStub,
-            parse: parseStub
+            parse: parseStub,
           };
         });
         commandLineArguments.addCustom(option);
@@ -271,7 +271,7 @@ describe("options", () => {
         const option = {
           name: "foo",
           description: "foo description",
-          type: "boolean"
+          type: "boolean",
         };
         optionStub.callsFake((commandName, description) => {
           if (commandName.includes("--foo")) {
@@ -280,7 +280,7 @@ describe("options", () => {
           }
           return {
             option: optionStub,
-            parse: parseStub
+            parse: parseStub,
           };
         });
         commandLineArguments.addCustom(option);
@@ -293,7 +293,7 @@ describe("options", () => {
           name: "foo",
           description: "foo description",
           type: "boolean",
-          default: true
+          default: true,
         };
         optionStub.callsFake((commandName, description) => {
           if (commandName.includes("-foo")) {
@@ -302,7 +302,7 @@ describe("options", () => {
           }
           return {
             option: optionStub,
-            parse: parseStub
+            parse: parseStub,
           };
         });
         commandLineArguments.addCustom(option);
@@ -316,7 +316,7 @@ describe("options", () => {
         const option = {
           name: "foo",
           description: "foo description",
-          type: "number"
+          type: "number",
         };
         optionStub.callsFake((commandName, description) => {
           if (commandName.includes("--foo")) {
@@ -325,7 +325,7 @@ describe("options", () => {
           }
           return {
             option: optionStub,
-            parse: parseStub
+            parse: parseStub,
           };
         });
         commandLineArguments.addCustom(option);
@@ -337,7 +337,7 @@ describe("options", () => {
         const option = {
           name: "foo",
           description: "foo description",
-          type: "number"
+          type: "number",
         };
         optionStub.callsFake((commandName, description, parser) => {
           if (commandName.includes("--foo")) {
@@ -345,7 +345,7 @@ describe("options", () => {
           }
           return {
             option: optionStub,
-            parse: parseStub
+            parse: parseStub,
           };
         });
         commandLineArguments.addCustom(option);
@@ -358,7 +358,7 @@ describe("options", () => {
           name: "foo",
           description: "foo description",
           type: "number",
-          parse: val => val
+          parse: (val) => val,
         };
         sandbox.spy(option, "parse");
         optionStub.callsFake((commandName, description, parser) => {
@@ -368,7 +368,7 @@ describe("options", () => {
           }
           return {
             option: optionStub,
-            parse: parseStub
+            parse: parseStub,
           };
         });
         commandLineArguments.addCustom(option);

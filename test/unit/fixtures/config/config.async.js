@@ -8,7 +8,7 @@ module.exports = async () => {
     plugins: ["foo"],
     options: {
       log,
-      delay: 1000
-    }
+      delay: 1000,
+    },
   };
 };

@@ -22,7 +22,7 @@ class Mock {
     this._stubs = {
       init: this._sandbox.stub(),
       addCustom: this._sandbox.stub(),
-      options: {}
+      options: {},
     };
 
     CommandLineArguments.mockImplementation(() => this._stubs);
@@ -31,7 +31,7 @@ class Mock {
   get stubs() {
     return {
       Constructor: CommandLineArguments,
-      instance: this._stubs
+      instance: this._stubs,
     };
   }
 

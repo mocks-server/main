@@ -33,7 +33,7 @@ class Behavior {
   }
 
   getRequestMatchingFixture(req) {
-    return this._fixtures.collection.find(fixture => fixture.requestMatch(req));
+    return this._fixtures.collection.find((fixture) => fixture.requestMatch(req));
   }
 
   get isBehaviorInstance() {

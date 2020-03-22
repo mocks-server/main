@@ -26,8 +26,8 @@ class Mock {
       checkValidOptionName: this._sandbox.stub(),
       options: {
         log: "foo-log-level",
-        behavior: "foo-behavior"
-      }
+        behavior: "foo-behavior",
+      },
     };
 
     Options.mockImplementation(() => this._stubs);
@@ -36,7 +36,7 @@ class Mock {
   get stubs() {
     return {
       Constructor: Options,
-      instance: this._stubs
+      instance: this._stubs,
     };
   }
 

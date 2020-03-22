@@ -24,7 +24,7 @@ class Mock {
       current: {},
       init: this._sandbox.stub().resolves(),
       start: this._sandbox.stub().resolves(),
-      process: this._sandbox.stub().resolves()
+      process: this._sandbox.stub().resolves(),
     };
 
     Behaviors.mockImplementation(() => this._stubs);
@@ -33,7 +33,7 @@ class Mock {
   get stubs() {
     return {
       Constructor: Behaviors,
-      instance: this._stubs
+      instance: this._stubs,
     };
   }
 

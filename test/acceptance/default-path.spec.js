@@ -19,7 +19,7 @@ describe("with no path defined", () => {
 
   beforeAll(async () => {
     cli = new CliRunner([binaryPath], {
-      cwd: cwdPath
+      cwd: cwdPath,
     });
     await wait();
   });
@@ -31,7 +31,7 @@ describe("with no path defined", () => {
   it("should start server and return 404 to all requests", async () => {
     const usersResponse = await request("/api/users", {
       resolveWithFullResponse: true,
-      simple: false
+      simple: false,
     });
     expect(usersResponse.statusCode).toEqual(404);
   });

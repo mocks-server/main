@@ -15,7 +15,7 @@ const { startCore, stopCore, request, fixturesFolder, wait, TimeCounter } = requ
 
 describe("plugins", () => {
   const FOO_CUSTOM_RESPONSE = {
-    foo: "foo"
+    foo: "foo",
   };
   let core;
   let customRouter;
@@ -50,7 +50,7 @@ describe("plugins", () => {
     describe(description, () => {
       beforeAll(async () => {
         core = await startCore("web-tutorial", {
-          plugins: [pluginConstructor]
+          plugins: [pluginConstructor],
         });
       });
 
@@ -64,7 +64,7 @@ describe("plugins", () => {
           const users = await request("/api/users");
           expect(users).toEqual([
             { id: 1, name: "John Doe" },
-            { id: 2, name: "Jane Doe" }
+            { id: 2, name: "Jane Doe" },
           ]);
         });
 
@@ -113,7 +113,7 @@ describe("plugins", () => {
 
         it("should inform plugin when settings are changed", async () => {
           expect(changeSettingsSpy.getCall(1).args[0]).toEqual({
-            path: fixturesFolder("files-modification")
+            path: fixturesFolder("files-modification"),
           });
         });
 
@@ -139,12 +139,12 @@ describe("plugins", () => {
         it("should start server when all initialization is finished", async () => {
           const timeCounter = new TimeCounter();
           core = await startCore("web-tutorial", {
-            plugins: [pluginConstructor]
+            plugins: [pluginConstructor],
           });
           const users = await request("/api/users");
           expect(users).toEqual([
             { id: 1, name: "John Doe" },
-            { id: 2, name: "Jane Doe" }
+            { id: 2, name: "Jane Doe" },
           ]);
           timeCounter.stop();
           expect(timeCounter.total).toBeGreaterThan(3000);
@@ -154,11 +154,11 @@ describe("plugins", () => {
   };
 
   testPlugin("created as an object", {
-    register: coreInstance => {
+    register: (coreInstance) => {
       coreInstance.addCustomRouter("/foo-path", customRouter);
       registerSpy(coreInstance);
     },
-    init: coreInstance => {
+    init: (coreInstance) => {
       initSpy(
         coreInstance,
         coreInstance.settings.get("behaviors"),
@@ -170,9 +170,9 @@ describe("plugins", () => {
       coreInstance.onLoadMocks(mocksLoadedSpy);
       coreInstance.onLoadFiles(filesLoadedSpy);
     },
-    start: coreInstance => {
+    start: (coreInstance) => {
       startSpy(coreInstance);
-    }
+    },
   });
 
   testAsyncPlugin("created as an object", {
@@ -182,7 +182,7 @@ describe("plugins", () => {
     },
     start: () => {
       return wait(1000);
-    }
+    },
   });
 
   testPlugin(
@@ -251,11 +251,11 @@ describe("plugins", () => {
     }
   );
 
-  testPlugin("created as a function", coreInstance => {
+  testPlugin("created as a function", (coreInstance) => {
     coreInstance.addCustomRouter("/foo-path", customRouter);
     registerSpy(coreInstance);
     return {
-      init: coreIns => {
+      init: (coreIns) => {
         initSpy(
           coreIns,
           coreIns.settings.get("behaviors"),
@@ -267,13 +267,13 @@ describe("plugins", () => {
         coreIns.onLoadMocks(mocksLoadedSpy);
         coreIns.onLoadFiles(filesLoadedSpy);
       },
-      start: coreIns => {
+      start: (coreIns) => {
         startSpy(coreIns);
-      }
+      },
     };
   });
 
-  testAsyncPlugin("created as a function", coreInstance => {
+  testAsyncPlugin("created as a function", (coreInstance) => {
     coreInstance.addCustomRouter("/foo-path", customRouter);
     registerSpy(coreInstance);
     return {
@@ -282,17 +282,17 @@ describe("plugins", () => {
       },
       start: async () => {
         await wait(1000);
-      }
+      },
     };
   });
 
   testPlugin("created as a function returning register property", () => {
     return {
-      register: coreInstance => {
+      register: (coreInstance) => {
         coreInstance.addCustomRouter("/foo-path", customRouter);
         registerSpy(coreInstance);
       },
-      init: coreInstance => {
+      init: (coreInstance) => {
         initSpy(
           coreInstance,
           coreInstance.settings.get("behaviors"),
@@ -304,9 +304,9 @@ describe("plugins", () => {
         coreInstance.onLoadMocks(mocksLoadedSpy);
         coreInstance.onLoadFiles(filesLoadedSpy);
       },
-      start: coreInstance => {
+      start: (coreInstance) => {
         startSpy(coreInstance);
-      }
+      },
     };
   });
 });

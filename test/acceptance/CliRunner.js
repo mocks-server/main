@@ -24,7 +24,7 @@ module.exports = class CliRunner {
     this._cwd = options.cwd || process.cwd();
     this._logs = [];
 
-    this._exitPromise = new Promise(resolve => {
+    this._exitPromise = new Promise((resolve) => {
       this._resolveExitPromise = resolve;
     });
 
@@ -36,7 +36,7 @@ module.exports = class CliRunner {
   getCommandToExecute(command) {
     return {
       name: command[0],
-      params: command.splice(1, command.length - 1)
+      params: command.splice(1, command.length - 1),
     };
   }
 
@@ -52,7 +52,7 @@ module.exports = class CliRunner {
       throw new Error("Cli is already running");
     } else {
       this._cliProcess = childProcess.spawn(this._command.name, this._command.params, {
-        cwd: this._cwd
+        cwd: this._cwd,
       });
       this._cliProcess.stdin.setEncoding(ENCODING_TYPE);
 
@@ -62,7 +62,7 @@ module.exports = class CliRunner {
       this._cliProcess.stdout.on("data", this.logData);
       this._cliProcess.stderr.on("data", this.logData);
 
-      this._cliProcess.on("close", code => {
+      this._cliProcess.on("close", (code) => {
         this._exitCode = code;
         this._resolveExitPromise(true);
       });

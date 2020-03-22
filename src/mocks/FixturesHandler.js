@@ -26,13 +26,13 @@ class FixturesHandler {
   }
 
   _getHandler(fixture) {
-    return this._handlers.find(handler => handler.recognize(fixture));
+    return this._handlers.find((handler) => handler.recognize(fixture));
   }
 
   getCollection(fixtures) {
     const addedFixtures = [];
     return compact(
-      fixtures.map(fixture => {
+      fixtures.map((fixture) => {
         if (fixture && fixture.isFixtureHandler) {
           return fixture;
         }
@@ -40,7 +40,7 @@ class FixturesHandler {
         if (Handler) {
           tracer.debug(`Creating fixture with handler ${Handler.displayName}`);
           const newFixture = new Handler(fixture, this._core);
-          if (addedFixtures.find(existingFixture => existingFixture.id === newFixture.id)) {
+          if (addedFixtures.find((existingFixture) => existingFixture.id === newFixture.id)) {
             return null;
           }
           newFixture.isFixtureHandler = true;

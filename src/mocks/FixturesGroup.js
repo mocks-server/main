@@ -22,9 +22,9 @@ class FixturesGroup {
   _convertStringReferences(allFixtures) {
     if (allFixtures) {
       this._fixtures = compact(
-        this._fixtures.map(fixture => {
+        this._fixtures.map((fixture) => {
           if (typeof fixture === "string") {
-            const realFixture = allFixtures.collection.find(existantFixture => {
+            const realFixture = allFixtures.collection.find((existantFixture) => {
               return existantFixture.id === fixture;
             });
             if (!realFixture) {

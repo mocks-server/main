@@ -37,8 +37,8 @@ describe("FixturesHandler", () => {
       expect(
         fixturesHandler.getCollection([
           {
-            foo: "foo"
-          }
+            foo: "foo",
+          },
         ]).length
       ).toEqual(0);
     });
@@ -51,10 +51,10 @@ describe("FixturesHandler", () => {
           response: {
             status: 200,
             body: {
-              fooProperty: "foo"
-            }
-          }
-        }
+              fooProperty: "foo",
+            },
+          },
+        },
       ]);
       expect(collection.length).toEqual(1);
     });
@@ -67,9 +67,9 @@ describe("FixturesHandler", () => {
           response: {
             status: 200,
             body: {
-              fooProperty: "foo"
-            }
-          }
+              fooProperty: "foo",
+            },
+          },
         },
         {
           url: "/api/foo/foo-uri-2",
@@ -77,10 +77,10 @@ describe("FixturesHandler", () => {
           response: {
             status: 200,
             body: {
-              fooProperty: "foo"
-            }
-          }
-        }
+              fooProperty: "foo",
+            },
+          },
+        },
       ]);
       const secondCollection = fixturesHandler.getCollection(collection);
       expect(secondCollection.length).toEqual(2);
@@ -94,9 +94,9 @@ describe("FixturesHandler", () => {
           response: {
             status: 200,
             body: {
-              fooProperty: "foo"
-            }
-          }
+              fooProperty: "foo",
+            },
+          },
         },
         {
           url: "/api/foo/foo-uri",
@@ -104,10 +104,10 @@ describe("FixturesHandler", () => {
           response: {
             status: 200,
             body: {
-              fooProperty: "foo"
-            }
-          }
-        }
+              fooProperty: "foo",
+            },
+          },
+        },
       ]);
       expect(collection.length).toEqual(1);
     });
@@ -120,10 +120,10 @@ describe("FixturesHandler", () => {
           response: {
             status: 200,
             body: {
-              fooProperty: "foo"
-            }
-          }
-        }
+              fooProperty: "foo",
+            },
+          },
+        },
       ]);
       expect(tracer.debug.getCall(0).args[0]).toEqual(
         "Creating fixture with handler mocks-server-fixture"
@@ -156,7 +156,7 @@ describe("FixturesHandler", () => {
       fixturesHandler.addHandler(CustomParser);
       const collection = fixturesHandler.getCollection([
         {
-          isCustom: true
+          isCustom: true,
         },
         {
           url: "/api/foo/foo-uri",
@@ -164,10 +164,10 @@ describe("FixturesHandler", () => {
           response: {
             status: 200,
             body: {
-              fooProperty: "foo"
-            }
-          }
-        }
+              fooProperty: "foo",
+            },
+          },
+        },
       ]);
       expect(collection.length).toEqual(2);
       expect(collection[0].id).toEqual("foo-id");

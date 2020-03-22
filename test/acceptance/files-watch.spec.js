@@ -21,7 +21,7 @@ describe("files watcher", () => {
     fsExtra.removeSync(fixturesFolder("files-watch"));
     fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
     cli = new CliRunner([binaryPath, "--path=files-watch"], {
-      cwd: cwdPath
+      cwd: cwdPath,
     });
     await wait();
   });
@@ -35,7 +35,7 @@ describe("files watcher", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -61,7 +61,7 @@ describe("files watcher", () => {
         const users = await request("/api/users");
         expect(users).toEqual([
           { id: 1, name: "John Doe modified" },
-          { id: 2, name: "Jane Doe modified" }
+          { id: 2, name: "Jane Doe modified" },
         ]);
       });
 
@@ -80,7 +80,7 @@ describe("files watcher", () => {
       beforeAll(async () => {
         await cli.kill();
         cli = new CliRunner([binaryPath, "--path=files-watch", "--behavior=user2"], {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
       });
@@ -89,7 +89,7 @@ describe("files watcher", () => {
         const users = await request("/api/users");
         expect(users).toEqual([
           { id: 1, name: "John Doe modified" },
-          { id: 2, name: "Jane Doe modified" }
+          { id: 2, name: "Jane Doe modified" },
         ]);
       });
 
@@ -108,7 +108,7 @@ describe("files watcher", () => {
       beforeAll(async () => {
         await cli.kill();
         cli = new CliRunner([binaryPath, "--path=files-watch", "--behavior=dynamic"], {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
       });
@@ -117,7 +117,7 @@ describe("files watcher", () => {
         const users = await request("/api/users");
         expect(users).toEqual([
           { id: 1, name: "John Doe modified" },
-          { id: 2, name: "Jane Doe modified" }
+          { id: 2, name: "Jane Doe modified" },
         ]);
       });
 
@@ -136,7 +136,7 @@ describe("files watcher", () => {
       beforeAll(async () => {
         await cli.kill();
         cli = new CliRunner([binaryPath, "--path=files-watch", "--behavior=newOne"], {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
       });
@@ -145,7 +145,7 @@ describe("files watcher", () => {
         const users = await request("/api/new-users");
         expect(users).toEqual([
           { id: 1, name: "John Doe new" },
-          { id: 2, name: "Jane Doe new" }
+          { id: 2, name: "Jane Doe new" },
         ]);
       });
 

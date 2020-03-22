@@ -26,9 +26,9 @@ describe("FixturesGroup", () => {
       response: {
         status: 200,
         body: {
-          fooProperty: "foo"
-        }
-      }
+          fooProperty: "foo",
+        },
+      },
     },
     {
       id: "fixture-2",
@@ -37,10 +37,10 @@ describe("FixturesGroup", () => {
       response: {
         status: 422,
         body: {
-          fooProperty2: "foo2"
-        }
-      }
-    }
+          fooProperty2: "foo2",
+        },
+      },
+    },
   ];
   let fixturesHandler;
   let sandbox;
@@ -68,9 +68,9 @@ describe("FixturesGroup", () => {
           response: {
             status: 422,
             body: {
-              fooProperty2: "foo2"
-            }
-          }
+              fooProperty2: "foo2",
+            },
+          },
         },
         {
           id: "fixture-1",
@@ -79,10 +79,10 @@ describe("FixturesGroup", () => {
           response: {
             status: 200,
             body: {
-              fooProperty: "foo"
-            }
-          }
-        }
+              fooProperty: "foo",
+            },
+          },
+        },
       ]);
     });
 
@@ -105,13 +105,13 @@ describe("FixturesGroup", () => {
           response: {
             status: 200,
             body: {
-              fooProperty: "foo"
-            }
-          }
-        }
+              fooProperty: "foo",
+            },
+          },
+        },
       ]);
       await fixturesGroup.init(fixturesHandler, {
-        collection: fooFixtures
+        collection: fooFixtures,
       });
       expect(fixturesGroup.collection.length).toEqual(3);
     });
@@ -128,13 +128,13 @@ describe("FixturesGroup", () => {
           response: {
             status: 200,
             body: {
-              fooProperty: "foo"
-            }
-          }
-        }
+              fooProperty: "foo",
+            },
+          },
+        },
       ]);
       await fixturesGroup.init(fixturesHandler, {
-        collection: fooFixtures
+        collection: fooFixtures,
       });
       expect(
         tracer.debug.calledWith('Fixture with id "fixture-foo" was not found and will be ignored')

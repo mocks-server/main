@@ -21,7 +21,7 @@ describe("files watcher disabled using command line argument", () => {
     fsExtra.removeSync(fixturesFolder("files-watch"));
     fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
     cli = new CliRunner([binaryPath, "--behaviors=files-watch", "--watch=false"], {
-      cwd: cwdPath
+      cwd: cwdPath,
     });
     await wait();
   });
@@ -35,7 +35,7 @@ describe("files watcher disabled using command line argument", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -60,7 +60,7 @@ describe("files watcher disabled using command line argument", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 

@@ -48,28 +48,28 @@ describe("Orchestrator", () => {
   describe("when settings change", () => {
     it("should restart the server when port changes", async () => {
       coreInstance._eventEmitter.on.getCall(0).args[1]({
-        port: 4540
+        port: 4540,
       });
       expect(serverMocks.stubs.instance.restart.callCount).toEqual(1);
     });
 
     it("should restart the server when host changes", async () => {
       coreInstance._eventEmitter.on.getCall(0).args[1]({
-        host: "foo-new-host"
+        host: "foo-new-host",
       });
       expect(serverMocks.stubs.instance.restart.callCount).toEqual(1);
     });
 
     it("should do nothing when no port nor host are changed", async () => {
       coreInstance._eventEmitter.on.getCall(0).args[1]({
-        foo: true
+        foo: true,
       });
       expect(serverMocks.stubs.instance.restart.callCount).toEqual(0);
     });
 
     it("should set new behavior as current one if behavior has changed", async () => {
       coreInstance._eventEmitter.on.getCall(0).args[1]({
-        behavior: "behavior2"
+        behavior: "behavior2",
       });
       expect(mocksMock.stubs.instance.behaviors.current).toEqual("behavior2");
     });

@@ -18,7 +18,7 @@ describe("port command line argument", () => {
 
   beforeAll(async () => {
     cli = new CliRunner([binaryPath, "--behaviors=web-tutorial", "--port=3005"], {
-      cwd: cwdPath
+      cwd: cwdPath,
     });
     await wait();
   });
@@ -29,11 +29,11 @@ describe("port command line argument", () => {
 
   it("should set server port", async () => {
     const users = await request("/api/users", {
-      port: 3005
+      port: 3005,
     });
     expect(users).toEqual([
       { id: 1, name: "John Doe" },
-      { id: 2, name: "Jane Doe" }
+      { id: 2, name: "Jane Doe" },
     ]);
   });
 });

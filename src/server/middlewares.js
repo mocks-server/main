@@ -61,5 +61,5 @@ module.exports = {
   enableCors,
   addCommonHeaders,
   notFound,
-  errorHandler
+  errorHandler,
 };

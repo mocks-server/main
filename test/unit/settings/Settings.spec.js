@@ -31,7 +31,7 @@ describe("Settings", () => {
     sandbox = sinon.createSandbox();
     optionsMocks = new OptionsMocks();
     optionsInstance = optionsMocks.stubs.instance;
-    optionsInstance.checkValidOptionName.callsFake(name => name);
+    optionsInstance.checkValidOptionName.callsFake((name) => name);
     coreMocks = new CoreMocks();
     configMocks = new ConfigMocks();
     coreInstance = coreMocks.stubs.instance;
@@ -90,7 +90,7 @@ describe("Settings", () => {
       settings.set("foo", "foo-new-value");
       expect(
         coreInstance._eventEmitter.emit.calledWith("change:settings", {
-          foo: "foo-new-value"
+          foo: "foo-new-value",
         })
       ).toEqual(true);
     });
@@ -117,7 +117,7 @@ describe("Settings", () => {
     it("should return all current settings", () => {
       expect(settings.all).toEqual({
         log: "foo-log-level",
-        behavior: "foo-behavior"
+        behavior: "foo-behavior",
       });
     });
 
@@ -130,7 +130,7 @@ describe("Settings", () => {
   describe("addCustom method", () => {
     it("should pass custom option to options Class", () => {
       const fooOption = {
-        foo: "foo"
+        foo: "foo",
       };
       settings.addCustom(fooOption);
       expect(optionsInstance.addCustom.calledWith(fooOption)).toEqual(true);

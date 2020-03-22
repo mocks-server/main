@@ -13,7 +13,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const winston = require("winston");
 
-const format = winston.format.printf(info => {
+const format = winston.format.printf((info) => {
   return `${info.timestamp} [Mocks ${info.level}] ${info.message}`;
 });
 
@@ -22,15 +22,15 @@ const transports = {
     format: winston.format.combine(
       winston.format.colorize(),
       winston.format.timestamp({
-        format: "HH:mm:ss:SS"
+        format: "HH:mm:ss:SS",
       }),
       format
-    )
-  })
+    ),
+  }),
 };
 
 const logger = winston.createLogger({
-  transports: [transports.console]
+  transports: [transports.console],
 });
 
 logger.silly = logger.silly.bind(logger);
@@ -63,5 +63,5 @@ module.exports = {
   warn: logger.warn,
   error: logger.error,
   set,
-  deprecationWarn
+  deprecationWarn,
 };

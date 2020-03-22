@@ -25,9 +25,9 @@ class Fixtures {
   }
 
   add(fixtures) {
-    fixtures.forEach(fixture => {
+    fixtures.forEach((fixture) => {
       const existingFixture = this.collection.find(
-        allFixturesElement => fixture.id === allFixturesElement.id
+        (allFixturesElement) => fixture.id === allFixturesElement.id
       );
       if (!existingFixture) {
         tracer.verbose("Added fixture that was not registered in fixtures collection");

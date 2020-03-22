@@ -21,7 +21,7 @@ describe("config method", () => {
 
   it("should set baseUrl in admin-api-client tagged providers", () => {
     config({
-      baseUrl: BASE_URL
+      baseUrl: BASE_URL,
     });
     expect(providers.getByTag(TAG).config.getCall(0).args[0].baseUrl).toEqual(
       `${BASE_URL}${DEFAULT_BASE_PATH}`
@@ -31,7 +31,7 @@ describe("config method", () => {
   it("should set apiPath in admin-api-client tagged providers", () => {
     config({
       baseUrl: BASE_URL,
-      apiPath: API_PATH
+      apiPath: API_PATH,
     });
     expect(providers.getByTag(TAG).config.getCall(1).args[0].baseUrl).toEqual(
       `${BASE_URL}${API_PATH}`

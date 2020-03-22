@@ -5,7 +5,7 @@ describe("behaviors and fixtures", () => {
     CURRENT_BEHAVIOR: "current-behavior-name",
     CURRENT_FIXTURE: "current-fixture-id",
     SET_BEHAVIOR_BASE: "set-behavior-base",
-    SET_BEHAVIOR_USER2: "set-behavior-user2"
+    SET_BEHAVIOR_USER2: "set-behavior-user2",
   };
 
   before(() => {

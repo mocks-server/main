@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const format = value => {
+const format = (value) => {
   return typeof value === "boolean" ? value.toString() : value;
 };
 
@@ -10,7 +10,7 @@ const SettingsView = ({ settings }) => {
     <div className="content">
       <p className="content__title">Current Settings</p>
       <ul>
-        {Object.keys(settings).map(key => {
+        {Object.keys(settings).map((key) => {
           return (
             <li key={key}>
               <b>{key}</b>: <span data-testid={`settings-${key}`}>{format(settings[key])}</span>
@@ -23,7 +23,7 @@ const SettingsView = ({ settings }) => {
 };
 
 SettingsView.propTypes = {
-  settings: PropTypes.object
+  settings: PropTypes.object,
 };
 
 export default SettingsView;

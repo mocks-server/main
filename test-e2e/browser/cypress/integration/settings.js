@@ -1,7 +1,7 @@
 describe("Settings section", () => {
   const SELECTORS = {
     PATH: "settings-path",
-    DELAY: "settings-delay"
+    DELAY: "settings-delay",
   };
 
   before(() => {

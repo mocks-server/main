@@ -7,7 +7,7 @@ import {
   behaviorsModel,
   fixtures,
   fixture,
-  fixturesModel
+  fixturesModel,
 } from "../index";
 
 describe("Exported methods", () => {

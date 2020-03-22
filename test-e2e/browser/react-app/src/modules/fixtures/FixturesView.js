@@ -6,7 +6,7 @@ const FixturesView = ({ fixtures }) => {
     <div className="content">
       <p className="content__title">Fixtures</p>
       <ul>
-        {fixtures.map(fixture => {
+        {fixtures.map((fixture) => {
           return (
             <li
               key={fixture.id}
@@ -23,7 +23,7 @@ const FixturesView = ({ fixtures }) => {
 };
 
 FixturesView.propTypes = {
-  fixtures: PropTypes.array
+  fixtures: PropTypes.array,
 };
 
 export default FixturesView;

@@ -5,13 +5,13 @@ import { settings } from "@mocks-server/admin-api-client-data-provider";
 const CurrentBehaviorView = ({ behavior, fixture }) => {
   const setBehaviorBase = () => {
     settings.update({
-      behavior: "base"
+      behavior: "base",
     });
   };
 
   const setBehaviorUser2 = () => {
     settings.update({
-      behavior: "user2"
+      behavior: "user2",
     });
   };
 
@@ -37,7 +37,7 @@ const CurrentBehaviorView = ({ behavior, fixture }) => {
 
 CurrentBehaviorView.propTypes = {
   behavior: PropTypes.object,
-  fixture: PropTypes.object
+  fixture: PropTypes.object,
 };
 
 export default CurrentBehaviorView;

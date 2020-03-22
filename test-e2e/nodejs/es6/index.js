@@ -4,7 +4,7 @@ const {
   behavior,
   fixtures,
   fixture,
-  settings
+  settings,
 } = require("../../../dist/index.cjs");
 
 const readAbout = () => {
@@ -15,7 +15,7 @@ const readBehaviors = () => {
   return behaviors.read();
 };
 
-const readBehavior = name => {
+const readBehavior = (name) => {
   return behavior(name).read();
 };
 
@@ -23,7 +23,7 @@ const readFixtures = () => {
   return fixtures.read();
 };
 
-const readFixture = id => {
+const readFixture = (id) => {
   return fixture(id).read();
 };
 
@@ -31,7 +31,7 @@ const readSettings = () => {
   return settings.read();
 };
 
-const updateSettings = newSettings => {
+const updateSettings = (newSettings) => {
   return settings.update(newSettings);
 };
 
@@ -42,5 +42,5 @@ module.exports = {
   readFixtures,
   readFixture,
   readSettings,
-  updateSettings
+  updateSettings,
 };

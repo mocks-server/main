@@ -6,7 +6,7 @@ const BehaviorsView = ({ behaviors }) => {
     <div className="content">
       <p className="content__title">Behaviors</p>
       <ul>
-        {behaviors.map(behavior => {
+        {behaviors.map((behavior) => {
           return (
             <li
               key={behavior.name}
@@ -23,7 +23,7 @@ const BehaviorsView = ({ behaviors }) => {
 };
 
 BehaviorsView.propTypes = {
-  behaviors: PropTypes.array
+  behaviors: PropTypes.array,
 };
 
 export default BehaviorsView;

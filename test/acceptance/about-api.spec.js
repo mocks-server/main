@@ -25,7 +25,7 @@ describe("about api", () => {
     it("should return current version", async () => {
       const response = await request("/admin/about");
       expect(response).toEqual({
-        version
+        version,
       });
     });
   });

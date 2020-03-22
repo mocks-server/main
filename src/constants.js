@@ -12,5 +12,5 @@ module.exports = {
   ADMIN_API_PATH_OPTION: "adminApiPath",
   ADMIN_API_DEPRECATED_PATHS_OPTION: "adminApiDeprecatedPaths",
   PLUGIN_NAME: "plugin-admin-api",
-  DEPRECATED_API_PATH: "/mocks"
+  DEPRECATED_API_PATH: "/mocks",
 };

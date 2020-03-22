@@ -32,7 +32,7 @@ describe("Fixtures", () => {
     nextStub = sandbox.stub();
     resMock = {
       status: sandbox.stub(),
-      send: sandbox.stub()
+      send: sandbox.stub(),
     };
     libMocks = new LibMocks();
     coreMock = new CoreMocks();
@@ -71,8 +71,8 @@ describe("Fixtures", () => {
         {
           body: {
             log: "foo",
-            delay: 4000
-          }
+            delay: 4000,
+          },
         },
         resMock,
         nextStub
@@ -92,8 +92,8 @@ describe("Fixtures", () => {
         {
           body: {
             log: "foo",
-            delay: 4000
-          }
+            delay: 4000,
+          },
         },
         resMock,
         nextStub
@@ -110,8 +110,8 @@ describe("Fixtures", () => {
         {
           body: {
             log: "foo",
-            delay: 4000
-          }
+            delay: 4000,
+          },
         },
         resMock,
         nextStub

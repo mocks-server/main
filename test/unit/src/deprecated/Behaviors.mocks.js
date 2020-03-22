@@ -23,7 +23,7 @@ const Mock = class Mock {
       getCurrent: this._sandbox.stub(),
       putCurrent: this._sandbox.stub(),
       getCollection: this._sandbox.stub(),
-      router: "foo-behaviors-router"
+      router: "foo-behaviors-router",
     };
 
     Behaviors.mockImplementation(() => this._stubs);
@@ -32,7 +32,7 @@ const Mock = class Mock {
   get stubs() {
     return {
       Constructor: Behaviors,
-      instance: this._stubs
+      instance: this._stubs,
     };
   }
 

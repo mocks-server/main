@@ -28,28 +28,28 @@ describe("behaviors api", () => {
           extendedFrom: null,
           fixtures: ["12e5f429b92f67d4ec2bf90940ec1135", "0dbc954f9d9c9f3f7996c60e63384c9e"],
           name: "standard",
-          id: "standard"
+          id: "standard",
         },
         {
           extendedFrom: "standard",
           fixtures: [
             "bd5292849ee3fda9fa8383837bb908e7",
             "12e5f429b92f67d4ec2bf90940ec1135",
-            "0dbc954f9d9c9f3f7996c60e63384c9e"
+            "0dbc954f9d9c9f3f7996c60e63384c9e",
           ],
           name: "user2",
-          id: "user2"
+          id: "user2",
         },
         {
           extendedFrom: "standard",
           fixtures: [
             "e82af88532da929b0592925899eb056e",
             "12e5f429b92f67d4ec2bf90940ec1135",
-            "0dbc954f9d9c9f3f7996c60e63384c9e"
+            "0dbc954f9d9c9f3f7996c60e63384c9e",
           ],
           name: "dynamic",
-          id: "dynamic"
-        }
+          id: "dynamic",
+        },
       ]);
     });
   });
@@ -61,7 +61,7 @@ describe("behaviors api", () => {
         extendedFrom: null,
         fixtures: ["12e5f429b92f67d4ec2bf90940ec1135", "0dbc954f9d9c9f3f7996c60e63384c9e"],
         name: "standard",
-        id: "standard"
+        id: "standard",
       });
     });
   });
@@ -74,10 +74,10 @@ describe("behaviors api", () => {
         fixtures: [
           "e82af88532da929b0592925899eb056e",
           "12e5f429b92f67d4ec2bf90940ec1135",
-          "0dbc954f9d9c9f3f7996c60e63384c9e"
+          "0dbc954f9d9c9f3f7996c60e63384c9e",
         ],
         name: "dynamic",
-        id: "dynamic"
+        id: "dynamic",
       });
     });
   });
@@ -86,7 +86,7 @@ describe("behaviors api", () => {
     it("should return a not found error", async () => {
       const response = await request("/admin/behaviors/foo", {
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       });
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual('Behavior with id "foo" was not found');

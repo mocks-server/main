@@ -27,7 +27,7 @@ class CoreMock {
         getValidOptionName: this._sandbox.stub(),
         get: this._sandbox.stub(),
         set: this._sandbox.stub(),
-        all: {}
+        all: {},
       },
       tracer: {
         silly: this._sandbox.stub(),
@@ -36,7 +36,7 @@ class CoreMock {
         info: this._sandbox.stub(),
         warn: this._sandbox.stub(),
         deprecationWarn: this._sandbox.stub(),
-        error: this._sandbox.stub()
+        error: this._sandbox.stub(),
       },
       onChangeSettings: this._sandbox.stub(),
       onLoadMocks: this._sandbox.stub(),
@@ -47,14 +47,14 @@ class CoreMock {
       removeRouter: this._sandbox.stub(),
       behaviors: {
         currentFromCollection: "foo-current",
-        collection: "foo-behaviors-collection"
+        collection: "foo-behaviors-collection",
       },
       serverError: null,
       _eventEmitter: {
         on: this._sandbox.stub(),
         removeListener: this._sandbox.stub(),
-        emit: this._sandbox.stub()
-      }
+        emit: this._sandbox.stub(),
+      },
     };
 
     Core.mockImplementation(() => this._stubs);
@@ -63,7 +63,7 @@ class CoreMock {
   get stubs() {
     return {
       Constructor: Core,
-      instance: this._stubs
+      instance: this._stubs,
     };
   }
 

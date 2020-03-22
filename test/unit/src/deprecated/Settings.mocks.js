@@ -22,7 +22,7 @@ const Mock = class Mock {
     this._stubs = {
       get: this._sandbox.stub(),
       put: this._sandbox.stub(),
-      router: "foo-settings-router"
+      router: "foo-settings-router",
     };
 
     Settings.mockImplementation(() => this._stubs);
@@ -31,7 +31,7 @@ const Mock = class Mock {
   get stubs() {
     return {
       Constructor: Settings,
-      instance: this._stubs
+      instance: this._stubs,
     };
   }
 

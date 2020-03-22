@@ -21,8 +21,8 @@ class Mock {
       express: {
         use: this._sandbox.stub(),
         patch: this._sandbox.stub(),
-        get: this._sandbox.stub()
-      }
+        get: this._sandbox.stub(),
+      },
     };
 
     this._sandbox.stub(express, "Router").returns(this._stubs.express);

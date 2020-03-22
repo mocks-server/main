@@ -29,7 +29,7 @@ class AboutApi {
     this._tracer.verbose(`${PLUGIN_NAME}: Sending about | ${req.id}`);
     res.status(200);
     res.send({
-      version
+      version,
     });
   }
 

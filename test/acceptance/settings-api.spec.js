@@ -32,7 +32,7 @@ describe("settings api", () => {
         watch: false,
         log: "silly",
         adminApiPath: "/admin",
-        adminApiDeprecatedPaths: true
+        adminApiDeprecatedPaths: true,
       });
     });
   });
@@ -47,11 +47,11 @@ describe("settings api", () => {
             foo: "foo-value",
             anotherFoo: 45,
             third: {
-              foo: "foo"
-            }
+              foo: "foo",
+            },
           },
           resolveWithFullResponse: true,
-          simple: false
+          simple: false,
         });
         expect(settingsResponse.statusCode).toEqual(400);
         expect(settingsResponse.body.message).toEqual(
@@ -65,10 +65,10 @@ describe("settings api", () => {
           method: "PATCH",
           body: {
             foo: "foo-value",
-            delay: 1000
+            delay: 1000,
           },
           resolveWithFullResponse: true,
-          simple: false
+          simple: false,
         });
         const settingsResponse = await request("/admin/settings");
         expect(settingsUpdateResponse.statusCode).toEqual(400);
@@ -90,8 +90,8 @@ describe("settings api", () => {
         await request("/admin/settings", {
           method: "PATCH",
           body: {
-            delay: 2000
-          }
+            delay: 2000,
+          },
         });
         await request("/api/users");
         timeCounter.stop();
@@ -103,8 +103,8 @@ describe("settings api", () => {
         await request("/admin/settings", {
           method: "PATCH",
           body: {
-            delay: 0
-          }
+            delay: 0,
+          },
         });
         await request("/api/users");
         timeCounter.stop();
@@ -130,8 +130,8 @@ describe("settings api", () => {
           await request("/admin/settings", {
             method: "PATCH",
             body: {
-              behavior: "user2"
-            }
+              behavior: "user2",
+            },
           });
         });
 
@@ -157,8 +157,8 @@ describe("settings api", () => {
         await request("/admin/settings", {
           method: "PATCH",
           body: {
-            path: fixturesFolder("files-modification")
-          }
+            path: fixturesFolder("files-modification"),
+          },
         });
         await wait(1000);
       });
@@ -167,8 +167,8 @@ describe("settings api", () => {
         await request("/admin/settings", {
           method: "PATCH",
           body: {
-            path: fixturesFolder("web-tutorial")
-          }
+            path: fixturesFolder("web-tutorial"),
+          },
         });
         await wait(1000);
       });
@@ -182,7 +182,7 @@ describe("settings api", () => {
         const users = await request("/api/users");
         expect(users).toEqual([
           { id: 1, name: "John Doe modified" },
-          { id: 2, name: "Jane Doe modified" }
+          { id: 2, name: "Jane Doe modified" },
         ]);
       });
     });
@@ -192,8 +192,8 @@ describe("settings api", () => {
         await request("/admin/settings", {
           method: "PATCH",
           body: {
-            port: 3101
-          }
+            port: 3101,
+          },
         });
         await wait(1000);
       });
@@ -203,22 +203,22 @@ describe("settings api", () => {
           port: 3101,
           method: "PATCH",
           body: {
-            port: 3100
-          }
+            port: 3100,
+          },
         });
         await wait(1000);
       });
 
       it("should return new port option when getting settings, using new port", async () => {
         const settingsResponse = await request("/admin/settings", {
-          port: 3101
+          port: 3101,
         });
         expect(settingsResponse.port).toEqual(3101);
       });
 
       it("should serve user 2 under the /api/users/1 path using new port", async () => {
         const users = await request("/api/users/1", {
-          port: 3101
+          port: 3101,
         });
         expect(users).toEqual({ id: 2, name: "Jane Doe" });
       });
@@ -229,8 +229,8 @@ describe("settings api", () => {
         await request("/admin/settings", {
           method: "PATCH",
           body: {
-            adminApiPath: "/administration"
-          }
+            adminApiPath: "/administration",
+          },
         });
         await wait(1000);
       });
@@ -239,8 +239,8 @@ describe("settings api", () => {
         await request("/administration/settings", {
           method: "PATCH",
           body: {
-            adminApiPath: "/admin"
-          }
+            adminApiPath: "/admin",
+          },
         });
         await wait(1000);
       });
@@ -253,7 +253,7 @@ describe("settings api", () => {
       it("should return not found adminApiPath when getting settings in old admin api path", async () => {
         const settingsResponse = await request("/admin/settings", {
           resolveWithFullResponse: true,
-          simple: false
+          simple: false,
         });
         expect(settingsResponse.statusCode).toEqual(404);
       });
@@ -263,7 +263,7 @@ describe("settings api", () => {
       it("should return current delay option in deprecated api path", async () => {
         const settingsResponse = await request("/mocks/settings");
         expect(settingsResponse).toEqual({
-          delay: 0
+          delay: 0,
         });
       });
     });
@@ -273,8 +273,8 @@ describe("settings api", () => {
         await request("/admin/settings", {
           method: "PATCH",
           body: {
-            adminApiDeprecatedPaths: false
-          }
+            adminApiDeprecatedPaths: false,
+          },
         });
         await wait(1000);
       });
@@ -282,7 +282,7 @@ describe("settings api", () => {
       it("should return not found when getting settings in deprecated admin api path", async () => {
         const settingsResponse = await request("/mocks/settings", {
           resolveWithFullResponse: true,
-          simple: false
+          simple: false,
         });
         expect(settingsResponse.statusCode).toEqual(404);
       });

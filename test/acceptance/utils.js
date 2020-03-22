@@ -21,14 +21,14 @@ const SERVER_PORT = 3100;
 const defaultOptions = {
   port: SERVER_PORT,
   log: "silly",
-  watch: false
+  watch: false,
 };
 
 const defaultRequestOptions = {
-  method: "GET"
+  method: "GET",
 };
 
-const fixturesFolder = folderName => {
+const fixturesFolder = (folderName) => {
   return path.resolve(__dirname, "fixtures", folderName);
 };
 
@@ -37,11 +37,11 @@ const startServer = (mocksPath, opts = {}) => {
   const options = {
     path: fixturesFolder(mocks),
     ...defaultOptions,
-    ...opts
+    ...opts,
   };
   const server = new Core({
     onlyProgrammaticOptions: true,
-    plugins: [PluginAdminApi]
+    plugins: [PluginAdminApi],
   });
   return server.init(options).then(() => {
     return server.start().then(() => {
@@ -50,29 +50,29 @@ const startServer = (mocksPath, opts = {}) => {
   });
 };
 
-const stopServer = server => {
+const stopServer = (server) => {
   return server.stop();
 };
 
 const request = (uri, options = {}) => {
   const requestOptions = {
     ...defaultRequestOptions,
-    ...options
+    ...options,
   };
 
   return requestPromise({
     uri: `http://localhost:${options.port || SERVER_PORT}${uri}`,
     json: true,
-    ...requestOptions
+    ...requestOptions,
   });
 };
 
-const deprecatedChangeBehavior = behavior => {
+const deprecatedChangeBehavior = (behavior) => {
   return request("/mocks/behaviors/current", {
     method: "PUT",
     body: {
-      name: behavior
-    }
+      name: behavior,
+    },
   });
 };
 
@@ -80,12 +80,12 @@ const deprecatedGetBehaviors = () => {
   return request("/mocks/behaviors");
 };
 
-const deprecatedChangeDelay = delay => {
+const deprecatedChangeDelay = (delay) => {
   return request("/mocks/settings", {
     method: "PUT",
     body: {
-      delay
-    }
+      delay,
+    },
   });
 };
 
@@ -109,7 +109,7 @@ class TimeCounter {
 }
 
 const wait = (time = 1000) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve();
     }, time);
@@ -126,5 +126,5 @@ module.exports = {
   TimeCounter,
   wait,
   fixturesFolder,
-  CliRunner
+  CliRunner,
 };

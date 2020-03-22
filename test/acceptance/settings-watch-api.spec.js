@@ -18,7 +18,7 @@ describe("watch option modified through api", () => {
     fsExtra.removeSync(fixturesFolder("files-watch"));
     fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
     cli = new CliRunner(["node", "start.js", "--path=files-watch", "--watch=false"], {
-      cwd: path.resolve(__dirname, "fixtures")
+      cwd: path.resolve(__dirname, "fixtures"),
     });
     await wait(1000);
   });
@@ -37,7 +37,7 @@ describe("watch option modified through api", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
   });
@@ -47,8 +47,8 @@ describe("watch option modified through api", () => {
       await request("/admin/settings", {
         method: "PATCH",
         body: {
-          watch: true
-        }
+          watch: true,
+        },
       });
       await wait();
       fsExtra.copySync(fixturesFolder("files-modification"), fixturesFolder("files-watch"));
@@ -64,7 +64,7 @@ describe("watch option modified through api", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe modified" },
-        { id: 2, name: "Jane Doe modified" }
+        { id: 2, name: "Jane Doe modified" },
       ]);
     });
   });
@@ -74,8 +74,8 @@ describe("watch option modified through api", () => {
       await request("/admin/settings", {
         method: "PATCH",
         body: {
-          watch: false
-        }
+          watch: false,
+        },
       });
       await wait();
       fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
@@ -91,7 +91,7 @@ describe("watch option modified through api", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe modified" },
-        { id: 2, name: "Jane Doe modified" }
+        { id: 2, name: "Jane Doe modified" },
       ]);
     });
   });

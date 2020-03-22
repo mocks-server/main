@@ -30,7 +30,7 @@ describe("About", () => {
     sandbox = sinon.createSandbox();
     resMock = {
       status: sandbox.stub(),
-      send: sandbox.stub()
+      send: sandbox.stub(),
     };
     libMocks = new LibMocks();
     coreMock = new CoreMocks();
@@ -59,7 +59,7 @@ describe("About", () => {
     it("should return current package version", () => {
       about.getAbout({}, resMock);
       expect(resMock.send.getCall(0).args[0]).toEqual({
-        version
+        version,
       });
     });
   });

@@ -28,7 +28,7 @@ class SettingsApi {
 
   _validateNewSettings(newSettings) {
     const errors = [];
-    Object.keys(newSettings).forEach(newSettingKey => {
+    Object.keys(newSettings).forEach((newSettingKey) => {
       if (!this._settings.getValidOptionName(newSettingKey)) {
         errors.push(`Invalid option name "${newSettingKey}"`);
       }
@@ -42,7 +42,7 @@ class SettingsApi {
     if (errors.length) {
       next(Boom.badRequest(errors.join(". ")));
     } else {
-      Object.keys(newSettings).forEach(newSettingKey => {
+      Object.keys(newSettings).forEach((newSettingKey) => {
         this._tracer.verbose(
           `${PLUGIN_NAME}: Changing setting "${newSettingKey}" to "${newSettings[newSettingKey]}" | ${req.id}`
         );

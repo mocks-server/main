@@ -112,7 +112,7 @@ describe("Plugin", () => {
       coreInstance.settings.get.withArgs("adminApiDeprecatedPaths").returns(true);
       await plugin.init();
       coreInstance.onChangeSettings.getCall(0).args[0]({
-        adminApiDeprecatedPaths: true
+        adminApiDeprecatedPaths: true,
       });
       expect(coreInstance.addRouter.callCount).toEqual(2);
     });
@@ -122,7 +122,7 @@ describe("Plugin", () => {
       await plugin.init();
       coreInstance.settings.get.withArgs("adminApiDeprecatedPaths").returns(false);
       coreInstance.onChangeSettings.getCall(0).args[0]({
-        adminApiDeprecatedPaths: false
+        adminApiDeprecatedPaths: false,
       });
       expect(coreInstance.removeRouter.callCount).toEqual(1);
     });
@@ -132,7 +132,7 @@ describe("Plugin", () => {
       await plugin.init();
       coreInstance.settings.get.withArgs("adminApiDeprecatedPaths").returns(false);
       coreInstance.onChangeSettings.getCall(0).args[0]({
-        adminApiDeprecatedPaths: false
+        adminApiDeprecatedPaths: false,
       });
       expect(coreInstance.removeRouter.callCount).toEqual(0);
     });
@@ -143,7 +143,7 @@ describe("Plugin", () => {
       await plugin.init();
       coreInstance.settings.get.withArgs("adminApiPath").returns("/foo2");
       coreInstance.onChangeSettings.getCall(0).args[0]({
-        adminApiPath: "/foo2"
+        adminApiPath: "/foo2",
       });
       expect(coreInstance.removeRouter.callCount).toEqual(1);
       expect(coreInstance.addRouter.callCount).toEqual(2);

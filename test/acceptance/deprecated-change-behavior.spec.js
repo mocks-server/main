@@ -13,7 +13,7 @@ const {
   stopServer,
   request,
   deprecatedChangeBehavior,
-  deprecatedGetBehaviors
+  deprecatedGetBehaviors,
 } = require("./utils");
 
 describe("deprecated API for changing current behavior", () => {
@@ -37,7 +37,7 @@ describe("deprecated API for changing current behavior", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -61,7 +61,7 @@ describe("deprecated API for changing current behavior", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -85,7 +85,7 @@ describe("deprecated API for changing current behavior", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -102,7 +102,7 @@ describe("deprecated API for changing current behavior", () => {
     it("should return not found for /api/users/3 path", async () => {
       const usersResponse = await request("/api/users/3", {
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       });
       expect(usersResponse.statusCode).toEqual(404);
     });

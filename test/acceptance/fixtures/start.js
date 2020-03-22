@@ -14,7 +14,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const { Core } = require("@mocks-server/core");
 const AdminApi = require("../../../index");
 
-const handleError = error => {
+const handleError = (error) => {
   console.error(`Error: ${error.message}`);
   process.exitCode = 1;
 };
@@ -22,7 +22,7 @@ const handleError = error => {
 const start = () => {
   try {
     const mocksServer = new Core({
-      plugins: [AdminApi]
+      plugins: [AdminApi],
     });
     return mocksServer
       .init()

@@ -30,7 +30,7 @@ describe("Settings Api", () => {
     sandbox = sinon.createSandbox();
     routerStubs = {
       get: sandbox.stub(),
-      put: sandbox.stub()
+      put: sandbox.stub(),
     };
     coreMocks = new CoreMocks();
     settingsMock = coreMocks.stubs.instance.settings;
@@ -40,7 +40,7 @@ describe("Settings Api", () => {
     sendSpy = sandbox.spy();
     resMock = {
       status: statusSpy,
-      send: sendSpy
+      send: sendSpy,
     };
     expect.assertions(1);
   });
@@ -69,7 +69,7 @@ describe("Settings Api", () => {
       const settings = new Settings(settingsMock, tracerMock);
       settings.get({}, resMock);
       expect(sendSpy.getCall(0).args[0]).toEqual({
-        delay: 3000
+        delay: 3000,
       });
     });
   });
@@ -80,8 +80,8 @@ describe("Settings Api", () => {
       settings.put(
         {
           body: {
-            delay: 5000
-          }
+            delay: 5000,
+          },
         },
         resMock
       );
@@ -94,13 +94,13 @@ describe("Settings Api", () => {
       settings.put(
         {
           body: {
-            delay: 2000
-          }
+            delay: 2000,
+          },
         },
         resMock
       );
       expect(sendSpy.getCall(0).args[0]).toEqual({
-        delay: 2000
+        delay: 2000,
       });
     });
   });

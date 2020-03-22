@@ -22,13 +22,13 @@ describe("programmatic Cli", () => {
     it("should set mocks folder", async () => {
       expect.assertions(2);
       cli = new CliRunner("start.js", {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
       expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
     });
@@ -36,13 +36,13 @@ describe("programmatic Cli", () => {
     it("should set mocks folder even when deprecated features option is received", async () => {
       expect.assertions(3);
       cli = new CliRunner("start-features.js", {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
       expect(cli.logs).toEqual(
         expect.stringContaining(
@@ -55,13 +55,13 @@ describe("programmatic Cli", () => {
     it("should set mocks folder even when deprecated behaviors option is received", async () => {
       expect.assertions(3);
       cli = new CliRunner("start-behaviors.js", {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
       expect(cli.logs).toEqual(
         expect.stringContaining(
@@ -73,7 +73,7 @@ describe("programmatic Cli", () => {
 
     it("should print a log when started", async () => {
       cli = new CliRunner("start.js", {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       expect(cli.logs).toEqual(expect.stringContaining("Server started"));
@@ -85,7 +85,7 @@ describe("programmatic Cli", () => {
       it("should set as current behavior the first one found", async () => {
         expect.assertions(2);
         cli = new CliRunner("start.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
@@ -98,7 +98,7 @@ describe("programmatic Cli", () => {
       it("should set current behavior", async () => {
         expect.assertions(2);
         cli = new CliRunner("start-dynamic-behavior.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
@@ -111,7 +111,7 @@ describe("programmatic Cli", () => {
       it("should set current behavior", async () => {
         expect.assertions(2);
         cli = new CliRunner("deprecated-start-dynamic-behavior.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
@@ -123,7 +123,7 @@ describe("programmatic Cli", () => {
     describe("when provided and does not exist", () => {
       it("should print a warning", async () => {
         cli = new CliRunner("start-unexistant-behavior.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         expect(cli.logs).toEqual(expect.stringContaining('Defined behavior "foo" was not found'));
@@ -132,7 +132,7 @@ describe("programmatic Cli", () => {
       it("should set as current behavior the first one found", async () => {
         expect.assertions(2);
         cli = new CliRunner("start-unexistant-behavior.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
@@ -147,7 +147,7 @@ describe("programmatic Cli", () => {
       it("should set current behavior", async () => {
         expect.assertions(2);
         cli = new CliRunner("start-dynamic-feature.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
@@ -157,7 +157,7 @@ describe("programmatic Cli", () => {
 
       it("should print a deprecation warning", async () => {
         cli = new CliRunner("start-dynamic-feature.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         expect(cli.logs).toEqual(
@@ -171,7 +171,7 @@ describe("programmatic Cli", () => {
     describe("when provided and does not exist", () => {
       it("should print a warning", async () => {
         cli = new CliRunner("start-unexistant-feature.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         expect(cli.logs).toEqual(expect.stringContaining('Defined behavior "foo" was not found'));
@@ -180,7 +180,7 @@ describe("programmatic Cli", () => {
       it("should set as current behavior the first one found", async () => {
         expect.assertions(2);
         cli = new CliRunner("start-unexistant-feature.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
@@ -194,7 +194,7 @@ describe("programmatic Cli", () => {
     it("should set delay", async () => {
       expect.assertions(2);
       cli = new CliRunner("start-delay.js", {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       const timeCounter = new TimeCounter();
@@ -202,7 +202,7 @@ describe("programmatic Cli", () => {
       timeCounter.stop();
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
       expect(timeCounter.total).toBeGreaterThan(1999);
     });
@@ -212,7 +212,7 @@ describe("programmatic Cli", () => {
     it("should start server without cli, then start", async () => {
       expect.assertions(3);
       cli = new CliRunner("init-server.js", {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       const users = await request("/api/users/2");

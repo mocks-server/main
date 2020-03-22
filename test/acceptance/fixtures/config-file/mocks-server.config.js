@@ -7,6 +7,6 @@ module.exports = {
     log: "silly",
     traceMocks: true,
     behavior: "user2",
-    path: path.resolve(__dirname, "..", "web-tutorial-json")
-  }
+    path: path.resolve(__dirname, "..", "web-tutorial-json"),
+  },
 };

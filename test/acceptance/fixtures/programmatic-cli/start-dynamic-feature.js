@@ -6,9 +6,9 @@ const cli = new Cli({
   feature: "dynamic",
   port: 3100,
   log: "debug",
-  watch: false
+  watch: false,
 });
 
-cli.start().catch(err => {
+cli.start().catch((err) => {
   console.log("Error starting CLI", err);
 });

@@ -19,7 +19,7 @@ describe("start method", () => {
   const fooMocksPath = "foo-mocks-path";
   const fooOptions = {
     foo: "foo",
-    foo2: "foo2"
+    foo2: "foo2",
   };
   let sandbox;
   let coreMocks;
@@ -48,7 +48,7 @@ describe("start method", () => {
       await cli.start();
       expect(coreMocks.stubs.instance.init.getCall(0).args[0]).toEqual({
         ...fooOptions,
-        path: fooMocksPath
+        path: fooMocksPath,
       });
     });
 

@@ -23,13 +23,13 @@ describe("command line arguments", () => {
     it("should set mocks folder", async () => {
       expect.assertions(2);
       cli = new CliRunner([BINARY_PATH, "--behaviors=web-tutorial"], {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
       expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
     });
@@ -39,13 +39,13 @@ describe("command line arguments", () => {
     it("should set mocks folder", async () => {
       expect.assertions(2);
       cli = new CliRunner([BINARY_PATH, "--features=web-tutorial"], {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
       expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
     });
@@ -56,7 +56,7 @@ describe("command line arguments", () => {
       it("should set as current behavior the first one found", async () => {
         expect.assertions(2);
         cli = new CliRunner([BINARY_PATH, "--features=web-tutorial"], {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
@@ -69,7 +69,7 @@ describe("command line arguments", () => {
       it("should set current behavior", async () => {
         expect.assertions(2);
         cli = new CliRunner([BINARY_PATH, "--features=web-tutorial", "--feature=dynamic"], {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
@@ -81,7 +81,7 @@ describe("command line arguments", () => {
     describe("when provided and does not exist", () => {
       it("should print a warning", async () => {
         cli = new CliRunner([BINARY_PATH, "--features=web-tutorial", "--feature=foo"], {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         expect(cli.logs).toEqual(expect.stringContaining('Defined behavior "foo" was not found'));
@@ -90,7 +90,7 @@ describe("command line arguments", () => {
       it("should set as current behavior the first one found", async () => {
         expect.assertions(2);
         cli = new CliRunner([BINARY_PATH, "--features=web-tutorial", "--feature=foo"], {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");

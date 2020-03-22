@@ -18,7 +18,7 @@ describe("Cli stop method", () => {
 
   beforeAll(async () => {
     cli = new InteractiveCliRunner([BINARY_PATH, "--path=web-tutorial"], {
-      cwd: cwdPath
+      cwd: cwdPath,
     });
     await wait();
   });
@@ -36,7 +36,7 @@ describe("Cli stop method", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
   });
@@ -57,8 +57,8 @@ describe("Cli stop method", () => {
       await request("/admin/settings", {
         method: "PATCH",
         body: {
-          cli: false
-        }
+          cli: false,
+        },
       });
       await wait();
     });
@@ -86,8 +86,8 @@ describe("Cli stop method", () => {
       await request("/admin/settings", {
         method: "PATCH",
         body: {
-          cli: true
-        }
+          cli: true,
+        },
       });
       await wait();
     });

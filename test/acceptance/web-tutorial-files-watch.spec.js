@@ -16,11 +16,11 @@ const {
   changeBehavior,
   getBehaviors,
   fixturesFolder,
-  wait
+  wait,
 } = require("./utils");
 const InteractiveCliRunner = require("./InteractiveCliRunner");
 
-const runTests = interactiveCli => {
+const runTests = (interactiveCli) => {
   describe("When started", () => {
     it("should have 3 behaviors available", async () => {
       const behaviors = await getBehaviors();
@@ -43,7 +43,7 @@ const runTests = interactiveCli => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -80,7 +80,7 @@ const runTests = interactiveCli => {
         const users = await request("/api/users");
         expect(users).toEqual([
           { id: 1, name: "John Doe modified" },
-          { id: 2, name: "Jane Doe modified" }
+          { id: 2, name: "Jane Doe modified" },
         ]);
       });
 
@@ -113,7 +113,7 @@ const runTests = interactiveCli => {
         const users = await request("/api/users");
         expect(users).toEqual([
           { id: 1, name: "John Doe modified" },
-          { id: 2, name: "Jane Doe modified" }
+          { id: 2, name: "Jane Doe modified" },
         ]);
       });
 
@@ -146,7 +146,7 @@ const runTests = interactiveCli => {
         const users = await request("/api/users");
         expect(users).toEqual([
           { id: 1, name: "John Doe modified" },
-          { id: 2, name: "Jane Doe modified" }
+          { id: 2, name: "Jane Doe modified" },
         ]);
       });
 
@@ -179,7 +179,7 @@ const runTests = interactiveCli => {
         const users = await request("/api/new-users");
         expect(users).toEqual([
           { id: 1, name: "John Doe new" },
-          { id: 2, name: "Jane Doe new" }
+          { id: 2, name: "Jane Doe new" },
         ]);
       });
 
@@ -200,14 +200,14 @@ describe("files watcher started using cli", () => {
   const BINARY_PATH = "../../../bin/mocks-server";
   const cwdPath = path.resolve(__dirname, "fixtures");
   const interactiveCli = {
-    cli: null
+    cli: null,
   };
 
   beforeAll(async () => {
     fsExtra.removeSync(fixturesFolder("files-watch"));
     fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
     interactiveCli.cli = new InteractiveCliRunner([BINARY_PATH, "--path=files-watch"], {
-      cwd: cwdPath
+      cwd: cwdPath,
     });
     await wait();
   });
@@ -227,7 +227,7 @@ describe("files watcher started using Server", () => {
     fsExtra.removeSync(fixturesFolder("files-watch"));
     fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
     cli = new CliRunner("start-watch.js", {
-      cwd: cwdPath
+      cwd: cwdPath,
     });
     await wait();
   });

@@ -31,7 +31,7 @@ describe("web tutorial", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -55,7 +55,7 @@ describe("web tutorial", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -79,7 +79,7 @@ describe("web tutorial", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
@@ -96,7 +96,7 @@ describe("web tutorial", () => {
     it("should return not found for /api/users/3 path", async () => {
       const usersResponse = await request("/api/users/3", {
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       });
       expect(usersResponse.statusCode).toEqual(404);
     });

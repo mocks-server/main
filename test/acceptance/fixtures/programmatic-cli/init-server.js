@@ -2,7 +2,7 @@ const path = require("path");
 const { Cli } = require("../../../../index");
 
 const wait = (time = 3000) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve();
     }, time);
@@ -13,12 +13,12 @@ const cli = new Cli({
   path: path.resolve(__dirname, "..", "web-tutorial"),
   port: 3100,
   log: "debug",
-  watch: false
+  watch: false,
 });
 
 cli
   .initServer()
-  .catch(err => {
+  .catch((err) => {
     console.log("Error initializing CLI", err);
   })
   .then(() => {

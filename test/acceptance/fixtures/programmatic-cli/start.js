@@ -5,9 +5,9 @@ const cli = new Cli({
   path: path.resolve(__dirname, "..", "web-tutorial"),
   port: 3100,
   log: "debug",
-  watch: false
+  watch: false,
 });
 
-cli.start().catch(err => {
+cli.start().catch((err) => {
   console.log("Error starting CLI", err);
 });

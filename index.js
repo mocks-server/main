@@ -19,5 +19,5 @@ module.exports = {
   Cli: ProgrammaticCli,
   Server: ProgrammaticServer,
   Feature: Behavior,
-  Behavior
+  Behavior,
 };

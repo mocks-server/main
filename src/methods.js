@@ -5,22 +5,22 @@ import {
   ABOUT,
   SETTINGS,
   BEHAVIORS,
-  FIXTURES
+  FIXTURES,
 } from "@mocks-server/admin-api-paths";
 
 const DEFAULT_OPTIONS = {
   apiPath: DEFAULT_BASE_PATH,
-  baseUrl: "http://localhost:3100"
+  baseUrl: "http://localhost:3100",
 };
 
 let configuration = {
-  ...DEFAULT_OPTIONS
+  ...DEFAULT_OPTIONS,
 };
 
-export const config = options => {
+export const config = (options) => {
   configuration = {
     ...configuration,
-    ...options
+    ...options,
   };
 };
 
@@ -35,7 +35,7 @@ class Fetcher {
   }
 
   _read() {
-    return fetch(this.url).then(res => res.json());
+    return fetch(this.url).then((res) => res.json());
   }
 
   _patch(data) {
@@ -43,8 +43,8 @@ class Fetcher {
       method: "PATCH",
       body: JSON.stringify(data),
       headers: {
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     });
   }
 
@@ -63,12 +63,12 @@ export const settings = new Fetcher(SETTINGS);
 
 export const behaviors = new Fetcher(BEHAVIORS);
 
-export const behavior = name => {
+export const behavior = (name) => {
   return new Fetcher(BEHAVIORS, name);
 };
 
 export const fixtures = new Fetcher(FIXTURES);
 
-export const fixture = id => {
+export const fixture = (id) => {
   return new Fetcher(FIXTURES, id);
 };

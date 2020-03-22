@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/admin-api-client",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Client of @mocks-server/plugin-admin-api",
   "keywords": [
     "mocks-server-plugin",
@@ -35,29 +35,29 @@
   },
   "dependencies": {
     "cross-fetch": "3.0.4",
-    "@mocks-server/admin-api-paths": "1.0.4"
+    "@mocks-server/admin-api-paths": "1.0.5"
   },
   "devDependencies": {
     "@babel/preset-env": "7.8.4",
-    "@rollup/plugin-commonjs": "11.0.1",
-    "@rollup/plugin-node-resolve": "7.0.0",
+    "@rollup/plugin-commonjs": "11.0.2",
+    "@rollup/plugin-node-resolve": "7.1.1",
     "babel-eslint": "10.0.3",
-    "babel-jest": "24.9.0",
+    "babel-jest": "25.1.0",
     "babel-polyfill": "6.26.0",
     "coveralls": "3.0.9",
     "eslint": "6.8.0",
     "eslint-config-prettier": "6.10.0",
     "eslint-plugin-prettier": "3.1.2",
-    "eslint-plugin-react": "7.18.0",
-    "husky": "4.2.1",
-    "jest": "24.9.0",
+    "eslint-plugin-react": "7.19.0",
+    "husky": "4.2.3",
+    "jest": "25.1.0",
     "lint-staged": "9.5.0",
-    "prettier": "1.19.1",
-    "rollup": "1.31.0",
-    "rollup-plugin-babel": "4.3.3",
+    "prettier": "2.0.1",
+    "rollup": "1.32.1",
+    "rollup-plugin-babel": "4.4.0",
     "rollup-plugin-uglify": "6.0.4",
-    "sinon": "8.1.1",
-    "start-server-and-test": "1.10.8"
+    "sinon": "9.0.1",
+    "start-server-and-test": "1.10.11"
   },
   "lint-staged": {
     "test/**/*.js": "eslint",

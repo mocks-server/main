@@ -3,7 +3,7 @@ import { withData } from "@data-provider/react";
 import {
   settings,
   behaviorsModel,
-  fixturesModel
+  fixturesModel,
 } from "@mocks-server/admin-api-client-data-provider";
 
 import CurrentBehaviorView from "./CurrentBehaviorView";
@@ -18,8 +18,8 @@ const currentBehavior = new Selector(
   },
   {
     initialState: {
-      data: {}
-    }
+      data: {},
+    },
   }
 );
 
@@ -33,8 +33,8 @@ const currentFixture = new Selector(
   },
   {
     initialState: {
-      data: {}
-    }
+      data: {},
+    },
   }
 );
 

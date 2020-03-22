@@ -1,6 +1,6 @@
 describe("About section", () => {
   const SELECTORS = {
-    VERSION: "about-version"
+    VERSION: "about-version",
   };
 
   before(() => {

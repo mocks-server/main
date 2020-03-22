@@ -17,21 +17,21 @@ var currentBehavior = new dataProvider.Selector(
   adminApiClient.settings,
   {
     provider: adminApiClient.behaviorsModel,
-    query: function(query, prevResults) {
+    query: function (query, prevResults) {
       return {
         urlParams: {
-          name: prevResults[0].behavior
-        }
+          name: prevResults[0].behavior,
+        },
       };
-    }
+    },
   },
-  function(settingsResults, behaviorResult) {
+  function (settingsResults, behaviorResult) {
     return behaviorResult;
   },
   {
     initialState: {
-      data: {}
-    }
+      data: {},
+    },
   }
 );
 
@@ -39,28 +39,28 @@ var currentFixture = new dataProvider.Selector(
   currentBehavior,
   {
     provider: adminApiClient.fixturesModel,
-    query: function(query, prevResults) {
+    query: function (query, prevResults) {
       return {
         urlParams: {
-          id: prevResults[0].fixtures[prevResults[0].fixtures.length - 1]
-        }
+          id: prevResults[0].fixtures[prevResults[0].fixtures.length - 1],
+        },
       };
-    }
+    },
   },
-  function(currentBehaviorResult, fixtureResult) {
+  function (currentBehaviorResult, fixtureResult) {
     return fixtureResult;
   },
   {
     initialState: {
-      data: {}
-    }
+      data: {},
+    },
   }
 );
 
-var loadAbout = function() {
-  return adminApiClient.about.read().then(function(about) {
+var loadAbout = function () {
+  return adminApiClient.about.read().then(function (about) {
     $aboutContainer.empty();
-    Object.keys(about).forEach(function(key) {
+    Object.keys(about).forEach(function (key) {
       $aboutContainer.append(
         `<li><b>version</b>:&nbsp;<span data-testid="about-${key}" id="about-${key}">${about[key]}</span></li>`
       );
@@ -68,10 +68,10 @@ var loadAbout = function() {
   });
 };
 
-var loadSettings = function() {
-  return adminApiClient.settings.read().then(function(settings) {
+var loadSettings = function () {
+  return adminApiClient.settings.read().then(function (settings) {
     $settingsContainer.empty();
-    Object.keys(settings).forEach(function(key) {
+    Object.keys(settings).forEach(function (key) {
       $settingsContainer.append(
         `<li><b>${key}</b>:&nbsp;<span data-testid="settings-${key}">${settings[key]}</span></li>`
       );
@@ -79,10 +79,10 @@ var loadSettings = function() {
   });
 };
 
-var loadBehaviors = function() {
-  return adminApiClient.behaviors.read().then(function(behaviorsCollection) {
+var loadBehaviors = function () {
+  return adminApiClient.behaviors.read().then(function (behaviorsCollection) {
     $behaviorsContainer.empty();
-    behaviorsCollection.forEach(function(behavior) {
+    behaviorsCollection.forEach(function (behavior) {
       $behaviorsContainer.append(
         `<li data-testid="behavior-${
           behavior.name
@@ -92,10 +92,10 @@ var loadBehaviors = function() {
   });
 };
 
-var loadFixtures = function() {
-  return adminApiClient.fixtures.read().then(function(fixturesCollection) {
+var loadFixtures = function () {
+  return adminApiClient.fixtures.read().then(function (fixturesCollection) {
     $fixturesContainer.empty();
-    fixturesCollection.forEach(function(fixture) {
+    fixturesCollection.forEach(function (fixture) {
       $fixturesContainer.append(
         `<li data-testid="fixture-${fixture.id}" class="fixtures-collection-item">${JSON.stringify(
           fixture
@@ -105,21 +105,21 @@ var loadFixtures = function() {
   });
 };
 
-var loadCurrentBehavior = function() {
-  return currentBehavior.read().then(function(currentBehaviorResult) {
+var loadCurrentBehavior = function () {
+  return currentBehavior.read().then(function (currentBehaviorResult) {
     $currentBehaviorNameContainer.text(currentBehaviorResult.name);
     $currentBehaviorContainer.text(JSON.stringify(currentBehaviorResult));
   });
 };
 
-var loadCurrentFixture = function() {
-  return currentFixture.read().then(function(currentFixtureResult) {
+var loadCurrentFixture = function () {
+  return currentFixture.read().then(function (currentFixtureResult) {
     $currentFixtureIdContainer.text(currentFixtureResult.id);
     $currentFixtureContainer.text(JSON.stringify(currentFixtureResult));
   });
 };
 
-$.when($.ready).then(function() {
+$.when($.ready).then(function () {
   $behaviorsContainer = $("#behaviors-container");
   $fixturesContainer = $("#fixtures-container");
   $aboutContainer = $("#about-container");
@@ -131,26 +131,26 @@ $.when($.ready).then(function() {
   $setBehaviorBaseButton = $("#set-behavior-base");
   $setBehaviorUser2Button = $("#set-behavior-user2");
 
-  $setBehaviorBaseButton.click(function() {
+  $setBehaviorBaseButton.click(function () {
     adminApiClient.settings.update({
-      behavior: "base"
+      behavior: "base",
     });
   });
-  $setBehaviorUser2Button.click(function() {
+  $setBehaviorUser2Button.click(function () {
     adminApiClient.settings.update({
-      behavior: "user2"
+      behavior: "user2",
     });
   });
 
-  adminApiClient.settings.on("cleanCache", function() {
+  adminApiClient.settings.on("cleanCache", function () {
     loadSettings();
   });
 
-  currentBehavior.on("cleanCache", function() {
+  currentBehavior.on("cleanCache", function () {
     loadCurrentBehavior();
   });
 
-  currentFixture.on("cleanCache", function() {
+  currentFixture.on("cleanCache", function () {
     loadCurrentFixture();
   });
 
@@ -160,6 +160,6 @@ $.when($.ready).then(function() {
     loadAbout(),
     loadSettings(),
     loadCurrentBehavior(),
-    loadCurrentFixture()
+    loadCurrentFixture(),
   ]);
 });

@@ -4,17 +4,17 @@ import TAG from "./tag";
 
 const DEFAULT_OPTIONS = {
   apiPath: DEFAULT_BASE_PATH,
-  baseUrl: "http://localhost:3100"
+  baseUrl: "http://localhost:3100",
 };
 
-export const config = options => {
+export const config = (options) => {
   const finalOptions = {
     ...DEFAULT_OPTIONS,
-    ...options
+    ...options,
   };
 
   providers.getByTag(TAG).config({
-    baseUrl: `${finalOptions.baseUrl}${finalOptions.apiPath}`
+    baseUrl: `${finalOptions.baseUrl}${finalOptions.apiPath}`,
   });
 };
 

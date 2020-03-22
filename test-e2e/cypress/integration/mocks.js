@@ -1,7 +1,7 @@
 describe("Mocks server responses", () => {
   const SELECTORS = {
     RESPONSE: "#response",
-    RESPONSE_TIME: "#response-time"
+    RESPONSE_TIME: "#response-time",
   };
 
   describe("when started", () => {
@@ -14,7 +14,7 @@ describe("Mocks server responses", () => {
     });
 
     it("should load response fast", () => {
-      cy.get(SELECTORS.RESPONSE_TIME).should($div => {
+      cy.get(SELECTORS.RESPONSE_TIME).should(($div) => {
         const text = $div.text();
 
         expect(Number(text)).to.be.lessThan(1000);
@@ -33,7 +33,7 @@ describe("Mocks server responses", () => {
     });
 
     it("should load response fast", () => {
-      cy.get(SELECTORS.RESPONSE_TIME).should($div => {
+      cy.get(SELECTORS.RESPONSE_TIME).should(($div) => {
         const text = $div.text();
 
         expect(Number(text)).to.be.lessThan(1000);
@@ -52,7 +52,7 @@ describe("Mocks server responses", () => {
     });
 
     it("should load response with delay", () => {
-      cy.get(SELECTORS.RESPONSE_TIME).should($div => {
+      cy.get(SELECTORS.RESPONSE_TIME).should(($div) => {
         const text = $div.text();
 
         expect(Number(text)).to.be.greaterThan(1000);
@@ -64,7 +64,7 @@ describe("Mocks server responses", () => {
     before(() => {
       cy.mocksServerSetSettings({
         behavior: "standard",
-        delay: 0
+        delay: 0,
       });
       cy.visit("/");
     });
@@ -74,7 +74,7 @@ describe("Mocks server responses", () => {
     });
 
     it("should load response fast", () => {
-      cy.get(SELECTORS.RESPONSE_TIME).should($div => {
+      cy.get(SELECTORS.RESPONSE_TIME).should(($div) => {
         const text = $div.text();
 
         expect(Number(text)).to.be.lessThan(1000);

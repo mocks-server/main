@@ -1,15 +1,16 @@
-import { Api } from "@data-provider/axios";
+import { Axios } from "@data-provider/axios";
 
 import $ from "jquery";
 
 let $response;
 let $responseTime;
 
-const response = new Api("/api/response", {
-  baseUrl: `http://localhost:${process.env.PORT}`
+const response = new Axios("response", {
+  url: "/api/response",
+  baseUrl: `http://localhost:${process.env.PORT}`,
 });
 
-const loadResponse = async function() {
+const loadResponse = async function () {
   const startDate = new Date();
   const responseData = await response.read();
   const endDate = new Date();
@@ -18,7 +19,7 @@ const loadResponse = async function() {
   $responseTime.text(totalTime);
 };
 
-$.when($.ready).then(function() {
+$.when($.ready).then(function () {
   $response = $("#response");
   $responseTime = $("#response-time");
 

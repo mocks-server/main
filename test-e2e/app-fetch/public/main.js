@@ -3,7 +3,7 @@ var $ = window.$;
 var $response;
 var $responseTime;
 
-var loadResponse = async function() {
+var loadResponse = async function () {
   const startDate = new Date();
   const responseData = await fetch("http://localhost:3100/api/response");
   const responseJson = await responseData.json();
@@ -13,7 +13,7 @@ var loadResponse = async function() {
   $responseTime.text(totalTime);
 };
 
-$.when($.ready).then(function() {
+$.when($.ready).then(function () {
   $response = $("#response");
   $responseTime = $("#response-time");
 

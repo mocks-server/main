@@ -6,8 +6,8 @@ const Mock = class Mock {
 
     this._stubs = {
       Commands: {
-        add: this._sandbox.stub()
-      }
+        add: this._sandbox.stub(),
+      },
     };
   }
 

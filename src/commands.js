@@ -1,23 +1,23 @@
 const adminApiClient = require("@mocks-server/admin-api-client");
 
-const setBehavior = behavior => {
+const setBehavior = (behavior) => {
   return adminApiClient.settings.update({
-    behavior
+    behavior,
   });
 };
 
-const setDelay = delay => {
+const setDelay = (delay) => {
   return adminApiClient.settings.update({
-    delay
+    delay,
   });
 };
 
-const setSettings = newSettings => {
+const setSettings = (newSettings) => {
   return adminApiClient.settings.update(newSettings);
 };
 
 // TODO, remove when admin-api-client supports adminApiPath option
-const mapConfig = customConfig => {
+const mapConfig = (customConfig) => {
   const configToSet = {};
   if (customConfig.adminApiPath) {
     configToSet.apiPath = customConfig.adminApiPath;
@@ -32,5 +32,5 @@ module.exports = {
   setBehavior,
   setDelay,
   setSettings,
-  config: mapConfig
+  config: mapConfig,
 };

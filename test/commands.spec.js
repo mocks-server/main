@@ -21,7 +21,7 @@ describe("commands", () => {
       setBehavior("foo-behavior");
       expect(
         adminApiClient.settings.update.calledWith({
-          behavior: "foo-behavior"
+          behavior: "foo-behavior",
         })
       ).toBe(true);
     });
@@ -32,7 +32,7 @@ describe("commands", () => {
       setDelay(3000);
       expect(
         adminApiClient.settings.update.calledWith({
-          delay: 3000
+          delay: 3000,
         })
       ).toBe(true);
     });
@@ -48,22 +48,22 @@ describe("commands", () => {
   describe("config method", () => {
     it("should call to config admin-api-client baseUrl", () => {
       config({
-        baseUrl: "foo"
+        baseUrl: "foo",
       });
       expect(
         adminApiClient.config.calledWith({
-          baseUrl: "foo"
+          baseUrl: "foo",
         })
       ).toBe(true);
     });
 
     it("should call to config admin-api-client apiPath with adminApiPath value", () => {
       config({
-        adminApiPath: "foo"
+        adminApiPath: "foo",
       });
       expect(
         adminApiClient.config.calledWith({
-          apiPath: "foo"
+          apiPath: "foo",
         })
       ).toBe(true);
     });

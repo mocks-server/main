@@ -6,5 +6,5 @@ const register = require("./src/register");
 register(Cypress);
 
 module.exports = {
-  config
+  config,
 };

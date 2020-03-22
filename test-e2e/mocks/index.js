@@ -5,8 +5,8 @@ const getStandard = {
   method: "GET",
   response: {
     status: 200,
-    body: { display: "standard-response" }
-  }
+    body: { display: "standard-response" },
+  },
 };
 
 const getCustom = {
@@ -14,8 +14,8 @@ const getCustom = {
   method: "GET",
   response: {
     status: 200,
-    body: { display: "custom-response" }
-  }
+    body: { display: "custom-response" },
+  },
 };
 
 const standard = new Behavior([getStandard]);
@@ -24,5 +24,5 @@ const custom = new Behavior([getCustom]);
 
 module.exports = {
   standard,
-  custom
+  custom,
 };

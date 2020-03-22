@@ -10,11 +10,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [1.0.4] - 2019-01-12
+## [1.0.5] - 2020-03-22
+### Changed
+- Update dependencies
+
+## [1.0.4] - 2020-01-12
 ### Changed
 - Use fixed versioning in dependencies
 
-## [1.0.3] - 2019-01-12
+## [1.0.3] - 2020-01-12
 ### Changed
 - Update dependencies
 

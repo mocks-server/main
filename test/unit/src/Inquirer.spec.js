@@ -23,10 +23,10 @@ const fooQuestions = {
     choices: [
       {
         name: "Option 1",
-        value: "option1"
-      }
-    ]
-  }
+        value: "option1",
+      },
+    ],
+  },
 };
 
 describe("Inquirer", () => {
@@ -65,7 +65,7 @@ describe("Inquirer", () => {
         const fooQuitMethodName = "foo name";
         const cli = new Inquirer(fooQuestions, null, {
           name: fooQuitMethodName,
-          action: () => {}
+          action: () => {},
         });
         expect(cli._questions.main.choices[2].name).toEqual(fooQuitMethodName);
       });
@@ -85,7 +85,7 @@ describe("Inquirer", () => {
         const fooQuitMethodAction = sandbox.spy();
         const cli = new Inquirer(fooQuestions, null, {
           name: "foo name",
-          action: fooQuitMethodAction
+          action: fooQuitMethodAction,
         });
         cli.quit();
         expect(fooQuitMethodAction.callCount).toEqual(1);
@@ -116,7 +116,7 @@ describe("Inquirer", () => {
       sandbox.stub(console, "log");
       const cli = new Inquirer(fooQuestions, () => [fooHeader]);
       cli.clearScreen({
-        header: false
+        header: false,
       });
       expect(console.log.getCalls().length).toEqual(0);
     });
@@ -126,20 +126,14 @@ describe("Inquirer", () => {
     it("should return the inquirer returned value", async () => {
       expect.assertions(1);
       const fooValue = "foo-value";
-      sandbox
-        .stub(inquirer, "prompt")
-        .usingPromise()
-        .resolves({ value: fooValue });
+      sandbox.stub(inquirer, "prompt").usingPromise().resolves({ value: fooValue });
       const cli = new Inquirer(fooQuestions);
       expect(await cli.inquire("main")).toEqual(fooValue);
     });
 
     it("should call to inquire prompt method, passing the correspondant question", async () => {
       expect.assertions(1);
-      sandbox
-        .stub(inquirer, "prompt")
-        .usingPromise()
-        .resolves({});
+      sandbox.stub(inquirer, "prompt").usingPromise().resolves({});
       const cli = new Inquirer(fooQuestions);
       await cli.inquire("main");
       expect(inquirer.prompt.getCall(0).args[0].message).toEqual("Select action:");
@@ -147,10 +141,7 @@ describe("Inquirer", () => {
 
     it("should call to remove keypress listener after inquire has finished", async () => {
       expect.assertions(1);
-      sandbox
-        .stub(inquirer, "prompt")
-        .usingPromise()
-        .resolves({});
+      sandbox.stub(inquirer, "prompt").usingPromise().resolves({});
       const cli = new Inquirer(fooQuestions);
       process.stdin.on("keypress", () => {});
       sandbox.stub(process.stdin, "removeListener");
@@ -161,10 +152,7 @@ describe("Inquirer", () => {
     it('should call to quit method if inquired question is "main" and answer value is "quit"', async () => {
       expect.assertions(1);
       sandbox.stub(process, "exit");
-      sandbox
-        .stub(inquirer, "prompt")
-        .usingPromise()
-        .resolves({ value: "quit" });
+      sandbox.stub(inquirer, "prompt").usingPromise().resolves({ value: "quit" });
       const cli = new Inquirer(fooQuestions);
       await cli.inquire("main");
       expect(process.exit.callCount).toEqual(1);

@@ -24,53 +24,53 @@ const questions = {
     choices: [
       {
         name: "Change current behavior",
-        value: "behavior"
+        value: "behavior",
       },
       {
         name: "Change delay",
-        value: "delay"
+        value: "delay",
       },
       {
         name: "Restart server",
-        value: "restart"
+        value: "restart",
       },
       {
         name: "Change log level",
-        value: "logLevel"
+        value: "logLevel",
       },
       {
         name: "Switch watch",
-        value: "watch"
+        value: "watch",
       },
       {
         name: "Display server logs",
-        value: "logs"
-      }
-    ]
+        value: "logs",
+      },
+    ],
   },
   logLevel: {
     type: "list",
     message: "Select log level:",
     name: "value",
-    choices: ["silly", "debug", "verbose", "info", "warn", "error"]
+    choices: ["silly", "debug", "verbose", "info", "warn", "error"],
   },
   behavior: {
     type: "autocomplete",
     name: "value",
-    message: "Please choose behavior"
+    message: "Please choose behavior",
   },
   delay: {
     type: "input",
     name: "value",
     message: "Enter delay time in ms:",
-    validate: value => isNumber(value),
-    filter: value => {
+    validate: (value) => isNumber(value),
+    filter: (value) => {
       if (/^\d*$/.test(value)) {
         return parseInt(value, 10);
       }
       return false;
-    }
-  }
+    },
+  },
 };
 
 const SCREENS = {
@@ -78,7 +78,7 @@ const SCREENS = {
   BEHAVIOR: "behavior",
   DELAY: "delay",
   LOG_LEVEL: "log-level",
-  LOGS: "logs"
+  LOGS: "logs",
 };
 
 class Cli {
@@ -97,7 +97,7 @@ class Cli {
       name: "cli",
       type: "booleanString", // Workaround to maintain backward compaitbility with --cli=false
       description: "Start interactive CLI plugin",
-      default: true
+      default: true,
     });
   }
 
@@ -142,7 +142,7 @@ class Cli {
     this._cli.removeListeners();
     this._cli.logsMode();
     this._cli.clearScreen({
-      header: false
+      header: false,
     });
     return Promise.resolve();
   }
@@ -202,7 +202,7 @@ class Cli {
       `Current behavior: ${chalk.cyan(this._core.behaviors.currentId || "-")}`,
       `Current fixtures: ${chalk.cyan(this._core.fixtures.count || 0)}`,
       `Log level: ${chalk.cyan(this._logLevel)}`,
-      `Watch enabled: ${chalk.cyan(this._settings.get("watch"))}`
+      `Watch enabled: ${chalk.cyan(this._settings.get("watch"))}`,
     ];
 
     if (this._core.serverError) {
@@ -248,9 +248,9 @@ class Cli {
           return Promise.resolve(behaviorsIds);
         }
         return Promise.resolve(
-          behaviorsIds.filter(currentBehavior => currentBehavior.includes(input))
+          behaviorsIds.filter((currentBehavior) => currentBehavior.includes(input))
         );
-      }
+      },
     });
     this._settings.set("behavior", behavior);
     return this._displayMainMenu();

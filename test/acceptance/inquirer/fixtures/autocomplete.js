@@ -19,15 +19,15 @@ const questions = {
     choices: [
       {
         name: "Select tags",
-        value: "tags"
-      }
-    ]
+        value: "tags",
+      },
+    ],
   },
   tags: {
     type: "autocomplete",
     name: "value",
-    message: "Insert tags:"
-  }
+    message: "Insert tags:",
+  },
 };
 
 const MyCli = class MyCli {
@@ -49,8 +49,8 @@ const MyCli = class MyCli {
         if (!currentInput) {
           return Promise.resolve(tags);
         }
-        return Promise.resolve(tags.filter(tag => tag.indexOf(currentInput) === 0));
-      }
+        return Promise.resolve(tags.filter((tag) => tag.indexOf(currentInput) === 0));
+      },
     });
     return this.displayMainMenu();
   }

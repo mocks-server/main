@@ -22,7 +22,7 @@ describe("command line arguments with cli disabled", () => {
   describe("interactive cli", () => {
     it("should not be started", async () => {
       cli = new CliRunner([BINARY_PATH, "--path=web-tutorial", "--cli=false"], {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait(3000);
       expect(cli.logs).toEqual(expect.not.stringContaining("Select action"));
@@ -32,13 +32,13 @@ describe("command line arguments with cli disabled", () => {
   describe("path option", () => {
     it("should set mocks folder", async () => {
       cli = new CliRunner([BINARY_PATH, "--path=web-tutorial", "--cli=false"], {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
   });
@@ -47,7 +47,7 @@ describe("command line arguments with cli disabled", () => {
     describe("when not provided", () => {
       it("should set as current behavior the first one found", async () => {
         cli = new CliRunner([BINARY_PATH, "--path=web-tutorial", "--cli=false"], {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
@@ -60,7 +60,7 @@ describe("command line arguments with cli disabled", () => {
         cli = new CliRunner(
           [BINARY_PATH, "--path=web-tutorial", "--behavior=dynamic", "--cli=false"],
           {
-            cwd: cwdPath
+            cwd: cwdPath,
           }
         );
         await wait();
@@ -74,7 +74,7 @@ describe("command line arguments with cli disabled", () => {
         cli = new CliRunner(
           [BINARY_PATH, "--path=web-tutorial", "--behavior=foo", "--cli=false"],
           {
-            cwd: cwdPath
+            cwd: cwdPath,
           }
         );
         await wait();
@@ -85,7 +85,7 @@ describe("command line arguments with cli disabled", () => {
         cli = new CliRunner(
           [BINARY_PATH, "--path=web-tutorial", "--behavior=foo", "--cli=false"],
           {
-            cwd: cwdPath
+            cwd: cwdPath,
           }
         );
         await wait();
@@ -98,13 +98,13 @@ describe("command line arguments with cli disabled", () => {
   describe("features option", () => {
     it("should set mocks folder", async () => {
       cli = new CliRunner([BINARY_PATH, "--features=web-tutorial", "--cli=false"], {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
   });
@@ -113,7 +113,7 @@ describe("command line arguments with cli disabled", () => {
     describe("when not provided", () => {
       it("should set as current behavior the first one found", async () => {
         cli = new CliRunner([BINARY_PATH, "--features=web-tutorial", "--cli=false"], {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
@@ -126,7 +126,7 @@ describe("command line arguments with cli disabled", () => {
         cli = new CliRunner(
           [BINARY_PATH, "--features=web-tutorial", "--feature=dynamic", "--cli=false"],
           {
-            cwd: cwdPath
+            cwd: cwdPath,
           }
         );
         await wait();
@@ -140,7 +140,7 @@ describe("command line arguments with cli disabled", () => {
         cli = new CliRunner(
           [BINARY_PATH, "--features=web-tutorial", "--feature=foo", "--cli=false"],
           {
-            cwd: cwdPath
+            cwd: cwdPath,
           }
         );
         await wait();
@@ -151,7 +151,7 @@ describe("command line arguments with cli disabled", () => {
         cli = new CliRunner(
           [BINARY_PATH, "--features=web-tutorial", "--feature=foo", "--cli=false"],
           {
-            cwd: cwdPath
+            cwd: cwdPath,
           }
         );
         await wait();
@@ -165,7 +165,7 @@ describe("command line arguments with cli disabled", () => {
     it("should set delay", async () => {
       expect.assertions(2);
       cli = new CliRunner([BINARY_PATH, "--path=web-tutorial", "--delay=2000", "--cli=false"], {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       const timeCounter = new TimeCounter();
@@ -173,7 +173,7 @@ describe("command line arguments with cli disabled", () => {
       timeCounter.stop();
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
       expect(timeCounter.total).toBeGreaterThan(1999);
     });

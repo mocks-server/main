@@ -43,7 +43,7 @@ describe("when removeListeners is executed", () => {
     expect(cliRunner.logs).toEqual(expect.stringContaining("Selected option: None"));
   });
 
-  it("should do nothing after removing Listeners even when user tries to select an option", async done => {
+  it("should do nothing after removing Listeners even when user tries to select an option", async (done) => {
     await cliRunner.hasPrinted(END_SCREEN);
     setTimeout(async () => {
       try {

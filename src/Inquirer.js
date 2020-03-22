@@ -47,14 +47,14 @@ const Inquirer = class Inquirer {
     const clonedQuestions = cloneDeep(questions);
     const quitQuestion = {
       name: DEFAULT_QUIT_NAME,
-      value: QUIT_ACTION_ID
+      value: QUIT_ACTION_ID,
     };
     if (clonedQuestions[MAIN_MENU_ID] && clonedQuestions[MAIN_MENU_ID].choices) {
       clonedQuestions[MAIN_MENU_ID].choices.push(new inquirer.Separator());
       if (quitMethod) {
         clonedQuestions[MAIN_MENU_ID].choices.push({
           ...quitQuestion,
-          name: quitMethod.name
+          name: quitMethod.name,
         });
         this._quit = quitMethod.action;
       } else {
@@ -98,7 +98,7 @@ const Inquirer = class Inquirer {
     if (startLogs) {
       startLogs();
     }
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this._logModeExit = resolve;
     });
   }
@@ -106,7 +106,7 @@ const Inquirer = class Inquirer {
   async inquire(questionKey, extendProperties) {
     const answers = await inquirer.prompt({
       ...this._questions[questionKey],
-      ...extendProperties
+      ...extendProperties,
     });
     this.removeListeners();
     if (questionKey === MAIN_MENU_ID && answers.value === QUIT_ACTION_ID) {
@@ -124,19 +124,19 @@ const Inquirer = class Inquirer {
     process.stdout.write(CLRS);
     if (options.header !== false) {
       const headers = (this._header && this._header()) || [];
-      headers.map(header => console.log(`${HEADER_ITEM} ${header}`));
+      headers.map((header) => console.log(`${HEADER_ITEM} ${header}`));
       console.log(HEADER_FOOTER);
     }
   }
 
   removeListeners() {
     const listeners = process.stdin.listeners(EVENT_LISTENER);
-    map(listeners, listener => {
+    map(listeners, (listener) => {
       process.stdin.removeListener(EVENT_LISTENER, listener);
     });
   }
 };
 
 module.exports = {
-  Inquirer
+  Inquirer,
 };

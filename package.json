@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/admin-api-paths",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Api paths of @mocks-server/plugin-admin-api",
   "keywords": [
     "mocks-server-plugin",
@@ -32,7 +32,7 @@
     "test:ci": "npm run test"
   },
   "devDependencies": {
-    "@babel/preset-env": "7.8.7",
+    "@babel/preset-env": "7.9.0",
     "babel-jest": "25.1.0",
     "coveralls": "3.0.9",
     "eslint": "6.8.0",
@@ -41,7 +41,7 @@
     "husky": "4.2.3",
     "jest": "25.1.0",
     "lint-staged": "10.0.8",
-    "prettier": "1.19.1",
+    "prettier": "2.0.1",
     "rollup": "2.1.0",
     "rollup-plugin-babel": "4.4.0",
     "rollup-plugin-commonjs": "10.1.0",

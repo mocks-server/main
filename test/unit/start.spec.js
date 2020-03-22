@@ -35,7 +35,7 @@ describe("start method", () => {
   it("should create a new Core, passing to it AdminApi and CLI plugins", async () => {
     await start();
     expect(coreMocks.stubs.Constructor.mock.calls[0][0]).toEqual({
-      plugins: [AdminApi, InquirerCli]
+      plugins: [AdminApi, InquirerCli],
     });
   });
 

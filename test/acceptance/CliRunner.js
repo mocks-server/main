@@ -39,7 +39,7 @@ module.exports = class CliRunner {
     this.cursorUp = this.cursorUp.bind(this);
     this.cursorDown = this.cursorDown.bind(this);
     this.pressCtrlC = this.pressCtrlC.bind(this);
-    this._exitPromise = new Promise(resolve => {
+    this._exitPromise = new Promise((resolve) => {
       this._resolveExitPromise = resolve;
     });
     this.run();
@@ -50,7 +50,7 @@ module.exports = class CliRunner {
     const command = commandIsArray ? [...commandToExecute] : commandToExecute;
     return {
       name: commandIsArray ? command[0] : "node",
-      params: commandIsArray ? command.splice(1, command.length - 1) : [command]
+      params: commandIsArray ? command.splice(1, command.length - 1) : [command],
     };
   }
 
@@ -71,7 +71,7 @@ module.exports = class CliRunner {
       throw new Error("Cli is already running");
     } else {
       this._cliProcess = childProcess.spawn(this._command.name, this._command.params, {
-        cwd: this._cwd
+        cwd: this._cwd,
       });
       this._cliProcess.stdin.setEncoding(ENCODING_TYPE);
 
@@ -81,7 +81,7 @@ module.exports = class CliRunner {
       this._cliProcess.stdout.on("data", this.logData);
       this._cliProcess.stderr.on("data", this.logData);
 
-      this._cliProcess.on("close", code => {
+      this._cliProcess.on("close", (code) => {
         this._exitCode = code;
         this._resolveExitPromise(true);
       });
@@ -133,7 +133,7 @@ module.exports = class CliRunner {
       rejecter(new Error(errorMessage));
     }, timeOut);
 
-    const listener = logData => {
+    const listener = (logData) => {
       if (logData.includes(data)) {
         this._eventEmitter.removeListener(LOG_EVENT_NAME, listener);
         clearTimeout(timeout);
@@ -198,14 +198,14 @@ module.exports = class CliRunner {
       }, 200);
     };
 
-    const logsListener = logData => {
+    const logsListener = (logData) => {
       screenLogs.push(logData);
       if (!continuosLogsTriggered) {
         waitForNewLogs();
       }
     };
 
-    const clearScreenListener = logData => {
+    const clearScreenListener = (logData) => {
       if (this._debug) {
         console.log(`${CLI_DEBUG} New screen`);
       }
@@ -234,10 +234,7 @@ module.exports = class CliRunner {
   }
 
   get allLogs() {
-    return this._allLogs
-      .join("")
-      .split(CLRS)
-      .map(stripAnsi);
+    return this._allLogs.join("").split(CLRS).map(stripAnsi);
   }
 
   get exitCode() {

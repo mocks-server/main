@@ -21,7 +21,7 @@ class Mock {
 
     this._stubs = {
       start: this._sandbox.stub().resolves(),
-      stopListeningServerWatch: this._sandbox.stub()
+      stopListeningServerWatch: this._sandbox.stub(),
     };
 
     Cli.mockImplementation(() => this._stubs);
@@ -30,7 +30,7 @@ class Mock {
   get stubs() {
     return {
       Constructor: Cli,
-      instance: this._stubs
+      instance: this._stubs,
     };
   }
 

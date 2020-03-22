@@ -18,7 +18,7 @@ describe("web tutorial", () => {
 
   beforeAll(async () => {
     cli = new InteractiveCliRunner([path.join("..", BINARY_PATH)], {
-      cwd: cwdPath
+      cwd: cwdPath,
     });
     await wait(2000);
   });
@@ -44,7 +44,7 @@ describe("web tutorial", () => {
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 

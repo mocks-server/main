@@ -20,14 +20,14 @@ const BINARY_PATH = "../../../bin/mocks-server";
 const defaultOptions = {
   port: SERVER_PORT,
   log: "debug",
-  watch: false
+  watch: false,
 };
 
 const defaultRequestOptions = {
-  method: "GET"
+  method: "GET",
 };
 
-const fixturesFolder = folderName => {
+const fixturesFolder = (folderName) => {
   return path.resolve(__dirname, "fixtures", folderName);
 };
 
@@ -35,14 +35,14 @@ const startServer = (mocksPath, options = {}) => {
   const mocks = mocksPath || "web-tutorial";
   const server = new Server(fixturesFolder(mocks), {
     ...defaultOptions,
-    ...options
+    ...options,
   });
   return server.start().then(() => {
     return Promise.resolve(server);
   });
 };
 
-const stopServer = server => {
+const stopServer = (server) => {
   server.stop();
   server.switchWatch(false);
 };
@@ -50,31 +50,31 @@ const stopServer = server => {
 const request = (uri, options = {}) => {
   const requestOptions = {
     ...defaultRequestOptions,
-    ...options
+    ...options,
   };
 
   return requestPromise({
     uri: `http://localhost:${SERVER_PORT}${uri}`,
     json: true,
-    ...requestOptions
+    ...requestOptions,
   });
 };
 
-const deprecatedChangeBehavior = behavior => {
+const deprecatedChangeBehavior = (behavior) => {
   return request("/mocks/behaviors/current", {
     method: "PUT",
     body: {
-      name: behavior
-    }
+      name: behavior,
+    },
   });
 };
 
-const changeBehavior = behavior => {
+const changeBehavior = (behavior) => {
   return request("/admin/settings", {
     method: "PATCH",
     body: {
-      behavior: behavior
-    }
+      behavior: behavior,
+    },
   });
 };
 
@@ -86,21 +86,21 @@ const deprecatedGetBehaviors = () => {
   return request("/mocks/behaviors");
 };
 
-const changeDelay = delay => {
+const changeDelay = (delay) => {
   return request("/admin/settings", {
     method: "PATCH",
     body: {
-      delay: delay
-    }
+      delay: delay,
+    },
   });
 };
 
-const deprecatedChangeDelay = delay => {
+const deprecatedChangeDelay = (delay) => {
   return request("/mocks/settings", {
     method: "PUT",
     body: {
-      delay
-    }
+      delay,
+    },
   });
 };
 
@@ -124,7 +124,7 @@ class TimeCounter {
 }
 
 const wait = (time = 1000) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve();
     }, time);
@@ -145,5 +145,5 @@ module.exports = {
   CliRunner,
   wait,
   fixturesFolder,
-  BINARY_PATH
+  BINARY_PATH,
 };

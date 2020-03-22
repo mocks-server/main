@@ -13,7 +13,7 @@ const {
   stopServer,
   request,
   deprecatedChangeDelay,
-  TimeCounter
+  TimeCounter,
 } = require("./utils");
 
 describe("delay setting", () => {

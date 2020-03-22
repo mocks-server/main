@@ -21,19 +21,19 @@ describe("programmatic Server", () => {
   describe("When started", () => {
     it("should set mocks folder", async () => {
       cli = new CliRunner("start.js", {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
     });
 
     it("should print a log when started", async () => {
       cli = new CliRunner("start.js", {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       expect(cli.logs).toEqual(expect.stringContaining("Server started"));
@@ -44,7 +44,7 @@ describe("programmatic Server", () => {
     describe("when not provided", () => {
       it("should set as current behavior the first one found", async () => {
         cli = new CliRunner("start.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
@@ -55,7 +55,7 @@ describe("programmatic Server", () => {
     describe("when provided and exists", () => {
       it("should set current behavior", async () => {
         cli = new CliRunner("start-dynamic-behavior.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
@@ -66,7 +66,7 @@ describe("programmatic Server", () => {
     describe("when provided and does not exist", () => {
       it("should print a warning", async () => {
         cli = new CliRunner("start-unexistant-behavior.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         expect(cli.logs).toEqual(expect.stringContaining('Defined behavior "foo" was not found'));
@@ -74,7 +74,7 @@ describe("programmatic Server", () => {
 
       it("should set as current behavior the first one found", async () => {
         cli = new CliRunner("start-unexistant-behavior.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
@@ -87,7 +87,7 @@ describe("programmatic Server", () => {
     describe("when provided and exists", () => {
       it("should set current behavior", async () => {
         cli = new CliRunner("start-dynamic-feature.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
@@ -96,7 +96,7 @@ describe("programmatic Server", () => {
 
       it("should print a deprecation warning", async () => {
         cli = new CliRunner("start-dynamic-feature.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         expect(cli.logs).toEqual(
@@ -110,7 +110,7 @@ describe("programmatic Server", () => {
     describe("when provided and does not exist", () => {
       it("should print a warning", async () => {
         cli = new CliRunner("start-unexistant-feature.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         expect(cli.logs).toEqual(expect.stringContaining('Defined behavior "foo" was not found'));
@@ -118,7 +118,7 @@ describe("programmatic Server", () => {
 
       it("should set as current behavior the first one found", async () => {
         cli = new CliRunner("start-unexistant-feature.js", {
-          cwd: cwdPath
+          cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
@@ -131,7 +131,7 @@ describe("programmatic Server", () => {
     it("should set delay", async () => {
       expect.assertions(2);
       cli = new CliRunner("start-delay.js", {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       const timeCounter = new TimeCounter();
@@ -139,7 +139,7 @@ describe("programmatic Server", () => {
       timeCounter.stop();
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
       expect(timeCounter.total).toBeGreaterThan(1999);
     });
@@ -149,13 +149,13 @@ describe("programmatic Server", () => {
     it("should stop the server", async () => {
       expect.assertions(2);
       cli = new CliRunner("start-and-stop.js", {
-        cwd: cwdPath
+        cwd: cwdPath,
       });
       await wait();
       const users = await request("/api/users");
       expect(users).toEqual([
         { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" }
+        { id: 2, name: "Jane Doe" },
       ]);
       await wait(2000);
       try {

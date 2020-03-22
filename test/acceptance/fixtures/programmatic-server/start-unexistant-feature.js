@@ -5,7 +5,7 @@ const server = new Server(path.resolve(__dirname, "..", "web-tutorial"), {
   port: 3100,
   log: "debug",
   watch: false,
-  feature: "foo"
+  feature: "foo",
 });
 
 server.start().then(() => {

@@ -49,7 +49,7 @@ describe("start method", () => {
     let cli;
     const fooOptions = {
       foo: "foo",
-      foo2: "foo2"
+      foo2: "foo2",
     };
 
     beforeEach(() => {
@@ -91,7 +91,7 @@ describe("start method", () => {
     let cli;
     const fooOptions = {
       foo: "foo",
-      foo2: "foo2"
+      foo2: "foo2",
     };
 
     beforeEach(() => {

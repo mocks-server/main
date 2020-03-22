@@ -5,7 +5,7 @@ const server = new Server(path.resolve(__dirname, "..", "web-tutorial"), {
   port: 3100,
   log: "debug",
   watch: false,
-  behavior: "dynamic"
+  behavior: "dynamic",
 });
 
 server.start().then(() => {

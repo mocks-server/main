@@ -52,7 +52,7 @@
     "husky": "4.2.3",
     "jest": "25.1.0",
     "lint-staged": "10.0.8",
-    "prettier": "2.0.1",
+    "prettier": "2.0.2",
     "rollup": "1.32.1",
     "rollup-plugin-babel": "4.4.0",
     "rollup-plugin-uglify": "6.0.4",

@@ -50,7 +50,7 @@
     "husky": "4.2.3",
     "is-promise": "2.1.0",
     "jest": "25.1.0",
-    "lint-staged": "10.0.8",
+    "lint-staged": "10.0.9",
     "prettier": "2.0.2",
     "request": "2.88.2",
     "request-promise": "4.2.5",

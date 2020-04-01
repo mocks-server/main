@@ -50,7 +50,7 @@
     "fs-extra": "9.0.0",
     "husky": "4.2.3",
     "is-promise": "2.1.0",
-    "jest": "25.1.0",
+    "jest": "25.2.4",
     "lint-staged": "10.0.9",
     "prettier": "2.0.1",
     "request": "2.88.2",

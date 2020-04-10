@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.4.3] - 2020-04-10
+### Changed
+- Update dependencies
+
 ## [1.4.2] - 2020-03-22
 ### Changed
 - Update dependencies

@@ -16,8 +16,8 @@
     "test:vanilla-app": "start-server-and-test mocks:ci-and-start:vanilla-app http-get://localhost:3000 cypress:run"
   },
   "devDependencies": {
-    "@testing-library/cypress": "5.3.1",
-    "cypress": "4.2.0",
+    "@testing-library/cypress": "6.0.0",
+    "cypress": "4.3.0",
     "start-server-and-test": "1.10.11"
   }
 }

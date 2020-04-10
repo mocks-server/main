@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "cross-fetch": "3.0.4",
-    "@mocks-server/admin-api-paths": "1.0.5"
+    "@mocks-server/admin-api-paths": "1.0.6"
   },
   "devDependencies": {
     "@babel/preset-env": "7.9.5",

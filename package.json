@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "7.9.5",
-    "@rollup/plugin-commonjs": "11.0.2",
+    "@rollup/plugin-commonjs": "11.1.0",
     "@rollup/plugin-node-resolve": "7.1.1",
     "babel-eslint": "10.1.0",
     "babel-jest": "25.3.0",

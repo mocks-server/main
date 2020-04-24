@@ -52,7 +52,7 @@
     "is-promise": "2.1.0",
     "jest": "25.4.0",
     "lint-staged": "10.1.7",
-    "prettier": "2.0.4",
+    "prettier": "2.0.5",
     "request": "2.88.2",
     "request-promise": "4.2.5",
     "sinon": "9.0.2",

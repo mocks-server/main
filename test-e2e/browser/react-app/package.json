@@ -33,7 +33,7 @@
     ]
   },
   "devDependencies": {
-    "react-app-rewired": "2.1.5",
+    "react-app-rewired": "2.1.6",
     "serve": "11.3.0",
     "start-server-and-test": "1.11.0"
   }

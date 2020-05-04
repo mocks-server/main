@@ -45,7 +45,7 @@
   "devDependencies": {
     "@babel/preset-env": "7.9.6",
     "redux": "4.0.5",
-    "@data-provider/core": "2.1.2",
+    "@data-provider/core": "2.2.0",
     "@data-provider/axios": "2.1.1",
     "@rollup/plugin-commonjs": "11.1.0",
     "@rollup/plugin-node-resolve": "7.1.3",

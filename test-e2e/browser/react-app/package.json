@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@data-provider/axios": "2.1.1",
-    "@data-provider/core": "2.1.2",
+    "@data-provider/core": "2.2.0",
     "@data-provider/react": "1.0.2",
     "prop-types": "15.7.2",
     "react": "16.13.1",

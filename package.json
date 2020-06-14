@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/core",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "description": "Pluggable mock server supporting multiple api behaviors",
   "keywords": [
     "mocks",
@@ -31,7 +31,7 @@
   ],
   "main": "index.js",
   "scripts": {
-    "lint": "eslint index.js src test jest.config.js jest.acceptance.config.js",
+    "lint": "eslint *.js src test",
     "lint-staged": "lint-staged",
     "test": "jest",
     "test:acceptance": "jest --config=jest.acceptance.config.js --runInBand --detectOpenHandles",
@@ -42,28 +42,28 @@
   "dependencies": {
     "body-parser": "1.19.0",
     "@hapi/boom": "9.1.0",
-    "commander": "5.0.0",
+    "commander": "5.1.0",
     "cors": "2.8.5",
     "express": "4.17.1",
     "express-request-id": "1.4.1",
-    "fs-extra": "9.0.0",
+    "fs-extra": "9.0.1",
     "lodash": "4.17.15",
     "md5": "2.2.1",
-    "node-watch": "0.6.3",
+    "node-watch": "0.6.4",
     "require-all": "3.0.0",
     "route-parser": "0.0.5",
     "winston": "3.2.1"
   },
   "devDependencies": {
     "coveralls": "3.0.9",
-    "eslint": "6.8.0",
-    "eslint-config-prettier": "6.10.1",
-    "eslint-plugin-prettier": "3.1.2",
+    "eslint": "7.2.0",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-plugin-prettier": "3.1.3",
     "husky": "4.2.5",
-    "is-promise": "2.1.0",
-    "jest": "25.3.0",
-    "lint-staged": "10.1.3",
-    "prettier": "2.0.4",
+    "is-promise": "4.0.0",
+    "jest": "26.0.1",
+    "lint-staged": "10.2.10",
+    "prettier": "2.0.5",
     "request": "2.88.2",
     "request-promise": "4.2.5",
     "sinon": "9.0.2",
@@ -73,9 +73,7 @@
   "lint-staged": {
     "src/**/*.js": "eslint",
     "test/**/*.js": "eslint",
-    "index.js": "eslint",
-    "jest.config.js": "eslint",
-    "jest.acceptance.config.js": "eslint"
+    "*.js": "eslint"
   },
   "husky": {
     "hooks": {
@@ -83,6 +81,6 @@
     }
   },
   "engines": {
-    "node": "10.x || 12.x || 13.x"
+    "node": "12.x || 14.x"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/admin-api-client-data-provider",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Client of @mocks-server/plugin-admin-api built with @data-provider",
   "keywords": [
     "mocks-server-plugin",
@@ -24,7 +24,7 @@
   "module": "dist/index.esm.js",
   "scripts": {
     "build": "rollup --config",
-    "lint": "eslint index.js test src jest.config.js test-e2e/browser/react-app/src test-e2e/browser/cypress test-e2e/browser/vanilla-app/public/main.js test-e2e/nodejs/es6/test test-e2e/nodejs/es6/index.js",
+    "lint": "eslint *.js test src jest.config.js test-e2e/browser/react-app/src test-e2e/browser/cypress test-e2e/browser/vanilla-app/public/main.js test-e2e/nodejs/es6/test test-e2e/nodejs/es6/index.js --resolve-plugins-relative-to=.",
     "lint-staged": "lint-staged",
     "test": "jest",
     "test:coverage": "npm run test",
@@ -40,37 +40,36 @@
     "@data-provider/axios": "^2.0.0"
   },
   "dependencies": {
-    "@mocks-server/admin-api-paths": "1.0.6"
+    "@mocks-server/admin-api-paths": "1.0.7"
   },
   "devDependencies": {
-    "@babel/preset-env": "7.9.6",
-    "redux": "4.0.5",
-    "@data-provider/core": "2.2.0",
-    "@data-provider/axios": "2.1.1",
+    "@babel/preset-env": "7.10.2",
+    "@rollup/plugin-babel": "5.0.3",
     "@rollup/plugin-commonjs": "11.1.0",
     "@rollup/plugin-node-resolve": "7.1.3",
+    "redux": "4.0.5",
+    "@data-provider/core": "2.5.0",
+    "@data-provider/axios": "2.1.2",
     "babel-eslint": "10.1.0",
-    "babel-jest": "25.5.1",
+    "babel-jest": "26.0.1",
     "babel-polyfill": "6.26.0",
     "coveralls": "3.0.9",
-    "eslint": "6.8.0",
+    "eslint": "7.2.0",
     "eslint-config-prettier": "6.11.0",
     "eslint-plugin-prettier": "3.1.3",
-    "eslint-plugin-react": "7.19.0",
+    "eslint-plugin-react": "7.20.0",
     "husky": "4.2.5",
-    "jest": "25.5.4",
-    "lint-staged": "10.2.2",
+    "jest": "26.0.1",
+    "lint-staged": "10.2.10",
     "prettier": "2.0.5",
-    "rollup": "2.7.6",
-    "rollup-plugin-babel": "4.4.0",
-    "rollup-plugin-uglify": "6.0.4",
+    "rollup": "2.16.1",
+    "rollup-plugin-terser": "6.1.0",
     "sinon": "9.0.2"
   },
   "lint-staged": {
     "test/**/*.js": "eslint",
     "src/**/*.js": "eslint",
-    "index.js": "eslint",
-    "jest.config.js": "eslint",
+    "*.js": "eslint",
     "test-e2e/browser/react-app/src/**/*.js": "eslint",
     "test-e2e/browser/cypress/**/*.js": "eslint",
     "test-e2e/browser/vanilla-app/public/main.js": "eslint",
@@ -83,6 +82,6 @@
     }
   },
   "engines": {
-    "node": "10.x || 12.x || 13.x"
+    "node": "12.x || 14.x"
   }
 }

@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@data-provider/axios": "2.1.1",
-    "@data-provider/core": "2.2.0",
-    "@data-provider/react": "1.0.2",
+    "@data-provider/axios": "2.1.2",
+    "@data-provider/core": "2.5.0",
+    "@data-provider/react": "1.1.0",
     "prop-types": "15.7.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "react-app-rewired": "2.1.6",
-    "serve": "11.3.0",
+    "serve": "11.3.2",
     "start-server-and-test": "1.11.0"
   }
 }

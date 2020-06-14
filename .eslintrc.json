@@ -1,4 +1,5 @@
 {
+  "root": true,
   "env": {
     "node": true
   },
@@ -18,6 +19,5 @@
     "no-undef": "error",
     "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }]
   },
-  "extends": ["prettier"],
-  "root": true
+  "extends": ["prettier"]
 }

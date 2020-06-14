@@ -1,30 +1,30 @@
-const uglifier = require("rollup-plugin-uglify");
-const commonjs = require("@rollup/plugin-commonjs");
-const resolve = require("@rollup/plugin-node-resolve");
-const babel = require("rollup-plugin-babel");
+import commonjs from "@rollup/plugin-commonjs";
+import resolve from "@rollup/plugin-node-resolve";
+import babel from "@rollup/plugin-babel";
+import { terser } from "rollup-plugin-terser";
 
 const BASE_CONFIG = {
   input: "index.js",
-  external: ["cross-fetch", "@mocks-server/admin-api-paths"]
+  external: ["cross-fetch", "@mocks-server/admin-api-paths"],
 };
 
 const GLOBALS = {
-  "@mocks-server/admin-api-paths": "pluginAdminApiPaths"
+  "@mocks-server/admin-api-paths": "pluginAdminApiPaths",
 };
 
 const BASE_PLUGINS = [
   resolve({
     mainFields: ["module", "main", "jsnext"],
     browser: true,
-    preferBuiltins: true
+    preferBuiltins: true,
   }),
   commonjs({
-    include: "node_modules/**"
+    include: "node_modules/**",
   }),
   babel({
     babelrc: false,
-    presets: ["@babel/env"]
-  })
+    presets: ["@babel/env"],
+  }),
 ];
 
 module.exports = [
@@ -32,9 +32,9 @@ module.exports = [
     ...BASE_CONFIG,
     output: {
       file: "dist/index.cjs.js",
-      format: "cjs"
+      format: "cjs",
     },
-    plugins: BASE_PLUGINS
+    plugins: BASE_PLUGINS,
   },
   {
     input: "index.js",
@@ -44,18 +44,18 @@ module.exports = [
       format: "umd",
       name: "mocksServerAdminApiClient",
       globals: {
-        "@mocks-server/admin-api-paths": "pluginAdminApiPaths"
-      }
+        "@mocks-server/admin-api-paths": "pluginAdminApiPaths",
+      },
     },
-    plugins: [...BASE_PLUGINS, uglifier.uglify()]
+    plugins: [...BASE_PLUGINS, terser()],
   },
   {
     ...BASE_CONFIG,
     output: {
       file: "dist/index.esm.js",
       format: "esm",
-      globals: GLOBALS
+      globals: GLOBALS,
     },
-    plugins: BASE_PLUGINS
-  }
+    plugins: BASE_PLUGINS,
+  },
 ];

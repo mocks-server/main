@@ -24,7 +24,7 @@
   ],
   "main": "index.js",
   "scripts": {
-    "lint": "eslint index.js src test jest.config.js jest.acceptance.config.js",
+    "lint": "eslint *.js src test",
     "lint-staged": "lint-staged",
     "test": "jest",
     "test:acceptance": "jest --config=jest.acceptance.config.js --runInBand",
@@ -62,9 +62,7 @@
   "lint-staged": {
     "src/**/*.js": "eslint",
     "test/**/*.js": "eslint",
-    "index.js": "eslint",
-    "jest.config.js": "eslint",
-    "jest.acceptance.config.js": "eslint"
+    "*.js": "eslint"
   },
   "husky": {
     "hooks": {

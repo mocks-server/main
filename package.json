@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/admin-api-paths",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Api paths of @mocks-server/plugin-admin-api",
   "keywords": [
     "mocks-server-plugin",
@@ -24,7 +24,7 @@
   "module": "dist/index.esm.js",
   "scripts": {
     "build": "rollup --config",
-    "lint": "eslint index.js test jest.config.js",
+    "lint": "eslint *.js test jest.config.js",
     "lint-staged": "lint-staged",
     "test": "jest",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
@@ -32,7 +32,10 @@
     "test:ci": "npm run test"
   },
   "devDependencies": {
-    "@babel/preset-env": "7.9.6",
+    "@babel/preset-env": "7.10.2",
+    "@rollup/plugin-babel": "5.0.3",
+    "@rollup/plugin-commonjs": "13.0.0",
+    "@rollup/plugin-node-resolve": "8.0.1",
     "babel-jest": "25.5.1",
     "coveralls": "3.0.9",
     "eslint": "6.8.0",
@@ -40,17 +43,14 @@
     "eslint-plugin-prettier": "3.1.3",
     "husky": "4.2.5",
     "jest": "25.5.4",
-    "lint-staged": "10.2.2",
+    "lint-staged": "10.2.10",
     "prettier": "2.0.5",
-    "rollup": "2.7.6",
-    "rollup-plugin-babel": "4.4.0",
-    "rollup-plugin-commonjs": "10.1.0",
-    "rollup-plugin-node-resolve": "5.2.0",
-    "rollup-plugin-uglify": "6.0.4"
+    "rollup": "2.16.1",
+    "rollup-plugin-terser": "6.1.0"
   },
   "lint-staged": {
     "test/**/*.js": "eslint",
-    "index.js": "eslint",
+    "*.js": "eslint",
     "jest.config.js": "eslint"
   },
   "husky": {
@@ -59,6 +59,6 @@
     }
   },
   "engines": {
-    "node": "10.x || 12.x || 13.x"
+    "node": "12.x || 13.x || 14.x"
   }
 }

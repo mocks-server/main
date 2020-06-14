@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/cypress-commands",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Extends Cypress' cy commands with methods for administrating mocks-server",
   "keywords": [
     "cypress",
@@ -27,7 +27,7 @@
   "main": "index.js",
   "scripts": {
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "lint": "eslint src test index.js jest.config.js test-e2e/cypress test-e2e/mocks test-e2e/app-fetch/public test-e2e/app-data-provider/src test-e2e/app-data-provider/webpack.config.js",
+    "lint": "eslint src test *.js jest.config.js test-e2e/cypress test-e2e/mocks test-e2e/app-fetch/public test-e2e/app-data-provider/src test-e2e/app-data-provider/webpack.config.js",
     "lint-staged": "lint-staged",
     "test": "jest",
     "test-e2e": "cd test-e2e && npm run test:ci",
@@ -36,17 +36,17 @@
     "test:ci": "npm run test && npm run test-e2e:ci"
   },
   "dependencies": {
-    "@mocks-server/admin-api-client": "2.0.2"
+    "@mocks-server/admin-api-client": "2.0.3"
   },
   "devDependencies": {
     "babel-eslint": "10.1.0",
     "coveralls": "3.0.9",
-    "eslint": "6.8.0",
+    "eslint": "7.2.0",
     "eslint-config-prettier": "6.11.0",
     "eslint-plugin-prettier": "3.1.3",
     "husky": "4.2.5",
-    "jest": "25.5.4",
-    "lint-staged": "10.2.2",
+    "jest": "26.0.1",
+    "lint-staged": "10.2.10",
     "prettier": "2.0.5",
     "sinon": "9.0.2"
   },
@@ -59,8 +59,7 @@
     "test-e2e/app-fetch/public/*.js": "eslint",
     "test-e2e/mocks/**/*.js": "eslint",
     "test-e2e/cypress/**/*.js": "eslint",
-    "jest.config.js": "eslint",
-    "index.js": "eslint",
+    "*.js": "eslint",
     "src/**/*.js": "eslint",
     "test/**/*.js": "eslint"
   },
@@ -70,6 +69,6 @@
     }
   },
   "engines": {
-    "node": "10.x || 12.x || 13.x"
+    "node": "12.x || 14.x"
   }
 }

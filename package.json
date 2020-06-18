@@ -34,7 +34,7 @@
     "test:ci": "npm run test:coverage"
   },
   "dependencies": {
-    "cross-fetch": "3.0.4",
+    "cross-fetch": "3.0.5",
     "@mocks-server/admin-api-paths": "1.0.7"
   },
   "devDependencies": {

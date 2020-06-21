@@ -26,6 +26,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.4.8] - 2020-06-21
+
+### Fixed
+- chore(deps): Move is-promise from devDeps to deps.
+
+### Changed
+- chore(deps): Update dependencies
+
 ## [1.4.7] - 2020-06-14
 ### Changed
 - chore(deps): Update dependencies

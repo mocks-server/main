@@ -8,7 +8,7 @@
     "serve": "serve -l 3000"
   },
   "dependencies": {
-    "@data-provider/core": "2.5.0",
+    "@data-provider/core": "2.5.2",
     "@data-provider/axios": "2.1.2",
     "jquery": "3.5.1",
     "redux": "4.0.5"

@@ -53,7 +53,7 @@
     "node-watch": "0.6.4",
     "require-all": "3.0.0",
     "route-parser": "0.0.5",
-    "winston": "3.2.1"
+    "winston": "3.3.3"
   },
   "devDependencies": {
     "coveralls": "3.0.9",

@@ -54,7 +54,7 @@
     "lint-staged": "10.2.11",
     "prettier": "2.0.5",
     "request": "2.88.2",
-    "request-promise": "4.2.5",
+    "request-promise": "4.2.6",
     "sinon": "9.0.2",
     "strip-ansi": "6.0.0",
     "tree-kill-sync": "1.0.0"

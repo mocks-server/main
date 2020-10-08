@@ -54,7 +54,7 @@
     "husky": "4.3.0",
     "jest": "26.2.2",
     "lint-staged": "10.4.0",
-    "lodash": "4.17.19",
+    "lodash": "4.17.20",
     "prettier": "2.0.5",
     "request": "2.88.2",
     "request-promise": "4.2.6",

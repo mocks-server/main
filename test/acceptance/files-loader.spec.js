@@ -135,4 +135,23 @@ describe("when mocks files are unordered and export single fixtures and behavior
       expect(usersResponse.statusCode).toEqual(404);
     });
   });
+
+  describe("When there is an error loading files", () => {
+    beforeAll(async () => {
+      cli = new CliRunner([binaryPath, "--path=files-error", "--behavior=standard"], {
+        cwd: cwdPath,
+      });
+      await wait();
+    });
+
+    afterAll(async () => {
+      await cli.kill();
+    });
+
+    it("should have logged files loader error", async () => {
+      expect(cli.logs).toEqual(expect.stringContaining("Error loading files from folder"));
+      expect(cli.logs).toEqual(expect.stringContaining("Cannot find module './non-existant'"));
+      expect(cli.logs).toEqual(expect.stringContaining("fixtures/files-error/getUser.js"));
+    });
+  });
 });

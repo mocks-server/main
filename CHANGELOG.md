@@ -26,6 +26,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.5.0] - 2020-10-26
+
+### Added
+- feat(filesLoader): Add error object to fileLoader error log
+
+### Changed
+- chore(deps): Update dependencies
+
 ## [1.4.8] - 2020-06-21
 
 ### Fixed

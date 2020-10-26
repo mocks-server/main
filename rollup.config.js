@@ -24,6 +24,7 @@ const BASE_PLUGINS = [
     include: "node_modules/**",
   }),
   babel({
+    babelHelpers: "bundled",
     babelrc: false,
     presets: ["@babel/env"],
   }),

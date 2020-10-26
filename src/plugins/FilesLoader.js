@@ -117,7 +117,7 @@ class FilesHandler {
       });
       this._load(this._contents);
     } catch (error) {
-      this._tracer.error(`Error loading files from folder ${this._path}`);
+      this._tracer.error(`Error loading files from folder ${this._path} with error:`, error);
     }
   }
 

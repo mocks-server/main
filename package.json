@@ -40,7 +40,7 @@
     "@data-provider/axios": "^2.0.0"
   },
   "dependencies": {
-    "@mocks-server/admin-api-paths": "1.0.7"
+    "@mocks-server/admin-api-paths": "1.0.8"
   },
   "devDependencies": {
     "@babel/preset-env": "7.12.1",

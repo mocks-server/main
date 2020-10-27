@@ -1,4 +1,3 @@
-import React from "react";
 import PropTypes from "prop-types";
 import { settings } from "@mocks-server/admin-api-client-data-provider";
 

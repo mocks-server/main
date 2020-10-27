@@ -1,4 +1,3 @@
-import React from "react";
 import { Provider } from "react-redux";
 import { createStore, combineReducers } from "redux";
 import { storeManager } from "@data-provider/core";

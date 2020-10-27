@@ -26,6 +26,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.5.1] - 2020-10-27
+
+### Fixed
+- fix(options): Call to new commander option to avoid conflicts in plugins options since new commander version
+
 ## [1.5.0] - 2020-10-26
 
 ### Added

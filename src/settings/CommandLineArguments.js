@@ -14,6 +14,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const { isUndefined } = require("lodash");
 
 const commander = require("commander");
+commander.storeOptionsAsProperties(true);
 
 class CommandLineArguments {
   constructor(defaultOptions) {

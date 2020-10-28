@@ -9,6 +9,7 @@
 # tests
 /coverage
 /public/main.js
+/public/main.js.LICENSE.txt
 
 # misc
 .DS_Store

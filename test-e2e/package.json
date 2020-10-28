@@ -24,11 +24,11 @@
     "test:ci": "npm run test:app-fetch && npm run test:app-data-provider && npm run test:app-data-provider-custom-config"
   },
   "devDependencies": {
-    "@mocks-server/main": "1.8.6",
+    "@mocks-server/main": "1.8.7",
     "@testing-library/cypress": "7.0.1",
     "babel-plugin-module-resolver": "4.0.0",
     "cross-env": "7.0.2",
-    "cypress": "4.12.1",
+    "cypress": "5.5.0",
     "start-server-and-test": "1.11.5"
   }
 }

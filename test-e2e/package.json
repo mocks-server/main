@@ -27,7 +27,7 @@
     "@mocks-server/main": "1.8.7",
     "@testing-library/cypress": "7.0.2",
     "babel-plugin-module-resolver": "4.0.0",
-    "cross-env": "7.0.2",
+    "cross-env": "7.0.3",
     "cypress": "5.6.0",
     "start-server-and-test": "1.11.6"
   }

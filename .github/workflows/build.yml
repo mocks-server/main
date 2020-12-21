@@ -45,6 +45,13 @@ jobs:
       - name: Test E2E
         run: npm run test:e2e:ci
         id: test-e2e
+      - name: Upload E2E tests screenshots
+        if: ${{ always() && steps.test-e2e.outcome == 'failure' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: e2e-screenshots-${{ matrix.node }}
+          path: test-e2e/browser/cypress/screenshots
+          retention-days: 7
       - name: Upload test results
         uses: actions/upload-artifact@v2
         with:

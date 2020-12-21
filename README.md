@@ -1,4 +1,4 @@
-[![Build status][travisci-image]][travisci-url] [![Coverage Status][coveralls-image]][coveralls-url] [![Quality Gate][quality-gate-image]][quality-gate-url]
+[![Build status][build-image]][build-url] [![Coverage Status][coveralls-image]][coveralls-url] [![Quality Gate][quality-gate-image]][quality-gate-url]
 
 [![NPM dependencies][npm-dependencies-image]][npm-dependencies-url] [![Renovate](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com) [![Last commit][last-commit-image]][last-commit-url] [![Last release][release-image]][release-url] 
 
@@ -84,8 +84,8 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 
 [coveralls-image]: https://coveralls.io/repos/github/mocks-server/admin-api-client/badge.svg
 [coveralls-url]: https://coveralls.io/github/mocks-server/admin-api-client
-[travisci-image]: https://travis-ci.com/mocks-server/admin-api-client.svg?branch=master
-[travisci-url]: https://travis-ci.com/mocks-server/admin-api-client
+[build-image]: https://github.com/mocks-server/admin-api-client/workflows/build/badge.svg?branch=master
+[build-url]: https://github.com/mocks-server/admin-api-client/actions?query=workflow%3Abuild+branch%3Amaster
 [last-commit-image]: https://img.shields.io/github/last-commit/mocks-server/admin-api-client.svg
 [last-commit-url]: https://github.com/mocks-server/admin-api-client/commits
 [license-image]: https://img.shields.io/npm/l/@mocks-server/admin-api-client.svg

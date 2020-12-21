@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - chore(ci): Migrate from Travis CI to github actions
 - chore(deps): Support all Node.js releases that have not passed their end date
+- test(e2e): Rename acceptance tests into e2e tests
 ### Fixed
 ### Removed
 

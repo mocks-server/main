@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/main",
-  "version": "1.8.7",
+  "version": "1.8.8",
   "description": "Mocks server supporting multiple api behaviors",
   "keywords": [
     "mocks",
@@ -35,10 +35,8 @@
     "lint": "eslint *.js lib test",
     "lint-staged": "lint-staged",
     "test": "jest",
-    "test:acceptance": "jest --config=jest.acceptance.config.js --runInBand",
-    "test:coverage": "npm run test",
-    "test:ci": "npm run test && npm run test:acceptance",
-    "coveralls": "cat ./coverage/lcov.info | coveralls"
+    "test:e2e": "jest --config=jest.e2e.config.js --runInBand",
+    "test:unit": "npm run test"
   },
   "dependencies": {
     "@mocks-server/core": "1.5.1",
@@ -46,19 +44,18 @@
     "@mocks-server/plugin-inquirer-cli": "1.3.6"
   },
   "devDependencies": {
-    "coveralls": "3.0.9",
-    "eslint": "7.12.1",
+    "eslint": "7.15.0",
     "eslint-config-prettier": "6.15.0",
-    "eslint-plugin-prettier": "3.1.4",
+    "eslint-plugin-prettier": "3.3.0",
     "fs-extra": "9.0.1",
-    "husky": "4.3.0",
-    "jest": "26.6.1",
-    "lint-staged": "10.5.0",
+    "husky": "4.3.6",
+    "jest": "26.6.3",
+    "lint-staged": "10.5.3",
     "lodash": "4.17.20",
-    "prettier": "2.1.2",
+    "prettier": "2.2.1",
     "request": "2.88.2",
     "request-promise": "4.2.6",
-    "sinon": "9.2.0",
+    "sinon": "9.2.2",
     "strip-ansi": "6.0.0",
     "tree-kill-sync": "1.0.0"
   },
@@ -73,6 +70,6 @@
     }
   },
   "engines": {
-    "node": "12.x || 14.x"
+    "node": "12.x || 14.x || 15.x"
   }
 }

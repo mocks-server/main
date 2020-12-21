@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
+- chore(deps): Support Cypress v6.x
 ### Changed
+- chore(ci): Migrate from Travis CI to github actions
+- chore(deps): Support all Node.js releases that have not passed their end date
 ### Fixed
 ### Removed
 

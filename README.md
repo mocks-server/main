@@ -1,4 +1,4 @@
-[![Build status][travisci-image]][travisci-url] [![Coverage Status][coveralls-image]][coveralls-url] [![Quality Gate][quality-gate-image]][quality-gate-url]
+[![Build status][build-image]][build-url] [![Coverage Status][coveralls-image]][coveralls-url] [![Quality Gate][quality-gate-image]][quality-gate-url]
 
 [![NPM dependencies][npm-dependencies-image]][npm-dependencies-url] [![Renovate](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com) [![Last commit][last-commit-image]][last-commit-url] [![Last release][release-image]][release-url] 
 
@@ -110,8 +110,8 @@ MIT, see [LICENSE](./LICENSE) for details.
 
 [coveralls-image]: https://coveralls.io/repos/github/mocks-server/cypress-commands/badge.svg
 [coveralls-url]: https://coveralls.io/github/mocks-server/cypress-commands
-[travisci-image]: https://travis-ci.com/mocks-server/cypress-commands.svg?branch=master
-[travisci-url]: https://travis-ci.com/mocks-server/cypress-commands
+[build-image]: https://github.com/mocks-server/cypress-commands/workflows/build/badge.svg?branch=master
+[build-url]: https://github.com/mocks-server/cypress-commands/actions?query=workflow%3Abuild+branch%3Amaster
 [last-commit-image]: https://img.shields.io/github/last-commit/mocks-server/cypress-commands.svg
 [last-commit-url]: https://github.com/mocks-server/cypress-commands/commits
 [license-image]: https://img.shields.io/npm/l/@mocks-server/cypress-commands.svg

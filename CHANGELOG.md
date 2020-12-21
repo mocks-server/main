@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 ### Added
 ### Changed
+- chore(ci): Migrate from Travis CI to github actions
+- test(e2e): Rename acceptance tests into e2e tests
 ### Fixed
 ### Removed
 

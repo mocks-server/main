@@ -10,6 +10,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.0.8] - 2020-12-21
+
+### Added
+- chore(deps): Add support for Node.js v15.x
+- chore(deps): Support Cypress v6.x
+
+### Changed
+- chore(ci): Migrate from Travis CI to github actions
+
 ## [1.0.7] - 2020-10-28
 ### Changed
 - Update dependencies

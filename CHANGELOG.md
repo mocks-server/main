@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 ### Added
 ### Changed
-- chore(ci): Migrate from Travis CI to github actions
 ### Fixed
 ### Removed
+
+## [2.0.5] - 2020-12-21
+
+### Added
+- chore(deps): Add support for Node.js v15.x
+
+### Changed
+- chore(ci): Migrate from Travis CI to github actions
 
 ## [2.0.4] - 2020-10-26
 ### Changed

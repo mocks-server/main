@@ -5,7 +5,7 @@ module.exports = {
   // Automatically clear mock calls and instances between every test
   clearMocks: true,
 
-  testMatch: ["**/test/acceptance/**/?(*.)+(spec|test).js?(x)"],
+  testMatch: ["**/test/e2e/**/?(*.)+(spec|test).js?(x)"],
   // testMatch: ["**/test/acceptance/files-loader.spec.js"],
 
   // Indicates whether the coverage information should be collected while executing the test

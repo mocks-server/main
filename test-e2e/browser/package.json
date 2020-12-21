@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@testing-library/cypress": "7.0.1",
-    "cypress": "5.4.0",
+    "cypress": "5.5.0",
     "start-server-and-test": "1.11.5"
   }
 }

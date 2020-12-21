@@ -26,6 +26,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.5.2] - 2020-12-21
+
+### Added
+- chore(deps): Add support for Node.js v15.x
+
+### Changed
+- chore(ci): Migrate from Travis CI to github actions
+- test(e2e): Rename acceptance tests into e2e tests
+
 ## [1.5.1] - 2020-10-27
 
 ### Fixed

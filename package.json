@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/core",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Pluggable mock server supporting multiple api behaviors",
   "keywords": [
     "mocks",
@@ -34,10 +34,8 @@
     "lint": "eslint *.js src test",
     "lint-staged": "lint-staged",
     "test": "jest",
-    "test:acceptance": "jest --config=jest.acceptance.config.js --runInBand --detectOpenHandles",
-    "test:coverage": "npm run test",
-    "test:ci": "npm run test && npm run test:acceptance",
-    "coveralls": "cat ./coverage/lcov.info | coveralls"
+    "test:e2e": "jest --config=jest.e2e.config.js --runInBand --detectOpenHandles",
+    "test:unit": "npm run test"
   },
   "dependencies": {
     "body-parser": "1.19.0",
@@ -56,7 +54,6 @@
     "winston": "3.3.3"
   },
   "devDependencies": {
-    "coveralls": "3.0.9",
     "eslint": "7.12.0",
     "eslint-config-prettier": "6.14.0",
     "eslint-plugin-prettier": "3.1.4",
@@ -81,6 +78,6 @@
     }
   },
   "engines": {
-    "node": "12.x || 14.x"
+    "node": "12.x || 14.x || 15.x"
   }
 }

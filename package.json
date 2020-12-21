@@ -43,7 +43,7 @@
     "@mocks-server/core": "1.5.1",
     "eslint": "7.15.0",
     "eslint-config-prettier": "6.15.0",
-    "eslint-plugin-prettier": "3.2.0",
+    "eslint-plugin-prettier": "3.3.0",
     "fs-extra": "9.0.1",
     "husky": "4.3.6",
     "is-promise": "4.0.0",

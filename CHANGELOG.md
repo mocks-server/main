@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
+- chore(deps): Support Cypress v6.x
 ### Changed
+- chore(ci): Migrate from Travis CI to github actions
 ### Fixed
 ### Removed
 

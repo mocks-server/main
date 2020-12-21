@@ -29,9 +29,7 @@
     "mocks:install": "cd mocks && npm i",
     "mocks:ci": "cd mocks && npm run mocks:ci",
     "test": "jest",
-    "test:coverage": "npm run mocks:install && start-server-and-test mocks:ci tcp:3200 test",
-    "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "test:ci": "npm run test:coverage"
+    "test:unit": "npm run mocks:install && start-server-and-test mocks:ci tcp:3200 test"
   },
   "dependencies": {
     "cross-fetch": "3.0.6",
@@ -45,7 +43,6 @@
     "babel-eslint": "10.1.0",
     "babel-jest": "26.6.1",
     "babel-polyfill": "6.26.0",
-    "coveralls": "3.0.9",
     "eslint": "7.12.1",
     "eslint-config-prettier": "6.15.0",
     "eslint-plugin-prettier": "3.1.4",
@@ -71,6 +68,6 @@
     }
   },
   "engines": {
-    "node": "12.x || 14.x"
+    "node": "10.x || 12.x || 14.x || 15.x"
   }
 }

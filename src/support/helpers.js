@@ -1,10 +1,10 @@
-function scopedAlertsMethods(alertIdScope, originalAddMethod, originalRemoveMethod) {
+function scopedAlertsMethods(contextScope, originalAddMethod, originalRemoveMethod) {
   return {
-    addAlert: (alertId, message, error) => {
-      return originalAddMethod(`${alertIdScope}:${alertId || ""}`, message, error);
+    addAlert: (context, message, error) => {
+      return originalAddMethod(`${contextScope}:${context || ""}`, message, error);
     },
-    removeAlerts: (alertsIdScope) => {
-      return originalRemoveMethod(`${alertIdScope}:${alertsIdScope || ""}`);
+    removeAlerts: (context) => {
+      return originalRemoveMethod(`${contextScope}:${context || ""}`);
     },
   };
 }

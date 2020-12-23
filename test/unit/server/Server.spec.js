@@ -29,6 +29,7 @@ const wait = (time = 1000) => {
 
 describe("Server", () => {
   let sandbox;
+  let callbacks;
   let libsMocks;
   let mocksMocks;
   let coreMocks;
@@ -38,7 +39,10 @@ describe("Server", () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-
+    callbacks = {
+      addAlert: sandbox.stub(),
+      removeAlerts: sandbox.stub(),
+    };
     processOnStub = sandbox.stub(process, "on");
     sandbox.stub(process, "exit");
     sandbox.stub(tracer, "error");
@@ -51,7 +55,9 @@ describe("Server", () => {
     server = new Server(
       coreInstance._eventEmitter,
       coreInstance.settings,
-      mocksMocks.stubs.instance
+      mocksMocks.stubs.instance,
+      coreInstance,
+      callbacks
     );
     expect.assertions(1);
     libsMocks.stubs.http.createServer.onListen.delay(200);
@@ -238,6 +244,25 @@ describe("Server", () => {
       }
     });
 
+    it("should add an alert if an error occurs when calling to server listen method", async () => {
+      const error = new Error("Foo error");
+      libsMocks.stubs.http.createServer.listen.throws(error);
+
+      await server.init();
+
+      try {
+        await server.start();
+      } catch (err) {
+        expect(callbacks.addAlert.calledWith("start", "Error starting server", err)).toEqual(true);
+      }
+    });
+
+    it("should remove start alerts when starts successfully", async () => {
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      await server.start();
+      expect(callbacks.removeAlerts.calledWith("start")).toEqual(true);
+    });
+
     it("should call to start only once even when called multiple times in parallel", async () => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
       libsMocks.stubs.http.createServer.onListen.delay(200);
@@ -250,6 +275,18 @@ describe("Server", () => {
     });
 
     it("should be listening to server errors and throw an error if occurs", async () => {
+      const error = new Error();
+      libsMocks.stubs.http.createServer.onError.returns(error);
+
+      try {
+        await server.init();
+        await server.start();
+      } catch (err) {
+        expect(callbacks.addAlert.calledWith("server", "Server error", err)).toEqual(true);
+      }
+    });
+
+    it("should add an alert if server errors", async () => {
       const error = new Error();
       libsMocks.stubs.http.createServer.onError.returns(error);
 

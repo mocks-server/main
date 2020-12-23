@@ -11,21 +11,21 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const tracer = require("./tracer");
 
 class Alerts {
-  constructor({ onChangeAlerts }) {
-    this._onChangeAlerts = onChangeAlerts;
+  constructor({ onChangeValues }) {
+    this._onChangeValues = onChangeValues;
     this._alerts = new Set();
     this.add = this.add.bind(this);
     this.remove = this.remove.bind(this);
   }
 
-  add(reporter, message, error) {
+  add(context, message, error) {
     const alert = {
-      reporter,
+      context,
       message,
       error,
     };
     this._alerts.forEach((alert) => {
-      if (alert.reporter === reporter) {
+      if (alert.context === context) {
         this._alerts.delete(alert);
       }
     });
@@ -35,27 +35,23 @@ class Alerts {
     } else {
       tracer.warn(message);
     }
-    this._onChangeAlerts(this.get());
-    return () => {
-      this._alerts.delete(alert);
-      this._onChangeAlerts(this.get());
-    };
+    this._onChangeValues(this.values);
   }
 
-  remove(reporter) {
+  remove(context) {
     let changed = false;
     this._alerts.forEach((alert) => {
-      if (alert.reporter.indexOf(reporter) === 0) {
+      if (alert.context.indexOf(context) === 0) {
         this._alerts.delete(alert);
         changed = true;
       }
     });
     if (changed) {
-      this._onChangeAlerts(this.get());
+      this._onChangeValues(this.values);
     }
   }
 
-  get() {
+  get values() {
     return Array.from(this._alerts);
   }
 }

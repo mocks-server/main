@@ -101,7 +101,6 @@ class Server {
         },
         (error) => {
           if (error) {
-            // tracer.error(`Error starting server: ${error.message}`);
             this._serverStarting = false;
             this._serverStarted = false;
             this._addAlert("start", `Error starting server`, error);

@@ -26,7 +26,7 @@ class Behaviors {
     this._settings = settings;
     this._eventEmitter = eventEmitter;
     this._noBehavior = new Behavior();
-    this._onAlert = addAlert;
+    this._addAlert = addAlert;
     this._removeAlerts = removeAlerts;
   }
 
@@ -54,19 +54,18 @@ class Behaviors {
       if (this._current !== null) {
         currentFailed = this._current;
       }
-      tracer.warn(`Defined behavior "${this._current}" was not found.`);
       this._current = this._ids[0];
       if (this._current) {
-        tracer.warn(`Inititializing with first found behavior: "${this._ids[0]}"`);
+        tracer.warn(`Initializing with first found behavior: "${this._ids[0]}"`);
         this._settings.set("behavior", this._current);
         if (currentFailed) {
-          this._onAlert(
+          this._addAlert(
             "current",
             `Defined behavior "${currentFailed}" was not found. The first one found was used instead`
           );
         }
       } else {
-        this._onAlert("empty", `No behaviors found`);
+        this._addAlert("empty", `No behaviors found`);
       }
     }
 

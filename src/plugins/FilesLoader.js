@@ -186,7 +186,7 @@ class FilesHandler {
   }
 
   get displayName() {
-    return "@mocks-server/plugin-files-loader";
+    return "@mocks-server/core/plugin-files-loader";
   }
 }
 

@@ -19,7 +19,7 @@ const { scopedAlertsMethods } = require("../support/helpers");
 
 class Plugins {
   constructor(config, loaders, core, { addAlert, removeAlerts }) {
-    this._onPluginAlert = addAlert;
+    this._addAlert = addAlert;
     this._removeAlerts = removeAlerts;
     this._config = config;
     this._core = core;
@@ -42,6 +42,7 @@ class Plugins {
   }
 
   init() {
+    this._removeAlerts("init");
     return this._initPlugins().then(() => {
       tracer.verbose(`Initializated ${this._pluginsInitialized} plugins without errors`);
       return Promise.resolve();
@@ -49,6 +50,7 @@ class Plugins {
   }
 
   start() {
+    this._removeAlerts("start");
     return this._startPlugins().then(() => {
       tracer.verbose(`Started ${this._pluginsStarted} plugins without errors`);
       return Promise.resolve();
@@ -56,6 +58,7 @@ class Plugins {
   }
 
   stop() {
+    this._removeAlerts("stop");
     return this._stopPlugins().then(() => {
       tracer.verbose(`Stopped ${this._pluginsStopped} plugins without errors`);
       return Promise.resolve();
@@ -68,8 +71,8 @@ class Plugins {
 
   _catchRegisterError(error, index) {
     const pluginDisplayName = this.pluginDisplayName(index);
-    this._onPluginAlert(
-      `${pluginDisplayName}:register`,
+    this._addAlert(
+      `register:${pluginDisplayName}`,
       `Error registering plugin "${pluginDisplayName}"`,
       error
     );
@@ -119,7 +122,7 @@ class Plugins {
       loadMocks,
       ...scopedAlertsMethods(
         this.pluginDisplayName(pluginIndex),
-        this._onPluginAlert,
+        this._addAlert,
         this._removeAlerts
       ),
     };
@@ -132,8 +135,8 @@ class Plugins {
   _catchInitError(error, index) {
     this._pluginsInitialized = this._pluginsInitialized - 1;
     const pluginDisplayName = this.pluginDisplayName(index);
-    this._onPluginAlert(
-      `${pluginDisplayName}:init`,
+    this._addAlert(
+      `init:${pluginDisplayName}`,
       `Error initializating plugin "${pluginDisplayName}"`,
       error
     );
@@ -152,8 +155,8 @@ class Plugins {
     const pluginDisplayName = this.pluginDisplayName(pluginIndex);
     if (!this._pluginsInstances[pluginIndex].init) {
       this._pluginsInitialized = this._pluginsInitialized - 1;
-      this._onPluginAlert(
-        `${pluginDisplayName}:init`,
+      this._addAlert(
+        `init:${pluginDisplayName}`,
         `Plugin "${pluginDisplayName}" has not init method`
       );
       return initNextPlugin();
@@ -182,8 +185,8 @@ class Plugins {
   _catchStartError(error, index) {
     this._pluginsStarted = this._pluginsStarted - 1;
     const pluginDisplayName = this.pluginDisplayName(index);
-    this._onPluginAlert(
-      `${pluginDisplayName}:start`,
+    this._addAlert(
+      `start:${pluginDisplayName}`,
       `Error starting plugin "${pluginDisplayName}"`,
       error
     );
@@ -202,8 +205,8 @@ class Plugins {
     const pluginDisplayName = this.pluginDisplayName(pluginIndex);
     if (!this._pluginsInstances[pluginIndex].start) {
       this._pluginsStarted = this._pluginsStarted - 1;
-      this._onPluginAlert(
-        `${pluginDisplayName}:start`,
+      this._addAlert(
+        `start:${pluginDisplayName}`,
         `Plugin "${pluginDisplayName}" has not start method`
       );
       return startNextPlugin();
@@ -232,8 +235,8 @@ class Plugins {
   _catchStopError(error, index) {
     this._pluginsStopped = this._pluginsStopped - 1;
     const pluginDisplayName = this.pluginDisplayName(index);
-    this._onPluginAlert(
-      `${pluginDisplayName}:stop`,
+    this._addAlert(
+      `stop:${pluginDisplayName}`,
       `Error stopping plugin "${pluginDisplayName}"`,
       error
     );
@@ -253,8 +256,8 @@ class Plugins {
     const pluginDisplayName = this.pluginDisplayName(pluginIndex);
     if (!this._pluginsInstances[pluginIndex].stop) {
       this._pluginsStopped = this._pluginsStopped - 1;
-      this._onPluginAlert(
-        `${pluginDisplayName}:stop`,
+      this._addAlert(
+        `stop:${pluginDisplayName}`,
         `Plugin "${pluginDisplayName}" has not stop method`
       );
       return stopNextPlugin();

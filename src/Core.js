@@ -41,7 +41,7 @@ class Core {
     // They should never access directly to the full core
     // (expect in cases where it is needed to be passed to plugins or another external pieces)
     this._alerts = new Alerts({
-      onChangeAlerts: (alerts) => {
+      onChangeValues: (alerts) => {
         this._eventEmitter.emit(CHANGE_ALERTS, alerts);
       },
     });
@@ -49,8 +49,8 @@ class Core {
     // TODO, move loaders inside mocks folder, or rename it
     this._loaders = new Loaders(this);
     this._config = new Config(
-      config,
-      scopedAlertsMethods("config", this._alerts.add, this._alerts.remove)
+      scopedAlertsMethods("config", this._alerts.add, this._alerts.remove),
+      config
     );
 
     this._settings = new Settings(this._eventEmitter, this._config);
@@ -227,7 +227,7 @@ class Core {
   // Expose child objects needed
 
   get alerts() {
-    return this._alerts.get();
+    return this._alerts.values;
   }
 
   get settings() {

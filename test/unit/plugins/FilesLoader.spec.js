@@ -162,6 +162,8 @@ describe("FilesLoader", () => {
     libsMocks = new LibsMocks();
     pluginMethods = {
       loadMocks: sandbox.stub(),
+      addAlert: sandbox.stub(),
+      removeAlerts: sandbox.stub(),
     };
     coreInstance = coreMocks.stubs.instance;
     requireAll.mockImplementation(() => fooFiles);
@@ -323,16 +325,25 @@ describe("FilesLoader", () => {
       ]);
     });
 
+    it("should have displayName defined", async () => {
+      expect(filesLoader.displayName).toEqual("@mocks-server/core/plugin-files-loader");
+    });
+
     it("should require all files from mocks folders calculating it from cwd", async () => {
       path.isAbsolute.returns(false);
       await filesLoader.init();
       expect(requireAll.mock.calls[0][0].dirname).toEqual(path.resolve(process.cwd(), "foo-path"));
     });
 
-    it("should not throw and trace error if there is an error loading files", async () => {
+    it("should not throw and add an alert if there is an error loading files", async () => {
       coreInstance.tracer.silly.throws(new Error());
       await filesLoader.init();
-      expect(coreInstance.tracer.error.callCount).toEqual(1);
+      expect(pluginMethods.addAlert.calledWith("load")).toEqual(true);
+    });
+
+    it("should remove alerts if there is are no errors loading files", async () => {
+      await filesLoader.init();
+      expect(pluginMethods.removeAlerts.calledWith("load")).toEqual(true);
     });
 
     it("should require all files from exactly mocks folder if it is absolute", async () => {

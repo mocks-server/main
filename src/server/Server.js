@@ -19,14 +19,16 @@ const tracer = require("../tracer");
 const middlewares = require("./middlewares");
 
 class Server {
-  constructor(eventEmitter, settings, mocks, core) {
-    // TODO, deprecate, the core is being passed only to maintain temporarily backward retrocompaitbility with API plugin. This is not published in documentation.
+  constructor(eventEmitter, settings, mocks, core, { addAlert, removeAlerts }) {
+    // TODO, deprecate, the core is being passed only to maintain temporarily backward compatibility with API plugin. This is not published in documentation.
     this._core = core; // Use this reference only to provide it to external functions for customization purposes
     this._mocks = mocks;
     this._eventEmitter = eventEmitter;
     this._customRouters = [];
     this._settings = settings;
     this._error = null;
+    this._addAlert = addAlert;
+    this._removeAlerts = removeAlerts;
 
     this._startServer = this._startServer.bind(this);
   }
@@ -46,7 +48,6 @@ class Server {
       return;
     }
     tracer.debug("Initializing server");
-    this._serverInitted = true;
     this._express = express();
 
     // Add middlewares
@@ -63,12 +64,13 @@ class Server {
 
     // Create server
     this._server = http.createServer(this._express);
-
+    this._removeAlerts("server");
     this._server.on("error", (error) => {
-      tracer.error(`Server error: ${error.message}`);
+      this._addAlert("server", `Server error`, error);
       this._error = error;
       throw error;
     });
+    this._serverInitted = true;
   }
 
   _reinitServer() {
@@ -99,9 +101,10 @@ class Server {
         },
         (error) => {
           if (error) {
-            tracer.error(`Error starting server: ${error.message}`);
+            // tracer.error(`Error starting server: ${error.message}`);
             this._serverStarting = false;
             this._serverStarted = false;
+            this._addAlert("start", `Error starting server`, error);
             this._error = error;
             reject(error);
           } else {
@@ -109,11 +112,13 @@ class Server {
             this._error = null;
             this._serverStarting = false;
             this._serverStarted = true;
+            this._removeAlerts("start");
             resolve(this);
           }
         }
       );
     } catch (error) {
+      this._addAlert("start", `Error starting server`, error);
       reject(error);
     }
   }

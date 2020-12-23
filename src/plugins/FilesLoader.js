@@ -22,6 +22,8 @@ class FilesHandler {
   constructor(core, methods, extraOptions = {}) {
     this._core = core;
     this._load = methods.loadMocks;
+    this._onAlert = methods.addAlert;
+    this._removeAlerts = methods.removeAlerts;
     this._tracer = core.tracer;
     this._settings = this._core.settings;
     this._customRequireCache = extraOptions.requireCache;
@@ -116,8 +118,9 @@ class FilesHandler {
         return content;
       });
       this._load(this._contents);
+      this._removeAlerts("load");
     } catch (error) {
-      this._tracer.error(`Error loading files from folder ${this._path} with error:`, error);
+      this._onAlert("load", `Error loading files from folder ${this._path}`, error);
     }
   }
 

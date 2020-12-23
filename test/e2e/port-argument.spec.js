@@ -9,7 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { CliRunner, request, wait } = require("./utils");
+const { CliRunner, request, wait } = require("./support/helpers");
 
 describe("port command line argument", () => {
   const binaryPath = "./starter";

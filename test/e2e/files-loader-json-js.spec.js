@@ -9,7 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { CliRunner, startCore, stopCore, request, wait } = require("./utils");
+const { CliRunner, startCore, stopCore, request, wait } = require("./support/helpers");
 
 describe("when mocks files are defined as json and js", () => {
   const binaryPath = "./starter";

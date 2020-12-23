@@ -9,7 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { CliRunner, request, wait, TimeCounter } = require("./utils");
+const { CliRunner, request, wait, TimeCounter } = require("./support/helpers");
 
 describe("delay argument", () => {
   const binaryPath = "./starter";

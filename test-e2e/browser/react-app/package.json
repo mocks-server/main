@@ -5,7 +5,7 @@
   "dependencies": {
     "@data-provider/axios": "2.1.6",
     "@data-provider/core": "2.8.2",
-    "@data-provider/react": "1.2.0",
+    "@data-provider/react": "1.5.1",
     "prop-types": "15.7.2",
     "react": "17.0.1",
     "react-dom": "17.0.1",

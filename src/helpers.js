@@ -14,8 +14,8 @@ const renderWithStatusColor = (message, statusLevel = 0) => {
 
 const formatError = (error) => {
   return `${error.message}${ALERTS_TAB_LINE}${trim(
-    error.stack.substring(0, 100).replace(/\n/gim, ALERTS_TAB_LINE)
-  )}`;
+    error.stack.split("\n").slice(0, 3).join("\n").replace(/\n/gim, ALERTS_TAB_LINE)
+  )}...`;
 };
 
 function renderSectionHeader(sectionName) {

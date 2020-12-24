@@ -56,6 +56,10 @@ module.exports = class InteractiveCliRunner {
     return this._cli.logs;
   }
 
+  get currentScreen() {
+    return this._cli.currentScreen;
+  }
+
   async cursorDown(number) {
     this._log("Moving cursor down");
     this._cli.cursorDown();

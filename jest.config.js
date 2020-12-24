@@ -26,7 +26,7 @@ module.exports = {
 
   // The glob patterns Jest uses to detect test files
   testMatch: ["<rootDir>/test/unit/**/*.spec.js"],
-  // testMatch: ["**/test/unit/**/Inquirer.spec.js"],
+  // testMatch: ["**/test/unit/**/Cli.spec.js"],
 
   // The test environment that will be used for testing
   testEnvironment: "node",

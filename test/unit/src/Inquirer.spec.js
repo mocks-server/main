@@ -88,6 +88,19 @@ describe("Inquirer", () => {
       expect(console.log.getCall(3).args[0]).toEqual(expect.stringContaining(fooHeader));
     });
 
+    it("should print all alerts returned by alerts method provided to constructor", () => {
+      const fooAlert = "foo header";
+      sandbox.stub(process.stdout, "write");
+      const cli = new Inquirer(
+        fooQuestions,
+        () => [],
+        () => [fooAlert]
+      );
+      cli.clearScreen();
+      // Get console call 3 (From 0 to 2 are rendering section header)
+      expect(console.log.getCall(3).args[0]).toEqual(expect.stringContaining(fooAlert));
+    });
+
     it("should not print header if header option is set to false", () => {
       const fooHeader = "foo header";
       sandbox.stub(process.stdout, "write");
@@ -239,7 +252,7 @@ describe("Inquirer", () => {
 
     it("should do nothing if logs mode is not currently enabled", async () => {
       const cli = new Inquirer(fooQuestions);
-      await cli.exitLogsMode();
+      cli.exitLogsMode();
       expect(process.stdin.removeListener.callCount).toEqual(0);
     });
   });

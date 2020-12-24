@@ -221,22 +221,7 @@ class Cli {
   }
 
   _alertsHeader() {
-    const alerts = this._core.alerts;
-    const alertsToRender = alerts.map(renderAlert);
-
-    // TODO, convert this into an alert in Core
-    if (this._core.serverError) {
-      alertsToRender.unshift(
-        renderHeader(
-          "server:restart",
-          `There was an error restarting server`,
-          2
-          //error: this._core.serverError,
-        )
-      );
-    }
-
-    return alertsToRender;
+    return this._core.alerts.map(renderAlert);
   }
 
   async _displayMainMenu() {

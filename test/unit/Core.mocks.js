@@ -41,12 +41,13 @@ class CoreMock {
       addRouter: this._sandbox.stub(),
       addSetting: this._sandbox.stub(),
       behaviors: {
-        ids: [],
-        currentFromCollection: "foo-current",
-        collection: "foo-behaviors-collection",
+        count: 0,
+        currentId: "foo-current",
       },
       alerts: [],
-      fixtures: {},
+      fixtures: {
+        count: 0,
+      },
       serverError: null,
       _eventEmitter: {
         on: this._sandbox.stub(),

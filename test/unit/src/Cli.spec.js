@@ -10,6 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
+const chalk = require("chalk");
 
 const CoreMocks = require("../Core.mocks.js");
 const InquirerMocks = require("./Inquirer.mocks.js");
@@ -46,6 +47,10 @@ describe("Cli", () => {
       coreMocks.reset();
       cli = new Cli(coreInstance);
       expect(coreInstance.addSetting.getCall(0).args[0].name).toEqual("cli");
+    });
+
+    it("should have displayName", () => {
+      expect(cli.displayName).toEqual("@mocks-server/plugin-inquirer-cli");
     });
   });
 
@@ -201,6 +206,19 @@ describe("Cli", () => {
         log: "silent",
       });
       expect(coreInstance.settings.set.callCount).toEqual(0);
+    });
+  });
+
+  describe("when alerts are changed", () => {
+    beforeEach(async () => {
+      await cli.start();
+    });
+
+    it("should refresh main menu", async () => {
+      expect.assertions(2);
+      coreInstance.onChangeAlerts.getCall(0).args[0]();
+      expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
   });
 
@@ -437,24 +455,123 @@ describe("Cli", () => {
   });
 
   describe("when printing header", () => {
-    it("should print server url as first element if server has not an error", async () => {
-      coreInstance.serverError = null;
+    it("should print server url as first element", async () => {
       await cli.start();
       expect(cli._header()[0]).toEqual(expect.stringContaining("Mocks server listening"));
     });
 
     it("should print localhost as host when it is 0.0.0.0", async () => {
-      coreInstance.serverError = null;
       coreInstance.settings.get.withArgs("host").returns("0.0.0.0");
       await cli.start();
       expect(cli._header()[0]).toEqual(expect.stringContaining("http://localhost"));
     });
 
     it("should print custom host as host", async () => {
-      coreInstance.serverError = null;
       coreInstance.settings.get.withArgs("host").returns("foo-host");
       await cli.start();
       expect(cli._header()[0]).toEqual(expect.stringContaining("http://foo-host"));
+    });
+
+    it("should print delay in yellow if is greater than 0", async () => {
+      coreInstance.settings.get.withArgs("delay").returns(1000);
+      await cli.start();
+      expect(cli._header()[1]).toEqual(expect.stringContaining(chalk.yellow("1000")));
+    });
+
+    it("should print delay in green if is equal to 0", async () => {
+      coreInstance.settings.get.withArgs("delay").returns(0);
+      await cli.start();
+      expect(cli._header()[1]).toEqual(expect.stringContaining(chalk.green("0")));
+    });
+
+    it("should print behaviors in red if are equal to 0", async () => {
+      coreInstance.behaviors.count = 0;
+      await cli.start();
+      expect(cli._header()[2]).toEqual(expect.stringContaining(chalk.red("0")));
+    });
+
+    it("should print behaviors in green if are greater than 0", async () => {
+      coreInstance.behaviors.count = 10;
+      await cli.start();
+      expect(cli._header()[2]).toEqual(expect.stringContaining(chalk.green("10")));
+    });
+
+    it("should print current behavior in red if it is null", async () => {
+      coreInstance.behaviors.currentId = null;
+      await cli.start();
+      expect(cli._header()[3]).toEqual(expect.stringContaining(chalk.red("-")));
+    });
+
+    it("should print current behavior in green if it is defined", async () => {
+      coreInstance.behaviors.currentId = "foo";
+      await cli.start();
+      expect(cli._header()[3]).toEqual(expect.stringContaining(chalk.green("foo")));
+    });
+
+    it("should print current fixtures in red if there are less than 1", async () => {
+      coreInstance.fixtures.count = 0;
+      await cli.start();
+      expect(cli._header()[4]).toEqual(expect.stringContaining(chalk.red("0")));
+    });
+
+    it("should print current fixtures in green if there are less than 1", async () => {
+      coreInstance.fixtures.count = 10;
+      await cli.start();
+      expect(cli._header()[4]).toEqual(expect.stringContaining(chalk.green("10")));
+    });
+
+    it("should print watch in yellow if it is disabled", async () => {
+      coreInstance.settings.get.withArgs("watch").returns(false);
+      await cli.start();
+      expect(cli._header()[6]).toEqual(expect.stringContaining(chalk.yellow("false")));
+    });
+
+    it("should print watch in yellow if it is enabled", async () => {
+      coreInstance.settings.get.withArgs("watch").returns(true);
+      await cli.start();
+      expect(cli._header()[6]).toEqual(expect.stringContaining(chalk.green("true")));
+    });
+  });
+
+  describe("when printing alerts", () => {
+    it("should not display alerts if core alerts are empty", async () => {
+      coreInstance.alerts = [];
+      await cli.start();
+      expect(cli._alertsHeader().length).toEqual(0);
+    });
+
+    it("should display provided alert in yellow when it has no error", async () => {
+      expect.assertions(2);
+      coreInstance.alerts = [
+        {
+          message: "foo message",
+        },
+      ];
+      await cli.start();
+      expect(cli._alertsHeader()[0]).toEqual(expect.stringContaining("Warning"));
+      expect(cli._alertsHeader()[0]).toEqual(expect.stringContaining(chalk.yellow("foo message")));
+    });
+
+    it("should display provided alert in red when it has error", async () => {
+      expect.assertions(2);
+      coreInstance.alerts = [
+        {
+          message: "foo message",
+          error: {
+            message: "Foo error message",
+            stack: "Testing stack\nTesting stack 2\nTesting stack 3\nTesting stack 4",
+          },
+        },
+      ];
+      await cli.start();
+      expect(cli._alertsHeader()[0]).toEqual(expect.stringContaining("Error"));
+      expect(cli._alertsHeader()[0]).toEqual(
+        expect.stringContaining(
+          chalk.red(
+            `foo message: Foo error message\n         Testing stack\n         Testing stack 2\n         Testing stack 3...`
+          )
+        )
+      );
     });
   });
 

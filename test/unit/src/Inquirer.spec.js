@@ -34,6 +34,7 @@ describe("Inquirer", () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    sandbox.stub(console, "log");
   });
 
   afterEach(() => {
@@ -59,17 +60,6 @@ describe("Inquirer", () => {
       const cli = new Inquirer(questionsWithoutMain);
       expect(cli._questions.notMain.choices.length).toEqual(1);
     });
-
-    describe("when quitMethod option is provided", () => {
-      it("should add it as an extra option to main menu choices", () => {
-        const fooQuitMethodName = "foo name";
-        const cli = new Inquirer(fooQuestions, null, {
-          name: fooQuitMethodName,
-          action: () => {},
-        });
-        expect(cli._questions.main.choices[2].name).toEqual(fooQuitMethodName);
-      });
-    });
   });
 
   describe("quit method", () => {
@@ -78,18 +68,6 @@ describe("Inquirer", () => {
       const cli = new Inquirer(fooQuestions);
       cli.quit();
       expect(process.exit.callCount).toEqual(1);
-    });
-
-    describe("when quitMethod option is provided", () => {
-      it("should call to provided quitMethod action", () => {
-        const fooQuitMethodAction = sandbox.spy();
-        const cli = new Inquirer(fooQuestions, null, {
-          name: "foo name",
-          action: fooQuitMethodAction,
-        });
-        cli.quit();
-        expect(fooQuitMethodAction.callCount).toEqual(1);
-      });
     });
   });
 
@@ -104,16 +82,15 @@ describe("Inquirer", () => {
     it("should print all strings returned by header method provided to constructor", () => {
       const fooHeader = "foo header";
       sandbox.stub(process.stdout, "write");
-      sandbox.stub(console, "log");
       const cli = new Inquirer(fooQuestions, () => [fooHeader]);
       cli.clearScreen();
-      expect(console.log.getCall(0).args[0]).toEqual(expect.stringContaining(fooHeader));
+      // Get console call 3 (From 0 to 2 are rendering section header)
+      expect(console.log.getCall(3).args[0]).toEqual(expect.stringContaining(fooHeader));
     });
 
     it("should not print header if header option is set to false", () => {
       const fooHeader = "foo header";
       sandbox.stub(process.stdout, "write");
-      sandbox.stub(console, "log");
       const cli = new Inquirer(fooQuestions, () => [fooHeader]);
       cli.clearScreen({
         header: false,
@@ -189,7 +166,6 @@ describe("Inquirer", () => {
       sandbox.stub(process.stdin, "setEncoding");
       sandbox.stub(process.stdout, "write");
       sandbox.stub(process.stdin, "on").callsFake(fooKeyPresser.handler);
-      sandbox.spy(console, "log");
     });
 
     afterEach(() => {

@@ -34,14 +34,13 @@ const MAIN_MENU_ID = "main";
 const DEFAULT_QUIT_NAME = "Exit";
 const QUIT_ACTION_ID = "quit";
 
-require("events").EventEmitter.defaultMaxListeners = 100;
+// require("events").EventEmitter.defaultMaxListeners = 100;
 
 const Inquirer = class Inquirer {
-  // TODO, deprecate quit method
-  constructor(questions, header, alerts, quitMethod) {
+  constructor(questions, header, alerts) {
     this._alertsHeader = alerts;
     this._header = header;
-    this._questions = this._initQuestions(questions, quitMethod);
+    this._questions = this._initQuestions(questions);
     this._exitLogsMode = this._exitLogsMode.bind(this);
   }
 
@@ -49,7 +48,7 @@ const Inquirer = class Inquirer {
     return packageInfo.name;
   }
 
-  _initQuestions(questions, quitMethod) {
+  _initQuestions(questions) {
     const clonedQuestions = cloneDeep(questions);
     const quitQuestion = {
       name: DEFAULT_QUIT_NAME,
@@ -57,16 +56,8 @@ const Inquirer = class Inquirer {
     };
     if (clonedQuestions[MAIN_MENU_ID] && clonedQuestions[MAIN_MENU_ID].choices) {
       clonedQuestions[MAIN_MENU_ID].choices.push(new inquirer.Separator());
-      if (quitMethod) {
-        clonedQuestions[MAIN_MENU_ID].choices.push({
-          ...quitQuestion,
-          name: quitMethod.name,
-        });
-        this._quit = quitMethod.action;
-      } else {
-        clonedQuestions[MAIN_MENU_ID].choices.push(quitQuestion);
-        this._quit = () => process.exit();
-      }
+      clonedQuestions[MAIN_MENU_ID].choices.push(quitQuestion);
+      this._quit = () => process.exit();
     }
     return clonedQuestions;
   }

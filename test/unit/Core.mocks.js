@@ -36,6 +36,7 @@ class CoreMock {
         error: this._sandbox.stub(),
       },
       onChangeSettings: this._sandbox.stub().returns(() => {}),
+      onChangeAlerts: this._sandbox.stub().returns(() => {}),
       onChangeMocks: this._sandbox.stub().returns(() => {}),
       addRouter: this._sandbox.stub(),
       addSetting: this._sandbox.stub(),
@@ -44,6 +45,7 @@ class CoreMock {
         currentFromCollection: "foo-current",
         collection: "foo-behaviors-collection",
       },
+      alerts: [],
       fixtures: {},
       serverError: null,
       _eventEmitter: {

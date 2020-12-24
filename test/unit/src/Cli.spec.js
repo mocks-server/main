@@ -437,14 +437,6 @@ describe("Cli", () => {
   });
 
   describe("when printing header", () => {
-    it("should print it as first element if server has an error", async () => {
-      const fooServerErrorMessage = "foo server error";
-      const fooServerError = new Error(fooServerErrorMessage);
-      coreInstance.serverError = fooServerError;
-      await cli.start();
-      expect(cli._header()[0]).toEqual(expect.stringContaining(fooServerErrorMessage));
-    });
-
     it("should print server url as first element if server has not an error", async () => {
       coreInstance.serverError = null;
       await cli.start();

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - feat: Add sections headers
 - feat: Display alerts
+- style(lint): Add eslint plugin to avoid the usage of `only` in tests
 ### Changed
 - refactor: Move render helpers to a helpers file
 ### Fixed

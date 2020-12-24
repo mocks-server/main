@@ -43,6 +43,7 @@
   "devDependencies": {
     "@mocks-server/core": "1.5.3",
     "eslint": "7.15.0",
+    "eslint-plugin-no-only-tests": "2.4.0",
     "eslint-config-prettier": "6.15.0",
     "eslint-plugin-prettier": "3.2.0",
     "fs-extra": "9.0.1",

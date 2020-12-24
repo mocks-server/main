@@ -23,14 +23,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
+### Changed
+### Fixed
+### Removed
+
+## [1.5.3] - 2020-12-24
+
+### Added
 - feat: Add alerts handler, allowing plugins and other internal pieces to inform about errors or warnings, and let plugins access to the list, so they can display it, for example. (#102)
 - chore(lint): Add eslint plugin to avoid the usage of `only`.
+
 ### Changed
 - feat: Rename filesLoader plugin
 - test: Move e2e helpers to a subfolder
+
 ### Fixed
 - fix: Avoid errors when calling to fixtures and behaviors getters if they are not already initialized
-### Removed
 
 ## [1.5.2] - 2020-12-21
 

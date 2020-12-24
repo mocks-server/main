@@ -18,6 +18,7 @@ class Settings {
   constructor(eventEmitter, config) {
     this._eventEmitter = eventEmitter;
     this._optionsHandler = new Options(config);
+    // TODO, remove next unnecessary bind
     this._emitChange = this._emitChange.bind(this); //Add debounce here to group change events
     this._newSettings = {};
   }

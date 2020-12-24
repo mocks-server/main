@@ -18,8 +18,9 @@ const { isFunction, isObject } = require("lodash");
 const CONFIG_FILE = "mocks-server.config.js";
 
 class Config {
-  constructor(programmaticConfig = {}) {
+  constructor({ addAlert }, programmaticConfig = {}) {
     this._coreOptions = {};
+    this._addAlert = addAlert;
     this._options = {};
     this._getCoreOptions(programmaticConfig);
     this._getOptions(programmaticConfig.options);
@@ -31,8 +32,7 @@ class Config {
   }
 
   _catchFileConfigError(error) {
-    tracer.error("Error in configuration file");
-    console.log(error);
+    this._addAlert("file", "Error in configuration file", error);
     return Promise.resolve({});
   }
 

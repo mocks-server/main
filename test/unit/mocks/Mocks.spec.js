@@ -20,6 +20,7 @@ const Mocks = require("../../../src/mocks/Mocks");
 
 describe("Behaviors", () => {
   const fooBoomError = new Error("foo boom error");
+  let callbacks;
   let sandbox;
   let coreMocks;
   let loadersMocks;
@@ -30,6 +31,10 @@ describe("Behaviors", () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    callbacks = {
+      addAlert: sandbox.stub(),
+      removeAlerts: sandbox.stub(),
+    };
     sandbox.stub(Boom, "badData").returns(fooBoomError);
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
@@ -39,7 +44,9 @@ describe("Behaviors", () => {
     mocks = new Mocks(
       coreInstance._eventEmitter,
       coreInstance.settings,
-      loadersMocks.stubs.instance
+      loadersMocks.stubs.instance,
+      coreInstance,
+      callbacks
     );
   });
 

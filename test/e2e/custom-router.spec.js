@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const express = require("express");
 
 const { Core } = require("../../index");
-const { stopCore, request, fixturesFolder } = require("./utils");
+const { stopCore, request, fixturesFolder } = require("./support/helpers");
 
 describe("when using custom router", () => {
   const customRouter = express.Router();

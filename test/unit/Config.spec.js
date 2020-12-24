@@ -16,12 +16,16 @@ const Config = require("../../src/Config");
 const tracer = require("../../src/tracer");
 
 describe("Config", () => {
+  let callbacks;
   let sandbox;
   let config;
   const FIXTURES_FOLDER = path.resolve(__dirname, "fixtures", "config");
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
+    callbacks = {
+      addAlert: sandbox.stub(),
+    };
     sandbox.stub(tracer, "info");
     sandbox.stub(tracer, "error");
     sandbox.stub(tracer, "set");
@@ -36,19 +40,19 @@ describe("Config", () => {
 
   describe("when created", () => {
     it("should init coreOptions as empty object if no received", async () => {
-      config = new Config();
+      config = new Config(callbacks);
       expect(config.coreOptions).toEqual({});
     });
 
     it("should set disableCommandLineArguments as true if onlyProgrammaticOptions is true", async () => {
-      config = new Config({
+      config = new Config(callbacks, {
         onlyProgrammaticOptions: true,
       });
       expect(config.coreOptions.disableCommandLineArguments).toEqual(true);
     });
 
     it("should set disableCommandLineArguments as false if it is explictly defined", async () => {
-      config = new Config({
+      config = new Config(callbacks, {
         onlyProgrammaticOptions: true,
         disableCommandLineArguments: false,
       });
@@ -56,14 +60,14 @@ describe("Config", () => {
     });
 
     it("should set disableConfigFile as true if onlyProgrammaticOptions is true", async () => {
-      config = new Config({
+      config = new Config(callbacks, {
         onlyProgrammaticOptions: true,
       });
       expect(config.coreOptions.disableConfigFile).toEqual(true);
     });
 
     it("should set disableConfigFile as false if it is explictly defined", async () => {
-      config = new Config({
+      config = new Config(callbacks, {
         onlyProgrammaticOptions: true,
         disableConfigFile: false,
       });
@@ -71,28 +75,28 @@ describe("Config", () => {
     });
 
     it("should set plugins received programmatically", async () => {
-      config = new Config({
+      config = new Config(callbacks, {
         plugins: "foo",
       });
       expect(config.coreOptions.plugins).toEqual("foo");
     });
 
     it("should add plugins received programmatically", async () => {
-      config = new Config({
+      config = new Config(callbacks, {
         addPlugins: ["foo"],
       });
       expect(config.coreOptions.plugins).toEqual(["foo"]);
     });
 
     it("should set configFile received programmatically", async () => {
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: "/foo",
       });
       expect(config.coreOptions.configFile).toEqual("/foo");
     });
 
     it("should set received options", async () => {
-      config = new Config({
+      config = new Config(callbacks, {
         options: {
           foo: "foo",
         },
@@ -103,7 +107,7 @@ describe("Config", () => {
     });
 
     it("should set log level if option log is received", async () => {
-      config = new Config({
+      config = new Config(callbacks, {
         options: {
           log: "silly",
         },
@@ -114,7 +118,7 @@ describe("Config", () => {
 
   describe("When initialized", () => {
     it("should extend core programmatic options with init method options", async () => {
-      config = new Config({
+      config = new Config(callbacks, {
         options: {
           foo: "foo",
           foo2: "foo-2",
@@ -134,7 +138,7 @@ describe("Config", () => {
 
   describe("When reading config file", () => {
     it("should not try to read config file if disableConfigFile is true", async () => {
-      config = new Config({
+      config = new Config(callbacks, {
         disableConfigFile: true,
       });
       await config.init();
@@ -142,7 +146,7 @@ describe("Config", () => {
     });
 
     it("should try to read file named mocks-server.config.js in cwd by default", async () => {
-      config = new Config();
+      config = new Config(callbacks);
       await config.init();
       expect(fsExtra.pathExists.getCall(0).args[0]).toEqual(
         path.resolve(FIXTURES_FOLDER, "mocks-server.config.js")
@@ -150,7 +154,7 @@ describe("Config", () => {
     });
 
     it("should try to read custom file path from cwd if it is relative", async () => {
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: "foo-config.js",
       });
       await config.init();
@@ -160,7 +164,7 @@ describe("Config", () => {
     });
 
     it("should try to read custom file path if it is absolute", async () => {
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: path.resolve(__dirname, "foo.js"),
       });
       await config.init();
@@ -168,7 +172,7 @@ describe("Config", () => {
     });
 
     it("should trace if configuration file is not found", async () => {
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: "foo-config.js",
       });
       await config.init();
@@ -177,7 +181,7 @@ describe("Config", () => {
 
     it("should extend programmatic, initialization and file options", async () => {
       expect.assertions(2);
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: "config.object.js",
         options: {
           foo: "foo",
@@ -203,7 +207,7 @@ describe("Config", () => {
     });
 
     it("should add plugins received in addPlugins option", async () => {
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: "config.add-plugins.js",
         plugins: ["foo"],
       });
@@ -216,7 +220,7 @@ describe("Config", () => {
 
     it("should read configuration when defined as an object", async () => {
       expect.assertions(2);
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: "config.object.js",
       });
       await config.init();
@@ -232,7 +236,7 @@ describe("Config", () => {
 
     it("should read configuration when defined as a function", async () => {
       expect.assertions(2);
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: "config.function.js",
       });
       await config.init();
@@ -248,7 +252,7 @@ describe("Config", () => {
 
     it("should read configuration when defined as a promise", async () => {
       expect.assertions(2);
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: "config.promise.js",
       });
       await config.init();
@@ -264,7 +268,7 @@ describe("Config", () => {
 
     it("should read configuration when defined as an async function", async () => {
       expect.assertions(2);
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: "config.async.js",
       });
       await config.init();
@@ -280,7 +284,7 @@ describe("Config", () => {
 
     it("should pass programmatic config to function to allow modify it", async () => {
       expect.assertions(2);
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: "config.modify.js",
         disableCommandLineArguments: true,
         plugins: ["foo"],
@@ -301,63 +305,63 @@ describe("Config", () => {
       });
     });
 
-    it("should trace error when file export a not valid object", async () => {
+    it("should add alert when file exports a not valid object", async () => {
       expect.assertions(2);
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: "config.export-invalid.js",
       });
       await config.init();
-      expect(tracer.error.calledWith("Error in configuration file")).toEqual(true);
+      expect(callbacks.addAlert.calledWith("file", "Error in configuration file")).toEqual(true);
       expect(config.options).toEqual({});
     });
 
     it("should trace error when promise returns a not valid object", async () => {
       expect.assertions(2);
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: "config.promise-invalid.js",
       });
       await config.init();
-      expect(tracer.error.calledWith("Error in configuration file")).toEqual(true);
+      expect(callbacks.addAlert.calledWith("file", "Error in configuration file")).toEqual(true);
       expect(config.options).toEqual({});
     });
 
     it("should trace error when function returns a not valid object", async () => {
       expect.assertions(2);
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: "config.function-invalid.js",
       });
       await config.init();
-      expect(tracer.error.calledWith("Error in configuration file")).toEqual(true);
+      expect(callbacks.addAlert.calledWith("file", "Error in configuration file")).toEqual(true);
       expect(config.options).toEqual({});
     });
 
     it("should trace error when file throws an error", async () => {
       expect.assertions(2);
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: "config.export-error.js",
       });
       await config.init();
-      expect(tracer.error.calledWith("Error in configuration file")).toEqual(true);
+      expect(callbacks.addAlert.calledWith("file", "Error in configuration file")).toEqual(true);
       expect(config.options).toEqual({});
     });
 
     it("should trace error when function throws an error", async () => {
       expect.assertions(2);
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: "config.function-error.js",
       });
       await config.init();
-      expect(tracer.error.calledWith("Error in configuration file")).toEqual(true);
+      expect(callbacks.addAlert.calledWith("file", "Error in configuration file")).toEqual(true);
       expect(config.options).toEqual({});
     });
 
     it("should trace error when promise is rejected", async () => {
       expect.assertions(2);
-      config = new Config({
+      config = new Config(callbacks, {
         configFile: "config.promise-rejected.js",
       });
       await config.init();
-      expect(tracer.error.calledWith("Error in configuration file")).toEqual(true);
+      expect(callbacks.addAlert.calledWith("file", "Error in configuration file")).toEqual(true);
       expect(config.options).toEqual({});
     });
   });

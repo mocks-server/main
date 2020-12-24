@@ -14,8 +14,10 @@ const FixturesHandler = require("./FixturesHandler");
 const FixtureHandler = require("./FixtureHandler");
 const Fixtures = require("./Fixtures");
 
+const { scopedAlertsMethods } = require("../support/helpers");
+
 class Mocks {
-  constructor(eventEmitter, settings, loaders, core) {
+  constructor(eventEmitter, settings, loaders, core, { addAlert, removeAlerts }) {
     this._eventEmitter = eventEmitter;
     this._settings = settings;
     this._loaders = loaders;
@@ -23,7 +25,9 @@ class Mocks {
     this._fixturesHandler = new FixturesHandler(core);
     this._fixturesHandler.addHandler(FixtureHandler);
     this._fixtures = new Fixtures(this._loaders);
-    this._behaviors = new Behaviors(this._loaders, this._settings, this._eventEmitter);
+    this._behaviors = new Behaviors(this._loaders, this._settings, this._eventEmitter, {
+      ...scopedAlertsMethods("behaviors", addAlert, removeAlerts),
+    });
   }
 
   async init() {

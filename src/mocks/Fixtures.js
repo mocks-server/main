@@ -49,11 +49,11 @@ class Fixtures {
   }
 
   get count() {
-    return this._fixtures.collection.length;
+    return (this._fixtures && this._fixtures.collection && this._fixtures.collection.length) || 0;
   }
 
   get collection() {
-    return this._fixtures.collection;
+    return (this._fixtures && this._fixtures.collection) || [];
   }
 }
 

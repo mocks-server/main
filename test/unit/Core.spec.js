@@ -16,6 +16,7 @@ const ServerMocks = require("./server/Server.mocks.js");
 const PluginsMocks = require("./plugins/Plugins.mocks.js");
 const OrchestratorMocks = require("./Orchestrator.mocks.js");
 const ConfigMocks = require("./Config.mocks.js");
+const AlertsMocks = require("./Alerts.mocks.js");
 
 const Core = require("../../src/Core");
 const tracer = require("../../src/tracer");
@@ -32,6 +33,8 @@ describe("Core", () => {
   let pluginsMocks;
   let pluginsInstance;
   let configMocks;
+  let alertsMocks;
+  let alertsInstance;
   let core;
 
   beforeEach(async () => {
@@ -45,6 +48,8 @@ describe("Core", () => {
     pluginsMocks = new PluginsMocks();
     pluginsInstance = pluginsMocks.stubs.instance;
     orchestratorMocks = new OrchestratorMocks();
+    alertsMocks = new AlertsMocks();
+    alertsInstance = alertsMocks.stubs.instance;
     configMocks = new ConfigMocks();
 
     core = new Core();
@@ -59,13 +64,14 @@ describe("Core", () => {
     serverMocks.restore();
     configMocks.restore();
     pluginsMocks.restore();
+    alertsMocks.restore();
   });
 
   describe("when created", () => {
     it("should create Config with received config", () => {
       const fooConfig = { foo: "foo" };
       core = new Core(fooConfig);
-      expect(configMocks.stubs.Constructor.mock.calls[1][0]).toEqual(fooConfig);
+      expect(configMocks.stubs.Constructor.mock.calls[1][1]).toEqual(fooConfig);
     });
   });
 
@@ -242,6 +248,27 @@ describe("Core", () => {
     });
   });
 
+  describe("onChangeAlerts method", () => {
+    it("should execute callback when alerts execute onChangeValues callback", () => {
+      const FOO_ALERTS = ["foo", "foo2"];
+      const spy = sandbox.spy();
+      core.onChangeAlerts(spy);
+      alertsMocks.stubs.Constructor.mock.calls[0][0].onChangeValues(FOO_ALERTS);
+      expect(spy.calledWith(FOO_ALERTS)).toEqual(true);
+    });
+
+    it("should return a function to remove listener", () => {
+      expect.assertions(2);
+      const spy = sandbox.spy();
+      const removeCallback = core.onChangeAlerts(spy);
+      core._eventEmitter.emit("change:alerts");
+      expect(spy.callCount).toEqual(1);
+      removeCallback();
+      core._eventEmitter.emit("change:alerts");
+      expect(spy.callCount).toEqual(1);
+    });
+  });
+
   describe("stop method", () => {
     it("should stop server", async () => {
       await core.stop();
@@ -300,6 +327,12 @@ describe("Core", () => {
   describe("settings getter", () => {
     it("should return settings", () => {
       expect(core.settings).toEqual(settingsInstance);
+    });
+  });
+
+  describe("alerts getter", () => {
+    it("should return alerts", () => {
+      expect(core.alerts).toEqual(alertsInstance.values);
     });
   });
 

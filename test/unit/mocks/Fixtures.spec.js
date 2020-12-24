@@ -27,9 +27,14 @@ describe("Fixtures", () => {
   let loadersInstance;
   let fixturesHandler;
   let fixtures;
+  let callbacks;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    callbacks = {
+      addAlert: sandbox.stub(),
+      removeAlerts: sandbox.stub(),
+    };
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
     loadersMocks = new LoadersMocks();
@@ -57,12 +62,13 @@ describe("Fixtures", () => {
       loadersInstance.contents = originalContents;
     });
 
-    it("should add fixtures existing in behaviors and not exiting in fixtures collection", async () => {
+    it("should add fixtures existing in behaviors and not existing in fixtures collection", async () => {
       expect.assertions(2);
       const behaviors = new Behaviors(
         loadersInstance,
         coreInstance.settings,
-        coreInstance._eventEmitter
+        coreInstance._eventEmitter,
+        callbacks
       );
       await fixtures.init(fixturesHandler);
       await fixtures.process();
@@ -70,6 +76,18 @@ describe("Fixtures", () => {
       await behaviors.init(fixturesHandler, fixtures);
       await behaviors.process();
       expect(fixtures.count).toEqual(2);
+    });
+  });
+
+  describe("count getter", () => {
+    it("should return 0 if fixtures are not initialized", async () => {
+      expect(fixtures.count).toEqual(0);
+    });
+  });
+
+  describe("collection getter", () => {
+    it("should return an empty array if fixtures are not initialized", async () => {
+      expect(fixtures.collection).toEqual([]);
     });
   });
 });

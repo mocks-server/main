@@ -23,6 +23,7 @@ const tracer = require("../../../src/tracer");
 
 describe("Behaviors", () => {
   const fooBoomError = new Error("foo boom error");
+  let callbacks;
   let sandbox;
   let coreMocks;
   let coreInstance;
@@ -35,6 +36,10 @@ describe("Behaviors", () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    callbacks = {
+      addAlert: sandbox.stub(),
+      removeAlerts: sandbox.stub(),
+    };
     sandbox.stub(Boom, "badData").returns(fooBoomError);
     filesLoaderMock = new FilesLoaderMocks();
     filesLoaderInstance = filesLoaderMock.stubs.instance;
@@ -51,7 +56,8 @@ describe("Behaviors", () => {
     behaviors = new Behaviors(
       filesLoaderInstance,
       coreInstance.settings,
-      coreInstance._eventEmitter
+      coreInstance._eventEmitter,
+      callbacks
     );
   });
 
@@ -69,13 +75,23 @@ describe("Behaviors", () => {
       expect(behaviors.currentName).toEqual("behavior1");
     });
 
-    it("should trace an error if selected behavior is not found in behaviors", async () => {
+    it("should add an alert if selected behavior is not found in behaviors", async () => {
       coreInstance.settings.get.withArgs("behavior").returns("foo");
       await behaviors.init(fixturesHandler, allFixturesInstance);
       await behaviors.process();
-      expect(tracer.warn.getCall(0).args[0]).toEqual(
-        expect.stringContaining('Defined behavior "foo" was not found')
-      );
+      expect(
+        callbacks.addAlert.calledWith(
+          "current",
+          'Defined behavior "foo" was not found. The first one found was used instead'
+        )
+      ).toEqual(true);
+    });
+
+    it("should not add an alert if behavior is not set", async () => {
+      coreInstance.settings.get.withArgs("behavior").returns(null);
+      await behaviors.init(fixturesHandler, allFixturesInstance);
+      await behaviors.process();
+      expect(callbacks.addAlert.callCount).toEqual(0);
     });
 
     it("should trace an error if a behavior throws an error during inititalization", async () => {
@@ -85,6 +101,32 @@ describe("Behaviors", () => {
       await behaviors.process();
       FilesLoaderMocks.contents[0].init = originalInitFunc;
       expect(tracer.debug.getCall(1).args[0]).toEqual(expect.stringContaining("foo error"));
+    });
+  });
+
+  describe("when initializing with no behaviors", () => {
+    let originalFilesLoaderContents;
+    beforeEach(() => {
+      originalFilesLoaderContents = FilesLoaderMocks.contents;
+      FilesLoaderMocks.contents = [];
+      filesLoaderMock = new FilesLoaderMocks();
+      filesLoaderInstance = filesLoaderMock.stubs.instance;
+      behaviors = new Behaviors(
+        filesLoaderInstance,
+        coreInstance.settings,
+        coreInstance._eventEmitter,
+        callbacks
+      );
+    });
+
+    afterEach(() => {
+      FilesLoaderMocks.contents = originalFilesLoaderContents;
+    });
+
+    it("should add an alert", async () => {
+      await behaviors.init(fixturesHandler, allFixturesInstance);
+      await behaviors.process();
+      expect(callbacks.addAlert.calledWith("empty", "No behaviors found")).toEqual(true);
     });
   });
 
@@ -143,7 +185,8 @@ describe("Behaviors", () => {
       behaviors = new Behaviors(
         filesLoaderInstance,
         coreInstance.settings,
-        coreInstance._eventEmitter
+        coreInstance._eventEmitter,
+        callbacks
       );
     });
 
@@ -188,7 +231,8 @@ describe("Behaviors", () => {
       behaviors = new Behaviors(
         filesLoaderInstance,
         coreInstance.settings,
-        coreInstance._eventEmitter
+        coreInstance._eventEmitter,
+        callbacks
       );
     });
 
@@ -230,7 +274,8 @@ describe("Behaviors", () => {
       behaviors = new Behaviors(
         filesLoaderInstance,
         coreInstance.settings,
-        coreInstance._eventEmitter
+        coreInstance._eventEmitter,
+        callbacks
       );
     });
 
@@ -285,6 +330,10 @@ describe("Behaviors", () => {
       await behaviors.process();
       expect(behaviors.count).toEqual(2);
     });
+
+    it("should return 0 when it is not initialized", async () => {
+      expect(behaviors.count).toEqual(0);
+    });
   });
 
   describe("currentTotalFixtures getter", () => {
@@ -318,6 +367,10 @@ describe("Behaviors", () => {
       await behaviors.process();
       expect(behaviors.ids).toEqual(["behavior1", "behavior2"]);
     });
+
+    it("should return empty array if there are no ids", async () => {
+      expect(behaviors.ids).toEqual([]);
+    });
   });
 
   describe("currentId getter", () => {
@@ -334,6 +387,10 @@ describe("Behaviors", () => {
       await behaviors.init(fixturesHandler, allFixturesInstance);
       await behaviors.process();
       expect(behaviors.names).toEqual(["behavior1", "behavior2"]);
+    });
+
+    it("should return an empty array if there are no ids", async () => {
+      expect(behaviors.names).toEqual([]);
     });
   });
 

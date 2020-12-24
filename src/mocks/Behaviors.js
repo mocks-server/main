@@ -21,11 +21,13 @@ const Behavior = require("./Behavior");
 const { CHANGE_MOCKS } = require("../eventNames");
 
 class Behaviors {
-  constructor(loaders, settings, eventEmitter) {
+  constructor(loaders, settings, eventEmitter, { addAlert, removeAlerts }) {
     this._loaders = loaders;
     this._settings = settings;
     this._eventEmitter = eventEmitter;
     this._noBehavior = new Behavior();
+    this._addAlert = addAlert;
+    this._removeAlerts = removeAlerts;
   }
 
   async init(fixturesHandler, allFixtures) {
@@ -46,12 +48,24 @@ class Behaviors {
 
     try {
       this._checkCurrent(this._current);
+      this._removeAlerts();
     } catch (error) {
-      tracer.warn(`Defined behavior "${this._current}" was not found.`);
+      let currentFailed;
+      if (this._current !== null) {
+        currentFailed = this._current;
+      }
       this._current = this._ids[0];
       if (this._current) {
-        tracer.warn(`Inititializing with first found behavior: "${this._ids[0]}"`);
+        tracer.warn(`Initializing with first found behavior: "${this._ids[0]}"`);
         this._settings.set("behavior", this._current);
+        if (currentFailed) {
+          this._addAlert(
+            "current",
+            `Defined behavior "${currentFailed}" was not found. The first one found was used instead`
+          );
+        }
+      } else {
+        this._addAlert("empty", `No behaviors found`);
       }
     }
 
@@ -157,6 +171,7 @@ class Behaviors {
 
   set current(behaviorId) {
     this._checkCurrent(behaviorId);
+    this._removeAlerts("current");
     this._current = behaviorId;
   }
 
@@ -171,15 +186,15 @@ class Behaviors {
   // TODO, deprecate, use ids instead
   get names() {
     tracer.deprecationWarn("names", "ids");
-    return this._ids;
+    return this._ids || [];
   }
 
   get ids() {
-    return this._ids;
+    return this._ids || [];
   }
 
   get count() {
-    return this._ids.length;
+    return this.ids.length;
   }
 
   // TODO, deprecate, use currentId instead

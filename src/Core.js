@@ -10,32 +10,75 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const EventEmitter = require("events");
 
-const { INIT, START, STOP, LOAD_MOCKS, CHANGE_MOCKS, CHANGE_SETTINGS } = require("./eventNames");
+const {
+  INIT,
+  START,
+  STOP,
+  LOAD_MOCKS,
+  CHANGE_MOCKS,
+  CHANGE_SETTINGS,
+  CHANGE_ALERTS,
+} = require("./eventNames");
 const tracer = require("./tracer");
 
 const Config = require("./Config");
 const Orchestrator = require("./Orchestrator");
 const Loaders = require("./Loaders");
+const Alerts = require("./Alerts");
 
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
 const Mocks = require("./mocks/Mocks");
 const Settings = require("./settings/Settings");
 
+const { scopedAlertsMethods } = require("./support/helpers");
+
 class Core {
   constructor(config) {
     this._eventEmitter = new EventEmitter();
 
+    // TODO, refactor all pieces as the next one. They should receive prepared callbacks
+    // They should never access directly to the full core
+    // (expect in cases where it is needed to be passed to plugins or another external pieces)
+    this._alerts = new Alerts({
+      onChangeValues: (alerts) => {
+        this._eventEmitter.emit(CHANGE_ALERTS, alerts);
+      },
+    });
+
+    // TODO, move loaders inside mocks folder, or rename it
     this._loaders = new Loaders(this);
-    this._config = new Config(config);
+    this._config = new Config(
+      scopedAlertsMethods("config", this._alerts.add, this._alerts.remove),
+      config
+    );
 
     this._settings = new Settings(this._eventEmitter, this._config);
 
-    this._plugins = new Plugins(this._config, this._loaders, this);
+    this._plugins = new Plugins(
+      this._config,
+      this._loaders,
+      this,
+      scopedAlertsMethods("plugins", this._alerts.add, this._alerts.remove, this._alerts.rename)
+    );
 
-    this._mocks = new Mocks(this._eventEmitter, this._settings, this._loaders, this);
-    this._server = new Server(this._eventEmitter, this._settings, this._mocks, this);
+    this._mocks = new Mocks(
+      this._eventEmitter,
+      this._settings,
+      this._loaders,
+      this,
+      scopedAlertsMethods("mocks", this._alerts.add, this._alerts.remove)
+    );
 
+    this._server = new Server(
+      this._eventEmitter,
+      this._settings,
+      this._mocks,
+      this,
+      scopedAlertsMethods("server", this._alerts.add, this._alerts.remove)
+    );
+
+    // TODO, rename into eventsOrchestrator, convert into a function
     this._orchestrator = new Orchestrator(this._eventEmitter, this._mocks, this._server);
 
     this._inited = false;
@@ -149,6 +192,14 @@ class Core {
     return removeCallback;
   }
 
+  onChangeAlerts(cb) {
+    const removeCallback = () => {
+      this._eventEmitter.removeListener(CHANGE_ALERTS, cb);
+    };
+    this._eventEmitter.on(CHANGE_ALERTS, cb);
+    return removeCallback;
+  }
+
   async stop() {
     await this._server.stop();
     return this._stopPlugins().then(() => {
@@ -168,11 +219,16 @@ class Core {
     return this._server.restart();
   }
 
+  // TODO, deprecate
   get serverError() {
     return this._server.error;
   }
 
   // Expose child objects needed
+
+  get alerts() {
+    return this._alerts.values;
+  }
 
   get settings() {
     return this._settings;

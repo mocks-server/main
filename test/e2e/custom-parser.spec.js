@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const routeParser = require("route-parser");
 const md5 = require("md5");
-const { startCore, stopCore, request, wait } = require("./utils");
+const { startCore, stopCore, request, wait } = require("./support/helpers");
 
 const isFunction = (response) => {
   return typeof response === "function";

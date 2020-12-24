@@ -15,7 +15,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - test(e2e): Move support elements to support folder
 - docs(readme): Add main features chapter
 ### Fixed
-- fix: Increase EventEmitter.defaultMaxListeners to avoid warnings due to re-renders of inquirer-cli
 ### Removed
 
 ## [1.3.7] - 2020-12-21

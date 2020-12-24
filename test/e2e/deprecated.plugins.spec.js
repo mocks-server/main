@@ -11,7 +11,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const express = require("express");
 
-const { startCore, stopCore, request, fixturesFolder, wait, TimeCounter } = require("./utils");
+const {
+  startCore,
+  stopCore,
+  request,
+  fixturesFolder,
+  wait,
+  TimeCounter,
+} = require("./support/helpers");
 
 describe("plugins", () => {
   const FOO_CUSTOM_RESPONSE = {

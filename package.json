@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/core",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Pluggable mock server supporting multiple api behaviors",
   "keywords": [
     "mocks",
@@ -55,6 +55,7 @@
   },
   "devDependencies": {
     "eslint": "7.12.0",
+    "eslint-plugin-no-only-tests": "2.4.0",
     "eslint-config-prettier": "6.14.0",
     "eslint-plugin-prettier": "3.1.4",
     "husky": "4.3.0",

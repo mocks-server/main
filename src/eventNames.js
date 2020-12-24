@@ -16,4 +16,5 @@ module.exports = {
   CHANGE_FIXTURES: "change:fixtures",
   CHANGE_MOCKS: "change:mocks",
   CHANGE_SETTINGS: "change:settings",
+  CHANGE_ALERTS: "change:alerts",
 };

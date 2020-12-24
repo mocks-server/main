@@ -12,7 +12,7 @@ const path = require("path");
 
 const requestPromise = require("request-promise");
 
-const { Core } = require("../../index");
+const { Core } = require("../../../index");
 const CliRunner = require("./CliRunner");
 
 const SERVER_PORT = 3100;
@@ -28,7 +28,7 @@ const defaultRequestOptions = {
 };
 
 const fixturesFolder = (folderName) => {
-  return path.resolve(__dirname, "fixtures", folderName);
+  return path.resolve(__dirname, "..", "fixtures", folderName);
 };
 
 const startCore = (mocksPath, options = {}) => {

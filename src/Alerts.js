@@ -20,6 +20,7 @@ class Alerts {
   }
 
   add(context, message, error) {
+    tracer.silly(`Adding alert with context "${context}" and message "${message}"`);
     const alert = {
       context,
       message,
@@ -33,6 +34,7 @@ class Alerts {
     this._alerts.add(alert);
     if (error) {
       tracer.error(`${message}: ${error.message}`);
+      tracer.debug(error.stack);
     } else {
       tracer.warn(message);
     }
@@ -40,6 +42,7 @@ class Alerts {
   }
 
   remove(context) {
+    tracer.silly(`Removing alerts with context "${context}"`);
     let changed = false;
     this._alerts.forEach((alert) => {
       if (alert.context.indexOf(context) === 0) {
@@ -53,6 +56,7 @@ class Alerts {
   }
 
   rename(oldContext, newContext) {
+    tracer.silly(`Renaming alerts with context "${oldContext}" to context "${newContext}"`);
     let changed = false;
     this._alerts.forEach((alert) => {
       if (alert.context.indexOf(oldContext) === 0) {

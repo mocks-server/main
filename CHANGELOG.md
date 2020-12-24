@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - style(lint): Add eslint plugin to avoid the usage of `only` in tests
 ### Changed
 - refactor: Move render helpers to a helpers file
+- refactor: Remove unused inquirerCli option
+- test(e2e): Move support elements to support folder
 ### Fixed
 - fix: Increase EventEmitter.defaultMaxListeners to avoid warnings due to re-renders of inquirer-cli
 ### Removed

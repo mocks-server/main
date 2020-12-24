@@ -10,8 +10,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 const fsExtra = require("fs-extra");
-const { request, fixturesFolder, wait, BINARY_PATH } = require("./utils");
-const InteractiveCliRunner = require("./InteractiveCliRunner");
+const { request, fixturesFolder, wait, BINARY_PATH } = require("../support/utils");
+const InteractiveCliRunner = require("../support/InteractiveCliRunner");
 
 describe("files watcher", () => {
   const cwdPath = path.resolve(__dirname, "fixtures");

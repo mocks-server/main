@@ -9,8 +9,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { request, wait, TimeCounter, BINARY_PATH } = require("./utils");
-const InteractiveCliRunner = require("./InteractiveCliRunner");
+const { request, wait, TimeCounter, BINARY_PATH } = require("../support/utils");
+const InteractiveCliRunner = require("../support/InteractiveCliRunner");
 
 describe("interactive CLI", () => {
   let cli;

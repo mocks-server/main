@@ -9,7 +9,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { CliRunner, wait, BINARY_PATH } = require("./utils");
+const { wait, BINARY_PATH } = require("../support/utils");
+const CliRunner = require("../support/CliRunner");
 
 describe("with no behaviors", () => {
   const cwdPath = path.resolve(__dirname, "fixtures");
@@ -17,6 +18,15 @@ describe("with no behaviors", () => {
 
   afterEach(async () => {
     await cli.kill();
+  });
+
+  it("should display alerts", async () => {
+    cli = new CliRunner([BINARY_PATH, "--behavior=foo", "--path=no-behaviors"], {
+      cwd: cwdPath,
+    });
+    await wait();
+    expect(cli.currentScreen).toEqual(expect.stringContaining("ALERTS"));
+    expect(cli.currentScreen).toEqual(expect.stringContaining("Warning: No behaviors found"));
   });
 
   it("should print a dash as current behavior", async () => {

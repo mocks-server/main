@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 
-const CliRunner = require("./CliRunner");
+const CliRunner = require("../support/CliRunner");
 
 const END_SCREEN = "Exit";
 

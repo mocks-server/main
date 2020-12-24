@@ -10,8 +10,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 const fsExtra = require("fs-extra");
-const { request, fixturesFolder, wait, BINARY_PATH } = require("./utils");
-const InteractiveCliRunner = require("./InteractiveCliRunner");
+const { request, fixturesFolder, wait, BINARY_PATH } = require("../support/utils");
+const InteractiveCliRunner = require("../support/InteractiveCliRunner");
 
 describe("files watcher", () => {
   const cwdPath = path.resolve(__dirname, "fixtures");
@@ -180,6 +180,41 @@ describe("files watcher", () => {
         const users = await request("/api/new-users/2");
         expect(users).toEqual({ id: 1, name: "John Doe new" });
       });
+    });
+  });
+
+  describe("When files are modified and contain an error", () => {
+    beforeAll(async () => {
+      fsExtra.copySync(fixturesFolder("files-error"), fixturesFolder("files-watch"));
+      await wait(2000);
+    });
+
+    it("should display an error", async () => {
+      expect(interactiveCli.currentScreen).toEqual(expect.stringContaining("ALERTS"));
+      expect(interactiveCli.currentScreen).toEqual(
+        expect.stringContaining("main/fixtures/files-watch: FOO is not defined")
+      );
+      expect(interactiveCli.currentScreen).toEqual(
+        expect.stringContaining("files-watch/fixtures/users.js:2:18")
+      );
+    });
+
+    it("should have same behaviors than before available", async () => {
+      expect(interactiveCli.currentScreen).toEqual(expect.stringContaining("Behaviors: 4"));
+    });
+
+    it("should still serve users collection mock under the /api/users path", async () => {
+      const users = await request("/api/new-users");
+      expect(users).toEqual([
+        { id: 1, name: "John Doe new" },
+        { id: 2, name: "Jane Doe new" },
+      ]);
+    });
+
+    it("should remove alerts when error is fixed", async () => {
+      fsExtra.copySync(fixturesFolder("files-modification"), fixturesFolder("files-watch"));
+      await wait(2000);
+      expect(interactiveCli.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
     });
   });
 });

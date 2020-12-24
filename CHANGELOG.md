@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - refactor: Move render helpers to a helpers file
 - refactor: Remove unused inquirerCli option
 - test(e2e): Move support elements to support folder
+- docs(readme): Add main features chapter
 ### Fixed
 - fix: Increase EventEmitter.defaultMaxListeners to avoid warnings due to re-renders of inquirer-cli
 ### Removed

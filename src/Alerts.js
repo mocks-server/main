@@ -16,6 +16,7 @@ class Alerts {
     this._alerts = new Set();
     this.add = this.add.bind(this);
     this.remove = this.remove.bind(this);
+    this.rename = this.rename.bind(this);
   }
 
   add(context, message, error) {
@@ -42,6 +43,23 @@ class Alerts {
     let changed = false;
     this._alerts.forEach((alert) => {
       if (alert.context.indexOf(context) === 0) {
+        this._alerts.delete(alert);
+        changed = true;
+      }
+    });
+    if (changed) {
+      this._onChangeValues(this.values);
+    }
+  }
+
+  rename(oldContext, newContext) {
+    let changed = false;
+    this._alerts.forEach((alert) => {
+      if (alert.context.indexOf(oldContext) === 0) {
+        this._alerts.add({
+          ...alert,
+          context: alert.context.replace(oldContext, newContext),
+        });
         this._alerts.delete(alert);
         changed = true;
       }

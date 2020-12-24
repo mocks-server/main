@@ -36,6 +36,7 @@ describe("Plugins", () => {
     callbacks = {
       addAlert: sandbox.stub(),
       removeAlerts: sandbox.stub(),
+      renameAlerts: sandbox.stub(),
     };
     sandbox.stub(tracer, "verbose");
     sandbox.stub(tracer, "debug");
@@ -658,6 +659,40 @@ describe("Plugins", () => {
       await plugins.register();
       await plugins.stop();
       expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
+    });
+  });
+
+  describe("alerts", () => {
+    let fooPlugin;
+    beforeEach(() => {
+      fooPlugin = {
+        register: (core, { addAlert }) => {
+          addAlert("test-register", "Testing register alert");
+        },
+        start: (core, { addAlert }) => {
+          addAlert("test-start", "Testing start alert");
+        },
+        displayName: "foo-name",
+      };
+      configInstance.coreOptions.plugins = [fooPlugin];
+      plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
+    });
+
+    it("should have as scope the plugin index during the register method", async () => {
+      await plugins.register();
+      expect(callbacks.addAlert.calledWith("1:test-register", "Testing register alert")).toEqual(
+        true
+      );
+    });
+
+    it("should rename the scope if an alert is added during the start method", async () => {
+      expect.assertions(2);
+      await plugins.register();
+      await plugins.start();
+      expect(callbacks.renameAlerts.calledWith("1:", "foo-name:")).toEqual(true);
+      expect(callbacks.addAlert.calledWith("foo-name:test-start", "Testing start alert")).toEqual(
+        true
+      );
     });
   });
 });

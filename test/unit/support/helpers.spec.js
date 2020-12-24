@@ -25,41 +25,114 @@ describe("helpers", () => {
   describe("scopedAlertsMethods", () => {
     let addAlertsMethod;
     let removeAlertsMethod;
+    let renameAlertsMethod;
     let scopedAlertsMethods;
 
     beforeEach(() => {
       addAlertsMethod = sandbox.stub();
       removeAlertsMethod = sandbox.stub();
-      scopedAlertsMethods = helpers.scopedAlertsMethods(
-        "fooContext",
-        addAlertsMethod,
-        removeAlertsMethod
-      );
+      renameAlertsMethod = sandbox.stub();
     });
 
-    describe("returned addAlert method", () => {
-      it("should call to the original one but adding defined scope to the context", () => {
-        scopedAlertsMethods.addAlert("foo", "Foo alert message", "foo error");
-        expect(addAlertsMethod.getCall(0).args[0]).toEqual("fooContext:foo");
-        expect(addAlertsMethod.getCall(0).args[1]).toEqual("Foo alert message");
-        expect(addAlertsMethod.getCall(0).args[2]).toEqual("foo error");
+    describe("when contextScope is static", () => {
+      beforeEach(() => {
+        scopedAlertsMethods = helpers.scopedAlertsMethods(
+          "fooContext",
+          addAlertsMethod,
+          removeAlertsMethod,
+          renameAlertsMethod
+        );
       });
 
-      it("should add default context if it is not provided", () => {
-        scopedAlertsMethods.addAlert(null, "Foo alert message", "foo error");
-        expect(addAlertsMethod.getCall(0).args[0]).toEqual("fooContext:");
+      describe("returned addAlert method", () => {
+        it("should call to the original one but adding defined scope to the context", () => {
+          scopedAlertsMethods.addAlert("foo", "Foo alert message", "foo error");
+          expect(addAlertsMethod.getCall(0).args[0]).toEqual("fooContext:foo");
+          expect(addAlertsMethod.getCall(0).args[1]).toEqual("Foo alert message");
+          expect(addAlertsMethod.getCall(0).args[2]).toEqual("foo error");
+        });
+
+        it("should add default context if it is not provided", () => {
+          scopedAlertsMethods.addAlert(null, "Foo alert message", "foo error");
+          expect(addAlertsMethod.getCall(0).args[0]).toEqual("fooContext:");
+        });
+      });
+
+      describe("returned removeAlerts method", () => {
+        it("should call to the original one but adding defined scope to the context", () => {
+          scopedAlertsMethods.removeAlerts("foo");
+          expect(removeAlertsMethod.getCall(0).args[0]).toEqual("fooContext:foo");
+        });
+
+        it("should add default context if it is not provided", () => {
+          scopedAlertsMethods.removeAlerts();
+          expect(removeAlertsMethod.getCall(0).args[0]).toEqual("fooContext:");
+        });
+      });
+
+      describe("returned renameAlerts method", () => {
+        it("should call to the original one but adding defined scope to the context", () => {
+          expect.assertions(2);
+          scopedAlertsMethods.renameAlerts("foo", "foo2");
+          expect(renameAlertsMethod.getCall(0).args[0]).toEqual("fooContext:foo");
+          expect(renameAlertsMethod.getCall(0).args[1]).toEqual("fooContext:foo2");
+        });
       });
     });
 
-    describe("returned removeAlerts method", () => {
-      it("should call to the original one but adding defined scope to the context", () => {
-        scopedAlertsMethods.removeAlerts("foo");
-        expect(removeAlertsMethod.getCall(0).args[0]).toEqual("fooContext:foo");
+    describe("when contextScope is a callback", () => {
+      let contextToReturn;
+      beforeEach(() => {
+        contextToReturn = "fooContext";
+        scopedAlertsMethods = helpers.scopedAlertsMethods(
+          () => contextToReturn,
+          addAlertsMethod,
+          removeAlertsMethod,
+          renameAlertsMethod
+        );
       });
 
-      it("should add default context if it is not provided", () => {
-        scopedAlertsMethods.removeAlerts();
-        expect(removeAlertsMethod.getCall(0).args[0]).toEqual("fooContext:");
+      describe("returned addAlert method", () => {
+        it("should call to the original one but adding defined scope to the context", () => {
+          scopedAlertsMethods.addAlert("foo", "Foo alert message", "foo error");
+          expect(addAlertsMethod.getCall(0).args[0]).toEqual("fooContext:foo");
+          expect(addAlertsMethod.getCall(0).args[1]).toEqual("Foo alert message");
+          expect(addAlertsMethod.getCall(0).args[2]).toEqual("foo error");
+        });
+
+        it("should add default context if it is not provided", () => {
+          scopedAlertsMethods.addAlert(null, "Foo alert message", "foo error");
+          expect(addAlertsMethod.getCall(0).args[0]).toEqual("fooContext:");
+        });
+      });
+
+      describe("returned removeAlerts method", () => {
+        it("should call to the original one but adding defined scope to the context", () => {
+          scopedAlertsMethods.removeAlerts("foo");
+          expect(removeAlertsMethod.getCall(0).args[0]).toEqual("fooContext:foo");
+        });
+
+        it("should add default context if it is not provided", () => {
+          scopedAlertsMethods.removeAlerts();
+          expect(removeAlertsMethod.getCall(0).args[0]).toEqual("fooContext:");
+        });
+      });
+
+      describe("when returned context changes", () => {
+        it("should call to rename previously added alerts", () => {
+          expect.assertions(2);
+          scopedAlertsMethods.addAlert("foo", "Foo alert message");
+          contextToReturn = "fooContext2";
+          scopedAlertsMethods.addAlert("var", "Foo var message");
+          expect(renameAlertsMethod.getCall(0).args[0]).toEqual("fooContext:");
+          expect(renameAlertsMethod.getCall(0).args[1]).toEqual("fooContext2:");
+        });
+
+        it("should not call to rename previously added alerts if context is the same", () => {
+          scopedAlertsMethods.addAlert("foo", "Foo alert message");
+          scopedAlertsMethods.addAlert("foo", "Foo var message");
+          expect(renameAlertsMethod.callCount).toEqual(0);
+        });
       });
     });
   });

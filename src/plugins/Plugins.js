@@ -18,9 +18,10 @@ const FilesLoader = require("./FilesLoader");
 const { scopedAlertsMethods } = require("../support/helpers");
 
 class Plugins {
-  constructor(config, loaders, core, { addAlert, removeAlerts }) {
+  constructor(config, loaders, core, { addAlert, removeAlerts, renameAlerts }) {
     this._addAlert = addAlert;
     this._removeAlerts = removeAlerts;
+    this._renameAlerts = renameAlerts;
     this._config = config;
     this._core = core;
     this._loaders = loaders;
@@ -121,9 +122,10 @@ class Plugins {
     const pluginMethods = {
       loadMocks,
       ...scopedAlertsMethods(
-        this.pluginDisplayName(pluginIndex),
+        () => this.pluginDisplayName(pluginIndex),
         this._addAlert,
-        this._removeAlerts
+        this._removeAlerts,
+        this._renameAlerts
       ),
     };
     this._pluginsMethods.push(pluginMethods);

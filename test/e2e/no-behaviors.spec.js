@@ -32,4 +32,9 @@ describe("with no behaviors", () => {
   it("should have no behaviors", async () => {
     expect(core.behaviors.count).toEqual(0);
   });
+
+  it("should have an alert", async () => {
+    expect(core.alerts.length).toEqual(1);
+    expect(core.alerts[0].message).toEqual("No behaviors found");
+  });
 });

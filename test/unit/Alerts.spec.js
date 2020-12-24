@@ -133,4 +133,54 @@ describe("Loaders", () => {
       expect(callbacks.onChangeValues.callCount).toEqual(1);
     });
   });
+
+  describe("rename method", () => {
+    it("should rename alerts starting by same context from values", async () => {
+      expect.assertions(2);
+      alerts.add("foo", "Foo message 1");
+      alerts.add("foo:2", "Foo message 2");
+      alerts.add("var", "Var message 1");
+      expect(alerts.values).toEqual([
+        {
+          context: "foo",
+          message: "Foo message 1",
+        },
+        {
+          context: "foo:2",
+          message: "Foo message 2",
+        },
+        {
+          context: "var",
+          message: "Var message 1",
+        },
+      ]);
+      alerts.rename("foo", "testing");
+      expect(alerts.values).toEqual([
+        {
+          context: "var",
+          message: "Var message 1",
+        },
+        {
+          context: "testing",
+          message: "Foo message 1",
+        },
+        {
+          context: "testing:2",
+          message: "Foo message 2",
+        },
+      ]);
+    });
+
+    it("should notify that alerts have changed if any is renamed", () => {
+      alerts.add("foo", "Foo message");
+      alerts.rename("foo", "testing");
+      expect(callbacks.onChangeValues.callCount).toEqual(2);
+    });
+
+    it("should not notify that alerts have changed if no one is renamed", () => {
+      alerts.add("foo", "Foo message");
+      alerts.rename("var", "testing");
+      expect(callbacks.onChangeValues.callCount).toEqual(1);
+    });
+  });
 });

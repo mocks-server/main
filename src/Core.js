@@ -59,7 +59,7 @@ class Core {
       this._config,
       this._loaders,
       this,
-      scopedAlertsMethods("plugins", this._alerts.add, this._alerts.remove)
+      scopedAlertsMethods("plugins", this._alerts.add, this._alerts.remove, this._alerts.rename)
     );
 
     this._mocks = new Mocks(

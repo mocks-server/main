@@ -41,7 +41,7 @@
     "node-emoji": "1.10.0"
   },
   "devDependencies": {
-    "@mocks-server/core": "1.5.1",
+    "@mocks-server/core": "1.5.3",
     "eslint": "7.15.0",
     "eslint-config-prettier": "6.15.0",
     "eslint-plugin-prettier": "3.2.0",

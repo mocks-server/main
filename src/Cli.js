@@ -11,10 +11,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-const chalk = require("chalk");
 const { isNumber } = require("lodash");
 
 const inquirer = require("./Inquirer");
+const { renderHeader, renderAlert } = require("./helpers");
 
 const questions = {
   main: {
@@ -92,6 +92,7 @@ class Cli {
 
     this._onChangeMocks = this._onChangeMocks.bind(this);
     this._onChangeSettings = this._onChangeSettings.bind(this);
+    this._onChangeAlerts = this._onChangeAlerts.bind(this);
 
     this._core.addSetting({
       name: "cli",
@@ -103,13 +104,15 @@ class Cli {
 
   init() {
     this._stopListeningChangeSettings = this._core.onChangeSettings(this._onChangeSettings);
+    this._stopListeningChangeAlerts = this._core.onChangeAlerts(this._onChangeAlerts);
     if (!this._settings.get("cli")) {
       return Promise.resolve();
     }
     this._questions = questions;
     this._cli = new inquirer.Inquirer(
       this._questions,
-      this._header.bind(this) // TODO, deprecate quit method
+      this._header.bind(this),
+      this._alertsHeader.bind(this)
     );
     this._inited = true;
     return Promise.resolve();
@@ -188,6 +191,10 @@ class Cli {
     }
   }
 
+  _onChangeAlerts() {
+    return this._refreshMainMenu();
+  }
+
   get _serverUrl() {
     const hostSetting = this._settings.get("host");
     const host = hostSetting === "0.0.0.0" ? "localhost" : hostSetting;
@@ -195,23 +202,41 @@ class Cli {
   }
 
   _header() {
+    const delay = this._settings.get("delay");
+    const behaviorsCount = this._core.behaviors.count;
+    const currentBehavior = this._core.behaviors.currentId || "-";
+    const currentFixtures = this._core.fixtures.count;
+    const watchEnabled = this._settings.get("watch");
     const header = [
-      `Mocks server listening at: ${chalk.cyan(this._serverUrl)}`,
-      `Delay: ${chalk.cyan(this._settings.get("delay"))}`,
-      `Behaviors: ${chalk.cyan(this._core.behaviors.count)}`,
-      `Current behavior: ${chalk.cyan(this._core.behaviors.currentId || "-")}`,
-      `Current fixtures: ${chalk.cyan(this._core.fixtures.count || 0)}`,
-      `Log level: ${chalk.cyan(this._logLevel)}`,
-      `Watch enabled: ${chalk.cyan(this._settings.get("watch"))}`,
+      renderHeader(`Mocks server listening at`, this._serverUrl),
+      renderHeader(`Delay`, delay, delay > 0 ? 1 : 0),
+      renderHeader(`Behaviors`, behaviorsCount, behaviorsCount < 1 ? 2 : 0),
+      renderHeader(`Current behavior`, currentBehavior, currentBehavior === "-" ? 2 : 0),
+      renderHeader(`Current fixtures`, currentFixtures, currentFixtures < 1 ? 2 : 0),
+      renderHeader(`Log level`, this._logLevel),
+      renderHeader(`Watch enabled`, watchEnabled, !!watchEnabled ? 0 : 1),
     ];
 
+    return header;
+  }
+
+  _alertsHeader() {
+    const alerts = this._core.alerts;
+    const alertsToRender = alerts.map(renderAlert);
+
+    // TODO, convert this into an alert in Core
     if (this._core.serverError) {
-      header.unshift(
-        chalk.red.bold(`There was an error restarting server: ${this._core.serverError.message}`)
+      alertsToRender.unshift(
+        renderHeader(
+          "server:restart",
+          `There was an error restarting server`,
+          2
+          //error: this._core.serverError,
+        )
       );
     }
 
-    return header;
+    return alertsToRender;
   }
 
   async _displayMainMenu() {
@@ -302,6 +327,10 @@ class Cli {
     if (this._stopListeningChangeMocks) {
       this._stopListeningChangeMocks();
     }
+  }
+
+  get displayName() {
+    return "@mocks-server/plugin-inquirer-cli";
   }
 }
 

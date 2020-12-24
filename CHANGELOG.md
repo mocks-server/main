@@ -6,8 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
+- feat: Add sections headers
+- feat: Display alerts
 ### Changed
+- refactor: Move render helpers to a helpers file
 ### Fixed
+- fix: Increase EventEmitter.defaultMaxListeners to avoid warnings due to re-renders of inquirer-cli
 ### Removed
 
 ## [1.3.7] - 2020-12-21

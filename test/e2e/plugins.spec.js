@@ -244,7 +244,7 @@ describe("plugins", () => {
     init: () => {
       return wait(2000);
     },
-    start: (core, { addAlert }) => {
+    start: (coreInstance, { addAlert }) => {
       addAlert("test-start", "Warning starting plugin");
       return wait(1000);
     },
@@ -357,11 +357,11 @@ describe("plugins", () => {
         coreIns.onLoadMocks(mocksLoadedSpy);
         coreIns.onLoadFiles(filesLoadedSpy);
       },
-      start: (coreInstance, { addAlert }) => {
-        addAlert("test-start", "Warning starting plugin");
+      start: (coreIns, methods) => {
+        methods.addAlert("test-start", "Warning starting plugin");
         startSpy(coreInstance);
       },
-      stop: (coreInstance, { removeAlerts }) => {
+      stop: (coreIns, { removeAlerts }) => {
         removeAlerts();
       },
       displayName: "test-plugin",

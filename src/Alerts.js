@@ -26,9 +26,9 @@ class Alerts {
       message,
       error,
     };
-    this._alerts.forEach((alert) => {
-      if (alert.context === context) {
-        this._alerts.delete(alert);
+    this._alerts.forEach((existantAlert) => {
+      if (existantAlert.context === context) {
+        this._alerts.delete(existantAlert);
       }
     });
     this._alerts.add(alert);

@@ -98,7 +98,7 @@ describe("Plugins", () => {
       const callToLoader = sandbox.stub();
       loaderMocks.stubs.instance.new.returns(callToLoader);
       const fooPlugin = {
-        register: (coreInstance, methods) => {
+        register: (coreIns, methods) => {
           methods.loadMocks();
           methods.addAlert("foo", "Foo message");
           methods.removeAlerts();
@@ -161,7 +161,7 @@ describe("Plugins", () => {
       expect.assertions(3);
       const callToLoader = sandbox.stub();
       loaderMocks.stubs.instance.new.returns(callToLoader);
-      const fooPlugin = (coreInstance, methods) => {
+      const fooPlugin = (coreIns, methods) => {
         methods.loadMocks();
         methods.addAlert("foo", "Foo message");
         methods.removeAlerts();

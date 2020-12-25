@@ -11,7 +11,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const path = require("path");
 
 const requestPromise = require("request-promise");
-const CliRunner = require("../inquirer/CliRunner");
 
 const SERVER_PORT = 3100;
 
@@ -22,7 +21,7 @@ const defaultRequestOptions = {
 };
 
 const fixturesFolder = (folderName) => {
-  return path.resolve(__dirname, "fixtures", folderName);
+  return path.resolve(__dirname, "..", "main", "fixtures", folderName);
 };
 
 const request = (uri, options = {}) => {
@@ -68,7 +67,6 @@ const wait = (time = 1000) => {
 module.exports = {
   request,
   TimeCounter,
-  CliRunner,
   wait,
   fixturesFolder,
   BINARY_PATH,

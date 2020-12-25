@@ -10,32 +10,37 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-const chalk = require("chalk");
 const inquirer = require("inquirer");
 const autocomplete = require("inquirer-autocomplete-prompt");
 const { cloneDeep, map } = require("lodash");
 
 const packageInfo = require("../package.json");
+const {
+  renderSectionHeader,
+  renderSectionFooter,
+  renderLogsMode,
+  clearScreen,
+} = require("./helpers");
 
 inquirer.registerPrompt("autocomplete", autocomplete);
 
 const STDIN_ENCODING = "utf8";
 const CTRL_C = "\u0003";
-const CLRS = "\x1Bc";
+
 const EVENT_LISTENER = "keypress";
 const STDIN_EVENT = "data";
 
-const HEADER_ITEM = chalk.yellow(">>");
-const HEADER_FOOTER = "------------------------------------";
 const MAIN_MENU_ID = "main";
 const DEFAULT_QUIT_NAME = "Exit";
 const QUIT_ACTION_ID = "quit";
-const LOGS_MODE_MESSAGE = "Displaying logs. Press any key to display main menu again";
+
+// require("events").EventEmitter.defaultMaxListeners = 100;
 
 const Inquirer = class Inquirer {
-  constructor(questions, header, quitMethod) {
+  constructor(questions, header, alerts) {
+    this._alertsHeader = alerts;
     this._header = header;
-    this._questions = this._initQuestions(questions, quitMethod);
+    this._questions = this._initQuestions(questions);
     this._exitLogsMode = this._exitLogsMode.bind(this);
   }
 
@@ -43,7 +48,7 @@ const Inquirer = class Inquirer {
     return packageInfo.name;
   }
 
-  _initQuestions(questions, quitMethod) {
+  _initQuestions(questions) {
     const clonedQuestions = cloneDeep(questions);
     const quitQuestion = {
       name: DEFAULT_QUIT_NAME,
@@ -51,16 +56,8 @@ const Inquirer = class Inquirer {
     };
     if (clonedQuestions[MAIN_MENU_ID] && clonedQuestions[MAIN_MENU_ID].choices) {
       clonedQuestions[MAIN_MENU_ID].choices.push(new inquirer.Separator());
-      if (quitMethod) {
-        clonedQuestions[MAIN_MENU_ID].choices.push({
-          ...quitQuestion,
-          name: quitMethod.name,
-        });
-        this._quit = quitMethod.action;
-      } else {
-        clonedQuestions[MAIN_MENU_ID].choices.push(quitQuestion);
-        this._quit = () => process.exit();
-      }
+      clonedQuestions[MAIN_MENU_ID].choices.push(quitQuestion);
+      this._quit = () => process.exit();
     }
     return clonedQuestions;
   }
@@ -87,7 +84,7 @@ const Inquirer = class Inquirer {
 
   async logsMode(startLogs) {
     this.clearScreen();
-    console.log(chalk.blue(LOGS_MODE_MESSAGE));
+    renderLogsMode();
     const stdin = process.stdin;
     if (stdin.setRawMode) {
       stdin.setRawMode(true);
@@ -121,11 +118,19 @@ const Inquirer = class Inquirer {
 
   clearScreen(opts) {
     const options = opts || {};
-    process.stdout.write(CLRS);
+    clearScreen();
     if (options.header !== false) {
       const headers = (this._header && this._header()) || [];
-      headers.map((header) => console.log(`${HEADER_ITEM} ${header}`));
-      console.log(HEADER_FOOTER);
+      const alerts = (this._alertsHeader && this._alertsHeader()) || [];
+      if (alerts.length) {
+        renderSectionHeader(":warning:  ALERTS");
+        alerts.forEach((alert) => console.log(alert));
+        renderSectionFooter();
+      }
+      renderSectionHeader(":information_source:  CURRENT SETTINGS");
+      headers.forEach((header) => console.log(header));
+      renderSectionFooter();
+      renderSectionHeader(":arrow_up_down:  ACTIONS");
     }
   }
 

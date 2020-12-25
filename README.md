@@ -7,13 +7,20 @@
 
 # [![Mocks Server][logo-url]][website-url] Mocks Server Plugin Inquirer CLI
 
-Plugin for [Mocks Server][website-url] that provides an interactive CLI that allows to change the server settings while it is running.
+Plugin for [Mocks Server][website-url] that provides an interactive CLI that allows to change the server settings while it is running and displays logs and alerts.
 
 ## Usage
 
-This plugin is included in the [main distribution of the Mocks Server project][main-distribution-url], so you can refer to the [official documentation website][website-url].
+This plugin is preinstalled in the [main distribution of the Mocks Server project][main-distribution-url]. _If you want ot install it by yourself, you can refer to the [plugins documentation website][plugins-url]._
 
 ![Interactive CLI](assets/cli_animation.gif)
+
+## Main features
+
+* __Displays current [settings][settings-url].__ _Settings will be refreshed automatically even if they are changed using other plugins, as the REST API, etc._
+* __Allows changing [settings][settings-url].__
+* __Displays current alerts.__ _Alerts include errors when loading mock files, wrong options, etc._
+* __Displays logs.__ _Mocks-server logs are displayed in real time._
 
 ## Options
 
@@ -31,6 +38,8 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [inquirer-url]: https://www.npmjs.com/package/inquirer
 [inquirer-support]: https://www.npmjs.com/package/inquirer#support-os-terminals
 [website-url]: https://www.mocks-server.org
+[plugins-url]: https://www.mocks-server.org/docs/plugins-adding-plugins
+[settings-url]: https://www.mocks-server.org/docs/configuration-options
 [main-distribution-url]: https://www.npmjs.com/package/@mocks-server/main
 [options-url]: https://www.mocks-server.org/docs/configuration-options
 [logo-url]: https://www.mocks-server.org/img/logo_120.png

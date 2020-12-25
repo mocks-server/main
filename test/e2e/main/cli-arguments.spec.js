@@ -9,7 +9,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { CliRunner, request, wait, TimeCounter, BINARY_PATH } = require("./utils");
+const { request, wait, TimeCounter, BINARY_PATH } = require("../support/utils");
+const CliRunner = require("../support/CliRunner");
 
 describe("command line arguments", () => {
   const cwdPath = path.resolve(__dirname, "fixtures");
@@ -63,22 +64,28 @@ describe("command line arguments", () => {
     });
 
     describe("when provided and does not exist", () => {
-      it("should print a warning", async () => {
+      it("should display an alert", async () => {
         cli = new CliRunner([BINARY_PATH, "--path=web-tutorial", "--behavior=foo"], {
           cwd: cwdPath,
         });
         await wait();
-        expect(cli.logs).toEqual(expect.stringContaining('Defined behavior "foo" was not found'));
+        expect(cli.currentScreen).toEqual(expect.stringContaining("ALERTS"));
+        expect(cli.currentScreen).toEqual(
+          expect.stringContaining('Defined behavior "foo" was not found')
+        );
       });
 
       it("should set as current behavior the first one found", async () => {
-        expect.assertions(2);
+        expect.assertions(3);
         cli = new CliRunner([BINARY_PATH, "--path=web-tutorial", "--behavior=foo"], {
           cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 1, name: "John Doe" });
+        expect(cli.currentScreen).toEqual(
+          expect.stringContaining("The first one found was used instead")
+        );
         expect(cli.logs).toEqual(expect.stringContaining("Current behavior: standard"));
       });
     });
@@ -86,7 +93,7 @@ describe("command line arguments", () => {
 
   describe("delay option", () => {
     it("should set delay", async () => {
-      expect.assertions(2);
+      expect.assertions(3);
       cli = new CliRunner([BINARY_PATH, "--path=web-tutorial", "--delay=2000"], {
         cwd: cwdPath,
       });
@@ -98,7 +105,18 @@ describe("command line arguments", () => {
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
       ]);
+      expect(cli.currentScreen).toEqual(expect.stringContaining("Delay: 2000"));
       expect(timeCounter.total).toBeGreaterThan(1999);
+    });
+  });
+
+  describe("log option", () => {
+    it("should set log level", async () => {
+      cli = new CliRunner([BINARY_PATH, "--path=web-tutorial", "--log=debug"], {
+        cwd: cwdPath,
+      });
+      await wait();
+      expect(cli.currentScreen).toEqual(expect.stringContaining("Log level: debug"));
     });
   });
 });

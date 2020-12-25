@@ -9,7 +9,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { CliRunner, request, wait, TimeCounter, BINARY_PATH } = require("./utils");
+const { request, wait, TimeCounter, BINARY_PATH } = require("../support/utils");
+const CliRunner = require("../support/CliRunner");
 
 describe("command line arguments with cli disabled", () => {
   const cwdPath = path.resolve(__dirname, "fixtures");

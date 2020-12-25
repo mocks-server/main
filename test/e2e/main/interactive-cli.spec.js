@@ -9,15 +9,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { request, wait, TimeCounter, BINARY_PATH } = require("./utils");
-const InteractiveCliRunner = require("./InteractiveCliRunner");
+const { request, wait, TimeCounter, BINARY_PATH } = require("../support/utils");
+const InteractiveCliRunner = require("../support/InteractiveCliRunner");
 
 describe("interactive CLI", () => {
   let cli;
   const cwdPath = path.resolve(__dirname, "fixtures");
 
   beforeAll(async () => {
-    cli = new InteractiveCliRunner([BINARY_PATH, "--path=web-tutorial"], {
+    cli = new InteractiveCliRunner([BINARY_PATH, "--path=web-tutorial", "--behavior=foo"], {
       cwd: cwdPath,
     });
     await wait();
@@ -28,6 +28,17 @@ describe("interactive CLI", () => {
   });
 
   describe("When started", () => {
+    it("should display an alert because chosen behavior does not exist", async () => {
+      expect(cli.currentScreen).toEqual(
+        expect.stringContaining('Defined behavior "foo" was not found.')
+      );
+      expect(cli.currentScreen).toEqual(expect.stringContaining("ALERTS"));
+    });
+
+    it("should have loaded first behavior", async () => {
+      expect(cli.currentScreen).toEqual(expect.stringContaining("Current behavior: standard"));
+    });
+
     it("should have 3 behaviors available", async () => {
       expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
     });
@@ -57,6 +68,10 @@ describe("interactive CLI", () => {
       await cli.cursorDown(2);
       const newScreen = await cli.pressEnter();
       expect(newScreen).toEqual(expect.stringContaining("Current behavior: dynamic"));
+    });
+
+    it("should have removed alert", async () => {
+      expect(cli.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -102,9 +117,11 @@ describe("interactive CLI", () => {
       await cli.cursorDown(5);
       await cli.pressEnter();
       await request("/api/users");
-      const newScreen = await cli.getCurrentScreen();
-      expect(newScreen).toEqual(expect.stringContaining("Displaying logs"));
-      expect(newScreen).toEqual(expect.stringContaining("[Mocks verbose] Request received"));
+      await wait(1000);
+      expect(cli.currentScreen).toEqual(expect.stringContaining("Displaying logs"));
+      expect(cli.currentScreen).toEqual(
+        expect.stringContaining("[Mocks verbose] Request received")
+      );
       await cli.pressEnter();
     });
   });

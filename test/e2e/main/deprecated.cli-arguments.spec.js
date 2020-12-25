@@ -9,7 +9,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { CliRunner, request, wait, BINARY_PATH } = require("./utils");
+const { request, wait, BINARY_PATH } = require("../support/utils");
+const CliRunner = require("../support/CliRunner");
 
 describe("deprecated command line arguments", () => {
   const cwdPath = path.resolve(__dirname, "fixtures");

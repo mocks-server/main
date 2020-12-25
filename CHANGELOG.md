@@ -10,6 +10,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.3.8] - 2020-12-25
+
+### Added
+- feat: Add sections headers
+- feat: Display alerts (#110)
+- style(lint): Add eslint plugin to avoid the usage of `only` in tests
+
+### Changed
+- refactor: Move render helpers to a helpers file
+- refactor: Remove unused inquirerCli option
+- test(e2e): Move support elements to support folder
+- docs(readme): Add main features chapter
+- chore(deps): Update dependencies
+
+### Fixed
+- fix: Add/remove listeners in start/stop methods, not in the init one.
+
 ## [1.3.7] - 2020-12-21
 
 ### Added

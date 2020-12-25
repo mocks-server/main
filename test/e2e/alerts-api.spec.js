@@ -20,7 +20,7 @@ describe("alerts api", () => {
     cli = new CliRunner(["node", "start.js", "--path=files-watch", "--behavior=foo"], {
       cwd: path.resolve(__dirname, "fixtures"),
     });
-    await wait(1000);
+    await wait(2000);
   });
 
   afterAll(async () => {

@@ -18,7 +18,7 @@ describe("log option modified through api", () => {
     cli = new CliRunner(["node", "start.js", "--path=web-tutorial", "--log=info"], {
       cwd: path.resolve(__dirname, "fixtures"),
     });
-    await wait(1000);
+    await wait(2000);
   });
 
   afterAll(async () => {

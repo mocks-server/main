@@ -65,7 +65,7 @@ describe("plugin options", () => {
           cwd: path.resolve(__dirname, "fixtures"),
         }
       );
-      await wait(1000);
+      await wait(2000);
     });
 
     afterAll(async () => {

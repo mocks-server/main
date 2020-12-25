@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat(#78): Add alerts router
 ### Changed
 - chore(deps): Update dependencies
+- test(e2e): Move utils to a support folder
 ### Fixed
 ### Removed
 

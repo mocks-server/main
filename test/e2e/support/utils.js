@@ -14,7 +14,7 @@ const { Core } = require("@mocks-server/core");
 const requestPromise = require("request-promise");
 const CliRunner = require("./CliRunner");
 
-const PluginAdminApi = require("../../index");
+const PluginAdminApi = require("../../../index");
 
 const SERVER_PORT = 3100;
 
@@ -29,7 +29,7 @@ const defaultRequestOptions = {
 };
 
 const fixturesFolder = (folderName) => {
-  return path.resolve(__dirname, "fixtures", folderName);
+  return path.resolve(__dirname, "..", "fixtures", folderName);
 };
 
 const startServer = (mocksPath, opts = {}) => {

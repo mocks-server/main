@@ -14,7 +14,7 @@ const {
   request,
   deprecatedChangeBehavior,
   deprecatedGetBehaviors,
-} = require("./utils");
+} = require("./support/utils");
 
 describe("deprecated API for changing current behavior", () => {
   let server;

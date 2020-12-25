@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - chore(deps): Update dependencies
 - test(e2e): Move utils to a support folder
 - feat: Add/remove routers on start/stop plugin methods, not in init method.
+- style: Remove redundant `await` on a non-promise
 
 ## [1.4.7] - 2020-12-21
 

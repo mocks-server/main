@@ -67,8 +67,8 @@ class Plugin {
     return packageInfo.name;
   }
 
-  async init() {
-    await this._deprecatedApi.init();
+  init() {
+    this._deprecatedApi.init();
     this._initRouter();
   }
 

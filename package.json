@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/admin-api-paths",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "Api paths of @mocks-server/plugin-admin-api",
   "keywords": [
     "mocks-server-plugin",

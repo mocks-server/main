@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.1.0] - 2020-12-25
+
+### Added
+- feat: Add alerts path
+
 ## [1.0.9] - 2020-12-21
 
 ### Added

@@ -3,3 +3,4 @@ export const SETTINGS = "/settings";
 export const BEHAVIORS = "/behaviors";
 export const FIXTURES = "/fixtures";
 export const ABOUT = "/about";
+export const ALERTS = "/alerts";

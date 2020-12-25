@@ -9,8 +9,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { request, wait, BINARY_PATH } = require("./utils");
-const InteractiveCliRunner = require("./InteractiveCliRunner");
+const { request, wait, BINARY_PATH } = require("./support/utils");
+const InteractiveCliRunner = require("./support/InteractiveCliRunner");
 
 describe("Cli stop method", () => {
   let cli;
@@ -65,7 +65,7 @@ describe("Cli stop method", () => {
 
     it("should not display cli", async () => {
       await request("/api/users");
-      expect(cli.logs).toEqual(expect.stringContaining("Request received | GET => /api/users"));
+      expect(cli.currentScreen).toEqual(expect.not.stringContaining("CURRENT SETTINGS"));
     });
 
     it("should not work to select log level using cli", async () => {
@@ -80,7 +80,7 @@ describe("Cli stop method", () => {
     });
   });
 
-  describe("when using api plugin to disable inquirer-cli", () => {
+  describe("when using api plugin to enable inquirer-cli", () => {
     beforeAll(async () => {
       cli.flush();
       await request("/admin/settings", {
@@ -89,14 +89,12 @@ describe("Cli stop method", () => {
           cli: true,
         },
       });
-      await wait();
+      await wait(2000);
     });
 
-    it("should not display cli", async () => {
+    it("should display cli", async () => {
       await request("/api/users");
-      expect(cli.logs).not.toEqual(
-        expect.stringContaining("Request received | GET => /api/users")
-      );
+      expect(cli.currentScreen).toEqual(expect.stringContaining("CURRENT SETTINGS"));
     });
 
     it("should display new selected log level", async () => {

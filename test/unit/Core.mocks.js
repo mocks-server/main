@@ -46,9 +46,13 @@ class CoreMock {
       addRouter: this._sandbox.stub(),
       removeRouter: this._sandbox.stub(),
       behaviors: {
-        currentFromCollection: "foo-current",
+        count: 0,
         collection: "foo-behaviors-collection",
+        ids: [],
+        current: {},
+        currentId: "foo",
       },
+      alerts: [],
       serverError: null,
       _eventEmitter: {
         on: this._sandbox.stub(),

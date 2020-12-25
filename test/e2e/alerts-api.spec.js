@@ -89,7 +89,7 @@ describe("alerts api", () => {
       expect(response.error.name).toEqual("ReferenceError");
       expect(response.error.message).toEqual("FOO is not defined");
       expect(response.error.stack).toEqual(
-        expect.stringContaining("test/e2e/fixtures/files-watch/fixtures/users.js:1:18")
+        expect.stringContaining("test/e2e/fixtures/files-watch/fixtures/users.js:2:18")
       );
     });
   });

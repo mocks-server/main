@@ -23,8 +23,8 @@ describe("deprecated API for changing current behavior", () => {
     server = await startServer();
   });
 
-  afterAll(() => {
-    stopServer(server);
+  afterAll(async () => {
+    await stopServer(server);
   });
 
   describe("When started", () => {

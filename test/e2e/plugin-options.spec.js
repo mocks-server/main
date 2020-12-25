@@ -28,8 +28,8 @@ describe("plugin options", () => {
       });
     });
 
-    afterAll(() => {
-      stopServer(server);
+    afterAll(async () => {
+      await stopServer(server);
     });
 
     it("should disable deprecated behaviors api path", async () => {

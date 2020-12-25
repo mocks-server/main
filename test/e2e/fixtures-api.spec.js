@@ -16,8 +16,8 @@ describe("alerts api", () => {
     server = await startServer("web-tutorial");
   });
 
-  afterAll(() => {
-    stopServer(server);
+  afterAll(async () => {
+    await stopServer(server);
   });
 
   describe("get /", () => {

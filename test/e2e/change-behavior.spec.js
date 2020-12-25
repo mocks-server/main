@@ -17,8 +17,8 @@ describe("API for changing current behavior", () => {
     server = await startServer("web-tutorial-json");
   });
 
-  afterAll(() => {
-    stopServer(server);
+  afterAll(async () => {
+    await stopServer(server);
   });
 
   describe("When started", () => {

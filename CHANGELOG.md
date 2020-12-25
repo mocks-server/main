@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Add alerts path
 
 ### Fixed
-- fix: Remove mocks-server-plugin tag from package.json
+- fix: Remove mocks-server-plugin tag from package.json (#87)
 
 ## [1.0.9] - 2020-12-21
 

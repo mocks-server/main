@@ -36,9 +36,6 @@ class AlertsApi {
             name: alert.error.name,
             message: alert.error.message,
             stack: alert.error.stack,
-            fileName: alert.error.fileName,
-            lineNumber: alert.error.lineNumber,
-            columnNumber: alert.error.columnNumber,
           }
         : null,
     };

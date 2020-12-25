@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const path = require("path");
 const fsExtra = require("fs-extra");
 
-const { CliRunner, request, fixturesFolder, wait } = require("./utils");
+const { CliRunner, request, fixturesFolder, wait } = require("./support/utils");
 
 describe("watch option modified through api", () => {
   let cli;
@@ -20,7 +20,7 @@ describe("watch option modified through api", () => {
     cli = new CliRunner(["node", "start.js", "--path=files-watch", "--watch=false"], {
       cwd: path.resolve(__dirname, "fixtures"),
     });
-    await wait(1000);
+    await wait(2000);
   });
 
   afterAll(async () => {

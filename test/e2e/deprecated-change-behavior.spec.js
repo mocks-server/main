@@ -14,7 +14,7 @@ const {
   request,
   deprecatedChangeBehavior,
   deprecatedGetBehaviors,
-} = require("./utils");
+} = require("./support/utils");
 
 describe("deprecated API for changing current behavior", () => {
   let server;
@@ -23,8 +23,8 @@ describe("deprecated API for changing current behavior", () => {
     server = await startServer();
   });
 
-  afterAll(() => {
-    stopServer(server);
+  afterAll(async () => {
+    await stopServer(server);
   });
 
   describe("When started", () => {

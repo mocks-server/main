@@ -9,8 +9,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { request, wait, BINARY_PATH } = require("./utils");
-const InteractiveCliRunner = require("./InteractiveCliRunner");
+const { request, wait, BINARY_PATH } = require("./support/utils");
+const InteractiveCliRunner = require("./support/InteractiveCliRunner");
 
 describe("Cli stop method", () => {
   let cli;
@@ -60,12 +60,11 @@ describe("Cli stop method", () => {
           cli: false,
         },
       });
-      await wait();
+      await wait(3000);
     });
 
     it("should not display cli", async () => {
-      await request("/api/users");
-      expect(cli.logs).toEqual(expect.stringContaining("Request received | GET => /api/users"));
+      expect(cli.currentScreen).toEqual(expect.not.stringContaining("CURRENT SETTINGS"));
     });
 
     it("should not work to select log level using cli", async () => {
@@ -78,9 +77,71 @@ describe("Cli stop method", () => {
         expect(err.message).toEqual(expect.stringContaining("No new screen"));
       }
     });
+
+    it("should display logs", async () => {
+      await request("/api/users");
+      expect(cli.currentScreen).toEqual(expect.not.stringContaining("CURRENT SETTINGS"));
+      expect(cli.currentScreen).toEqual(
+        expect.stringContaining("[Mocks verbose] Request received")
+      );
+    });
+
+    it("should not start when files are changed", async () => {
+      expect.assertions(2);
+      await request("/admin/settings", {
+        method: "PATCH",
+        body: {
+          path: "no-behaviors",
+        },
+      });
+      await wait(2000);
+      expect(cli.currentScreen).toEqual(expect.not.stringContaining("CURRENT SETTINGS"));
+      const usersResponse = await request("/api/users", {
+        resolveWithFullResponse: true,
+        simple: false,
+      });
+      expect(usersResponse.statusCode).toEqual(404);
+    });
+
+    it("should not start when there is an error in files", async () => {
+      expect.assertions(2);
+      await request("/admin/settings", {
+        method: "PATCH",
+        body: {
+          path: "files-error",
+        },
+      });
+      await wait(2000);
+      expect(cli.currentScreen).toEqual(
+        expect.stringContaining("Error loading files from folder")
+      );
+      expect(cli.currentScreen).toEqual(expect.not.stringContaining("CURRENT SETTINGS"));
+    });
+
+    it("should not start when behaviors load successfully", async () => {
+      await request("/admin/settings", {
+        method: "PATCH",
+        body: {
+          path: "web-tutorial",
+        },
+      });
+      await wait(2000);
+      expect(cli.currentScreen).toEqual(expect.not.stringContaining("CURRENT SETTINGS"));
+    });
+
+    it("should not start when settings different to cli are changed", async () => {
+      await request("/admin/settings", {
+        method: "PATCH",
+        body: {
+          behavior: "user2",
+        },
+      });
+      await wait(2000);
+      expect(cli.currentScreen).toEqual(expect.not.stringContaining("CURRENT SETTINGS"));
+    });
   });
 
-  describe("when using api plugin to disable inquirer-cli", () => {
+  describe("when using api plugin to enable inquirer-cli", () => {
     beforeAll(async () => {
       cli.flush();
       await request("/admin/settings", {
@@ -89,14 +150,15 @@ describe("Cli stop method", () => {
           cli: true,
         },
       });
-      await wait();
+      await wait(3000);
     });
 
-    it("should not display cli", async () => {
-      await request("/api/users");
-      expect(cli.logs).not.toEqual(
-        expect.stringContaining("Request received | GET => /api/users")
-      );
+    it("should display cli", async () => {
+      expect(cli.currentScreen).toEqual(expect.stringContaining("CURRENT SETTINGS"));
+    });
+
+    it("should display new settings if they were changed while it was stopped", async () => {
+      expect(cli.currentScreen).toEqual(expect.stringContaining("Current behavior: user2"));
     });
 
     it("should display new selected log level", async () => {
@@ -104,6 +166,32 @@ describe("Cli stop method", () => {
       await cli.pressEnter();
       const newScreen = await cli.pressEnter();
       expect(newScreen).toEqual(expect.stringContaining("Log level: silly"));
+    });
+
+    it("should display alerts when there is an error in files", async () => {
+      expect.assertions(2);
+      await request("/admin/settings", {
+        method: "PATCH",
+        body: {
+          path: "files-error",
+        },
+      });
+      await wait(2000);
+      expect(cli.currentScreen).toEqual(expect.stringContaining("ALERTS"));
+      expect(cli.currentScreen).toEqual(
+        expect.stringContaining("Error loading files from folder")
+      );
+    });
+
+    it("should not display alerts when error in files is fixed", async () => {
+      await request("/admin/settings", {
+        method: "PATCH",
+        body: {
+          path: "web-tutorial",
+        },
+      });
+      await wait(2000);
+      expect(cli.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
     });
   });
 });

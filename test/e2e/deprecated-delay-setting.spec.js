@@ -14,7 +14,7 @@ const {
   request,
   deprecatedChangeDelay,
   TimeCounter,
-} = require("./utils");
+} = require("./support/utils");
 
 describe("delay setting", () => {
   let server;

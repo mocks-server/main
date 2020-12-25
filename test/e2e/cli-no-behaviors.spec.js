@@ -9,7 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { CliRunner, wait, BINARY_PATH } = require("./utils");
+const { CliRunner, wait, BINARY_PATH } = require("./support/utils");
 
 describe("with no behaviors", () => {
   const cwdPath = path.resolve(__dirname, "fixtures");

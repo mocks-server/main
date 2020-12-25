@@ -14,7 +14,7 @@ const {
   request,
   deprecatedChangeBehavior,
   deprecatedGetBehaviors,
-} = require("./utils");
+} = require("./support/utils");
 
 describe("web tutorial using deprecated admin-api", () => {
   let server;

@@ -16,6 +16,7 @@ const {
   BEHAVIORS,
   ABOUT,
   FIXTURES,
+  ALERTS,
 } = require("@mocks-server/admin-api-paths");
 
 const packageInfo = require("../package.json");
@@ -23,6 +24,7 @@ const DeprecatedApi = require("./deprecated/Api");
 
 const Settings = require("./Settings");
 const Behaviors = require("./Behaviors");
+const Alerts = require("./Alerts");
 const Fixtures = require("./Fixtures");
 const About = require("./About");
 
@@ -41,6 +43,7 @@ class Plugin {
     this._deprecatedApi = new DeprecatedApi(core);
     this._settingsApi = new Settings(this._core);
     this._behaviorsApi = new Behaviors(this._core);
+    this._alertsApi = new Alerts(this._core);
     this._aboutApi = new About(this._core);
     this._fixturesApi = new Fixtures(this._core);
     core.addSetting({
@@ -66,10 +69,21 @@ class Plugin {
 
   async init() {
     await this._deprecatedApi.init();
-    this._core.onChangeSettings(this._onChangeSettings);
     this._initRouter();
+  }
+
+  start() {
+    this._stopListeningOnChangeSettings = this._core.onChangeSettings(this._onChangeSettings);
     this._addDeprecatedRouter();
     this._addRouter();
+  }
+
+  stop() {
+    if (this._stopListeningOnChangeSettings) {
+      this._stopListeningOnChangeSettings();
+    }
+    this._removeDeprecatedRouter();
+    this._removeRouter();
   }
 
   _initRouter() {
@@ -78,16 +92,11 @@ class Plugin {
     this._router.use(BEHAVIORS, this._behaviorsApi.router);
     this._router.use(ABOUT, this._aboutApi.router);
     this._router.use(FIXTURES, this._fixturesApi.router);
+    this._router.use(ALERTS, this._alertsApi.router);
   }
 
   _addDeprecatedRouter() {
-    if (
-      this._settings.get(ADMIN_API_DEPRECATED_PATHS_OPTION) === false &&
-      this._addedDeprecatedRouter
-    ) {
-      this._core.removeRouter(DEPRECATED_API_PATH, this._deprecatedApi.router);
-      this._addedDeprecatedRouter = false;
-    }
+    this._removeDeprecatedRouter();
     if (
       this._settings.get(ADMIN_API_DEPRECATED_PATHS_OPTION) === true &&
       !this._addedDeprecatedRouter
@@ -97,12 +106,24 @@ class Plugin {
     }
   }
 
-  _addRouter() {
-    if (this._previousRoutersPath) {
-      this._core.removeRouter(this._previousRoutersPath, this._router);
+  _removeDeprecatedRouter() {
+    if (this._addedDeprecatedRouter) {
+      this._core.removeRouter(DEPRECATED_API_PATH, this._deprecatedApi.router);
+      this._addedDeprecatedRouter = false;
     }
-    this._previousRoutersPath = this._settings.get(ADMIN_API_PATH_OPTION);
-    this._core.addRouter(this._previousRoutersPath, this._router);
+  }
+
+  _addRouter() {
+    this._removeRouter();
+    this._routersPath = this._settings.get(ADMIN_API_PATH_OPTION);
+    this._core.addRouter(this._routersPath, this._router);
+  }
+
+  _removeRouter() {
+    if (this._routersPath) {
+      this._core.removeRouter(this._routersPath, this._router);
+      this._routersPath = null;
+    }
   }
 
   _onChangeSettings(newSettings) {

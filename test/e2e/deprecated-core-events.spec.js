@@ -17,7 +17,7 @@ const {
   fixturesFolder,
   wait,
   CliRunner,
-} = require("./utils");
+} = require("./support/utils");
 
 describe("Plugin listening to core events", () => {
   let cli;

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 ### Added
 - feat(#78): Add alerts router
+- chore(lint): Add eslint plugin to avoid only in tests
 ### Changed
 - chore(deps): Update dependencies
 - test(e2e): Move utils to a support folder

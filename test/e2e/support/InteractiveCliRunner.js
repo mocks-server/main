@@ -12,7 +12,6 @@ const { wait } = require("./utils");
 const CliRunner = require("./CliRunner");
 
 const LOG = "[CLI]: ";
-const SCREEN_SEPARATOR = ">> Mocks server";
 
 module.exports = class InteractiveCliRunner {
   constructor(cliArguments, cliOptions) {
@@ -25,11 +24,7 @@ module.exports = class InteractiveCliRunner {
 
   async getCurrentScreen() {
     await wait(500);
-    const allLogs = this._cli.allLogs;
-    const lastLog = allLogs[allLogs.length - 1];
-    return lastLog.includes(SCREEN_SEPARATOR)
-      ? `${SCREEN_SEPARATOR}${lastLog.split(SCREEN_SEPARATOR).pop()}`
-      : lastLog;
+    return this._cli.currentScreen;
   }
 
   async logCurrentScreen() {
@@ -50,6 +45,10 @@ module.exports = class InteractiveCliRunner {
 
   kill() {
     return this._cli.kill();
+  }
+
+  flush() {
+    this._cli.flush();
   }
 
   get logs() {

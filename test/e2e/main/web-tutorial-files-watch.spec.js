@@ -217,4 +217,51 @@ describe("files watcher", () => {
       expect(interactiveCli.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
     });
   });
+
+  describe("When files are modified while displaying logs", () => {
+    it("should display logs", async () => {
+      await interactiveCli.cursorDown(5);
+      await interactiveCli.pressEnter();
+      await wait(1000);
+      expect(interactiveCli.currentScreen).toEqual(expect.stringContaining("Displaying logs"));
+    });
+
+    it("should not display alerts when files are modified and contain an error", async () => {
+      expect.assertions(2);
+      fsExtra.copySync(fixturesFolder("files-error"), fixturesFolder("files-watch"));
+      await wait(2000);
+      expect(interactiveCli.currentScreen).toEqual(expect.stringContaining("Displaying logs"));
+      expect(interactiveCli.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
+    });
+
+    it("should have displayed error in logs", async () => {
+      expect.assertions(2);
+      expect(interactiveCli.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
+      expect(interactiveCli.currentScreen).toEqual(
+        expect.stringContaining("Error loading files from folder")
+      );
+    });
+
+    it("should display alerts when exit logs mode", async () => {
+      expect.assertions(4);
+      await interactiveCli.pressEnter();
+      await wait(2000);
+      expect(interactiveCli.currentScreen).toEqual(expect.not.stringContaining("Displaying logs"));
+      expect(interactiveCli.currentScreen).toEqual(expect.stringContaining("ALERTS"));
+      expect(interactiveCli.currentScreen).toEqual(
+        expect.stringContaining("main/fixtures/files-watch: FOO is not defined")
+      );
+      expect(interactiveCli.currentScreen).toEqual(
+        expect.stringContaining("files-watch/fixtures/users.js:2:18")
+      );
+    });
+
+    it("should remove alerts when error is fixed", async () => {
+      expect.assertions(2);
+      fsExtra.copySync(fixturesFolder("files-modification"), fixturesFolder("files-watch"));
+      await wait(2000);
+      expect(interactiveCli.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
+      expect(interactiveCli.currentScreen).toEqual(expect.stringContaining("CURRENT SETTINGS"));
+    });
+  });
 });

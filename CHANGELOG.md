@@ -24,6 +24,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - docs(readme): Add main features chapter
 - chore(deps): Update dependencies
 
+### Fixed
+- fix: Add/remove listeners in start/stop methods, not in the init one.
+
 ## [1.3.7] - 2020-12-21
 
 ### Added

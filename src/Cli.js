@@ -103,8 +103,6 @@ class Cli {
   }
 
   init() {
-    this._stopListeningChangeSettings = this._core.onChangeSettings(this._onChangeSettings);
-    this._stopListeningChangeAlerts = this._core.onChangeAlerts(this._onChangeAlerts);
     if (!this._settings.get("cli")) {
       return Promise.resolve();
     }
@@ -128,7 +126,11 @@ class Cli {
     this._started = true;
     if (this._stopListeningChangeMocks) {
       this._stopListeningChangeMocks();
+      this._stopListeningChangeSettings();
+      this._stopListeningChangeAlerts();
     }
+    this._stopListeningChangeSettings = this._core.onChangeSettings(this._onChangeSettings);
+    this._stopListeningChangeAlerts = this._core.onChangeAlerts(this._onChangeAlerts);
     this._stopListeningChangeMocks = this._core.onChangeMocks(this._onChangeMocks);
     this._logLevel = this._settings.get("log");
     this._silentTraces();
@@ -141,6 +143,8 @@ class Cli {
     }
     this._started = false;
     this._stopListeningChangeMocks();
+    this._stopListeningChangeSettings();
+    this._stopListeningChangeAlerts();
     this._settings.set("log", this._logLevel);
     this._cli.removeListeners();
     this._cli.logsMode();
@@ -306,12 +310,6 @@ class Cli {
   _silentTraces() {
     this._isOverwritingLogLevel = true;
     this._settings.set("log", "silent");
-  }
-
-  stopListeningServerWatch() {
-    if (this._stopListeningChangeMocks) {
-      this._stopListeningChangeMocks();
-    }
   }
 
   get displayName() {

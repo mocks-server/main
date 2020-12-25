@@ -117,9 +117,11 @@ describe("interactive CLI", () => {
       await cli.cursorDown(5);
       await cli.pressEnter();
       await request("/api/users");
-      const newScreen = await cli.getCurrentScreen();
-      expect(newScreen).toEqual(expect.stringContaining("Displaying logs"));
-      expect(newScreen).toEqual(expect.stringContaining("[Mocks verbose] Request received"));
+      await wait(1000);
+      expect(cli.currentScreen).toEqual(expect.stringContaining("Displaying logs"));
+      expect(cli.currentScreen).toEqual(
+        expect.stringContaining("[Mocks verbose] Request received")
+      );
       await cli.pressEnter();
     });
   });

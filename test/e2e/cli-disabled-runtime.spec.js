@@ -167,5 +167,31 @@ describe("Cli stop method", () => {
       const newScreen = await cli.pressEnter();
       expect(newScreen).toEqual(expect.stringContaining("Log level: silly"));
     });
+
+    it("should display alerts when there is an error in files", async () => {
+      expect.assertions(2);
+      await request("/admin/settings", {
+        method: "PATCH",
+        body: {
+          path: "files-error",
+        },
+      });
+      await wait(2000);
+      expect(cli.currentScreen).toEqual(expect.stringContaining("ALERTS"));
+      expect(cli.currentScreen).toEqual(
+        expect.stringContaining("Error loading files from folder")
+      );
+    });
+
+    it("should not display alerts when error in files is fixed", async () => {
+      await request("/admin/settings", {
+        method: "PATCH",
+        body: {
+          path: "web-tutorial",
+        },
+      });
+      await wait(2000);
+      expect(cli.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
+    });
   });
 });

@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - test(E2E): Add more start/stop cli plugin E2E tests
+- test(E2E): Add alerts E2E tests
 
 ### Changed
 - Update dependencies

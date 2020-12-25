@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.4.1] - 2020-12-25
+
+### Fixed
+- fix: Do not stop listening to changeSettings event on stop plugin, as it has to be restarted if `cli` setting changes to `true`
+
 ## [1.4.0] - 2020-12-25
 
 ### Changed

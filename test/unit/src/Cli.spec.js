@@ -66,6 +66,10 @@ describe("Cli", () => {
       await cli.init();
       expect(inquirerMocks.stubs.Inquirer.callCount).toEqual(0);
     });
+
+    it("should listen to settings change", async () => {
+      expect(coreInstance.onChangeSettings.callCount).toEqual(1);
+    });
   });
 
   describe("when settings are changed", () => {
@@ -286,9 +290,10 @@ describe("Cli", () => {
       expect.assertions(3);
       inquirerMocks.reset();
       await cli.stop();
-      expect(removeChangeSettingsSpy.callCount).toEqual(1);
       expect(removeChangeMocksSpy.callCount).toEqual(1);
       expect(removeChangeAlertsSpy.callCount).toEqual(1);
+      // it still hast to listen to change settings to restart the plugin in case cli setting changes
+      expect(removeChangeSettingsSpy.callCount).toEqual(0);
     });
 
     it("should not stop if it was already stopped", async () => {

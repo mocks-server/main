@@ -39,7 +39,7 @@
     "express": "4.17.1"
   },
   "devDependencies": {
-    "@mocks-server/core": "1.5.3",
+    "@mocks-server/core": "1.6.0",
     "eslint": "7.12.1",
     "eslint-plugin-no-only-tests": "2.4.0",
     "eslint-config-prettier": "6.15.0",

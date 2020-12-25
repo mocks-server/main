@@ -16,6 +16,7 @@ const {
   BEHAVIORS,
   ABOUT,
   FIXTURES,
+  ALERTS,
 } = require("@mocks-server/admin-api-paths");
 
 const packageInfo = require("../package.json");
@@ -23,6 +24,7 @@ const DeprecatedApi = require("./deprecated/Api");
 
 const Settings = require("./Settings");
 const Behaviors = require("./Behaviors");
+const Alerts = require("./Alerts");
 const Fixtures = require("./Fixtures");
 const About = require("./About");
 
@@ -41,6 +43,7 @@ class Plugin {
     this._deprecatedApi = new DeprecatedApi(core);
     this._settingsApi = new Settings(this._core);
     this._behaviorsApi = new Behaviors(this._core);
+    this._alertsApi = new Alerts(this._core);
     this._aboutApi = new About(this._core);
     this._fixturesApi = new Fixtures(this._core);
     core.addSetting({
@@ -78,6 +81,7 @@ class Plugin {
     this._router.use(BEHAVIORS, this._behaviorsApi.router);
     this._router.use(ABOUT, this._aboutApi.router);
     this._router.use(FIXTURES, this._fixturesApi.router);
+    this._router.use(ALERTS, this._alertsApi.router);
   }
 
   _addDeprecatedRouter() {

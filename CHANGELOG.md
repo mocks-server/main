@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
+- feat(#78): Add alerts router
 ### Changed
 - chore(deps): Update dependencies
 ### Fixed

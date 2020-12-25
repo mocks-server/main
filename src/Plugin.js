@@ -69,10 +69,21 @@ class Plugin {
 
   async init() {
     await this._deprecatedApi.init();
-    this._core.onChangeSettings(this._onChangeSettings);
     this._initRouter();
+  }
+
+  start() {
+    this._stopListeningOnChangeSettings = this._core.onChangeSettings(this._onChangeSettings);
     this._addDeprecatedRouter();
     this._addRouter();
+  }
+
+  stop() {
+    if (this._stopListeningOnChangeSettings) {
+      this._stopListeningOnChangeSettings();
+    }
+    this._removeDeprecatedRouter();
+    this._removeRouter();
   }
 
   _initRouter() {
@@ -85,13 +96,7 @@ class Plugin {
   }
 
   _addDeprecatedRouter() {
-    if (
-      this._settings.get(ADMIN_API_DEPRECATED_PATHS_OPTION) === false &&
-      this._addedDeprecatedRouter
-    ) {
-      this._core.removeRouter(DEPRECATED_API_PATH, this._deprecatedApi.router);
-      this._addedDeprecatedRouter = false;
-    }
+    this._removeDeprecatedRouter();
     if (
       this._settings.get(ADMIN_API_DEPRECATED_PATHS_OPTION) === true &&
       !this._addedDeprecatedRouter
@@ -101,12 +106,24 @@ class Plugin {
     }
   }
 
-  _addRouter() {
-    if (this._previousRoutersPath) {
-      this._core.removeRouter(this._previousRoutersPath, this._router);
+  _removeDeprecatedRouter() {
+    if (this._addedDeprecatedRouter) {
+      this._core.removeRouter(DEPRECATED_API_PATH, this._deprecatedApi.router);
+      this._addedDeprecatedRouter = false;
     }
-    this._previousRoutersPath = this._settings.get(ADMIN_API_PATH_OPTION);
-    this._core.addRouter(this._previousRoutersPath, this._router);
+  }
+
+  _addRouter() {
+    this._removeRouter();
+    this._routersPath = this._settings.get(ADMIN_API_PATH_OPTION);
+    this._core.addRouter(this._routersPath, this._router);
+  }
+
+  _removeRouter() {
+    if (this._routersPath) {
+      this._core.removeRouter(this._routersPath, this._router);
+      this._routersPath = null;
+    }
   }
 
   _onChangeSettings(newSettings) {

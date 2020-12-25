@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - chore(deps): Update dependencies
 - test(e2e): Move utils to a support folder
+- feat: Add/remove routers on start/stop plugin methods, not in init method.
 ### Fixed
 ### Removed
 

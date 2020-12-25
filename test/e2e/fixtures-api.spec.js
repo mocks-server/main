@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { startServer, stopServer, request } = require("./support/utils");
 
-describe("fixtures api", () => {
+describe("alerts api", () => {
   let server;
   beforeAll(async () => {
     server = await startServer("web-tutorial");

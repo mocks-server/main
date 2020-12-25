@@ -91,39 +91,80 @@ describe("Plugin", () => {
       await plugin.init();
       expect(deprecatedApiInstance.init.callCount).toEqual(1);
     });
+  });
 
+  describe("when started", () => {
     it("should add deprecated router if adminApiDeprecatedPaths setting returns true", async () => {
       coreInstance.settings.get.withArgs("adminApiDeprecatedPaths").returns(true);
       await plugin.init();
+      plugin.start();
       expect(coreInstance.addRouter.callCount).toEqual(2);
     });
 
     it("should not add deprecated router if adminApiDeprecatedPaths setting returns false", async () => {
       coreInstance.settings.get.withArgs("adminApiDeprecatedPaths").returns(false);
       await plugin.init();
+      plugin.start();
       expect(coreInstance.addRouter.callCount).toEqual(1);
     });
 
     it("should register Express router into the core under the path returned by settings", async () => {
       coreInstance.settings.get.withArgs("adminApiPath").returns("/foo");
       await plugin.init();
+      plugin.start();
       expect(coreInstance.addRouter.getCall(0).args).toEqual(["/foo", plugin._router]);
     });
   });
 
-  describe("when settings change", () => {
-    it("should not register deprecated router again if it is enabled and was already registered", async () => {
+  describe("when stopped", () => {
+    it("should remove deprecated router if it was started", async () => {
+      expect.assertions(2);
       coreInstance.settings.get.withArgs("adminApiDeprecatedPaths").returns(true);
       await plugin.init();
+      plugin.start();
+      plugin.stop();
+      expect(coreInstance.removeRouter.callCount).toEqual(1);
+      expect(coreInstance.removeRouter.getCall(0).args[0]).toEqual("/mocks");
+    });
+
+    it("should remove router if it was started", async () => {
+      expect.assertions(2);
+      coreInstance.settings.get.withArgs("adminApiPath").returns("/admin");
+      await plugin.init();
+      plugin.start();
+      plugin.stop();
+      expect(coreInstance.removeRouter.callCount).toEqual(1);
+      expect(coreInstance.removeRouter.getCall(0).args[0]).toEqual("/admin");
+    });
+
+    it("should stop listening to onChangeSettings events", async () => {
+      const removeListenerSpy = sandbox.spy();
+      coreInstance.onChangeSettings.returns(removeListenerSpy);
+      coreInstance.settings.get.withArgs("adminApiPath").returns("/admin");
+      await plugin.init();
+      plugin.start();
+      plugin.stop();
+      expect(removeListenerSpy.callCount).toEqual(1);
+    });
+  });
+
+  describe("when settings change", () => {
+    it("should remove deprecated router and add it again if it is enabled and was already registered", async () => {
+      expect.assertions(2);
+      coreInstance.settings.get.withArgs("adminApiDeprecatedPaths").returns(true);
+      await plugin.init();
+      plugin.start();
       coreInstance.onChangeSettings.getCall(0).args[0]({
         adminApiDeprecatedPaths: true,
       });
-      expect(coreInstance.addRouter.callCount).toEqual(2);
+      expect(coreInstance.removeRouter.callCount).toEqual(1);
+      expect(coreInstance.addRouter.callCount).toEqual(3);
     });
 
     it("should remove deprecated router if it is disabled and was already enabled", async () => {
       coreInstance.settings.get.withArgs("adminApiDeprecatedPaths").returns(true);
       await plugin.init();
+      plugin.start();
       coreInstance.settings.get.withArgs("adminApiDeprecatedPaths").returns(false);
       coreInstance.onChangeSettings.getCall(0).args[0]({
         adminApiDeprecatedPaths: false,
@@ -134,6 +175,7 @@ describe("Plugin", () => {
     it("should not remove deprecated router if it was not added", async () => {
       coreInstance.settings.get.withArgs("adminApiDeprecatedPaths").returns(false);
       await plugin.init();
+      plugin.start();
       coreInstance.settings.get.withArgs("adminApiDeprecatedPaths").returns(false);
       coreInstance.onChangeSettings.getCall(0).args[0]({
         adminApiDeprecatedPaths: false,
@@ -145,6 +187,7 @@ describe("Plugin", () => {
       expect.assertions(3);
       coreInstance.settings.get.withArgs("adminApiPath").returns("/foo");
       await plugin.init();
+      plugin.start();
       coreInstance.settings.get.withArgs("adminApiPath").returns("/foo2");
       coreInstance.onChangeSettings.getCall(0).args[0]({
         adminApiPath: "/foo2",

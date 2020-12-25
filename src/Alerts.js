@@ -20,7 +20,6 @@ class AlertsApi {
   constructor(core) {
     this._core = core;
     this._tracer = core.tracer;
-    this._alerts = this._core.alerts;
     this._router = express.Router();
     this._router.get("/", this.getCollection.bind(this));
     this._router.get("/:id", this.getModel.bind(this));
@@ -42,7 +41,7 @@ class AlertsApi {
   }
 
   _parseCollection() {
-    return this._alerts.map(this._parseModel);
+    return this._core.alerts.map(this._parseModel);
   }
 
   getCollection(req, res) {
@@ -54,7 +53,7 @@ class AlertsApi {
   getModel(req, res, next) {
     const id = req.params.id;
     this._tracer.verbose(`${PLUGIN_NAME}: Sending alert ${id} | ${req.id}`);
-    const foundAlert = this._alerts.find((alert) => alert.context === id);
+    const foundAlert = this._core.alerts.find((alert) => alert.context === id);
     if (foundAlert) {
       res.status(200);
       res.send(this._parseModel(foundAlert));

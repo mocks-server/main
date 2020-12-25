@@ -17,8 +17,8 @@ const {
   getBehaviors,
   fixturesFolder,
   wait,
-} = require("./utils");
-const InteractiveCliRunner = require("./InteractiveCliRunner");
+} = require("./support/utils");
+const InteractiveCliRunner = require("./support/InteractiveCliRunner");
 
 const runTests = (interactiveCli) => {
   describe("When started", () => {

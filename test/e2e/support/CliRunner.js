@@ -32,6 +32,7 @@ module.exports = class CliRunner {
     this._cwd = options.cwd || process.cwd();
     this._debug = options.debug === true;
     this._logs = [];
+    this._currentScreenLogs = [];
     this._allLogs = [];
     this.logData = this.logData.bind(this);
     this.write = this.write.bind(this);
@@ -57,9 +58,11 @@ module.exports = class CliRunner {
   logData(data) {
     if (data.includes(CLRS)) {
       this._eventEmitter.emit(CLEAR_SCREEN_EVENT_NAME, stripAnsi(data.split(CLRS)[1] || ""));
+      this._currentScreenLogs = [];
     }
     const cleanData = stripAnsi(data.replace(/\x1Bc/, ""));
     if (cleanData.length) {
+      this._currentScreenLogs.push(cleanData);
       this._logs.push(cleanData);
       this._allLogs.push(data);
       this._eventEmitter.emit(LOG_EVENT_NAME, cleanData);
@@ -231,6 +234,10 @@ module.exports = class CliRunner {
 
   get logs() {
     return this._logs.join("");
+  }
+
+  get currentScreen() {
+    return this._currentScreenLogs.join("");
   }
 
   get allLogs() {

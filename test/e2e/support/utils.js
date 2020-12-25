@@ -12,7 +12,7 @@ const path = require("path");
 
 const requestPromise = require("request-promise");
 const CliRunner = require("./CliRunner"); // TODO, export in CLI package for testing purposes?
-const { Server } = require("../../index");
+const { Server } = require("../../../index");
 
 const SERVER_PORT = 3100;
 const BINARY_PATH = "../../../bin/mocks-server";
@@ -28,7 +28,7 @@ const defaultRequestOptions = {
 };
 
 const fixturesFolder = (folderName) => {
-  return path.resolve(__dirname, "fixtures", folderName);
+  return path.resolve(__dirname, "..", "fixtures", folderName);
 };
 
 const startServer = (mocksPath, options = {}) => {

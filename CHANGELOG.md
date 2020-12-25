@@ -27,6 +27,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.6.0] - 2020-12-25
+
+### Changed
+- chore(release): Upgrade minor version, as current release was wrongly released as patch
+
 ## [1.5.3] - 2020-12-24
 
 ### Added

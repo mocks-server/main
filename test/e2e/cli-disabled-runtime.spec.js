@@ -60,7 +60,7 @@ describe("Cli stop method", () => {
           cli: false,
         },
       });
-      await wait();
+      await wait(3000);
     });
 
     it("should not display cli", async () => {
@@ -150,7 +150,7 @@ describe("Cli stop method", () => {
           cli: true,
         },
       });
-      await wait(2000);
+      await wait(3000);
     });
 
     it("should display cli", async () => {

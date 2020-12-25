@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Update dependencies
 - Update core version to [1.6.0](https://github.com/mocks-server/core/releases/tag/v1.6.0)
-- Update plugin-inquirer-cli version to [1.4.0](https://github.com/mocks-server/plugin-inquirer-cli/releases/tag/v1.4.0)
+- Update plugin-inquirer-cli version to [1.4.1](https://github.com/mocks-server/plugin-inquirer-cli/releases/tag/v1.4.1)
 - Update plugin-admin-api version to [1.5.0](https://github.com/mocks-server/plugin-admin-api/releases/tag/v1.5.0)
 - test(E2E): Move support files to support folder
 

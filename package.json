@@ -41,7 +41,7 @@
   "dependencies": {
     "@mocks-server/core": "1.6.0",
     "@mocks-server/plugin-admin-api": "1.5.0",
-    "@mocks-server/plugin-inquirer-cli": "1.4.0"
+    "@mocks-server/plugin-inquirer-cli": "1.4.1"
   },
   "devDependencies": {
     "eslint": "7.16.0",

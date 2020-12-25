@@ -17,7 +17,7 @@ This plugin is preinstalled in the [main distribution of the Mocks Server projec
 
 ## Main features
 
-* __Displays current [settings][settings-url].__ _Settings will be refreshed automatically also if they are changed through other plugins, as the REST API, etc._
+* __Displays current [settings][settings-url].__ _Settings will be refreshed automatically even if they are changed using other plugins, as the REST API, etc._
 * __Allows changing [settings][settings-url].__
 * __Displays current alerts.__ _Alerts include errors when loading mock files, wrong options, etc._
 * __Displays logs.__ _Mocks-server logs are displayed in real time._

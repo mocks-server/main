@@ -5,8 +5,8 @@ module.exports = {
   // Automatically clear mock calls and instances between every test
   clearMocks: true,
 
-  testMatch: ["**/test/e2e/**/?(*.)+(spec|test).js?(x)"],
-  // testMatch: ["**/test/acceptance/config-file.spec.js"],
+  testMatch: ["<rootDir>/test/e2e/*.spec.js"],
+  // testMatch: ["**/test/e2e/cli-disabled-runtime.spec.js"],
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: false,

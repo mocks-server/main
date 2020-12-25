@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 ## [1.9.0] - 2020-12-25
+
+### Added
+- test(E2E): Add more start/stop cli plugin E2E tests
+
 ### Changed
 - Update dependencies
 - Update core version to [1.6.0](https://github.com/mocks-server/core/releases/tag/v1.6.0)

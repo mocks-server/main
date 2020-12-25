@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 ### Changed
 ### Fixed
+- fix: Remove mocks-server-plugin tag from package.json (#93)
 ### Removed
 
 ## [2.0.5] - 2020-12-21

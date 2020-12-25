@@ -3,7 +3,6 @@
   "version": "2.0.5",
   "description": "Client of @mocks-server/plugin-admin-api",
   "keywords": [
-    "mocks-server-plugin",
     "administration",
     "admin",
     "api",

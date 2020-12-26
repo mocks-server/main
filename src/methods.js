@@ -6,6 +6,7 @@ import {
   SETTINGS,
   BEHAVIORS,
   FIXTURES,
+  ALERTS,
 } from "@mocks-server/admin-api-paths";
 
 const DEFAULT_OPTIONS = {
@@ -27,7 +28,7 @@ export const config = (options) => {
 class Fetcher {
   constructor(url, id) {
     this._url = url;
-    this._id = id ? `/${id}` : "";
+    this._id = id ? `/${encodeURIComponent(id)}` : "";
   }
 
   get url() {
@@ -71,4 +72,10 @@ export const fixtures = new Fetcher(FIXTURES);
 
 export const fixture = (id) => {
   return new Fetcher(FIXTURES, id);
+};
+
+export const alerts = new Fetcher(ALERTS);
+
+export const alert = (id) => {
+  return new Fetcher(ALERTS, id);
 };

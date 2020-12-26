@@ -3,7 +3,6 @@
   "version": "2.0.5",
   "description": "Client of @mocks-server/plugin-admin-api built with @data-provider",
   "keywords": [
-    "mocks-server-plugin",
     "administration",
     "admin",
     "api",
@@ -38,7 +37,7 @@
     "@data-provider/axios": "^2.0.0"
   },
   "dependencies": {
-    "@mocks-server/admin-api-paths": "1.0.9"
+    "@mocks-server/admin-api-paths": "1.1.0"
   },
   "devDependencies": {
     "@babel/preset-env": "7.12.11",

@@ -12,18 +12,12 @@ var $currentFixtureIdContainer;
 var $currentFixtureContainer;
 var $setBehaviorBaseButton;
 var $setBehaviorUser2Button;
+var $alertsContainer;
 
 var currentBehavior = new dataProvider.Selector(
   adminApiClient.settings,
-  {
-    provider: adminApiClient.behaviorsModel,
-    query: function (query, prevResults) {
-      return {
-        urlParams: {
-          name: prevResults[0].behavior,
-        },
-      };
-    },
+  function (query, prevResults) {
+    return adminApiClient.behaviorsModel.queries.byName(prevResults[0].behavior);
   },
   function (settingsResults, behaviorResult) {
     return behaviorResult;
@@ -37,15 +31,10 @@ var currentBehavior = new dataProvider.Selector(
 
 var currentFixture = new dataProvider.Selector(
   currentBehavior,
-  {
-    provider: adminApiClient.fixturesModel,
-    query: function (query, prevResults) {
-      return {
-        urlParams: {
-          id: prevResults[0].fixtures[prevResults[0].fixtures.length - 1],
-        },
-      };
-    },
+  function (query, prevResults) {
+    return adminApiClient.fixturesModel.queries.byId(
+      prevResults[0].fixtures[prevResults[0].fixtures.length - 1]
+    );
   },
   function (currentBehaviorResult, fixtureResult) {
     return fixtureResult;
@@ -105,6 +94,19 @@ var loadFixtures = function () {
   });
 };
 
+var loadAlerts = function () {
+  return adminApiClient.alerts.read().then(function (alertsCollection) {
+    $alertsContainer.empty();
+    alertsCollection.forEach(function (alertModel) {
+      $alertsContainer.append(
+        `<li data-testid="alert-${alertModel.id}" class="alerts-collection-item">${JSON.stringify(
+          alertModel
+        )}</li>`
+      );
+    });
+  });
+};
+
 var loadCurrentBehavior = function () {
   return currentBehavior.read().then(function (currentBehaviorResult) {
     $currentBehaviorNameContainer.text(currentBehaviorResult.name);
@@ -122,6 +124,7 @@ var loadCurrentFixture = function () {
 $.when($.ready).then(function () {
   $behaviorsContainer = $("#behaviors-container");
   $fixturesContainer = $("#fixtures-container");
+  $alertsContainer = $("#alerts-container");
   $aboutContainer = $("#about-container");
   $settingsContainer = $("#settings-container");
   $currentBehaviorNameContainer = $("#current-behavior-name");
@@ -161,5 +164,6 @@ $.when($.ready).then(function () {
     loadSettings(),
     loadCurrentBehavior(),
     loadCurrentFixture(),
+    loadAlerts(),
   ]);
 });

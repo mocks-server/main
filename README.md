@@ -36,6 +36,8 @@ Available api resources are:
   * Response body example: `{ "delay": 0, behavior: "foo-behavior", path: "mocks" }`
 * `PATCH` `/admin/settings` Changes current server settings.
   * Request body example: `{ "delay": 3000 }`
+* `GET` `/admin/alerts` Returns current alerts.
+* `GET` `/admin/alerts/:id` Returns an specific alert. The alert `id` is equivalent to the alert `context`.
 
 > Deprecated api resources under "/mocks" api path are still available.
 

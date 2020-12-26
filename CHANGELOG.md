@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 ### Changed
 ### Fixed
+- docs(readme): Add missed API resources.
 ### Removed
 
 ## [1.5.0] - 2020-12-25

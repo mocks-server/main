@@ -1,2 +1,2 @@
 //eslint-disable-next-line
-FOO
+module.exports = FOO

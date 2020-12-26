@@ -14,9 +14,8 @@ This package provides a server that simulates multiple API behaviors. It can be 
 * __Multiple formats__: Responses can be defined using `json` files or Javascript files. Definitions can be plain objects, and even Express middlewares can be used to send dynamic responses.
 * __Multiple interfaces__: Settings can be changed using the [interactive CLI](plugins-inquirer-cli) or the [admin REST API](plugins-admin-api). The CLI is perfect for development, and the API can be used in other scenarios, as the [Cypress plugin does.](integrations-cypress)
 
-<p align="center">
-<img align="center" alt="Interactive CLI demo" src="https://www.mocks-server.org/img/interactive-cli-animation.gif" />
-</p>
+
+![Interactive CLI][interactive-cli-demo]
 
 ## Documentation
 
@@ -44,7 +43,7 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 
 [website-url]: https://www.mocks-server.org
 [logo-url]: https://www.mocks-server.org/img/logo_120.png
-[interactive-cli-demo]: 
+[interactive-cli-demo]: https://www.mocks-server.org/img/interactive-cli-animation.gif
 
 [coveralls-image]: https://coveralls.io/repos/github/mocks-server/main/badge.svg
 [coveralls-url]: https://coveralls.io/github/mocks-server/main

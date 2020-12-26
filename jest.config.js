@@ -25,10 +25,7 @@ module.exports = {
   },
 
   // The glob patterns Jest uses to detect test files
-  testMatch: [
-    "<rootDir>/test/?(*.)+(spec|test).js?(x)",
-    "<rootDir>/test/*/?(*.)+(spec|test).js?(x)",
-  ],
+  testMatch: ["<rootDir>/test/*.spec.js"],
 
   transform: {
     ".js$": "babel-jest",

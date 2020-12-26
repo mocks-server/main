@@ -9,7 +9,7 @@ import {
   readAlert,
   updateSettings,
   wait,
-} from "./index";
+} from "./support/helpers";
 
 describe("react-admin-client methods used through node", () => {
   describe("when reading about", () => {

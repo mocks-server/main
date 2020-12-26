@@ -8,7 +8,7 @@ import {
   config,
   alerts,
   alert,
-} from "../index";
+} from "../../index";
 
 config({
   baseUrl: "http://localhost:3200",

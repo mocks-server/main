@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Add method for reading alerts (#94)
 ### Changed
 - chore(lint): Lint mocks folder
+- test(refactor): Move helpers to a support folder
 ### Fixed
 - fix: Remove mocks-server-plugin tag from package.json (#93)
 ### Removed

@@ -1,4 +1,14 @@
-import { about, behaviors, behavior, fixtures, fixture, settings, config } from "../index";
+import {
+  about,
+  behaviors,
+  behavior,
+  fixtures,
+  fixture,
+  settings,
+  config,
+  alerts,
+  alert,
+} from "../../index";
 
 config({
   baseUrl: "http://localhost:3200",
@@ -32,6 +42,22 @@ const updateSettings = (newSettings) => {
   return settings.update(newSettings);
 };
 
+const readAlerts = () => {
+  return alerts.read();
+};
+
+const readAlert = (id) => {
+  return alert(id).read();
+};
+
+const wait = (time = 1000) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  });
+};
+
 module.exports = {
   readAbout,
   readBehaviors,
@@ -40,4 +66,7 @@ module.exports = {
   readFixture,
   readSettings,
   updateSettings,
+  readAlerts,
+  readAlert,
+  wait,
 };

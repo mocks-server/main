@@ -6,11 +6,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
+### Changed
+### Fixed
+### Removed
+
+## [2.1.0] - 2020-12-26
+
+### Added
 - feat: Add alerts providers (#114)
+
 ### Changed
 - chore(deps): Update dependencies
+
 ### Fixed
 - docs: Fix some readme typos
+
 ### Removed
 - fix: Remove mocks-server-plugin tag from package.json
 

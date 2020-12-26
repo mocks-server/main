@@ -13,9 +13,9 @@
     </script>
     <script src="https://unpkg.com/redux@4.0.5/dist/redux.js"></script>
     <script src="https://unpkg.com/is-promise@2.1.0/index.js"></script>
-    <script src="https://unpkg.com/@data-provider/core@2.0.0-alpha.6/dist/core.umd.js"></script>
+    <script src="https://unpkg.com/@data-provider/core@2.8.2/dist/index.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js"></script>
-    <script src="https://unpkg.com/axios-retry@3.1.2/lib/index.js"></script>
+    <script src="https://unpkg.com/axios-retry@3.1.9/lib/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/path-to-regexp@3.0.0/index.min.js"></script>
     <script>
         // Workaround. pathToRegexp is not exported as UMD. Fix some exportation problems.
@@ -35,8 +35,8 @@
           '(?:\\:(\\w+)(?:\\(((?:\\\\.|[^\\\\()])+)\\))?|\\(((?:\\\\.|[^\\\\()])+)\\))([+*?])?'
         ].join('|'), 'g')
     </script>
-    <script src="https://unpkg.com/@data-provider/axios@2.0.0-alpha.2/dist/index.umd.js"></script>
-    <script src="https://unpkg.com/@mocks-server/admin-api-paths@1.0.2/dist/index.umd.js"></script>
+    <script src="https://unpkg.com/@data-provider/axios@2.1.6/dist/index.umd.js"></script>
+    <script src="https://unpkg.com/@mocks-server/admin-api-paths@1.1.0/dist/index.umd.js"></script>
     <script src="js/admin-api-client.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
     <script src="main.js"></script>
@@ -73,6 +73,11 @@
                 <div class="content">
                     <p class="content__title">Fixtures</p>
                     <ul id="fixtures-container">
+                    </ul>
+                </div>
+                <div class="content">
+                    <p class="content__title">Alerts</p>
+                    <ul id="alerts-container">
                     </ul>
                 </div>
             </header>

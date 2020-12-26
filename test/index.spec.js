@@ -8,6 +8,9 @@ import {
   fixtures,
   fixture,
   fixturesModel,
+  alerts,
+  alert,
+  alertsModel,
 } from "../index";
 
 describe("Exported methods", () => {
@@ -45,5 +48,17 @@ describe("Exported methods", () => {
 
   it("should include fixturesModel", () => {
     expect(fixturesModel).toBeDefined();
+  });
+
+  it("should include alerts", () => {
+    expect(alerts).toBeDefined();
+  });
+
+  it("should include alert", () => {
+    expect(alert).toBeDefined();
+  });
+
+  it("should include alertsModel", () => {
+    expect(alertsModel).toBeDefined();
   });
 });

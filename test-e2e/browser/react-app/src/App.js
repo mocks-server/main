@@ -7,6 +7,7 @@ import Settings from "./modules/settings";
 import Behaviors from "./modules/behaviors";
 import CurrentBehavior from "./modules/current-behavior";
 import Fixtures from "./modules/fixtures";
+import Alerts from "./modules/alerts";
 
 import "./App.css";
 
@@ -29,6 +30,7 @@ function App() {
           <Behaviors />
           <CurrentBehavior />
           <Fixtures />
+          <Alerts />
         </header>
       </div>
     </Provider>

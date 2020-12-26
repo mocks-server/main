@@ -1,4 +1,4 @@
-import { ABOUT, SETTINGS, BEHAVIORS, FIXTURES } from "@mocks-server/admin-api-paths";
+import { ABOUT, SETTINGS, BEHAVIORS, FIXTURES, ALERTS } from "@mocks-server/admin-api-paths";
 import { Axios } from "@data-provider/axios";
 
 import TAG from "./tag";
@@ -65,4 +65,26 @@ fixturesModel.addQuery("byId", (id) => ({
 
 export const fixture = (id) => {
   return fixturesModel.queries.byId(id);
+};
+
+export const alerts = new Axios("alerts", {
+  url: ALERTS,
+  tags: [TAG],
+  ...initialState([]),
+});
+
+export const alertsModel = new Axios("alerts-model", {
+  url: `${ALERTS}/:id`,
+  tags: [TAG],
+  ...initialState({}),
+});
+
+alertsModel.addQuery("byId", (id) => ({
+  urlParams: {
+    id,
+  },
+}));
+
+export const alert = (id) => {
+  return alertsModel.queries.byId(id);
 };

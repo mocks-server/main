@@ -12,7 +12,7 @@ This package provides a server that simulates multiple API behaviors. It can be 
 
 * __Multiple api behaviors__: It allows to define different responses for the same route, and group them into different behaviors.
 * __Multiple formats__: Responses can be defined using `json` files or Javascript files. Definitions can be plain objects, and even Express middlewares can be used to send dynamic responses.
-* __Multiple interfaces__: Settings can be changed using the [interactive CLI](plugins-inquirer-cli) or the [admin REST API](plugins-admin-api). The CLI is perfect for development, and the API can be used in other scenarios, as the [Cypress plugin does.](integrations-cypress)
+* __Multiple interfaces__: Settings can be changed using the [interactive CLI](https://github.com/mocks-server/plugin-inquirer-cli) or the [admin REST API](https://github.com/mocks-server/plugin-admin-api). The CLI is perfect for development, and the API can be used in other scenarios, as the [Cypress plugin does.](https://github.com/mocks-server/cypress-commands)
 
 
 ![Interactive CLI][interactive-cli-demo]

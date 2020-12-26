@@ -1,9 +1,8 @@
 {
   "name": "@mocks-server/admin-api-client",
-  "version": "2.0.5",
+  "version": "2.1.0",
   "description": "Client of @mocks-server/plugin-admin-api",
   "keywords": [
-    "mocks-server-plugin",
     "administration",
     "admin",
     "api",
@@ -24,7 +23,7 @@
   "module": "dist/index.esm.js",
   "scripts": {
     "build": "rollup --config",
-    "lint": "eslint *.js test src jest.config.js",
+    "lint": "eslint *.js test src mocks/*.js mocks/mocks/*.js",
     "lint-staged": "lint-staged",
     "mocks:install": "cd mocks && npm i",
     "mocks:ci": "cd mocks && npm run mocks:ci",
@@ -33,7 +32,7 @@
   },
   "dependencies": {
     "cross-fetch": "3.0.6",
-    "@mocks-server/admin-api-paths": "1.0.8"
+    "@mocks-server/admin-api-paths": "1.1.0"
   },
   "devDependencies": {
     "@babel/preset-env": "7.12.1",
@@ -60,7 +59,8 @@
     "test/**/*.js": "eslint",
     "src/**/*.js": "eslint",
     "*.js": "eslint",
-    "jest.config.js": "eslint"
+    "mocks/*.js": "eslint",
+    "mocks/mocks/*.js": "eslint"
   },
   "husky": {
     "hooks": {

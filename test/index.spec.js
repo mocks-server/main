@@ -5,18 +5,60 @@ import {
   readFixtures,
   readFixture,
   readSettings,
+  readAlerts,
+  readAlert,
   updateSettings,
-} from "./index";
+  wait,
+} from "./support/helpers";
 
 describe("react-admin-client methods used through node", () => {
-  describe("whe reading about", () => {
+  describe("when reading about", () => {
     it("should return current version", async () => {
       const about = await readAbout();
       expect(about.version).toBeDefined();
     });
   });
 
-  describe("whe reading fixtures", () => {
+  describe("when reading alerts", () => {
+    describe("when there are no alerts", () => {
+      it("should return an empty array", async () => {
+        const alerts = await readAlerts();
+        expect(alerts).toEqual([]);
+      });
+    });
+
+    describe("when there are alerts", () => {
+      it("should return alerts array", async () => {
+        expect.assertions(1);
+        await updateSettings({
+          path: "mocks-with-error",
+        });
+        await wait(2000);
+        const alerts = await readAlerts();
+        expect(alerts.length).toEqual(1);
+      });
+
+      it("first alert model should exist", async () => {
+        const alerts = await readAlerts();
+        const alertId = alerts[0].id;
+        const alert = await readAlert(alertId);
+        expect(alert.id).toEqual(alertId);
+      });
+    });
+
+    describe("when alerts are removed", () => {
+      it("should return an empty array again", async () => {
+        await updateSettings({
+          path: "mocks",
+        });
+        await wait(2000);
+        const alerts = await readAlerts();
+        expect(alerts).toEqual([]);
+      });
+    });
+  });
+
+  describe("when reading fixtures", () => {
     it("should return current fixtures collection", async () => {
       const fixtures = await readFixtures();
       expect(fixtures.length).toEqual(2);
@@ -37,7 +79,7 @@ describe("react-admin-client methods used through node", () => {
     });
   });
 
-  describe("whe reading behaviors", () => {
+  describe("when reading behaviors", () => {
     it("should return behaviors collection", async () => {
       const behaviors = await readBehaviors();
       expect(behaviors.length).toEqual(2);
@@ -79,7 +121,7 @@ describe("react-admin-client methods used through node", () => {
     });
   });
 
-  describe("whe reading settings", () => {
+  describe("when reading settings", () => {
     it("should return current behavior", async () => {
       const settings = await readSettings();
       expect(settings.behavior).toEqual("base");
@@ -92,7 +134,7 @@ describe("react-admin-client methods used through node", () => {
     });
   });
 
-  describe("whe updating settings", () => {
+  describe("when updating settings", () => {
     it("should update current behavior", async () => {
       await updateSettings({
         behavior: "user2",

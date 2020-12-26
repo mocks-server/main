@@ -10,6 +10,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [2.1.0] - 2020-12-26
+
+### Added
+- feat: Add method for reading alerts (#94)
+
+### Changed
+- chore(lint): Lint mocks folder
+- test(refactor): Move helpers to a support folder
+
+### Fixed
+- fix: Remove mocks-server-plugin tag from package.json (#93)
+
 ## [2.0.5] - 2020-12-21
 
 ### Added

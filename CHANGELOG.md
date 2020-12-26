@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
-- feat: Add alerts providers. (#114)
+- feat: Add alerts providers (#114)
 ### Changed
 - chore(deps): Update dependencies
 ### Fixed

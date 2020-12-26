@@ -5,6 +5,8 @@ const {
   fixtures,
   fixture,
   settings,
+  alerts,
+  alert,
 } = require("../../../dist/index.cjs");
 
 const readAbout = () => {
@@ -35,6 +37,14 @@ const updateSettings = (newSettings) => {
   return settings.update(newSettings);
 };
 
+const readAlerts = () => {
+  return alerts.read();
+};
+
+const readAlert = (id) => {
+  return alert(id).read();
+};
+
 module.exports = {
   readAbout,
   readBehaviors,
@@ -43,4 +53,6 @@ module.exports = {
   readFixture,
   readSettings,
   updateSettings,
+  readAlerts,
+  readAlert,
 };

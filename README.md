@@ -54,8 +54,11 @@ Exported properties `about`, `settings`, `behaviors`, `behaviorsModel`, `fixture
 * `behavior(behaviorName).read()` - Returns an specific behavior.
 * `behaviorsModel.queries.byName(behaviorName).read()` - Returns an specific behavior.
 * `fixtures.read()` - Returns collection of available fixtures.
-* `fixture(fixtureId).read()` - Returns an specific fixture.
-* `fixturesModel.queries.byId(fixtureId).read()` - Returns an specific fixture.
+* `fixture(id).read()` - Returns an specific fixture.
+* `fixturesModel.queries.byId(id).read()` - Returns an specific fixture.
+* `alerts.read()` - Returns collection of current alerts.
+* `alert(id).read()` - Returns an specific alert.
+* `alertsModel.queries.byId(id).read()` - Returns an specific alert.
 
 ## Configuration
 

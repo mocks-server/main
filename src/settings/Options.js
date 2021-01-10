@@ -18,6 +18,7 @@ const CommandLineArguments = require("./CommandLineArguments");
 const DEFAULT_OPTIONS = {
   behavior: null,
   path: "mocks",
+  pathV2: null,
   delay: 0,
   host: "0.0.0.0",
   port: 3100,

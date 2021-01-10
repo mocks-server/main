@@ -15,6 +15,7 @@ const tracer = require("../tracer");
 
 // FilesLoader built-in plugin
 const FilesLoader = require("./FilesLoader");
+const FilesLoaderV2 = require("./FilesLoaderV2");
 const { scopedAlertsMethods } = require("../support/helpers");
 
 class Plugins {
@@ -36,6 +37,7 @@ class Plugins {
   register() {
     this._plugins = this._config.coreOptions.plugins || [];
     this._plugins.unshift(FilesLoader);
+    this._plugins.unshift(FilesLoaderV2);
     return this._registerPlugins().then(() => {
       tracer.verbose(`Registered ${this._pluginsRegistered} plugins without errors`);
       return Promise.resolve();

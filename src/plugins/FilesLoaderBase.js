@@ -20,7 +20,7 @@ const JS_FILES_REGEXP = /\.json$/;
 
 class FilesLoaderBase {
   constructor(
-    { name, pathOptionName, pathMandatory, createPath },
+    { name, pathOptionName, pathMandatory, createPath, defaultPath },
     core,
     methods,
     extraOptions = {}
@@ -38,12 +38,12 @@ class FilesLoaderBase {
     this._settings = this._core.settings;
     this._customRequireCache = extraOptions.requireCache;
 
-    /* core.addSetting({
+    core.addSetting({
       name: pathOptionName,
       type: "string",
       description: "Define folder from where load mocks",
       default: defaultPath,
-    }); */
+    });
 
     this._onChangeSettings = this._onChangeSettings.bind(this);
   }

@@ -17,7 +17,7 @@ describe("port command line argument", () => {
   let cli;
 
   beforeAll(async () => {
-    cli = new CliRunner([binaryPath, "--behaviors=web-tutorial", "--port=3005"], {
+    cli = new CliRunner([binaryPath, "--path=web-tutorial", "--port=3005"], {
       cwd: cwdPath,
     });
     await wait();

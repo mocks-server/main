@@ -17,23 +17,15 @@ const CommandLineArguments = require("./CommandLineArguments");
 
 const DEFAULT_OPTIONS = {
   behavior: null,
-  path: "mocks",
-  pathV2: null,
   delay: 0,
   host: "0.0.0.0",
   port: 3100,
   watch: true,
   log: "info",
-  // TODO, remove deprecated options
-  feature: null,
-  features: null,
-  behaviors: null,
 };
 
 const DEPRECATED_OPTIONS = {
-  feature: "behavior",
-  behaviors: "path",
-  features: "path",
+  // deprecatedKey: "newKey",
 };
 
 class Options {

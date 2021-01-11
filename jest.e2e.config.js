@@ -6,7 +6,7 @@ module.exports = {
   clearMocks: true,
 
   testMatch: ["**/test/e2e/**/?(*.)+(spec|test).js?(x)"],
-  // testMatch: ["**/test/e2e/files-loader.spec.js"],
+  // testMatch: ["**/test/e2e/watch-argument.spec.js"],
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: false,

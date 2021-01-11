@@ -62,47 +62,4 @@ describe("behavior arguments", () => {
       });
     });
   });
-
-  describe("feature argument", () => {
-    describe("when not provided", () => {
-      it("should set as current behavior the first one found", async () => {
-        cli = new CliRunner([binaryPath, "--features=web-tutorial"], {
-          cwd: cwdPath,
-        });
-        await wait();
-        const users = await request("/api/users/2");
-        expect(users).toEqual({ id: 1, name: "John Doe" });
-      });
-    });
-
-    describe("when provided and exists", () => {
-      it("should set current behavior", async () => {
-        cli = new CliRunner([binaryPath, "--features=web-tutorial", "--feature=dynamic"], {
-          cwd: cwdPath,
-        });
-        await wait();
-        const users = await request("/api/users/2");
-        expect(users).toEqual({ id: 2, name: "Jane Doe" });
-      });
-    });
-
-    describe("when provided and does not exist", () => {
-      it("should print a warning", async () => {
-        cli = new CliRunner([binaryPath, "--features=web-tutorial", "--feature=foo"], {
-          cwd: cwdPath,
-        });
-        await wait();
-        expect(cli.logs).toEqual(expect.stringContaining('Defined behavior "foo" was not found'));
-      });
-
-      it("should set as current behavior the first one found", async () => {
-        cli = new CliRunner([binaryPath, "--features=web-tutorial", "--feature=foo"], {
-          cwd: cwdPath,
-        });
-        await wait();
-        const users = await request("/api/users/2");
-        expect(users).toEqual({ id: 1, name: "John Doe" });
-      });
-    });
-  });
 });

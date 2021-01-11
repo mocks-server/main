@@ -5,7 +5,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [To be deprecated]
-- Deprecate options "features", "behaviors" and "feature".
 - Remove "features" getter from Server
 - Remove "currentFromCollection" and "currentTotalFixtures" getters from Behaviors.
 - Remove "addCustomRouter" method. Use "addRouter".
@@ -26,6 +25,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Fixed
 ### Removed
+### BREAKING CHANGES
+- feat: Remove deprecated options "features" and "behaviors", "path" option should be used instead.
+- feat: Remove deprecated option "feature", "behavior" option should be used instead.
 
 ## [1.6.0] - 2020-12-25
 

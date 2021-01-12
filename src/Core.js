@@ -28,7 +28,7 @@ const Alerts = require("./Alerts");
 
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
-const Mocks = require("./mocks/Mocks");
+const Mocks = require("./mocks-v1/Mocks");
 const Settings = require("./settings/Settings");
 
 const { scopedAlertsMethods } = require("./support/helpers");

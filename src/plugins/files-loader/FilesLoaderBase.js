@@ -116,13 +116,13 @@ class FilesLoaderBase {
       }
       return;
     }
-    this._enabled = true;
     const resolvedFolder = this._resolveFolder(pathName);
     if (!this._createPath && !fsExtra.existsSync(resolvedFolder)) {
       this._tracer.warn(`Folder ${this._path} does not exists. Skipping load`);
       this._enabled = false;
       return;
     }
+    this._enabled = true;
     this._path = this._ensureFolder(resolvedFolder);
     this._tracer.info(`Loading files from folder ${this._path}`);
     this._cleanRequireCacheFolder();

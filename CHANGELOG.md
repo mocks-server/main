@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Remove behaviors "names" getter. Use "ids" instead
 - Remove "serverError" getter. Use alerts instead
 
+- Remove FilesLoaderV1 plugin, and mocks-v1 fixtures handler.
+
 ## [unreleased]
 ### Added
 ### Changed
@@ -28,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### BREAKING CHANGES
 - feat: Remove deprecated options "features" and "behaviors", "path" option should be used instead.
 - feat: Remove deprecated option "feature", "behavior" option should be used instead.
+- feat: Mocks defined using v1 format have to be loaded from folder defined using option "path-v1" instead of "path". "path-v1" will not be created automatically if it is not found, and the option is not required.
 
 ## [1.6.0] - 2020-12-25
 

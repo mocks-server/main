@@ -11,15 +11,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const FilesLoaderBase = require("./FilesLoaderBase");
 
-class FilesLoaderV2 extends FilesLoaderBase {
+class FilesLoader extends FilesLoaderBase {
   constructor(core, methods, extraOptions) {
     super(
       {
-        name: "@mocks-server/core/plugin-files-loader-v2",
-        pathOptionName: "pathV2",
+        name: "@mocks-server/core/plugin-files-loader-v1",
+        pathOptionName: "path-v1",
         pathMandatory: false,
         createPath: false,
-        defaultPath: null,
+        defaultPath: "mocks-v1",
       },
       core,
       methods,
@@ -28,4 +28,4 @@ class FilesLoaderV2 extends FilesLoaderBase {
   }
 }
 
-module.exports = FilesLoaderV2;
+module.exports = FilesLoader;

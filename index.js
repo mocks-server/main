@@ -9,7 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const Core = require("./src/Core");
-const Behavior = require("./src/mocks/Behavior");
+const Behavior = require("./src/mocks-v1/Behavior");
 
 module.exports = {
   Core,

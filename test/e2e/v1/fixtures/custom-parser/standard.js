@@ -10,10 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 // /mocks/behaviors.js
 
-const { Behavior } = require("../../../../index");
+const { Behavior } = require("../../../../../index");
 
 const { getUsers, getUser, getUser2, getRealUser } = require("./fixtures/users");
-const { getNewUsers, getNewUser } = require("./new-fixtures/users");
 
 const standard = new Behavior([getUsers, getUser]);
 
@@ -23,12 +22,8 @@ const user2 = standard.extend([getUser2]);
 // Extends the standard behavior adding "getRealUser" dynamic fixture.
 const dynamic = standard.extend([getRealUser]);
 
-// New one created while server is running
-const newOne = standard.extend([getNewUsers, getNewUser]);
-
 module.exports = {
   standard,
   user2,
   dynamic,
-  newOne,
 };

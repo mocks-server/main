@@ -10,22 +10,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 // /mocks/behaviors.js
 
-const { Behavior } = require("../../../../index");
+const { Behavior } = require("../../../../../index");
 
-const { getUsers, getUser, getUser2, getRealUser } = require("./fixtures/users");
+const getUsers = require("./fixtures/getUsers");
+const getUser = require("./fixtures/getUser");
 
-const behavior1 = new Behavior([getUsers, getUser], {
-  id: "standard",
-});
+const standard = new Behavior([getUsers, getUser]);
 
-// Extends the standard behavior adding "getUser2" fixture.
-const behavior2 = behavior1.extend([getUser2], {
-  id: "user2",
-});
-
-// Extends the standard behavior adding "getRealUser" dynamic fixture.
-const behavior3 = behavior1.extend([getRealUser], {
-  id: "dynamic",
-});
-
-module.exports = [behavior1, behavior2, behavior3];
+module.exports = standard;

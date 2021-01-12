@@ -3,7 +3,7 @@
 
 const { Core } = require("../../../../index");
 
-const handleError = error => {
+const handleError = (error) => {
   console.error(`Error: ${error.message}`);
   process.exitCode = 1;
 };

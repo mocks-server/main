@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 "use strict";
 
-const { Core } = require("../../../index");
+const { Core } = require("../../../../../index");
 
 const handleError = (error) => {
   console.error(`Error: ${error.message}`);

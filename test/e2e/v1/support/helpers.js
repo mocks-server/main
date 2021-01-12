@@ -12,7 +12,7 @@ const path = require("path");
 
 const requestPromise = require("request-promise");
 
-const { Core } = require("../../../index");
+const { Core } = require("../../../../index");
 const CliRunner = require("./CliRunner");
 
 const SERVER_PORT = 3100;

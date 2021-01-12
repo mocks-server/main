@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 "use strict";
 
-const { Core } = require("../../../../index");
+const { Core } = require("../../../../../index");
 const TraceMocksPlugin = require("./TraceMocksPlugin");
 
-const handleError = error => {
+const handleError = (error) => {
   console.error(`Error: ${error.message}`);
   process.exitCode = 1;
 };
@@ -13,7 +13,7 @@ const start = () => {
   try {
     const mocksServer = new Core({
       plugins: [TraceMocksPlugin],
-      configFile: "add-plugins.config.js"
+      configFile: "add-plugins.config.js",
     });
 
     return mocksServer.start().catch(handleError);

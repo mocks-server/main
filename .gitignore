@@ -9,8 +9,8 @@
 # tests
 /coverage
 /mocks
-/test/e2e/fixtures/files-watch
-/test/e2e/fixtures/mocks
+/test/e2e/v1/fixtures/files-watch
+/test/e2e/v1/fixtures/mocks
 /testing.js
 /mocks-server.config.js
 

@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const SettingsMocks = require("./settings/Settings.mocks.js");
-const MocksMocks = require("./mocks/Mocks.mocks.js");
+const MocksMocks = require("./mocks-v1/Mocks.mocks.js");
 const ServerMocks = require("./server/Server.mocks.js");
 const PluginsMocks = require("./plugins/Plugins.mocks.js");
 const OrchestratorMocks = require("./Orchestrator.mocks.js");

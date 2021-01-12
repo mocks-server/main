@@ -12,9 +12,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const tracer = require("../../../src/tracer");
-const FixtureHandler = require("../../../src/mocks/FixtureHandler");
+const FixtureHandler = require("../../../src/mocks-v1/FixtureHandler");
 
-const FixturesHandler = require("../../../src/mocks/FixturesHandler");
+const FixturesHandler = require("../../../src/mocks-v1/FixturesHandler");
 
 describe("FixturesHandler", () => {
   let fixturesHandler;

@@ -12,12 +12,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const CoreMocks = require("../Core.mocks.js");
 const LoadersMocks = require("../Loaders.mocks");
-const FixturesHandler = require("../../../src/mocks/FixturesHandler");
-const FixtureHandler = require("../../../src/mocks/FixtureHandler");
-const Behaviors = require("../../../src/mocks/Behaviors");
+const FixturesHandler = require("../../../src/mocks-v1/FixturesHandler");
+const FixtureHandler = require("../../../src/mocks-v1/FixtureHandler");
+const Behaviors = require("../../../src/mocks-v1/Behaviors");
 
 const tracer = require("../../../src/tracer");
-const Fixtures = require("../../../src/mocks/Fixtures");
+const Fixtures = require("../../../src/mocks-v1/Fixtures");
 
 describe("Fixtures", () => {
   let sandbox;

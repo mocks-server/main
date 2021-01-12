@@ -79,6 +79,7 @@ class Mock {
     watchStub.triggerChange = watchRunner.triggerChange;
 
     const ensureDirSyncStub = this._sandbox.stub(fsExtra, "ensureDirSync");
+    const existsSyncStub = this._sandbox.stub(fsExtra, "existsSync");
 
     this._stubs = {
       watch: watchStub,
@@ -99,6 +100,7 @@ class Mock {
       },
       fsExtra: {
         ensureDirSync: ensureDirSyncStub,
+        existsSync: existsSyncStub,
       },
     };
 

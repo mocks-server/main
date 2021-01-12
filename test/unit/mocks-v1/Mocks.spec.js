@@ -16,7 +16,7 @@ const FixturesMocks = require("./Fixtures.mocks.js");
 const LoadersMocks = require("../Loaders.mocks");
 const CoreMocks = require("../Core.mocks.js");
 
-const Mocks = require("../../../src/mocks/Mocks");
+const Mocks = require("../../../src/mocks-v1/Mocks");
 
 describe("Behaviors", () => {
   const fooBoomError = new Error("foo boom error");

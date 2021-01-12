@@ -13,12 +13,12 @@ const sinon = require("sinon");
 const Boom = require("@hapi/boom");
 
 const CoreMocks = require("../Core.mocks.js");
-const FilesLoaderMocks = require("../plugins/FilesLoader.mocks");
+const FilesLoaderMocks = require("../plugins/files-loader/FilesLoader.mocks");
 const AllFixturesMocks = require("./Fixtures.mocks");
-const FixturesHandler = require("../../../src/mocks/FixturesHandler");
-const FixtureHandler = require("../../../src/mocks/FixtureHandler");
+const FixturesHandler = require("../../../src/mocks-v1/FixturesHandler");
+const FixtureHandler = require("../../../src/mocks-v1/FixtureHandler");
 
-const Behaviors = require("../../../src/mocks/Behaviors");
+const Behaviors = require("../../../src/mocks-v1/Behaviors");
 const tracer = require("../../../src/tracer");
 
 describe("Behaviors", () => {

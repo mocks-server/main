@@ -18,10 +18,10 @@ jest.mock("require-all");
 
 const requireAll = require("require-all");
 
-const LibsMocks = require("../Libs.mocks.js");
-const CoreMocks = require("../Core.mocks.js");
+const LibsMocks = require("../../Libs.mocks.js");
+const CoreMocks = require("../../Core.mocks.js");
 
-const FilesLoader = require("../../../src/plugins/FilesLoader");
+const FilesLoader = require("../../../../src/plugins/files-loader/FilesLoader");
 
 const wait = () => {
   return new Promise((resolve) => {
@@ -172,6 +172,7 @@ describe("FilesLoader", () => {
     });
     sandbox.stub(path, "isAbsolute").returns(true);
     coreInstance.settings.get.withArgs("path").returns("foo-path");
+    libsMocks.stubs.fsExtra.existsSync.returns(true);
   });
 
   afterEach(async () => {

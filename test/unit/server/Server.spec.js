@@ -13,7 +13,7 @@ const sinon = require("sinon");
 const http = require("http");
 
 const LibsMocks = require("../Libs.mocks.js");
-const MocksMocks = require("../mocks/Mocks.mocks.js");
+const MocksMocks = require("../mocks-v1/Mocks.mocks.js");
 const CoreMocks = require("../Core.mocks.js");
 
 const Server = require("../../../src/server/Server");

@@ -13,12 +13,23 @@ const sinon = require("sinon");
 const CoreMocks = require("../Core.mocks.js");
 const LoadersMocks = require("../Loaders.mocks.js");
 const ConfigMocks = require("../Config.mocks.js");
+const LibsMocks = require("../Libs.mocks.js");
 
 const Plugins = require("../../../src/plugins/Plugins");
 const tracer = require("../../../src/tracer");
 
-const pluginsQuantity = (method, quantity) => {
+const NATIVE_PLUGINS_QUANTITY = 2;
+
+const pluginsTrace = (method, quantity) => {
   return `${method}ed ${quantity} plugins without errors`;
+};
+
+const addNativePlugins = (quantity) => {
+  return quantity + NATIVE_PLUGINS_QUANTITY;
+};
+
+const pluginsTraceAddingNative = (method, quantity) => {
+  return pluginsTrace(method, addNativePlugins(quantity));
 };
 
 describe("Plugins", () => {
@@ -30,6 +41,7 @@ describe("Plugins", () => {
   let plugins;
   let configMocks;
   let configInstance;
+  let libsMocks;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
@@ -45,8 +57,12 @@ describe("Plugins", () => {
     coreMocks = new CoreMocks();
     loaderMocks = new LoadersMocks();
     configMocks = new ConfigMocks();
+    libsMocks = new LibsMocks();
     coreInstance = coreMocks.stubs.instance;
     configInstance = configMocks.stubs.instance;
+    coreInstance.settings.get.withArgs("path").returns("foo-path");
+    coreInstance.settings.get.withArgs("path-v1").returns("foo-path");
+    libsMocks.stubs.fsExtra.existsSync.returns(true);
   });
 
   afterEach(() => {
@@ -55,6 +71,7 @@ describe("Plugins", () => {
     coreMocks.restore();
     configMocks.restore();
     configInstance.coreOptions = {};
+    libsMocks.restore();
   });
 
   describe("register method", () => {
@@ -62,7 +79,7 @@ describe("Plugins", () => {
     it("should do nothing if there are no plugins to register", async () => {
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
 
     it("should register object plugins", async () => {
@@ -70,7 +87,7 @@ describe("Plugins", () => {
       configInstance.coreOptions.plugins = [fooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
     });
 
     it("should register object plugins with register method", async () => {
@@ -80,7 +97,7 @@ describe("Plugins", () => {
       configInstance.coreOptions.plugins = [fooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
     });
 
     it("should register object plugins with register method passing to them the core itself", async () => {
@@ -108,8 +125,8 @@ describe("Plugins", () => {
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
       expect(callToLoader.callCount).toEqual(1);
-      expect(callbacks.addAlert.calledWith("1:foo", "Foo message")).toEqual(true);
-      expect(callbacks.removeAlerts.calledWith("1:")).toEqual(true);
+      expect(callbacks.addAlert.calledWith("2:foo", "Foo message")).toEqual(true);
+      expect(callbacks.removeAlerts.calledWith("2:")).toEqual(true);
     });
 
     it("should not register object plugins with register method throwing an error", async () => {
@@ -121,7 +138,7 @@ describe("Plugins", () => {
       configInstance.coreOptions.plugins = [fooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
 
     it("should not register strings as plugins", async () => {
@@ -129,10 +146,13 @@ describe("Plugins", () => {
       configInstance.coreOptions.plugins = ["foo"];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
-      expect(callbacks.addAlert.calledWith("register:1", 'Error registering plugin "1"')).toEqual(
-        true
-      );
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
+      expect(
+        callbacks.addAlert.calledWith(
+          `register:${addNativePlugins(0)}`,
+          `Error registering plugin "${addNativePlugins(0)}"`
+        )
+      ).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
 
     it("should not register booleans as plugins", async () => {
@@ -140,10 +160,13 @@ describe("Plugins", () => {
       configInstance.coreOptions.plugins = [true];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
-      expect(callbacks.addAlert.calledWith("register:1", 'Error registering plugin "1"')).toEqual(
-        true
-      );
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
+      expect(
+        callbacks.addAlert.calledWith(
+          `register:${addNativePlugins(0)}`,
+          `Error registering plugin "${addNativePlugins(0)}"`
+        )
+      ).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
 
     it("should register function plugins executing them passing the core", async () => {
@@ -154,7 +177,7 @@ describe("Plugins", () => {
       await plugins.register();
       expect(fooPlugin.calledWith(coreInstance)).toEqual(true);
       expect(fooPlugin.callCount).toEqual(1);
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
     });
 
     it("should register function plugins executing them passing custom methods", async () => {
@@ -171,8 +194,10 @@ describe("Plugins", () => {
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
       expect(callToLoader.callCount).toEqual(1);
-      expect(callbacks.addAlert.calledWith("1:foo", "Foo message")).toEqual(true);
-      expect(callbacks.removeAlerts.calledWith("1:")).toEqual(true);
+      expect(callbacks.addAlert.calledWith(`${addNativePlugins(0)}:foo`, "Foo message")).toEqual(
+        true
+      );
+      expect(callbacks.removeAlerts.calledWith(`${addNativePlugins(0)}:`)).toEqual(true);
     });
 
     it("should register function plugins returning a register method", async () => {
@@ -186,7 +211,7 @@ describe("Plugins", () => {
       await plugins.register();
       expect(spy.calledWith(coreInstance)).toEqual(true);
       expect(spy.callCount).toEqual(1);
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
     });
 
     it("should not register function plugins returning a register method which throws an error", async () => {
@@ -198,7 +223,7 @@ describe("Plugins", () => {
       configInstance.coreOptions.plugins = [fooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
 
     it("should register class plugins, instantiating them passing the core", async () => {
@@ -217,7 +242,7 @@ describe("Plugins", () => {
       await plugins.register();
       expect(receivedCore).toEqual(coreInstance);
       expect(instantiated).toEqual(true);
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
     });
 
     it("should register class plugins, instantiating them passing custom methods", async () => {
@@ -236,8 +261,10 @@ describe("Plugins", () => {
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
       expect(callToLoader.callCount).toEqual(1);
-      expect(callbacks.addAlert.calledWith("1:foo", "Foo message")).toEqual(true);
-      expect(callbacks.removeAlerts.calledWith("1:")).toEqual(true);
+      expect(callbacks.addAlert.calledWith(`${addNativePlugins(0)}:foo`, "Foo message")).toEqual(
+        true
+      );
+      expect(callbacks.removeAlerts.calledWith(`${addNativePlugins(0)}:`)).toEqual(true);
     });
 
     it("should not register class plugins if class throw an error when being created", async () => {
@@ -250,10 +277,13 @@ describe("Plugins", () => {
       configInstance.coreOptions.plugins = [FooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
-      expect(callbacks.addAlert.calledWith("register:1", 'Error registering plugin "1"')).toEqual(
-        true
-      );
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
+      expect(
+        callbacks.addAlert.calledWith(
+          `register:${addNativePlugins(0)}`,
+          `Error registering plugin "${addNativePlugins(0)}"`
+        )
+      ).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
 
     it("should register class plugins with a register method, passing to it the core", async () => {
@@ -274,7 +304,7 @@ describe("Plugins", () => {
       await plugins.register();
       expect(receivedCore).toEqual(coreInstance);
       expect(instantiated).toEqual(true);
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
     });
 
     it("should not register class plugins with a register method when it throws an error", async () => {
@@ -290,7 +320,7 @@ describe("Plugins", () => {
       configInstance.coreOptions.plugins = [FooPlugin];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
 
     it("should trace the total number of registered plugins", async () => {
@@ -312,16 +342,25 @@ describe("Plugins", () => {
       ];
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
-      expect(callbacks.addAlert.calledWith("register:4", 'Error registering plugin "4"')).toEqual(
-        true
-      );
-      expect(callbacks.addAlert.calledWith("register:5", 'Error registering plugin "5"')).toEqual(
-        true
-      );
-      expect(callbacks.addAlert.calledWith("register:6", 'Error registering plugin "6"')).toEqual(
-        true
-      );
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 4))).toEqual(true);
+      expect(
+        callbacks.addAlert.calledWith(
+          `register:${addNativePlugins(3)}`,
+          `Error registering plugin "${addNativePlugins(3)}"`
+        )
+      ).toEqual(true);
+      expect(
+        callbacks.addAlert.calledWith(
+          `register:${addNativePlugins(4)}`,
+          `Error registering plugin "${addNativePlugins(4)}"`
+        )
+      ).toEqual(true);
+      expect(
+        callbacks.addAlert.calledWith(
+          `register:${addNativePlugins(5)}`,
+          `Error registering plugin "${addNativePlugins(5)}"`
+        )
+      ).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 3))).toEqual(true);
     });
   });
 
@@ -332,7 +371,7 @@ describe("Plugins", () => {
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
       await plugins.init();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 0))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
 
     it("should init object plugins with an init property", async () => {
@@ -345,7 +384,7 @@ describe("Plugins", () => {
       await plugins.register();
       await plugins.init();
       expect(fooPlugin.init.callCount).toEqual(1);
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
     });
 
     it("should trace the plugin displayName", async () => {
@@ -372,7 +411,7 @@ describe("Plugins", () => {
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
       await plugins.init();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
 
     it("should catch init method errors and notify alerts", async () => {
@@ -393,10 +432,13 @@ describe("Plugins", () => {
       await plugins.register();
       await plugins.init();
       expect(callbacks.removeAlerts.calledWith("init")).toEqual(true);
-      expect(callbacks.addAlert.calledWith("init:1", 'Error initializating plugin "1"')).toEqual(
-        true
-      );
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
+      expect(
+        callbacks.addAlert.calledWith(
+          `init:${addNativePlugins(0)}`,
+          `Error initializating plugin "${addNativePlugins(0)}"`
+        )
+      ).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
 
     it("should catch init method rejected", async () => {
@@ -418,7 +460,7 @@ describe("Plugins", () => {
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
       await plugins.init();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
 
     it("should accept plugins with no init method", async () => {
@@ -434,7 +476,7 @@ describe("Plugins", () => {
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
       await plugins.init();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
   });
 
@@ -446,7 +488,7 @@ describe("Plugins", () => {
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
       await plugins.start();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
 
     it("should start object plugins with an start property", async () => {
@@ -459,7 +501,7 @@ describe("Plugins", () => {
       await plugins.register();
       await plugins.start();
       expect(fooPlugin.start.callCount).toEqual(1);
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
     });
 
     it("should trace the plugin displayName", async () => {
@@ -486,7 +528,7 @@ describe("Plugins", () => {
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
       await plugins.start();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
 
     it("should catch start method errors and notify alert", async () => {
@@ -507,8 +549,13 @@ describe("Plugins", () => {
       await plugins.register();
       await plugins.start();
       expect(callbacks.removeAlerts.calledWith("start")).toEqual(true);
-      expect(callbacks.addAlert.calledWith("start:1", 'Error starting plugin "1"')).toEqual(true);
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
+      expect(
+        callbacks.addAlert.calledWith(
+          `start:${addNativePlugins(0)}`,
+          `Error starting plugin "${addNativePlugins(0)}"`
+        )
+      ).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
 
     it("should catch start method rejected", async () => {
@@ -530,7 +577,7 @@ describe("Plugins", () => {
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
       await plugins.start();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
 
     it("should accept plugins with no start method", async () => {
@@ -546,7 +593,7 @@ describe("Plugins", () => {
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
       await plugins.start();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
   });
 
@@ -558,7 +605,7 @@ describe("Plugins", () => {
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
       await plugins.stop();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 1))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
 
     it("should stop object plugins with an stop property", async () => {
@@ -571,7 +618,7 @@ describe("Plugins", () => {
       await plugins.register();
       await plugins.stop();
       expect(fooPlugin.stop.callCount).toEqual(1);
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 2))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
     });
 
     it("should trace the plugin displayName", async () => {
@@ -598,7 +645,7 @@ describe("Plugins", () => {
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
       await plugins.stop();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
 
     it("should catch stop method errors and notify alert", async () => {
@@ -619,8 +666,13 @@ describe("Plugins", () => {
       await plugins.register();
       await plugins.stop();
       expect(callbacks.removeAlerts.calledWith("stop")).toEqual(true);
-      expect(callbacks.addAlert.calledWith("stop:1", 'Error stopping plugin "1"')).toEqual(true);
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
+      expect(
+        callbacks.addAlert.calledWith(
+          `stop:${addNativePlugins(0)}`,
+          `Error stopping plugin "${addNativePlugins(0)}"`
+        )
+      ).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
 
     it("should catch stop method rejected", async () => {
@@ -642,7 +694,7 @@ describe("Plugins", () => {
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
       await plugins.stop();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
 
     it("should accept plugins with no stop method", async () => {
@@ -658,7 +710,7 @@ describe("Plugins", () => {
       plugins = new Plugins(configInstance, loaderMocks.stubs.instance, coreInstance, callbacks);
       await plugins.register();
       await plugins.stop();
-      expect(tracer.verbose.calledWith(pluginsQuantity(METHOD, 3))).toEqual(true);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
   });
 
@@ -680,7 +732,7 @@ describe("Plugins", () => {
 
     it("should have as scope the plugin index during the register method", async () => {
       await plugins.register();
-      expect(callbacks.addAlert.calledWith("1:test-register", "Testing register alert")).toEqual(
+      expect(callbacks.addAlert.calledWith("2:test-register", "Testing register alert")).toEqual(
         true
       );
     });
@@ -689,7 +741,7 @@ describe("Plugins", () => {
       expect.assertions(2);
       await plugins.register();
       await plugins.start();
-      expect(callbacks.renameAlerts.calledWith("1:", "foo-name:")).toEqual(true);
+      expect(callbacks.renameAlerts.calledWith("2:", "foo-name:")).toEqual(true);
       expect(callbacks.addAlert.calledWith("foo-name:test-start", "Testing start alert")).toEqual(
         true
       );

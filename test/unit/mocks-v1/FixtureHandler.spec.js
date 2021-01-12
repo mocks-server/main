@@ -12,7 +12,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const CoreMocks = require("../Core.mocks.js");
 
-const FixtureHandler = require("../../../src/mocks/FixtureHandler");
+const FixtureHandler = require("../../../src/mocks-v1/FixtureHandler");
 
 describe("FixtureHandler", () => {
   let sandbox;

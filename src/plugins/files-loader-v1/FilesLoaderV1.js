@@ -19,6 +19,7 @@ const JS_FILES_REGEXP = /\.json$/;
 
 const PLUGIN_NAME = "@mocks-server/core/plugin-files-loader-v1";
 const PATH_OPTION = "path-v1";
+const WATCH_OPTION = "watch-v1";
 const DEFAULT_PATH = "mocks-v1";
 
 class FilesLoaderBase {
@@ -36,6 +37,12 @@ class FilesLoaderBase {
       type: "string",
       description: "Define folder from where load v1 mocks",
       default: DEFAULT_PATH,
+    });
+    core.addSetting({
+      name: WATCH_OPTION,
+      type: "boolean",
+      description: "Enable/disable files watcher in v1 folder",
+      default: true,
     });
 
     this._onChangeSettings = this._onChangeSettings.bind(this);
@@ -172,7 +179,7 @@ class FilesLoaderBase {
   }
 
   _switchWatch() {
-    const enabled = this._settings.get("watch") && this._enabled;
+    const enabled = this._settings.get(WATCH_OPTION) && this._enabled;
     this.stop();
     if (enabled) {
       this._tracer.debug("Starting files watcher");
@@ -192,7 +199,7 @@ class FilesLoaderBase {
     if (changeDetails.hasOwnProperty(PATH_OPTION)) {
       this._loadFiles();
       this._switchWatch();
-    } else if (changeDetails.hasOwnProperty("watch")) {
+    } else if (changeDetails.hasOwnProperty(WATCH_OPTION)) {
       this._switchWatch();
     }
   }

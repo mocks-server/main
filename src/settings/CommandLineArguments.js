@@ -11,8 +11,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-const { isUndefined } = require("lodash");
-
 const commander = require("commander");
 commander.storeOptionsAsProperties(true);
 
@@ -22,32 +20,16 @@ class CommandLineArguments {
     this._optionsNames = Object.keys(defaultOptions);
     // TODO, generate initial options dynamically from Options object using the "addCustom" method
     this._commander = commander
-      .option("--path <path>", "Define folder from which load mocks")
       .option("--behavior <behavior>", "Define current behavior")
       .option("--delay <delay>", "Define delay time")
       .option("--host <host>", "Host for server")
       .option("--log <log>", "Log level")
-      .option("--port <port>", "Port for server", parseInt)
-      .option("--watch <watch>", "Watch or not", this._stringToBoolean) // TODO, change by --no-watch option
-      // TODO, remove deprecated options
-      .option("--feature <feature>", "Define current behavior")
-      .option("--features <features>", "Define folder from which load mocks")
-      .option("--behaviors <behaviors>", "Define folder from which load mocks");
+      .option("--port <port>", "Port for server", parseInt);
   }
 
   init() {
     this._options = this._commander.parse(process.argv);
     return Promise.resolve();
-  }
-
-  // TODO, deprecate "booleanString" options. Use --no- commander feature (boolean type)
-  _stringToBoolean(val) {
-    if (isUndefined(val) || val === "true") {
-      return true;
-    } else if (val === "false") {
-      return false;
-    }
-    throw new Error("Invalid boolean value");
   }
 
   addCustom(optionDetails) {
@@ -58,8 +40,6 @@ class CommandLineArguments {
       ? optionDetails.parse
       : optionDetails.type === "number"
       ? parseInt
-      : optionDetails.type === "booleanString" // TODO, deprecate
-      ? this._stringToBoolean
       : undefined;
 
     this._commander.option(

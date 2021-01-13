@@ -175,7 +175,6 @@ describe("options", () => {
         host: "0.0.0.0",
         log: "info",
         delay: 0,
-        watch: true,
         behavior: "foo-behavior",
       });
     });
@@ -194,7 +193,6 @@ describe("options", () => {
         host: "0.0.0.0",
         log: "info",
         delay: 0,
-        watch: true,
         behavior: "foo-behavior",
       });
     });
@@ -221,7 +219,6 @@ describe("options", () => {
         cli: true,
         foo: "foo",
         delay: 0,
-        watch: true,
         behavior: "foo-behavior",
       });
     });
@@ -234,7 +231,6 @@ describe("options", () => {
         host: "0.0.0.0",
         log: "info",
         delay: 0,
-        watch: true,
         behavior: null,
       });
     });
@@ -251,7 +247,6 @@ describe("options", () => {
         host: "0.0.0.0",
         log: "info",
         delay: 0,
-        watch: true,
         behavior: "foo-behavior",
       });
     });
@@ -276,7 +271,6 @@ describe("options", () => {
         host: "0.0.0.0",
         log: "info",
         delay: 0,
-        watch: true,
         behavior: "foo-behavior",
       });
     });
@@ -297,7 +291,6 @@ describe("options", () => {
         host: "0.0.0.0",
         log: "info",
         delay: 0,
-        watch: true,
         behavior: "foo-behavior",
       });
     });
@@ -324,7 +317,6 @@ describe("options", () => {
         cli: true,
         foo: "foo",
         delay: 0,
-        watch: true,
         behavior: "foo-behavior",
       });
     });
@@ -341,7 +333,6 @@ describe("options", () => {
         host: "0.0.0.0",
         log: "info",
         delay: 0,
-        watch: true,
         behavior: "foo-behavior",
       });
     });

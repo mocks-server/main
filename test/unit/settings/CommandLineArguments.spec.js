@@ -17,16 +17,10 @@ const CommandLineArguments = require("../../../src/settings/CommandLineArguments
 describe("options", () => {
   const DEFAULT_OPTIONS = {
     behavior: null,
-    path: "mocks",
     delay: 0,
     host: "0.0.0.0",
     port: 3100,
-    watch: true,
     log: "info",
-    // TODO, remove deprecated options
-    feature: null,
-    features: null,
-    behaviors: null,
   };
   let sandbox;
   let optionStub;
@@ -58,7 +52,7 @@ describe("options", () => {
   describe("init method", () => {
     it("should call to commander to get user options from command line", async () => {
       await commandLineArguments.init();
-      expect(optionStub.callCount).toEqual(9);
+      expect(optionStub.callCount).toEqual(4); //First call is not registered
     });
 
     it("should call to convert to number received value in --port option", async () => {
@@ -86,72 +80,6 @@ describe("options", () => {
       expect(commandLineArguments.options).toEqual({
         behavior: "foo-behavior",
       });
-    });
-  });
-
-  describe("stringBoolean options", () => {
-    it("should return true if value is 'true'", async () => {
-      expect.assertions(1);
-      optionStub.callsFake((commandName, description, parser) => {
-        if (commandName.includes("--watch")) {
-          expect(parser("true")).toEqual(true);
-        }
-        return {
-          option: optionStub,
-          parse: parseStub,
-        };
-      });
-      commandLineArguments = new CommandLineArguments({});
-      await commandLineArguments.init();
-    });
-
-    it("should return true if value is 'undefined'", async () => {
-      expect.assertions(1);
-      optionStub.callsFake((commandName, description, parser) => {
-        if (commandName.includes("--watch")) {
-          expect(parser()).toEqual(true);
-        }
-        return {
-          option: optionStub,
-          parse: parseStub,
-        };
-      });
-      commandLineArguments = new CommandLineArguments({});
-      await commandLineArguments.init();
-    });
-
-    it("should return false if value is 'false'", async () => {
-      expect.assertions(1);
-      optionStub.callsFake((commandName, description, parser) => {
-        if (commandName.includes("--watch")) {
-          expect(parser("false")).toEqual(false);
-        }
-        return {
-          option: optionStub,
-          parse: parseStub,
-        };
-      });
-      commandLineArguments = new CommandLineArguments({});
-      await commandLineArguments.init();
-    });
-
-    it("should throw an error if value is not true nor false", async () => {
-      expect.assertions(1);
-      optionStub.callsFake((commandName, description, parser) => {
-        if (commandName.includes("--watch")) {
-          try {
-            parser("foo");
-          } catch (error) {
-            expect(error.message).toEqual(expect.stringContaining("Invalid boolean value"));
-          }
-        }
-        return {
-          option: optionStub,
-          parse: parseStub,
-        };
-      });
-      commandLineArguments = new CommandLineArguments({});
-      await commandLineArguments.init();
     });
   });
 
@@ -188,72 +116,6 @@ describe("options", () => {
         optionStub.callsFake((commandName, description, parser) => {
           if (commandName.includes("--foo")) {
             expect(parser).toEqual(option.parse);
-          }
-          return {
-            option: optionStub,
-            parse: parseStub,
-          };
-        });
-        commandLineArguments.addCustom(option);
-        await commandLineArguments.init();
-      });
-    });
-
-    describe("when it is booleanString type", () => {
-      it("should add commander option with mandatory value", async () => {
-        expect.assertions(2);
-        const option = {
-          name: "foo",
-          description: "foo description",
-          type: "booleanString",
-        };
-        optionStub.callsFake((commandName, description) => {
-          if (commandName.includes("--foo")) {
-            expect(commandName).toEqual("--foo <foo>");
-            expect(description).toEqual(option.description);
-          }
-          return {
-            option: optionStub,
-            parse: parseStub,
-          };
-        });
-        commandLineArguments.addCustom(option);
-        await commandLineArguments.init();
-      });
-
-      it("should convert string to boolean when parsed", async () => {
-        expect.assertions(1);
-        const option = {
-          name: "foo",
-          description: "foo description",
-          type: "booleanString",
-        };
-        optionStub.callsFake((commandName, description, parser) => {
-          if (commandName.includes("--foo")) {
-            expect(parser("false")).toEqual(false);
-          }
-          return {
-            option: optionStub,
-            parse: parseStub,
-          };
-        });
-        commandLineArguments.addCustom(option);
-        await commandLineArguments.init();
-      });
-
-      it("should use custom parser if provided to get value", async () => {
-        expect.assertions(2);
-        const option = {
-          name: "foo",
-          description: "foo description",
-          type: "booleanString",
-          parse: (val) => val,
-        };
-        sandbox.spy(option, "parse");
-        optionStub.callsFake((commandName, description, parser) => {
-          if (commandName.includes("--foo")) {
-            expect(parser("false")).toEqual("false");
-            expect(option.parse.callCount).toEqual(1);
           }
           return {
             option: optionStub,

@@ -431,14 +431,14 @@ describe("FilesLoaderV1", () => {
   describe("start method", () => {
     describe("when starting files watch", () => {
       it("should do nothing if watch was not enabled", async () => {
-        coreInstance.settings.get.withArgs("watch").returns(false);
+        coreInstance.settings.get.withArgs("watch-v1").returns(false);
         await filesLoader.init();
         await filesLoader.start();
         expect(libsMocks.stubs.watch.callCount).toEqual(0);
       });
 
       it("should call to close watcher if watch was enabled previously", async () => {
-        coreInstance.settings.get.withArgs("watch").returns(true);
+        coreInstance.settings.get.withArgs("watch-v1").returns(true);
         await filesLoader.init();
         await filesLoader.start();
         await filesLoader.start();
@@ -449,7 +449,7 @@ describe("FilesLoaderV1", () => {
 
   describe("when a file is changed", () => {
     it("should load files again", async () => {
-      coreInstance.settings.get.withArgs("watch").returns(true);
+      coreInstance.settings.get.withArgs("watch-v1").returns(true);
       await filesLoader.init();
       await filesLoader.start();
       libsMocks.stubs.watch.getCall(0).args[2]();
@@ -469,7 +469,7 @@ describe("FilesLoaderV1", () => {
     });
 
     it("should enable watch again if path setting is changed", async () => {
-      coreInstance.settings.get.withArgs("watch").returns(true);
+      coreInstance.settings.get.withArgs("watch-v1").returns(true);
       await filesLoader.init();
       await filesLoader.start();
       coreInstance.onChangeSettings.getCall(0).args[0]({
@@ -480,12 +480,12 @@ describe("FilesLoaderV1", () => {
     });
 
     it("should disable watch if watch is changed", async () => {
-      coreInstance.settings.get.withArgs("watch").returns(true);
+      coreInstance.settings.get.withArgs("watch-v1").returns(true);
       await filesLoader.init();
       await filesLoader.start();
-      coreInstance.settings.get.withArgs("watch").returns(false);
+      coreInstance.settings.get.withArgs("watch-v1").returns(false);
       coreInstance.onChangeSettings.getCall(0).args[0]({
-        watch: false,
+        "watch-v1": false,
       });
       await wait();
       expect(libsMocks.stubs.watchClose.callCount).toEqual(1);
@@ -493,7 +493,7 @@ describe("FilesLoaderV1", () => {
 
     it("should do nothing if no path or watch settings are changed", async () => {
       expect.assertions(3);
-      coreInstance.settings.get.withArgs("watch").returns(true);
+      coreInstance.settings.get.withArgs("watch-v1").returns(true);
       await filesLoader.init();
       await filesLoader.start();
       coreInstance.onChangeSettings.getCall(0).args[0]({});

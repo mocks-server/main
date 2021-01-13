@@ -20,7 +20,6 @@ const DEFAULT_OPTIONS = {
   delay: 0,
   host: "0.0.0.0",
   port: 3100,
-  watch: true,
   log: "info",
 };
 
@@ -84,10 +83,7 @@ class Options {
     if (this._optionsNames.includes(optionDetails.name)) {
       this._rejectCustomOption(`Option with name ${optionDetails.name} is already registered`);
     }
-    if (
-      !optionDetails.type ||
-      !["string", "number", "boolean", "booleanString"].includes(optionDetails.type)
-    ) {
+    if (!optionDetails.type || !["string", "number", "boolean"].includes(optionDetails.type)) {
       this._rejectCustomOption("Please provide a valid option type: string, number, boolean");
     }
     if (!optionDetails.description) {

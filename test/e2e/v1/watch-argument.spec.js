@@ -20,7 +20,7 @@ describe("files watcher disabled using command line argument", () => {
   beforeAll(async () => {
     fsExtra.removeSync(fixturesFolder("files-watch"));
     fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
-    cli = new CliRunner([binaryPath, "--path=files-watch", "--watch=false"], {
+    cli = new CliRunner([binaryPath, "--path=files-watch", "--no-watch"], {
       cwd: cwdPath,
     });
     await wait();

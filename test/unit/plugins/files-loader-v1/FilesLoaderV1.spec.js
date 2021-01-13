@@ -21,7 +21,7 @@ const requireAll = require("require-all");
 const LibsMocks = require("../../Libs.mocks.js");
 const CoreMocks = require("../../Core.mocks.js");
 
-const FilesLoaderV1 = require("../../../../src/plugins/files-loader/FilesLoaderV1");
+const FilesLoaderV1 = require("../../../../src/plugins/files-loader-v1/FilesLoaderV1");
 
 const wait = () => {
   return new Promise((resolve) => {
@@ -334,6 +334,17 @@ describe("FilesLoaderV1", () => {
       path.isAbsolute.returns(false);
       await filesLoader.init();
       expect(requireAll.mock.calls[0][0].dirname).toEqual(path.resolve(process.cwd(), "foo-path"));
+    });
+
+    it("should throw error if there is an error initializing plugin", async () => {
+      expect.assertions(1);
+      const FOO_ERROR = new Error();
+      coreInstance.settings.get.withArgs("path-v1").throws(FOO_ERROR);
+      try {
+        await filesLoader.init();
+      } catch (err) {
+        expect(err).toEqual(FOO_ERROR);
+      }
     });
 
     it("should not throw and add an alert if there is an error loading files", async () => {

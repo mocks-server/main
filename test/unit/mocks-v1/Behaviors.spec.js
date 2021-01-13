@@ -13,7 +13,7 @@ const sinon = require("sinon");
 const Boom = require("@hapi/boom");
 
 const CoreMocks = require("../Core.mocks.js");
-const FilesLoaderMocks = require("../plugins/files-loader/FilesLoader.mocks");
+const FilesLoaderMocks = require("../plugins/files-loader-v1/FilesLoaderV1.mocks");
 const AllFixturesMocks = require("./Fixtures.mocks");
 const FixturesHandler = require("../../../src/mocks-v1/FixturesHandler");
 const FixtureHandler = require("../../../src/mocks-v1/FixtureHandler");

@@ -11,7 +11,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 const sinon = require("sinon");
-const Boom = require("@hapi/boom");
 const { cloneDeep } = require("lodash");
 
 jest.mock("require-all");
@@ -145,7 +144,6 @@ describe("FilesLoader", () => {
     },
   };
 
-  const fooBoomError = new Error("foo boom error");
   let sandbox;
   let coreMocks;
   let coreInstance;
@@ -157,7 +155,6 @@ describe("FilesLoader", () => {
   beforeEach(async () => {
     requireCache = cloneDeep(fooRequireCache);
     sandbox = sinon.createSandbox();
-    sandbox.stub(Boom, "badData").returns(fooBoomError);
     coreMocks = new CoreMocks();
     libsMocks = new LibsMocks();
     pluginMethods = {
@@ -381,7 +378,7 @@ describe("FilesLoader", () => {
         coreInstance.settings.get.withArgs("path").returns(undefined);
         await filesLoader.init();
       } catch (error) {
-        expect(error).toEqual(fooBoomError);
+        expect(error.message).toEqual(`Invalid option "path"`);
       }
     });
 

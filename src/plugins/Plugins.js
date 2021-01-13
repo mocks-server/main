@@ -14,7 +14,7 @@ const { isObject, isFunction } = require("lodash");
 const tracer = require("../tracer");
 
 // FilesLoader built-in plugin
-const FilesLoaderV1 = require("./files-loader/FilesLoaderV1");
+const FilesLoaderV1 = require("./files-loader-v1/FilesLoaderV1");
 const FilesLoader = require("./files-loader/FilesLoader");
 
 const { scopedAlertsMethods } = require("../support/helpers");

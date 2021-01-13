@@ -24,13 +24,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
+- feat: Add new plugin for loading routes and mocks in v2 format
 ### Changed
+- refactor: Move "path" and "watch" options inside files-loader plugin
+- refactor: Reorganize files and folders
 ### Fixed
 ### Removed
 ### BREAKING CHANGES
 - feat: Remove deprecated options "features" and "behaviors", "path" option should be used instead.
 - feat: Remove deprecated option "feature", "behavior" option should be used instead.
-- feat: Mocks defined using v1 format have to be loaded from folder defined using option "path-v1" instead of "path". "path-v1" will not be created automatically if it is not found, and the option is not required.
+- feat: Mocks defined using v1 format have to be loaded from folder defined using option "path-v1" instead of "path", which now is used to define the folder from which load routes and mocks in v2 format. Folder defined with "path-v1" option will not be created automatically if it is not found, and the option is not required.
+- feat: Watching files for mocks in v1 format has to be disabled using "watch-v1" option instead of "watch", which now affects only to routes and mocks in v2 format.
 
 ## [1.6.0] - 2020-12-25
 

@@ -10,7 +10,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const Boom = require("@hapi/boom");
 const requireAll = require("require-all");
 const watch = require("node-watch");
 const fsExtra = require("fs-extra");
@@ -18,18 +17,12 @@ const fsExtra = require("fs-extra");
 const { map, debounce, flatten, isObject } = require("lodash");
 const JS_FILES_REGEXP = /\.json$/;
 
+const PLUGIN_NAME = "@mocks-server/core/plugin-files-loader-v1";
+const PATH_OPTION = "path-v1";
+const DEFAULT_PATH = "mocks-v1";
+
 class FilesLoaderBase {
-  constructor(
-    { name, pathOptionName, pathMandatory, createPath, defaultPath },
-    core,
-    methods,
-    extraOptions = {}
-  ) {
-    // TODO v2, register own option, remove it from settings/Options.js
-    this._pluginName = name;
-    this._pathOptionName = pathOptionName;
-    this._pathMandatory = pathMandatory;
-    this._createPath = createPath;
+  constructor(core, methods, extraOptions = {}) {
     this._core = core;
     this._load = methods.loadMocks;
     this._onAlert = methods.addAlert;
@@ -39,10 +32,10 @@ class FilesLoaderBase {
     this._customRequireCache = extraOptions.requireCache;
 
     core.addSetting({
-      name: pathOptionName,
+      name: PATH_OPTION,
       type: "string",
-      description: "Define folder from where load mocks",
-      default: defaultPath,
+      description: "Define folder from where load v1 mocks",
+      default: DEFAULT_PATH,
     });
 
     this._onChangeSettings = this._onChangeSettings.bind(this);
@@ -88,13 +81,6 @@ class FilesLoaderBase {
     }
   }
 
-  _demandPathName() {
-    this._tracer.error(
-      `Please provide a path to the folder containing mocks using the "${this._pathOptionName}" option`
-    );
-    throw Boom.badData(`Invalid folder in option ${this._pathOptionName}`);
-  }
-
   _resolveFolder(folder) {
     if (path.isAbsolute(folder)) {
       return folder;
@@ -108,16 +94,13 @@ class FilesLoaderBase {
   }
 
   _loadFiles() {
-    const pathName = this._settings.get(this._pathOptionName);
+    const pathName = this._settings.get(PATH_OPTION);
     if (!pathName) {
       this._enabled = false;
-      if (this._pathMandatory) {
-        this._demandPathName();
-      }
       return;
     }
     const resolvedFolder = this._resolveFolder(pathName);
-    if (!this._createPath && !fsExtra.existsSync(resolvedFolder)) {
+    if (!fsExtra.existsSync(resolvedFolder)) {
       this._tracer.warn(`Folder ${this._path} does not exists. Skipping load`);
       this._enabled = false;
       return;
@@ -206,7 +189,7 @@ class FilesLoaderBase {
   }
 
   _onChangeSettings(changeDetails) {
-    if (changeDetails.hasOwnProperty(this._pathOptionName)) {
+    if (changeDetails.hasOwnProperty(PATH_OPTION)) {
       this._loadFiles();
       this._switchWatch();
     } else if (changeDetails.hasOwnProperty("watch")) {
@@ -219,7 +202,7 @@ class FilesLoaderBase {
   }
 
   get displayName() {
-    return this._pluginName;
+    return PLUGIN_NAME;
   }
 }
 

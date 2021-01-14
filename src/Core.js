@@ -66,7 +66,7 @@ class Core {
       this._settings,
       this._loaders,
       this,
-      scopedAlertsMethods("mocks", this._alerts.add, this._alerts.remove)
+      scopedAlertsMethods("legacy-mocks", this._alerts.add, this._alerts.remove)
     );
 
     this._server = new Server(

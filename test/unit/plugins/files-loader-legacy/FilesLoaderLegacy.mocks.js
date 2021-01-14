@@ -9,11 +9,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
-const Behavior = require("../../../../src/mocks-v1/Behavior");
+const Behavior = require("../../../../src/mocks-legacy/Behavior");
 
-jest.mock("../../../../src/plugins/files-loader-v1/FilesLoaderV1");
+jest.mock("../../../../src/plugins/files-loader-legacy/FilesLoaderLegacy");
 
-const FilesLoader = require("../../../../src/plugins/files-loader-v1/FilesLoaderV1");
+const FilesLoader = require("../../../../src/plugins/files-loader-legacy/FilesLoaderLegacy");
 
 let INITIAL_FILES = {
   file1: {

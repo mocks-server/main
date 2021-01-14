@@ -21,7 +21,7 @@ const requireAll = require("require-all");
 const LibsMocks = require("../../Libs.mocks.js");
 const CoreMocks = require("../../Core.mocks.js");
 
-const FilesLoaderV1 = require("../../../../src/plugins/files-loader-v1/FilesLoaderV1");
+const FilesLoaderLegacy = require("../../../../src/plugins/files-loader-legacy/FilesLoaderLegacy");
 
 const wait = () => {
   return new Promise((resolve) => {
@@ -31,7 +31,7 @@ const wait = () => {
   });
 };
 
-describe("FilesLoaderV1", () => {
+describe("FilesLoaderLegacy", () => {
   const fooRequireCache = {
     "foo-path": {
       id: "foo-path",
@@ -167,11 +167,11 @@ describe("FilesLoaderV1", () => {
     };
     coreInstance = coreMocks.stubs.instance;
     requireAll.mockImplementation(() => fooFiles);
-    filesLoader = new FilesLoaderV1(coreInstance, pluginMethods, {
+    filesLoader = new FilesLoaderLegacy(coreInstance, pluginMethods, {
       requireCache,
     });
     sandbox.stub(path, "isAbsolute").returns(true);
-    coreInstance.settings.get.withArgs("path-v1").returns("foo-path");
+    coreInstance.settings.get.withArgs("legacy-path").returns("foo-path");
     libsMocks.stubs.fsExtra.existsSync.returns(true);
   });
 
@@ -327,7 +327,7 @@ describe("FilesLoaderV1", () => {
     });
 
     it("should have displayName defined", async () => {
-      expect(filesLoader.displayName).toEqual("@mocks-server/core/plugin-files-loader-v1");
+      expect(filesLoader.displayName).toEqual("@mocks-server/core/plugin-legacy-files-loader");
     });
 
     it("should require all files from mocks folders calculating it from cwd", async () => {
@@ -339,7 +339,7 @@ describe("FilesLoaderV1", () => {
     it("should throw error if there is an error initializing plugin", async () => {
       expect.assertions(1);
       const FOO_ERROR = new Error();
-      coreInstance.settings.get.withArgs("path-v1").throws(FOO_ERROR);
+      coreInstance.settings.get.withArgs("legacy-path").throws(FOO_ERROR);
       try {
         await filesLoader.init();
       } catch (err) {
@@ -390,7 +390,7 @@ describe("FilesLoaderV1", () => {
 
     it("should not try to load files if mocks folder is not defined", async () => {
       expect.assertions(1);
-      coreInstance.settings.get.withArgs("path-v1").returns(undefined);
+      coreInstance.settings.get.withArgs("legacy-path").returns(undefined);
       await filesLoader.init();
       expect(requireAll.mock.calls.length).toEqual(0);
     });
@@ -404,7 +404,7 @@ describe("FilesLoaderV1", () => {
     });
 
     it("should require cache in order to found the mocks folder", async () => {
-      filesLoader = new FilesLoaderV1(coreInstance, pluginMethods);
+      filesLoader = new FilesLoaderLegacy(coreInstance, pluginMethods);
       sandbox.spy(filesLoader, "_cleanRequireCache");
       await filesLoader.init();
       // it seems like require cache is empty in jest environment
@@ -431,14 +431,14 @@ describe("FilesLoaderV1", () => {
   describe("start method", () => {
     describe("when starting files watch", () => {
       it("should do nothing if watch was not enabled", async () => {
-        coreInstance.settings.get.withArgs("watch-v1").returns(false);
+        coreInstance.settings.get.withArgs("legacy-watch").returns(false);
         await filesLoader.init();
         await filesLoader.start();
         expect(libsMocks.stubs.watch.callCount).toEqual(0);
       });
 
       it("should call to close watcher if watch was enabled previously", async () => {
-        coreInstance.settings.get.withArgs("watch-v1").returns(true);
+        coreInstance.settings.get.withArgs("legacy-watch").returns(true);
         await filesLoader.init();
         await filesLoader.start();
         await filesLoader.start();
@@ -449,7 +449,7 @@ describe("FilesLoaderV1", () => {
 
   describe("when a file is changed", () => {
     it("should load files again", async () => {
-      coreInstance.settings.get.withArgs("watch-v1").returns(true);
+      coreInstance.settings.get.withArgs("legacy-watch").returns(true);
       await filesLoader.init();
       await filesLoader.start();
       libsMocks.stubs.watch.getCall(0).args[2]();
@@ -462,30 +462,30 @@ describe("FilesLoaderV1", () => {
     it("should load files again if path setting is changed", async () => {
       await filesLoader.init();
       coreInstance.onChangeSettings.getCall(0).args[0]({
-        "path-v1": "foo-path",
+        "legacy-path": "foo-path",
       });
       await wait();
       expect(requireAll.mock.calls.length).toEqual(2);
     });
 
     it("should enable watch again if path setting is changed", async () => {
-      coreInstance.settings.get.withArgs("watch-v1").returns(true);
+      coreInstance.settings.get.withArgs("legacy-watch").returns(true);
       await filesLoader.init();
       await filesLoader.start();
       coreInstance.onChangeSettings.getCall(0).args[0]({
-        "path-v1": "foo-path",
+        "legacy-path": "foo-path",
       });
       await wait();
       expect(libsMocks.stubs.watch.callCount).toEqual(2);
     });
 
     it("should disable watch if watch is changed", async () => {
-      coreInstance.settings.get.withArgs("watch-v1").returns(true);
+      coreInstance.settings.get.withArgs("legacy-watch").returns(true);
       await filesLoader.init();
       await filesLoader.start();
-      coreInstance.settings.get.withArgs("watch-v1").returns(false);
+      coreInstance.settings.get.withArgs("legacy-watch").returns(false);
       coreInstance.onChangeSettings.getCall(0).args[0]({
-        "watch-v1": false,
+        "legacy-watch": false,
       });
       await wait();
       expect(libsMocks.stubs.watchClose.callCount).toEqual(1);
@@ -493,7 +493,7 @@ describe("FilesLoaderV1", () => {
 
     it("should do nothing if no path or watch settings are changed", async () => {
       expect.assertions(3);
-      coreInstance.settings.get.withArgs("watch-v1").returns(true);
+      coreInstance.settings.get.withArgs("legacy-watch").returns(true);
       await filesLoader.init();
       await filesLoader.start();
       coreInstance.onChangeSettings.getCall(0).args[0]({});

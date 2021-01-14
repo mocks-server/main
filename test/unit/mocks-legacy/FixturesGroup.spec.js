@@ -11,10 +11,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-const FixturesHandler = require("../../../src/mocks-v1/FixturesHandler");
-const FixtureHandler = require("../../../src/mocks-v1/FixtureHandler");
+const FixturesHandler = require("../../../src/mocks-legacy/FixturesHandler");
+const FixtureHandler = require("../../../src/mocks-legacy/FixtureHandler");
 
-const FixturesGroup = require("../../../src/mocks-v1/FixturesGroup");
+const FixturesGroup = require("../../../src/mocks-legacy/FixturesGroup");
 const tracer = require("../../../src/tracer");
 
 describe("FixturesGroup", () => {

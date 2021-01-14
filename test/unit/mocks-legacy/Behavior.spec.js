@@ -9,10 +9,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const FixturesHandler = require("../../../src/mocks-v1/FixturesHandler");
-const FixtureHandler = require("../../../src/mocks-v1/FixtureHandler");
+const FixturesHandler = require("../../../src/mocks-legacy/FixturesHandler");
+const FixtureHandler = require("../../../src/mocks-legacy/FixtureHandler");
 
-const Behavior = require("../../../src/mocks-v1/Behavior");
+const Behavior = require("../../../src/mocks-legacy/Behavior");
 
 describe("Behavior", () => {
   const fooBehaviorData = [

@@ -14,7 +14,7 @@ const { isObject, isFunction } = require("lodash");
 const tracer = require("../tracer");
 
 // FilesLoader built-in plugin
-const FilesLoaderV1 = require("./files-loader-v1/FilesLoaderV1");
+const FilesLoaderLegacy = require("./files-loader-legacy/FilesLoaderLegacy");
 const FilesLoader = require("./files-loader/FilesLoader");
 
 const { scopedAlertsMethods } = require("../support/helpers");
@@ -38,7 +38,7 @@ class Plugins {
   register() {
     this._plugins = this._config.coreOptions.plugins || [];
     this._plugins.unshift(FilesLoader);
-    this._plugins.unshift(FilesLoaderV1);
+    this._plugins.unshift(FilesLoaderLegacy);
     return this._registerPlugins().then(() => {
       tracer.verbose(`Registered ${this._pluginsRegistered} plugins without errors`);
       return Promise.resolve();

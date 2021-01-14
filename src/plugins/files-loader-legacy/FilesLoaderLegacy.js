@@ -17,10 +17,10 @@ const fsExtra = require("fs-extra");
 const { map, debounce, flatten, isObject } = require("lodash");
 const JS_FILES_REGEXP = /\.json$/;
 
-const PLUGIN_NAME = "@mocks-server/core/plugin-files-loader-v1";
-const PATH_OPTION = "path-v1";
-const WATCH_OPTION = "watch-v1";
-const DEFAULT_PATH = "mocks-v1";
+const PLUGIN_NAME = "@mocks-server/core/plugin-legacy-files-loader";
+const PATH_OPTION = "legacy-path";
+const WATCH_OPTION = "legacy-watch";
+const DEFAULT_PATH = "legacy-mocks";
 
 class FilesLoaderBase {
   constructor(core, methods, extraOptions = {}) {
@@ -41,7 +41,7 @@ class FilesLoaderBase {
     core.addSetting({
       name: WATCH_OPTION,
       type: "boolean",
-      description: "Enable/disable files watcher in legacy folder",
+      description: "Enable/disable files watcher on legacy path",
       default: true,
     });
 

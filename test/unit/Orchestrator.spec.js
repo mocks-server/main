@@ -13,7 +13,7 @@ const sinon = require("sinon");
 
 const CoreMocks = require("./Core.mocks.js");
 const ServerMocks = require("./server/Server.mocks.js");
-const MocksMock = require("./mocks-v1/Mocks.mocks.js");
+const MocksMock = require("./mocks-legacy/Mocks.mocks.js");
 
 const Orchestrator = require("../../src/Orchestrator");
 

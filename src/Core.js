@@ -27,7 +27,7 @@ const Alerts = require("./Alerts");
 
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
-const Mocks = require("./mocks-v1/Mocks");
+const LegacyMocks = require("./mocks-legacy/Mocks");
 const Settings = require("./settings/Settings");
 
 const { scopedAlertsMethods } = require("./support/helpers");
@@ -61,7 +61,7 @@ class Core {
       scopedAlertsMethods("plugins", this._alerts.add, this._alerts.remove, this._alerts.rename)
     );
 
-    this._mocks = new Mocks(
+    this._legacyMocks = new LegacyMocks(
       this._eventEmitter,
       this._settings,
       this._loaders,
@@ -72,13 +72,13 @@ class Core {
     this._server = new Server(
       this._eventEmitter,
       this._settings,
-      this._mocks,
+      this._legacyMocks,
       this,
       scopedAlertsMethods("server", this._alerts.add, this._alerts.remove)
     );
 
     // TODO, rename into eventsOrchestrator, convert into a function
-    this._orchestrator = new Orchestrator(this._eventEmitter, this._mocks, this._server);
+    this._orchestrator = new Orchestrator(this._eventEmitter, this._legacyMocks, this._server);
 
     this._inited = false;
     this._stopPluginsPromise = null;
@@ -116,7 +116,7 @@ class Core {
     // Init settings, read command line arguments, etc.
     await this._settings.init(this._config.options);
     // Settings are ready, init all
-    await this._mocks.init();
+    await this._legacyMocks.init();
     await this._server.init();
     return this._plugins.init().then(() => {
       this._eventEmitter.emit(INIT, this);
@@ -163,7 +163,7 @@ class Core {
   }
 
   addFixturesHandler(Handler) {
-    return this._mocks.addFixturesHandler(Handler);
+    return this._legacyMocks.addFixturesHandler(Handler);
   }
 
   // Listeners
@@ -220,17 +220,17 @@ class Core {
   }
 
   get behaviors() {
-    return this._mocks.behaviors;
+    return this._legacyMocks.behaviors;
   }
 
   get fixtures() {
-    return this._mocks.fixtures;
+    return this._legacyMocks.fixtures;
   }
 
   // TODO, deprecate getter
   get features() {
     tracer.deprecationWarn("features getter", "behaviors getter");
-    return this._mocks.behaviors;
+    return this._legacyMocks.behaviors;
   }
 
   get tracer() {

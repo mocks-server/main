@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Remove behaviors "names" getter. Use "ids" instead
 - Remove "serverError" getter. Use alerts instead
 
-- Remove FilesLoaderV1 plugin, and mocks-v1 fixtures handler.
+- Remove all legacy plugins, options and handlers related to v1.
 
 ## [unreleased]
 ### Added
@@ -30,9 +30,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### BREAKING CHANGES
 - feat: Remove deprecated options "features" and "behaviors", "path" option should be used instead.
 - feat: Remove deprecated option "feature", "behavior" option should be used instead.
-- feat: Legacy mocks defined using v1 format have to be loaded from folder defined using option "path-v1" instead of "path", which now is used to define the folder from which load routes and mocks in v2 format. Folder defined with "path-v1" option will not be created automatically if it is not found, and the option is not required.
-- feat: Watching files for mocks in legacy v1 format has to be disabled using "watch-v1" option instead of "watch", which now affects only to routes and mocks in v2 format.
-- feat: "watch" option now is a standard commander boolean, so, to disable watch, argument "--no-watch" has to be provided. ("--no-watch-v1" for legacy v1 mocks folder)
+- feat: Legacy mocks defined using v1 format have to be loaded from folder defined using option "legacy-path" instead of "path", which now is used to define the folder from which load routes and mocks in v2 format. Folder defined with "legacy-path" option will not be created automatically if it is not found, and the option is not required.
+- feat: Watching files for mocks in legacy v1 format has to be disabled using "legacy-watch" option instead of "watch", which now affects only to routes and mocks in v2 format.
+- feat: "watch" option now is a standard commander boolean, so, to disable watch, argument "--no-watch" has to be provided. ("--no-legacy-watch" for legacy v1 mocks folder)
 - feat: Remove "booleanString" option type. Now only "number", "boolean" or "string" can be used.
 - feat: Remove deprecated "onLoadMocks" method, "onChangeMocks" must be used instead.
 - feat: Remove "onLoadFiles" method. There is no alternative, as it is an internal event of the files-loader plugin and it should't be used by other external pieces.

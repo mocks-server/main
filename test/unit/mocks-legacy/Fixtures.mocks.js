@@ -1,5 +1,6 @@
 /*
 Copyright 2019 Javier Brea
+Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -10,36 +11,27 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../../src/mocks-v1/Mocks");
+jest.mock("../../../src/mocks-legacy/Fixtures");
 
-const Mocks = require("../../../src/mocks-v1/Mocks");
+const Fixtures = require("../../../src/mocks-legacy/Fixtures");
 
 class Mock {
   constructor() {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
+      add: this._sandbox.stub().returns(),
       init: this._sandbox.stub().resolves(),
-      start: this._sandbox.stub().resolves(),
-      stop: this._sandbox.stub(),
-      addFixturesHandler: this._sandbox.stub(),
-      behaviors: {
-        current: {
-          getRequestMatchingFixture: this._sandbox.stub(),
-        },
-      },
-      fixtures: {
-        collection: [],
-      },
-      processLoadedMocks: this._sandbox.stub().resolves(),
+      process: this._sandbox.stub().resolves(),
+      collection: [],
     };
 
-    Mocks.mockImplementation(() => this._stubs);
+    Fixtures.mockImplementation(() => this._stubs);
   }
 
   get stubs() {
     return {
-      Constructor: Mocks,
+      Constructor: Fixtures,
       instance: this._stubs,
     };
   }

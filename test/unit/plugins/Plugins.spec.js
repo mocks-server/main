@@ -116,7 +116,7 @@ describe("Plugins", () => {
       loaderMocks.stubs.instance.new.returns(callToLoader);
       const fooPlugin = {
         register: (coreIns, methods) => {
-          methods.loadMocks();
+          methods.loadLegacyMocks();
           methods.addAlert("foo", "Foo message");
           methods.removeAlerts();
         },
@@ -185,7 +185,7 @@ describe("Plugins", () => {
       const callToLoader = sandbox.stub();
       loaderMocks.stubs.instance.new.returns(callToLoader);
       const fooPlugin = (coreIns, methods) => {
-        methods.loadMocks();
+        methods.loadLegacyMocks();
         methods.addAlert("foo", "Foo message");
         methods.removeAlerts();
         return {};
@@ -251,7 +251,7 @@ describe("Plugins", () => {
       loaderMocks.stubs.instance.new.returns(callToLoader);
       class FooPlugin {
         constructor(core, methods) {
-          methods.loadMocks();
+          methods.loadLegacyMocks();
           methods.addAlert("foo", "Foo message");
           methods.removeAlerts();
           return {};

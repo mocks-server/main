@@ -25,7 +25,7 @@ const DEFAULT_PATH = "mocks-v1";
 class FilesLoaderBase {
   constructor(core, methods, extraOptions = {}) {
     this._core = core;
-    this._load = methods.loadMocks;
+    this._load = methods.loadLegacyMocks;
     this._onAlert = methods.addAlert;
     this._removeAlerts = methods.removeAlerts;
     this._tracer = core.tracer;
@@ -35,13 +35,13 @@ class FilesLoaderBase {
     core.addSetting({
       name: PATH_OPTION,
       type: "string",
-      description: "Define folder from where load v1 mocks",
+      description: "Define folder from where to load legacy mocks",
       default: DEFAULT_PATH,
     });
     core.addSetting({
       name: WATCH_OPTION,
       type: "boolean",
-      description: "Enable/disable files watcher in v1 folder",
+      description: "Enable/disable files watcher in legacy folder",
       default: true,
     });
 

@@ -13,7 +13,7 @@ const { startCore, stopCore, request, wait } = require("./support/helpers");
 describe("plugins load method", () => {
   class Plugin {
     register(coreInstance, methods) {
-      this.load = methods.loadMocks;
+      this.load = methods.loadLegacyMocks;
     }
     async init() {
       this.load([

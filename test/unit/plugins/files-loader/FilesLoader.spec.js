@@ -158,7 +158,7 @@ describe("FilesLoader", () => {
     coreMocks = new CoreMocks();
     libsMocks = new LibsMocks();
     pluginMethods = {
-      loadMocks: sandbox.stub(),
+      loadLegacyMocks: sandbox.stub(),
       addAlert: sandbox.stub(),
       removeAlerts: sandbox.stub(),
     };
@@ -180,9 +180,9 @@ describe("FilesLoader", () => {
   });
 
   describe("when initialized", () => {
-    it("should call to loadMocks method with current files contents in a flatten array", async () => {
+    it("should call to loadLegacyMocks method with current files contents in a flatten array", async () => {
       await filesLoader.init();
-      expect(pluginMethods.loadMocks.getCall(0).args[0]).toEqual([
+      expect(pluginMethods.loadLegacyMocks.getCall(0).args[0]).toEqual([
         {
           _mocksServer_lastPath: "behavior1",
           fixtures: [

@@ -25,7 +25,7 @@ const DEFAULT_PATH = "mocks";
 class FilesLoaderBase {
   constructor(core, methods, extraOptions = {}) {
     this._core = core;
-    this._load = methods.loadMocks;
+    this._load = methods.loadLegacyMocks;
     this._onAlert = methods.addAlert;
     this._removeAlerts = methods.removeAlerts;
     this._tracer = core.tracer;
@@ -35,7 +35,7 @@ class FilesLoaderBase {
     core.addSetting({
       name: "path",
       type: "string",
-      description: "Define folder from where load mocks",
+      description: "Define folder from where to load mocks",
       default: DEFAULT_PATH,
     });
     core.addSetting({

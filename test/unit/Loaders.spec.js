@@ -43,7 +43,7 @@ describe("Loaders", () => {
     it("should emit a load:mocks event", async () => {
       const load = loaders.new();
       load(["foo1", "foo2"]);
-      expect(coreInstance._eventEmitter.emit.calledWith("load:mocks")).toEqual(true);
+      expect(coreInstance._eventEmitter.emit.calledWith("load:mocks:legacy")).toEqual(true);
     });
 
     it("should replace all previously loaded contents", async () => {

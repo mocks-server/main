@@ -121,9 +121,9 @@ class Plugins {
     if (pluginIndex === this._plugins.length) {
       return Promise.resolve();
     }
-    const loadMocks = this._loaders.new();
+    const loadLegacyMocks = this._loaders.new();
     const pluginMethods = {
-      loadMocks,
+      loadLegacyMocks,
       ...scopedAlertsMethods(
         () => this.pluginDisplayName(pluginIndex),
         this._addAlert,

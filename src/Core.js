@@ -14,7 +14,6 @@ const {
   INIT,
   START,
   STOP,
-  LOAD_MOCKS,
   CHANGE_MOCKS,
   CHANGE_SETTINGS,
   CHANGE_ALERTS,
@@ -86,6 +85,26 @@ class Core {
     this._startPluginsPromise = null;
   }
 
+  async _startPlugins() {
+    if (!this._startPluginsPromise) {
+      this._startPluginsPromise = this._plugins.start();
+    }
+    return this._startPluginsPromise.then(() => {
+      this._startPluginsPromise = null;
+    });
+  }
+
+  async _stopPlugins() {
+    if (!this._stopPluginsPromise) {
+      this._stopPluginsPromise = this._plugins.stop();
+    }
+    return this._stopPluginsPromise.then(() => {
+      this._stopPluginsPromise = null;
+    });
+  }
+
+  // Public methods
+
   async init(options) {
     if (this._inited) {
       return Promise.resolve();
@@ -112,21 +131,10 @@ class Core {
     });
   }
 
-  async _startPlugins() {
-    if (!this._startPluginsPromise) {
-      this._startPluginsPromise = this._plugins.start();
-    }
-    return this._startPluginsPromise.then(() => {
-      this._startPluginsPromise = null;
-    });
-  }
-
-  async _stopPlugins() {
-    if (!this._stopPluginsPromise) {
-      this._stopPluginsPromise = this._plugins.stop();
-    }
-    return this._stopPluginsPromise.then(() => {
-      this._stopPluginsPromise = null;
+  async stop() {
+    await this._server.stop();
+    return this._stopPlugins().then(() => {
+      this._eventEmitter.emit(STOP, this);
     });
   }
 
@@ -160,22 +168,6 @@ class Core {
 
   // Listeners
 
-  // TODO, deprecate method
-  onLoadFiles(cb) {
-    tracer.deprecationWarn("onLoadFiles", "onChangeMocks");
-    const removeCallback = () => {
-      this._eventEmitter.removeListener(LOAD_MOCKS, cb);
-    };
-    this._eventEmitter.on(LOAD_MOCKS, cb);
-    return removeCallback;
-  }
-
-  // TODO, deprecate method, use onChangeMocks
-  onLoadMocks(cb) {
-    tracer.deprecationWarn("onLoadMocks", "onChangeMocks");
-    return this.onChangeMocks(cb);
-  }
-
   onChangeMocks(cb) {
     const removeCallback = () => {
       this._eventEmitter.removeListener(CHANGE_MOCKS, cb);
@@ -198,13 +190,6 @@ class Core {
     };
     this._eventEmitter.on(CHANGE_ALERTS, cb);
     return removeCallback;
-  }
-
-  async stop() {
-    await this._server.stop();
-    return this._stopPlugins().then(() => {
-      this._eventEmitter.emit(STOP, this);
-    });
   }
 
   // Expose Server methods and getters

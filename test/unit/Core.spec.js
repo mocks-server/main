@@ -188,10 +188,10 @@ describe("Core", () => {
     });
   });
 
-  describe("onLoadMocks method", () => {
+  describe("onChangeMocks method", () => {
     it("should add listener to eventEmitter", () => {
       const spy = sandbox.spy();
-      core.onLoadMocks(spy);
+      core.onChangeMocks(spy);
       core._eventEmitter.emit("change:mocks");
       expect(spy.callCount).toEqual(1);
     });
@@ -199,31 +199,11 @@ describe("Core", () => {
     it("should return a function to remove listener", () => {
       expect.assertions(2);
       const spy = sandbox.spy();
-      const removeCallback = core.onLoadMocks(spy);
+      const removeCallback = core.onChangeMocks(spy);
       core._eventEmitter.emit("change:mocks");
       expect(spy.callCount).toEqual(1);
       removeCallback();
       core._eventEmitter.emit("change:mocks");
-      expect(spy.callCount).toEqual(1);
-    });
-  });
-
-  describe("onLoadFiles method", () => {
-    it("should add listener to eventEmitter", () => {
-      const spy = sandbox.spy();
-      core.onLoadFiles(spy);
-      core._eventEmitter.emit("load:mocks");
-      expect(spy.callCount).toEqual(1);
-    });
-
-    it("should return a function to remove listener", () => {
-      expect.assertions(2);
-      const spy = sandbox.spy();
-      const removeCallback = core.onLoadFiles(spy);
-      core._eventEmitter.emit("load:mocks");
-      expect(spy.callCount).toEqual(1);
-      removeCallback();
-      core._eventEmitter.emit("load:mocks");
       expect(spy.callCount).toEqual(1);
     });
   });

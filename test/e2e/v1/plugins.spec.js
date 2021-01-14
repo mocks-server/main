@@ -29,7 +29,6 @@ describe("plugins", () => {
   let sandbox;
   let changeSettingsSpy;
   let changeAlertsSpy;
-  let filesLoadedSpy;
   let mocksLoadedSpy;
   let initSpy;
   let registerSpy;
@@ -38,7 +37,6 @@ describe("plugins", () => {
   beforeAll(async () => {
     sandbox = sinon.createSandbox();
     changeSettingsSpy = sandbox.spy();
-    filesLoadedSpy = sandbox.spy();
     mocksLoadedSpy = sandbox.spy();
     changeAlertsSpy = sandbox.spy();
     initSpy = sandbox.spy();
@@ -143,10 +141,6 @@ describe("plugins", () => {
           });
         });
 
-        it("should inform plugin when files are loaded", async () => {
-          expect(filesLoadedSpy.callCount).toEqual(1);
-        });
-
         it("should inform plugin when mocks are loaded", async () => {
           expect(mocksLoadedSpy.callCount).toEqual(2);
         });
@@ -223,8 +217,7 @@ describe("plugins", () => {
       coreInstance.settings.set("log", "silly");
       coreInstance.onChangeSettings(changeSettingsSpy);
       coreInstance.onChangeAlerts(changeAlertsSpy);
-      coreInstance.onLoadMocks(mocksLoadedSpy);
-      coreInstance.onLoadFiles(filesLoadedSpy);
+      coreInstance.onChangeMocks(mocksLoadedSpy);
     },
     start: (coreInstance, { addAlert }) => {
       startSpy(coreInstance);
@@ -268,8 +261,7 @@ describe("plugins", () => {
         coreInstance.settings.set("log", "silly");
         coreInstance.onChangeSettings(changeSettingsSpy);
         coreInstance.onChangeAlerts(changeAlertsSpy);
-        coreInstance.onLoadMocks(mocksLoadedSpy);
-        coreInstance.onLoadFiles(filesLoadedSpy);
+        coreInstance.onChangeMocks(mocksLoadedSpy);
       }
       start(coreInstance, { addAlert }) {
         addAlert("test-start", "Warning starting plugin");
@@ -302,8 +294,7 @@ describe("plugins", () => {
         coreInstance.settings.set("log", "silly");
         coreInstance.onChangeSettings(changeSettingsSpy);
         coreInstance.onChangeAlerts(changeAlertsSpy);
-        coreInstance.onLoadMocks(mocksLoadedSpy);
-        coreInstance.onLoadFiles(filesLoadedSpy);
+        coreInstance.onChangeMocks(mocksLoadedSpy);
       }
       start(coreInstance, { addAlert }) {
         addAlert("test-start", "Warning starting plugin");
@@ -354,8 +345,7 @@ describe("plugins", () => {
         coreIns.settings.set("log", "silly");
         coreIns.onChangeSettings(changeSettingsSpy);
         coreInstance.onChangeAlerts(changeAlertsSpy);
-        coreIns.onLoadMocks(mocksLoadedSpy);
-        coreIns.onLoadFiles(filesLoadedSpy);
+        coreIns.onChangeMocks(mocksLoadedSpy);
       },
       start: (coreIns, methods) => {
         methods.addAlert("test-start", "Warning starting plugin");
@@ -402,8 +392,7 @@ describe("plugins", () => {
         coreInstance.settings.set("log", "silly");
         coreInstance.onChangeSettings(changeSettingsSpy);
         coreInstance.onChangeAlerts(changeAlertsSpy);
-        coreInstance.onLoadMocks(mocksLoadedSpy);
-        coreInstance.onLoadFiles(filesLoadedSpy);
+        coreInstance.onChangeMocks(mocksLoadedSpy);
       },
       start: (coreInstance, { addAlert }) => {
         addAlert("test-start", "Warning starting plugin");

@@ -18,7 +18,7 @@ const { compact, uniqBy } = require("lodash");
 const tracer = require("../tracer");
 const Behavior = require("./Behavior");
 
-const { CHANGE_MOCKS } = require("../eventNames");
+const { CHANGE_LEGACY_MOCKS } = require("../eventNames");
 
 class Behaviors {
   constructor(loaders, settings, eventEmitter, { addAlert, removeAlerts }) {
@@ -69,7 +69,7 @@ class Behaviors {
       }
     }
 
-    this._eventEmitter.emit(CHANGE_MOCKS);
+    this._eventEmitter.emit(CHANGE_LEGACY_MOCKS);
     return Promise.resolve();
   }
 

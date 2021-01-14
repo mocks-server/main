@@ -8,7 +8,7 @@ class Plugin {
     });
 
     this._core = core;
-    this._onChangeMocks = this._onChangeMocks.bind(this);
+    this._onChangeLegacyMocks = this._onChangeLegacyMocks.bind(this);
     this._onChangeSettings = this._onChangeSettings.bind(this);
   }
 
@@ -18,7 +18,7 @@ class Plugin {
 
   init(core) {
     this._enabled = core.settings.get("traceMocks2");
-    this._removeChangeMocksListener = core.onChangeMocks(this.onChangeMocks);
+    this._removeChangeMocksListener = core.onChangeLegacyMocks(this.onChangeLegacyMocks);
     this._removeChangeSettingsListener = core.onChangeSettings(this.onChangeSettings);
     core.tracer.debug(`traceMocks2 initial value is ${core.settings.get("traceMocks2")}`);
   }
@@ -46,7 +46,7 @@ class Plugin {
     }
   }
 
-  _onChangeMocks() {
+  _onChangeLegacyMocks() {
     this.traceBehaviors();
   }
 }

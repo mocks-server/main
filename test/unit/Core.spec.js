@@ -188,22 +188,22 @@ describe("Core", () => {
     });
   });
 
-  describe("onChangeMocks method", () => {
+  describe("onChangeLegacyMocks method", () => {
     it("should add listener to eventEmitter", () => {
       const spy = sandbox.spy();
-      core.onChangeMocks(spy);
-      core._eventEmitter.emit("change:mocks");
+      core.onChangeLegacyMocks(spy);
+      core._eventEmitter.emit("change:mocks:legacy");
       expect(spy.callCount).toEqual(1);
     });
 
     it("should return a function to remove listener", () => {
       expect.assertions(2);
       const spy = sandbox.spy();
-      const removeCallback = core.onChangeMocks(spy);
-      core._eventEmitter.emit("change:mocks");
+      const removeCallback = core.onChangeLegacyMocks(spy);
+      core._eventEmitter.emit("change:mocks:legacy");
       expect(spy.callCount).toEqual(1);
       removeCallback();
-      core._eventEmitter.emit("change:mocks");
+      core._eventEmitter.emit("change:mocks:legacy");
       expect(spy.callCount).toEqual(1);
     });
   });

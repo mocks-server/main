@@ -217,7 +217,7 @@ describe("plugins", () => {
       coreInstance.settings.set("log", "silly");
       coreInstance.onChangeSettings(changeSettingsSpy);
       coreInstance.onChangeAlerts(changeAlertsSpy);
-      coreInstance.onChangeMocks(mocksLoadedSpy);
+      coreInstance.onChangeLegacyMocks(mocksLoadedSpy);
     },
     start: (coreInstance, { addAlert }) => {
       startSpy(coreInstance);
@@ -261,7 +261,7 @@ describe("plugins", () => {
         coreInstance.settings.set("log", "silly");
         coreInstance.onChangeSettings(changeSettingsSpy);
         coreInstance.onChangeAlerts(changeAlertsSpy);
-        coreInstance.onChangeMocks(mocksLoadedSpy);
+        coreInstance.onChangeLegacyMocks(mocksLoadedSpy);
       }
       start(coreInstance, { addAlert }) {
         addAlert("test-start", "Warning starting plugin");
@@ -294,7 +294,7 @@ describe("plugins", () => {
         coreInstance.settings.set("log", "silly");
         coreInstance.onChangeSettings(changeSettingsSpy);
         coreInstance.onChangeAlerts(changeAlertsSpy);
-        coreInstance.onChangeMocks(mocksLoadedSpy);
+        coreInstance.onChangeLegacyMocks(mocksLoadedSpy);
       }
       start(coreInstance, { addAlert }) {
         addAlert("test-start", "Warning starting plugin");
@@ -345,7 +345,7 @@ describe("plugins", () => {
         coreIns.settings.set("log", "silly");
         coreIns.onChangeSettings(changeSettingsSpy);
         coreInstance.onChangeAlerts(changeAlertsSpy);
-        coreIns.onChangeMocks(mocksLoadedSpy);
+        coreIns.onChangeLegacyMocks(mocksLoadedSpy);
       },
       start: (coreIns, methods) => {
         methods.addAlert("test-start", "Warning starting plugin");
@@ -392,7 +392,7 @@ describe("plugins", () => {
         coreInstance.settings.set("log", "silly");
         coreInstance.onChangeSettings(changeSettingsSpy);
         coreInstance.onChangeAlerts(changeAlertsSpy);
-        coreInstance.onChangeMocks(mocksLoadedSpy);
+        coreInstance.onChangeLegacyMocks(mocksLoadedSpy);
       },
       start: (coreInstance, { addAlert }) => {
         addAlert("test-start", "Warning starting plugin");

@@ -13,8 +13,7 @@ module.exports = {
   START: "start",
   STOP: "stop",
   LOAD_LEGACY_MOCKS: "load:mocks:legacy",
-  CHANGE_FIXTURES: "change:fixtures",
-  CHANGE_MOCKS: "change:mocks",
+  CHANGE_LEGACY_MOCKS: "change:mocks:legacy",
   CHANGE_SETTINGS: "change:settings",
   CHANGE_ALERTS: "change:alerts",
 };

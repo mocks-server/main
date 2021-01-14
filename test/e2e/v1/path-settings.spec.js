@@ -33,7 +33,7 @@ describe("path setting", () => {
 
   describe("When path setting is changed to files-modification and current behavior is changed", () => {
     it("should have loaded files-modification mocks and applied current behavior", async () => {
-      core.onChangeMocks(() => {
+      core.onChangeLegacyMocks(() => {
         core.settings.set("behavior", "newOne");
       });
       core.settings.set("path", fixturesFolder("files-modification"));

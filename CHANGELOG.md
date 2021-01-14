@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Remove deprecated "onLoadMocks" method, "onChangeMocks" must be used instead.
 - feat: Remove "onLoadFiles" method. There is no alternative, as it is an internal event of the files-loader plugin and it should't be used by other external pieces.
 - feat: Rename "loadMocks" plugins method to "loadLegacyMocks"
+- feat: Rename "onChangeMocks" core method to "onChangeLegacyMocks"
 
 ## [1.6.0] - 2020-12-25
 

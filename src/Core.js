@@ -14,7 +14,7 @@ const {
   INIT,
   START,
   STOP,
-  CHANGE_MOCKS,
+  CHANGE_LEGACY_MOCKS,
   CHANGE_SETTINGS,
   CHANGE_ALERTS,
 } = require("./eventNames");
@@ -168,11 +168,11 @@ class Core {
 
   // Listeners
 
-  onChangeMocks(cb) {
+  onChangeLegacyMocks(cb) {
     const removeCallback = () => {
-      this._eventEmitter.removeListener(CHANGE_MOCKS, cb);
+      this._eventEmitter.removeListener(CHANGE_LEGACY_MOCKS, cb);
     };
-    this._eventEmitter.on(CHANGE_MOCKS, cb);
+    this._eventEmitter.on(CHANGE_LEGACY_MOCKS, cb);
     return removeCallback;
   }
 

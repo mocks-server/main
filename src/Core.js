@@ -17,6 +17,7 @@ const {
   CHANGE_LEGACY_MOCKS,
   CHANGE_SETTINGS,
   CHANGE_ALERTS,
+  LOAD_LEGACY_MOCKS,
 } = require("./eventNames");
 const tracer = require("./tracer");
 
@@ -45,8 +46,12 @@ class Core {
       },
     });
 
-    // TODO, move loaders inside mocks folder, or rename it
-    this._loaders = new Loaders(this);
+    this._legacyMocksLoaders = new Loaders({
+      onLoad: () => {
+        this._eventEmitter.emit(LOAD_LEGACY_MOCKS);
+      },
+    });
+
     this._config = new Config(
       scopedAlertsMethods("config", this._alerts.add, this._alerts.remove),
       config
@@ -56,7 +61,7 @@ class Core {
 
     this._plugins = new Plugins(
       this._config,
-      this._loaders,
+      this._legacyMocksLoaders,
       this,
       scopedAlertsMethods("plugins", this._alerts.add, this._alerts.remove, this._alerts.rename)
     );
@@ -64,7 +69,7 @@ class Core {
     this._legacyMocks = new LegacyMocks(
       this._eventEmitter,
       this._settings,
-      this._loaders,
+      this._legacyMocksLoaders,
       this,
       scopedAlertsMethods("legacy-mocks", this._alerts.add, this._alerts.remove)
     );

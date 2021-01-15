@@ -17,6 +17,7 @@ const PluginsMocks = require("./plugins/Plugins.mocks.js");
 const OrchestratorMocks = require("./Orchestrator.mocks.js");
 const ConfigMocks = require("./Config.mocks.js");
 const AlertsMocks = require("./Alerts.mocks.js");
+const LoadersMocks = require("./Loaders.mocks.js");
 
 const Core = require("../../src/Core");
 const tracer = require("../../src/tracer");
@@ -35,6 +36,7 @@ describe("Core", () => {
   let configMocks;
   let alertsMocks;
   let alertsInstance;
+  let loadersMocks;
   let core;
 
   beforeEach(async () => {
@@ -50,6 +52,7 @@ describe("Core", () => {
     orchestratorMocks = new OrchestratorMocks();
     alertsMocks = new AlertsMocks();
     alertsInstance = alertsMocks.stubs.instance;
+    loadersMocks = new LoadersMocks();
     configMocks = new ConfigMocks();
 
     core = new Core();
@@ -65,6 +68,7 @@ describe("Core", () => {
     configMocks.restore();
     pluginsMocks.restore();
     alertsMocks.restore();
+    loadersMocks.restore();
   });
 
   describe("when created", () => {
@@ -246,6 +250,17 @@ describe("Core", () => {
       removeCallback();
       core._eventEmitter.emit("change:alerts");
       expect(spy.callCount).toEqual(1);
+    });
+  });
+
+  describe("when legacyMocksLoaders load something", () => {
+    it("should emit an event", (done) => {
+      expect.assertions(1);
+      core._eventEmitter.on("load:mocks:legacy", () => {
+        expect(true).toEqual(true);
+        done();
+      });
+      loadersMocks.stubs.Constructor.mock.calls[0][0].onLoad();
     });
   });
 

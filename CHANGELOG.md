@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - refactor: Move "path" and "watch" options inside files-loader plugin
 - refactor: Reorganize files and folders
 - refactor: Refactor Loaders to receive specific onLoad callback instead of full core instance
+- refactor: Refactor Config to receive a single argument with all options in an object
 ### Fixed
 ### Removed
 ### BREAKING CHANGES

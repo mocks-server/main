@@ -34,10 +34,10 @@ const Settings = require("./settings/Settings");
 const { scopedAlertsMethods } = require("./support/helpers");
 
 class Core {
-  constructor(config) {
+  constructor(programmaticConfig) {
     this._eventEmitter = new EventEmitter();
 
-    // TODO, refactor all pieces as the next one. They should receive prepared callbacks
+    // TODO, refactor all pieces as the next one. They should receive callbacks
     // They should never access directly to the full core
     // (expect in cases where it is needed to be passed to plugins or another external pieces)
     this._alerts = new Alerts({
@@ -52,10 +52,10 @@ class Core {
       },
     });
 
-    this._config = new Config(
-      scopedAlertsMethods("config", this._alerts.add, this._alerts.remove),
-      config
-    );
+    this._config = new Config({
+      programmaticConfig,
+      ...scopedAlertsMethods("config", this._alerts.add, this._alerts.remove),
+    });
 
     this._settings = new Settings(this._eventEmitter, this._config);
 

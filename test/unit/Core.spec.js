@@ -75,7 +75,7 @@ describe("Core", () => {
     it("should create Config with received config", () => {
       const fooConfig = { foo: "foo" };
       core = new Core(fooConfig);
-      expect(configMocks.stubs.Constructor.mock.calls[1][1]).toEqual(fooConfig);
+      expect(configMocks.stubs.Constructor.mock.calls[1][0].programmaticConfig).toEqual(fooConfig);
     });
   });
 

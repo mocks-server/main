@@ -18,7 +18,7 @@ const { isFunction, isObject } = require("lodash");
 const CONFIG_FILE = "mocks-server.config.js";
 
 class Config {
-  constructor({ addAlert }, programmaticConfig = {}) {
+  constructor({ addAlert, programmaticConfig = {} }) {
     this._coreOptions = {};
     this._addAlert = addAlert;
     this._options = {};

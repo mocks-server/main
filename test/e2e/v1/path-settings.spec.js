@@ -36,7 +36,7 @@ describe("path setting", () => {
       core.onChangeLegacyMocks(() => {
         core.settings.set("behavior", "newOne");
       });
-      core.settings.set("path", fixturesFolder("files-modification"));
+      core.settings.set("pathLegacy", fixturesFolder("files-modification"));
       await wait(3000);
       const users = await request("/api/new-users");
       expect(users).toEqual([

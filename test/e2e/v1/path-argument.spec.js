@@ -17,7 +17,7 @@ describe("path argument", () => {
   let cli;
 
   beforeAll(async () => {
-    cli = new CliRunner([binaryPath, "--path=web-tutorial"], {
+    cli = new CliRunner([binaryPath, "--pathLegacy=web-tutorial"], {
       cwd: cwdPath,
     });
     await wait();

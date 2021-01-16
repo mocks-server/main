@@ -23,7 +23,7 @@ describe("behavior arguments", () => {
   describe("behavior argument", () => {
     describe("when not provided", () => {
       it("should set as current behavior the first one found", async () => {
-        cli = new CliRunner([binaryPath, "--path=web-tutorial"], {
+        cli = new CliRunner([binaryPath, "--pathLegacy=web-tutorial"], {
           cwd: cwdPath,
         });
         await wait();
@@ -34,7 +34,7 @@ describe("behavior arguments", () => {
 
     describe("when provided and exists", () => {
       it("should set current behavior", async () => {
-        cli = new CliRunner([binaryPath, "--path=web-tutorial", "--behavior=dynamic"], {
+        cli = new CliRunner([binaryPath, "--pathLegacy=web-tutorial", "--behavior=dynamic"], {
           cwd: cwdPath,
         });
         await wait();
@@ -45,7 +45,7 @@ describe("behavior arguments", () => {
 
     describe("when provided and does not exist", () => {
       it("should print a warning", async () => {
-        cli = new CliRunner([binaryPath, "--path=web-tutorial", "--behavior=foo"], {
+        cli = new CliRunner([binaryPath, "--pathLegacy=web-tutorial", "--behavior=foo"], {
           cwd: cwdPath,
         });
         await wait();
@@ -53,7 +53,7 @@ describe("behavior arguments", () => {
       });
 
       it("should set as current behavior the first one found", async () => {
-        cli = new CliRunner([binaryPath, "--path=web-tutorial", "--behavior=foo"], {
+        cli = new CliRunner([binaryPath, "--pathLegacy=web-tutorial", "--behavior=foo"], {
           cwd: cwdPath,
         });
         await wait();

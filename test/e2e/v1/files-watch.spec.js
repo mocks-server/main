@@ -20,7 +20,7 @@ describe("files watcher", () => {
   beforeAll(async () => {
     fsExtra.removeSync(fixturesFolder("files-watch"));
     fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
-    cli = new CliRunner([binaryPath, "--path=files-watch"], {
+    cli = new CliRunner([binaryPath, "--pathLegacy=files-watch"], {
       cwd: cwdPath,
     });
     await wait();
@@ -79,7 +79,7 @@ describe("files watcher", () => {
     describe('When changing current behavior to "user2"', () => {
       beforeAll(async () => {
         await cli.kill();
-        cli = new CliRunner([binaryPath, "--path=files-watch", "--behavior=user2"], {
+        cli = new CliRunner([binaryPath, "--pathLegacy=files-watch", "--behavior=user2"], {
           cwd: cwdPath,
         });
         await wait();
@@ -107,7 +107,7 @@ describe("files watcher", () => {
     describe('When changing current behavior to "dynamic"', () => {
       beforeAll(async () => {
         await cli.kill();
-        cli = new CliRunner([binaryPath, "--path=files-watch", "--behavior=dynamic"], {
+        cli = new CliRunner([binaryPath, "--pathLegacy=files-watch", "--behavior=dynamic"], {
           cwd: cwdPath,
         });
         await wait();
@@ -135,7 +135,7 @@ describe("files watcher", () => {
     describe('When changing current behavior to "newOne"', () => {
       beforeAll(async () => {
         await cli.kill();
-        cli = new CliRunner([binaryPath, "--path=files-watch", "--behavior=newOne"], {
+        cli = new CliRunner([binaryPath, "--pathLegacy=files-watch", "--behavior=newOne"], {
           cwd: cwdPath,
         });
         await wait();

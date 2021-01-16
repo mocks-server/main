@@ -18,9 +18,9 @@ const { map, debounce, flatten, isObject } = require("lodash");
 const JS_FILES_REGEXP = /\.json$/;
 
 const PLUGIN_NAME = "@mocks-server/core/plugin-legacy-files-loader";
-const PATH_OPTION = "legacy-path";
-const WATCH_OPTION = "legacy-watch";
-const DEFAULT_PATH = "legacy-mocks";
+const PATH_OPTION = "pathLegacy";
+const WATCH_OPTION = "watchLegacy";
+const DEFAULT_PATH = "mocks-legacy";
 
 class FilesLoaderBase {
   constructor(core, methods, extraOptions = {}) {
@@ -104,17 +104,19 @@ class FilesLoaderBase {
     const pathName = this._settings.get(PATH_OPTION);
     if (!pathName) {
       this._enabled = false;
+      this._load([]);
       return;
     }
     const resolvedFolder = this._resolveFolder(pathName);
     if (!fsExtra.existsSync(resolvedFolder)) {
-      this._tracer.warn(`Folder ${this._path} does not exists. Skipping load`);
+      this._tracer.warn(`Folder ${pathName} does not exists. Skipping legacy mocks load`);
       this._enabled = false;
+      this._load([]);
       return;
     }
     this._enabled = true;
     this._path = this._ensureFolder(resolvedFolder);
-    this._tracer.info(`Loading files from folder ${this._path}`);
+    this._tracer.info(`Loading files from legacy folder ${this._path}`);
     this._cleanRequireCacheFolder();
     try {
       this._files = requireAll({
@@ -133,7 +135,7 @@ class FilesLoaderBase {
           return fileContent;
         },
       });
-      this._tracer.silly(`Loaded files from folder ${this._path}`);
+      this._tracer.silly(`Loaded files from legacy folder ${this._path}`);
       this._contents = this._getContents(this._files).map((content) => {
         // TODO, remove the addition of extra properties when reading files. Define a name for the behavior.
         delete content._mocksServer_isFile;
@@ -143,7 +145,7 @@ class FilesLoaderBase {
       this._load(this._contents);
       this._removeAlerts("load");
     } catch (error) {
-      this._onAlert("load", `Error loading files from folder ${this._path}`, error);
+      this._onAlert("load", `Error loading files from legacy folder ${this._path}`, error);
     }
   }
 
@@ -182,12 +184,12 @@ class FilesLoaderBase {
     const enabled = this._settings.get(WATCH_OPTION) && this._enabled;
     this.stop();
     if (enabled) {
-      this._tracer.debug("Starting files watcher");
+      this._tracer.debug("Starting files watcher on legacy folder");
       this._watcher = watch(
         this._path,
         { recursive: true },
         debounce(() => {
-          this._tracer.info("File change detected");
+          this._tracer.info("File change detected in legacy folder");
           this._loadFiles();
         }),
         1000

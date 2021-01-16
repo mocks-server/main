@@ -171,7 +171,7 @@ describe("FilesLoaderLegacy", () => {
       requireCache,
     });
     sandbox.stub(path, "isAbsolute").returns(true);
-    coreInstance.settings.get.withArgs("legacy-path").returns("foo-path");
+    coreInstance.settings.get.withArgs("pathLegacy").returns("foo-path");
     libsMocks.stubs.fsExtra.existsSync.returns(true);
   });
 
@@ -339,7 +339,7 @@ describe("FilesLoaderLegacy", () => {
     it("should throw error if there is an error initializing plugin", async () => {
       expect.assertions(1);
       const FOO_ERROR = new Error();
-      coreInstance.settings.get.withArgs("legacy-path").throws(FOO_ERROR);
+      coreInstance.settings.get.withArgs("pathLegacy").throws(FOO_ERROR);
       try {
         await filesLoader.init();
       } catch (err) {
@@ -390,7 +390,7 @@ describe("FilesLoaderLegacy", () => {
 
     it("should not try to load files if mocks folder is not defined", async () => {
       expect.assertions(1);
-      coreInstance.settings.get.withArgs("legacy-path").returns(undefined);
+      coreInstance.settings.get.withArgs("pathLegacy").returns(undefined);
       await filesLoader.init();
       expect(requireAll.mock.calls.length).toEqual(0);
     });
@@ -431,14 +431,14 @@ describe("FilesLoaderLegacy", () => {
   describe("start method", () => {
     describe("when starting files watch", () => {
       it("should do nothing if watch was not enabled", async () => {
-        coreInstance.settings.get.withArgs("legacy-watch").returns(false);
+        coreInstance.settings.get.withArgs("watchLegacy").returns(false);
         await filesLoader.init();
         await filesLoader.start();
         expect(libsMocks.stubs.watch.callCount).toEqual(0);
       });
 
       it("should call to close watcher if watch was enabled previously", async () => {
-        coreInstance.settings.get.withArgs("legacy-watch").returns(true);
+        coreInstance.settings.get.withArgs("watchLegacy").returns(true);
         await filesLoader.init();
         await filesLoader.start();
         await filesLoader.start();
@@ -449,7 +449,7 @@ describe("FilesLoaderLegacy", () => {
 
   describe("when a file is changed", () => {
     it("should load files again", async () => {
-      coreInstance.settings.get.withArgs("legacy-watch").returns(true);
+      coreInstance.settings.get.withArgs("watchLegacy").returns(true);
       await filesLoader.init();
       await filesLoader.start();
       libsMocks.stubs.watch.getCall(0).args[2]();
@@ -462,30 +462,30 @@ describe("FilesLoaderLegacy", () => {
     it("should load files again if path setting is changed", async () => {
       await filesLoader.init();
       coreInstance.onChangeSettings.getCall(0).args[0]({
-        "legacy-path": "foo-path",
+        pathLegacy: "foo-path",
       });
       await wait();
       expect(requireAll.mock.calls.length).toEqual(2);
     });
 
     it("should enable watch again if path setting is changed", async () => {
-      coreInstance.settings.get.withArgs("legacy-watch").returns(true);
+      coreInstance.settings.get.withArgs("watchLegacy").returns(true);
       await filesLoader.init();
       await filesLoader.start();
       coreInstance.onChangeSettings.getCall(0).args[0]({
-        "legacy-path": "foo-path",
+        pathLegacy: "foo-path",
       });
       await wait();
       expect(libsMocks.stubs.watch.callCount).toEqual(2);
     });
 
     it("should disable watch if watch is changed", async () => {
-      coreInstance.settings.get.withArgs("legacy-watch").returns(true);
+      coreInstance.settings.get.withArgs("watchLegacy").returns(true);
       await filesLoader.init();
       await filesLoader.start();
-      coreInstance.settings.get.withArgs("legacy-watch").returns(false);
+      coreInstance.settings.get.withArgs("watchLegacy").returns(false);
       coreInstance.onChangeSettings.getCall(0).args[0]({
-        "legacy-watch": false,
+        watchLegacy: false,
       });
       await wait();
       expect(libsMocks.stubs.watchClose.callCount).toEqual(1);
@@ -493,7 +493,7 @@ describe("FilesLoaderLegacy", () => {
 
     it("should do nothing if no path or watch settings are changed", async () => {
       expect.assertions(3);
-      coreInstance.settings.get.withArgs("legacy-watch").returns(true);
+      coreInstance.settings.get.withArgs("watchLegacy").returns(true);
       await filesLoader.init();
       await filesLoader.start();
       coreInstance.onChangeSettings.getCall(0).args[0]({});

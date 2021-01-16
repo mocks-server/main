@@ -70,7 +70,7 @@ describe("Plugins", () => {
     coreInstance = coreMocks.stubs.instance;
     configInstance = configMocks.stubs.instance;
     coreInstance.settings.get.withArgs("path").returns("foo-path");
-    coreInstance.settings.get.withArgs("legacy-path").returns("foo-path");
+    coreInstance.settings.get.withArgs("pathLegacy").returns("foo-path");
     libsMocks.stubs.fsExtra.existsSync.returns(true);
     plugins = new Plugins(callbacks, coreInstance);
   });

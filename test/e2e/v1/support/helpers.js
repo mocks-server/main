@@ -20,6 +20,7 @@ const SERVER_PORT = 3100;
 const defaultOptions = {
   port: SERVER_PORT,
   log: "debug",
+  watchLegacy: false,
   watch: false,
 };
 
@@ -41,7 +42,8 @@ const startCore = (mocksPath, options = {}) => {
   return core
     .init({
       ...defaultOptions,
-      path: fixturesFolder(mocks),
+      path: fixturesFolder("mocks"),
+      pathLegacy: fixturesFolder(mocks),
       ...options,
     })
     .then(() => {

@@ -37,7 +37,7 @@ describe("behaviors defined programmatically", () => {
 
   describe('When started with "standard" behavior', () => {
     beforeAll(async () => {
-      cli = new CliRunner([binaryPath, "--path=web-tutorial", "--behavior=standard"], {
+      cli = new CliRunner([binaryPath, "--pathLegacy=web-tutorial", "--behavior=standard"], {
         cwd: cwdPath,
       });
       await wait();
@@ -68,7 +68,7 @@ describe("behaviors defined programmatically", () => {
 
   describe('When started with "user2" behavior', () => {
     beforeAll(async () => {
-      cli = new CliRunner([binaryPath, "--path=web-tutorial", "--behavior=user2"], {
+      cli = new CliRunner([binaryPath, "--pathLegacy=web-tutorial", "--behavior=user2"], {
         cwd: cwdPath,
       });
       await wait();
@@ -99,7 +99,7 @@ describe("behaviors defined programmatically", () => {
 
   describe('When started with "dynamic" behavior', () => {
     beforeAll(async () => {
-      cli = new CliRunner([binaryPath, "--path=web-tutorial", "--behavior=dynamic"], {
+      cli = new CliRunner([binaryPath, "--pathLegacy=web-tutorial", "--behavior=dynamic"], {
         cwd: cwdPath,
       });
       await wait();

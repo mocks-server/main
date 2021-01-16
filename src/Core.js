@@ -28,6 +28,8 @@ const Orchestrator = require("./Orchestrator");
 const Loaders = require("./Loaders");
 const Alerts = require("./Alerts");
 
+const RoutesHandlers = require("./routes-handlers/RoutesHandlers");
+const Mocks = require("./mocks/Mocks");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
 const LegacyMocks = require("./mocks-legacy/Mocks");
@@ -93,6 +95,14 @@ class Core {
       this //To be used only by plugins
     );
 
+    this._routesHandlers = new RoutesHandlers();
+
+    this._mocks = new Mocks({
+      getRouteHandlers: () => this._routesHandlers.handlers,
+      getLoadedMocks: () => this._mocksLoaders.contents,
+      getLoadedRoutes: () => this._routesLoaders.contents,
+    });
+
     // TODO, remove
     this._legacyMocks = new LegacyMocks(
       this._eventEmitter,
@@ -103,16 +113,18 @@ class Core {
     );
 
     // TODO, refactor. Pass specific callbacks instead of objects
-    this._server = new Server(
-      this._eventEmitter,
-      this._settings,
-      this._legacyMocks,
-      this,
-      scopedAlertsMethods("server", this._alerts.add, this._alerts.remove)
-    );
+    this._server = new Server(this._eventEmitter, this._settings, this._legacyMocks, this, {
+      mocksRouter: this._mocks.router,
+      ...scopedAlertsMethods("server", this._alerts.add, this._alerts.remove),
+    });
 
     // TODO, remove, add orchestration event listeners here
-    this._orchestrator = new Orchestrator(this._eventEmitter, this._legacyMocks, this._server);
+    this._orchestrator = new Orchestrator(
+      this._eventEmitter,
+      this._legacyMocks,
+      this._server,
+      this._mocks
+    );
 
     this._inited = false;
     this._stopPluginsPromise = null;
@@ -145,11 +157,14 @@ class Core {
     }
     await this._config.init(options);
     this._inited = true;
+    // Register routes handlers
+    await this._routesHandlers.register();
     // Register plugins, let them add their custom settings
     await this._plugins.register(this._config.coreOptions.plugins);
     // Init settings, read command line arguments, etc.
     await this._settings.init(this._config.options);
     // Settings are ready, init all
+    await this._mocks.init();
     await this._legacyMocks.init();
     await this._server.init();
     return this._plugins.init().then(() => {

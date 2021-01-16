@@ -38,7 +38,7 @@ describe("when behavior ids are defined using object keys", () => {
   describe('When started with "standard" behavior', () => {
     beforeAll(async () => {
       cli = new CliRunner(
-        [binaryPath, "--path=web-tutorial-deprecated-ids", "--behavior=standard"],
+        [binaryPath, "--pathLegacy=web-tutorial-deprecated-ids", "--behavior=standard"],
         {
           cwd: cwdPath,
         }
@@ -71,9 +71,12 @@ describe("when behavior ids are defined using object keys", () => {
 
   describe('When started with "user2" behavior', () => {
     beforeAll(async () => {
-      cli = new CliRunner([binaryPath, "--path=web-tutorial-deprecated-ids", "--behavior=user2"], {
-        cwd: cwdPath,
-      });
+      cli = new CliRunner(
+        [binaryPath, "--pathLegacy=web-tutorial-deprecated-ids", "--behavior=user2"],
+        {
+          cwd: cwdPath,
+        }
+      );
       await wait();
     });
 
@@ -103,7 +106,7 @@ describe("when behavior ids are defined using object keys", () => {
   describe('When started with "dynamic" behavior', () => {
     beforeAll(async () => {
       cli = new CliRunner(
-        [binaryPath, "--path=web-tutorial-deprecated-ids", "--behavior=dynamic"],
+        [binaryPath, "--pathLegacy=web-tutorial-deprecated-ids", "--behavior=dynamic"],
         {
           cwd: cwdPath,
         }

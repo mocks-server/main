@@ -19,7 +19,7 @@ describe("delay argument", () => {
 
   beforeAll(async () => {
     timeCounter = new TimeCounter();
-    cli = new CliRunner([binaryPath, "--path=web-tutorial", "--delay=2000"], {
+    cli = new CliRunner([binaryPath, "--pathLegacy=web-tutorial", "--delay=2000"], {
       cwd: cwdPath,
     });
     await wait();

@@ -9,6 +9,7 @@
 # tests
 /coverage
 /mocks
+/mocks-legacy
 /test/e2e/v1/fixtures/files-watch
 /test/e2e/v1/fixtures/mocks
 /testing.js

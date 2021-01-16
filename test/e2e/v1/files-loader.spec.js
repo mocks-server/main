@@ -37,7 +37,7 @@ describe("when mocks files are unordered and export single fixtures and behavior
 
   describe('When started with "standard" behavior', () => {
     beforeAll(async () => {
-      cli = new CliRunner([binaryPath, "--path=files-handler", "--behavior=standard"], {
+      cli = new CliRunner([binaryPath, "--pathLegacy=files-handler", "--behavior=standard"], {
         cwd: cwdPath,
       });
       await wait();
@@ -68,7 +68,7 @@ describe("when mocks files are unordered and export single fixtures and behavior
 
   describe('When started with "user2" behavior', () => {
     beforeAll(async () => {
-      cli = new CliRunner([binaryPath, "--path=files-handler", "--behavior=user2"], {
+      cli = new CliRunner([binaryPath, "--pathLegacy=files-handler", "--behavior=user2"], {
         cwd: cwdPath,
       });
       await wait();
@@ -99,7 +99,7 @@ describe("when mocks files are unordered and export single fixtures and behavior
 
   describe('When started with "dynamic" behavior', () => {
     beforeAll(async () => {
-      cli = new CliRunner([binaryPath, "--path=files-handler", "--behavior=dynamic"], {
+      cli = new CliRunner([binaryPath, "--pathLegacy=files-handler", "--behavior=dynamic"], {
         cwd: cwdPath,
       });
       await wait();
@@ -138,7 +138,7 @@ describe("when mocks files are unordered and export single fixtures and behavior
 
   describe("When there is an error loading files", () => {
     beforeAll(async () => {
-      cli = new CliRunner([binaryPath, "--path=files-error", "--behavior=standard"], {
+      cli = new CliRunner([binaryPath, "--pathLegacy=files-error", "--behavior=standard"], {
         cwd: cwdPath,
       });
       await wait();
@@ -149,7 +149,7 @@ describe("when mocks files are unordered and export single fixtures and behavior
     });
 
     it("should have logged files loader error", async () => {
-      expect(cli.logs).toEqual(expect.stringContaining("Error loading files from folder"));
+      expect(cli.logs).toEqual(expect.stringContaining("Error loading files from legacy folder"));
       expect(cli.logs).toEqual(expect.stringContaining("Cannot find module './non-existant'"));
       expect(cli.logs).toEqual(expect.stringContaining("fixtures/files-error/getUser.js"));
     });

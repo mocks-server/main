@@ -13,10 +13,6 @@ const path = require("path");
 const sinon = require("sinon");
 const { cloneDeep } = require("lodash");
 
-jest.mock("require-all");
-
-const requireAll = require("require-all");
-
 const LibsMocks = require("../../Libs.mocks.js");
 const CoreMocks = require("../../Core.mocks.js");
 
@@ -61,89 +57,6 @@ describe("FilesLoader", () => {
     },
   };
 
-  const fooFiles = {
-    file1: {
-      _mocksServer_isFile: true,
-      behavior1: {
-        fixtures: [
-          {
-            url: "/api/foo/foo-uri",
-            method: "GET",
-            response: {
-              status: 200,
-              body: {
-                fooProperty: "foo",
-              },
-            },
-          },
-        ],
-        totalFixtures: 1,
-        methods: {
-          POST: {
-            "/api/foo/foo-uri": {
-              route: "foo-route-parser",
-              response: {
-                status: 200,
-                body: {
-                  fooProperty: "foo",
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    file2: {
-      _mocksServer_isFile: true,
-      behavior2: {
-        fixtures: [
-          {
-            url: "/api/foo/foo-uri-2",
-            method: "POST",
-            response: {
-              status: 422,
-              body: {
-                fooProperty2: "foo2",
-              },
-            },
-          },
-        ],
-        totalFixtures: 1,
-        methods: {
-          POST: {
-            "/api/foo/foo-uri-2": {
-              route: "foo-route-parser",
-              response: {
-                status: 422,
-                body: {
-                  fooProperty2: "foo2",
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    folder: {
-      folder2: {
-        file: {
-          _mocksServer_isFile: true,
-          fooProperty: "",
-        },
-        file2: {
-          _mocksServer_isFile: true,
-          fooProperty: {
-            foo: "foo",
-          },
-        },
-      },
-      folder3: {
-        file2: 3,
-      },
-      file5: "foo",
-    },
-  };
-
   let sandbox;
   let coreMocks;
   let coreInstance;
@@ -163,7 +76,6 @@ describe("FilesLoader", () => {
       removeAlerts: sandbox.stub(),
     };
     coreInstance = coreMocks.stubs.instance;
-    requireAll.mockImplementation(() => fooFiles);
     filesLoader = new FilesLoader(coreInstance, pluginMethods, {
       requireCache,
     });
@@ -180,191 +92,14 @@ describe("FilesLoader", () => {
   });
 
   describe("when initialized", () => {
-    it("should call to loadLegacyMocks method with current files contents in a flatten array", async () => {
-      await filesLoader.init();
-      expect(pluginMethods.loadLegacyMocks.getCall(0).args[0]).toEqual([
-        {
-          _mocksServer_lastPath: "behavior1",
-          fixtures: [
-            {
-              url: "/api/foo/foo-uri",
-              method: "GET",
-              response: {
-                status: 200,
-                body: {
-                  fooProperty: "foo",
-                },
-              },
-            },
-          ],
-          totalFixtures: 1,
-          methods: {
-            POST: {
-              "/api/foo/foo-uri": {
-                route: "foo-route-parser",
-                response: {
-                  status: 200,
-                  body: {
-                    fooProperty: "foo",
-                  },
-                },
-              },
-            },
-          },
-        },
-        {
-          _mocksServer_lastPath: "file1",
-          behavior1: {
-            _mocksServer_lastPath: "behavior1",
-            fixtures: [
-              {
-                url: "/api/foo/foo-uri",
-                method: "GET",
-                response: {
-                  status: 200,
-                  body: {
-                    fooProperty: "foo",
-                  },
-                },
-              },
-            ],
-            totalFixtures: 1,
-            methods: {
-              POST: {
-                "/api/foo/foo-uri": {
-                  route: "foo-route-parser",
-                  response: {
-                    status: 200,
-                    body: {
-                      fooProperty: "foo",
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        {
-          _mocksServer_lastPath: "behavior2",
-          fixtures: [
-            {
-              url: "/api/foo/foo-uri-2",
-              method: "POST",
-              response: {
-                status: 422,
-                body: {
-                  fooProperty2: "foo2",
-                },
-              },
-            },
-          ],
-          totalFixtures: 1,
-          methods: {
-            POST: {
-              "/api/foo/foo-uri-2": {
-                route: "foo-route-parser",
-                response: {
-                  status: 422,
-                  body: {
-                    fooProperty2: "foo2",
-                  },
-                },
-              },
-            },
-          },
-        },
-        {
-          _mocksServer_lastPath: "file2",
-          behavior2: {
-            _mocksServer_lastPath: "behavior2",
-            fixtures: [
-              {
-                url: "/api/foo/foo-uri-2",
-                method: "POST",
-                response: {
-                  status: 422,
-                  body: {
-                    fooProperty2: "foo2",
-                  },
-                },
-              },
-            ],
-            totalFixtures: 1,
-            methods: {
-              POST: {
-                "/api/foo/foo-uri-2": {
-                  route: "foo-route-parser",
-                  response: {
-                    status: 422,
-                    body: {
-                      fooProperty2: "foo2",
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        {
-          _mocksServer_lastPath: "file",
-          fooProperty: "",
-        },
-        {
-          _mocksServer_lastPath: "fooProperty",
-          foo: "foo",
-        },
-        {
-          _mocksServer_lastPath: "file2",
-          fooProperty: {
-            _mocksServer_lastPath: "fooProperty",
-            foo: "foo",
-          },
-        },
-      ]);
-    });
-
     it("should have displayName defined", async () => {
       expect(filesLoader.displayName).toEqual("@mocks-server/core/plugin-files-loader");
-    });
-
-    it("should require all files from mocks folders calculating it from cwd", async () => {
-      path.isAbsolute.returns(false);
-      await filesLoader.init();
-      expect(requireAll.mock.calls[0][0].dirname).toEqual(path.resolve(process.cwd(), "foo-path"));
     });
 
     it("should not throw and add an alert if there is an error loading files", async () => {
       coreInstance.tracer.silly.throws(new Error());
       await filesLoader.init();
-      expect(pluginMethods.addAlert.calledWith("load")).toEqual(true);
-    });
-
-    it("should remove alerts if there is are no errors loading files", async () => {
-      await filesLoader.init();
-      expect(pluginMethods.removeAlerts.calledWith("load")).toEqual(true);
-    });
-
-    it("should require all files from exactly mocks folder if it is absolute", async () => {
-      await filesLoader.init();
-      expect(requireAll.mock.calls[0][0].dirname).toEqual("foo-path");
-    });
-
-    it("should add extension to json files to avoid conflicts", async () => {
-      await filesLoader.init();
-      expect(requireAll.mock.calls[0][0].map("foo", "foo-path/foo.json")).toEqual("foo.json");
-    });
-
-    it("should not add extension to js files", async () => {
-      await filesLoader.init();
-      expect(requireAll.mock.calls[0][0].map("foo", "foo-path/foo.js")).toEqual("foo");
-    });
-
-    it("should require all files adding a _mocksServer_isFile property to their content", async () => {
-      await filesLoader.init();
-      expect(requireAll.mock.calls[0][0].resolve({ foo: "foo" })).toEqual({
-        foo: "foo",
-        _mocksServer_isFile: true,
-      });
+      expect(pluginMethods.addAlert.calledWith("load:routes")).toEqual(true);
     });
 
     it("should ensure that defined mocks folder exists", async () => {
@@ -434,27 +169,7 @@ describe("FilesLoader", () => {
     });
   });
 
-  describe("when a file is changed", () => {
-    it("should load files again", async () => {
-      coreInstance.settings.get.withArgs("watch").returns(true);
-      await filesLoader.init();
-      await filesLoader.start();
-      libsMocks.stubs.watch.getCall(0).args[2]();
-      await wait();
-      expect(requireAll.mock.calls.length).toEqual(2);
-    });
-  });
-
   describe("when core settings change", () => {
-    it("should load files again if path setting is changed", async () => {
-      await filesLoader.init();
-      coreInstance.onChangeSettings.getCall(0).args[0]({
-        path: "foo-path",
-      });
-      await wait();
-      expect(requireAll.mock.calls.length).toEqual(2);
-    });
-
     it("should enable watch again if path setting is changed", async () => {
       coreInstance.settings.get.withArgs("watch").returns(true);
       await filesLoader.init();
@@ -476,18 +191,6 @@ describe("FilesLoader", () => {
       });
       await wait();
       expect(libsMocks.stubs.watchClose.callCount).toEqual(1);
-    });
-
-    it("should do nothing if no path or watch settings are changed", async () => {
-      expect.assertions(3);
-      coreInstance.settings.get.withArgs("watch").returns(true);
-      await filesLoader.init();
-      await filesLoader.start();
-      coreInstance.onChangeSettings.getCall(0).args[0]({});
-      await wait();
-      expect(requireAll.mock.calls.length).toEqual(1);
-      expect(libsMocks.stubs.watch.callCount).toEqual(1);
-      expect(libsMocks.stubs.watchClose.callCount).toEqual(0);
     });
   });
 });

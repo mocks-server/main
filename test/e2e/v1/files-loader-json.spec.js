@@ -37,9 +37,12 @@ describe("when mocks files are defined as json", () => {
 
   describe('When started with "standard" behavior', () => {
     beforeAll(async () => {
-      cli = new CliRunner([binaryPath, "--path=web-tutorial-json", "--behavior=standard"], {
-        cwd: cwdPath,
-      });
+      cli = new CliRunner(
+        [binaryPath, "--no-watchLegacy", "--pathLegacy=web-tutorial-json", "--behavior=standard"],
+        {
+          cwd: cwdPath,
+        }
+      );
       await wait();
     });
 
@@ -68,7 +71,7 @@ describe("when mocks files are defined as json", () => {
 
   describe('When started with "user2" behavior', () => {
     beforeAll(async () => {
-      cli = new CliRunner([binaryPath, "--path=web-tutorial-json", "--behavior=user2"], {
+      cli = new CliRunner([binaryPath, "--pathLegacy=web-tutorial-json", "--behavior=user2"], {
         cwd: cwdPath,
       });
       await wait();
@@ -99,7 +102,7 @@ describe("when mocks files are defined as json", () => {
 
   describe('When started with "dynamic" behavior', () => {
     beforeAll(async () => {
-      cli = new CliRunner([binaryPath, "--path=web-tutorial-json", "--behavior=dynamic"], {
+      cli = new CliRunner([binaryPath, "--pathLegacy=web-tutorial-json", "--behavior=dynamic"], {
         cwd: cwdPath,
       });
       await wait();

@@ -51,9 +51,13 @@ module.exports = class CliRunner {
     if (this._cliProcess) {
       throw new Error("Cli is already running");
     } else {
-      this._cliProcess = childProcess.spawn(this._command.name, this._command.params, {
-        cwd: this._cwd,
-      });
+      this._cliProcess = childProcess.spawn(
+        this._command.name,
+        this._command.params.concat(["--no-watch"]),
+        {
+          cwd: this._cwd,
+        }
+      );
       this._cliProcess.stdin.setEncoding(ENCODING_TYPE);
 
       this._cliProcess.stdout.setEncoding(ENCODING_TYPE);

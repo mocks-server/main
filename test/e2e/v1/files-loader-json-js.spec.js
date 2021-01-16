@@ -37,7 +37,7 @@ describe("when mocks files are defined as json and js", () => {
 
   describe('When started with "standard" behavior', () => {
     beforeAll(async () => {
-      cli = new CliRunner([binaryPath, "--path=json-and-js", "--behavior=standard"], {
+      cli = new CliRunner([binaryPath, "--pathLegacy=json-and-js", "--behavior=standard"], {
         cwd: cwdPath,
       });
       await wait();
@@ -68,7 +68,7 @@ describe("when mocks files are defined as json and js", () => {
 
   describe('When started with "user2" behavior', () => {
     beforeAll(async () => {
-      cli = new CliRunner([binaryPath, "--path=json-and-js", "--behavior=user2"], {
+      cli = new CliRunner([binaryPath, "--pathLegacy=json-and-js", "--behavior=user2"], {
         cwd: cwdPath,
       });
       await wait();
@@ -99,7 +99,7 @@ describe("when mocks files are defined as json and js", () => {
 
   describe('When started with "dynamic" behavior', () => {
     beforeAll(async () => {
-      cli = new CliRunner([binaryPath, "--path=json-and-js", "--behavior=dynamic"], {
+      cli = new CliRunner([binaryPath, "--pathLegacy=json-and-js", "--behavior=dynamic"], {
         cwd: cwdPath,
       });
       await wait();

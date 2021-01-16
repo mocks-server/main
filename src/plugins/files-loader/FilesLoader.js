@@ -10,22 +10,25 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const requireAll = require("require-all");
+const globule = require("globule");
 const watch = require("node-watch");
 const fsExtra = require("fs-extra");
 
-const { map, debounce, flatten, isObject } = require("lodash");
-const JS_FILES_REGEXP = /\.json$/;
+const { map, debounce, flatten } = require("lodash");
 
 const PLUGIN_NAME = "@mocks-server/core/plugin-files-loader";
 const PATH_OPTION = "path";
 const WATCH_OPTION = "watch";
 const DEFAULT_PATH = "mocks";
+const ROUTES_FOLDER = "routes";
+const MOCKS_FILE = "mocks";
 
 class FilesLoaderBase {
   constructor(core, methods, extraOptions = {}) {
     this._core = core;
-    this._load = methods.loadLegacyMocks;
+    this._loadMocks = methods.loadMocks;
+    this._loadRoutes = methods.loadRoutes;
+    this._loadLegacy = methods.loadLegacyMocks;
     this._onAlert = methods.addAlert;
     this._removeAlerts = methods.removeAlerts;
     this._tracer = core.tracer;
@@ -116,66 +119,44 @@ class FilesLoaderBase {
     this._path = this._ensureFolder(resolvedFolder);
     this._tracer.info(`Loading files from folder ${this._path}`);
     this._cleanRequireCacheFolder();
+    this._loadRoutesFiles();
+    this._loadMocksFile();
+  }
+
+  _loadRoutesFiles() {
+    const routesPath = path.resolve(this._path, ROUTES_FOLDER);
     try {
-      this._files = requireAll({
-        dirname: this._path,
-        recursive: true,
-        map: (fileName, filePath) => {
-          if (JS_FILES_REGEXP.test(filePath)) {
-            return `${fileName}.json`;
-          }
-          return fileName;
-        },
-        resolve: (fileContent) => {
-          try {
-            fileContent._mocksServer_isFile = true;
-          } catch (error) {}
-          return fileContent;
-        },
+      const routeFiles = globule.find({
+        src: ["**/*.js", "**/*.json"],
+        srcBase: routesPath,
+        prefixBase: true,
       });
-      this._tracer.silly(`Loaded files from folder ${this._path}`);
-      this._contents = this._getContents(this._files).map((content) => {
-        // TODO, remove the addition of extra properties when reading files. Define a name for the behavior.
-        delete content._mocksServer_isFile;
-        delete content._mocksServer_fullPath;
-        return content;
-      });
-      this._load(this._contents);
-      this._removeAlerts("load");
+
+      const routes = flatten(
+        routeFiles.map((filePath) => {
+          // TODO, validate basic routes structure, add warning for not valid routes
+          return require(filePath);
+        })
+      );
+      this._loadRoutes(routes);
+      this._tracer.silly(`Loaded routes from folder ${routesPath}`);
+      this._removeAlerts("load:routes");
     } catch (error) {
-      this._onAlert("load", `Error loading files from folder ${this._path}`, error);
+      this._onAlert("load:routes", `Error loading routes from folder ${routesPath}`, error);
     }
   }
 
-  _addPathToLoadedObject(object, fullPath, lastPath) {
+  _loadMocksFile() {
+    const mocksFile = path.resolve(this._path, `${MOCKS_FILE}.js`);
     try {
-      object._mocksServer_fullPath = fullPath;
-      object._mocksServer_lastPath = lastPath;
-    } catch (error) {}
-    return object;
-  }
-
-  _getContents(files, fileName = "") {
-    const contents = [];
-    if (files._mocksServer_isFile || !isObject(files)) {
-      if (isObject(files)) {
-        // module exports is an object, add path to each one.
-        Object.keys(files).forEach((key) => {
-          if (isObject(files[key])) {
-            this._addPathToLoadedObject(files[key], `${fileName}/${key}`, key);
-            contents.push(files[key]);
-          }
-        });
-        // Add also the full object, maybe it is a single export
-        this._addPathToLoadedObject(files, fileName, fileName.split("/").pop());
-        contents.push(files);
-      }
-    } else {
-      Object.keys(files).forEach((childFileName) => {
-        contents.push(this._getContents(files[childFileName], `${fileName}/${childFileName}`));
-      });
+      const mocks = require(mocksFile);
+      // TODO, validate mocks, add warning for not valid mocks
+      this._loadMocks(mocks);
+      this._tracer.silly(`Loaded mocks from file ${mocksFile}`);
+      this._removeAlerts("load:mocks");
+    } catch (error) {
+      // this._onAlert("load:mocks", `Error loading mocks from file ${mocksFile}`, error);
     }
-    return flatten(contents);
   }
 
   _switchWatch() {

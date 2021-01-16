@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
+- feat: Add new Mocks and Routes handler
 - feat: Add new plugin for loading routes and mocks in v2 format
 - feat: Pass new method `loadRoutes` to plugins.
 ### Changed
@@ -29,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - refactor: Refactor Loaders to receive specific onLoad callback instead of full core instance
 - refactor: Refactor Config to receive a single argument with all options
 - refactor: Refactor Plugins to receive a single argument with all options
+- feat: Improve traces when checking plugin options
 ### Fixed
 ### Removed
 ### BREAKING CHANGES
@@ -41,7 +43,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Remove deprecated `onLoadMocks` method, `onChangeMocks` must be used instead.
 - feat: Remove `onLoadFiles` method. There is no alternative, as it is an internal event of the files-loader plugin and it should't be used by other external pieces.
 - feat: Legacy mocks have to be loaded using plugins custom method `loadLegacyMocks`. `loadMocks` will be able to handle only v2 mocks.
-- feat: Listening to changes on legacy mocks has to be added using `onChangeLegacyMocks` instead of `onChangeMocks`
+- feat: Listening to changes on legacy mocks has to be added using `onChangeLegacyMocks` instead of `onChangeMocks`, which only is triggered when v2 mocks change
+- feat: Remove Accept and language default headers
 
 ## [1.6.0] - 2020-12-25
 

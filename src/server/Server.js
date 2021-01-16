@@ -54,7 +54,6 @@ class Server {
     // Add middlewares
     this._express.use(middlewares.addRequestId);
     this._express.use(middlewares.enableCors);
-    this._express.use(middlewares.addCommonHeaders);
     this._express.options("*", middlewares.enableCors);
     this._express.use(middlewares.jsonBodyParser);
     this._express.use(middlewares.traceRequest);

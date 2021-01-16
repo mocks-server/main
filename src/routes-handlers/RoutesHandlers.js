@@ -15,7 +15,6 @@ const DefaultRoutesHandler = require("./default/DefaultRoutesHandler");
 
 class RoutesHandlers {
   constructor() {
-    this._routeHandlersRegistered = 0;
     this._registeredRouteHandlers = [];
   }
 
@@ -23,7 +22,9 @@ class RoutesHandlers {
     this._routeHandlers = routeHandlers;
     this._routeHandlers.unshift(DefaultRoutesHandler);
     return this._registerHandlers().then(() => {
-      tracer.verbose(`Registered ${this._routeHandlersRegistered} routes handlers without errors`);
+      tracer.verbose(
+        `Registered ${this._registeredRouteHandlers.length} routes handlers without errors`
+      );
       return Promise.resolve();
     });
   }
@@ -39,10 +40,6 @@ class RoutesHandlers {
 
   get handlers() {
     return this._registeredRouteHandlers;
-  }
-
-  handlerById(id) {
-    return this._registeredRouteHandlers.find((RouteHandler) => RouteHandler.id === id);
   }
 }
 

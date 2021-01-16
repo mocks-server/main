@@ -16,6 +16,7 @@ module.exports = {
   LOAD_MOCKS: "load:mocks",
   LOAD_ROUTES: "load:routes",
   CHANGE_LEGACY_MOCKS: "change:mocks:legacy",
+  CHANGE_MOCKS: "change:mocks",
   CHANGE_SETTINGS: "change:settings",
   CHANGE_ALERTS: "change:alerts",
 };

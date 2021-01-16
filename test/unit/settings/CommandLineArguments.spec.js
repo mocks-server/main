@@ -52,7 +52,7 @@ describe("options", () => {
   describe("init method", () => {
     it("should call to commander to get user options from command line", async () => {
       await commandLineArguments.init();
-      expect(optionStub.callCount).toEqual(4); //First call is not registered
+      expect(optionStub.callCount).toEqual(5); //First call is not registered
     });
 
     it("should call to convert to number received value in --port option", async () => {

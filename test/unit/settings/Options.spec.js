@@ -176,6 +176,7 @@ describe("options", () => {
         log: "info",
         delay: 0,
         behavior: "foo-behavior",
+        mock: null,
       });
     });
 
@@ -194,6 +195,7 @@ describe("options", () => {
         log: "info",
         delay: 0,
         behavior: "foo-behavior",
+        mock: null,
       });
     });
 
@@ -220,6 +222,7 @@ describe("options", () => {
         foo: "foo",
         delay: 0,
         behavior: "foo-behavior",
+        mock: null,
       });
     });
 
@@ -232,6 +235,7 @@ describe("options", () => {
         log: "info",
         delay: 0,
         behavior: null,
+        mock: null,
       });
     });
 
@@ -248,6 +252,7 @@ describe("options", () => {
         log: "info",
         delay: 0,
         behavior: "foo-behavior",
+        mock: null,
       });
     });
   });
@@ -272,6 +277,7 @@ describe("options", () => {
         log: "info",
         delay: 0,
         behavior: "foo-behavior",
+        mock: null,
       });
     });
 
@@ -292,6 +298,7 @@ describe("options", () => {
         log: "info",
         delay: 0,
         behavior: "foo-behavior",
+        mock: null,
       });
     });
 
@@ -318,6 +325,7 @@ describe("options", () => {
         foo: "foo",
         delay: 0,
         behavior: "foo-behavior",
+        mock: null,
       });
     });
 
@@ -334,6 +342,7 @@ describe("options", () => {
         log: "info",
         delay: 0,
         behavior: "foo-behavior",
+        mock: null,
       });
     });
   });

@@ -32,6 +32,8 @@ describe("when using custom router", () => {
       await core.init({
         pathLegacy: fixturesFolder("web-tutorial"),
         watchLegacy: false,
+        path: fixturesFolder("mocks"),
+        watch: false,
       });
       await core.start();
     });
@@ -71,6 +73,8 @@ describe("when using custom router", () => {
       await core.init({
         pathLegacy: fixturesFolder("web-tutorial"),
         watchLegacy: false,
+        path: fixturesFolder("mocks"),
+        watch: false,
       });
       await core.start();
       await core.addRouter("/api/custom", customRouter);

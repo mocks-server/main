@@ -20,7 +20,8 @@ class CommandLineArguments {
     this._optionsNames = Object.keys(defaultOptions);
     // TODO, generate initial options dynamically from Options object using the "addCustom" method
     this._commander = commander
-      .option("--behavior <behavior>", "Define current behavior")
+      .option("--behavior <behavior>", "Current behavior for legacy mocks")
+      .option("--mock <mock>", "Current mock")
       .option("--delay <delay>", "Define delay time")
       .option("--host <host>", "Host for server")
       .option("--log <log>", "Log level")

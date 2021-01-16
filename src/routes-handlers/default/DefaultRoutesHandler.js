@@ -17,24 +17,28 @@ class DefaultRoutesHandler {
     return "default";
   }
 
-  constructor(route) {
+  constructor(route, core) {
     this._method = route.method;
     this._url = route.url;
     this._response = route.response;
-    this._id = route.id;
+    this._variantId = route.variantId;
+    this._core = core;
   }
 
-  middleware(req, res, next, core) {
+  middleware(req, res, next) {
     if (isFunction(this._response)) {
-      core.tracer.debug(
-        `Route variant ${this.id} response is a function, executing middleware | req: ${req.id}`
+      this._core.tracer.debug(
+        `Route variant "${this._variantId}" response is a function, executing middleware | req: ${req.id}`
       );
-      this._response(req, res, next);
+      this._response(req, res, next, this._core);
     } else {
-      core.tracer.debug(`Responding with route variant ${this.id} | req: ${req.id}`);
+      this._core.tracer.debug(
+        `Responding with route variant "${this._variantId}" | req: ${req.id}`
+      );
       res.status(this._response.status);
       res.send(this._response.body);
     }
+    this._core.tracer.info(`Request ${req.method} => ${req.url} => "${this._variantId}"`);
   }
 }
 

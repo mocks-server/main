@@ -17,6 +17,7 @@ const CommandLineArguments = require("./CommandLineArguments");
 
 const DEFAULT_OPTIONS = {
   behavior: null,
+  mock: null,
   delay: 0,
   host: "0.0.0.0",
   port: 3100,
@@ -71,23 +72,30 @@ class Options {
   }
 
   addCustom(optionDetails) {
+    const optionName = optionDetails && optionDetails.name;
     if (this._initialized) {
-      this._rejectCustomOption("Options are already initializated. No more options can be added");
+      this._rejectCustomOption(
+        `Options are already initializated. Option ${optionName} couldn't be added`
+      );
     }
     if (!optionDetails) {
-      this._rejectCustomOption("Please provide option details when adding a new option");
+      this._rejectCustomOption(`Please provide option details when adding a new option`);
     }
     if (!optionDetails.name) {
       this._rejectCustomOption("Please provide option name when adding a new option");
     }
-    if (this._optionsNames.includes(optionDetails.name)) {
-      this._rejectCustomOption(`Option with name ${optionDetails.name} is already registered`);
+    if (this._optionsNames.includes(optionName)) {
+      this._rejectCustomOption(`Option with name "${optionName}" is already registered`);
     }
     if (!optionDetails.type || !["string", "number", "boolean"].includes(optionDetails.type)) {
-      this._rejectCustomOption("Please provide a valid option type: string, number, boolean");
+      this._rejectCustomOption(
+        `Option "${optionName}" with type "${optionDetails.type}" not valid. Please provide a valid option type: string, number, boolean`
+      );
     }
     if (!optionDetails.description) {
-      tracer.warn("Please provide option description when adding a new option");
+      tracer.warn(
+        `Missed description in option "${optionName}". Please provide option description when adding a new option`
+      );
       optionDetails.description = "";
     }
 

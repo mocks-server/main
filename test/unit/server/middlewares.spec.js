@@ -40,23 +40,6 @@ describe("middlewares", () => {
     sandbox.restore();
   });
 
-  describe("addCommonHeaders", () => {
-    it("should call to set encoding header", () => {
-      middlewares.addCommonHeaders({}, resMock, nextSpy);
-      expect(headerSpy.getCall(0).args[0]).toEqual("Accept-Encoding");
-    });
-
-    it("should call to set language header", () => {
-      middlewares.addCommonHeaders({}, resMock, nextSpy);
-      expect(headerSpy.getCall(1).args[0]).toEqual("Accept-Language");
-    });
-
-    it("should call to next callback", () => {
-      middlewares.addCommonHeaders({}, resMock, nextSpy);
-      expect(nextSpy.callCount).toEqual(1);
-    });
-  });
-
   describe("traceRequest", () => {
     const fooRequest = {
       method: "foo-method",

@@ -15,6 +15,7 @@ const {
   START,
   STOP,
   CHANGE_LEGACY_MOCKS,
+  CHANGE_MOCKS,
   CHANGE_SETTINGS,
   CHANGE_ALERTS,
   LOAD_LEGACY_MOCKS,
@@ -35,7 +36,7 @@ const Server = require("./server/Server");
 const LegacyMocks = require("./mocks-legacy/Mocks");
 const Settings = require("./settings/Settings");
 
-const { scopedAlertsMethods } = require("./support/helpers");
+const { scopedAlertsMethods, addEventListener } = require("./support/helpers");
 
 class Core {
   constructor(programmaticConfig) {
@@ -97,11 +98,16 @@ class Core {
 
     this._routesHandlers = new RoutesHandlers();
 
-    this._mocks = new Mocks({
-      getRouteHandlers: () => this._routesHandlers.handlers,
-      getLoadedMocks: () => this._mocksLoaders.contents,
-      getLoadedRoutes: () => this._routesLoaders.contents,
-    });
+    this._mocks = new Mocks(
+      {
+        getLoadedMocks: () => this._mocksLoaders.contents,
+        getLoadedRoutes: () => this._routesLoaders.contents,
+        getCurrentMock: () => this._settings.get("mock"),
+        getDelay: () => this._settings.get("delay"),
+        onChange: () => this._eventEmitter.emit(CHANGE_MOCKS),
+      },
+      this //To be used only by routeHandlers
+    );
 
     // TODO, remove
     this._legacyMocks = new LegacyMocks(
@@ -164,7 +170,7 @@ class Core {
     // Init settings, read command line arguments, etc.
     await this._settings.init(this._config.options);
     // Settings are ready, init all
-    await this._mocks.init();
+    await this._mocks.init(this._routesHandlers.handlers);
     await this._legacyMocks.init();
     await this._server.init();
     return this._plugins.init().then(() => {
@@ -211,34 +217,28 @@ class Core {
     return this._settings.addCustom(option);
   }
 
+  // TODO, remove legacy method
   addFixturesHandler(Handler) {
     return this._legacyMocks.addFixturesHandler(Handler);
   }
 
   // Listeners
 
-  onChangeLegacyMocks(cb) {
-    const removeCallback = () => {
-      this._eventEmitter.removeListener(CHANGE_LEGACY_MOCKS, cb);
-    };
-    this._eventEmitter.on(CHANGE_LEGACY_MOCKS, cb);
-    return removeCallback;
+  // TODO, remove legacy method
+  onChangeLegacyMocks(listener) {
+    return addEventListener(listener, CHANGE_LEGACY_MOCKS, this._eventEmitter);
   }
 
-  onChangeSettings(cb) {
-    const removeCallback = () => {
-      this._eventEmitter.removeListener(CHANGE_SETTINGS, cb);
-    };
-    this._eventEmitter.on(CHANGE_SETTINGS, cb);
-    return removeCallback;
+  onChangeMocks(listener) {
+    return addEventListener(listener, CHANGE_MOCKS, this._eventEmitter);
   }
 
-  onChangeAlerts(cb) {
-    const removeCallback = () => {
-      this._eventEmitter.removeListener(CHANGE_ALERTS, cb);
-    };
-    this._eventEmitter.on(CHANGE_ALERTS, cb);
-    return removeCallback;
+  onChangeSettings(listener) {
+    return addEventListener(listener, CHANGE_SETTINGS, this._eventEmitter);
+  }
+
+  onChangeAlerts(listener) {
+    return addEventListener(listener, CHANGE_ALERTS, this._eventEmitter);
   }
 
   // Expose Server methods and getters
@@ -253,7 +253,7 @@ class Core {
     return this._server.restart();
   }
 
-  // TODO, deprecate
+  // TODO, remove
   get serverError() {
     return this._server.error;
   }
@@ -268,10 +268,12 @@ class Core {
     return this._settings;
   }
 
+  // TODO, remove
   get behaviors() {
     return this._legacyMocks.behaviors;
   }
 
+  // TODO, remove
   get fixtures() {
     return this._legacyMocks.fixtures;
   }

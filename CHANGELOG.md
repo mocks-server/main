@@ -22,24 +22,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 ### Added
 - feat: Add new plugin for loading routes and mocks in v2 format
+- feat: Pass new method `loadRoutes` to plugins.
 ### Changed
-- refactor: Move "path" and "watch" options inside files-loader plugin
+- refactor: Move `path` and `watch` options inside files-loader plugin
 - refactor: Reorganize files and folders
 - refactor: Refactor Loaders to receive specific onLoad callback instead of full core instance
-- refactor: Refactor Config to receive a single argument with all options in an object
+- refactor: Refactor Config to receive a single argument with all options
+- refactor: Refactor Plugins to receive a single argument with all options
 ### Fixed
 ### Removed
 ### BREAKING CHANGES
-- feat: Remove deprecated options "features" and "behaviors", "path" option should be used instead.
-- feat: Remove deprecated option "feature", "behavior" option should be used instead.
-- feat: Legacy mocks defined using v1 format have to be loaded from folder defined using option "legacy-path" instead of "path", which now is used to define the folder from which load routes and mocks in v2 format. Folder defined with "legacy-path" option will not be created automatically if it is not found, and the option is not required.
-- feat: Watching files for mocks in legacy v1 format has to be disabled using "legacy-watch" option instead of "watch", which now affects only to routes and mocks in v2 format.
-- feat: "watch" option now is a standard commander boolean, so, to disable watch, argument "--no-watch" has to be provided. ("--no-legacy-watch" for legacy v1 mocks folder)
-- feat: Remove "booleanString" option type. Now only "number", "boolean" or "string" can be used.
-- feat: Remove deprecated "onLoadMocks" method, "onChangeMocks" must be used instead.
-- feat: Remove "onLoadFiles" method. There is no alternative, as it is an internal event of the files-loader plugin and it should't be used by other external pieces.
-- feat: Rename "loadMocks" plugins method to "loadLegacyMocks"
-- feat: Rename "onChangeMocks" core method to "onChangeLegacyMocks"
+- feat: Remove deprecated options `features` and `behaviors`, `path` option should be used instead.
+- feat: Remove deprecated option `feature`, `behavior` option should be used instead.
+- feat: Legacy mocks defined using v1 format have to be loaded from folder defined using option `legacy-path` instead of `path`, which now is used to define the folder from which load routes and mocks in v2 format. Folder defined with `legacy-path` option will not be created automatically if it is not found, and the option is not required.
+- feat: Watching files for mocks in legacy v1 format has to be disabled using `legacy-watch` option instead of `watch`, which now affects only to routes and mocks in v2 format.
+- feat: `watch` option now is a standard commander boolean, so, to disable watch, argument `--no-watch` has to be provided. (`--no-legacy-watch` for legacy v1 mocks folder)
+- feat: Remove `booleanString` option type. Now only `number`, `boolean` or `string` can be used.
+- feat: Remove deprecated `onLoadMocks` method, `onChangeMocks` must be used instead.
+- feat: Remove `onLoadFiles` method. There is no alternative, as it is an internal event of the files-loader plugin and it should't be used by other external pieces.
+- feat: Legacy mocks have to be loaded using plugins custom method `loadLegacyMocks`. `loadMocks` will be able to handle only v2 mocks.
+- feat: Rename `onChangeMocks` core method to `onChangeLegacyMocks`
 
 ## [1.6.0] - 2020-12-25
 

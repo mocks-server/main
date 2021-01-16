@@ -79,6 +79,38 @@ describe("Core", () => {
     });
   });
 
+  describe("Plugins callbacks", () => {
+    describe("createLegacyMocksLoader", () => {
+      it("should return a new loader", () => {
+        const FOO_LOADER = "foo";
+        loadersMocks.stubs.instance.new.returns(FOO_LOADER);
+        expect(pluginsMocks.stubs.Constructor.mock.calls[0][0].createLegacyMocksLoader()).toEqual(
+          FOO_LOADER
+        );
+      });
+    });
+
+    describe("createMocksLoader", () => {
+      it("should return a new loader", () => {
+        const FOO_LOADER = "foo";
+        loadersMocks.stubs.instance.new.returns(FOO_LOADER);
+        expect(pluginsMocks.stubs.Constructor.mock.calls[0][0].createMocksLoader()).toEqual(
+          FOO_LOADER
+        );
+      });
+    });
+
+    describe("createRoutesLoader", () => {
+      it("should return a new loader", () => {
+        const FOO_LOADER = "foo";
+        loadersMocks.stubs.instance.new.returns(FOO_LOADER);
+        expect(pluginsMocks.stubs.Constructor.mock.calls[0][0].createRoutesLoader()).toEqual(
+          FOO_LOADER
+        );
+      });
+    });
+  });
+
   describe("init method", () => {
     it("should init only once", async () => {
       await core.init();
@@ -253,7 +285,7 @@ describe("Core", () => {
     });
   });
 
-  describe("when legacyMocksLoaders load something", () => {
+  describe("when legacyMocksLoaders load", () => {
     it("should emit an event", (done) => {
       expect.assertions(1);
       core._eventEmitter.on("load:mocks:legacy", () => {
@@ -261,6 +293,28 @@ describe("Core", () => {
         done();
       });
       loadersMocks.stubs.Constructor.mock.calls[0][0].onLoad();
+    });
+  });
+
+  describe("when mocksLoaders load", () => {
+    it("should emit an event", (done) => {
+      expect.assertions(1);
+      core._eventEmitter.on("load:mocks", () => {
+        expect(true).toEqual(true);
+        done();
+      });
+      loadersMocks.stubs.Constructor.mock.calls[1][0].onLoad();
+    });
+  });
+
+  describe("when routesLoaders load", () => {
+    it("should emit an event", (done) => {
+      expect.assertions(1);
+      core._eventEmitter.on("load:routes", () => {
+        expect(true).toEqual(true);
+        done();
+      });
+      loadersMocks.stubs.Constructor.mock.calls[2][0].onLoad();
     });
   });
 

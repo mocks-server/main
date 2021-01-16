@@ -18,6 +18,8 @@ const {
   CHANGE_SETTINGS,
   CHANGE_ALERTS,
   LOAD_LEGACY_MOCKS,
+  LOAD_MOCKS,
+  LOAD_ROUTES,
 } = require("./eventNames");
 const tracer = require("./tracer");
 
@@ -37,10 +39,8 @@ class Core {
   constructor(programmaticConfig) {
     this._eventEmitter = new EventEmitter();
 
-    // TODO, refactor all pieces as the next one. They should receive callbacks
-    // They should never access directly to the full core
-    // (expect in cases where it is needed to be passed to plugins or another external pieces)
     this._alerts = new Alerts({
+      // TODO, rename into onChange
       onChangeValues: (alerts) => {
         this._eventEmitter.emit(CHANGE_ALERTS, alerts);
       },
@@ -52,20 +52,48 @@ class Core {
       },
     });
 
+    this._mocksLoaders = new Loaders({
+      onLoad: () => {
+        this._eventEmitter.emit(LOAD_MOCKS);
+      },
+    });
+
+    this._routesLoaders = new Loaders({
+      onLoad: () => {
+        this._eventEmitter.emit(LOAD_ROUTES);
+      },
+    });
+
     this._config = new Config({
       programmaticConfig,
       ...scopedAlertsMethods("config", this._alerts.add, this._alerts.remove),
     });
 
+    // TODO, refactor. Pass specific callbacks instead of objects
     this._settings = new Settings(this._eventEmitter, this._config);
 
     this._plugins = new Plugins(
-      this._config,
-      this._legacyMocksLoaders,
-      this,
-      scopedAlertsMethods("plugins", this._alerts.add, this._alerts.remove, this._alerts.rename)
+      {
+        createLegacyMocksLoader: () => {
+          return this._legacyMocksLoaders.new();
+        },
+        createMocksLoader: () => {
+          return this._mocksLoaders.new();
+        },
+        createRoutesLoader: () => {
+          return this._routesLoaders.new();
+        },
+        ...scopedAlertsMethods(
+          "plugins",
+          this._alerts.add,
+          this._alerts.remove,
+          this._alerts.rename
+        ),
+      },
+      this //To be used only by plugins
     );
 
+    // TODO, remove
     this._legacyMocks = new LegacyMocks(
       this._eventEmitter,
       this._settings,
@@ -74,6 +102,7 @@ class Core {
       scopedAlertsMethods("legacy-mocks", this._alerts.add, this._alerts.remove)
     );
 
+    // TODO, refactor. Pass specific callbacks instead of objects
     this._server = new Server(
       this._eventEmitter,
       this._settings,
@@ -82,7 +111,7 @@ class Core {
       scopedAlertsMethods("server", this._alerts.add, this._alerts.remove)
     );
 
-    // TODO, rename into eventsOrchestrator, convert into a function
+    // TODO, remove, add orchestration event listeners here
     this._orchestrator = new Orchestrator(this._eventEmitter, this._legacyMocks, this._server);
 
     this._inited = false;
@@ -117,7 +146,7 @@ class Core {
     await this._config.init(options);
     this._inited = true;
     // Register plugins, let them add their custom settings
-    await this._plugins.register();
+    await this._plugins.register(this._config.coreOptions.plugins);
     // Init settings, read command line arguments, etc.
     await this._settings.init(this._config.options);
     // Settings are ready, init all

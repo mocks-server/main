@@ -13,6 +13,8 @@ module.exports = {
   START: "start",
   STOP: "stop",
   LOAD_LEGACY_MOCKS: "load:mocks:legacy",
+  LOAD_MOCKS: "load:mocks",
+  LOAD_ROUTES: "load:routes",
   CHANGE_LEGACY_MOCKS: "change:mocks:legacy",
   CHANGE_SETTINGS: "change:settings",
   CHANGE_ALERTS: "change:alerts",

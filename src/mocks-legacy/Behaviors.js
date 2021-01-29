@@ -64,8 +64,6 @@ class Behaviors {
             `Defined behavior "${currentFailed}" was not found. The first one found was used instead`
           );
         }
-      } else {
-        this._addAlert("empty", `No behaviors found`);
       }
     }
 

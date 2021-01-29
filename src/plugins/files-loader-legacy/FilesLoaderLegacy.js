@@ -20,13 +20,12 @@ const JS_FILES_REGEXP = /\.json$/;
 const PLUGIN_NAME = "@mocks-server/core/plugin-legacy-files-loader";
 const PATH_OPTION = "pathLegacy";
 const WATCH_OPTION = "watchLegacy";
-const DEFAULT_PATH = "mocks-legacy";
 
 class FilesLoaderBase {
   constructor(core, methods, extraOptions = {}) {
     this._core = core;
     this._load = methods.loadLegacyMocks;
-    this._onAlert = methods.addAlert;
+    this._addAlert = methods.addAlert;
     this._removeAlerts = methods.removeAlerts;
     this._tracer = core.tracer;
     this._settings = this._core.settings;
@@ -36,7 +35,7 @@ class FilesLoaderBase {
       name: PATH_OPTION,
       type: "string",
       description: "Define folder from where to load legacy mocks",
-      default: DEFAULT_PATH,
+      default: null,
     });
     core.addSetting({
       name: WATCH_OPTION,
@@ -110,11 +109,13 @@ class FilesLoaderBase {
     const resolvedFolder = this._resolveFolder(pathName);
     if (!fsExtra.existsSync(resolvedFolder)) {
       this._tracer.warn(`Folder ${pathName} does not exists. Skipping legacy mocks load`);
+      this._removeAlerts("enabled");
       this._enabled = false;
       this._load([]);
       return;
     }
     this._enabled = true;
+    this._addAlert("enabled", "Legacy mocks enabled. Consider migrating them to v2 routes format");
     this._path = this._ensureFolder(resolvedFolder);
     this._tracer.info(`Loading files from legacy folder ${this._path}`);
     this._cleanRequireCacheFolder();
@@ -145,7 +146,7 @@ class FilesLoaderBase {
       this._load(this._contents);
       this._removeAlerts("load");
     } catch (error) {
-      this._onAlert("load", `Error loading files from legacy folder ${this._path}`, error);
+      this._addAlert("load", `Error loading files from legacy folder ${this._path}`, error);
     }
   }
 

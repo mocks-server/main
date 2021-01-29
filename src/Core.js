@@ -268,6 +268,10 @@ class Core {
     return this._settings;
   }
 
+  get mocks() {
+    return this._mocks;
+  }
+
   // TODO, remove
   get behaviors() {
     return this._legacyMocks.behaviors;

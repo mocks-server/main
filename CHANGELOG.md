@@ -21,9 +21,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
-- feat: Add new Mocks and Routes handler
+- feat: Add new Mocks and Routes handler, and related getters to core.
+- feat: Add `mock` option. Legacy mocks continue using `behavior` for backward compatibility
 - feat: Add new plugin for loading routes and mocks in v2 format
 - feat: Pass new method `loadRoutes` to plugins.
+- feat: Add alert when legacy behaviors are loaded.
 ### Changed
 - refactor: Move `path` and `watch` options inside files-loader plugin
 - refactor: Reorganize files and folders
@@ -33,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Improve traces when checking plugin options
 ### Fixed
 ### Removed
+- feat: Do not add `no behaviors` alert. As behaviors are legacy, it should not be considered a problem.
 ### BREAKING CHANGES
 - feat: Remove deprecated options `features` and `behaviors`, `path` option should be used instead.
 - feat: Remove deprecated option `feature`, `behavior` option should be used instead.

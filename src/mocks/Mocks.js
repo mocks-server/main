@@ -170,12 +170,16 @@ class Mocks {
     }
 
     this._currentMock = current;
-    this._currentId = id;
+    this._currentId = current && current.id;
     this._reloadRouter();
   }
 
   get current() {
     return this._currentId;
+  }
+
+  get ids() {
+    return this._mocks.map((mock) => mock.id);
   }
 }
 

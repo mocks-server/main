@@ -16,37 +16,45 @@ const { isNumber } = require("lodash");
 const inquirer = require("./Inquirer");
 const { renderHeader, renderAlert } = require("./helpers");
 
-const questions = {
+const MAIN_CHOICES = [
+  {
+    name: "Change delay",
+    value: "delay",
+  },
+  {
+    name: "Restart server",
+    value: "restart",
+  },
+  {
+    name: "Change log level",
+    value: "logLevel",
+  },
+  {
+    name: "Switch watch",
+    value: "watch",
+  },
+  {
+    name: "Display server logs",
+    value: "logs",
+  },
+  {
+    name: "Legacy: Change behavior",
+    value: "behavior",
+    isLegacy: true,
+  },
+  {
+    name: "Legacy: Switch watch",
+    value: "watch",
+    isLegacy: true,
+  },
+];
+
+const QUESTIONS = {
   main: {
     type: "list",
     message: "Select action:",
     name: "value",
-    choices: [
-      {
-        name: "Change current behavior",
-        value: "behavior",
-      },
-      {
-        name: "Change delay",
-        value: "delay",
-      },
-      {
-        name: "Restart server",
-        value: "restart",
-      },
-      {
-        name: "Change log level",
-        value: "logLevel",
-      },
-      {
-        name: "Switch watch",
-        value: "watch",
-      },
-      {
-        name: "Display server logs",
-        value: "logs",
-      },
-    ],
+    choices: MAIN_CHOICES,
   },
   logLevel: {
     type: "list",
@@ -73,6 +81,16 @@ const questions = {
   },
 };
 
+const mainChoices = (legacyMode) => {
+  return MAIN_CHOICES.filter((choice) => !(choice.isLegacy && !legacyMode));
+};
+
+const getQuestions = (legacyMode) => {
+  const questions = QUESTIONS;
+  questions.main.choices = mainChoices(legacyMode);
+  return questions;
+};
+
 const SCREENS = {
   MAIN: "main",
   BEHAVIOR: "behavior",
@@ -96,7 +114,7 @@ class Cli {
 
     this._core.addSetting({
       name: "cli",
-      type: "booleanString", // Workaround to maintain backward compaitbility with --cli=false
+      type: "boolean",
       description: "Start interactive CLI plugin",
       default: true,
     });
@@ -106,12 +124,7 @@ class Cli {
     if (!this._settings.get("cli")) {
       return Promise.resolve();
     }
-    this._questions = questions;
-    this._cli = new inquirer.Inquirer(
-      this._questions,
-      this._header.bind(this),
-      this._alertsHeader.bind(this)
-    );
+    this._cli = new inquirer.Inquirer(this._header.bind(this), this._alertsHeader.bind(this));
     this._stopListeningChangeSettings = this._core.onChangeSettings(this._onChangeSettings);
     this._inited = true;
     return Promise.resolve();
@@ -205,21 +218,35 @@ class Cli {
 
   _header() {
     const delay = this._settings.get("delay");
+    const watchEnabled = this._settings.get("watch");
+    const legacyMode = !!this._settings.get("pathLegacy");
+
+    const currentMock = this._core.mocks.current || "-";
     const behaviorsCount = this._core.behaviors.count;
     const currentBehavior = this._core.behaviors.currentId || "-";
     const currentFixtures = this._core.fixtures.count;
-    const watchEnabled = this._settings.get("watch");
-    const header = [
+
+    const headers = [
       renderHeader(`Mocks server listening at`, this._serverUrl),
+      renderHeader(`Current mock`, currentMock, currentMock === "-" ? 2 : 0),
       renderHeader(`Delay`, delay, delay > 0 ? 1 : 0),
-      renderHeader(`Behaviors`, behaviorsCount, behaviorsCount < 1 ? 2 : 0),
-      renderHeader(`Current behavior`, currentBehavior, currentBehavior === "-" ? 2 : 0),
-      renderHeader(`Current fixtures`, currentFixtures, currentFixtures < 1 ? 2 : 0),
       renderHeader(`Log level`, this._logLevel),
-      renderHeader(`Watch enabled`, watchEnabled, !!watchEnabled ? 0 : 1),
     ];
 
-    return header;
+    const legacyHeaders = legacyMode
+      ? [
+          renderHeader(`Legacy: Watch enabled`, watchEnabled, !!watchEnabled ? 0 : 1),
+          renderHeader(`Legacy: behaviors`, behaviorsCount, behaviorsCount < 1 ? 2 : 0),
+          renderHeader(
+            `Legacy: Current behavior`,
+            currentBehavior,
+            currentBehavior === "-" ? 2 : 0
+          ),
+          renderHeader(`Legacy: Current fixtures`, currentFixtures, currentFixtures < 1 ? 2 : 0),
+        ]
+      : [];
+
+    return [...headers, ...legacyHeaders];
   }
 
   _alertsHeader() {
@@ -227,6 +254,7 @@ class Cli {
   }
 
   async _displayMainMenu() {
+    this._cli.questions = getQuestions(!!this._settings.get("pathLegacy"));
     this._cli.clearScreen();
     this._cli.exitLogsMode();
     this._currentScreen = SCREENS.MAIN;

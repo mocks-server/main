@@ -34,13 +34,20 @@ const MAIN_MENU_ID = "main";
 const DEFAULT_QUIT_NAME = "Exit";
 const QUIT_ACTION_ID = "quit";
 
+const QUIT_QUESTION = {
+  name: DEFAULT_QUIT_NAME,
+  value: QUIT_ACTION_ID,
+};
+
+const exitProcess = () => process.exit();
+
 // require("events").EventEmitter.defaultMaxListeners = 100;
 
 const Inquirer = class Inquirer {
-  constructor(questions, header, alerts) {
+  constructor(header, alerts) {
     this._alertsHeader = alerts;
     this._header = header;
-    this._questions = this._initQuestions(questions);
+
     this._exitLogsMode = this._exitLogsMode.bind(this);
   }
 
@@ -50,16 +57,15 @@ const Inquirer = class Inquirer {
 
   _initQuestions(questions) {
     const clonedQuestions = cloneDeep(questions);
-    const quitQuestion = {
-      name: DEFAULT_QUIT_NAME,
-      value: QUIT_ACTION_ID,
-    };
     if (clonedQuestions[MAIN_MENU_ID] && clonedQuestions[MAIN_MENU_ID].choices) {
       clonedQuestions[MAIN_MENU_ID].choices.push(new inquirer.Separator());
-      clonedQuestions[MAIN_MENU_ID].choices.push(quitQuestion);
-      this._quit = () => process.exit();
+      clonedQuestions[MAIN_MENU_ID].choices.push(QUIT_QUESTION);
     }
     return clonedQuestions;
+  }
+
+  set questions(questions) {
+    this._questions = this._initQuestions(questions);
   }
 
   exitLogsMode() {
@@ -107,13 +113,13 @@ const Inquirer = class Inquirer {
     });
     this.removeListeners();
     if (questionKey === MAIN_MENU_ID && answers.value === QUIT_ACTION_ID) {
-      return this._quit();
+      return this.quit();
     }
     return answers.value;
   }
 
   quit() {
-    this._quit();
+    exitProcess();
   }
 
   clearScreen(opts) {

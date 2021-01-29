@@ -6,9 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
+- feat: Display current mock.
 ### Changed
+- feat: Display legacy options and menus only when core `pathLegacy` setting has value.
+- refactor: Refresh inquirer main options every time main menu is displayed.
 ### Fixed
 ### Removed
+### BREAKING CHANGE
+- Changed format of `cli` option to boolean (now `--no-cli` has to be used to disable it)
 
 ## [1.4.1] - 2020-12-25
 

@@ -12,9 +12,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const inquirer = require("inquirer");
 const autocomplete = require("inquirer-autocomplete-prompt");
-const { cloneDeep, map } = require("lodash");
+const { cloneDeep } = require("lodash");
 
-const packageInfo = require("../package.json");
 const {
   renderSectionHeader,
   renderSectionFooter,
@@ -49,10 +48,7 @@ const Inquirer = class Inquirer {
     this._header = header;
 
     this._exitLogsMode = this._exitLogsMode.bind(this);
-  }
-
-  get displayName() {
-    return packageInfo.name;
+    this._currentInquirers = new Set();
   }
 
   _initQuestions(questions) {
@@ -106,16 +102,31 @@ const Inquirer = class Inquirer {
     });
   }
 
-  async inquire(questionKey, extendProperties) {
-    const answers = await inquirer.prompt({
-      ...this._questions[questionKey],
-      ...extendProperties,
+  _resolvePreviousInquirers() {
+    this._currentInquirers.forEach((inquirerPromise) => {
+      inquirerPromise(null);
+      this._currentInquirers.delete(inquirerPromise);
     });
+  }
+
+  async inquire(questionKey, extendProperties) {
+    this._resolvePreviousInquirers();
     this.removeListeners();
-    if (questionKey === MAIN_MENU_ID && answers.value === QUIT_ACTION_ID) {
-      return this.quit();
-    }
-    return answers.value;
+    return new Promise((resolve) => {
+      this._currentInquirers.add(resolve);
+      inquirer
+        .prompt({
+          ...this._questions[questionKey],
+          ...extendProperties,
+        })
+        .then((answers) => {
+          this.removeListeners();
+          if (questionKey === MAIN_MENU_ID && answers.value === QUIT_ACTION_ID) {
+            this.quit();
+          }
+          resolve(answers.value);
+        });
+    });
   }
 
   quit() {
@@ -142,7 +153,7 @@ const Inquirer = class Inquirer {
 
   removeListeners() {
     const listeners = process.stdin.listeners(EVENT_LISTENER);
-    map(listeners, (listener) => {
+    listeners.forEach((listener) => {
       process.stdin.removeListener(EVENT_LISTENER, listener);
     });
   }

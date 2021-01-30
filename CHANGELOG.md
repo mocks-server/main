@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 ### Added
 - feat: Display current mock.
+- feat: Display menus for changing current mock.
 ### Changed
-- feat: Display legacy options and menus only when core `pathLegacy` setting has value.
+- feat: Display legacy options and menus only when core `pathLegacy` setting has value. Add toggle legacy watch menu.
 - refactor: Refresh inquirer main options every time main menu is displayed.
 ### Fixed
+- fix: Resolve previous inquirers before displaying a new one
 ### Removed
 ### BREAKING CHANGE
 - Changed format of `cli` option to boolean (now `--no-cli` has to be used to disable it)

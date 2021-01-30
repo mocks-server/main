@@ -18,6 +18,10 @@ const { renderHeader, renderAlert } = require("./helpers");
 
 const MAIN_CHOICES = [
   {
+    name: "Change current mock",
+    value: "mock",
+  },
+  {
     name: "Change delay",
     value: "delay",
   },
@@ -44,7 +48,7 @@ const MAIN_CHOICES = [
   },
   {
     name: "Legacy: Switch watch",
-    value: "watch",
+    value: "watchLegacy",
     isLegacy: true,
   },
 ];
@@ -61,6 +65,11 @@ const QUESTIONS = {
     message: "Select log level:",
     name: "value",
     choices: ["silly", "debug", "verbose", "info", "warn", "error"],
+  },
+  mock: {
+    type: "autocomplete",
+    name: "value",
+    message: "Please choose mock",
   },
   behavior: {
     type: "autocomplete",
@@ -94,6 +103,7 @@ const getQuestions = (legacyMode) => {
 const SCREENS = {
   MAIN: "main",
   BEHAVIOR: "behavior",
+  MOCK: "mock",
   DELAY: "delay",
   LOG_LEVEL: "log-level",
   LOGS: "logs",
@@ -157,7 +167,6 @@ class Cli {
     this._stopListeningChangeMocks();
     this._stopListeningChangeAlerts();
     this._settings.set("log", this._logLevel);
-    this._cli.removeListeners();
     this._cli.logsMode();
     this._cli.clearScreen({
       header: false,
@@ -167,7 +176,6 @@ class Cli {
 
   _refreshMainMenu() {
     if (this._currentScreen === SCREENS.MAIN) {
-      this._cli.removeListeners();
       return this._displayMainMenu();
     }
     return Promise.resolve();
@@ -193,11 +201,14 @@ class Cli {
         }
       }
       if (
-        newSettings.hasOwnProperty("behavior") ||
+        newSettings.hasOwnProperty("mock") ||
         newSettings.hasOwnProperty("delay") ||
         newSettings.hasOwnProperty("host") ||
         newSettings.hasOwnProperty("log") ||
-        newSettings.hasOwnProperty("watch")
+        newSettings.hasOwnProperty("watch") ||
+        // To be deprecated
+        newSettings.hasOwnProperty("watchLegacy") ||
+        newSettings.hasOwnProperty("behavior")
       ) {
         return this._refreshMainMenu();
       }
@@ -218,6 +229,7 @@ class Cli {
 
   _header() {
     const delay = this._settings.get("delay");
+    const watchLegacyEnabled = this._settings.get("watchLegacy");
     const watchEnabled = this._settings.get("watch");
     const legacyMode = !!this._settings.get("pathLegacy");
 
@@ -231,11 +243,12 @@ class Cli {
       renderHeader(`Current mock`, currentMock, currentMock === "-" ? 2 : 0),
       renderHeader(`Delay`, delay, delay > 0 ? 1 : 0),
       renderHeader(`Log level`, this._logLevel),
+      renderHeader(`Watch enabled`, watchEnabled, !!watchEnabled ? 0 : 1),
     ];
 
     const legacyHeaders = legacyMode
       ? [
-          renderHeader(`Legacy: Watch enabled`, watchEnabled, !!watchEnabled ? 0 : 1),
+          renderHeader(`Legacy: Watch enabled`, watchLegacyEnabled, !!watchLegacyEnabled ? 0 : 1),
           renderHeader(`Legacy: behaviors`, behaviorsCount, behaviorsCount < 1 ? 2 : 0),
           renderHeader(
             `Legacy: Current behavior`,
@@ -260,8 +273,8 @@ class Cli {
     this._currentScreen = SCREENS.MAIN;
     const action = await this._cli.inquire("main");
     switch (action) {
-      case "behavior":
-        return this._changeCurrentBehavior();
+      case "mock":
+        return this._changeCurrentMock();
       case "delay":
         return this._changeDelay();
       case "restart":
@@ -272,7 +285,31 @@ class Cli {
         return this._switchWatch();
       case "logs":
         return this._displayLogs();
+      // Legacy, to be removed
+      case "behavior":
+        return this._changeCurrentBehavior();
+      case "watchLegacy":
+        return this._switchWatchLegacy();
     }
+  }
+
+  async _changeCurrentMock() {
+    this._currentScreen = SCREENS.MOCK;
+    this._cli.clearScreen();
+    const mocksIds = this._core.mocks.ids;
+    if (!mocksIds.length) {
+      return this._displayMainMenu();
+    }
+    const mockId = await this._cli.inquire("mock", {
+      source: (answers, input) => {
+        if (!input || !input.length) {
+          return Promise.resolve(mocksIds);
+        }
+        return Promise.resolve(mocksIds.filter((currentMock) => currentMock.includes(input)));
+      },
+    });
+    this._settings.set("mock", mockId);
+    return this._displayMainMenu();
   }
 
   async _changeCurrentBehavior() {
@@ -313,6 +350,11 @@ class Cli {
 
   async _switchWatch() {
     this._settings.set("watch", !this._settings.get("watch"));
+    return this._displayMainMenu();
+  }
+
+  async _switchWatchLegacy() {
+    this._settings.set("watchLegacy", !this._settings.get("watchLegacy"));
     return this._displayMainMenu();
   }
 

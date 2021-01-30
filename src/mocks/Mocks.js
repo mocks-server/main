@@ -47,12 +47,25 @@ function getMockRoutes(mock, mocks, routes, nextRoutes = []) {
 }
 
 class Mocks {
-  constructor({ getLoadedMocks, getLoadedRoutes, getCurrentMock, getDelay, onChange }, core) {
+  constructor(
+    {
+      getLoadedMocks,
+      getLoadedRoutes,
+      getCurrentMock,
+      getDelay,
+      onChange,
+      addAlert,
+      removeAlerts,
+    },
+    core
+  ) {
     this._getLoadedMocks = getLoadedMocks;
     this._getLoadedRoutes = getLoadedRoutes;
     this._getCurrentMock = getCurrentMock;
     this._getDelay = getDelay;
     this._onChange = onChange;
+    this._addAlert = addAlert;
+    this._removeAlerts = removeAlerts;
     this._core = core;
 
     this._router = null;
@@ -74,6 +87,7 @@ class Mocks {
 
   _processMocks() {
     tracer.debug("Processing loaded mocks");
+    let errorsProcessing = 0;
     this._mocks = this._mocksDefinitions
       .map((mockDefinition) => {
         try {
@@ -83,12 +97,17 @@ class Mocks {
             getDelay: this._getDelay,
           });
         } catch (err) {
-          tracer.error("Error processing mocks");
+          errorsProcessing++;
+          tracer.error("Error processing mock");
           return null;
         }
       })
       .filter((mock) => !!mock);
-    this._onChange();
+    if (errorsProcessing > 0) {
+      this._addAlert("process:mocks", `${errorsProcessing} errors found while loading mocks`);
+    } else {
+      this._removeAlerts("process:mocks");
+    }
   }
 
   _processRoutes() {
@@ -134,6 +153,7 @@ class Mocks {
     this._processRoutes();
     this._processMocks();
     this.current = this._getCurrentMock();
+    this._onChange();
   }
 
   init(routesHandlers) {
@@ -147,11 +167,18 @@ class Mocks {
   set current(id) {
     tracer.verbose(`Trying to set current mock as "${id}"`);
     let current;
+    this._removeAlerts("current:settings");
     if (!id) {
       current = this._mocks[0];
       tracer.warn(`Option "mock" was not defined`);
       if (current) {
+        this._addAlert(
+          "current:settings",
+          `"mock" option was not defined. Using the first one found`
+        );
         tracer.info(`Using first found mock: "${current.id}"`);
+      } else {
+        this._addAlert("current:settings", `"mock" option was not defined`);
       }
     } else {
       current = this._mocks.find((mock) => mock.id === id);
@@ -159,14 +186,20 @@ class Mocks {
         current = this._mocks[0];
         tracer.error(`Mock "${id}" was not found`);
         if (current) {
+          this._addAlert(
+            "current:settings",
+            `Mock "${id}" was not found. Using the first one found`
+          );
           tracer.info(`Using first found mock: "${current.id}"`);
         }
       }
     }
     if (!current) {
       tracer.error(`No mocks found`);
+      this._addAlert("current:amount", "No mocks found");
     } else {
       tracer.info(`Current mock: "${current.id}"`);
+      this._removeAlerts("current:amount");
     }
 
     this._currentMock = current;

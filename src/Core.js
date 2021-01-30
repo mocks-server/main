@@ -105,6 +105,12 @@ class Core {
         getCurrentMock: () => this._settings.get("mock"),
         getDelay: () => this._settings.get("delay"),
         onChange: () => this._eventEmitter.emit(CHANGE_MOCKS),
+        ...scopedAlertsMethods(
+          "mocks",
+          this._alerts.add,
+          this._alerts.remove,
+          this._alerts.rename
+        ),
       },
       this //To be used only by routeHandlers
     );

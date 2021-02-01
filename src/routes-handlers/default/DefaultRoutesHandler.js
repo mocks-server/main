@@ -40,6 +40,15 @@ class DefaultRoutesHandler {
     }
     this._core.tracer.info(`Request ${req.method} => ${req.url} => "${this._variantId}"`);
   }
+
+  get plainResponsePreview() {
+    return isFunction(this._response)
+      ? "function"
+      : {
+          body: this._response.body,
+          status: this._response.status,
+        };
+  }
 }
 
 module.exports = DefaultRoutesHandler;

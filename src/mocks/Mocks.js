@@ -46,6 +46,10 @@ function getMockRoutes(mock, mocks, routes, nextRoutes = []) {
   return filterMockRoutes(mockRoutes, nextRoutes).concat(nextRoutes);
 }
 
+function getVariantId(routeId, variantId) {
+  return `${routeId}:${variantId}`;
+}
+
 class Mocks {
   constructor(
     {
@@ -71,14 +75,21 @@ class Mocks {
     this._router = null;
     this._mocksDefinitions = [];
     this._mocks = [];
+    this._plainMocks = [];
     this._routesDefinitions = [];
+    this._plainRoutes = [];
+    this._plainRoutesVariants = [];
     this._routes = [];
+    this._customVariants = [];
+    this._customVariantsMock = null;
 
     this.router = this.router.bind(this);
   }
 
   _reloadRouter() {
-    if (this._currentMock) {
+    if (this._customVariantsMock) {
+      this._router = this._customVariantsMock.router;
+    } else if (this._currentMock) {
       this._router = this._currentMock.router;
     } else {
       this._router = express.Router();
@@ -110,13 +121,22 @@ class Mocks {
     }
   }
 
+  _processPlainMocks() {
+    this._plainMocks = this._mocks.map((mock) => {
+      return {
+        id: mock.id,
+        routes: mock.routes.map((route) => route.variantId),
+      };
+    });
+  }
+
   _processRoutes() {
     tracer.debug("Processing loaded routes");
     this._routes = flatten(
       this._routesDefinitions.map((route) => {
         // TODO, validate and handle errors
         return route.variants.map((variant) => {
-          const variantId = `${route.id}:${variant.id}`;
+          const variantId = getVariantId(route.id, variant.id);
           const handlerId = variant.handler || DEFAULT_ROUTES_HANDLER;
           const Handler = this._routesHandlers.find(
             (routeHandler) => routeHandler.id === handlerId
@@ -124,7 +144,7 @@ class Mocks {
           const routeHandler = new Handler(
             {
               ...variant,
-              variantId: `${route.id}:${variant.id}`,
+              variantId,
               url: route.url,
               method: route.method,
             },
@@ -135,6 +155,7 @@ class Mocks {
             : route.hasOwnProperty("delay")
             ? route.delay
             : null;
+          routeHandler.id = variant.id;
           routeHandler.variantId = variantId;
           routeHandler.routeId = route.id;
           routeHandler.url = route.url;
@@ -146,12 +167,47 @@ class Mocks {
     ).filter((route) => !!route);
   }
 
+  _processPlainRoutes() {
+    this._plainRoutes = this._routesDefinitions.map((route) => {
+      return {
+        id: route.id,
+        url: route.url,
+        method: route.method,
+        delay: route.delay,
+        variants: route.variants
+          .map((variant) => {
+            const variantId = getVariantId(route.id, variant.id);
+            const variantHandler = this._routes.find((route) => route.variantId === variantId);
+            if (variantHandler) {
+              return variantId;
+            }
+          })
+          .filter((variant) => !!variant),
+      };
+    });
+  }
+
+  _processPlainRoutesVariants() {
+    this._plainRoutesVariants = this._routes.map((routeVariant) => {
+      return {
+        id: routeVariant.variantId,
+        routeId: routeVariant.routeId,
+        handler: routeVariant.constructor.id,
+        response: routeVariant.plainResponsePreview,
+        delay: routeVariant.delay,
+      };
+    });
+  }
+
   load() {
     // TODO, validate
     this._routesDefinitions = this._getLoadedRoutes();
     this._mocksDefinitions = this._getLoadedMocks();
     this._processRoutes();
+    this._processPlainRoutes();
+    this._processPlainRoutesVariants();
     this._processMocks();
+    this._processPlainMocks();
     this.current = this._getCurrentMock();
     this._onChange();
   }
@@ -204,7 +260,55 @@ class Mocks {
 
     this._currentMock = current;
     this._currentId = current && current.id;
+    this._stopUsingVariants();
     this._reloadRouter();
+  }
+
+  _stopUsingVariants() {
+    this._customVariants = [];
+    this._customVariantsMock = null;
+  }
+
+  _createCustomMock() {
+    const currentMockId = this._currentId;
+    this._customVariantsMock = new Mock({
+      id: `custom-variants:from:${currentMockId}`,
+      routes: getMockRoutes(
+        {
+          from: currentMockId,
+          routes: this._customVariants,
+        },
+        this._mocksDefinitions,
+        this._routes
+      ),
+      getDelay: this._getDelay,
+    });
+  }
+
+  restoreRouteVariants() {
+    this._stopUsingVariants();
+    this._reloadRouter();
+  }
+
+  useRouteVariant(variantId) {
+    // TODO, validate variantId
+    let inserted = false;
+    this._customVariants.forEach((customVariantId, index) => {
+      // TODO, use better method, store base id and variant id in an object to avoid conflicts with possible routes ids containing :
+      if (!inserted && customVariantId.split(":")[0] === variantId.split(":")[0]) {
+        this._customVariants.splice(index, 1, variantId);
+        inserted = true;
+      }
+    });
+    if (!inserted) {
+      this._customVariants.push(variantId);
+    }
+    this._createCustomMock();
+    this._reloadRouter();
+  }
+
+  get customRouteVariants() {
+    return [...this._customVariants];
   }
 
   get current() {
@@ -213,6 +317,18 @@ class Mocks {
 
   get ids() {
     return this._mocks.map((mock) => mock.id);
+  }
+
+  get plainMocks() {
+    return [...this._plainMocks];
+  }
+
+  get plainRoutes() {
+    return [...this._plainRoutes];
+  }
+
+  get plainRoutesVariants() {
+    return [...this._plainRoutesVariants];
   }
 }
 

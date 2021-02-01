@@ -46,6 +46,10 @@ class Mock {
     });
   }
 
+  get routes() {
+    return this._routes;
+  }
+
   get id() {
     return this._id;
   }

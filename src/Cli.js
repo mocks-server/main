@@ -22,6 +22,14 @@ const MAIN_CHOICES = [
     value: "mock",
   },
   {
+    name: "Change route variant",
+    value: "variant",
+  },
+  {
+    name: "Restore route variants",
+    value: "restoreVariants",
+  },
+  {
     name: "Change delay",
     value: "delay",
   },
@@ -75,6 +83,11 @@ const QUESTIONS = {
     type: "autocomplete",
     name: "value",
     message: "Please choose behavior",
+  },
+  variant: {
+    type: "autocomplete",
+    name: "value",
+    message: "Please choose route variant",
   },
   delay: {
     type: "input",
@@ -237,11 +250,29 @@ class Cli {
     const behaviorsCount = this._core.behaviors.count;
     const currentBehavior = this._core.behaviors.currentId || "-";
     const currentFixtures = this._core.fixtures.count;
+    const availableMocks = this._core.mocks.plainMocks.length;
+    const availableRoutes = this._core.mocks.plainRoutes.length;
+    const availableRoutesVariants = this._core.mocks.plainRoutesVariants.length;
+
+    const currentMockMessage = this._core.mocks.customRouteVariants.length
+      ? `${currentMock} (custom variants: ${this._core.mocks.customRouteVariants.join(",")})`
+      : currentMock;
 
     const headers = [
       renderHeader(`Mocks server listening at`, this._serverUrl),
-      renderHeader(`Current mock`, currentMock, currentMock === "-" ? 2 : 0),
       renderHeader(`Delay`, delay, delay > 0 ? 1 : 0),
+      renderHeader(
+        `Current mock`,
+        currentMockMessage,
+        this._core.mocks.customRouteVariants.length ? 1 : currentMock === "-" ? 2 : 0
+      ),
+      renderHeader(`Mocks`, availableMocks, availableMocks < 1 ? 2 : 0),
+      renderHeader(`Routes`, availableRoutes, availableRoutes < 1 ? 2 : 0),
+      renderHeader(
+        `Routes variants`,
+        availableRoutesVariants,
+        availableRoutesVariants < 1 ? 2 : 0
+      ),
       renderHeader(`Log level`, this._logLevel),
       renderHeader(`Watch enabled`, watchEnabled, !!watchEnabled ? 0 : 1),
     ];
@@ -275,6 +306,10 @@ class Cli {
     switch (action) {
       case "mock":
         return this._changeCurrentMock();
+      case "variant":
+        return this._changeRouteVariant();
+      case "restoreVariants":
+        return this._restoreRouteVariants();
       case "delay":
         return this._changeDelay();
       case "restart":
@@ -309,6 +344,30 @@ class Cli {
       },
     });
     this._settings.set("mock", mockId);
+    return this._displayMainMenu();
+  }
+
+  async _changeRouteVariant() {
+    this._currentScreen = SCREENS.MOCK;
+    this._cli.clearScreen();
+    const routeVariantsIds = this._core.mocks.plainRoutesVariants.map((variant) => variant.id);
+    if (!routeVariantsIds.length) {
+      return this._displayMainMenu();
+    }
+    const variantId = await this._cli.inquire("variant", {
+      source: (answers, input) => {
+        if (!input || !input.length) {
+          return Promise.resolve(routeVariantsIds);
+        }
+        return Promise.resolve(routeVariantsIds.filter((variant) => variant.includes(input)));
+      },
+    });
+    this._core.mocks.useRouteVariant(variantId);
+    return this._displayMainMenu();
+  }
+
+  async _restoreRouteVariants() {
+    this._core.mocks.restoreRouteVariants();
     return this._displayMainMenu();
   }
 

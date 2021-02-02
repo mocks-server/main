@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - refactor: Refactor Plugins to receive a single argument with all options
 - feat: Improve traces when checking plugin options
 ### Fixed
+- fix: Boolean options with default value of `true` were not working when defined as `false` in config file
 ### Removed
 - feat: Do not add `no behaviors` alert. As behaviors are legacy, it should not be considered a problem.
 ### BREAKING CHANGES

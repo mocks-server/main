@@ -18,6 +18,7 @@ class CommandLineArguments {
   constructor(defaultOptions) {
     this._options = {};
     this._optionsNames = Object.keys(defaultOptions);
+    this._booleanOptionsWithTrueDefaults = [];
     // TODO, generate initial options dynamically from Options object using the "addCustom" method
     this._commander = commander
       .option("--behavior <behavior>", "Current behavior for legacy mocks")
@@ -29,14 +30,31 @@ class CommandLineArguments {
   }
 
   init() {
-    this._options = this._commander.parse(process.argv);
+    const commanderParsed = this._commander.parse(process.argv);
+    this._options = this._optionsNames.reduce((options, optionName) => {
+      if (
+        commanderParsed[optionName] &&
+        !(
+          // Remove boolean options with true value by default, as commander always defines them explicitly as true
+          (
+            this._booleanOptionsWithTrueDefaults.includes(optionName) &&
+            commanderParsed[optionName] === true
+          )
+        )
+      ) {
+        options[optionName] = commanderParsed[optionName];
+      }
+      return options;
+    }, {});
+
     return Promise.resolve();
   }
 
   addCustom(optionDetails) {
-    const optionPrefix =
-      optionDetails.type === "boolean" && optionDetails.default === true ? "--no-" : "--";
-    const optionValueGetter = optionDetails.type === "boolean" ? "" : ` <${optionDetails.name}>`;
+    const isBoolean = optionDetails.type === "boolean";
+    const defaultIsTrue = optionDetails.default === true;
+    const optionPrefix = isBoolean && defaultIsTrue ? "--no-" : "--";
+    const optionValueGetter = isBoolean ? "" : ` <${optionDetails.name}>`;
     const optionParser = optionDetails.parse
       ? optionDetails.parse
       : optionDetails.type === "number"
@@ -49,6 +67,9 @@ class CommandLineArguments {
       optionParser
     );
     this._optionsNames.push(optionDetails.name);
+    if (isBoolean && defaultIsTrue) {
+      this._booleanOptionsWithTrueDefaults.push(optionDetails.name);
+    }
   }
 
   get options() {

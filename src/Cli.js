@@ -169,7 +169,8 @@ class Cli {
     this._stopListeningChangeMocks = this._core.onChangeMocks(this._onChangeMocks);
     this._logLevel = this._settings.get("log");
     this._silentTraces();
-    return this._displayMainMenu();
+    this._displayMainMenu();
+    return Promise.resolve();
   }
 
   stop() {

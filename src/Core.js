@@ -163,24 +163,7 @@ class Core {
 
   // Public methods
 
-  // Listeners
-
-  // TODO, remove legacy method
-  onChangeLegacyMocks(listener) {
-    return addEventListener(listener, CHANGE_LEGACY_MOCKS, this._eventEmitter);
-  }
-
-  onChangeMocks(listener) {
-    return addEventListener(listener, CHANGE_MOCKS, this._eventEmitter);
-  }
-
-  onChangeSettings(listener) {
-    return addEventListener(listener, CHANGE_SETTINGS, this._eventEmitter);
-  }
-
-  onChangeAlerts(listener) {
-    return addEventListener(listener, CHANGE_ALERTS, this._eventEmitter);
-  }
+  // Main programmatic methods
 
   async init(options) {
     if (this._inited) {
@@ -216,6 +199,25 @@ class Core {
     return this._stopPlugins().then(() => {
       this._eventEmitter.emit(STOP, this);
     });
+  }
+
+  // Listeners
+
+  // TODO, remove legacy method
+  onChangeLegacyMocks(listener) {
+    return addEventListener(listener, CHANGE_LEGACY_MOCKS, this._eventEmitter);
+  }
+
+  onChangeMocks(listener) {
+    return addEventListener(listener, CHANGE_MOCKS, this._eventEmitter);
+  }
+
+  onChangeSettings(listener) {
+    return addEventListener(listener, CHANGE_SETTINGS, this._eventEmitter);
+  }
+
+  onChangeAlerts(listener) {
+    return addEventListener(listener, CHANGE_ALERTS, this._eventEmitter);
   }
 
   // TODO, deprecate method, use addRouter

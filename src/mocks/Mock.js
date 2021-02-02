@@ -21,18 +21,18 @@ const METHODS = {
 };
 
 class Mock {
-  constructor({ id, routes, getDelay }) {
+  constructor({ id, routesVariants, getDelay }) {
     this._id = id;
-    this._routes = routes;
+    this._routesVariants = routesVariants;
     this._getDelay = getDelay;
     this._initRouter();
   }
 
   _initRouter() {
     this._router = express.Router();
-    this._routes.forEach((route) => {
-      this._router[METHODS[route.method]](route.url, (req, res, next) => {
-        const delay = route.delay !== null ? route.delay : this._getDelay();
+    this._routesVariants.forEach((routeVariant) => {
+      this._router[METHODS[routeVariant.method]](routeVariant.url, (req, res, next) => {
+        const delay = routeVariant.delay !== null ? routeVariant.delay : this._getDelay();
         if (delay > 0) {
           tracer.verbose(`Applying delay of ${delay}ms to route variant "${this._id}"`);
           setTimeout(() => {
@@ -42,12 +42,15 @@ class Mock {
           next();
         }
       });
-      this._router[METHODS[route.method]](route.url, route.middleware.bind(route));
+      this._router[METHODS[routeVariant.method]](
+        routeVariant.url,
+        routeVariant.middleware.bind(routeVariant)
+      );
     });
   }
 
-  get routes() {
-    return this._routes;
+  get routesVariants() {
+    return this._routesVariants;
   }
 
   get id() {

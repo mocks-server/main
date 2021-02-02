@@ -20,7 +20,6 @@ class AboutApi {
   constructor(core) {
     this._core = core;
     this._tracer = core.tracer;
-    this._fixtures = this._core.fixtures;
     this._router = express.Router();
     this._router.get("/", this.getAbout.bind(this));
   }

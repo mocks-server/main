@@ -14,46 +14,32 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const express = require("express");
 const Boom = require("@hapi/boom");
 
-const { PLUGIN_NAME } = require("../constants");
+const { PLUGIN_NAME } = require("./constants");
 
-class BehaviorsApi {
+class RoutesVariants {
   constructor(core) {
     this._core = core;
     this._tracer = core.tracer;
-    this._behaviors = this._core.behaviors;
     this._router = express.Router();
     this._router.get("/", this.getCollection.bind(this));
     this._router.get("/:id", this.getModel.bind(this));
   }
 
-  _parseModel(behavior) {
-    return {
-      id: behavior.id,
-      name: behavior.name, // TODO, deprecate name property
-      fixtures: behavior.fixtures.map((fixture) => fixture.id),
-      extendedFrom: behavior.extendedFrom,
-    };
-  }
-
-  _parseCollection() {
-    return this._behaviors.collection.map(this._parseModel);
-  }
-
   getCollection(req, res) {
-    this._tracer.verbose(`${PLUGIN_NAME}: Sending behaviors | ${req.id}`);
+    this._tracer.verbose(`${PLUGIN_NAME}: Sending routes variants | ${req.id}`);
     res.status(200);
-    res.send(this._parseCollection());
+    res.send(this._core.mocks.plainRoutesVariants);
   }
 
   getModel(req, res, next) {
     const id = req.params.id;
-    this._tracer.verbose(`${PLUGIN_NAME}: Sending behavior ${id} | ${req.id}`);
-    const foundBehavior = this._behaviors.collection.find((behavior) => behavior.id === id);
-    if (foundBehavior) {
+    this._tracer.verbose(`${PLUGIN_NAME}: Sending route variant ${id} | ${req.id}`);
+    const foundRoute = this._core.mocks.plainRoutesVariants.find((route) => route.id === id);
+    if (foundRoute) {
       res.status(200);
-      res.send(this._parseModel(foundBehavior));
+      res.send(foundRoute);
     } else {
-      next(Boom.notFound(`Behavior with id "${id}" was not found`));
+      next(Boom.notFound(`Route variant with id "${id}" was not found`));
     }
   }
 
@@ -62,4 +48,4 @@ class BehaviorsApi {
   }
 }
 
-module.exports = BehaviorsApi;
+module.exports = RoutesVariants;

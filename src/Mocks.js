@@ -16,44 +16,31 @@ const Boom = require("@hapi/boom");
 
 const { PLUGIN_NAME } = require("./constants");
 
-class BehaviorsApi {
+class MocksApi {
   constructor(core) {
     this._core = core;
     this._tracer = core.tracer;
-    this._behaviors = this._core.behaviors;
+    this._mocks = this._core.mocks;
     this._router = express.Router();
     this._router.get("/", this.getCollection.bind(this));
     this._router.get("/:id", this.getModel.bind(this));
   }
 
-  _parseModel(behavior) {
-    return {
-      id: behavior.id,
-      name: behavior.name, // TODO, deprecate name property
-      fixtures: behavior.fixtures.map((fixture) => fixture.id),
-      extendedFrom: behavior.extendedFrom,
-    };
-  }
-
-  _parseCollection() {
-    return this._behaviors.collection.map(this._parseModel);
-  }
-
   getCollection(req, res) {
-    this._tracer.verbose(`${PLUGIN_NAME}: Sending behaviors | ${req.id}`);
+    this._tracer.verbose(`${PLUGIN_NAME}: Sending mocks | ${req.id}`);
     res.status(200);
-    res.send(this._parseCollection());
+    res.send(this._core.mocks.plainMocks);
   }
 
   getModel(req, res, next) {
     const id = req.params.id;
-    this._tracer.verbose(`${PLUGIN_NAME}: Sending behavior ${id} | ${req.id}`);
-    const foundBehavior = this._behaviors.collection.find((behavior) => behavior.id === id);
-    if (foundBehavior) {
+    this._tracer.verbose(`${PLUGIN_NAME}: Sending mock ${id} | ${req.id}`);
+    const foundMock = this._core.mocks.plainMocks.find((mock) => mock.id === id);
+    if (foundMock) {
       res.status(200);
-      res.send(this._parseModel(foundBehavior));
+      res.send(foundMock);
     } else {
-      next(Boom.notFound(`Behavior with id "${id}" was not found`));
+      next(Boom.notFound(`Mock with id "${id}" was not found`));
     }
   }
 
@@ -62,4 +49,4 @@ class BehaviorsApi {
   }
 }
 
-module.exports = BehaviorsApi;
+module.exports = MocksApi;

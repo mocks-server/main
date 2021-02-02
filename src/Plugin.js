@@ -13,26 +13,28 @@ const express = require("express");
 const {
   DEFAULT_BASE_PATH,
   SETTINGS,
-  BEHAVIORS,
+  MOCKS,
   ABOUT,
-  FIXTURES,
+  ROUTES,
+  ROUTES_VARIANTS,
   ALERTS,
-} = require("@mocks-server/admin-api-paths");
+  LEGACY,
+} = require("./adminApiPaths");
 
 const packageInfo = require("../package.json");
 const DeprecatedApi = require("./deprecated/Api");
 
-const Settings = require("./Settings");
-const Behaviors = require("./Behaviors");
-const Alerts = require("./Alerts");
-const Fixtures = require("./Fixtures");
 const About = require("./About");
+const Settings = require("./Settings");
+const Alerts = require("./Alerts");
+const Mocks = require("./Mocks");
+const Routes = require("./Routes");
+const RoutesVariants = require("./RoutesVariants");
 
 const {
   ADMIN_API_PATH_OPTION,
   ADMIN_API_DEPRECATED_PATHS_OPTION,
   PLUGIN_NAME,
-  DEPRECATED_API_PATH,
 } = require("./constants");
 
 class Plugin {
@@ -42,10 +44,11 @@ class Plugin {
     this._settings = this._core.settings;
     this._deprecatedApi = new DeprecatedApi(core);
     this._settingsApi = new Settings(this._core);
-    this._behaviorsApi = new Behaviors(this._core);
+    this._mocksApi = new Mocks(this._core);
     this._alertsApi = new Alerts(this._core);
     this._aboutApi = new About(this._core);
-    this._fixturesApi = new Fixtures(this._core);
+    this._routesApi = new Routes(this._core);
+    this._routesVariantsApi = new RoutesVariants(this._core);
     core.addSetting({
       name: ADMIN_API_PATH_OPTION,
       type: "string",
@@ -88,11 +91,12 @@ class Plugin {
 
   _initRouter() {
     this._router = express.Router();
-    this._router.use(SETTINGS, this._settingsApi.router);
-    this._router.use(BEHAVIORS, this._behaviorsApi.router);
     this._router.use(ABOUT, this._aboutApi.router);
-    this._router.use(FIXTURES, this._fixturesApi.router);
+    this._router.use(SETTINGS, this._settingsApi.router);
     this._router.use(ALERTS, this._alertsApi.router);
+    this._router.use(MOCKS, this._mocksApi.router);
+    this._router.use(ROUTES, this._routesApi.router);
+    this._router.use(ROUTES_VARIANTS, this._routesVariantsApi.router);
   }
 
   _addDeprecatedRouter() {
@@ -101,14 +105,14 @@ class Plugin {
       this._settings.get(ADMIN_API_DEPRECATED_PATHS_OPTION) === true &&
       !this._addedDeprecatedRouter
     ) {
-      this._core.addRouter(DEPRECATED_API_PATH, this._deprecatedApi.router);
+      this._core.addRouter(LEGACY, this._deprecatedApi.router);
       this._addedDeprecatedRouter = true;
     }
   }
 
   _removeDeprecatedRouter() {
     if (this._addedDeprecatedRouter) {
-      this._core.removeRouter(DEPRECATED_API_PATH, this._deprecatedApi.router);
+      this._core.removeRouter(LEGACY, this._deprecatedApi.router);
       this._addedDeprecatedRouter = false;
     }
   }

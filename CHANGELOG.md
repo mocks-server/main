@@ -10,10 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
+- Add mocks, routes and routes-variants apis
 ### Changed
+- Move behaviors and fixtures apis to legacy folder
 ### Fixed
-- docs(readme): Add missed API resources.
 ### Removed
+- Remove deprecated api paths
 
 ## [1.5.0] - 2020-12-25
 

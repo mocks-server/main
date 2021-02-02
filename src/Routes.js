@@ -16,45 +16,30 @@ const Boom = require("@hapi/boom");
 
 const { PLUGIN_NAME } = require("./constants");
 
-class FixturesApi {
+class RoutesApi {
   constructor(core) {
     this._core = core;
     this._tracer = core.tracer;
-    this._fixtures = this._core.fixtures;
     this._router = express.Router();
     this._router.get("/", this.getCollection.bind(this));
     this._router.get("/:id", this.getModel.bind(this));
   }
 
-  _parseModel(fixture) {
-    return {
-      id: fixture.id,
-      requestMatchId: fixture.requestMatchId,
-      handler: fixture.constructor.displayName,
-      request: fixture.request,
-      response: fixture.response,
-    };
-  }
-
-  _parseCollection() {
-    return this._fixtures.collection.map(this._parseModel);
-  }
-
   getCollection(req, res) {
-    this._tracer.verbose(`${PLUGIN_NAME}: Sending fixtures | ${req.id}`);
+    this._tracer.verbose(`${PLUGIN_NAME}: Sending routes | ${req.id}`);
     res.status(200);
-    res.send(this._parseCollection());
+    res.send(this._core.mocks.plainRoutes);
   }
 
   getModel(req, res, next) {
     const id = req.params.id;
-    this._tracer.verbose(`${PLUGIN_NAME}: Sending fixture ${id} | ${req.id}`);
-    const foundFixture = this._fixtures.collection.find((fixture) => fixture.id === id);
-    if (foundFixture) {
+    this._tracer.verbose(`${PLUGIN_NAME}: Sending route ${id} | ${req.id}`);
+    const foundRoute = this._core.mocks.plainRoutes.find((route) => route.id === id);
+    if (foundRoute) {
       res.status(200);
-      res.send(this._parseModel(foundFixture));
+      res.send(foundRoute);
     } else {
-      next(Boom.notFound(`Fixture with id "${id}" was not found`));
+      next(Boom.notFound(`Route with id "${id}" was not found`));
     }
   }
 
@@ -63,4 +48,4 @@ class FixturesApi {
   }
 }
 
-module.exports = FixturesApi;
+module.exports = RoutesApi;

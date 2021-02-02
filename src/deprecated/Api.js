@@ -10,10 +10,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const express = require("express");
-const { DEFAULT_BASE_PATH } = require("@mocks-server/admin-api-paths");
+const { DEFAULT_BASE_PATH, BEHAVIORS, FIXTURES } = require("../adminApiPaths");
 
 const Behaviors = require("./Behaviors");
-const Settings = require("./Settings");
+const Fixtures = require("./Fixtures");
 
 const { DEPRECATED_API_PATH, PLUGIN_NAME } = require("../constants");
 
@@ -27,6 +27,7 @@ class Api {
 
   init() {
     const behaviorsRouter = new Behaviors(this._core).router;
+    const fixturesRouter = new Fixtures(this._core).router;
     this._router = express.Router();
     this._router.use((req, res, next) => {
       this._core.tracer.deprecationWarn(
@@ -36,9 +37,8 @@ class Api {
       next();
     });
 
-    this._router.use("/features", behaviorsRouter);
-    this._router.use("/behaviors", behaviorsRouter);
-    this._router.use("/settings", new Settings(this._core.settings, this._tracer).router);
+    this._router.use(FIXTURES, fixturesRouter);
+    this._router.use(BEHAVIORS, behaviorsRouter);
   }
 
   get router() {

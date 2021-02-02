@@ -163,6 +163,25 @@ class Core {
 
   // Public methods
 
+  // Listeners
+
+  // TODO, remove legacy method
+  onChangeLegacyMocks(listener) {
+    return addEventListener(listener, CHANGE_LEGACY_MOCKS, this._eventEmitter);
+  }
+
+  onChangeMocks(listener) {
+    return addEventListener(listener, CHANGE_MOCKS, this._eventEmitter);
+  }
+
+  onChangeSettings(listener) {
+    return addEventListener(listener, CHANGE_SETTINGS, this._eventEmitter);
+  }
+
+  onChangeAlerts(listener) {
+    return addEventListener(listener, CHANGE_ALERTS, this._eventEmitter);
+  }
+
   async init(options) {
     if (this._inited) {
       return Promise.resolve();
@@ -228,25 +247,6 @@ class Core {
     return this._legacyMocks.addFixturesHandler(Handler);
   }
 
-  // Listeners
-
-  // TODO, remove legacy method
-  onChangeLegacyMocks(listener) {
-    return addEventListener(listener, CHANGE_LEGACY_MOCKS, this._eventEmitter);
-  }
-
-  onChangeMocks(listener) {
-    return addEventListener(listener, CHANGE_MOCKS, this._eventEmitter);
-  }
-
-  onChangeSettings(listener) {
-    return addEventListener(listener, CHANGE_SETTINGS, this._eventEmitter);
-  }
-
-  onChangeAlerts(listener) {
-    return addEventListener(listener, CHANGE_ALERTS, this._eventEmitter);
-  }
-
   // Expose Server methods and getters
 
   // TODO, deprecate method, use restartServer
@@ -264,7 +264,7 @@ class Core {
     return this._server.error;
   }
 
-  // Expose child objects needed
+  // Expose child objects
 
   get alerts() {
     return this._alerts.values;

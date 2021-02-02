@@ -94,6 +94,7 @@ class Mocks {
     } else {
       this._router = express.Router();
     }
+    this._onChange();
   }
 
   _processMocks() {
@@ -209,7 +210,6 @@ class Mocks {
     this._processMocks();
     this._processPlainMocks();
     this.current = this._getCurrentMock();
-    this._onChange();
   }
 
   init(routesHandlers) {

@@ -31,36 +31,27 @@ const Mocks = require("./Mocks");
 const Routes = require("./Routes");
 const RoutesVariants = require("./RoutesVariants");
 
-const {
-  ADMIN_API_PATH_OPTION,
-  ADMIN_API_DEPRECATED_PATHS_OPTION,
-  PLUGIN_NAME,
-} = require("./constants");
+const { ADMIN_API_PATH_OPTION, PLUGIN_NAME } = require("./constants");
 
 class Plugin {
-  constructor(core) {
+  constructor(core, { addAlert }) {
     this._core = core;
     this._tracer = core.tracer;
     this._settings = this._core.settings;
-    this._deprecatedApi = new DeprecatedApi(core);
+
+    this._legacyApi = new DeprecatedApi(core, { addAlert });
     this._settingsApi = new Settings(this._core);
     this._mocksApi = new Mocks(this._core);
     this._alertsApi = new Alerts(this._core);
     this._aboutApi = new About(this._core);
     this._routesApi = new Routes(this._core);
     this._routesVariantsApi = new RoutesVariants(this._core);
+
     core.addSetting({
       name: ADMIN_API_PATH_OPTION,
       type: "string",
       description: `Api path for ${PLUGIN_NAME}`,
       default: DEFAULT_BASE_PATH,
-    });
-
-    core.addSetting({
-      name: ADMIN_API_DEPRECATED_PATHS_OPTION,
-      type: "boolean",
-      description: `Disable deprecated paths of ${PLUGIN_NAME}`,
-      default: true,
     });
 
     this._onChangeSettings = this._onChangeSettings.bind(this);
@@ -71,13 +62,12 @@ class Plugin {
   }
 
   init() {
-    this._deprecatedApi.init();
+    this._legacyApi.init();
     this._initRouter();
   }
 
   start() {
     this._stopListeningOnChangeSettings = this._core.onChangeSettings(this._onChangeSettings);
-    this._addDeprecatedRouter();
     this._addRouter();
   }
 
@@ -85,7 +75,6 @@ class Plugin {
     if (this._stopListeningOnChangeSettings) {
       this._stopListeningOnChangeSettings();
     }
-    this._removeDeprecatedRouter();
     this._removeRouter();
   }
 
@@ -97,24 +86,7 @@ class Plugin {
     this._router.use(MOCKS, this._mocksApi.router);
     this._router.use(ROUTES, this._routesApi.router);
     this._router.use(ROUTES_VARIANTS, this._routesVariantsApi.router);
-  }
-
-  _addDeprecatedRouter() {
-    this._removeDeprecatedRouter();
-    if (
-      this._settings.get(ADMIN_API_DEPRECATED_PATHS_OPTION) === true &&
-      !this._addedDeprecatedRouter
-    ) {
-      this._core.addRouter(LEGACY, this._deprecatedApi.router);
-      this._addedDeprecatedRouter = true;
-    }
-  }
-
-  _removeDeprecatedRouter() {
-    if (this._addedDeprecatedRouter) {
-      this._core.removeRouter(LEGACY, this._deprecatedApi.router);
-      this._addedDeprecatedRouter = false;
-    }
+    this._router.use(LEGACY, this._legacyApi.router);
   }
 
   _addRouter() {
@@ -131,9 +103,6 @@ class Plugin {
   }
 
   _onChangeSettings(newSettings) {
-    if (newSettings.hasOwnProperty(ADMIN_API_DEPRECATED_PATHS_OPTION)) {
-      this._addDeprecatedRouter();
-    }
     if (newSettings.hasOwnProperty(ADMIN_API_PATH_OPTION)) {
       this._addRouter();
     }

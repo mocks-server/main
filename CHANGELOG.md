@@ -12,10 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Add mocks, routes and routes-variants apis
 ### Changed
-- Move behaviors and fixtures apis to legacy folder
+- Move behaviors and fixtures apis under legacy folder
 ### Fixed
 ### Removed
 - Remove deprecated api paths
+- Remove adminApiDeprecatedPaths option.
 
 ## [1.5.0] - 2020-12-25
 

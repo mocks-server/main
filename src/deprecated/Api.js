@@ -10,19 +10,25 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const express = require("express");
-const { DEFAULT_BASE_PATH, BEHAVIORS, FIXTURES } = require("@mocks-server/admin-api-paths");
+const {
+  DEFAULT_BASE_PATH,
+  BEHAVIORS,
+  FIXTURES,
+  LEGACY,
+} = require("@mocks-server/admin-api-paths");
 
 const Behaviors = require("./Behaviors");
 const Fixtures = require("./Fixtures");
 
-const { DEPRECATED_API_PATH, PLUGIN_NAME } = require("../constants");
+const { PLUGIN_NAME } = require("../constants");
 
 // TODO, deprecate mocks router
 
 class Api {
-  constructor(core) {
+  constructor(core, { addAlert }) {
     this._core = core;
     this._tracer = core.tracer;
+    this._addAlert = addAlert;
   }
 
   init() {
@@ -30,13 +36,10 @@ class Api {
     const fixturesRouter = new Fixtures(this._core).router;
     this._router = express.Router();
     this._router.use((req, res, next) => {
-      this._core.tracer.deprecationWarn(
-        `"${DEPRECATED_API_PATH}" ${PLUGIN_NAME} path`,
-        DEFAULT_BASE_PATH
-      );
+      this._addAlert("legacy", `Detected usage of deprecated api path "${LEGACY}"`);
+      this._core.tracer.deprecationWarn(`"${LEGACY}" ${PLUGIN_NAME} path`, DEFAULT_BASE_PATH);
       next();
     });
-
     this._router.use(FIXTURES, fixturesRouter);
     this._router.use(BEHAVIORS, behaviorsRouter);
   }

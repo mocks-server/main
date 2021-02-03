@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [2.0.0-beta.1] - 2021-02-03
+
+### Added
+- feat: Add mocks, routes and routes-variants paths
+- feat: Add legacy path
+
 ## [1.1.0] - 2020-12-25
 
 ### Added

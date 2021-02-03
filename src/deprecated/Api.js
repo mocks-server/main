@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const express = require("express");
-const { DEFAULT_BASE_PATH, BEHAVIORS, FIXTURES } = require("../adminApiPaths");
+const { DEFAULT_BASE_PATH, BEHAVIORS, FIXTURES } = require("@mocks-server/admin-api-paths");
 
 const Behaviors = require("./Behaviors");
 const Fixtures = require("./Fixtures");

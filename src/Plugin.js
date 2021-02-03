@@ -19,7 +19,7 @@ const {
   ROUTES_VARIANTS,
   ALERTS,
   LEGACY,
-} = require("./adminApiPaths");
+} = require("@mocks-server/admin-api-paths");
 
 const packageInfo = require("../package.json");
 const DeprecatedApi = require("./deprecated/Api");

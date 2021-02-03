@@ -123,10 +123,10 @@ describe("Behaviors", () => {
       FilesLoaderMocks.contents = originalFilesLoaderContents;
     });
 
-    it("should add an alert", async () => {
+    it("should not add an alert", async () => {
       await behaviors.init(fixturesHandler, allFixturesInstance);
       await behaviors.process();
-      expect(callbacks.addAlert.calledWith("empty", "No behaviors found")).toEqual(true);
+      expect(callbacks.addAlert.callCount).toEqual(0);
     });
   });
 

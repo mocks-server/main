@@ -14,7 +14,7 @@ const commander = require("commander");
 
 const CommandLineArguments = require("../../../src/settings/CommandLineArguments");
 
-describe("options", () => {
+describe("command line arguments", () => {
   const DEFAULT_OPTIONS = {
     behavior: null,
     delay: 0,
@@ -169,6 +169,38 @@ describe("options", () => {
         });
         commandLineArguments.addCustom(option);
         await commandLineArguments.init();
+      });
+
+      it("should not return the option value if default value is true and commander returns true", async () => {
+        expect.assertions(1);
+        const option = {
+          name: "foo",
+          description: "foo description",
+          type: "boolean",
+          default: true,
+        };
+        commandLineArguments.addCustom(option);
+        parseStub.returns({
+          foo: true,
+        });
+        await commandLineArguments.init();
+        expect(commandLineArguments.options.foo).toBeUndefined();
+      });
+
+      it("should return the option value if default value is true and commander returns false", async () => {
+        expect.assertions(1);
+        const option = {
+          name: "foo",
+          description: "foo description",
+          type: "boolean",
+          default: true,
+        };
+        commandLineArguments.addCustom(option);
+        parseStub.returns({
+          foo: false,
+        });
+        await commandLineArguments.init();
+        expect(commandLineArguments.options.foo).toEqual(false);
       });
     });
 

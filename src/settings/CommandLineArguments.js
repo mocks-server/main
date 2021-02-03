@@ -33,7 +33,7 @@ class CommandLineArguments {
     const commanderParsed = this._commander.parse(process.argv);
     this._options = this._optionsNames.reduce((options, optionName) => {
       if (
-        commanderParsed[optionName] &&
+        commanderParsed.hasOwnProperty(optionName) &&
         !(
           // Remove boolean options with true value by default, as commander always defines them explicitly as true
           (

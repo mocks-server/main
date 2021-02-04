@@ -11,6 +11,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const express = require("express");
 
+const filterPluginAlerts = (alerts) =>
+  alerts.filter(
+    (alert) =>
+      alert.context.indexOf("plugins") === 0 && !alert.context.includes("@mocks-server/core")
+  );
+
 const {
   startCore,
   stopCore,
@@ -111,8 +117,8 @@ describe("plugins", () => {
           expect(response).toEqual(FOO_CUSTOM_RESPONSE);
         });
 
-        it("should have added two alerts", async () => {
-          expect(core.alerts).toEqual([
+        it("should have added two plugin alerts", async () => {
+          expect(filterPluginAlerts(core.alerts)).toEqual([
             {
               // Plugin displayName is still not available in register method
               // It should have been renamed when start alert is received using a different context
@@ -152,7 +158,7 @@ describe("plugins", () => {
         });
 
         it("should have removed all alerts", async () => {
-          expect(core.alerts).toEqual([]);
+          expect(filterPluginAlerts(core.alerts)).toEqual([]);
         });
       });
     });
@@ -181,7 +187,7 @@ describe("plugins", () => {
         });
 
         it("should have added two alerts", async () => {
-          expect(core.alerts).toEqual([
+          expect(filterPluginAlerts(core.alerts)).toEqual([
             {
               // Plugin displayName is still not available in register method
               // It should have been renamed when start alert is received using a different context

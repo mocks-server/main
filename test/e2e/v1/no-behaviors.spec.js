@@ -33,8 +33,15 @@ describe("with no behaviors", () => {
     expect(core.behaviors.count).toEqual(0);
   });
 
-  it("should have an alert", async () => {
-    expect(core.alerts.length).toEqual(1);
-    expect(core.alerts[0].message).toEqual("No behaviors found");
+  it("should have added alerts about legacy enabled and no mocks v2", async () => {
+    expect(core.alerts.length).toEqual(4);
+    expect(core.alerts[0].context).toEqual(
+      "plugins:@mocks-server/core/plugin-legacy-files-loader:enabled"
+    );
+    expect(core.alerts[1].message).toEqual('"mock" option was not defined');
+    expect(core.alerts[2].message).toEqual("No mocks found");
+    expect(core.alerts[3].context).toEqual(
+      "plugins:@mocks-server/core/plugin-files-loader:load:mocks"
+    );
   });
 });

@@ -119,6 +119,10 @@ describe("FilesLoader", () => {
     });
 
     it("should remove alerts when mocks file loads successfully", async () => {
+      filesLoader = new FilesLoader(coreInstance, pluginMethods, {
+        requireCache,
+        require: () => [],
+      });
       const mocksFile = path.resolve(__dirname, "mocks.json");
       sandbox.stub(path, "resolve").returns(mocksFile);
       await filesLoader.init();
@@ -126,6 +130,10 @@ describe("FilesLoader", () => {
     });
 
     it("should call to loadMocks method when mocks file is loaded", async () => {
+      filesLoader = new FilesLoader(coreInstance, pluginMethods, {
+        requireCache,
+        require: () => [],
+      });
       const mocksFile = path.resolve(__dirname, "mocks.json");
       sandbox.stub(path, "resolve").returns(mocksFile);
       await filesLoader.init();

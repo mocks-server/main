@@ -34,6 +34,7 @@ class FilesLoaderBase {
     this._tracer = core.tracer;
     this._settings = this._core.settings;
     this._customRequireCache = extraOptions.requireCache;
+    this._require = extraOptions.require || require;
 
     core.addSetting({
       name: "path",
@@ -135,7 +136,7 @@ class FilesLoaderBase {
       const routes = flatten(
         routeFiles.map((filePath) => {
           // TODO, validate basic routes structure, add warning for not valid routes
-          return require(filePath);
+          return this._require(filePath);
         })
       );
       this._loadRoutes(routes);
@@ -149,7 +150,7 @@ class FilesLoaderBase {
   _loadMocksFile() {
     const mocksFile = path.resolve(this._path, `${MOCKS_FILE}.js`);
     try {
-      const mocks = require(mocksFile);
+      const mocks = this._require(mocksFile);
       // TODO, validate mocks, add warning for not valid mocks
       this._loadMocks(mocks);
       this._tracer.silly(`Loaded mocks from file ${mocksFile}`);

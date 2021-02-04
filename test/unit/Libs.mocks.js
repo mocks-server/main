@@ -18,6 +18,7 @@ jest.mock("node-watch");
 const express = require("express");
 const watch = require("node-watch");
 const fsExtra = require("fs-extra");
+const globule = require("globule");
 
 class CallBackRunner {
   constructor() {
@@ -88,6 +89,9 @@ class Mock {
       express: {
         use: this._sandbox.stub(),
         options: this._sandbox.stub(),
+      },
+      globule: {
+        find: this._sandbox.stub(globule, "find"),
       },
       http: {
         createServer: {

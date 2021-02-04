@@ -71,6 +71,8 @@ describe("FilesLoader", () => {
     coreMocks = new CoreMocks();
     libsMocks = new LibsMocks();
     pluginMethods = {
+      loadRoutes: sandbox.stub(),
+      loadMocks: sandbox.stub(),
       loadLegacyMocks: sandbox.stub(),
       addAlert: sandbox.stub(),
       removeAlerts: sandbox.stub(),
@@ -82,6 +84,7 @@ describe("FilesLoader", () => {
     sandbox.stub(path, "isAbsolute").returns(true);
     coreInstance.settings.get.withArgs("path").returns("foo-path");
     libsMocks.stubs.fsExtra.existsSync.returns(true);
+    libsMocks.stubs.globule.find.returns([]);
   });
 
   afterEach(async () => {
@@ -96,7 +99,40 @@ describe("FilesLoader", () => {
       expect(filesLoader.displayName).toEqual("@mocks-server/core/plugin-files-loader");
     });
 
-    it("should not throw and add an alert if there is an error loading files", async () => {
+    it("should require all files from mocks folders calculating it from cwd if path is not absolute", async () => {
+      path.isAbsolute.returns(false);
+      await filesLoader.init();
+      expect(libsMocks.stubs.fsExtra.ensureDirSync.getCall(0).args[0]).toEqual(
+        path.resolve(process.cwd(), "foo-path")
+      );
+    });
+
+    it("should not throw and add an alert if there is an error loading route files", async () => {
+      libsMocks.stubs.globule.find.returns(["foo"]);
+      await filesLoader.init();
+      expect(pluginMethods.addAlert.calledWith("load:routes")).toEqual(true);
+    });
+
+    it("should not throw and add an alert if there is an error loading mocks file", async () => {
+      await filesLoader.init();
+      expect(pluginMethods.addAlert.calledWith("load:mocks")).toEqual(true);
+    });
+
+    it("should remove alerts when mocks file loads successfully", async () => {
+      const mocksFile = path.resolve(__dirname, "mocks.json");
+      sandbox.stub(path, "resolve").returns(mocksFile);
+      await filesLoader.init();
+      expect(pluginMethods.removeAlerts.calledWith("load:mocks")).toEqual(true);
+    });
+
+    it("should call to loadMocks method when mocks file is loaded", async () => {
+      const mocksFile = path.resolve(__dirname, "mocks.json");
+      sandbox.stub(path, "resolve").returns(mocksFile);
+      await filesLoader.init();
+      expect(pluginMethods.loadMocks.callCount).toEqual(1);
+    });
+
+    it("should not throw and add an alert if there is an error in loadRoutesfiles method", async () => {
       coreInstance.tracer.silly.throws(new Error());
       await filesLoader.init();
       expect(pluginMethods.addAlert.calledWith("load:routes")).toEqual(true);
@@ -169,6 +205,18 @@ describe("FilesLoader", () => {
     });
   });
 
+  describe("when a file is changed", () => {
+    it("should load files again", async () => {
+      sandbox.stub(filesLoader, "_loadFiles");
+      coreInstance.settings.get.withArgs("watch").returns(true);
+      await filesLoader.init();
+      await filesLoader.start();
+      libsMocks.stubs.watch.getCall(0).args[2]();
+      await wait();
+      expect(filesLoader._loadFiles.callCount).toEqual(2);
+    });
+  });
+
   describe("when core settings change", () => {
     it("should enable watch again if path setting is changed", async () => {
       coreInstance.settings.get.withArgs("watch").returns(true);
@@ -191,6 +239,18 @@ describe("FilesLoader", () => {
       });
       await wait();
       expect(libsMocks.stubs.watchClose.callCount).toEqual(1);
+    });
+
+    it("should do nothing when no path nor watch are modified", async () => {
+      sandbox.stub(filesLoader, "_loadFiles");
+      await filesLoader.init();
+      await filesLoader.start();
+      coreInstance.onChangeSettings.getCall(0).args[0]({
+        foo: "foo",
+      });
+      await wait();
+      expect(filesLoader._loadFiles.callCount).toEqual(1);
+      expect(libsMocks.stubs.watch.callCount).toEqual(0);
     });
   });
 });

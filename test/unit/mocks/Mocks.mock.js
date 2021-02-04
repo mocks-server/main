@@ -23,6 +23,7 @@ class Mock {
     this._stubs = {
       current: CURRENT,
       load: this._sandbox.stub(),
+      init: this._sandbox.stub(),
     };
 
     Mocks.mockImplementation(() => this._stubs);

@@ -9,13 +9,21 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const express = require("express");
-const { flatten } = require("lodash");
 const tracer = require("../tracer");
-
-const Mock = require("./Mock");
-const { getVariantId, getMockRoutesVariants } = require("./helpers");
+const { flatten } = require("lodash");
 
 const DEFAULT_ROUTES_HANDLER = "default";
+
+const Mock = require("./Mock");
+const {
+  getVariantId,
+  getMockRoutesVariants,
+  getPlainMocks,
+  getPlainRoutes,
+  getPlainRoutesVariants,
+  addCustomVariant,
+  getMocksIds,
+} = require("./helpers");
 
 class Mocks {
   constructor(
@@ -86,21 +94,13 @@ class Mocks {
           return null;
         }
       })
+      // TODO, move to a helper
       .filter((mock) => !!mock);
     if (errorsProcessing > 0) {
       this._addAlert("process:mocks", `${errorsProcessing} errors found while loading mocks`);
     } else {
       this._removeAlerts("process:mocks");
     }
-  }
-
-  _processPlainMocks() {
-    this._plainMocks = this._mocks.map((mock) => {
-      return {
-        id: mock.id,
-        routesVariants: mock.routesVariants.map((routeVariant) => routeVariant.variantId),
-      };
-    });
   }
 
   _processRoutes() {
@@ -140,49 +140,16 @@ class Mocks {
     ).filter((route) => !!route);
   }
 
-  _processPlainRoutes() {
-    this._plainRoutes = this._routesDefinitions.map((route) => {
-      return {
-        id: route.id,
-        url: route.url,
-        method: route.method,
-        delay: route.delay,
-        variants: route.variants
-          .map((variant) => {
-            const variantId = getVariantId(route.id, variant.id);
-            const variantHandler = this._routesVariants.find(
-              (routeVariant) => routeVariant.variantId === variantId
-            );
-            if (variantHandler) {
-              return variantId;
-            }
-          })
-          .filter((variant) => !!variant),
-      };
-    });
-  }
-
-  _processPlainRoutesVariants() {
-    this._plainRoutesVariants = this._routesVariants.map((routeVariant) => {
-      return {
-        id: routeVariant.variantId,
-        routeId: routeVariant.routeId,
-        handler: routeVariant.constructor.id,
-        response: routeVariant.plainResponsePreview,
-        delay: routeVariant.delay,
-      };
-    });
-  }
-
   load() {
     // TODO, validate
     this._routesDefinitions = this._getLoadedRoutes();
     this._mocksDefinitions = this._getLoadedMocks();
     this._processRoutes();
-    this._processPlainRoutes();
-    this._processPlainRoutesVariants();
     this._processMocks();
-    this._processPlainMocks();
+    this._mocksIds = getMocksIds(this._mocks);
+    this._plainRoutes = getPlainRoutes(this._routesDefinitions);
+    this._plainRoutesVariants = getPlainRoutesVariants(this._routesVariants);
+    this._plainMocks = getPlainMocks(this._mocks);
     this.current = this._getCurrentMock();
   }
 
@@ -266,17 +233,7 @@ class Mocks {
 
   useRouteVariant(variantId) {
     // TODO, validate variantId
-    let inserted = false;
-    this._customVariants.forEach((customVariantId, index) => {
-      // TODO, use better method, store base id and variant id in an object to avoid conflicts with possible routes ids containing :
-      if (!inserted && customVariantId.split(":")[0] === variantId.split(":")[0]) {
-        this._customVariants.splice(index, 1, variantId);
-        inserted = true;
-      }
-    });
-    if (!inserted) {
-      this._customVariants.push(variantId);
-    }
+    this._customVariants = addCustomVariant(variantId, this._customVariants);
     this._createCustomMock();
     this._reloadRouter();
   }
@@ -290,7 +247,7 @@ class Mocks {
   }
 
   get ids() {
-    return this._mocks.map((mock) => mock.id);
+    return [...this._mocksIds];
   }
 
   get plainMocks() {

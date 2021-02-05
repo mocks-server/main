@@ -1,18 +1,35 @@
-function filterMockRoutesVariants(mockRoutesVariants, nextRoutesVariants) {
-  return mockRoutesVariants.filter((mockRouteVariant) => {
-    return !nextRoutesVariants.find((nextRouteVariant) => {
-      return mockRouteVariant.routeId === nextRouteVariant.routeId;
-    });
+function findEqualRouteVariant(routesVariants, routeVariantToFind) {
+  return routesVariants.find((routeVariant) => {
+    return routeVariant.routeId === routeVariantToFind.routeId;
   });
 }
 
-function getMockRoutesVariants(mock, mocks, routesVariants, nextRoutesVariants = []) {
+function addMockRoutesVariants(mockRoutesVariants, routesVariantsToAdd) {
+  const replacedMocksRoutesVariants = mockRoutesVariants.reduce((result, mockRouteVariant) => {
+    const routesVariantToReplace = findEqualRouteVariant(routesVariantsToAdd, mockRouteVariant);
+    result.push(routesVariantToReplace || mockRouteVariant);
+    return result;
+  }, []);
+
+  routesVariantsToAdd.forEach((routeVariantToAdd) => {
+    const hasBeenReplaced = !!findEqualRouteVariant(
+      replacedMocksRoutesVariants,
+      routeVariantToAdd
+    );
+    if (!hasBeenReplaced) {
+      replacedMocksRoutesVariants.push(routeVariantToAdd);
+    }
+  });
+  return replacedMocksRoutesVariants;
+}
+
+function getMockRoutesVariants(mock, mocks, routesVariants, routesVariantsToAdd = []) {
   const mockRoutesVariants = mock.routesVariants
     .map((routeId) => {
       const mockRoute = routesVariants.find((routeVariant) => routeVariant.variantId === routeId);
-      if (!mockRoute) {
+      /* if (!mockRoute) {
         // TODO, add alert
-      }
+      } */
       return mockRoute;
     })
     .filter((route) => !!route);
@@ -22,19 +39,85 @@ function getMockRoutesVariants(mock, mocks, routesVariants, nextRoutesVariants =
       from,
       mocks,
       routesVariants,
-      filterMockRoutesVariants(mockRoutesVariants, nextRoutesVariants).concat(nextRoutesVariants)
+      addMockRoutesVariants(mockRoutesVariants, routesVariantsToAdd)
     );
   }
-  return filterMockRoutesVariants(mockRoutesVariants, nextRoutesVariants).concat(
-    nextRoutesVariants
-  );
+  return addMockRoutesVariants(mockRoutesVariants, routesVariantsToAdd);
 }
 
 function getVariantId(routeId, variantId) {
   return `${routeId}:${variantId}`;
 }
 
+function getPlainMocks(mocks) {
+  return mocks.map((mock) => {
+    return {
+      id: mock.id,
+      routesVariants: mock.routesVariants.map((routeVariant) => routeVariant.variantId),
+    };
+  });
+}
+
+function getPlainRoutes(routes) {
+  return routes.map((route) => {
+    return {
+      id: route.id,
+      url: route.url,
+      method: route.method,
+      delay: route.delay,
+      variants: route.variants
+        .map((variant) => {
+          const variantId = getVariantId(route.id, variant.id);
+          const variantHandler = this._routesVariants.find(
+            (routeVariant) => routeVariant.variantId === variantId
+          );
+          if (variantHandler) {
+            return variantId;
+          }
+        })
+        .filter((variant) => !!variant),
+    };
+  });
+}
+
+function getPlainRoutesVariants(routesVariants) {
+  return routesVariants.map((routeVariant) => {
+    return {
+      id: routeVariant.variantId,
+      routeId: routeVariant.routeId,
+      handler: routeVariant.constructor.id,
+      response: routeVariant.plainResponsePreview,
+      delay: routeVariant.delay,
+    };
+  });
+}
+
+function addCustomVariant(variantId, customVariants) {
+  const newCustomVariants = [...customVariants];
+  let inserted = false;
+  newCustomVariants.forEach((customVariantId, index) => {
+    // TODO, use better method, store base id and variant id in an object to avoid conflicts with possible routes ids containing :
+    if (!inserted && customVariantId.split(":")[0] === variantId.split(":")[0]) {
+      newCustomVariants.splice(index, 1, variantId);
+      inserted = true;
+    }
+  });
+  if (!inserted) {
+    newCustomVariants.push(variantId);
+  }
+  return newCustomVariants;
+}
+
+function getMocksIds(mocks) {
+  return mocks.map((mock) => mock.id);
+}
+
 module.exports = {
   getMockRoutesVariants,
   getVariantId,
+  getPlainMocks,
+  getPlainRoutes,
+  getPlainRoutesVariants,
+  addCustomVariant,
+  getMocksIds,
 };

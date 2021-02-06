@@ -68,7 +68,8 @@
     "request-promise": "4.2.6",
     "sinon": "9.2.0",
     "strip-ansi": "6.0.0",
-    "tree-kill-sync": "1.0.0"
+    "tree-kill-sync": "1.0.0",
+    "wait-on": "5.2.1"
   },
   "lint-staged": {
     "src/**/*.js": "eslint",

@@ -9,8 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const fsExtra = require("fs-extra");
-const { CliRunner, request, fixturesFolder, wait } = require("./support/helpers");
+const { CliRunner, request, wait } = require("./support/helpers");
 
 describe("with no path defined", () => {
   const binaryPath = "./starter";
@@ -34,9 +33,5 @@ describe("with no path defined", () => {
       simple: false,
     });
     expect(usersResponse.statusCode).toEqual(404);
-  });
-
-  it.skip("should have created a mocks folder", async () => {
-    expect(fsExtra.existsSync(fixturesFolder("mocks"))).toEqual(true);
   });
 });

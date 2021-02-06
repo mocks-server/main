@@ -11,6 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const path = require("path");
 
 const crossFetch = require("cross-fetch");
+const waitOn = require("wait-on");
 
 const { Core } = require("../../../../index");
 const MocksRunner = require("./MocksRunner");
@@ -59,13 +60,17 @@ const stopCore = (core) => {
   return core.stop();
 };
 
+const serverUrl = (port) => {
+  return `http://localhost:${port || SERVER_PORT}`;
+};
+
 const fetch = (uri, options = {}) => {
   const requestOptions = {
     ...defaultRequestOptions,
     ...options,
   };
 
-  return crossFetch(`http://localhost:${options.port || SERVER_PORT}${uri}`, {
+  return crossFetch(`${serverUrl(options.port)}${uri}`, {
     ...requestOptions,
   }).then((res) => {
     return res.json().then((processedRes) => ({ body: processedRes, status: res.status }));
@@ -99,6 +104,10 @@ const wait = (time = 1000) => {
   });
 };
 
+const waitForServer = (port) => {
+  return waitOn({ resources: [`tcp:localhost:${port || SERVER_PORT}`] });
+};
+
 const mocksRunner = (args = [], binary = DEFAULT_BINARY_PATH) => {
   const argsToSend = [...args];
   argsToSend.unshift(binary);
@@ -113,5 +122,6 @@ module.exports = {
   MocksRunner,
   mocksRunner,
   wait,
+  waitForServer,
   fixturesFolder,
 };

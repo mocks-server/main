@@ -9,14 +9,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const fsExtra = require("fs-extra");
-const { mocksRunner, fetch, fixturesFolder, wait } = require("./support/helpers");
+const { mocksRunner, fetch, fixturesFolder, waitForServer } = require("./support/helpers");
 
 describe("with no path defined", () => {
   let mocks;
 
   beforeAll(async () => {
     mocks = mocksRunner();
-    await wait();
+    await waitForServer();
   });
 
   afterAll(async () => {
@@ -28,7 +28,7 @@ describe("with no path defined", () => {
     expect(users.status).toEqual(404);
   });
 
-  it.skip("should have created a mocks folder", async () => {
+  it("should have created a mocks folder", async () => {
     expect(fsExtra.existsSync(fixturesFolder("mocks"))).toEqual(true);
   });
 });

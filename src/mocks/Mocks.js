@@ -200,7 +200,7 @@ class Mocks {
     }
 
     this._currentMock = current;
-    this._currentId = current && current.id;
+    this._currentId = (current && current.id) || null;
     this._stopUsingVariants();
     this._reloadRouter();
   }

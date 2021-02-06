@@ -98,7 +98,7 @@ class Mock {
       express: {
         use: this._sandbox.stub(),
         options: this._sandbox.stub(),
-        Router: this._sandbox.stub().returns(expressRouterStub),
+        Router: express.Router,
       },
       globule: {
         find: this._sandbox.stub(globule, "find"),

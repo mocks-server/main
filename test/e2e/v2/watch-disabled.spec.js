@@ -15,14 +15,14 @@ describe("when files watch is disabled", () => {
   let mocks;
 
   beforeAll(async () => {
-    await fsExtra.remove(fixturesFolder("files-watch"));
-    await fsExtra.copy(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
-    mocks = mocksRunner(["--path=files-watch", "--no-watch"]);
+    await fsExtra.remove(fixturesFolder("temp"));
+    await fsExtra.copy(fixturesFolder("web-tutorial"), fixturesFolder("temp"));
+    mocks = mocksRunner(["--path=temp", "--no-watch"]);
     await waitForServer();
   });
 
   afterAll(async () => {
-    await fsExtra.remove(fixturesFolder("files-watch"));
+    await fsExtra.remove(fixturesFolder("temp"));
     await mocks.kill();
   });
 
@@ -38,7 +38,7 @@ describe("when files watch is disabled", () => {
 
   describe("When files are modified", () => {
     beforeAll(async () => {
-      await fsExtra.copy(fixturesFolder("web-tutorial-modified"), fixturesFolder("files-watch"));
+      await fsExtra.copy(fixturesFolder("web-tutorial-modified"), fixturesFolder("temp"));
       await wait(4000);
     });
 

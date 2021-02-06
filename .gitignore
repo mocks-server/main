@@ -12,7 +12,7 @@
 /mocks-legacy
 /test/e2e/v1/fixtures/files-watch
 /test/e2e/v1/fixtures/mocks
-/test/e2e/v2/fixtures/files-watch
+/test/e2e/v2/fixtures/temp
 /test/e2e/v2/fixtures/mocks
 /test/e2e/v2/fixtures/unexistant
 /testing.js

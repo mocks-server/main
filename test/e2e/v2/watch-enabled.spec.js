@@ -21,14 +21,14 @@ describe("when files watch is enabled", () => {
   let mocks;
 
   beforeAll(async () => {
-    await fsExtra.remove(fixturesFolder("files-watch"));
-    await fsExtra.copy(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
-    mocks = mocksRunner(["--path=files-watch"]);
+    await fsExtra.remove(fixturesFolder("temp"));
+    await fsExtra.copy(fixturesFolder("web-tutorial"), fixturesFolder("temp"));
+    mocks = mocksRunner(["--path=temp"]);
     await waitForServer();
   });
 
   afterAll(async () => {
-    await fsExtra.remove(fixturesFolder("files-watch"));
+    await fsExtra.remove(fixturesFolder("temp"));
     await mocks.kill();
   });
 
@@ -44,7 +44,7 @@ describe("when files watch is enabled", () => {
 
   describe("When files are modified", () => {
     it("should serve users modified in /api/users path", async () => {
-      await fsExtra.copy(fixturesFolder("web-tutorial-modified"), fixturesFolder("files-watch"));
+      await fsExtra.copy(fixturesFolder("web-tutorial-modified"), fixturesFolder("temp"));
       await waitForServerUrl("/api/new-users");
       const users = await fetch("/api/users");
       expect(users.body).toEqual([

@@ -11,13 +11,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const fsExtra = require("fs-extra");
 const { mocksRunner, fetch, waitForServer, fixturesFolder, wait } = require("./support/helpers");
 
-describe("when using config file", () => {
+describe("when adding plugins in config file", () => {
   let mocks;
 
   describe("When started", () => {
     beforeAll(async () => {
-      await fsExtra.remove(fixturesFolder("files-watch"));
-      await fsExtra.copy(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
+      await fsExtra.remove(fixturesFolder("temp"));
+      await fsExtra.copy(fixturesFolder("web-tutorial"), fixturesFolder("temp"));
       mocks = mocksRunner([], {
         cwd: fixturesFolder("config-file-with-plugins"),
       });
@@ -25,7 +25,7 @@ describe("when using config file", () => {
     });
 
     afterAll(async () => {
-      await fsExtra.remove(fixturesFolder("files-watch"));
+      await fsExtra.remove(fixturesFolder("temp"));
       await mocks.kill();
     });
 
@@ -62,7 +62,7 @@ describe("when using config file", () => {
     });
 
     it("should reload mocks when files are modified", async () => {
-      await fsExtra.copy(fixturesFolder("web-tutorial-modified"), fixturesFolder("files-watch"));
+      await fsExtra.copy(fixturesFolder("web-tutorial-modified"), fixturesFolder("temp"));
       await wait(4000);
       const users = await fetch("/api/users");
       expect(users.body).toEqual([

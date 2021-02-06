@@ -130,6 +130,12 @@ class Config {
       this._coreOptions.plugins = this._coreOptions.plugins || [];
       this._coreOptions.plugins = this._coreOptions.plugins.concat(config.addPlugins);
     }
+    if (config.hasOwnProperty("addRoutesHandlers")) {
+      this._coreOptions.routesHandlers = this._coreOptions.routesHandlers || [];
+      this._coreOptions.routesHandlers = this._coreOptions.routesHandlers.concat(
+        config.addRoutesHandlers
+      );
+    }
     if (config.hasOwnProperty("configFile")) {
       this._coreOptions.configFile = config.configFile;
     }

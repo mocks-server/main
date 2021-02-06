@@ -8,24 +8,20 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const fsExtra = require("fs-extra");
-const { mocksRunner, fetch, waitForServer, fixturesFolder, wait } = require("./support/helpers");
+const { mocksRunner, fetch, waitForServer, fixturesFolder } = require("./support/helpers");
 
-describe("when using config file", () => {
+describe("when adding route handlers in config file", () => {
   let mocks;
 
   describe("When started", () => {
     beforeAll(async () => {
-      await fsExtra.remove(fixturesFolder("temp"));
-      await fsExtra.copy(fixturesFolder("web-tutorial"), fixturesFolder("temp"));
       mocks = mocksRunner([], {
-        cwd: fixturesFolder("config-file"),
+        cwd: fixturesFolder("config-file-with-routes-handler"),
       });
       await waitForServer();
     });
 
     afterAll(async () => {
-      await fsExtra.remove(fixturesFolder("temp"));
       await mocks.kill();
     });
 
@@ -41,24 +37,13 @@ describe("when using config file", () => {
       ]);
     });
 
-    it("should serve user 2 in /api/users/1 path", async () => {
-      const users = await fetch("/api/users/1");
-      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
-    });
-
-    it("should serve user 2 in /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2");
-      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
-    });
-
-    it("should have watch disabled", async () => {
-      await fsExtra.copy(fixturesFolder("web-tutorial-modified"), fixturesFolder("temp"));
-      await wait(4000);
-      const users = await fetch("/api/users");
-      expect(users.body).toEqual([
-        { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" },
-      ]);
+    it("custom handler should have traced", async () => {
+      expect(mocks.logs).toEqual(
+        expect.stringContaining(
+          'Responding with custom route handler to route variant "get-users:custom-success"'
+        )
+      );
+      expect(mocks.logs).toEqual(expect.stringContaining("Custom request GET =>"));
     });
   });
 });

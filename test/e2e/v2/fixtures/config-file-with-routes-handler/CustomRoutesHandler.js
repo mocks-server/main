@@ -10,11 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-const { isFunction } = require("lodash");
-
-class DefaultRoutesHandler {
+class CustomRoutesHandler {
   static get id() {
-    return "default";
+    return "custom";
   }
 
   constructor(route, core) {
@@ -26,29 +24,20 @@ class DefaultRoutesHandler {
   }
 
   middleware(req, res, next) {
-    this._core.tracer.info(`Request ${req.method} => ${req.url} => "${this._variantId}"`);
-    if (isFunction(this._response)) {
-      this._core.tracer.debug(
-        `Route variant "${this._variantId}" response is a function, executing middleware | req: ${req.id}`
-      );
-      this._response(req, res, next, this._core);
-    } else {
-      this._core.tracer.debug(
-        `Responding with route variant "${this._variantId}" | req: ${req.id}`
-      );
-      res.status(this._response.status);
-      res.send(this._response.body);
-    }
+    this._core.tracer.debug(
+      `Responding with custom route handler to route variant "${this._variantId}" | req: ${req.id}`
+    );
+    this._core.tracer.info(`Custom request ${req.method} => ${req.url} => "${this._variantId}"`);
+    res.status(this._response.status);
+    res.send(this._response.body);
   }
 
   get plainResponsePreview() {
-    return isFunction(this._response)
-      ? "function"
-      : {
-          body: this._response.body,
-          status: this._response.status,
-        };
+    return {
+      body: this._response.body,
+      status: this._response.status,
+    };
   }
 }
 
-module.exports = DefaultRoutesHandler;
+module.exports = CustomRoutesHandler;

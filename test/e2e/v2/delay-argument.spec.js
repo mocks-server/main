@@ -8,14 +8,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const fsExtra = require("fs-extra");
-const { mocksRunner, fetch, fixturesFolder, waitForServer } = require("./support/helpers");
+const { mocksRunner, fetch, waitForServer, TimeCounter } = require("./support/helpers");
 
-describe("with no path defined", () => {
+describe("delay argument", () => {
   let mocks;
 
   beforeAll(async () => {
-    mocks = mocksRunner();
+    mocks = mocksRunner(["--path=web-tutorial", "--delay=1000"]);
     await waitForServer();
   });
 
@@ -23,12 +22,15 @@ describe("with no path defined", () => {
     await mocks.kill();
   });
 
-  it("should start server and return 404 to all requests", async () => {
+  it("should set delay", async () => {
+    expect.assertions(2);
+    const timeCounter = new TimeCounter();
     const users = await fetch("/api/users");
-    expect(users.status).toEqual(404);
-  });
-
-  it("should have created a mocks folder", async () => {
-    expect(fsExtra.existsSync(fixturesFolder("mocks"))).toEqual(true);
+    timeCounter.stop();
+    expect(users.body).toEqual([
+      { id: 1, name: "John Doe" },
+      { id: 2, name: "Jane Doe" },
+    ]);
+    expect(timeCounter.total).toBeGreaterThan(999);
   });
 });

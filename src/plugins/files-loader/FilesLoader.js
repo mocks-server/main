@@ -107,7 +107,10 @@ class FilesLoaderBase {
   }
 
   _ensureFolder(folder) {
-    fsExtra.ensureDirSync(folder);
+    if (!fsExtra.existsSync(folder)) {
+      this._addAlert("load:folder", `Created folder "${folder}" as it didn't exist.`);
+      fsExtra.ensureDirSync(folder);
+    }
     return folder;
   }
 

@@ -11,6 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const { mocksRunner, fetch, waitForServer } = require("./support/helpers");
 
 describe("mock argument", () => {
+  const PATH_OPTION = "--path=web-tutorial";
   let mocks;
 
   afterEach(async () => {
@@ -19,7 +20,7 @@ describe("mock argument", () => {
 
   describe("when not provided", () => {
     it("should set as current mock the first one found", async () => {
-      mocks = mocksRunner(["--path=web-tutorial"]);
+      mocks = mocksRunner([PATH_OPTION]);
       await waitForServer();
       const users = await fetch("/api/users/2");
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
@@ -28,7 +29,7 @@ describe("mock argument", () => {
 
   describe("when provided and exists", () => {
     it("should set current behavior", async () => {
-      mocks = mocksRunner(["--path=web-tutorial", "--mock=user-real"]);
+      mocks = mocksRunner([PATH_OPTION, "--mock=user-real"]);
       await waitForServer();
       const users = await fetch("/api/users/2");
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
@@ -37,13 +38,13 @@ describe("mock argument", () => {
 
   describe("when provided and does not exist", () => {
     it("should print a warning", async () => {
-      mocks = mocksRunner(["--path=web-tutorial", "--mock=foo"]);
+      mocks = mocksRunner([PATH_OPTION, "--mock=foo"]);
       await waitForServer();
       expect(mocks.logs).toEqual(expect.stringContaining('Mock "foo" was not found'));
     });
 
     it("should set as current mock the first one found", async () => {
-      mocks = mocksRunner(["--path=web-tutorial", "--mock=foo"]);
+      mocks = mocksRunner([PATH_OPTION, "--mock=foo"]);
       await waitForServer();
       const users = await fetch("/api/users/2");
       expect(users.body).toEqual({ id: 1, name: "John Doe" });

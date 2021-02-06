@@ -21,7 +21,7 @@ const DEFAULT_BINARY_PATH = "./starter";
 
 const defaultOptions = {
   port: SERVER_PORT,
-  log: "debug",
+  log: "silent",
   watch: false,
 };
 
@@ -54,10 +54,6 @@ const startCore = (mocksPath, options = {}) => {
         return Promise.resolve(core);
       });
     });
-};
-
-const stopCore = (core) => {
-  return core.stop();
 };
 
 const serverUrl = (port) => {
@@ -108,20 +104,29 @@ const waitForServer = (port) => {
   return waitOn({ resources: [`tcp:localhost:${port || SERVER_PORT}`] });
 };
 
+const waitForServerUrl = (url) => {
+  return waitOn({ resources: [`${serverUrl()}${url}`] });
+};
+
 const mocksRunner = (args = [], binary = DEFAULT_BINARY_PATH) => {
   const argsToSend = [...args];
   argsToSend.unshift(binary);
   return new MocksRunner(argsToSend);
 };
 
+const findAlert = (alertContextFragment, alerts) => {
+  return alerts.find((alert) => alert.context.includes(alertContextFragment));
+};
+
 module.exports = {
   startCore,
-  stopCore,
   fetch,
   TimeCounter,
   MocksRunner,
   mocksRunner,
   wait,
   waitForServer,
+  waitForServerUrl,
   fixturesFolder,
+  findAlert,
 };

@@ -8,30 +8,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { USERS } = require("../db/users");
-
 module.exports = [
   {
-    id: "get-users",
-    url: "/api/users",
-    method: "GET",
-    variants: [
-      {
-        id: "success",
-        response: {
-          status: 200,
-          body: USERS,
-        },
-      },
-      {
-        id: "error",
-        response: {
-          status: 403,
-          body: {
-            message: "Bad data",
-          },
-        },
-      },
-    ],
+    id: "base",
+    routesVariants: ["get-users:success", "get-user:1", "get-users-new:success"],
+  },
+  {
+    id: "user-2",
+    from: "base",
+    routesVariants: ["get-user:2"],
+  },
+  {
+    id: "user-real",
+    from: "base",
+    routesVariants: ["get-user:real"],
   },
 ];

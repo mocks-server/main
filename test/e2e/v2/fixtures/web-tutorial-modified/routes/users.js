@@ -34,4 +34,24 @@ module.exports = [
       },
     ],
   },
+  {
+    id: "get-users-new",
+    url: "/api/new-users",
+    method: "GET",
+    variants: [
+      {
+        id: "success",
+        response: {
+          status: 200,
+          body: [
+            ...USERS,
+            {
+              id: 3,
+              name: "Brand new user",
+            },
+          ],
+        },
+      },
+    ],
+  },
 ];

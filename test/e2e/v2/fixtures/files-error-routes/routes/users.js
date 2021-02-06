@@ -10,28 +10,4 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { USERS } = require("../db/users");
 
-module.exports = [
-  {
-    id: "get-users",
-    url: "/api/users",
-    method: "GET",
-    variants: [
-      {
-        id: "success",
-        response: {
-          status: 200,
-          body: USERS,
-        },
-      },
-      {
-        id: "error",
-        response: {
-          status: 403,
-          body: {
-            message: "Bad data",
-          },
-        },
-      },
-    ],
-  },
-];
+module.foo

@@ -12,24 +12,38 @@ const { USERS } = require("../db/users");
 
 module.exports = [
   {
-    id: "get-users",
-    url: "/api/users",
+    id: "get-user",
+    url: "/api/users/:id",
     method: "GET",
     variants: [
       {
-        id: "success",
+        id: "1",
         response: {
           status: 200,
-          body: USERS,
+          body: USERS[0],
         },
       },
       {
-        id: "error",
+        id: "2",
         response: {
-          status: 403,
-          body: {
-            message: "Bad data",
-          },
+          status: 200,
+          body: USERS[1],
+        },
+      },
+      {
+        id: "real",
+        response: (req, res) => {
+          const userId = req.params.id;
+          const user = USERS.find((userData) => userData.id === Number(userId));
+          if (user) {
+            res.status(200);
+            res.send(user);
+          } else {
+            res.status(404);
+            res.send({
+              message: "User not found",
+            });
+          }
         },
       },
     ],

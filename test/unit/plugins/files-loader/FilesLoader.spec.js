@@ -101,6 +101,7 @@ describe("FilesLoader", () => {
 
     it("should require all files from mocks folders calculating it from cwd if path is not absolute", async () => {
       path.isAbsolute.returns(false);
+      libsMocks.stubs.fsExtra.existsSync.returns(false);
       await filesLoader.init();
       expect(libsMocks.stubs.fsExtra.ensureDirSync.getCall(0).args[0]).toEqual(
         path.resolve(process.cwd(), "foo-path")
@@ -147,8 +148,15 @@ describe("FilesLoader", () => {
     });
 
     it("should ensure that defined mocks folder exists", async () => {
+      libsMocks.stubs.fsExtra.existsSync.returns(false);
       await filesLoader.init();
       expect(libsMocks.stubs.fsExtra.ensureDirSync.calledWith("foo-path")).toEqual(true);
+    });
+
+    it("should do nothing if folder exists", async () => {
+      libsMocks.stubs.fsExtra.existsSync.returns(true);
+      await filesLoader.init();
+      expect(libsMocks.stubs.fsExtra.ensureDirSync.callCount).toEqual(0);
     });
 
     it("should throw an error if mocks folder is not defined", async () => {

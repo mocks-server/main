@@ -34,7 +34,6 @@ function getMockRoutesVariants(mock, mocks, routesVariants, routesVariantsToAdd 
     })
     .filter((route) => !!route);
   if (mock.from) {
-    console.log(mock.from);
     const from = mocks.find((mockCandidate) => mockCandidate.id === mock.from);
     if (from) {
       return getMockRoutesVariants(

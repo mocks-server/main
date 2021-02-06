@@ -106,6 +106,16 @@ describe("Config", () => {
       expect(config.coreOptions.plugins).toEqual(["foo"]);
     });
 
+    it("should add routeHandlers received programmatically", async () => {
+      config = new Config({
+        ...callbacks,
+        programmaticConfig: {
+          addRoutesHandlers: ["foo"],
+        },
+      });
+      expect(config.coreOptions.routesHandlers).toEqual(["foo"]);
+    });
+
     it("should set configFile received programmatically", async () => {
       config = new Config({
         ...callbacks,

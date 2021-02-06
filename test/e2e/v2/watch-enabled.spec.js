@@ -28,7 +28,7 @@ describe("when files watch is enabled", () => {
   });
 
   afterAll(async () => {
-    // await fsExtra.remove(fixturesFolder("files-watch"));
+    await fsExtra.remove(fixturesFolder("files-watch"));
     await mocks.kill();
   });
 

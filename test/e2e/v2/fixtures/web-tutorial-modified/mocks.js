@@ -23,4 +23,9 @@ module.exports = [
     from: "base",
     routesVariants: ["get-user:real"],
   },
+  {
+    id: "users-error",
+    from: "base",
+    routesVariants: ["get-users:error"],
+  },
 ];

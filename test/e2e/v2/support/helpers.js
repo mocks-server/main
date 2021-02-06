@@ -108,10 +108,10 @@ const waitForServerUrl = (url) => {
   return waitOn({ resources: [`${serverUrl()}${url}`] });
 };
 
-const mocksRunner = (args = [], binary = DEFAULT_BINARY_PATH) => {
+const mocksRunner = (args = [], options = {}) => {
   const argsToSend = [...args];
-  argsToSend.unshift(binary);
-  return new MocksRunner(argsToSend);
+  argsToSend.unshift(DEFAULT_BINARY_PATH);
+  return new MocksRunner(argsToSend, options);
 };
 
 const findAlert = (alertContextFragment, alerts) => {

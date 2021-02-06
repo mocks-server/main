@@ -28,6 +28,7 @@ describe("when path not exists", () => {
   });
 
   afterAll(async () => {
+    await fsExtra.remove(fixturesFolder(FOLDER));
     await core.stop();
   });
 

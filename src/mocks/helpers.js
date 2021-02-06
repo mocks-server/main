@@ -58,7 +58,7 @@ function getPlainMocks(mocks) {
   });
 }
 
-function getPlainRoutes(routes) {
+function getPlainRoutes(routes, routesVariants) {
   return routes.map((route) => {
     return {
       id: route.id,
@@ -68,7 +68,7 @@ function getPlainRoutes(routes) {
       variants: route.variants
         .map((variant) => {
           const variantId = getVariantId(route.id, variant.id);
-          const variantHandler = this._routesVariants.find(
+          const variantHandler = routesVariants.find(
             (routeVariant) => routeVariant.variantId === variantId
           );
           if (variantHandler) {
@@ -108,8 +108,8 @@ function addCustomVariant(variantId, customVariants) {
   return newCustomVariants;
 }
 
-function getMocksIds(mocks) {
-  return mocks.map((mock) => mock.id);
+function getIds(objs) {
+  return objs.map((obj) => obj.id);
 }
 
 module.exports = {
@@ -119,5 +119,5 @@ module.exports = {
   getPlainRoutes,
   getPlainRoutesVariants,
   addCustomVariant,
-  getMocksIds,
+  getIds,
 };

@@ -22,7 +22,7 @@ const {
   getPlainRoutes,
   getPlainRoutesVariants,
   addCustomVariant,
-  getMocksIds,
+  getIds,
 } = require("./helpers");
 
 class Mocks {
@@ -146,8 +146,8 @@ class Mocks {
     this._mocksDefinitions = this._getLoadedMocks();
     this._processRoutes();
     this._processMocks();
-    this._mocksIds = getMocksIds(this._mocks);
-    this._plainRoutes = getPlainRoutes(this._routesDefinitions);
+    this._mocksIds = getIds(this._mocks);
+    this._plainRoutes = getPlainRoutes(this._routesDefinitions, this._routesVariants);
     this._plainRoutesVariants = getPlainRoutesVariants(this._routesVariants);
     this._plainMocks = getPlainMocks(this._mocks);
     this.current = this._getCurrentMock();

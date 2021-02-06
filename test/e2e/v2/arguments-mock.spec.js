@@ -8,10 +8,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { MocksRunner, fetch, wait } = require("./support/helpers");
+const { mocksRunner, fetch, wait } = require("./support/helpers");
 
 describe("mock argument", () => {
-  const binaryPath = "./starter";
   let mocks;
 
   afterEach(async () => {
@@ -20,7 +19,7 @@ describe("mock argument", () => {
 
   describe("when not provided", () => {
     it("should set as current mock the first one found", async () => {
-      mocks = new MocksRunner([binaryPath, "--path=web-tutorial"]);
+      mocks = mocksRunner(["--path=web-tutorial"]);
       await wait();
       const users = await fetch("/api/users/2");
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
@@ -29,7 +28,7 @@ describe("mock argument", () => {
 
   describe("when provided and exists", () => {
     it("should set current behavior", async () => {
-      mocks = new MocksRunner([binaryPath, "--path=web-tutorial", "--mock=user-real"]);
+      mocks = mocksRunner(["--path=web-tutorial", "--mock=user-real"]);
       await wait();
       const users = await fetch("/api/users/2");
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
@@ -38,13 +37,13 @@ describe("mock argument", () => {
 
   describe("when provided and does not exist", () => {
     it("should print a warning", async () => {
-      mocks = new MocksRunner([binaryPath, "--path=web-tutorial", "--mock=foo"]);
+      mocks = mocksRunner(["--path=web-tutorial", "--mock=foo"]);
       await wait();
       expect(mocks.logs).toEqual(expect.stringContaining('Mock "foo" was not found'));
     });
 
     it("should set as current mock the first one found", async () => {
-      mocks = new MocksRunner([binaryPath, "--path=web-tutorial", "--mock=foo"]);
+      mocks = mocksRunner(["--path=web-tutorial", "--mock=foo"]);
       await wait();
       const users = await fetch("/api/users/2");
       expect(users.body).toEqual({ id: 1, name: "John Doe" });

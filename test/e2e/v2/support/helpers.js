@@ -16,6 +16,7 @@ const { Core } = require("../../../../index");
 const MocksRunner = require("./MocksRunner");
 
 const SERVER_PORT = 3100;
+const DEFAULT_BINARY_PATH = "./starter";
 
 const defaultOptions = {
   port: SERVER_PORT,
@@ -98,12 +99,19 @@ const wait = (time = 1000) => {
   });
 };
 
+const mocksRunner = (args = [], binary = DEFAULT_BINARY_PATH) => {
+  const argsToSend = [...args];
+  argsToSend.unshift(binary);
+  return new MocksRunner(argsToSend);
+};
+
 module.exports = {
   startCore,
   stopCore,
   fetch,
   TimeCounter,
   MocksRunner,
+  mocksRunner,
   wait,
   fixturesFolder,
 };

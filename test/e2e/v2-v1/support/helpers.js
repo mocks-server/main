@@ -18,6 +18,7 @@ const defaultOptions = {
   port: SERVER_PORT,
   log: "silent",
   watch: false,
+  watchLegacy: false,
 };
 
 const fixturesFolder = (folderName) => {

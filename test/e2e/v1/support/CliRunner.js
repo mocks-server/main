@@ -75,6 +75,7 @@ module.exports = class CliRunner {
   }
 
   async kill() {
+    console.log("---------------- killing", this._cliProcess.pid);
     treeKillSync(this._cliProcess.pid);
     return this._exitPromise;
   }

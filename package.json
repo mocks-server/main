@@ -71,6 +71,7 @@
     "sinon": "9.2.0",
     "strip-ansi": "6.0.0",
     "tree-kill-sync": "1.0.0",
+    "tree-kill": "1.2.2",
     "wait-on": "5.2.1"
   },
   "lint-staged": {

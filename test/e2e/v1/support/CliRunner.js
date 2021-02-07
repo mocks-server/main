@@ -13,7 +13,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const crossSpawn = require("cross-spawn");
 
-const treeKillSync = require("tree-kill-sync");
+const treeKill = require("tree-kill");
 const stripAnsi = require("strip-ansi");
 
 const ENCODING_TYPE = "utf8";
@@ -76,7 +76,7 @@ module.exports = class CliRunner {
 
   async kill() {
     console.log("---------------- killing", this._cliProcess.pid);
-    treeKillSync(this._cliProcess.pid);
+    treeKill(this._cliProcess.pid);
     return this._exitPromise;
   }
 

@@ -40,10 +40,6 @@ describe("path setting", () => {
 
   describe("When path setting is changed", () => {
     it("should have loaded new mocks", async () => {
-      /* core.onChangeMocks(() => {
-        core.settings.set("mock", "new-users");
-      }); */
-
       core.settings.set("path", fixturesFolder("web-tutorial-modified"));
       await waitForServerUrl("/api/new-users");
 

@@ -23,7 +23,7 @@ describe("Loaders", () => {
     sandbox.stub(tracer, "error");
     sandbox.stub(tracer, "warn");
     callbacks = {
-      onChangeValues: sandbox.stub(),
+      onChange: sandbox.stub(),
     };
     alerts = new Alerts(callbacks);
   });
@@ -72,7 +72,7 @@ describe("Loaders", () => {
 
     it("should notify that alerts have changed", () => {
       alerts.add("foo", "Foo message");
-      expect(callbacks.onChangeValues.getCall(0).args[0]).toEqual([
+      expect(callbacks.onChange.getCall(0).args[0]).toEqual([
         {
           context: "foo",
           message: "Foo message",
@@ -124,13 +124,13 @@ describe("Loaders", () => {
     it("should notify that alerts have changed if any is removed", () => {
       alerts.add("foo", "Foo message");
       alerts.remove("foo");
-      expect(callbacks.onChangeValues.callCount).toEqual(2);
+      expect(callbacks.onChange.callCount).toEqual(2);
     });
 
     it("should not notify that alerts have changed if no one is removed", () => {
       alerts.add("foo", "Foo message");
       alerts.remove("var");
-      expect(callbacks.onChangeValues.callCount).toEqual(1);
+      expect(callbacks.onChange.callCount).toEqual(1);
     });
   });
 
@@ -174,13 +174,13 @@ describe("Loaders", () => {
     it("should notify that alerts have changed if any is renamed", () => {
       alerts.add("foo", "Foo message");
       alerts.rename("foo", "testing");
-      expect(callbacks.onChangeValues.callCount).toEqual(2);
+      expect(callbacks.onChange.callCount).toEqual(2);
     });
 
     it("should not notify that alerts have changed if no one is renamed", () => {
       alerts.add("foo", "Foo message");
       alerts.rename("var", "testing");
-      expect(callbacks.onChangeValues.callCount).toEqual(1);
+      expect(callbacks.onChange.callCount).toEqual(1);
     });
   });
 });

@@ -43,12 +43,12 @@ class Core {
     this._eventEmitter = new EventEmitter();
 
     this._alerts = new Alerts({
-      // TODO, rename into onChange
-      onChangeValues: (alerts) => {
+      onChange: (alerts) => {
         this._eventEmitter.emit(CHANGE_ALERTS, alerts);
       },
     });
 
+    // TODO, remove v1 legacy code
     this._legacyMocksLoaders = new Loaders({
       onLoad: () => {
         this._eventEmitter.emit(LOAD_LEGACY_MOCKS);
@@ -115,7 +115,7 @@ class Core {
       this //To be used only by routeHandlers
     );
 
-    // TODO, remove
+    // TODO, remove v1 legacy code
     this._legacyMocks = new LegacyMocks(
       this._eventEmitter,
       this._settings,
@@ -130,7 +130,7 @@ class Core {
       ...scopedAlertsMethods("server", this._alerts.add, this._alerts.remove),
     });
 
-    // TODO, remove, add orchestration event listeners here
+    // TODO, refactor. Pass specific callbacks instead of objects
     this._orchestrator = new Orchestrator(
       this._eventEmitter,
       this._legacyMocks,
@@ -162,8 +162,6 @@ class Core {
   }
 
   // Public methods
-
-  // Main programmatic methods
 
   async init(options) {
     if (this._inited) {
@@ -203,11 +201,6 @@ class Core {
 
   // Listeners
 
-  // TODO, remove legacy method
-  onChangeLegacyMocks(listener) {
-    return addEventListener(listener, CHANGE_LEGACY_MOCKS, this._eventEmitter);
-  }
-
   onChangeMocks(listener) {
     return addEventListener(listener, CHANGE_MOCKS, this._eventEmitter);
   }
@@ -220,12 +213,6 @@ class Core {
     return addEventListener(listener, CHANGE_ALERTS, this._eventEmitter);
   }
 
-  // TODO, deprecate method, use addRouter
-  addCustomRouter(path, router) {
-    tracer.deprecationWarn("addCustomRouter", "addRouter");
-    return this.addRouter(path, router);
-  }
-
   addRouter(path, router) {
     return this._server.addCustomRouter(path, router);
   }
@@ -234,36 +221,14 @@ class Core {
     return this._server.removeCustomRouter(path, router);
   }
 
-  // TODO, deprecate method, use addSetting
-  addCustomSetting(option) {
-    tracer.deprecationWarn("addCustomSetting", "addSetting");
-    return this.addSetting(option);
-  }
-
   addSetting(option) {
     return this._settings.addCustom(option);
   }
 
-  // TODO, remove legacy method
-  addFixturesHandler(Handler) {
-    return this._legacyMocks.addFixturesHandler(Handler);
-  }
-
   // Expose Server methods and getters
-
-  // TODO, deprecate method, use restartServer
-  restart() {
-    tracer.deprecationWarn("restart", "restartServer");
-    return this.restartServer();
-  }
 
   restartServer() {
     return this._server.restart();
-  }
-
-  // TODO, remove
-  get serverError() {
-    return this._server.error;
   }
 
   // Expose child objects
@@ -280,24 +245,45 @@ class Core {
     return this._mocks;
   }
 
-  // TODO, remove
+  get tracer() {
+    return tracer;
+  }
+
+  // TODO, remove v1 legacy code
+  addFixturesHandler(Handler) {
+    return this._legacyMocks.addFixturesHandler(Handler);
+  }
+
+  // TODO, remove v1 legacy code
+  onChangeLegacyMocks(listener) {
+    return addEventListener(listener, CHANGE_LEGACY_MOCKS, this._eventEmitter);
+  }
+
+  // TODO, remove v1 legacy code
   get behaviors() {
     return this._legacyMocks.behaviors;
   }
 
-  // TODO, remove
+  // TODO, remove v1 legacy code
   get fixtures() {
     return this._legacyMocks.fixtures;
   }
 
-  // TODO, deprecate getter
+  // TODO, remove, use behaviors
   get features() {
     tracer.deprecationWarn("features getter", "behaviors getter");
     return this._legacyMocks.behaviors;
   }
 
-  get tracer() {
-    return tracer;
+  // TODO, remove, use alerts
+  get serverError() {
+    return this._server.error;
+  }
+
+  // TODO, remove, use restartServer
+  restart() {
+    tracer.deprecationWarn("restart", "restartServer");
+    return this.restartServer();
   }
 }
 

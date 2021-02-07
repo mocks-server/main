@@ -231,13 +231,6 @@ describe("Core", () => {
     });
   });
 
-  describe("addCustomRouter method", () => {
-    it("should add custom router to server", () => {
-      core.addCustomRouter();
-      expect(serverInstance.addCustomRouter.callCount).toEqual(1);
-    });
-  });
-
   describe("addRouter method", () => {
     it("should add router to server", () => {
       core.addRouter();
@@ -249,13 +242,6 @@ describe("Core", () => {
     it("should remove router from server", () => {
       core.removeRouter();
       expect(serverInstance.removeCustomRouter.callCount).toEqual(1);
-    });
-  });
-
-  describe("addCustomSetting method", () => {
-    it("should add custom setting to settings", () => {
-      core.addCustomSetting();
-      expect(settingsInstance.addCustom.callCount).toEqual(1);
     });
   });
 
@@ -334,11 +320,11 @@ describe("Core", () => {
   });
 
   describe("onChangeAlerts method", () => {
-    it("should execute callback when alerts execute onChangeValues callback", () => {
+    it("should execute callback when alerts execute onChange callback", () => {
       const FOO_ALERTS = ["foo", "foo2"];
       const spy = sandbox.spy();
       core.onChangeAlerts(spy);
-      alertsMocks.stubs.Constructor.mock.calls[0][0].onChangeValues(FOO_ALERTS);
+      alertsMocks.stubs.Constructor.mock.calls[0][0].onChange(FOO_ALERTS);
       expect(spy.calledWith(FOO_ALERTS)).toEqual(true);
     });
 

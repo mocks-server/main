@@ -23,6 +23,7 @@ class Server {
     // TODO, deprecate, the core is being passed only to maintain temporarily backward compatibility with API plugin. This is not published in documentation.
     this._core = core; // Use this reference only to provide it to external functions for customization purposes
     this._legacyMocks = legacyMocks;
+
     this._mocksRouter = mocksRouter;
     this._eventEmitter = eventEmitter;
     this._customRouters = [];
@@ -59,7 +60,7 @@ class Server {
     this._express.use(middlewares.traceRequest);
     this._registerCustomRouters();
     this._express.use(this._mocksRouter);
-    // TODO, remove legay router
+    // TODO, remove v1 legacy code
     this._express.use(this._fixturesMiddleware.bind(this));
     this._express.use(middlewares.notFound);
     this._express.use(middlewares.errorHandler);
@@ -132,6 +133,7 @@ class Server {
     });
   }
 
+  // TODO, remove v1 legacy code
   _fixturesMiddleware(req, res, next) {
     const fixture = this._legacyMocks.behaviors.current.getRequestMatchingFixture(req);
     if (fixture) {

@@ -6,18 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [To be deprecated]
 - Remove "features" getter from Server
-- Remove "currentFromCollection" and "currentTotalFixtures" getters from Behaviors.
-- Remove "addCustomRouter" method. Use "addRouter".
-- Remove "addCustomSetting" method. Use "addSetting".
-- Do not provide the core instance to request handlers. This was made only to maintain temporarily backward compatibility with api plugin, because it is responding with full behaviors collection in deprecated api endpoints, producing a circular reference if the core is saved as a private property of the FixtureHandler Class.
-- Remove the addition of extra properties when reading files. Define a name for the behavior with a mandatory option.
 - Remove "restart" method, use "restartServer"
-- Remove behavior "name" property. Use id instead.
-- Remove behaviors "currentName" getter. Use "currentId" instead
-- Remove behaviors "names" getter. Use "ids" instead
 - Remove "serverError" getter. Use alerts instead
 
-- Remove all legacy plugins, options and handlers related to v1.
+- Remove all legacy plugins, options and methods related to v1.
 
 ## [unreleased]
 ### Added
@@ -38,7 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - fix: Boolean options with default value of `true` were not working when defined as `false` in config file
 ### Removed
-- feat: Do not add `no behaviors` alert. As behaviors are legacy, it should not be considered a problem.
+- feat: Do not add `no behaviors` alert. As behaviors are legacy in v2, now it is not considered a problem.
 ### BREAKING CHANGES
 - feat: Remove deprecated options `features` and `behaviors`, `path` option should be used instead.
 - feat: Remove deprecated option `feature`, `behavior` option should be used instead.
@@ -51,6 +43,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Legacy mocks have to be loaded using plugins custom method `loadLegacyMocks`. `loadMocks` will be able to handle only v2 mocks.
 - feat: Listening to changes on legacy mocks has to be added using `onChangeLegacyMocks` instead of `onChangeMocks`, which only is triggered when v2 mocks change
 - feat: Remove Accept and language default headers
+- feat: Remove `addCustomRouter` method. `addRouter` has to be used instead
+- feat: Removed `addCustomSetting` method. `addSetting` has to be used instead.
 
 ## [1.6.0] - 2020-12-25
 

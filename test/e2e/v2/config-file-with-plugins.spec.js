@@ -22,7 +22,7 @@ describe("when adding plugins in config file", () => {
         cwd: fixturesFolder("config-file-with-plugins"),
       });
       await waitForServer();
-      wait(1000);
+      wait(3000);
     });
 
     afterAll(async () => {

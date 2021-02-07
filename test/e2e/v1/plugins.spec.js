@@ -209,7 +209,7 @@ describe("plugins", () => {
   testPlugin("created as an object", {
     displayName: "test-plugin",
     register: (coreInstance, { addAlert }) => {
-      coreInstance.addCustomRouter("/foo-path", customRouter);
+      coreInstance.addRouter("/foo-path", customRouter);
       addAlert("test-register", "Warning registering plugin");
       registerSpy(coreInstance);
     },
@@ -253,7 +253,7 @@ describe("plugins", () => {
     "created as a Class",
     class Plugin {
       constructor(coreInstance, { addAlert }) {
-        coreInstance.addCustomRouter("/foo-path", customRouter);
+        coreInstance.addRouter("/foo-path", customRouter);
         addAlert("test-register", "Warning registering plugin");
         registerSpy(coreInstance);
       }
@@ -286,7 +286,7 @@ describe("plugins", () => {
     "created as a Class with register method",
     class Plugin {
       register(coreInstance, { addAlert }) {
-        coreInstance.addCustomRouter("/foo-path", customRouter);
+        coreInstance.addRouter("/foo-path", customRouter);
         addAlert("test-register", "Warning registering plugin");
         registerSpy(coreInstance);
       }
@@ -319,7 +319,7 @@ describe("plugins", () => {
     "created as a Class",
     class Plugin {
       register(coreInstance, { addAlert }) {
-        coreInstance.addCustomRouter("/foo-path", customRouter);
+        coreInstance.addRouter("/foo-path", customRouter);
         addAlert("test-register", "Warning registering plugin");
         registerSpy(coreInstance);
       }
@@ -337,7 +337,7 @@ describe("plugins", () => {
   );
 
   testPlugin("created as a function", (coreInstance, { addAlert }) => {
-    coreInstance.addCustomRouter("/foo-path", customRouter);
+    coreInstance.addRouter("/foo-path", customRouter);
     addAlert("test-register", "Warning registering plugin");
     registerSpy(coreInstance);
     return {
@@ -365,7 +365,7 @@ describe("plugins", () => {
   });
 
   testAsyncPlugin("created as a function", (coreInstance, { addAlert }) => {
-    coreInstance.addCustomRouter("/foo-path", customRouter);
+    coreInstance.addRouter("/foo-path", customRouter);
     addAlert("test-register", "Warning registering plugin");
     registerSpy(coreInstance);
     return {
@@ -384,7 +384,7 @@ describe("plugins", () => {
     return {
       displayName: "test-plugin",
       register: (coreInstance, { addAlert }) => {
-        coreInstance.addCustomRouter("/foo-path", customRouter);
+        coreInstance.addRouter("/foo-path", customRouter);
         addAlert("test-register", "Warning registering plugin");
         registerSpy(coreInstance);
       },

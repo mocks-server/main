@@ -25,7 +25,7 @@ describe("mock setting", () => {
   describe("mock by default", () => {
     it("should have added an alert about mock was not defined", () => {
       expect(findAlert("mocks:current:settings", core.alerts).message).toEqual(
-        expect.stringContaining('"mock" option was not defined')
+        expect.stringContaining('Option "mock" was not defined')
       );
     });
 

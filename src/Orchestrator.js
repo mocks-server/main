@@ -25,8 +25,11 @@ class Orchestrator {
 
     this._eventEmitter.on(CHANGE_SETTINGS, this._onChangeSettings);
     this._eventEmitter.on(LOAD_LEGACY_MOCKS, this._onLoadLegacyMocks);
-    this._eventEmitter.on(LOAD_MOCKS, this._onLoadMocks);
+
+    this._loadedMocks = false;
+    this._loadedRoutes = false;
     this._eventEmitter.on(LOAD_ROUTES, this._onLoadRoutes);
+    this._eventEmitter.on(LOAD_MOCKS, this._onLoadMocks);
   }
 
   _onChangeSettings(changeDetails) {
@@ -46,11 +49,17 @@ class Orchestrator {
   }
 
   _onLoadMocks() {
-    this._mocks.load();
+    this._loadedMocks = true;
+    if (this._loadedRoutes) {
+      this._mocks.load();
+    }
   }
 
   _onLoadRoutes() {
-    this._mocks.load();
+    this._loadedRoutes = true;
+    if (this._loadedMocks) {
+      this._mocks.load();
+    }
   }
 }
 

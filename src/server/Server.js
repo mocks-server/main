@@ -48,7 +48,7 @@ class Server {
     if (this._serverInitted) {
       return;
     }
-    tracer.debug("Initializing server");
+    tracer.debug("Configuring server");
     this._express = express();
 
     // Add middlewares
@@ -125,9 +125,9 @@ class Server {
   }
 
   _registerCustomRouters() {
-    tracer.debug("Adding custom routers to server");
+    tracer.debug("Registering custom routers in server");
     this._customRouters.forEach((customRouter) => {
-      tracer.silly(`Adding custom router with path ${customRouter.path}`);
+      tracer.silly(`Registering custom router with path ${customRouter.path}`);
       this._express.use(customRouter.path, customRouter.router);
     });
   }
@@ -184,6 +184,7 @@ class Server {
   }
 
   addCustomRouter(path, router) {
+    tracer.info(`Adding custom router with path ${path}`);
     this._customRouters.push({
       path,
       router,
@@ -192,6 +193,7 @@ class Server {
   }
 
   removeCustomRouter(path, router) {
+    tracer.info(`Removing custom router with path ${path}`);
     let indexToRemove = this._getCustomRouterIndex(path, router);
     if (indexToRemove !== null) {
       this._customRouters.splice(indexToRemove, 1);

@@ -95,15 +95,27 @@ describe("Orchestrator", () => {
   });
 
   describe("when core emits load:mocks", () => {
-    it("should process mocks again", async () => {
+    it("should not call to load mocks if load:routes was not emitted", async () => {
+      coreInstance._eventEmitter.on.getCall(3).args[1]();
+      expect(mocksMock.stubs.instance.load.callCount).toEqual(0);
+    });
+
+    it("should call to load mocks if load:routes was emitted", async () => {
       coreInstance._eventEmitter.on.getCall(2).args[1]();
+      coreInstance._eventEmitter.on.getCall(3).args[1]();
       expect(mocksMock.stubs.instance.load.callCount).toEqual(1);
     });
   });
 
   describe("when core emits load:routes", () => {
-    it("should process mocks again", async () => {
+    it("should not call to load mocks if load:mocks was not emitted", async () => {
+      coreInstance._eventEmitter.on.getCall(2).args[1]();
+      expect(mocksMock.stubs.instance.load.callCount).toEqual(0);
+    });
+
+    it("should call to load mocks if load:mocks was emitted", async () => {
       coreInstance._eventEmitter.on.getCall(3).args[1]();
+      coreInstance._eventEmitter.on.getCall(2).args[1]();
       expect(mocksMock.stubs.instance.load.callCount).toEqual(1);
     });
   });

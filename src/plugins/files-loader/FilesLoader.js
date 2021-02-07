@@ -146,6 +146,7 @@ class FilesLoaderBase {
       this._tracer.silly(`Loaded routes from folder ${routesPath}`);
       this._removeAlerts("load:routes");
     } catch (error) {
+      this._loadRoutes([]);
       this._addAlert("load:routes", `Error loading routes from folder ${routesPath}`, error);
     }
   }
@@ -159,6 +160,7 @@ class FilesLoaderBase {
       this._tracer.silly(`Loaded mocks from file ${mocksFile}`);
       this._removeAlerts("load:mocks");
     } catch (error) {
+      this._loadMocks([]);
       this._addAlert("load:mocks", `Error loading mocks from file ${mocksFile}`, error);
     }
   }

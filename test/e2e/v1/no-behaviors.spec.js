@@ -38,7 +38,7 @@ describe("with no behaviors", () => {
     expect(core.alerts[0].context).toEqual(
       "plugins:@mocks-server/core/plugin-legacy-files-loader:enabled"
     );
-    expect(core.alerts[1].message).toEqual('"mock" option was not defined');
+    expect(core.alerts[1].message).toEqual('Option "mock" was not defined');
     expect(core.alerts[2].message).toEqual("No mocks found");
     expect(core.alerts[3].context).toEqual(
       "plugins:@mocks-server/core/plugin-files-loader:load:mocks"

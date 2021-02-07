@@ -167,32 +167,27 @@ class Mocks {
     this._removeAlerts("current:settings");
     if (!id) {
       current = this._mocks[0];
-      tracer.warn(`Option "mock" was not defined`);
       if (current) {
         this._addAlert(
           "current:settings",
-          `"mock" option was not defined. Using the first one found`
+          `Option "mock" was not defined. Using the first mock found`
         );
-        tracer.info(`Using first found mock: "${current.id}"`);
       } else {
-        this._addAlert("current:settings", `"mock" option was not defined`);
+        this._addAlert("current:settings", `Option "mock" was not defined`);
       }
     } else {
       current = this._mocks.find((mock) => mock.id === id);
       if (!current) {
         current = this._mocks[0];
-        tracer.error(`Mock "${id}" was not found`);
         if (current) {
           this._addAlert(
             "current:settings",
             `Mock "${id}" was not found. Using the first one found`
           );
-          tracer.info(`Using first found mock: "${current.id}"`);
         }
       }
     }
     if (!current) {
-      tracer.error(`No mocks found`);
       this._addAlert("current:amount", "No mocks found");
     } else {
       tracer.info(`Current mock: "${current.id}"`);

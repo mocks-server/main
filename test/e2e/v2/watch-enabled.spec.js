@@ -67,7 +67,7 @@ describe("when files watch is enabled", () => {
   describe("When non routes nor mocks files are modified", () => {
     it("should serve new data in /api/users path", async () => {
       await fsExtra.copy(fixturesFolder("web-tutorial/db"), fixturesFolder("temp/db"));
-      await wait(3000);
+      await wait(5000);
       const users = await fetch("/api/users");
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },

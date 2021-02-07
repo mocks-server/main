@@ -83,7 +83,7 @@ describe("events", () => {
     it("should not execute callback when event listener is removed", async () => {
       removeSpy();
       core.settings.set("path", fixturesFolder("web-tutorial"));
-      await wait(3000);
+      await wait(5000);
       expect(spies.onChangeMocks.callCount).toEqual(2);
     });
   });

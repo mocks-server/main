@@ -37,7 +37,7 @@ describe("path setting", () => {
         core.settings.set("behavior", "newOne");
       });
       core.settings.set("pathLegacy", fixturesFolder("files-modification"));
-      await wait(3000);
+      await wait(5000);
       const users = await request("/api/new-users");
       expect(users).toEqual([
         { id: 1, name: "John Doe new" },

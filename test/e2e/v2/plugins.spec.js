@@ -131,7 +131,7 @@ describe("plugins", () => {
       describe("when emit events", () => {
         beforeAll(async () => {
           core.settings.set("path", fixturesFolder("web-tutorial-modified"));
-          await wait(3000);
+          await wait(5000);
         });
 
         it("should inform plugin when settings are changed", async () => {

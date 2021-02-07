@@ -15,6 +15,7 @@ const {
   fixturesFolder,
   waitForServer,
   waitForServerUrl,
+  wait,
 } = require("./support/helpers");
 
 describe("when files watch is enabled", () => {
@@ -28,7 +29,7 @@ describe("when files watch is enabled", () => {
   });
 
   afterAll(async () => {
-    await fsExtra.remove(fixturesFolder("temp"));
+    // await fsExtra.remove(fixturesFolder("temp"));
     await mocks.kill();
   });
 
@@ -59,6 +60,18 @@ describe("when files watch is enabled", () => {
         { id: 1, name: "John Doe modified" },
         { id: 2, name: "Jane Doe modified" },
         { id: 3, name: "Brand new user" },
+      ]);
+    });
+  });
+
+  describe("When non routes nor mocks files are modified", () => {
+    it("should serve new data in /api/users path", async () => {
+      await fsExtra.copy(fixturesFolder("web-tutorial/db"), fixturesFolder("temp/db"));
+      await wait(3000);
+      const users = await fetch("/api/users");
+      expect(users.body).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" },
       ]);
     });
   });

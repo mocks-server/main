@@ -54,7 +54,7 @@ jobs:
     runs-on: windows-2019
     strategy:
       matrix:
-        node: ["12.19.0", "14.15.0", "15.2.0"]
+        node: ["15.2.0"]
     steps:
       - name: Checkout
         uses: actions/checkout@v2

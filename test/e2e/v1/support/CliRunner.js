@@ -35,7 +35,7 @@ module.exports = class CliRunner {
 
   getCommandToExecute(command) {
     return {
-      name: command[0],
+      name: process.platform === "win32" ? command[0].replace("./", ".\\") : command[0],
       params: command.splice(1, command.length - 1),
     };
   }

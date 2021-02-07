@@ -112,7 +112,7 @@ class Mocks {
           const variantId = getVariantId(route.id, variant.id);
           const handlerId = variant.handler || DEFAULT_ROUTES_HANDLER;
           const Handler = this._routesVariantsHandlers.find(
-            (routeHandler) => routeHandler.id === handlerId
+            (routeHandlerCandidate) => routeHandlerCandidate.id === handlerId
           );
           const routeHandler = new Handler(
             {

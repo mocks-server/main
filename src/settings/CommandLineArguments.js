@@ -34,12 +34,10 @@ class CommandLineArguments {
     this._options = this._optionsNames.reduce((options, optionName) => {
       if (
         commanderParsed.hasOwnProperty(optionName) &&
+        // Remove boolean options with true value by default, as commander always defines them explicitly as true
         !(
-          // Remove boolean options with true value by default, as commander always defines them explicitly as true
-          (
-            this._booleanOptionsWithTrueDefaults.includes(optionName) &&
-            commanderParsed[optionName] === true
-          )
+          this._booleanOptionsWithTrueDefaults.includes(optionName) &&
+          commanderParsed[optionName] === true
         )
       ) {
         options[optionName] = commanderParsed[optionName];

@@ -178,7 +178,7 @@ class Core {
     // Init settings, read command line arguments, etc.
     await this._settings.init(this._config.options);
     // Settings are ready, init all
-    await this._mocks.init(this._routesHandlers.handlers);
+    this._mocks.init(this._routesHandlers.handlers);
     await this._legacyMocks.init();
     await this._server.init();
     return this._plugins.init().then(() => {

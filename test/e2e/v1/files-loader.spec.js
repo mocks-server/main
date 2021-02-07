@@ -151,7 +151,9 @@ describe("when mocks files are unordered and export single fixtures and behavior
     it("should have logged files loader error", async () => {
       expect(cli.logs).toEqual(expect.stringContaining("Error loading files from legacy folder"));
       expect(cli.logs).toEqual(expect.stringContaining("Cannot find module './non-existant'"));
-      expect(cli.logs).toEqual(expect.stringContaining("fixtures/files-error/getUser.js"));
+      expect(cli.logs.replace(/\\/, "/")).toEqual(
+        expect.stringContaining("fixtures/files-error/getUser.js")
+      );
     });
   });
 });

@@ -12,9 +12,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 "use strict";
 
 const path = require("path");
-const childProcess = require("child_process");
+const crossSpawn = require("cross-spawn");
 
-const treeKillSync = require("tree-kill-sync");
+const treeKill = require("tree-kill");
 const stripAnsi = require("strip-ansi");
 
 const ENCODING_TYPE = "utf8";
@@ -54,7 +54,7 @@ module.exports = class MocksRunner {
     if (this._cliProcess) {
       throw new Error("Cli is already running");
     } else {
-      this._cliProcess = childProcess.spawn(this._command.name, this._command.params, {
+      this._cliProcess = crossSpawn(this._command.name, this._command.params, {
         cwd: this._cwd,
       });
       this._cliProcess.stdin.setEncoding(ENCODING_TYPE);
@@ -73,7 +73,7 @@ module.exports = class MocksRunner {
   }
 
   async kill() {
-    treeKillSync(this._cliProcess.pid);
+    treeKill(this._cliProcess.pid);
     return this._exitPromise;
   }
 
@@ -86,7 +86,7 @@ module.exports = class MocksRunner {
   }
 
   get logs() {
-    return this._logs.join("");
+    return this._logs.join("").replace(/\\/gim, "/");
   }
 
   get exitCode() {

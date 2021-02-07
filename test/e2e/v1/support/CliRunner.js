@@ -51,7 +51,6 @@ module.exports = class CliRunner {
     if (this._cliProcess) {
       throw new Error("Cli is already running");
     } else {
-      console.log("----------------------CWD", this._cwd, this._command.name);
       this._cliProcess = crossSpawn(
         this._command.name,
         this._command.params.concat(["--no-watch"]),
@@ -75,7 +74,6 @@ module.exports = class CliRunner {
   }
 
   async kill() {
-    console.log("---------------- killing", this._cliProcess.pid);
     treeKill(this._cliProcess.pid);
     return this._exitPromise;
   }

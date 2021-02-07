@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Pass new method `loadRoutes` to plugins.
 - feat: Add alert when legacy behaviors are loaded.
 - feat: Add option `addRoutesHandlers` to config.
+- feat: Add store to tracer
 ### Changed
 - refactor: Move `path` and `watch` options inside files-loader plugin
 - refactor: Reorganize files and folders

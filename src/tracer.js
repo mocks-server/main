@@ -12,10 +12,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 "use strict";
 
 const winston = require("winston");
+const ArrayTransport = require("winston-array-transport");
 
 const format = winston.format.printf((info) => {
   return `${info.timestamp} [Mocks ${info.level}] ${info.message}`;
 });
+
+const store = [];
 
 const transports = {
   console: new winston.transports.Console({
@@ -27,10 +30,21 @@ const transports = {
       format
     ),
   }),
+  store: new ArrayTransport({
+    array: store,
+    limit: 1000,
+    level: "verbose",
+    format: winston.format.combine(
+      winston.format.timestamp({
+        format: "HH:mm:ss:SS",
+      }),
+      format
+    ),
+  }),
 };
 
 const logger = winston.createLogger({
-  transports: [transports.console],
+  transports: [transports.console, transports.store],
 });
 
 logger.silly = logger.silly.bind(logger);
@@ -56,6 +70,7 @@ const deprecationWarn = (deprecatedMethod, newMethod) => {
 };
 
 module.exports = {
+  store,
   silly: logger.silly,
   debug: logger.debug,
   verbose: logger.verbose,

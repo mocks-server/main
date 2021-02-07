@@ -118,6 +118,10 @@ const findAlert = (alertContextFragment, alerts) => {
   return alerts.find((alert) => alert.context.includes(alertContextFragment));
 };
 
+const findTrace = (traceFragment, traces) => {
+  return traces.find((trace) => trace.includes(traceFragment));
+};
+
 module.exports = {
   startCore,
   fetch,
@@ -129,4 +133,5 @@ module.exports = {
   waitForServerUrl,
   fixturesFolder,
   findAlert,
+  findTrace,
 };

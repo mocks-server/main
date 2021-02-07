@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-const childProcess = require("child_process");
+const crossSpawn = require("cross-spawn");
 
 const treeKillSync = require("tree-kill-sync");
 const stripAnsi = require("strip-ansi");
@@ -52,7 +52,7 @@ module.exports = class CliRunner {
       throw new Error("Cli is already running");
     } else {
       console.log("----------------------CWD", this._cwd, this._command.name);
-      this._cliProcess = childProcess.spawn(
+      this._cliProcess = crossSpawn(
         this._command.name,
         this._command.params.concat(["--no-watch"]),
         {

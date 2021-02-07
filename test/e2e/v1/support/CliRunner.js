@@ -89,7 +89,7 @@ module.exports = class CliRunner {
   }
 
   get logs() {
-    return this._logs.join("");
+    return this._logs.join("").replace(/\\/gim, "/");
   }
 
   get exitCode() {

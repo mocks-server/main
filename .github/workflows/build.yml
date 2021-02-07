@@ -79,6 +79,7 @@ jobs:
         env:
           HUSKY_SKIP_INSTALL: 1
       - name: Test unit
+        if: "contains(github.event.head_commit.message, 'all tests')"
         run: npm run test:unit
       - name: Test E2E
         run: npm run test:e2e

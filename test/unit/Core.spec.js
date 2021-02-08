@@ -402,13 +402,6 @@ describe("Core", () => {
     });
   });
 
-  describe("restart method", () => {
-    it("should restart server", async () => {
-      await core.restart();
-      expect(serverInstance.restart.callCount).toEqual(1);
-    });
-  });
-
   describe("restartServer method", () => {
     it("should restart server", async () => {
       await core.restartServer();
@@ -428,12 +421,6 @@ describe("Core", () => {
     });
   });
 
-  describe("serverError getter", () => {
-    it("should return server error", () => {
-      expect(core.serverError).toEqual(serverInstance.error);
-    });
-  });
-
   describe("settings getter", () => {
     it("should return settings", () => {
       expect(core.settings).toEqual(settingsInstance);
@@ -449,12 +436,6 @@ describe("Core", () => {
   describe("behaviors getter", () => {
     it("should return mocks behaviors", () => {
       expect(core.behaviors).toEqual(legacyMocksInstance.behaviors);
-    });
-  });
-
-  describe("features getter", () => {
-    it("should return mocks behaviors", () => {
-      expect(core.features).toEqual(legacyMocksInstance.behaviors);
     });
   });
 

@@ -285,7 +285,6 @@ describe("options", () => {
       configMocks.stubs.instance.options = {
         behavior: "foo-behavior",
         cli: true,
-        features: "foo/features/path",
         behaviors: "foo/behaviors/path",
         foo: undefined,
         foo2: "foooo",

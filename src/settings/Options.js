@@ -16,12 +16,13 @@ const tracer = require("../tracer");
 const CommandLineArguments = require("./CommandLineArguments");
 
 const DEFAULT_OPTIONS = {
-  behavior: null,
   mock: null,
   delay: 0,
   host: "0.0.0.0",
   port: 3100,
   log: "info",
+  // TODO, remove v1 legacy code
+  behavior: null,
 };
 
 const DEPRECATED_OPTIONS = {

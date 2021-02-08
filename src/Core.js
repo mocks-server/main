@@ -199,6 +199,10 @@ class Core {
     });
   }
 
+  addSetting(option) {
+    return this._settings.addCustom(option);
+  }
+
   // Listeners
 
   onChangeMocks(listener) {
@@ -213,22 +217,18 @@ class Core {
     return addEventListener(listener, CHANGE_ALERTS, this._eventEmitter);
   }
 
+  // Expose Server methods and getters
+
+  restartServer() {
+    return this._server.restart();
+  }
+
   addRouter(path, router) {
     return this._server.addCustomRouter(path, router);
   }
 
   removeRouter(path, router) {
     return this._server.removeCustomRouter(path, router);
-  }
-
-  addSetting(option) {
-    return this._settings.addCustom(option);
-  }
-
-  // Expose Server methods and getters
-
-  restartServer() {
-    return this._server.restart();
   }
 
   // Expose child objects
@@ -267,23 +267,6 @@ class Core {
   // TODO, remove v1 legacy code
   get fixtures() {
     return this._legacyMocks.fixtures;
-  }
-
-  // TODO, remove, use behaviors
-  get features() {
-    tracer.deprecationWarn("features getter", "behaviors getter");
-    return this._legacyMocks.behaviors;
-  }
-
-  // TODO, remove, use alerts
-  get serverError() {
-    return this._server.error;
-  }
-
-  // TODO, remove, use restartServer
-  restart() {
-    tracer.deprecationWarn("restart", "restartServer");
-    return this.restartServer();
   }
 }
 

@@ -21,6 +21,7 @@ class CommandLineArguments {
     this._booleanOptionsWithTrueDefaults = [];
     // TODO, generate initial options dynamically from Options object using the "addCustom" method
     this._commander = commander
+      // TODO, remove v1 legacy code
       .option("--behavior <behavior>", "Current behavior for legacy mocks")
       .option("--mock <mock>", "Current mock")
       .option("--delay <delay>", "Define delay time")

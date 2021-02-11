@@ -36,13 +36,17 @@ const fixturesFolder = (folderName) => {
   return path.resolve(__dirname, "..", "fixtures", folderName);
 };
 
-const startCore = (mocksPath, options = {}) => {
-  const mocks = mocksPath || "web-tutorial";
+const createCore = (options = {}) => {
   const core = new Core({
     onlyProgrammaticOptions: true,
     plugins: options.plugins,
   });
 
+  return core;
+};
+
+const startExistingCore = (core, mocksPath, options = {}) => {
+  const mocks = mocksPath || "web-tutorial";
   return core
     .init({
       ...defaultOptions,
@@ -54,6 +58,10 @@ const startCore = (mocksPath, options = {}) => {
         return Promise.resolve(core);
       });
     });
+};
+
+const startCore = (mocksPath, options = {}) => {
+  return startExistingCore(createCore(options), mocksPath, options);
 };
 
 const serverUrl = (port) => {
@@ -123,6 +131,8 @@ const findTrace = (traceFragment, traces) => {
 };
 
 module.exports = {
+  createCore,
+  startExistingCore,
   startCore,
   fetch,
   TimeCounter,

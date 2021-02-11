@@ -169,10 +169,10 @@ class Core {
     }
     await this._config.init(options);
     this._inited = true;
-    // Register routes handlers
-    await this._routesHandlers.register(this._config.coreOptions.routesHandlers);
     // Register plugins, let them add their custom settings
     await this._plugins.register(this._config.coreOptions.plugins);
+    // Register routes handlers
+    await this._routesHandlers.register(this._config.coreOptions.routesHandlers);
     // Init settings, read command line arguments, etc.
     await this._settings.init(this._config.options);
     // Settings are ready, init all
@@ -201,6 +201,10 @@ class Core {
 
   addSetting(option) {
     return this._settings.addCustom(option);
+  }
+
+  addRoutesHandler(RoutesHandler) {
+    this._routesHandlers.add(RoutesHandler);
   }
 
   // Listeners

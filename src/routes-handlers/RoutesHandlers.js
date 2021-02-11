@@ -16,11 +16,15 @@ const DefaultRoutesHandler = require("./default/DefaultRoutesHandler");
 class RoutesHandlers {
   constructor() {
     this._registeredRouteHandlers = [];
+    this._routeHandlers = [DefaultRoutesHandler];
+  }
+
+  add(RoutesHandler) {
+    this._routeHandlers.push(RoutesHandler);
   }
 
   register(routeHandlers = []) {
-    this._routeHandlers = routeHandlers;
-    this._routeHandlers.unshift(DefaultRoutesHandler);
+    this._routeHandlers = this._routeHandlers.concat(routeHandlers);
     return this._registerHandlers().then(() => {
       tracer.verbose(
         `Registered ${this._registeredRouteHandlers.length} routes handlers without errors`

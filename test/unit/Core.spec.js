@@ -252,6 +252,15 @@ describe("Core", () => {
     });
   });
 
+  describe("addRoutesHandler method", () => {
+    it("should add Route Handler", () => {
+      core.addRoutesHandler("foo");
+      // TODO, do not use private properties in testing
+      expect(core._routesHandlers._routeHandlers.length).toEqual(2);
+      expect(core._routesHandlers._routeHandlers[1]).toEqual("foo");
+    });
+  });
+
   describe("addFixturesHandler method", () => {
     it("should add fixturesHandler to mocks", () => {
       core.addFixturesHandler();

@@ -59,7 +59,7 @@
     "eslint-config-prettier": "6.15.0",
     "eslint-plugin-prettier": "3.3.1",
     "husky": "4.3.8",
-    "jest": "26.6.1",
+    "jest": "26.6.3",
     "lint-staged": "10.4.2",
     "prettier": "2.1.2",
     "request": "2.88.2",

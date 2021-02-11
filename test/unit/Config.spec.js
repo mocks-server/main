@@ -188,11 +188,11 @@ describe("Config", () => {
       expect(fsExtra.pathExists.callCount).toEqual(0);
     });
 
-    it("should try to read file named mocks-server.config.js in cwd by default", async () => {
+    it("should try to read file named mocks.config.js in cwd by default", async () => {
       config = new Config(callbacks);
       await config.init();
       expect(fsExtra.pathExists.getCall(0).args[0]).toEqual(
-        path.resolve(FIXTURES_FOLDER, "mocks-server.config.js")
+        path.resolve(FIXTURES_FOLDER, "mocks.config.js")
       );
     });
 

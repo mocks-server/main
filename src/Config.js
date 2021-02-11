@@ -15,7 +15,7 @@ const tracer = require("./tracer");
 const isPromise = require("is-promise");
 const { isFunction, isObject } = require("lodash");
 
-const CONFIG_FILE = "mocks-server.config.js";
+const CONFIG_FILE = "mocks.config.js";
 
 class Config {
   constructor({ addAlert, programmaticConfig = {} }) {

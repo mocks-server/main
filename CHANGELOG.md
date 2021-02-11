@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 - feat: Do not add `no behaviors` alert. As behaviors are legacy in v2, now it is not considered a problem
 ### BREAKING CHANGES
+- feat: Renamed configuration file from `mocks-server.config.js` to `mocks.config.js`
 - feat: Remove deprecated options `features` and `behaviors`, `path` option should be used instead
 - feat: Remove deprecated option `feature`, `behavior` option should be used instead
 - feat: Legacy mocks defined using v1 format have to be loaded from folder defined using option `pathLegacy` instead of `path`, which now is used to define the folder from which load routes and mocks in v2 format. Folder defined with `pathLegacy` option will not be created automatically if it is not found, and the option is not required

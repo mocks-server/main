@@ -15,6 +15,8 @@ const tracer = require("./tracer");
 const isPromise = require("is-promise");
 const { isFunction, isObject } = require("lodash");
 
+const { createConfigFile } = require("./support/scaffold");
+
 const CONFIG_FILE = "mocks.config.js";
 
 class Config {
@@ -82,6 +84,15 @@ class Config {
     return path.resolve(process.cwd(), filePath);
   }
 
+  _readConfig(configFilePath) {
+    return this._readFileConfig(configFilePath).then((fileConfig) => {
+      this._getCoreOptions(fileConfig);
+      this._getOptions(fileConfig.options);
+      tracer.debug(`Config in file: ${JSON.stringify(fileConfig, null, 2)}`);
+      return Promise.resolve();
+    });
+  }
+
   _getFileConfig() {
     if (this._coreOptions.disableConfigFile) {
       tracer.info(`Configuration file is disabled`);
@@ -91,14 +102,17 @@ class Config {
     return fsExtra.pathExists(configFilePath).then((exists) => {
       if (!exists) {
         tracer.info(`Configuration file not found`);
-        return Promise.resolve();
+        return createConfigFile(configFilePath)
+          .then(() => {
+            tracer.info(`Created configuration file from scaffold`);
+            return this._readConfig(configFilePath);
+          })
+          .catch((err) => {
+            tracer.error(`Error creating config file: ${err.message}`);
+            return Promise.resolve();
+          });
       }
-      return this._readFileConfig(configFilePath).then((fileConfig) => {
-        this._getCoreOptions(fileConfig);
-        this._getOptions(fileConfig.options);
-        tracer.debug(`Config in file: ${JSON.stringify(fileConfig, null, 2)}`);
-        return Promise.resolve();
-      });
+      return this._readConfig(configFilePath);
     });
   }
 

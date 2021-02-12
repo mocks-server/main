@@ -124,8 +124,6 @@ describe("FilesLoader", () => {
         requireCache,
         require: () => [],
       });
-      const mocksFile = path.resolve(__dirname, "mocks.json");
-      sandbox.stub(path, "resolve").returns(mocksFile);
       await filesLoader.init();
       expect(pluginMethods.removeAlerts.calledWith("load:mocks")).toEqual(true);
     });
@@ -135,10 +133,20 @@ describe("FilesLoader", () => {
         requireCache,
         require: () => [],
       });
-      const mocksFile = path.resolve(__dirname, "mocks.json");
-      sandbox.stub(path, "resolve").returns(mocksFile);
       await filesLoader.init();
       expect(pluginMethods.loadMocks.callCount).toEqual(1);
+    });
+
+    it("should try to load mocks.json when mock.js file does not exists", async () => {
+      filesLoader = new FilesLoader(coreInstance, pluginMethods, {
+        requireCache,
+        require: sandbox.spy,
+      });
+      libsMocks.stubs.fsExtra.existsSync.onCall(0).returns(true);
+      libsMocks.stubs.fsExtra.existsSync.onCall(1).returns(false);
+      libsMocks.stubs.fsExtra.existsSync.onCall(2).returns(true);
+      await filesLoader.init();
+      expect(libsMocks.stubs.fsExtra.existsSync.callCount).toEqual(3);
     });
 
     it("should not throw and add an alert if there is an error in loadRoutesfiles method", async () => {

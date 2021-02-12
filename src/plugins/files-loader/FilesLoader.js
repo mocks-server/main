@@ -152,16 +152,27 @@ class FilesLoaderBase {
   }
 
   _loadMocksFile() {
-    const mocksFile = path.resolve(this._path, `${MOCKS_FILE}.js`);
-    try {
-      const mocks = this._require(mocksFile);
-      // TODO, validate mocks, add warning for not valid mocks
-      this._loadMocks(mocks);
-      this._tracer.silly(`Loaded mocks from file ${mocksFile}`);
-      this._removeAlerts("load:mocks");
-    } catch (error) {
+    const mocksFileJs = path.resolve(this._path, `${MOCKS_FILE}.js`);
+    const mocksFileJson = path.resolve(this._path, `${MOCKS_FILE}.json`);
+    const mocksFile = fsExtra.existsSync(mocksFileJs)
+      ? mocksFileJs
+      : fsExtra.existsSync(mocksFileJson)
+      ? mocksFileJson
+      : null;
+    if (mocksFile) {
+      try {
+        const mocks = this._require(mocksFile);
+        // TODO, validate mocks, add warning for not valid mocks
+        this._loadMocks(mocks);
+        this._tracer.silly(`Loaded mocks from file ${mocksFile}`);
+        this._removeAlerts("load:mocks");
+      } catch (error) {
+        this._loadMocks([]);
+        this._addAlert("load:mocks", `Error loading mocks from file ${mocksFile}`, error);
+      }
+    } else {
       this._loadMocks([]);
-      this._addAlert("load:mocks", `Error loading mocks from file ${mocksFile}`, error);
+      this._addAlert("load:mocks", `No mocks.(js|json) file was found in ${this._path}`);
     }
   }
 

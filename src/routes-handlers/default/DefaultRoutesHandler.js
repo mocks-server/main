@@ -36,6 +36,9 @@ class DefaultRoutesHandler {
       this._core.tracer.debug(
         `Responding with route variant "${this._variantId}" | req: ${req.id}`
       );
+      if (this._response.headers) {
+        res.set(this._response.headers);
+      }
       res.status(this._response.status);
       res.send(this._response.body);
     }

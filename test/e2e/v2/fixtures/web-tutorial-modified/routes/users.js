@@ -19,6 +19,10 @@ module.exports = [
       {
         id: "success",
         response: {
+          headers: {
+            "x-custom-header": "foo-header",
+            "x-another-header": "another-header",
+          },
           status: 200,
           body: USERS,
         },

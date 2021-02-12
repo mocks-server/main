@@ -77,7 +77,9 @@ const fetch = (uri, options = {}) => {
   return crossFetch(`${serverUrl(options.port)}${uri}`, {
     ...requestOptions,
   }).then((res) => {
-    return res.json().then((processedRes) => ({ body: processedRes, status: res.status }));
+    return res
+      .json()
+      .then((processedRes) => ({ body: processedRes, status: res.status, headers: res.headers }));
   });
 };
 

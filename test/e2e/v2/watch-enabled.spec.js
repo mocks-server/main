@@ -48,6 +48,8 @@ describe("when files watch is enabled", () => {
       await fsExtra.copy(fixturesFolder("web-tutorial-modified"), fixturesFolder("temp"));
       await waitForServerUrl("/api/new-users");
       const users = await fetch("/api/users");
+      expect(users.headers.get("x-custom-header")).toEqual("foo-header");
+      expect(users.headers.get("x-another-header")).toEqual("another-header");
       expect(users.body).toEqual([
         { id: 1, name: "John Doe modified" },
         { id: 2, name: "Jane Doe modified" },

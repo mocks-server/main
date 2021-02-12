@@ -38,6 +38,7 @@ describe("DefaultRoutesHandler", () => {
       res: {
         status: sandbox.stub(),
         send: sandbox.stub(),
+        set: sandbox.stub(),
       },
       next: sandbox.stub(),
     };
@@ -79,6 +80,16 @@ describe("DefaultRoutesHandler", () => {
       defaultRoutesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
       expect(expressStubs.res.status.getCall(0).args[0]).toEqual(FOO_ROUTE.response.status);
       expect(expressStubs.res.send.getCall(0).args[0]).toEqual(FOO_ROUTE.response.body);
+    });
+
+    it("should add headers if they are defined in response", () => {
+      const FOO_HEADERS = { foo: "foo" };
+      defaultRoutesHandler = new DefaultRoutesHandler(
+        { ...FOO_ROUTE, response: { ...FOO_ROUTE.response, headers: FOO_HEADERS } },
+        coreInstance
+      );
+      defaultRoutesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
+      expect(expressStubs.res.set.getCall(0).args[0]).toEqual(FOO_HEADERS);
     });
 
     it("should execute response if it is a function", () => {

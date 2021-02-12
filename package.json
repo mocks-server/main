@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "body-parser": "1.19.0",
-    "@hapi/boom": "9.1.0",
+    "@hapi/boom": "9.1.1",
     "commander": "6.2.0",
     "cors": "2.8.5",
     "express": "4.17.1",

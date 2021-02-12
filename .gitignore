@@ -17,6 +17,8 @@
 /test/e2e/v2/fixtures/unexistant
 /testing.js
 /mocks.config.js
+/test/e2e/v1/fixtures/mocks.config.js
+/test/e2e/v2/fixtures/mocks.config.js
 
 # misc
 .DS_Store

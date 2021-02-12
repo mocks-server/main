@@ -1,15 +1,9 @@
 const fs = require("fs");
-// const fsExtra = require("fs-extra");
+const fsExtra = require("fs-extra");
 const path = require("path");
-
-const JSON_FILE_REGEXP = /\.json$/;
 
 function scaffoldPath(filePath) {
   return path.resolve(__dirname, "..", "..", "scaffold", filePath);
-}
-
-function isJsonConfigFile(filePath) {
-  return JSON_FILE_REGEXP.test(filePath);
 }
 
 function readScaffoldConfigFile() {
@@ -37,15 +31,16 @@ function writeConfigFile(filePath, fileContent) {
 }
 
 function createConfigFile(filePath) {
-  // Do not create config files as .json, as the user has changed it, so it knows enough about config
-  if (isJsonConfigFile(filePath)) {
-    return Promise.resolve();
-  }
   return readScaffoldConfigFile().then((fileContent) => {
     return writeConfigFile(filePath, fileContent);
   });
 }
 
+function createMocksFolder(destPath) {
+  fsExtra.copySync(scaffoldPath("mocks"), destPath);
+}
+
 module.exports = {
   createConfigFile,
+  createMocksFolder,
 };

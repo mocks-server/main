@@ -75,6 +75,7 @@ class Mocks {
   _processMocks() {
     tracer.debug("Processing loaded mocks");
     let errorsProcessing = 0;
+    tracer.silly(JSON.stringify(this._mocksDefinitions));
     this._mocks = this._mocksDefinitions
       .map((mockDefinition) => {
         try {
@@ -105,6 +106,7 @@ class Mocks {
 
   _processRoutes() {
     tracer.debug("Processing loaded routes");
+    tracer.silly(JSON.stringify(this._routesDefinitions));
     this._routesVariants = flatten(
       this._routesDefinitions.map((route) => {
         // TODO, validate and handle errors

@@ -16,6 +16,8 @@ const fsExtra = require("fs-extra");
 
 const { map, debounce, flatten } = require("lodash");
 
+const { createMocksFolder } = require("../../support/scaffold");
+
 const PLUGIN_NAME = "@mocks-server/core/plugin-files-loader";
 const PATH_OPTION = "path";
 const WATCH_OPTION = "watch";
@@ -109,7 +111,7 @@ class FilesLoaderBase {
   _ensureFolder(folder) {
     if (!fsExtra.existsSync(folder)) {
       this._addAlert("load:folder", `Created folder "${folder}" as it didn't exist.`);
-      fsExtra.ensureDirSync(folder);
+      createMocksFolder(folder);
     }
     return folder;
   }

@@ -11,6 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const path = require("path");
 const fsExtra = require("fs-extra");
+const fs = require("fs");
 
 const Config = require("../../src/Config");
 const tracer = require("../../src/tracer");
@@ -32,6 +33,9 @@ describe("Config", () => {
     sandbox.stub(process, "cwd").returns(FIXTURES_FOLDER);
     sandbox.spy(path, "resolve");
     sandbox.spy(fsExtra, "pathExists");
+    sandbox.stub(fsExtra, "copySync");
+    sandbox.stub(fs, "readFile").callsFake((filePath, encoding, cb) => cb());
+    sandbox.stub(fs, "writeFile").callsFake((filePath, fileContent, encoding, cb) => cb());
   });
 
   afterEach(() => {
@@ -229,6 +233,41 @@ describe("Config", () => {
       });
       await config.init();
       expect(tracer.info.calledWith("Configuration file not found")).toEqual(true);
+    });
+
+    it("should create configuration file if not found", async () => {
+      config = new Config({
+        ...callbacks,
+        programmaticConfig: {
+          configFile: "foo-config.js",
+        },
+      });
+      await config.init();
+      expect(fs.writeFile.getCall(0).args[0]).toEqual(expect.stringContaining("foo-config.js"));
+    });
+
+    it("should catch errors when creating config file", async () => {
+      fs.writeFile.callsFake((filePath, fileContent, encoding, cb) => cb(new Error("foo error")));
+      config = new Config({
+        ...callbacks,
+        programmaticConfig: {
+          configFile: "foo-config.js",
+        },
+      });
+      await config.init();
+      expect(tracer.error.calledWith("Error creating config file: foo error")).toEqual(true);
+    });
+
+    it("should catch errors when reading config file scaffold", async () => {
+      fs.readFile.callsFake((filePath, encoding, cb) => cb(new Error("foo error")));
+      config = new Config({
+        ...callbacks,
+        programmaticConfig: {
+          configFile: "foo-config.js",
+        },
+      });
+      await config.init();
+      expect(tracer.error.calledWith("Error creating config file: foo error")).toEqual(true);
     });
 
     it("should extend programmatic, initialization and file options", async () => {

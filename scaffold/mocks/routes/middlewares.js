@@ -6,11 +6,12 @@ module.exports = [
   {
     id: "add-headers",
     url: "*",
+    method: "GET",
     variants: [
       {
         id: "enabled",
         response: (req, res, next, mocksServer) => {
-          res.set("x-mocks-server-example", "true");
+          res.set("x-mocks-server-example", "some-value");
           mocksServer.tracer.info(
             "Custom header added by add-headers:enabled route variant middleware"
           );

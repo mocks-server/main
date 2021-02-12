@@ -103,7 +103,7 @@ describe("FilesLoader", () => {
       path.isAbsolute.returns(false);
       libsMocks.stubs.fsExtra.existsSync.returns(false);
       await filesLoader.init();
-      expect(libsMocks.stubs.fsExtra.ensureDirSync.getCall(0).args[0]).toEqual(
+      expect(libsMocks.stubs.fsExtra.copySync.getCall(0).args[1]).toEqual(
         path.resolve(process.cwd(), "foo-path")
       );
     });
@@ -155,10 +155,10 @@ describe("FilesLoader", () => {
       expect(pluginMethods.addAlert.calledWith("load:routes")).toEqual(true);
     });
 
-    it("should ensure that defined mocks folder exists", async () => {
+    it("should create scaffold folder when folder does not exist", async () => {
       libsMocks.stubs.fsExtra.existsSync.returns(false);
       await filesLoader.init();
-      expect(libsMocks.stubs.fsExtra.ensureDirSync.calledWith("foo-path")).toEqual(true);
+      expect(libsMocks.stubs.fsExtra.copySync.getCall(0).args[1]).toEqual("foo-path");
     });
 
     it("should do nothing if folder exists", async () => {

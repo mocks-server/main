@@ -1,16 +1,16 @@
 [
   {
     "id": "base",
-    "routeVariants": ["add-headers:enabled", "get-users:success", "get-user:success"]
+    "routesVariants": ["add-headers:enabled", "get-users:success", "get-user:success"]
   },
   {
     "id": "no-headers",
     "from": "base",
-    "routeVariants": ["add-headers:disabled"]
+    "routesVariants": ["add-headers:disabled"]
   },
   {
     "id": "user-real",
     "from": "no-headers",
-    "routeVariants": ["get-user:real"]
+    "routesVariants": ["get-user:real"]
   }
 ]

@@ -8,6 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
+const path = require("path");
 const fsExtra = require("fs-extra");
 const { mocksRunner, fetch, fixturesFolder, waitForServer } = require("./support/helpers");
 
@@ -31,13 +32,13 @@ describe("path argument", () => {
       expect(mocks.logs).toEqual(expect.stringContaining("Created folder"));
     });
 
-    it("should start server and return 404 to all requests", async () => {
-      const users = await fetch("/api/users");
-      expect(users.status).toEqual(404);
-    });
-
     it("should have created a mocks folder", async () => {
       expect(fsExtra.existsSync(fixturesFolder(FOLDER))).toEqual(true);
+    });
+
+    it("should have created scaffold folder", async () => {
+      expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "routes"))).toEqual(true);
+      expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "mocks.json"))).toEqual(true);
     });
   });
 

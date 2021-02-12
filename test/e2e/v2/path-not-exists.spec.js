@@ -8,6 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
+const path = require("path");
 const fsExtra = require("fs-extra");
 const {
   startCore,
@@ -32,29 +33,112 @@ describe("when path not exists", () => {
     await core.stop();
   });
 
-  it("should start server and return 404 to all requests", async () => {
-    const users = await fetch("/api/users", {
-      resolveWithFullResponse: true,
-      simple: false,
+  describe("scaffold", () => {
+    it("should have created folder", async () => {
+      expect(fsExtra.existsSync(fixturesFolder(FOLDER))).toEqual(true);
     });
-    expect(users.status).toEqual(404);
+
+    it("should have created scaffold folder", async () => {
+      expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "routes"))).toEqual(true);
+      expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "mocks.json"))).toEqual(true);
+    });
+
+    it("should have added an alert about path not found", async () => {
+      expect(findAlert("load:folder", core.alerts).message).toEqual(
+        expect.stringContaining("Created folder")
+      );
+    });
+
+    it("should have three mocks", async () => {
+      expect(core.mocks.plainMocks.length).toEqual(3);
+    });
+
+    it("should have three routes", async () => {
+      expect(core.mocks.plainRoutes.length).toEqual(3);
+    });
+
+    it("should have six routes", async () => {
+      expect(core.mocks.plainRoutesVariants.length).toEqual(6);
+    });
   });
 
-  it("should have no mocks", async () => {
-    expect(core.mocks.plainMocks.length).toEqual(0);
+  describe("base mock", () => {
+    it("should serve users under the /api/users path", async () => {
+      const users = await fetch("/api/users");
+      expect(users.status).toEqual(200);
+      expect(users.headers.get("x-mocks-server-example")).toEqual("some-value");
+      expect(users.body).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" },
+      ]);
+    });
+
+    it("should serve user 1 under the /api/users/1 path", async () => {
+      const users = await fetch("/api/users/1");
+      expect(users.headers.get("x-mocks-server-example")).toEqual("some-value");
+      expect(users.status).toEqual(200);
+      expect(users.body).toEqual({ id: 1, name: "John Doe" });
+    });
+
+    it("should serve user 1 under the /api/users/2 path", async () => {
+      const users = await fetch("/api/users/2");
+      expect(users.headers.get("x-mocks-server-example")).toEqual("some-value");
+      expect(users.status).toEqual(200);
+      expect(users.body).toEqual({ id: 1, name: "John Doe" });
+    });
   });
 
-  it("should have created folder", async () => {
-    expect(fsExtra.existsSync(fixturesFolder(FOLDER))).toEqual(true);
+  describe("no-headers mock", () => {
+    it("should not add headers to /api/users", async () => {
+      core.settings.set("mock", "no-headers");
+      const users = await fetch("/api/users");
+      expect(users.status).toEqual(200);
+      expect(users.headers.get("x-mocks-server-example")).toEqual(null);
+      expect(users.body).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" },
+      ]);
+    });
+
+    it("should not add headers to /api/users/1 path", async () => {
+      const users = await fetch("/api/users/1");
+      expect(users.headers.get("x-mocks-server-example")).toEqual(null);
+      expect(users.status).toEqual(200);
+      expect(users.body).toEqual({ id: 1, name: "John Doe" });
+    });
+
+    it("should not add headers to /api/users/2 path", async () => {
+      const users = await fetch("/api/users/2");
+      expect(users.headers.get("x-mocks-server-example")).toEqual(null);
+      expect(users.status).toEqual(200);
+      expect(users.body).toEqual({ id: 1, name: "John Doe" });
+    });
   });
 
-  it("should have added an alert about not mock found", async () => {
-    expect(findAlert("mocks:current:amount", core.alerts).message).toEqual("No mocks found");
-  });
+  describe("user-real mock", () => {
+    it("should serve users under the /api/users path", async () => {
+      core.settings.set("mock", "user-real");
+      const users = await fetch("/api/users");
+      expect(users.status).toEqual(200);
+      expect(users.headers.get("x-mocks-server-example")).toEqual(null);
+      expect(users.body).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" },
+      ]);
+    });
 
-  it("should have added an alert about path not found", async () => {
-    expect(findAlert("load:folder", core.alerts).message).toEqual(
-      expect.stringContaining("Created folder")
-    );
+    it("should serve user 1 under the /api/users/1 path", async () => {
+      const users = await fetch("/api/users/1");
+      expect(users.headers.get("x-mocks-server-example")).toEqual(null);
+      expect(users.status).toEqual(200);
+      expect(users.body).toEqual({ id: 1, name: "John Doe" });
+    });
+
+    it("should serve user 2 under the /api/users/2 path", async () => {
+      const users = await fetch("/api/users/2");
+      expect(users.headers.get("x-mocks-server-example")).toEqual(null);
+      expect(users.status).toEqual(200);
+      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
+    });
   });
 });

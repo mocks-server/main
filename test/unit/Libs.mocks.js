@@ -18,6 +18,7 @@ jest.mock("node-watch");
 const express = require("express");
 const watch = require("node-watch");
 const fsExtra = require("fs-extra");
+const fs = require("fs");
 const globule = require("globule");
 
 class CallBackRunner {
@@ -81,6 +82,14 @@ class Mock {
 
     const ensureDirSyncStub = this._sandbox.stub(fsExtra, "ensureDirSync");
     const existsSyncStub = this._sandbox.stub(fsExtra, "existsSync");
+    const copySyncStub = this._sandbox.stub(fsExtra, "copySync");
+
+    const readFileStub = this._sandbox
+      .stub(fs, "readFile")
+      .callsFake((filePath, encoding, cb) => cb());
+    const writeFileStub = this._sandbox
+      .stub(fs, "writeFile")
+      .callsFake((filePath, fileContent, encoding, cb) => cb());
 
     const expressRouterStub = {
       get: this._sandbox.stub(),
@@ -115,6 +124,11 @@ class Mock {
       fsExtra: {
         ensureDirSync: ensureDirSyncStub,
         existsSync: existsSyncStub,
+        copySync: copySyncStub,
+      },
+      fs: {
+        readFile: readFileStub,
+        writeFileStub: writeFileStub,
       },
     };
 

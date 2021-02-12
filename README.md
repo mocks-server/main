@@ -6,35 +6,143 @@
 
 # [![Mocks Server][logo-url]][website-url] Mocks Server
 
-This package provides a server that simulates multiple API behaviors. It can be added as a dependency of your project, and started simply running an NPM command.
+## The project
 
-## Main features
+This project provides a mock server that can store and simulate multiple API behaviors. It can be added as a dependency of your project, and started simply running an NPM command.
 
-* __Multiple api behaviors__: It allows to define different responses for the same route, and group them into different behaviors.
-* __Multiple formats__: Responses can be defined using `json` files or Javascript files. Definitions can be plain objects, and even Express middlewares can be used to send dynamic responses.
-* __Multiple interfaces__: Settings can be changed using the [interactive CLI](https://github.com/mocks-server/plugin-inquirer-cli) or the [admin REST API](https://github.com/mocks-server/plugin-admin-api). The CLI is perfect for development, and the API can be used in other scenarios, as the [Cypress plugin does.](https://github.com/mocks-server/cypress-commands)
+Providing an interactive command line user interface and a REST API for changing the responses of the API, it is easy to use both for development and testing.
 
+### Main features
 
-![Interactive CLI][interactive-cli-demo]
+* __Route variants__: Define many responses for a same route.
+* __Multiple mocks__: Group different route variants into different mocks. Change the used mock while the server is running using the interactive command line interface or the API.
+* __Multiple formats__: Responses can be defined using `json` files or Javascript files.
+* __Express middlewares__: Route variants can be defined as `express` middlewares.
+* __Multiple interfaces__: Settings can be changed using the [interactive CLI](plugins-inquirer-cli.md) or the [admin REST API](plugins-admin-api). The CLI is perfect for development, and the API can be used from tests, for example.
+* __Integrations__: Integrations with other tools are available, as the [Cypress plugin](integrations-cypress.md).
+* __Customizable__: You can develop your own plugins, or even route handlers, that allows you to customize the format in which route variants are defined.
 
-## Documentation
+## Installation
 
-Please refer to the [project documentation website][website-url]:
+Add it to your dependencies using NPM:
 
-* [Get started](https://www.mocks-server.org/docs/get-started-intro)
-* [Guides](https://www.mocks-server.org/docs/guides-defining-fixtures)
-* [Configuration](https://www.mocks-server.org/docs/configuration-options)
-* [Plugins](https://www.mocks-server.org/docs/plugins-adding-plugins)
-* [Integrations](https://www.mocks-server.org/docs/integrations-cypress)
-* [Api](https://www.mocks-server.org/docs/advanced-programmatic-usage)
+```bash
+npm i @mocks-server/main --save-dev
+```
 
-## Why a mocks server?
+Add next script to your `package.json` file:
 
-Controlling the responses of the api will improve the front-end development workflow, avoiding early dependencies with back-end. It also improves the testing and development of error cases or another cases that are commonly hard to reproduce in the real api.
+```json
+{
+  "scripts": {
+    "mocks" : "mocks-server"
+  }
+}
+```
+
+## Usage
+
+Now, you can start the Mocks Server with the command:
+
+```bash
+npm run mocks
+```
+
+When started for the first time, __it creates a scaffold folder__ named `mocks` in your project, containing next files and folders:
+
+```
+project-root/
+├── mocks/
+│   ├── routes/
+│   │   └── users.js
+│   └── mocks.json
+└── mocks.config.js
+```
+
+The folder contains examples from this documentation providing a simple API with two different mocks and some route variants. You can use the interactive CLI that is also started to change the server settings and see how you can change the responses of the API changing the current mock, changing route variants, etc.
+
+![Interactive CLI][inquirer-cli-image]
+
+## How does it work?
+
+It loads all files in the ["routes"](https://www.mocks-server.org/docs/get-started-routes) folder, containing handlers for routes, and the ["mocks"](https://www.mocks-server.org/docs/get-started-mocks) file, which defines sets of ["route variants"](https://www.mocks-server.org/docs/get-started-routes).
+
+```js
+// mocks/routes/users.js
+module.exports = [
+  {
+    id: "get-users", // id of the route
+    url: "/api/users", // url in express format
+    method: "GET", // HTTP method
+    variants: [
+      {
+        id: "empty", // id of the variant
+        response: {
+          status: 200, // status to send
+          body: [] // body to send
+        }
+      },
+      {
+        id: "error", // id of the variant
+        response: {
+          status: 400, // status to send
+          body: { // body to send
+            message: "Error"
+          }
+        }
+      }
+    ]
+  }
+]
+```
+
+The server will respond to the requests with the route variants defined in the current mock.
+
+```jsonc
+// mocks/mocks.json
+[
+  {
+    "id": "base", //id of the mock
+    "routesVariants": ["get-users:empty", "get-user:success"] //routes variants to use
+  },
+  {
+    "id": "users-error", //id of the mock
+    "from": "base", //inherits the route variants of "base" mock
+    "routesVariants": ["get-users:error"] //get-users route uses another variant
+  }
+]
+```
+
+Then, you can easily [change the responses of the API while the server is running](#configuration) changing the current mock, or defining specific route variants. This can make your __development or acceptance tests environments very much agile and flexible__, as you can define different ["mocks"](https://www.mocks-server.org/docs/get-started-mocks) for every different case you want to simulate.
+
+## Configuration
+
+Configure the server simply [creating a `mocks.config.js` file at the root folder of your project](https://www.mocks-server.org/docs/configuration-file).
+
+For changing [settings](https://www.mocks-server.org/docs/configuration-options) (such as current mock, delay time, etc.) while it is running, you can use:
+* [Interactive command line interface](https://www.mocks-server.org/docs/plugins-inquirer-cli), which is very useful in local environments for development.
+* [REST API](https://www.mocks-server.org/docs/plugins-admin-api) which is very useful to change mock or route variants from E2E tests, for example, as the [Cypress plugin does.](https://www.mocks-server.org/docs/integrations-cypress)
+
+## Why a mock server?
+
+Controlling the responses of the api will improve the front-end development workflow, avoiding early dependencies with back-end. It also improves the testing and development of error cases or another cases that are commonly hard to reproduce with a real api.
 
 Defining the api responses during the earliest phases of development will improve the communication among team members and align their expectations.
 
 Working with Node.js, it integrates better in front-end projects as any other NPM dependency, and it will be easier for front-end developers to maintain the mocks.
+
+## Why "Mocks" in plural?
+
+As explained, the Mocks Server can store different mocks, which are sets of different route variants. So it simulates multiple api behaviors and send different responses to the same request at your convenience, so it is like having different mock servers that can be changed while running.
+
+## Customization
+
+Mocks Server is very customizable, and gives you the possibility of extend it with every new amazing feature you want:
+
+- [Start it programmatically](https://www.mocks-server.org/docs/api-programmatic-usage) and use his multiple methods and events to manage it from your program.
+- Add new options and features [adding plugins](https://www.mocks-server.org/docs/plugins-adding-plugins), or [developing your owns](https://www.mocks-server.org/docs/plugins-developing-plugins).
+- Add new [routes handlers](https://www.mocks-server.org/docs/api-routes-handler), which allows to customize the format in which route variants are defined.
+
 
 ## Contributing
 
@@ -43,7 +151,7 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 
 [website-url]: https://www.mocks-server.org
 [logo-url]: https://www.mocks-server.org/img/logo_120.png
-[interactive-cli-demo]: https://www.mocks-server.org/img/interactive-cli-animation.gif
+[inquirer-cli-image]: https://www.mocks-server.org/img/inquirer-cli.gif
 
 [coveralls-image]: https://coveralls.io/repos/github/mocks-server/main/badge.svg
 [coveralls-url]: https://coveralls.io/github/mocks-server/main

@@ -223,7 +223,7 @@ class Mocks {
     });
   }
 
-  restoreRouteVariants() {
+  restoreRoutesVariants() {
     this._stopUsingVariants();
     this._reloadRouter();
   }
@@ -235,7 +235,7 @@ class Mocks {
     this._reloadRouter();
   }
 
-  get customRouteVariants() {
+  get customRoutesVariants() {
     return [...this._customVariants];
   }
 

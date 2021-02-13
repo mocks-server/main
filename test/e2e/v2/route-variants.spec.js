@@ -188,7 +188,7 @@ describe("route variants", () => {
 
   describe("when restoring route variants", () => {
     it("should serve users under the /api/users path", async () => {
-      core.mocks.restoreRouteVariants();
+      core.mocks.restoreRoutesVariants();
       const users = await fetch("/api/users?req=1");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
@@ -278,7 +278,7 @@ describe("route variants", () => {
 
   describe("when restoring route variants again", () => {
     it("should serve user 2 under the /api/users/1 path", async () => {
-      core.mocks.restoreRouteVariants();
+      core.mocks.restoreRoutesVariants();
       const users = await fetch("/api/users/1");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });

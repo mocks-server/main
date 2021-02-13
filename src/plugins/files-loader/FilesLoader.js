@@ -110,7 +110,7 @@ class FilesLoaderBase {
 
   _ensureFolder(folder) {
     if (!fsExtra.existsSync(folder)) {
-      this._addAlert("load:folder", `Created folder "${folder}" as it didn't exist.`);
+      this._addAlert("load:folder", `Created folder "${folder}"`);
       createMocksFolder(folder);
     }
     return folder;

@@ -72,10 +72,6 @@ describe("interactive CLI", () => {
       expect(newScreen).toEqual(expect.stringContaining("Current behavior: dynamic"));
     });
 
-    it.skip("should have removed alert", async () => {
-      expect(cli.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
-    });
-
     it("should serve users collection mock under the /api/users path", async () => {
       const users = await request("/api/users");
       expect(users).toEqual([

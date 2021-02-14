@@ -1,14 +1,15 @@
 {
   "name": "@mocks-server/plugin-inquirer-cli",
   "version": "1.4.1",
-  "description": "Plugin for Mocks server. Displays an interactive CLI",
+  "description": "Mocks server plugin providing an interactive CLI",
   "keywords": [
     "mocks-server-plugin",
     "interactive",
     "cli",
     "inquirer",
+    "settings",
     "administration",
-    "testing",
+    "options",
     "development"
   ],
   "author": "Javier Brea",
@@ -42,6 +43,7 @@
   },
   "devDependencies": {
     "@mocks-server/core": "2.0.0-beta.1",
+    "cross-fetch": "3.0.6",
     "cross-spawn": "7.0.3",
     "eslint": "7.15.0",
     "eslint-plugin-no-only-tests": "2.4.0",
@@ -57,7 +59,8 @@
     "request-promise": "4.2.6",
     "sinon": "9.2.2",
     "strip-ansi": "6.0.0",
-    "tree-kill": "1.2.2"
+    "tree-kill": "1.2.2",
+    "wait-on": "5.2.1"
   },
   "lint-staged": {
     "src/**/*.js": "eslint",

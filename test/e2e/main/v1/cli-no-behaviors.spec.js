@@ -20,15 +20,6 @@ describe("with no behaviors", () => {
     await cli.kill();
   });
 
-  it.skip("should display alerts", async () => {
-    cli = new CliRunner([BINARY_PATH, "--behavior=foo", "--pathLegacy=no-behaviors"], {
-      cwd: cwdPath,
-    });
-    await wait();
-    expect(cli.currentScreen).toEqual(expect.stringContaining("ALERTS"));
-    expect(cli.currentScreen).toEqual(expect.stringContaining("Warning: No behaviors found"));
-  });
-
   it("should print a dash as current behavior", async () => {
     cli = new CliRunner([BINARY_PATH, "--pathLegacy=no-behaviors"], {
       cwd: cwdPath,

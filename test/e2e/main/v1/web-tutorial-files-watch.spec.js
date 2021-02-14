@@ -10,17 +10,18 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 const fsExtra = require("fs-extra");
-const { request, fixturesFolder, wait, BINARY_PATH } = require("../support/utils");
-const InteractiveCliRunner = require("../support/InteractiveCliRunner");
+const { request, fixturesFolder, wait, BINARY_PATH } = require("./support/utils");
+const InteractiveCliRunner = require("../../inquirer/support/InteractiveCliRunner");
 
 describe("files watcher", () => {
+  jest.setTimeout(15000);
   const cwdPath = path.resolve(__dirname, "fixtures");
   let interactiveCli;
 
   beforeAll(async () => {
     fsExtra.removeSync(fixturesFolder("files-watch"));
     fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
-    interactiveCli = new InteractiveCliRunner([BINARY_PATH, "--path=files-watch"], {
+    interactiveCli = new InteractiveCliRunner([BINARY_PATH, "--pathLegacy=files-watch"], {
       cwd: cwdPath,
     });
     await wait();
@@ -33,7 +34,7 @@ describe("files watcher", () => {
   describe("When started", () => {
     it("should display available behaviors in CLI", async () => {
       await wait(500);
-      expect(interactiveCli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
+      expect(interactiveCli.logs).toEqual(expect.stringContaining("behaviors: 3"));
     });
 
     it("should display current behavior in CLI", async () => {
@@ -62,12 +63,12 @@ describe("files watcher", () => {
   describe("When files are modified", () => {
     beforeAll(async () => {
       fsExtra.copySync(fixturesFolder("files-modification"), fixturesFolder("files-watch"));
-      await wait(2000);
+      await wait(5000);
     });
 
     describe("without changing current behavior", () => {
       it("should display available behaviors in CLI", async () => {
-        expect(interactiveCli.logs).toEqual(expect.stringContaining("Behaviors: 4"));
+        expect(interactiveCli.currentScreen).toEqual(expect.stringContaining("behaviors: 4"));
       });
 
       it("should serve users collection mock under the /api/users path", async () => {
@@ -91,6 +92,7 @@ describe("files watcher", () => {
 
     describe('When changing current behavior to "user2"', () => {
       beforeAll(async () => {
+        await interactiveCli.cursorDown(8);
         await interactiveCli.pressEnter();
         await interactiveCli.cursorDown();
         await interactiveCli.pressEnter();
@@ -122,6 +124,7 @@ describe("files watcher", () => {
 
     describe('When changing current behavior to "dynamic"', () => {
       beforeAll(async () => {
+        await interactiveCli.cursorDown(8);
         await interactiveCli.pressEnter();
         await interactiveCli.cursorDown(2);
         await interactiveCli.pressEnter();
@@ -153,6 +156,7 @@ describe("files watcher", () => {
 
     describe('When changing current behavior to "newOne"', () => {
       beforeAll(async () => {
+        await interactiveCli.cursorDown(8);
         await interactiveCli.pressEnter();
         await interactiveCli.cursorDown(3);
         await interactiveCli.pressEnter();
@@ -190,9 +194,11 @@ describe("files watcher", () => {
     });
 
     it("should display an error", async () => {
-      expect(interactiveCli.currentScreen).toEqual(expect.stringContaining("ALERTS"));
       expect(interactiveCli.currentScreen).toEqual(
-        expect.stringContaining("main/fixtures/files-watch: FOO is not defined")
+        expect.stringContaining("Error: Error loading files from legacy folder")
+      );
+      expect(interactiveCli.currentScreen).toEqual(
+        expect.stringContaining("main/v1/fixtures/files-watch: FOO is not defined")
       );
       expect(interactiveCli.currentScreen).toEqual(
         expect.stringContaining("files-watch/fixtures/users.js:2:18")
@@ -200,7 +206,7 @@ describe("files watcher", () => {
     });
 
     it("should have same behaviors than before available", async () => {
-      expect(interactiveCli.currentScreen).toEqual(expect.stringContaining("Behaviors: 4"));
+      expect(interactiveCli.currentScreen).toEqual(expect.stringContaining("behaviors: 4"));
     });
 
     it("should still serve users collection mock under the /api/users path", async () => {
@@ -214,13 +220,15 @@ describe("files watcher", () => {
     it("should remove alerts when error is fixed", async () => {
       fsExtra.copySync(fixturesFolder("files-modification"), fixturesFolder("files-watch"));
       await wait(2000);
-      expect(interactiveCli.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
+      expect(interactiveCli.currentScreen).toEqual(
+        expect.not.stringContaining("main/v1/fixtures/files-watch: FOO is not defined")
+      );
     });
   });
 
   describe("When files are modified while displaying logs", () => {
     it("should display logs", async () => {
-      await interactiveCli.cursorDown(5);
+      await interactiveCli.cursorDown(7);
       await interactiveCli.pressEnter();
       await wait(1000);
       expect(interactiveCli.currentScreen).toEqual(expect.stringContaining("Displaying logs"));
@@ -231,25 +239,28 @@ describe("files watcher", () => {
       fsExtra.copySync(fixturesFolder("files-error"), fixturesFolder("files-watch"));
       await wait(2000);
       expect(interactiveCli.currentScreen).toEqual(expect.stringContaining("Displaying logs"));
-      expect(interactiveCli.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
+      expect(interactiveCli.currentScreen).toEqual(
+        expect.not.stringContaining("Error: Error loading files from legacy folder")
+      );
     });
 
     it("should have displayed error in logs", async () => {
       expect.assertions(2);
-      expect(interactiveCli.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
       expect(interactiveCli.currentScreen).toEqual(
-        expect.stringContaining("Error loading files from folder")
+        expect.not.stringContaining("Error: Error loading files from legacy folder")
+      );
+      expect(interactiveCli.currentScreen).toEqual(
+        expect.stringContaining("Error loading files from legacy folder")
       );
     });
 
     it("should display alerts when exit logs mode", async () => {
-      expect.assertions(4);
+      expect.assertions(3);
       await interactiveCli.pressEnter();
       await wait(2000);
       expect(interactiveCli.currentScreen).toEqual(expect.not.stringContaining("Displaying logs"));
-      expect(interactiveCli.currentScreen).toEqual(expect.stringContaining("ALERTS"));
       expect(interactiveCli.currentScreen).toEqual(
-        expect.stringContaining("main/fixtures/files-watch: FOO is not defined")
+        expect.stringContaining("Error: Error loading files from legacy folder")
       );
       expect(interactiveCli.currentScreen).toEqual(
         expect.stringContaining("files-watch/fixtures/users.js:2:18")
@@ -260,7 +271,9 @@ describe("files watcher", () => {
       expect.assertions(2);
       fsExtra.copySync(fixturesFolder("files-modification"), fixturesFolder("files-watch"));
       await wait(2000);
-      expect(interactiveCli.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
+      expect(interactiveCli.currentScreen).toEqual(
+        expect.not.stringContaining("Error: Error loading files from legacy folder")
+      );
       expect(interactiveCli.currentScreen).toEqual(expect.stringContaining("CURRENT SETTINGS"));
     });
   });

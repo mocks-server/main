@@ -9,10 +9,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { request, wait, BINARY_PATH } = require("../support/utils");
-const CliRunner = require("../support/CliRunner");
+const { request, wait, TimeCounter, BINARY_PATH } = require("./support/utils");
+const CliRunner = require("../../inquirer/support/CliRunner");
 
-describe("deprecated command line arguments", () => {
+describe("command line arguments", () => {
   const cwdPath = path.resolve(__dirname, "fixtures");
   let cli;
 
@@ -20,10 +20,10 @@ describe("deprecated command line arguments", () => {
     await cli.kill();
   });
 
-  describe("behaviors option", () => {
+  describe("pathLegacy option", () => {
     it("should set mocks folder", async () => {
       expect.assertions(2);
-      cli = new CliRunner([BINARY_PATH, "--behaviors=web-tutorial"], {
+      cli = new CliRunner([BINARY_PATH, "--pathLegacy=web-tutorial"], {
         cwd: cwdPath,
       });
       await wait();
@@ -32,31 +32,15 @@ describe("deprecated command line arguments", () => {
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
       ]);
-      expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
+      expect(cli.logs).toEqual(expect.stringContaining("behaviors: 3"));
     });
   });
 
-  describe("features option", () => {
-    it("should set mocks folder", async () => {
-      expect.assertions(2);
-      cli = new CliRunner([BINARY_PATH, "--features=web-tutorial"], {
-        cwd: cwdPath,
-      });
-      await wait();
-      const users = await request("/api/users");
-      expect(users).toEqual([
-        { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" },
-      ]);
-      expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
-    });
-  });
-
-  describe("feature option", () => {
+  describe("behavior option", () => {
     describe("when not provided", () => {
       it("should set as current behavior the first one found", async () => {
         expect.assertions(2);
-        cli = new CliRunner([BINARY_PATH, "--features=web-tutorial"], {
+        cli = new CliRunner([BINARY_PATH, "--pathLegacy=web-tutorial"], {
           cwd: cwdPath,
         });
         await wait();
@@ -69,7 +53,7 @@ describe("deprecated command line arguments", () => {
     describe("when provided and exists", () => {
       it("should set current behavior", async () => {
         expect.assertions(2);
-        cli = new CliRunner([BINARY_PATH, "--features=web-tutorial", "--feature=dynamic"], {
+        cli = new CliRunner([BINARY_PATH, "--pathLegacy=web-tutorial", "--behavior=dynamic"], {
           cwd: cwdPath,
         });
         await wait();
@@ -80,24 +64,59 @@ describe("deprecated command line arguments", () => {
     });
 
     describe("when provided and does not exist", () => {
-      it("should print a warning", async () => {
-        cli = new CliRunner([BINARY_PATH, "--features=web-tutorial", "--feature=foo"], {
+      it("should display an alert", async () => {
+        cli = new CliRunner([BINARY_PATH, "--pathLegacy=web-tutorial", "--behavior=foo"], {
           cwd: cwdPath,
         });
         await wait();
-        expect(cli.logs).toEqual(expect.stringContaining('Defined behavior "foo" was not found'));
+        expect(cli.currentScreen).toEqual(expect.stringContaining("ALERTS"));
+        expect(cli.currentScreen).toEqual(
+          expect.stringContaining('Defined behavior "foo" was not found')
+        );
       });
 
       it("should set as current behavior the first one found", async () => {
-        expect.assertions(2);
-        cli = new CliRunner([BINARY_PATH, "--features=web-tutorial", "--feature=foo"], {
+        expect.assertions(3);
+        cli = new CliRunner([BINARY_PATH, "--pathLegacy=web-tutorial", "--behavior=foo"], {
           cwd: cwdPath,
         });
         await wait();
         const users = await request("/api/users/2");
         expect(users).toEqual({ id: 1, name: "John Doe" });
+        expect(cli.currentScreen).toEqual(
+          expect.stringContaining("The first one found was used instead")
+        );
         expect(cli.logs).toEqual(expect.stringContaining("Current behavior: standard"));
       });
+    });
+  });
+
+  describe("delay option", () => {
+    it("should set delay", async () => {
+      expect.assertions(3);
+      cli = new CliRunner([BINARY_PATH, "--pathLegacy=web-tutorial", "--delay=2000"], {
+        cwd: cwdPath,
+      });
+      await wait();
+      const timeCounter = new TimeCounter();
+      const users = await request("/api/users");
+      timeCounter.stop();
+      expect(users).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" },
+      ]);
+      expect(cli.currentScreen).toEqual(expect.stringContaining("Delay: 2000"));
+      expect(timeCounter.total).toBeGreaterThan(1999);
+    });
+  });
+
+  describe("log option", () => {
+    it("should set log level", async () => {
+      cli = new CliRunner([BINARY_PATH, "--pathLegacy=web-tutorial", "--log=debug"], {
+        cwd: cwdPath,
+      });
+      await wait();
+      expect(cli.currentScreen).toEqual(expect.stringContaining("Log level: debug"));
     });
   });
 });

@@ -38,6 +38,7 @@ class CoreMock {
       onChangeSettings: this._sandbox.stub().returns(() => {}),
       onChangeAlerts: this._sandbox.stub().returns(() => {}),
       onChangeMocks: this._sandbox.stub().returns(() => {}),
+      onChangeLegacyMocks: this._sandbox.stub().returns(() => {}),
       addRouter: this._sandbox.stub(),
       addSetting: this._sandbox.stub(),
       mocks: {

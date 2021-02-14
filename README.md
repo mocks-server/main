@@ -13,7 +13,7 @@
 
 This plugin is preinstalled in the [main distribution of the Mocks Server project][main-distribution-url]. _If you want ot install it by yourself, you can refer to the [plugins documentation][plugins-url]._
 
-![Interactive CLI](assets/cli_animation.gif)
+![Interactive CLI][animated-image-url]
 
 ## Main features
 
@@ -24,7 +24,7 @@ This plugin is preinstalled in the [main distribution of the Mocks Server projec
 
 ## Options
 
-* `cli`: `<String>` Start interactive CLI or not. Default is `true`. Use `false` to disable it.
+* `cli`: `<String>` Start interactive CLI or not. Default is `true`. Use `false` to disable it _(`--no-cli`) when using command line arguments)_
 
 ## Support
 

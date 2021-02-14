@@ -163,10 +163,12 @@ class Cli {
     this._started = true;
     if (this._stopListeningChangeMocks) {
       this._stopListeningChangeMocks();
+      this._stopListeningChangeLegacyMocks();
       this._stopListeningChangeAlerts();
     }
     this._stopListeningChangeAlerts = this._core.onChangeAlerts(this._onChangeAlerts);
     this._stopListeningChangeMocks = this._core.onChangeMocks(this._onChangeMocks);
+    this._stopListeningChangeLegacyMocks = this._core.onChangeLegacyMocks(this._onChangeMocks);
     this._logLevel = this._settings.get("log");
     this._silentTraces();
     this._displayMainMenu();
@@ -179,6 +181,7 @@ class Cli {
     }
     this._started = false;
     this._stopListeningChangeMocks();
+    this._stopListeningChangeLegacyMocks();
     this._stopListeningChangeAlerts();
     this._settings.set("log", this._logLevel);
     this._cli.logsMode();

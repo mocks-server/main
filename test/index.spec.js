@@ -6,6 +6,7 @@ import {
   MOCKS,
   ROUTES,
   ROUTES_VARIANTS,
+  MOCK_CUSTOM_ROUTES_VARIANTS,
   LEGACY,
   BEHAVIORS,
   FIXTURES,
@@ -38,6 +39,10 @@ describe("Exported paths", () => {
 
   it("should contain the routes-variants path", () => {
     expect(ROUTES_VARIANTS).toBeDefined();
+  });
+
+  it("should contain the mock-custom-routes-variants path", () => {
+    expect(MOCK_CUSTOM_ROUTES_VARIANTS).toBeDefined();
   });
 
   it("should contain the legacy path", () => {

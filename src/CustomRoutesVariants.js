@@ -38,7 +38,7 @@ class CustomRoutesVariants {
   add(req, res, next) {
     const id = req.body.id;
     const routeVariant = this._core.mocks.plainRoutesVariants.find(
-      (routeVariant) => routeVariant.id === id
+      (routeVariantCandidate) => routeVariantCandidate.id === id
     );
     if (routeVariant) {
       this._core.mocks.useRouteVariant(id);

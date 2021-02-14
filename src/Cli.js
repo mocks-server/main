@@ -26,7 +26,7 @@ const MAIN_CHOICES = [
     value: "variant",
   },
   {
-    name: "Restore route variants",
+    name: "Restore routes variants",
     value: "restoreVariants",
   },
   {
@@ -255,8 +255,8 @@ class Cli {
     const availableRoutes = this._core.mocks.plainRoutes.length;
     const availableRoutesVariants = this._core.mocks.plainRoutesVariants.length;
 
-    const currentMockMessage = this._core.mocks.customRouteVariants.length
-      ? `${currentMock} (custom variants: ${this._core.mocks.customRouteVariants.join(",")})`
+    const currentMockMessage = this._core.mocks.customRoutesVariants.length
+      ? `${currentMock} (custom variants: ${this._core.mocks.customRoutesVariants.join(",")})`
       : currentMock;
 
     const headers = [
@@ -265,7 +265,7 @@ class Cli {
       renderHeader(
         `Current mock`,
         currentMockMessage,
-        this._core.mocks.customRouteVariants.length ? 1 : currentMock === "-" ? 2 : 0
+        this._core.mocks.customRoutesVariants.length ? 1 : currentMock === "-" ? 2 : 0
       ),
       renderHeader(`Mocks`, availableMocks, availableMocks < 1 ? 2 : 0),
       renderHeader(`Routes`, availableRoutes, availableRoutes < 1 ? 2 : 0),
@@ -310,7 +310,7 @@ class Cli {
       case "variant":
         return this._changeRouteVariant();
       case "restoreVariants":
-        return this._restoreRouteVariants();
+        return this._restoreRoutesVariants();
       case "delay":
         return this._changeDelay();
       case "restart":
@@ -367,8 +367,8 @@ class Cli {
     return this._displayMainMenu();
   }
 
-  async _restoreRouteVariants() {
-    this._core.mocks.restoreRouteVariants();
+  async _restoreRoutesVariants() {
+    this._core.mocks.restoreRoutesVariants();
     return this._displayMainMenu();
   }
 

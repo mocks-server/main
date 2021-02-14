@@ -4,30 +4,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [To be deprecated]
+## [To be removed]
 - Remove all legacy plugins, options and methods related to v1
 
 ## [unreleased]
+### Added
+### Changed
+### Fixed
+### Removed
+### BREAKING CHANGES
+
+## [2.0.0-beta.1] - 2021-01-14
+
 ### Added
 - feat: Add new Mocks and Routes handler, and related getters to core.
 - feat: Add `mock` option. Legacy mocks continue using `behavior` for backward compatibility
 - feat: Add new plugin for loading files with routes and mocks in v2 format
 - feat: Pass new method `loadRoutes` to plugins
 - feat: Add alert when legacy behaviors are loaded
-- feat: Add option `addRoutesHandlers` to config
+- feat: Add option and method `addRoutesHandlers`
 - feat: Add store to tracer
-- feat: Create scaffold with some examples and configuration file when not exist
+- feat: Create configuration file from scaffold file when it does not exist
+- feat: Create folder with examples from scaffold file when path does not exist
+
 ### Changed
+- feat: Improve traces when checking plugin options
 - refactor: Move `path` and `watch` options inside files-loader plugin
 - refactor: Reorganize files and folders
 - refactor: Refactor Loaders to receive specific onLoad callback instead of full core instance
 - refactor: Refactor Config to receive a single argument with all options
 - refactor: Refactor Plugins to receive a single argument with all options
-- feat: Improve traces when checking plugin options
+
 ### Fixed
 - fix: Boolean options with default value of `true` were not working when defined as `false` in config file
+
 ### Removed
 - feat: Do not add `no behaviors` alert. As behaviors are legacy in v2, now it is not considered a problem
+
 ### BREAKING CHANGES
 - feat: Renamed configuration file from `mocks-server.config.js` to `mocks.config.js`
 - feat: Remove deprecated options `features` and `behaviors`, `path` option should be used instead
@@ -46,6 +59,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Remove `features` getter from Server. legacy `behaviors` has to be used instead
 - feat: Remove `serverError` getter. Use alerts instead
 - feat: Remove `restart` method, use `restartServer` instead
+
 
 ## [1.6.0] - 2020-12-25
 

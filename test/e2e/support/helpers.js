@@ -60,7 +60,7 @@ const startExistingCore = (core, mocksPath, options = {}) => {
 };
 
 const startServer = (mocksPath, options = {}) => {
-  return startExistingCore(createCore(options), mocksPath, options);
+  return startExistingCore(createCore(), mocksPath, options);
 };
 
 const serverUrl = (port) => {

@@ -30,6 +30,7 @@ class AlertsApi {
       getItems: this._getCollection.bind(this),
       parseItem: this._parseModel.bind(this),
       tracer: core.tracer,
+      finder: (context) => (item) => item.context === context,
     });
   }
 

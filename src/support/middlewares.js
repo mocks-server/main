@@ -13,13 +13,14 @@ function collectionMiddleware({ name, getItems, tracer }) {
   };
 }
 
-function modelMiddleware({ name, getItems, parseItem, tracer }) {
+function modelMiddleware({ name, getItems, parseItem, tracer, finder }) {
   const capitalizedName = capitalize(name);
   const returnItem = parseItem ? (item) => parseItem(item) : (item) => item;
+  const finderMethod = finder ? finder : (id) => (item) => item.id === id;
   return function (req, res, next) {
     const id = req.params.id;
     tracer.verbose(`${PLUGIN_NAME}: Sending ${name} ${id} | ${req.id}`);
-    const foundItem = getItems().find((item) => item.id === id);
+    const foundItem = getItems().find(finderMethod(id));
     if (foundItem) {
       res.status(200);
       res.send(returnItem(foundItem));

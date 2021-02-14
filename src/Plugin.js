@@ -91,9 +91,7 @@ class Plugin {
   }
 
   stop() {
-    if (this._stopListeningOnChangeSettings) {
-      this._stopListeningOnChangeSettings();
-    }
+    this._stopListeningOnChangeSettings();
     this._removeRouter();
   }
 

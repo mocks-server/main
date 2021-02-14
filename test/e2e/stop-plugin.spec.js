@@ -8,49 +8,37 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startServer, stopServer, request, fixturesFolder, wait } = require("./support/utils");
+const { startServer, fetch, fixturesFolder, wait, waitForServer } = require("./support/helpers");
 
-describe("stop plugin", () => {
+describe("when stopping plugin", () => {
   let server;
   beforeAll(async () => {
     server = await startServer("web-tutorial");
+    await waitForServer();
   });
 
   afterAll(async () => {
-    await stopServer(server);
+    await server.stop();
   });
 
   describe("when started", () => {
     it("should return current settings", async () => {
-      const response = await request("/admin/settings");
-      expect(response).toEqual({
-        behavior: "standard",
-        path: fixturesFolder("web-tutorial"),
-        delay: 0,
-        host: "0.0.0.0",
-        port: 3100,
-        watch: false,
-        log: "silly",
-        adminApiPath: "/admin",
-        adminApiDeprecatedPaths: true,
-      });
+      const response = await fetch("/admin/settings");
+      expect(response.body.path).toEqual(fixturesFolder("web-tutorial"));
     });
   });
 
   describe("when stopped", () => {
     it("should respond not found when requesting setting", async () => {
       await server._stopPlugins();
-      const response = await request("/admin/settings", {
-        resolveWithFullResponse: true,
-        simple: false,
-      });
-      expect(response.statusCode).toEqual(404);
+      const response = await fetch("/admin/settings");
+      expect(response.status).toEqual(404);
     });
 
     it("should respond to mocks requests", async () => {
       await server._stopPlugins();
-      const response = await request("/api/users");
-      expect(response).toEqual([
+      const response = await fetch("/api/users");
+      expect(response.body).toEqual([
         {
           id: 1,
           name: "John Doe",
@@ -63,12 +51,12 @@ describe("stop plugin", () => {
     });
   });
 
-  describe("when behavior is changed", () => {
-    it("should respond with new behavior", async () => {
-      server.settings.set("behavior", "user2");
+  describe("when mock is changed", () => {
+    it("should respond with new mock", async () => {
+      server.settings.set("mock", "user-2");
       await wait(1000);
-      const response = await request("/api/users/2");
-      expect(response).toEqual({
+      const response = await fetch("/api/users/2");
+      expect(response.body).toEqual({
         id: 2,
         name: "Jane Doe",
       });
@@ -76,37 +64,24 @@ describe("stop plugin", () => {
 
     it("should have not started the plugin", async () => {
       await server._stopPlugins();
-      const response = await request("/admin/settings", {
-        resolveWithFullResponse: true,
-        simple: false,
-      });
-      expect(response.statusCode).toEqual(404);
+      const response = await fetch("/admin/settings");
+      expect(response.status).toEqual(404);
     });
   });
 
   describe("when plugins are started", () => {
-    it("should respond with same behavior", async () => {
+    it("should respond with same mock", async () => {
       await server._startPlugins();
-      const response = await request("/api/users/2");
-      expect(response).toEqual({
+      const response = await fetch("/api/users/2");
+      expect(response.body).toEqual({
         id: 2,
         name: "Jane Doe",
       });
     });
 
     it("should have started the plugin", async () => {
-      const response = await request("/admin/settings");
-      expect(response).toEqual({
-        behavior: "user2",
-        path: fixturesFolder("web-tutorial"),
-        delay: 0,
-        host: "0.0.0.0",
-        port: 3100,
-        watch: false,
-        log: "silly",
-        adminApiPath: "/admin",
-        adminApiDeprecatedPaths: true,
-      });
+      const response = await fetch("/admin/settings");
+      expect(response.body.path).toEqual(fixturesFolder("web-tutorial"));
     });
   });
 });

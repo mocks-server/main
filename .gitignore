@@ -9,7 +9,8 @@
 # tests
 /coverage
 /mocks
-/test/e2e/fixtures/files-watch
+/test/e2e/fixtures/temp
+/test/e2e/fixtures/mocks.config.js
 
 # misc
 .DS_Store

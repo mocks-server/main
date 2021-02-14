@@ -27,10 +27,11 @@ const questions = {
 
 const MyCli = class MyCli {
   constructor() {
-    this._cli = new Inquirer(questions, this.header.bind(this), {
+    this._cli = new Inquirer(this.header.bind(this), {
       name: "Custom Quit",
       action: this.customExitSelected.bind(this),
     });
+    this._cli.questions = questions;
     this._selectedOption = "None";
   }
 

@@ -4,6 +4,7 @@ on:
     branches:
       - master
       - release
+      - pre-release
   pull_request:
 jobs:
   test:

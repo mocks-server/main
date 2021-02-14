@@ -170,12 +170,10 @@ describe("Cli", () => {
 
     it("should stop cli if it was started and cli option is false", async () => {
       inquirerMocks.reset();
-      expect.assertions(2);
       coreInstance.settings.get.withArgs("cli").returns(false);
       coreInstance.onChangeSettings.getCall(0).args[0]({
         cli: false,
       });
-      expect(inquirerMocks.stubs.inquirer.removeListeners.callCount).toEqual(1);
       expect(inquirerMocks.stubs.inquirer.clearScreen.getCall(0).args[0]).toEqual({
         header: false,
       });
@@ -278,9 +276,7 @@ describe("Cli", () => {
 
     it("should clear screen", async () => {
       inquirerMocks.reset();
-      expect.assertions(2);
       await cli.stop();
-      expect(inquirerMocks.stubs.inquirer.removeListeners.callCount).toEqual(1);
       expect(inquirerMocks.stubs.inquirer.clearScreen.getCall(0).args[0]).toEqual({
         header: false,
       });
@@ -299,7 +295,9 @@ describe("Cli", () => {
     it("should not stop if it was already stopped", async () => {
       await cli.stop();
       await cli.stop();
-      expect(inquirerMocks.stubs.inquirer.removeListeners.callCount).toEqual(1);
+      await cli.stop();
+      await cli.stop();
+      expect(inquirerMocks.stubs.inquirer.clearScreen.callCount).toEqual(2);
     });
   });
 
@@ -376,6 +374,152 @@ describe("Cli", () => {
     });
   });
 
+  describe('when user selects "Change current mock"', () => {
+    const fooSelectedMock = "foo mock";
+    let originalIds;
+
+    beforeEach(() => {
+      originalIds = coreInstance.mocks.ids;
+      coreInstance.mocks.ids = ["foo-mock"];
+      inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("mock");
+      inquirerMocks.stubs.inquirer.inquire.onCall(1).resolves(fooSelectedMock);
+    });
+
+    afterEach(() => {
+      coreInstance.mocks.ids = originalIds;
+    });
+
+    it("should call to clear screen", async () => {
+      await cli.start();
+      expect(inquirerMocks.stubs.inquirer.clearScreen.callCount).toEqual(3);
+    });
+
+    it("should display main menu if there are no mocks", async () => {
+      coreInstance.mocks.ids = [];
+      await cli.start();
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
+    });
+
+    it("should call to display mock menu", async () => {
+      await cli.start();
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("mock");
+    });
+
+    it("should set current selected mock", async () => {
+      await cli.start();
+      expect(coreInstance.settings.set.getCall(1).args).toEqual(["mock", fooSelectedMock]);
+    });
+
+    it("should not filter current mocks if there is no input", async () => {
+      const fooMocks = ["foo1", "foo2"];
+      inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
+      inquirerMocks.stubs.inquirer.inquireFake.returns(null);
+      inquirerMocks.stubs.inquirer.inquire
+        .onCall(0)
+        .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
+      coreInstance.mocks.ids = fooMocks;
+      await cli._changeCurrentMock();
+      expect(coreInstance.settings.set.getCall(0).args).toEqual(["mock", ["foo1", "foo2"]]);
+    });
+
+    it("should not filter current mocks if current input is empty", async () => {
+      const fooMocks = ["foo1", "foo2"];
+      inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
+      inquirerMocks.stubs.inquirer.inquireFake.returns([]);
+      inquirerMocks.stubs.inquirer.inquire
+        .onCall(0)
+        .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
+      coreInstance.mocks.ids = fooMocks;
+      await cli._changeCurrentMock();
+      expect(coreInstance.settings.set.getCall(0).args).toEqual(["mock", ["foo1", "foo2"]]);
+    });
+
+    it("should filter current mocks and returns all that includes current input", async () => {
+      const fooMocks = ["foo1", "foo2", "not-included"];
+      inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
+      inquirerMocks.stubs.inquirer.inquireFake.returns("foo");
+      inquirerMocks.stubs.inquirer.inquire
+        .onCall(0)
+        .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
+      coreInstance.mocks.ids = fooMocks;
+      await cli._changeCurrentMock();
+      expect(coreInstance.settings.set.getCall(0).args).toEqual(["mock", ["foo1", "foo2"]]);
+    });
+  });
+
+  describe('when user selects "Change route variant"', () => {
+    const fooSelectedVariant = "foo variant";
+    let originalVariants;
+
+    beforeEach(() => {
+      originalVariants = coreInstance.mocks.plainRoutesVariants;
+      coreInstance.mocks.plainRoutesVariants = [{ id: "foo-variant" }];
+      inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("variant");
+      inquirerMocks.stubs.inquirer.inquire.onCall(1).resolves(fooSelectedVariant);
+    });
+
+    afterEach(() => {
+      coreInstance.mocks.plainRoutesVariants = originalVariants;
+    });
+
+    it("should call to clear screen", async () => {
+      await cli.start();
+      expect(inquirerMocks.stubs.inquirer.clearScreen.callCount).toEqual(3);
+    });
+
+    it("should display main menu if there are no routes variants", async () => {
+      coreInstance.mocks.plainRoutesVariants = [];
+      await cli.start();
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
+    });
+
+    it("should call to display routes variants menu", async () => {
+      await cli.start();
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("variant");
+    });
+
+    it("should set current selected route variant", async () => {
+      await cli.start();
+      expect(coreInstance.mocks.useRouteVariant.getCall(0).args).toEqual([fooSelectedVariant]);
+    });
+
+    it("should not filter current routes variants if there is no input", async () => {
+      const fooVariants = [{ id: "foo1" }, { id: "foo2" }];
+      inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
+      inquirerMocks.stubs.inquirer.inquireFake.returns(null);
+      inquirerMocks.stubs.inquirer.inquire
+        .onCall(0)
+        .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
+      coreInstance.mocks.plainRoutesVariants = fooVariants;
+      await cli._changeRouteVariant();
+      expect(coreInstance.mocks.useRouteVariant.getCall(0).args).toEqual([["foo1", "foo2"]]);
+    });
+
+    it("should not filter current routes variants if current input is empty", async () => {
+      const fooVariants = [{ id: "foo1" }, { id: "foo2" }];
+      inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
+      inquirerMocks.stubs.inquirer.inquireFake.returns([]);
+      inquirerMocks.stubs.inquirer.inquire
+        .onCall(0)
+        .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
+      coreInstance.mocks.plainRoutesVariants = fooVariants;
+      await cli._changeRouteVariant();
+      expect(coreInstance.mocks.useRouteVariant.getCall(0).args).toEqual([["foo1", "foo2"]]);
+    });
+
+    it("should filter current variants and returns all that includes current input", async () => {
+      const fooVariants = [{ id: "foo1" }, { id: "foo2" }, { id: "not-included" }];
+      inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
+      inquirerMocks.stubs.inquirer.inquireFake.returns("foo");
+      inquirerMocks.stubs.inquirer.inquire
+        .onCall(0)
+        .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
+      coreInstance.mocks.plainRoutesVariants = fooVariants;
+      await cli._changeRouteVariant();
+      expect(coreInstance.mocks.useRouteVariant.getCall(0).args).toEqual([["foo1", "foo2"]]);
+    });
+  });
+
   describe('when user selects "Change Delay"', () => {
     const fooDelay = 2000;
     beforeEach(() => {
@@ -399,11 +543,17 @@ describe("Cli", () => {
     });
 
     it("should not pass delay validation if user introduce non numeric characters", async () => {
-      expect(cli._questions.delay.validate(cli._questions.delay.filter("asdads"))).toEqual(false);
+      await cli.start();
+      expect(cli._cli.questions.delay.validate(cli._cli.questions.delay.filter("asdads"))).toEqual(
+        false
+      );
     });
 
     it("should pass delay validation if user introduce numeric characters", async () => {
-      expect(cli._questions.delay.validate(cli._questions.delay.filter("123230"))).toEqual(true);
+      await cli.start();
+      expect(cli._cli.questions.delay.validate(cli._cli.questions.delay.filter("123230"))).toEqual(
+        true
+      );
     });
   });
 
@@ -415,6 +565,17 @@ describe("Cli", () => {
     it("should call to restart server", async () => {
       await cli.start();
       expect(coreInstance.restartServer.callCount).toEqual(1);
+    });
+  });
+
+  describe('when user selects "restore route variants"', () => {
+    beforeEach(() => {
+      inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("restoreVariants");
+    });
+
+    it("should call to restore variants", async () => {
+      await cli.start();
+      expect(coreInstance.mocks.restoreRoutesVariants.callCount).toEqual(1);
     });
   });
 
@@ -452,6 +613,24 @@ describe("Cli", () => {
       coreInstance.settings.get.withArgs("watch").returns(true);
       await cli.start();
       expect(coreInstance.settings.set.getCall(1).args).toEqual(["watch", false]);
+    });
+  });
+
+  describe('when user selects "Switch watch legacy"', () => {
+    beforeEach(() => {
+      inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("watchLegacy");
+    });
+
+    it("should call to switchWatchLegacy server method, passing true if it was disabled", async () => {
+      coreInstance.settings.get.withArgs("watchLegacy").returns(false);
+      await cli.start();
+      expect(coreInstance.settings.set.getCall(1).args).toEqual(["watchLegacy", true]);
+    });
+
+    it("should call to switchWatchLegacy server method, passing false if it was enabled", async () => {
+      coreInstance.settings.get.withArgs("watchLegacy").returns(true);
+      await cli.start();
+      expect(coreInstance.settings.set.getCall(1).args).toEqual(["watchLegacy", false]);
     });
   });
 
@@ -508,52 +687,127 @@ describe("Cli", () => {
       expect(cli._header()[1]).toEqual(expect.stringContaining(chalk.green("0")));
     });
 
-    it("should print behaviors in red if are equal to 0", async () => {
-      coreInstance.behaviors.count = 0;
+    it("should print mocks in red if are equal to 0", async () => {
+      coreInstance.mocks.plainMocks = [];
       await cli.start();
-      expect(cli._header()[2]).toEqual(expect.stringContaining(chalk.red("0")));
+      expect(cli._header()[3]).toEqual(expect.stringContaining(chalk.red("0")));
     });
 
-    it("should print behaviors in green if are greater than 0", async () => {
-      coreInstance.behaviors.count = 10;
+    it("should print mocks in green if are greater than 0", async () => {
+      coreInstance.mocks.plainMocks = [{}, {}, {}, {}];
       await cli.start();
-      expect(cli._header()[2]).toEqual(expect.stringContaining(chalk.green("10")));
+      expect(cli._header()[3]).toEqual(expect.stringContaining(chalk.green("4")));
     });
 
-    it("should print current behavior in red if it is null", async () => {
-      coreInstance.behaviors.currentId = null;
+    it("should print current mock in red if it is null", async () => {
+      coreInstance.mocks.current = null;
       await cli.start();
-      expect(cli._header()[3]).toEqual(expect.stringContaining(chalk.red("-")));
+      expect(cli._header()[2]).toEqual(expect.stringContaining(chalk.red("-")));
     });
 
-    it("should print current behavior in green if it is defined", async () => {
-      coreInstance.behaviors.currentId = "foo";
+    it("should print current mock in green if it is defined", async () => {
+      coreInstance.mocks.current = "foo";
       await cli.start();
-      expect(cli._header()[3]).toEqual(expect.stringContaining(chalk.green("foo")));
+      expect(cli._header()[2]).toEqual(expect.stringContaining(chalk.green("foo")));
     });
 
-    it("should print current fixtures in red if there are less than 1", async () => {
-      coreInstance.fixtures.count = 0;
+    it("should print current mock in yellow if there are custom routes variants", async () => {
+      coreInstance.mocks.current = "foo";
+      coreInstance.mocks.customRoutesVariants = ["foo-variant", "foo-variant-2"];
+      await cli.start();
+      expect(cli._header()[2]).toEqual(
+        expect.stringContaining(chalk.yellow("foo (custom variants: foo-variant,foo-variant-2)"))
+      );
+    });
+
+    it("should print current routes in red if there are less than 1", async () => {
+      coreInstance.mocks.plainRoutes = [];
       await cli.start();
       expect(cli._header()[4]).toEqual(expect.stringContaining(chalk.red("0")));
     });
 
-    it("should print current fixtures in green if there are less than 1", async () => {
-      coreInstance.fixtures.count = 10;
+    it("should print current routes in green if there are less than 1", async () => {
+      coreInstance.mocks.plainRoutes = [{}, {}];
       await cli.start();
-      expect(cli._header()[4]).toEqual(expect.stringContaining(chalk.green("10")));
+      expect(cli._header()[4]).toEqual(expect.stringContaining(chalk.green("2")));
+    });
+
+    it("should print current routes variants in red if there are less than 1", async () => {
+      coreInstance.mocks.plainRoutesVariants = [];
+      await cli.start();
+      expect(cli._header()[5]).toEqual(expect.stringContaining(chalk.red("0")));
+    });
+
+    it("should print current routes in green if there are less than 1", async () => {
+      coreInstance.mocks.plainRoutesVariants = [{}, {}];
+      await cli.start();
+      expect(cli._header()[5]).toEqual(expect.stringContaining(chalk.green("2")));
     });
 
     it("should print watch in yellow if it is disabled", async () => {
       coreInstance.settings.get.withArgs("watch").returns(false);
       await cli.start();
-      expect(cli._header()[6]).toEqual(expect.stringContaining(chalk.yellow("false")));
+      expect(cli._header()[7]).toEqual(expect.stringContaining(chalk.yellow("false")));
     });
 
     it("should print watch in yellow if it is enabled", async () => {
       coreInstance.settings.get.withArgs("watch").returns(true);
       await cli.start();
-      expect(cli._header()[6]).toEqual(expect.stringContaining(chalk.green("true")));
+      expect(cli._header()[7]).toEqual(expect.stringContaining(chalk.green("true")));
+    });
+  });
+
+  describe("when printing header with legacy mode enabled", () => {
+    beforeEach(() => {
+      coreInstance.settings.get.withArgs("pathLegacy").returns(true);
+    });
+
+    it("should print behaviors in red if are equal to 0", async () => {
+      coreInstance.behaviors.count = 0;
+      await cli.start();
+      expect(cli._header()[9]).toEqual(expect.stringContaining(chalk.red("0")));
+    });
+
+    it("should print behaviors in green if are greater than 0", async () => {
+      coreInstance.behaviors.count = 10;
+      await cli.start();
+      expect(cli._header()[9]).toEqual(expect.stringContaining(chalk.green("10")));
+    });
+
+    it("should print current behavior in red if it is null", async () => {
+      coreInstance.behaviors.currentId = null;
+      await cli.start();
+      expect(cli._header()[10]).toEqual(expect.stringContaining(chalk.red("-")));
+    });
+
+    it("should print current behavior in green if it is defined", async () => {
+      coreInstance.behaviors.currentId = "foo";
+      await cli.start();
+      expect(cli._header()[10]).toEqual(expect.stringContaining(chalk.green("foo")));
+    });
+
+    it("should print current fixtures in red if there are less than 1", async () => {
+      coreInstance.fixtures.count = 0;
+      await cli.start();
+      expect(cli._header()[11]).toEqual(expect.stringContaining(chalk.red("0")));
+    });
+
+    it("should print current fixtures in green if there are less than 1", async () => {
+      coreInstance.fixtures.count = 10;
+      await cli.start();
+      expect(cli._header()[11]).toEqual(expect.stringContaining(chalk.green("10")));
+    });
+
+    it("should print watch in yellow if it is disabled", async () => {
+      coreInstance.settings.get.withArgs("watchLegacy").returns(false);
+      await cli.start();
+      expect(cli._header()[8]).toEqual(expect.stringContaining(chalk.yellow("false")));
+    });
+
+    it("should print watch in yellow if it is enabled", async () => {
+      coreInstance.settings.get.withArgs("watchLegacy").returns(true);
+      await cli.start();
+      expect(cli._header()[8]).toEqual(expect.stringContaining(chalk.green("true")));
     });
   });
 
@@ -603,10 +857,6 @@ describe("Cli", () => {
     beforeEach(async () => {
       await cli.start();
       coreInstance.onChangeMocks.getCall(0).args[0]();
-    });
-
-    it("should remove all base-cli listeners", async () => {
-      expect(inquirerMocks.stubs.inquirer.removeListeners.callCount).toEqual(1);
     });
 
     it("should exit logs mode", async () => {

@@ -120,6 +120,7 @@ const Inquirer = class Inquirer {
           ...extendProperties,
         })
         .then((answers) => {
+          this._currentInquirers.delete(resolve);
           this.removeListeners();
           if (questionKey === MAIN_MENU_ID && answers.value === QUIT_ACTION_ID) {
             this.quit();

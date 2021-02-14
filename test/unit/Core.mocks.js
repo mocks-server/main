@@ -40,6 +40,16 @@ class CoreMock {
       onChangeMocks: this._sandbox.stub().returns(() => {}),
       addRouter: this._sandbox.stub(),
       addSetting: this._sandbox.stub(),
+      mocks: {
+        current: "foo-current",
+        plainMocks: [],
+        plainRoutes: [],
+        plainRoutesVariants: [],
+        customRoutesVariants: [],
+        ids: [],
+        useRouteVariant: this._sandbox.stub(),
+        restoreRoutesVariants: this._sandbox.stub(),
+      },
       behaviors: {
         count: 0,
         currentId: "foo-current",

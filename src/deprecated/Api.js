@@ -20,7 +20,7 @@ const {
 const Behaviors = require("./Behaviors");
 const Fixtures = require("./Fixtures");
 
-const { PLUGIN_NAME } = require("../constants");
+const { PLUGIN_NAME } = require("../support/constants");
 
 // TODO, deprecate mocks router
 

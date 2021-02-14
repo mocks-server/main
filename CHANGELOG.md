@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Add mocks, routes and routes-variants apis
 ### Changed
 - Move behaviors and fixtures apis under legacy folder
+- refactor: Use helper to create routers with same structure
 ### Fixed
 ### Removed
 - Remove deprecated api paths

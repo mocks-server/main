@@ -17,6 +17,7 @@ const {
   ABOUT,
   ROUTES,
   ROUTES_VARIANTS,
+  MOCK_CUSTOM_ROUTES_VARIANTS,
   ALERTS,
   LEGACY,
 } = require("@mocks-server/admin-api-paths");
@@ -27,11 +28,10 @@ const DeprecatedApi = require("./deprecated/Api");
 const About = require("./About");
 const Settings = require("./Settings");
 const Alerts = require("./Alerts");
-const Mocks = require("./Mocks");
-const Routes = require("./Routes");
-const RoutesVariants = require("./RoutesVariants");
+const CustomRoutesVariants = require("./CustomRoutesVariants");
 
-const { ADMIN_API_PATH_OPTION, PLUGIN_NAME } = require("./constants");
+const { ADMIN_API_PATH_OPTION, PLUGIN_NAME } = require("./support/constants");
+const { readCollectionAndModelRouter } = require("./support/routers");
 
 class Plugin {
   constructor(core, { addAlert }) {
@@ -41,11 +41,30 @@ class Plugin {
 
     this._legacyApi = new DeprecatedApi(core, { addAlert });
     this._settingsApi = new Settings(this._core);
-    this._mocksApi = new Mocks(this._core);
     this._alertsApi = new Alerts(this._core);
     this._aboutApi = new About(this._core);
-    this._routesApi = new Routes(this._core);
-    this._routesVariantsApi = new RoutesVariants(this._core);
+    this._customRoutesVariantsApi = new CustomRoutesVariants(this._core);
+
+    this._mocksApi = readCollectionAndModelRouter({
+      collectionName: "mocks",
+      modelName: "mock",
+      getItems: () => this._core.mocks.plainMocks,
+      tracer: core.tracer,
+    });
+
+    this._routesApi = readCollectionAndModelRouter({
+      collectionName: "routes",
+      modelName: "route",
+      getItems: () => this._core.mocks.plainRoutes,
+      tracer: core.tracer,
+    });
+
+    this._routesVariantsApi = readCollectionAndModelRouter({
+      collectionName: "routes variants",
+      modelName: "route variant",
+      getItems: () => this._core.mocks.plainRoutesVariants,
+      tracer: core.tracer,
+    });
 
     core.addSetting({
       name: ADMIN_API_PATH_OPTION,
@@ -83,9 +102,12 @@ class Plugin {
     this._router.use(ABOUT, this._aboutApi.router);
     this._router.use(SETTINGS, this._settingsApi.router);
     this._router.use(ALERTS, this._alertsApi.router);
-    this._router.use(MOCKS, this._mocksApi.router);
-    this._router.use(ROUTES, this._routesApi.router);
-    this._router.use(ROUTES_VARIANTS, this._routesVariantsApi.router);
+
+    this._router.use(MOCKS, this._mocksApi);
+    this._router.use(ROUTES, this._routesApi);
+    this._router.use(ROUTES_VARIANTS, this._routesVariantsApi);
+    this._router.use(MOCK_CUSTOM_ROUTES_VARIANTS, this._customRoutesVariantsApi.router);
+
     this._router.use(LEGACY, this._legacyApi.router);
   }
 

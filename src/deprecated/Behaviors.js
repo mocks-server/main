@@ -14,7 +14,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const express = require("express");
 const Boom = require("@hapi/boom");
 
-const { PLUGIN_NAME } = require("../constants");
+const { PLUGIN_NAME } = require("../support/constants");
 
 class BehaviorsApi {
   constructor(core) {

@@ -9,7 +9,7 @@ module.exports = {
   // testMatch: ["<rootDir>/test/e2e/**/stop-plugin.spec.js"],
 
   // Indicates whether the coverage information should be collected while executing the test
-  collectCoverage: false,
+  collectCoverage: true,
 
   // The test environment that will be used for testing
   testEnvironment: "node",

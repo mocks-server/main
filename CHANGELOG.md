@@ -6,16 +6,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
+### Changed
+### Fixed
+### Removed
+### BREAKING CHANGE
+
+## [2.0.0-beta.1] - 2021-02-14
+
+### Added
 - feat: Display current mock.
 - feat: Display menus for changing current mock.
 - feat: Add menus for changing route variant and restore variants
+
 ### Changed
 - feat: Display legacy options and menus only when core `pathLegacy` setting has value. Add toggle legacy watch menu.
 - refactor: Refresh inquirer main options every time main menu is displayed.
+
 ### Fixed
 - fix: Resolve previous inquirers before displaying a new one
 - fix: Start promise was never resolved
-### Removed
+
 ### BREAKING CHANGE
 - Changed format of `cli` option to boolean (now `--no-cli` has to be used to disable it)
 

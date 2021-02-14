@@ -6,7 +6,7 @@ module.exports = {
   clearMocks: true,
 
   testMatch: ["<rootDir>/test/e2e/**/*.spec.js"],
-  // testMatch: ["<rootDir>/test/e2e/**/web-tutorial-files-watch.spec.js"],
+  testMatch: ["<rootDir>/test/e2e/inquirer/autocomplete.spec.js"],
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: false,

@@ -41,9 +41,9 @@ jobs:
         run: npm run lint
       - name: Test unit
         run: npm run test:unit
-      - name: Test E2E
-        run: npm run test:e2e
-        id: test-e2e
+      #- name: Test E2E
+        #run: npm run test:e2e
+        #id: test-e2e
       - name: Upload test results
         uses: actions/upload-artifact@v2
         with:

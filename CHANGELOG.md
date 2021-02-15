@@ -6,7 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
+- feat: Add mocksSetMock, mocksUseRouteVariant and mocksRestoreRoutesVariants commands
 ### Changed
+- feat: Rename mocksServerSetBehavior command to mocksSetBehavior
+- feat: Rename mocksServerSetDelay command to mocksSetDelay
+- feat: Rename mocksServerSetSettings command to mocksSetSettings
 - chore(deps): Update dependencies to mocks-server v2 compatible versions.
 ### Fixed
 ### Removed

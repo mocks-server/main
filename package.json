@@ -27,7 +27,7 @@
   ],
   "main": "index.js",
   "scripts": {
-    "lint": "eslint src test *.js jest.config.js test-e2e/cypress test-e2e/mocks test-e2e/app-fetch/public test-e2e/app-data-provider/src test-e2e/app-data-provider/webpack.config.js",
+    "lint": "eslint src test *.js jest.config.js test-e2e/cypress test-e2e/mocks test-e2e/app/public",
     "lint-staged": "lint-staged",
     "test": "jest",
     "test:e2e": "cd test-e2e && npm run test:ci",
@@ -52,9 +52,7 @@
     "cypress": "2.x || 3.x || 4.x || 5.x || 6.x"
   },
   "lint-staged": {
-    "test-e2e/app-data-provider/*.js": "eslint",
-    "test-e2e/app-data-provider/src/*.js": "eslint",
-    "test-e2e/app-fetch/public/*.js": "eslint",
+    "test-e2e/app/public/*.js": "eslint",
     "test-e2e/mocks/**/*.js": "eslint",
     "test-e2e/cypress/**/*.js": "eslint",
     "*.js": "eslint",

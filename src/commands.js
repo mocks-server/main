@@ -1,19 +1,33 @@
-const adminApiClient = require("@mocks-server/admin-api-client");
+const apiClient = require("@mocks-server/admin-api-client");
 
 const setBehavior = (behavior) => {
-  return adminApiClient.settings.update({
+  return apiClient.updateSettings({
     behavior,
   });
 };
 
+const setMock = (id) => {
+  return apiClient.updateSettings({
+    mock: id,
+  });
+};
+
 const setDelay = (delay) => {
-  return adminApiClient.settings.update({
+  return apiClient.updateSettings({
     delay,
   });
 };
 
 const setSettings = (newSettings) => {
-  return adminApiClient.settings.update(newSettings);
+  return apiClient.updateSettings(newSettings);
+};
+
+const useRouteVariant = (id) => {
+  return apiClient.addMockCustomRouteVariant(id);
+};
+
+const restoreRoutesVariants = () => {
+  return apiClient.restoreMockRoutesVariants();
 };
 
 // TODO, remove when admin-api-client supports adminApiPath option
@@ -25,12 +39,15 @@ const mapConfig = (customConfig) => {
   if (customConfig.baseUrl) {
     configToSet.baseUrl = customConfig.baseUrl;
   }
-  return adminApiClient.config(configToSet);
+  return apiClient.config(configToSet);
 };
 
 module.exports = {
   setBehavior,
+  setMock,
   setDelay,
   setSettings,
   config: mapConfig,
+  useRouteVariant,
+  restoreRoutesVariants,
 };

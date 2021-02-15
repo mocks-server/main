@@ -1,27 +1,37 @@
 const sinon = require("sinon");
-const adminApiClient = require("@mocks-server/admin-api-client");
+const apiClient = require("@mocks-server/admin-api-client");
 
-const { setBehavior, setDelay, setSettings, config } = require("../src/commands");
+const {
+  setMock,
+  setBehavior,
+  setDelay,
+  setSettings,
+  useRouteVariant,
+  restoreRoutesVariants,
+  config,
+} = require("../src/commands");
 
 describe("commands", () => {
   let sandbox;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    sandbox.stub(adminApiClient.settings, "update");
-    sandbox.stub(adminApiClient, "config");
+    sandbox.stub(apiClient, "updateSettings");
+    sandbox.stub(apiClient, "addMockCustomRouteVariant"); // useRouteVariant
+    sandbox.stub(apiClient, "restoreMockRoutesVariants"); // restoreRoutesVariants
+    sandbox.stub(apiClient, "config");
   });
 
   afterEach(() => {
     sandbox.restore();
   });
 
-  describe("setBehavior command", () => {
-    it("should call to update behavior", () => {
-      setBehavior("foo-behavior");
+  describe("setMock command", () => {
+    it("should call to update delay", () => {
+      setMock("foo");
       expect(
-        adminApiClient.settings.update.calledWith({
-          behavior: "foo-behavior",
+        apiClient.updateSettings.calledWith({
+          mock: "foo",
         })
       ).toBe(true);
     });
@@ -31,7 +41,7 @@ describe("commands", () => {
     it("should call to update delay", () => {
       setDelay(3000);
       expect(
-        adminApiClient.settings.update.calledWith({
+        apiClient.updateSettings.calledWith({
           delay: 3000,
         })
       ).toBe(true);
@@ -41,7 +51,32 @@ describe("commands", () => {
   describe("setSettings command", () => {
     it("should call to update delay", () => {
       setSettings("foo");
-      expect(adminApiClient.settings.update.calledWith("foo")).toBe(true);
+      expect(apiClient.updateSettings.calledWith("foo")).toBe(true);
+    });
+  });
+
+  describe("useRouteVariant command", () => {
+    it("should call to useRoute variant", () => {
+      useRouteVariant("foo");
+      expect(apiClient.addMockCustomRouteVariant.calledWith("foo")).toBe(true);
+    });
+  });
+
+  describe("restoreRoutesVariants command", () => {
+    it("should call to useRoute variant", () => {
+      restoreRoutesVariants();
+      expect(apiClient.restoreMockRoutesVariants.callCount).toEqual(1);
+    });
+  });
+
+  describe("setBehavior command", () => {
+    it("should call to update behavior", () => {
+      setBehavior("foo-behavior");
+      expect(
+        apiClient.updateSettings.calledWith({
+          behavior: "foo-behavior",
+        })
+      ).toBe(true);
     });
   });
 
@@ -51,7 +86,7 @@ describe("commands", () => {
         baseUrl: "foo",
       });
       expect(
-        adminApiClient.config.calledWith({
+        apiClient.config.calledWith({
           baseUrl: "foo",
         })
       ).toBe(true);
@@ -62,7 +97,7 @@ describe("commands", () => {
         adminApiPath: "foo",
       });
       expect(
-        adminApiClient.config.calledWith({
+        apiClient.config.calledWith({
           apiPath: "foo",
         })
       ).toBe(true);

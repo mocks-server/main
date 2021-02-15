@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 ### Added
 ### Changed
+- chore(deps): Update dependencies to mocks-server v2 compatible versions.
 ### Fixed
 ### Removed
 

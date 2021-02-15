@@ -20,14 +20,26 @@ describe("react-admin-client methods used through node", () => {
   });
 
   describe("when reading alerts", () => {
-    describe("when there are no alerts", () => {
-      it("should return an empty array", async () => {
+    describe("when there are alerts", () => {
+      it("should return alerts", async () => {
         const alerts = await readAlerts();
-        expect(alerts).toEqual([]);
+        expect(alerts.length).toEqual(2);
+      });
+
+      it("should return alert about legacy usage", async () => {
+        const alerts = await readAlerts();
+        expect(alerts[0].message).toEqual(expect.stringContaining("Legacy mocks enabled"));
+      });
+
+      it("should return alert about mock not defined", async () => {
+        const alerts = await readAlerts();
+        expect(alerts[1].message).toEqual(
+          expect.stringContaining('Option "mock" was not defined')
+        );
       });
     });
 
-    describe("when there are alerts", () => {
+    describe("when there are alerts about files with error", () => {
       it("should return alerts array", async () => {
         expect.assertions(1);
         await updateSettings({
@@ -35,25 +47,27 @@ describe("react-admin-client methods used through node", () => {
         });
         await wait(2000);
         const alerts = await readAlerts();
-        expect(alerts.length).toEqual(1);
+        expect(alerts.length).toEqual(4);
       });
 
-      it("first alert model should exist", async () => {
+      it("alert about files error should exist", async () => {
         const alerts = await readAlerts();
-        const alertId = alerts[0].id;
+        const alertId = alerts[3].id;
         const alert = await readAlert(alertId);
         expect(alert.id).toEqual(alertId);
+        expect(alert.message).toEqual(expect.stringContaining("Error loading mocks"));
       });
     });
 
     describe("when alerts are removed", () => {
-      it("should return an empty array again", async () => {
+      it("should return only one alert about legacy usage", async () => {
         await updateSettings({
           path: "mocks",
+          mock: "base",
         });
         await wait(2000);
         const alerts = await readAlerts();
-        expect(alerts).toEqual([]);
+        expect(alerts.length).toEqual(1);
       });
     });
   });

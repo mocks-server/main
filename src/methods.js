@@ -2,11 +2,16 @@ import fetch from "cross-fetch";
 
 import {
   DEFAULT_BASE_PATH,
-  ABOUT,
   SETTINGS,
+  ABOUT,
+  ALERTS,
+  /* MOCKS,
+  ROUTES,
+  ROUTES_VARIANTS,
+  MOCK_CUSTOM_ROUTES_VARIANTS, */
+  LEGACY,
   BEHAVIORS,
   FIXTURES,
-  ALERTS,
 } from "@mocks-server/admin-api-paths";
 
 const DEFAULT_OPTIONS = {
@@ -62,16 +67,16 @@ export const about = new Fetcher(ABOUT);
 
 export const settings = new Fetcher(SETTINGS);
 
-export const behaviors = new Fetcher(BEHAVIORS);
+export const behaviors = new Fetcher(`${LEGACY}/${BEHAVIORS}`);
 
 export const behavior = (name) => {
-  return new Fetcher(BEHAVIORS, name);
+  return new Fetcher(`${LEGACY}/${BEHAVIORS}`, name);
 };
 
-export const fixtures = new Fetcher(FIXTURES);
+export const fixtures = new Fetcher(`${LEGACY}/${FIXTURES}`);
 
 export const fixture = (id) => {
-  return new Fetcher(FIXTURES, id);
+  return new Fetcher(`${LEGACY}/${FIXTURES}`, id);
 };
 
 export const alerts = new Fetcher(ALERTS);

@@ -11,8 +11,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 ### Changed
 - docs(readme): Add main features. Add interactive cli image
+- test(e2e): Remove duplicated e2e tests. Add scaffold e2e tests
 ### Fixed
 ### Removed
+### Breaking change
+- Remove Server and Cli constructors. @mocks-server/core has to be used instead.
+
+## [2.0.0-beta.1] - 2021-02-15
+
+### Changed
+- docs(readme): Add main features. Add interactive cli image
+- test(e2e): Remove duplicated e2e tests. Add scaffold e2e tests
+
 ### Breaking change
 - Remove Server and Cli constructors. @mocks-server/core has to be used instead.
 

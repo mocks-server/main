@@ -54,6 +54,7 @@ When started for the first time, __it creates a scaffold folder__ named `mocks` 
 project-root/
 ├── mocks/
 │   ├── routes/
+│   │   ├── middlewares.js
 │   │   └── users.js
 │   └── mocks.json
 └── mocks.config.js

@@ -137,13 +137,6 @@ describe("react-admin-client methods used with node", () => {
       const fixture = await readFixture(fixtureId);
       expect(fixture.id).toEqual(fixtureId);
     });
-
-    it("first fixture of behavior user2 should exist", async () => {
-      const behaviors = await readBehaviors();
-      const fixtureId = behaviors[1].fixtures[0];
-      const fixture = await readFixture(fixtureId);
-      expect(fixture.id).toEqual(fixtureId);
-    });
   });
 
   describe("when reading settings", () => {

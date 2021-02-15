@@ -7,9 +7,9 @@
 
 # Mocks-server administration api client
 
-This package contains methods for administrating `mocks-server` _(through the [@mocks-server/plugin-admin-api](https://github.com/mocks-server/plugin-admin-api) REST API)_.
+This package contains methods for administrating Mocks Server _(using the [@mocks-server/plugin-admin-api](https://github.com/mocks-server/plugin-admin-api) REST API)_.
 
-Requests to `mocks-server` are made using [cross-fetch](https://www.npmjs.com/package/cross-fetch), which makes this package compatible with browsers and nodejs environments, but, if you are going to build a browser application, you'll probably prefer to use the [@mocks-server/admin-api-client-data-provider package](https://www.npmjs.com/package/@mocks-server/admin-api-client-data-provider), which uses [@data-provider](https://github.com/data-provider), and works well with Redux, React, etc.
+Requests to the Mocks Server API are made using [cross-fetch](https://www.npmjs.com/package/cross-fetch), which makes this package compatible with browsers and nodejs environments, but, if you are going to build a browser application, you'll probably prefer to use the [@mocks-server/admin-api-client-data-provider package](https://www.npmjs.com/package/@mocks-server/admin-api-client-data-provider), which uses [@data-provider](https://github.com/data-provider), and works well with Redux, React, etc.
 
 ## Install
 
@@ -64,9 +64,9 @@ example();
 
 ## Configuration
 
-By default, the client is configured to request to http://localhost:3100/admin, based in the [default options of @mocks-server](https://www.mocks-server.org/docs/configuration-options)
+By default, the client is configured to request to `http://localhost:3100/admin`, based in the [default options of Mocks Server](https://www.mocks-server.org/docs/configuration-options)
 
-You can change both the base url of the "@mocks-server", and the base api path of the "@mocks-server/plugin-admin-api" using the `config` method:
+You can change both the base url of Mocks Server, and the base api path of the "@mocks-server/plugin-admin-api" using the `config` method:
 
 ```js
 import { config } from "@mocks-server/admin-api-client";

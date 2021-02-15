@@ -1,17 +1,28 @@
+import { wait } from "./support/helpers";
+
 import {
   readAbout,
+  readSettings,
+  updateSettings,
+  readAlerts,
+  readAlert,
+  readMocks,
+  readMock,
+  readRoutes,
+  readRoute,
+  readRoutesVariants,
+  readRouteVariant,
+  readMockCustomRoutesVariants,
+  addMockCustomRouteVariant,
+  restoreMockRoutesVariants,
+  // legacy
   readBehaviors,
   readBehavior,
   readFixtures,
   readFixture,
-  readSettings,
-  readAlerts,
-  readAlert,
-  updateSettings,
-  wait,
-} from "./support/helpers";
+} from "../index";
 
-describe("react-admin-client methods used through node", () => {
+describe("react-admin-client methods used with node", () => {
   describe("when reading about", () => {
     it("should return current version", async () => {
       const about = await readAbout();
@@ -171,6 +182,110 @@ describe("react-admin-client methods used through node", () => {
       });
       const settings = await readSettings();
       expect(settings.behavior).toEqual("base");
+    });
+  });
+
+  describe("when reading mocks", () => {
+    it("should return mocks", async () => {
+      const mocks = await readMocks();
+      expect(mocks).toEqual([
+        { id: "base", routesVariants: ["get-user:1"] },
+        { id: "user2", routesVariants: ["get-user:2"] },
+      ]);
+    });
+  });
+
+  describe("when reading mock", () => {
+    it("should return mock data", async () => {
+      const mock = await readMock("base");
+      expect(mock).toEqual({ id: "base", routesVariants: ["get-user:1"] });
+    });
+  });
+
+  describe("when reading routes", () => {
+    it("should return routes", async () => {
+      const data = await readRoutes();
+      expect(data).toEqual([
+        {
+          id: "get-user",
+          url: "/api/user",
+          method: "GET",
+          variants: ["get-user:1", "get-user:2"],
+        },
+      ]);
+    });
+  });
+
+  describe("when reading mock", () => {
+    it("should return mock data", async () => {
+      const mock = await readRoute("get-user");
+      expect(mock).toEqual({
+        id: "get-user",
+        url: "/api/user",
+        method: "GET",
+        variants: ["get-user:1", "get-user:2"],
+      });
+    });
+  });
+
+  describe("when reading routes variants", () => {
+    it("should return routes variants", async () => {
+      const data = await readRoutesVariants();
+      expect(data).toEqual([
+        {
+          id: "get-user:1",
+          routeId: "get-user",
+          handler: "default",
+          response: { body: [{ email: "foo@foo.com" }], status: 200 },
+          delay: null,
+        },
+        {
+          id: "get-user:2",
+          routeId: "get-user",
+          handler: "default",
+          response: { body: [{ email: "foo2@foo2.com" }], status: 200 },
+          delay: null,
+        },
+      ]);
+    });
+  });
+
+  describe("when reading route variant", () => {
+    it("should return route variant data", async () => {
+      const data = await readRouteVariant("get-user:2");
+      expect(data).toEqual({
+        id: "get-user:2",
+        routeId: "get-user",
+        handler: "default",
+        response: { body: [{ email: "foo2@foo2.com" }], status: 200 },
+        delay: null,
+      });
+    });
+  });
+
+  describe("mock custom route variants", () => {
+    it("should be empty", async () => {
+      const data = await readMockCustomRoutesVariants();
+      expect(data).toEqual([]);
+    });
+
+    it("should be able to add one", async () => {
+      await addMockCustomRouteVariant("get-user:2");
+      const data = await readMockCustomRoutesVariants();
+      expect(data).toEqual(["get-user:2"]);
+    });
+
+    it("should reject if route variant don't exist", async () => {
+      expect.assertions(1);
+      await addMockCustomRouteVariant("foo").catch((err) => {
+        expect(err.message).toEqual('Route variant with id "foo" was not found');
+      });
+    });
+
+    it("should be empty after restoring them to the mock defaults", async () => {
+      await restoreMockRoutesVariants();
+      const data = await readMockCustomRoutesVariants();
+      expect(data).toEqual([]);
     });
   });
 });

@@ -6,10 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
+- feat: Expose one different method for each action.
+- feat: Reject promises in case of status code different to 2xx
 ### Changed
 - feat: Update mocks-server dependencies to v2 beta versions and adapt routes and tests.
 ### Fixed
 ### Removed
+- feat: Make private entities
+### Breaking change
+- Removed previous entity-based methods
 
 ## [2.1.0] - 2020-12-26
 

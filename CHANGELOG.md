@@ -4,8 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [To be deprecated]
-- Remove Server and Cli constructors. @mocks-server/core has to be used instead.
+## [To be removed]
+- Do not export deprecated Behavior Class
 
 ## [unreleased]
 ### Added
@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - docs(readme): Add main features. Add interactive cli image
 ### Fixed
 ### Removed
+### Breaking change
+- Remove Server and Cli constructors. @mocks-server/core has to be used instead.
 
 ## [1.9.0] - 2020-12-25
 

@@ -31,16 +31,16 @@ The UMD build is also available on unpkg:
 All methods described in the [Api](#api) (except the `config` method) return Promises when executed:
 
 ```js
-import { about, settings } from "@mocks-server/admin-api-client";
+import { readAbout, readSettings, updateSettings } from "@mocks-server/admin-api-client";
 
 const example = async () => {
-  const { version } = await about.read();
+  const { version } = await readAbout();
   console.log(`Current Admin API plugin version is ${version}`);
 
-  const currentSettings = await settings.read();
+  const currentSettings = await readSettings();
   console.log("Current Mocks Server settings are", currentSettings);
 
-  await settings.update({
+  await updateSettings({
     mock: "user-super-admin",
     delay: 1000
   });
@@ -52,18 +52,27 @@ example();
 
 ## Api
 
-* `about.read()` - Returns info about the Admin API plugin, such as current version.
-* `settings.read()` - Returns current Mocks Server settings.
-* `settings.update(settingsObject)` - Updates Mocks Server settings. A settings object has to be provided. Read the [Mocks Server configuration docs](https://www.mocks-server.org/docs/configuration-options) for further info.
-* `alerts.read()` - Returns array of current alerts.
-* `alert(alertId).read()` - Returns an specific alert.
+* `readAbout()` - Returns info about the Admin API plugin, such as current version.
+* `readSettings()` - Returns current Mocks Server settings.
+* `updateSettings(settingsObject)` - Updates Mocks Server settings. A settings object has to be provided. Read the [Mocks Server configuration docs](https://www.mocks-server.org/docs/configuration-options) for further info.
+* `readAlerts()` - Returns array of current alerts.
+* `readAlert(alertId)` - Returns an specific alert.
+* `readMocks()` - Returns available mocks.
+* `readMock(id)` - Returns data of a specific mock.
+* `readRoutes()` - Returns available routes.
+* `readRoute(id)` - Returns data of a specific route.
+* `readRoutesVariants()` - Returns available routes variants.
+* `readRouteVariant(id)` - Returns data of a specific route variant.
+* `readMockCustomRoutesVariants()` - Returns current routes variants manually added to current mock.
+* `addMockCustomRouteVariant(id)` - Add a route variant to current mock.
+* `restoreMockRoutesVariants()` - Restore current mock original routes variants.
 
 ##### Legacy methods
 
-* `behaviors.read()` - Returns collection of available behaviors.
-* `behavior(behaviorName).read()` - Returns an specific behavior.
-* `fixtures.read()` - Returns collection of available fixtures.
-* `fixture(fixtureId).read()` - Returns an specific fixture.
+* `readBehaviors()` - Returns collection of available behaviors.
+* `readBehavior(behaviorName)` - Returns an specific behavior.
+* `readFixtures()` - Returns collection of available fixtures.
+* `readFixture(fixtureId)` - Returns an specific fixture.
 
 ## Configuration
 

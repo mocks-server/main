@@ -28,12 +28,14 @@ describe("routes api", () => {
       expect(response.body).toEqual([
         {
           id: "get-user",
+          delay: null,
           url: "/api/users/:id",
           method: "GET",
           variants: ["get-user:1", "get-user:2", "get-user:real"],
         },
         {
           id: "get-users",
+          delay: null,
           url: "/api/users",
           method: "GET",
           variants: ["get-users:success", "get-users:error"],
@@ -47,6 +49,7 @@ describe("routes api", () => {
       const response = await fetch("/admin/routes/get-user");
       expect(response.body).toEqual({
         id: "get-user",
+        delay: null,
         url: "/api/users/:id",
         method: "GET",
         variants: ["get-user:1", "get-user:2", "get-user:real"],
@@ -59,6 +62,7 @@ describe("routes api", () => {
       const response = await fetch("/admin/routes/get-users");
       expect(response.body).toEqual({
         id: "get-users",
+        delay: null,
         url: "/api/users",
         method: "GET",
         variants: ["get-users:success", "get-users:error"],

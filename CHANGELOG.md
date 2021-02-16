@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [2.0.0-beta.2] - 2021-01-16
+
+### Changed
+- chore(deps): Update mocks-server/core dependency. Adapt tests.
+
 ## [2.0.0-beta.1] - 2021-01-14
 
 ### Added

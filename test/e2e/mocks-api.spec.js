@@ -26,9 +26,24 @@ describe("mocks api", () => {
     it("should return current mocks", async () => {
       const response = await fetch("/admin/mocks");
       expect(response.body).toEqual([
-        { id: "base", routesVariants: ["get-users:success", "get-user:1"] },
-        { id: "user-2", routesVariants: ["get-users:success", "get-user:2"] },
-        { id: "user-real", routesVariants: ["get-users:success", "get-user:real"] },
+        {
+          id: "base",
+          from: null,
+          routesVariants: ["get-users:success", "get-user:1"],
+          appliedRoutesVariants: ["get-users:success", "get-user:1"],
+        },
+        {
+          id: "user-2",
+          from: "base",
+          routesVariants: ["get-user:2"],
+          appliedRoutesVariants: ["get-users:success", "get-user:2"],
+        },
+        {
+          id: "user-real",
+          from: "base",
+          routesVariants: ["get-user:real"],
+          appliedRoutesVariants: ["get-users:success", "get-user:real"],
+        },
       ]);
     });
   });
@@ -38,7 +53,9 @@ describe("mocks api", () => {
       const response = await fetch("/admin/mocks/base");
       expect(response.body).toEqual({
         id: "base",
+        from: null,
         routesVariants: ["get-users:success", "get-user:1"],
+        appliedRoutesVariants: ["get-users:success", "get-user:1"],
       });
     });
   });
@@ -48,7 +65,9 @@ describe("mocks api", () => {
       const response = await fetch("/admin/mocks/user-2");
       expect(response.body).toEqual({
         id: "user-2",
-        routesVariants: ["get-users:success", "get-user:2"],
+        from: "base",
+        routesVariants: ["get-user:2"],
+        appliedRoutesVariants: ["get-users:success", "get-user:2"],
       });
     });
   });

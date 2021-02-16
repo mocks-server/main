@@ -6,14 +6,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
-- feat: Add mocksSetMock, mocksUseRouteVariant and mocksRestoreRoutesVariants commands
+- feat: Add `mocksConfig`, `mocksSetMock`, `mocksUseRouteVariant` and `mocksRestoreRoutesVariants` commands
+- feat: Add support for environment variables `MOCKS_SERVER_ENABLED`, `MOCKS_SERVER_BASE_URL` and `MOCKS_SERVER_ADMIN_API_PATH`
 ### Changed
-- feat: Rename mocksServerSetBehavior command to mocksSetBehavior
-- feat: Rename mocksServerSetDelay command to mocksSetDelay
-- feat: Rename mocksServerSetSettings command to mocksSetSettings
-- chore(deps): Update dependencies to mocks-server v2 compatible versions.
+- feat: Rename `mocksServerSetBehavior` command to `mocksSetBehavior`
+- feat: Rename `mocksServerSetDelay` command to `mocksSetDelay`
+- feat: Rename `mocksServerSetSettings` command to `mocksSetSettings`
+- chore(deps): Update dependencies to mocks-server v2 compatible versions
 ### Fixed
 ### Removed
+- feat: Remove `config` method, `cy.mocksConfig` command should be used instead
+- test(e2e): Remove e2e tests using data-provider, as it does not concern to this package
+### Breaking changes
+- Rename `mocksServerSetBehavior` command to `mocksSetBehavior`
+- Rename `mocksServerSetDelay` command to `mocksSetDelay`
+- Rename `mocksServerSetSettings` command to `mocksSetSettings`
+- Remove `config` method, `cy.mocksConfig` command should be used instead
 
 ## [1.0.8] - 2020-12-21
 

@@ -1,18 +1,14 @@
 const sinon = require("sinon");
 const apiClient = require("@mocks-server/admin-api-client");
 
-const {
-  setMock,
-  setBehavior,
-  setDelay,
-  setSettings,
-  useRouteVariant,
-  restoreRoutesVariants,
-  config,
-} = require("../src/commands");
+const CypressMock = require("./Cypress.mock");
+
+const commands = require("../src/commands");
 
 describe("commands", () => {
   let sandbox;
+  let cypressMock;
+  let setMock, setBehavior, setDelay, setSettings, useRouteVariant, restoreRoutesVariants, config;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -20,6 +16,16 @@ describe("commands", () => {
     sandbox.stub(apiClient, "addMockCustomRouteVariant"); // useRouteVariant
     sandbox.stub(apiClient, "restoreMockRoutesVariants"); // restoreRoutesVariants
     sandbox.stub(apiClient, "config");
+    cypressMock = new CypressMock();
+    ({
+      setMock,
+      setBehavior,
+      setDelay,
+      setSettings,
+      useRouteVariant,
+      restoreRoutesVariants,
+      config,
+    } = commands(cypressMock.stubs));
   });
 
   afterEach(() => {
@@ -35,6 +41,12 @@ describe("commands", () => {
         })
       ).toBe(true);
     });
+
+    it("should do nothing if plugin is disabled", () => {
+      cypressMock.stubs.env.returns("false");
+      setMock("foo");
+      expect(apiClient.updateSettings.callCount).toEqual(0);
+    });
   });
 
   describe("setDelay command", () => {
@@ -46,12 +58,24 @@ describe("commands", () => {
         })
       ).toBe(true);
     });
+
+    it("should do nothing if plugin is disabled", () => {
+      cypressMock.stubs.env.returns("false");
+      setDelay("foo");
+      expect(apiClient.updateSettings.callCount).toEqual(0);
+    });
   });
 
   describe("setSettings command", () => {
     it("should call to update delay", () => {
       setSettings("foo");
       expect(apiClient.updateSettings.calledWith("foo")).toBe(true);
+    });
+
+    it("should do nothing if plugin is disabled", () => {
+      cypressMock.stubs.env.returns("0");
+      setSettings("foo");
+      expect(apiClient.updateSettings.callCount).toEqual(0);
     });
   });
 
@@ -60,12 +84,24 @@ describe("commands", () => {
       useRouteVariant("foo");
       expect(apiClient.addMockCustomRouteVariant.calledWith("foo")).toBe(true);
     });
+
+    it("should do nothing if plugin is disabled", () => {
+      cypressMock.stubs.env.returns(0);
+      useRouteVariant("foo");
+      expect(apiClient.addMockCustomRouteVariant.callCount).toEqual(0);
+    });
   });
 
   describe("restoreRoutesVariants command", () => {
     it("should call to useRoute variant", () => {
       restoreRoutesVariants();
       expect(apiClient.restoreMockRoutesVariants.callCount).toEqual(1);
+    });
+
+    it("should do nothing if plugin is disabled", () => {
+      cypressMock.stubs.env.returns(false);
+      restoreRoutesVariants();
+      expect(apiClient.restoreMockRoutesVariants.callCount).toEqual(0);
     });
   });
 
@@ -77,6 +113,12 @@ describe("commands", () => {
           behavior: "foo-behavior",
         })
       ).toBe(true);
+    });
+
+    it("should do nothing if plugin is disabled", () => {
+      cypressMock.stubs.env.returns(false);
+      setBehavior("foo-behavior");
+      expect(apiClient.updateSettings.callCount).toEqual(0);
     });
   });
 

@@ -15,6 +15,10 @@ describe("register", () => {
   });
 
   describe("commands", () => {
+    it("should register mocksConfig command", () => {
+      expect(cypressMock.stubs.Commands.add.calledWith("mocksConfig")).toBe(true);
+    });
+
     it("should register mocksSetMock command", () => {
       expect(cypressMock.stubs.Commands.add.calledWith("mocksSetMock")).toBe(true);
     });

@@ -68,10 +68,12 @@ function commands(Cypress) {
     return apiClient.config(customConfig);
   };
 
-  config({
-    adminApiPath: Cypress.env(ADMIN_API_PATH_ENVIRONMENT_VAR),
-    baseUrl: Cypress.env(BASE_URL_ENVIRONMENT_VAR),
-  });
+  if (Cypress.env(ADMIN_API_PATH_ENVIRONMENT_VAR)) {
+    config({ adminApiPath: Cypress.env(ADMIN_API_PATH_ENVIRONMENT_VAR) });
+  }
+  if (Cypress.env(BASE_URL_ENVIRONMENT_VAR)) {
+    config({ baseUrl: Cypress.env(BASE_URL_ENVIRONMENT_VAR) });
+  }
 
   return {
     setBehavior,

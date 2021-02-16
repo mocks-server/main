@@ -32,6 +32,28 @@ describe("commands", () => {
     sandbox.restore();
   });
 
+  describe("when initializing", () => {
+    it("should call to set adminApiPath config if env var is defined", () => {
+      cypressMock.stubs.env.withArgs("MOCKS_SERVER_ADMIN_API_PATH").returns("foo");
+      commands(cypressMock.stubs);
+      expect(
+        apiClient.config.calledWith({
+          adminApiPath: "foo",
+        })
+      ).toBe(true);
+    });
+
+    it("should call to set baseUrl config if env var is defined", () => {
+      cypressMock.stubs.env.withArgs("MOCKS_SERVER_BASE_URL").returns("foo");
+      commands(cypressMock.stubs);
+      expect(
+        apiClient.config.calledWith({
+          baseUrl: "foo",
+        })
+      ).toBe(true);
+    });
+  });
+
   describe("setMock command", () => {
     it("should call to update delay", () => {
       setMock("foo");

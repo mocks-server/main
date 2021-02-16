@@ -13,8 +13,8 @@ describe("commands", () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     sandbox.stub(apiClient, "updateSettings");
-    sandbox.stub(apiClient, "addMockCustomRouteVariant"); // useRouteVariant
-    sandbox.stub(apiClient, "restoreMockRoutesVariants"); // restoreRoutesVariants
+    sandbox.stub(apiClient, "useRouteVariant");
+    sandbox.stub(apiClient, "restoreRoutesVariants");
     sandbox.stub(apiClient, "config");
     cypressMock = new CypressMock();
     ({
@@ -82,26 +82,26 @@ describe("commands", () => {
   describe("useRouteVariant command", () => {
     it("should call to useRoute variant", () => {
       useRouteVariant("foo");
-      expect(apiClient.addMockCustomRouteVariant.calledWith("foo")).toBe(true);
+      expect(apiClient.useRouteVariant.calledWith("foo")).toBe(true);
     });
 
     it("should do nothing if plugin is disabled", () => {
       cypressMock.stubs.env.returns(0);
       useRouteVariant("foo");
-      expect(apiClient.addMockCustomRouteVariant.callCount).toEqual(0);
+      expect(apiClient.useRouteVariant.callCount).toEqual(0);
     });
   });
 
   describe("restoreRoutesVariants command", () => {
     it("should call to useRoute variant", () => {
       restoreRoutesVariants();
-      expect(apiClient.restoreMockRoutesVariants.callCount).toEqual(1);
+      expect(apiClient.restoreRoutesVariants.callCount).toEqual(1);
     });
 
     it("should do nothing if plugin is disabled", () => {
       cypressMock.stubs.env.returns(false);
       restoreRoutesVariants();
-      expect(apiClient.restoreMockRoutesVariants.callCount).toEqual(0);
+      expect(apiClient.restoreRoutesVariants.callCount).toEqual(0);
     });
   });
 
@@ -140,7 +140,7 @@ describe("commands", () => {
       });
       expect(
         apiClient.config.calledWith({
-          apiPath: "foo",
+          adminApiPath: "foo",
         })
       ).toBe(true);
     });

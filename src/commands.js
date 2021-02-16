@@ -54,26 +54,18 @@ function commands(Cypress) {
     if (isDisabled()) {
       return doNothing();
     }
-    return apiClient.addMockCustomRouteVariant(id);
+    return apiClient.useRouteVariant(id);
   };
 
   const restoreRoutesVariants = () => {
     if (isDisabled()) {
       return doNothing();
     }
-    return apiClient.restoreMockRoutesVariants();
+    return apiClient.restoreRoutesVariants();
   };
 
-  // TODO, remove when admin-api-client supports adminApiPath option
   const config = (customConfig) => {
-    const configToSet = {};
-    if (customConfig.adminApiPath) {
-      configToSet.apiPath = customConfig.adminApiPath;
-    }
-    if (customConfig.baseUrl) {
-      configToSet.baseUrl = customConfig.baseUrl;
-    }
-    return apiClient.config(configToSet);
+    return apiClient.config(customConfig);
   };
 
   config({

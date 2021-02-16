@@ -9,6 +9,7 @@
 # tests
 /coverage
 /dist
+/public/main.js
 
 # misc
 .DS_Store

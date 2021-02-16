@@ -57,15 +57,21 @@ describe("scaffold", () => {
       expect(response.body).toEqual([
         {
           id: "base",
+          from: null,
           routesVariants: ["add-headers:enabled", "get-users:success", "get-user:success"],
+          appliedRoutesVariants: ["add-headers:enabled", "get-users:success", "get-user:success"],
         },
         {
           id: "no-headers",
-          routesVariants: ["add-headers:disabled", "get-users:success", "get-user:success"],
+          from: "base",
+          routesVariants: ["add-headers:disabled"],
+          appliedRoutesVariants: ["add-headers:disabled", "get-users:success", "get-user:success"],
         },
         {
           id: "user-real",
-          routesVariants: ["add-headers:disabled", "get-users:success", "get-user:real"],
+          from: "no-headers",
+          routesVariants: ["get-user:real"],
+          appliedRoutesVariants: ["add-headers:disabled", "get-users:success", "get-user:real"],
         },
       ]);
     });
@@ -78,18 +84,21 @@ describe("scaffold", () => {
         {
           id: "add-headers",
           url: "*",
+          delay: null,
           method: "GET",
           variants: ["add-headers:enabled", "add-headers:disabled"],
         },
         {
           id: "get-users",
           url: "/api/users",
+          delay: null,
           method: "GET",
           variants: ["get-users:success", "get-users:error"],
         },
         {
           id: "get-user",
           url: "/api/users/:id",
+          delay: null,
           method: "GET",
           variants: ["get-user:success", "get-user:real"],
         },

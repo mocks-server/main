@@ -55,6 +55,10 @@ Sets any [Mocks Server setting][mocks-server-options-url].
 
 Configures the [Mocks Server administration API client](https://github.com/mocks-server/admin-api-client), used under the hood.
 
+##### `cy.mocksSetBeavior("foo")`
+
+Legacy method that sets behavior in Mocks Server v1.x
+
 ## Configuration
 
 By default, the API client is configured to request to `http://localhost:3100/admin`, based in the [default Mocks Server options][mocks-server-options-url]

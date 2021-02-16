@@ -16,6 +16,7 @@ const fsExtra = require("fs-extra");
 
 const { map, debounce, flatten } = require("lodash");
 
+const { mocksFileToUse } = require("./helpers");
 const { createMocksFolder } = require("../../support/scaffold");
 
 const PLUGIN_NAME = "@mocks-server/core/plugin-files-loader";
@@ -156,11 +157,7 @@ class FilesLoaderBase {
   _loadMocksFile() {
     const mocksFileJs = path.resolve(this._path, `${MOCKS_FILE}.js`);
     const mocksFileJson = path.resolve(this._path, `${MOCKS_FILE}.json`);
-    const mocksFile = fsExtra.existsSync(mocksFileJs)
-      ? mocksFileJs
-      : fsExtra.existsSync(mocksFileJson)
-      ? mocksFileJson
-      : null;
+    let mocksFile = mocksFileToUse(mocksFileJs, mocksFileJson);
     if (mocksFile) {
       try {
         const mocks = this._require(mocksFile);

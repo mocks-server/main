@@ -53,9 +53,7 @@ function getVariantId(routeId, variantId) {
 
 function getPlainMocks(mocks, mocksDefinitions) {
   return mocks.map((mock) => {
-    const mockDefinition = mocksDefinitions.find(
-      (mockDefinition) => mockDefinition.id === mock.id
-    );
+    const mockDefinition = mocksDefinitions.find((mockCandidate) => mockCandidate.id === mock.id);
     return {
       id: mock.id,
       from: (mockDefinition && mockDefinition.from) || null,

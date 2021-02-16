@@ -14,6 +14,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGES
 
+## [2.0.0-beta.2] - 2021-01-16
+
+### Added
+- feat: Add legacy options to config scaffold
+
+### Changed
+- feat: Include `from` and original `routesVariants` in plain mocks
+
 ## [2.0.0-beta.1] - 2021-01-14
 
 ### Added

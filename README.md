@@ -14,13 +14,13 @@ Providing an interactive command line user interface and a REST API for changing
 
 ### Main features
 
-* __Route variants__: Define many responses for a same route.
-* __Multiple mocks__: Group different route variants into different mocks. Change the used mock while the server is running using the interactive command line interface or the API.
-* __Multiple formats__: Responses can be defined using `json` files or Javascript files.
-* __Express middlewares__: Route variants can be defined as `express` middlewares.
-* __Multiple interfaces__: Settings can be changed using the [interactive CLI](plugins-inquirer-cli.md) or the [admin REST API](plugins-admin-api). The CLI is perfect for development, and the API can be used from tests, for example.
-* __Integrations__: Integrations with other tools are available, as the [Cypress plugin](integrations-cypress.md).
-* __Customizable__: You can develop your own plugins, or even route handlers, that allows you to customize the format in which route variants are defined.
+* __Route variants__: Define many responses for a same [route](https://www.mocks-server.org/docs/get-started-routes).
+* __Multiple mocks__: Group different [route variants](https://www.mocks-server.org/docs/get-started-routes) into different [mocks](https://www.mocks-server.org/docs/get-started-mocks). Change the current mock while the server is running using the [interactive command line interface](https://www.mocks-server.org/docs/plugins-inquirer-cli) or the [REST API](https://www.mocks-server.org/docs/plugins-admin-api).
+* __Multiple formats__: Responses can be defined [using `json` or JavaScript files](https://www.mocks-server.org/docs/guides-organizing-files).
+* __Express middlewares__: Route variants [can be defined as `express` middlewares](https://www.mocks-server.org/docs/guides-using-middlewares).
+* __Multiple interfaces__: Settings can be changed using the [interactive CLI](https://www.mocks-server.org/docs/plugins-inquirer-cli) or the [admin REST API](https://www.mocks-server.org/docs/plugins-admin-api). The CLI is perfect for development, and the API can be used from tests, for example.
+* __Integrations__: Integrations with other tools are available, as the [Cypress plugin](https://www.mocks-server.org/docs/integrations-cypress).
+* __Customizable__: You can [develop your own plugins](https://www.mocks-server.org/docs/plugins-developing-plugins), or even [routes handlers](https://www.mocks-server.org/docs/api-routes-handler), that allows to customize the format in which route variants are defined.
 
 ## Installation
 
@@ -118,7 +118,7 @@ Then, you can easily [change the responses of the API while the server is runnin
 
 ## Configuration
 
-Configure the server simply [creating a `mocks.config.js` file at the root folder of your project](https://www.mocks-server.org/docs/configuration-file).
+Configure the server simply [modifying the `mocks.config.js` file at the root folder of your project](https://www.mocks-server.org/docs/configuration-file).
 
 For changing [settings](https://www.mocks-server.org/docs/configuration-options) (such as current mock, delay time, etc.) while it is running, you can use:
 * [Interactive command line interface](https://www.mocks-server.org/docs/plugins-inquirer-cli), which is very useful in local environments for development.
@@ -141,7 +141,7 @@ As explained, the Mocks Server can store different mocks, which are sets of diff
 Mocks Server is very customizable, and gives you the possibility of extend it with every new amazing feature you want:
 
 - [Start it programmatically](https://www.mocks-server.org/docs/api-programmatic-usage) and use his multiple methods and events to manage it from your program.
-- Add new options and features [adding plugins](https://www.mocks-server.org/docs/plugins-adding-plugins), or [developing your owns](https://www.mocks-server.org/docs/plugins-developing-plugins).
+- Add new options and features [installing plugins](https://www.mocks-server.org/docs/plugins-adding-plugins), or [developing your owns](https://www.mocks-server.org/docs/plugins-developing-plugins).
 - Add new [routes handlers](https://www.mocks-server.org/docs/api-routes-handler), which allows to customize the format in which route variants are defined.
 
 

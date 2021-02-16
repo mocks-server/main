@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/main",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "description": "Mock Server supporting multiple route variants and mocks",
   "keywords": [
     "mock",
@@ -40,9 +40,9 @@
     "test:unit": "npm run test"
   },
   "dependencies": {
-    "@mocks-server/core": "2.0.0-beta.1",
-    "@mocks-server/plugin-admin-api": "2.0.0-beta.1",
-    "@mocks-server/plugin-inquirer-cli": "2.0.0-beta.1"
+    "@mocks-server/core": "2.0.0-beta.2",
+    "@mocks-server/plugin-admin-api": "2.0.0-beta.2",
+    "@mocks-server/plugin-inquirer-cli": "2.0.0-beta.2"
   },
   "devDependencies": {
     "eslint": "7.17.0",

@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [3.0.0-beta.2] - 2021-02-16
 
 ### Changed
-- chore(deps): Update depedencies. Adapt tests
+- chore(deps): Update dependencies. Adapt tests
 - feat: Rename `apiPath` config property into `adminApiPath`
 - feat: Rename `readMockCustomRoutesVariants` method into `readCustomRoutesVariants`
 - feat: Rename `addMockCustomRouteVariant` method into `useRouteVariant`

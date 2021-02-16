@@ -51,11 +51,16 @@ function getVariantId(routeId, variantId) {
   return `${routeId}:${variantId}`;
 }
 
-function getPlainMocks(mocks) {
+function getPlainMocks(mocks, mocksDefinitions) {
   return mocks.map((mock) => {
+    const mockDefinition = mocksDefinitions.find(
+      (mockDefinition) => mockDefinition.id === mock.id
+    );
     return {
       id: mock.id,
-      routesVariants: mock.routesVariants.map((routeVariant) => routeVariant.variantId),
+      from: (mockDefinition && mockDefinition.from) || null,
+      routesVariants: mockDefinition && mockDefinition.routesVariants,
+      appliedRoutesVariants: mock.routesVariants.map((routeVariant) => routeVariant.variantId),
     };
   });
 }
@@ -66,7 +71,7 @@ function getPlainRoutes(routes, routesVariants) {
       id: route.id,
       url: route.url,
       method: route.method,
-      delay: route.delay,
+      delay: route.delay || null,
       variants: route.variants
         .map((variant) => {
           const variantId = getVariantId(route.id, variant.id);

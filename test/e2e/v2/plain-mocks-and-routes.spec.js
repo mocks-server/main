@@ -39,14 +39,23 @@ describe("mocks and routes", () => {
   describe("plainMocks", () => {
     it("should return plain mocks", async () => {
       expect(core.mocks.plainMocks).toEqual([
-        { id: "base", routesVariants: ["get-users:success", "get-user:1"] },
+        {
+          id: "base",
+          from: null,
+          routesVariants: ["get-users:success", "get-user:1"],
+          appliedRoutesVariants: ["get-users:success", "get-user:1"],
+        },
         {
           id: "user-2",
-          routesVariants: ["get-users:success", "get-user:2"],
+          from: "base",
+          routesVariants: ["get-user:2"],
+          appliedRoutesVariants: ["get-users:success", "get-user:2"],
         },
         {
           id: "user-real",
-          routesVariants: ["get-users:success", "get-user:real"],
+          from: "base",
+          routesVariants: ["get-user:real"],
+          appliedRoutesVariants: ["get-users:success", "get-user:real"],
         },
       ]);
     });
@@ -57,14 +66,14 @@ describe("mocks and routes", () => {
           id: "get-user",
           url: "/api/users/:id",
           method: "GET",
-          delay: undefined,
+          delay: null,
           variants: ["get-user:1", "get-user:2", "get-user:real"],
         },
         {
           id: "get-users",
           url: "/api/users",
           method: "GET",
-          delay: undefined,
+          delay: null,
           variants: ["get-users:success", "get-users:error"],
         },
       ]);

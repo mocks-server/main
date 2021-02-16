@@ -151,7 +151,7 @@ class Mocks {
     this._mocksIds = getIds(this._mocks);
     this._plainRoutes = getPlainRoutes(this._routesDefinitions, this._routesVariants);
     this._plainRoutesVariants = getPlainRoutesVariants(this._routesVariants);
-    this._plainMocks = getPlainMocks(this._mocks);
+    this._plainMocks = getPlainMocks(this._mocks, this._mocksDefinitions);
     this.current = this._getCurrentMock();
   }
 

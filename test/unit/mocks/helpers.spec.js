@@ -146,38 +146,55 @@ describe("mocks helpers", () => {
   describe("getPlainMocks", () => {
     it("should return mocks ids and routeVariants ids", () => {
       expect(
-        getPlainMocks([
-          {
-            id: "mock-id-1",
-            routesVariants: [
-              {
-                variantId: "variant-id-1",
-              },
-              {
-                variantId: "variant-id-2",
-              },
-              {
-                variantId: "variant-id-3",
-              },
-            ],
-          },
-          {
-            id: "mock-id-2",
-            routesVariants: [
-              {
-                variantId: "variant-id-3",
-              },
-            ],
-          },
-        ])
+        getPlainMocks(
+          [
+            {
+              id: "mock-id-1",
+              routesVariants: [
+                {
+                  variantId: "variant-id-1",
+                },
+                {
+                  variantId: "variant-id-2",
+                },
+                {
+                  variantId: "variant-id-3",
+                },
+              ],
+            },
+            {
+              id: "mock-id-2",
+              routesVariants: [
+                {
+                  variantId: "variant-id-3",
+                },
+              ],
+            },
+          ],
+          [
+            {
+              id: "mock-id-1",
+              routesVariants: ["variant-id-1"],
+            },
+            {
+              id: "mock-id-2",
+              from: "mock-id-1",
+              routesVariants: ["variant-id-3"],
+            },
+          ]
+        )
       ).toEqual([
         {
           id: "mock-id-1",
-          routesVariants: ["variant-id-1", "variant-id-2", "variant-id-3"],
+          from: null,
+          routesVariants: ["variant-id-1"],
+          appliedRoutesVariants: ["variant-id-1", "variant-id-2", "variant-id-3"],
         },
         {
           id: "mock-id-2",
+          from: "mock-id-1",
           routesVariants: ["variant-id-3"],
+          appliedRoutesVariants: ["variant-id-3"],
         },
       ]);
     });

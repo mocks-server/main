@@ -63,9 +63,9 @@ example();
 * `readRoute(id)` - Returns data of a specific route.
 * `readRoutesVariants()` - Returns available routes variants.
 * `readRouteVariant(id)` - Returns data of a specific route variant.
-* `readMockCustomRoutesVariants()` - Returns current routes variants manually added to current mock.
-* `addMockCustomRouteVariant(id)` - Add a route variant to current mock.
-* `restoreMockRoutesVariants()` - Restore current mock original routes variants.
+* `readCustomRoutesVariants()` - Returns current routes variants manually added to current mock.
+* `useRouteVariant(id)` - Sets a specific route variant to be used by current mock.
+* `restoreRoutesVariants()` - Restore routes variants to those defined in current mock.
 
 ##### Legacy methods
 
@@ -78,13 +78,13 @@ example();
 
 By default, the client is configured to request to `http://localhost:3100/admin`, based in the [default options of Mocks Server](https://www.mocks-server.org/docs/configuration-options)
 
-You can change both the base url of Mocks Server, and the base api path of the Admin API plugin using the `config` method:
+You can change both the base url of Mocks Server, and the path of the [Admin API plugin][plugin-admin-api-url] using the `config` method:
 
 ```js
 import { config } from "@mocks-server/admin-api-client";
 
 config({
-  apiPath: "/foo-admin",
+  adminApiPath: "/foo-admin",
   baseUrl: "http://my-mocks-server:3000"
 });
 ```

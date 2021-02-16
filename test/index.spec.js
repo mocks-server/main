@@ -12,9 +12,9 @@ import {
   readRoute,
   readRoutesVariants,
   readRouteVariant,
-  readMockCustomRoutesVariants,
-  addMockCustomRouteVariant,
-  restoreMockRoutesVariants,
+  readCustomRoutesVariants,
+  useRouteVariant,
+  restoreRoutesVariants,
   // legacy
   readBehaviors,
   readBehavior,
@@ -182,8 +182,18 @@ describe("react-admin-client methods used with node", () => {
     it("should return mocks", async () => {
       const mocks = await readMocks();
       expect(mocks).toEqual([
-        { id: "base", routesVariants: ["get-user:1"] },
-        { id: "user2", routesVariants: ["get-user:2"] },
+        {
+          id: "base",
+          from: null,
+          routesVariants: ["get-user:1"],
+          appliedRoutesVariants: ["get-user:1"],
+        },
+        {
+          id: "user2",
+          from: null,
+          routesVariants: ["get-user:2"],
+          appliedRoutesVariants: ["get-user:2"],
+        },
       ]);
     });
   });
@@ -191,7 +201,12 @@ describe("react-admin-client methods used with node", () => {
   describe("when reading mock", () => {
     it("should return mock data", async () => {
       const mock = await readMock("base");
-      expect(mock).toEqual({ id: "base", routesVariants: ["get-user:1"] });
+      expect(mock).toEqual({
+        id: "base",
+        from: null,
+        routesVariants: ["get-user:1"],
+        appliedRoutesVariants: ["get-user:1"],
+      });
     });
   });
 
@@ -201,6 +216,7 @@ describe("react-admin-client methods used with node", () => {
       expect(data).toEqual([
         {
           id: "get-user",
+          delay: null,
           url: "/api/user",
           method: "GET",
           variants: ["get-user:1", "get-user:2"],
@@ -209,11 +225,12 @@ describe("react-admin-client methods used with node", () => {
     });
   });
 
-  describe("when reading mock", () => {
-    it("should return mock data", async () => {
+  describe("when reading route", () => {
+    it("should return route data", async () => {
       const mock = await readRoute("get-user");
       expect(mock).toEqual({
         id: "get-user",
+        delay: null,
         url: "/api/user",
         method: "GET",
         variants: ["get-user:1", "get-user:2"],
@@ -258,26 +275,26 @@ describe("react-admin-client methods used with node", () => {
 
   describe("mock custom route variants", () => {
     it("should be empty", async () => {
-      const data = await readMockCustomRoutesVariants();
+      const data = await readCustomRoutesVariants();
       expect(data).toEqual([]);
     });
 
     it("should be able to add one", async () => {
-      await addMockCustomRouteVariant("get-user:2");
-      const data = await readMockCustomRoutesVariants();
+      await useRouteVariant("get-user:2");
+      const data = await readCustomRoutesVariants();
       expect(data).toEqual(["get-user:2"]);
     });
 
     it("should reject if route variant don't exist", async () => {
       expect.assertions(1);
-      await addMockCustomRouteVariant("foo").catch((err) => {
+      await useRouteVariant("foo").catch((err) => {
         expect(err.message).toEqual('Route variant with id "foo" was not found');
       });
     });
 
     it("should be empty after restoring them to the mock defaults", async () => {
-      await restoreMockRoutesVariants();
-      const data = await readMockCustomRoutesVariants();
+      await restoreRoutesVariants();
+      const data = await readCustomRoutesVariants();
       expect(data).toEqual([]);
     });
   });

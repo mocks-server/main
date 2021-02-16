@@ -60,17 +60,17 @@ export function readRouteVariant(id) {
   return routeVariant(id).read();
 }
 
-export function readMockCustomRoutesVariants() {
+export function readCustomRoutesVariants() {
   return mockCustomRoutesVariants.read();
 }
 
-export function addMockCustomRouteVariant(id) {
+export function useRouteVariant(id) {
   return mockCustomRoutesVariants.create({
     id,
   });
 }
 
-export function restoreMockRoutesVariants() {
+export function restoreRoutesVariants() {
   return mockCustomRoutesVariants.delete();
 }
 

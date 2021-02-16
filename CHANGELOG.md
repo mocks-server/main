@@ -11,7 +11,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
-## [3.0.0-beta.1] - 2021-01-15
+## [3.0.0-beta.2] - 2021-02-16
+
+### Changed
+- chore(deps): Update depedencies. Adapt tests
+- feat: Rename `apiPath` config property into `adminApiPath`
+- feat: Rename `readMockCustomRoutesVariants` method into `readCustomRoutesVariants`
+- feat: Rename `addMockCustomRouteVariant` method into `useRouteVariant`
+- feat: Rename `restoreMockRoutesVariants` method into `restoreRoutesVariants`
+
+## [3.0.0-beta.1] - 2021-02-15
 
 ### Added
 - feat: Expose one different method for each action.

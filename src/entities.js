@@ -15,7 +15,7 @@ import {
 } from "@mocks-server/admin-api-paths";
 
 const DEFAULT_OPTIONS = {
-  apiPath: DEFAULT_BASE_PATH,
+  adminApiPath: DEFAULT_BASE_PATH,
   baseUrl: "http://localhost:3100",
 };
 
@@ -46,7 +46,7 @@ class Fetcher {
   }
 
   get url() {
-    return `${configuration.baseUrl}${configuration.apiPath}${this._url}${this._id}`;
+    return `${configuration.baseUrl}${configuration.adminApiPath}${this._url}${this._id}`;
   }
 
   _read() {

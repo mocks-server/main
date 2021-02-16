@@ -29,7 +29,7 @@
     "test:unit": "npm run test"
   },
   "devDependencies": {
-    "@babel/preset-env": "7.12.13",
+    "@babel/preset-env": "7.12.16",
     "@rollup/plugin-babel": "5.2.3",
     "@rollup/plugin-commonjs": "16.0.0",
     "@rollup/plugin-node-resolve": "9.0.0",

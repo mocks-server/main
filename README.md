@@ -5,9 +5,9 @@
 [![NPM downloads][npm-downloads-image]][npm-downloads-url] [![License][license-image]][license-url]
 
 
-# Mocks server Cypress commands
+# Mocks Server Cypress commands
 
-This solution provides you commands for easily changing [@mocks-server settings][mocks-server-options-url], such as current behavior, delay time, etc.
+Extends Cypress' cy commands with methods for easily changing [Mocks Server settings][mocks-server-options-url], such as current mock, route variants, delay time, etc.
 
 ## Installation
 
@@ -31,51 +31,48 @@ You can now use all next commands:
 
 ### Commands
 
-Set current behavior:
+##### `cy.mocksSetMock("users-error")`
 
-```js
-cy.mocksServerSetBehavior("admin-user");
-```
+Sets current mock.
 
-Set delay time:
+##### `cy.mocksUseRouteVariant("users:success")`
 
-```js
-cy.mocksServerSetDelay(2000);
-```
+Sets a specific route variant to be used by current mock.
 
-Set any setting:
+##### `cy.mocksRestoreRoutesVariants()`
 
-```js
-cy.mocksServerSetSettings({
-  watch: false,
-  delay: 0,
-  behavior: "catalog-error"
-});
-```
+Restore routes variants to those defined in current mock.
+
+##### `cy.mocksSetDelay(2000)`
+
+Sets delay time.
+
+##### `cy.mocksSetSettings({ watch: false, delay: 0 })`
+
+Sets any [Mocks Server setting][mocks-server-options-url].
+
+##### `cy.mocksConfig({ adminApiPath: "/foo", baseUrl: "http://localhost:3000" })`
+
+Configures the [Mocks Server administration API client](https://github.com/mocks-server/admin-api-client), used under the hood.
 
 ## Configuration
 
-By default, the client is configured to request to http://localhost:3100/admin, based in the [default options of @mocks-server][mocks-server-options-url]
+By default, the API client is configured to request to `http://localhost:3100/admin`, based in the [default Mocks Server options][mocks-server-options-url]
 
-You can change both the base url of the "@mocks-server", and the admin api path of the "@mocks-server/plugin-admin-api" using the `config` method in your project's `cypress/support/commands.js`:
+You can change both the base url of Mocks Server, and the api path of the administration API using the `cy.mocksConfig` command mentioned above, or the plugin environment variables:
 
-```js
-import { config } from "@mocks-server/cypress-commands";
-
-config({
-  adminApiPath: "/foo-admin",
-  baseUrl: "http://my-mocks-server:3200"
-});
-```
+* __`MOCKS_SERVER_BASE_URL`__: Modifies the base url of Mocks Server. Default is `http://localhost:3100`.
+* __`MOCKS_SERVER_ADMIN_API_PATH`__: Modifies the path of the Mocks Server administration API. Default is `/admin`.
+* __`MOCKS_SERVER_ENABLED`__: Disables requests to Mocks Server, so the commands will not fail even when Mocks Server is not running. This is useful to reuse same tests with mocks and a real API, because commands to change Mocks Server settings will be ignored.
 
 ### Using commands
 
-You should usually change the mock server settings in a `before` statement:
+You should usually change Mocks Server settings in a `before` statement:
 
 ```js
 describe("user with default role", () => {
   before(() => {
-    cy.mocksServerSetBehavior("normal-user");
+    cy.mocksSetMock("normal-user");
     cy.visit("/");
   });
 
@@ -86,7 +83,7 @@ describe("user with default role", () => {
 
 describe("user with admin role", () => {
   before(() => {
-    cy.mocksServerSetBehavior("admin-user");
+    cy.mocksSetMock("admin-user");
     cy.visit("/");
   });
 

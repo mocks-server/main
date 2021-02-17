@@ -5,6 +5,7 @@
   "keywords": [
     "cypress",
     "commands",
+    "plugin",
     "mocks-server",
     "mock",
     "server",

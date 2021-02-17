@@ -9,15 +9,16 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { request, wait, TimeCounter, BINARY_PATH } = require("../support/utils");
-const InteractiveCliRunner = require("../support/InteractiveCliRunner");
+const { request, wait, TimeCounter, BINARY_PATH } = require("./support/utils");
+const InteractiveCliRunner = require("../../inquirer/support/InteractiveCliRunner");
 
 describe("interactive CLI", () => {
+  jest.setTimeout(15000);
   let cli;
   const cwdPath = path.resolve(__dirname, "fixtures");
 
   beforeAll(async () => {
-    cli = new InteractiveCliRunner([BINARY_PATH, "--path=web-tutorial", "--behavior=foo"], {
+    cli = new InteractiveCliRunner([BINARY_PATH, "--pathLegacy=web-tutorial", "--behavior=foo"], {
       cwd: cwdPath,
     });
     await wait();
@@ -40,7 +41,7 @@ describe("interactive CLI", () => {
     });
 
     it("should have 3 behaviors available", async () => {
-      expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
+      expect(cli.logs).toEqual(expect.stringContaining("behaviors: 3"));
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -64,14 +65,11 @@ describe("interactive CLI", () => {
 
   describe('When changing current behavior to "dynamic"', () => {
     it("should display new selected behavior", async () => {
+      await cli.cursorDown(8);
       await cli.pressEnter();
       await cli.cursorDown(2);
       const newScreen = await cli.pressEnter();
       expect(newScreen).toEqual(expect.stringContaining("Current behavior: dynamic"));
-    });
-
-    it("should have removed alert", async () => {
-      expect(cli.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -103,7 +101,7 @@ describe("interactive CLI", () => {
 
   describe("When changing logs level", () => {
     it("should display new selected log level", async () => {
-      await cli.cursorDown(3);
+      await cli.cursorDown(5);
       await cli.pressEnter();
       await cli.cursorDown(2);
       const newScreen = await cli.pressEnter();
@@ -114,7 +112,7 @@ describe("interactive CLI", () => {
   describe("When displaying logs", () => {
     it("should log requests", async () => {
       expect.assertions(2);
-      await cli.cursorDown(5);
+      await cli.cursorDown(7);
       await cli.pressEnter();
       await request("/api/users");
       await wait(1000);
@@ -128,7 +126,7 @@ describe("interactive CLI", () => {
 
   describe("When changing delay time", () => {
     it("should display new selected delay time", async () => {
-      await cli.cursorDown();
+      await cli.cursorDown(3);
       await cli.pressEnter();
       await cli.write(2000);
       const newScreen = await cli.pressEnter();

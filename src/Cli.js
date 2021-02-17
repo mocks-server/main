@@ -14,39 +14,59 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const { isNumber } = require("lodash");
 
 const inquirer = require("./Inquirer");
-const { renderHeader, renderAlert } = require("./helpers");
+const { renderHeader, renderAlert, getCurrentMockMessageLevel } = require("./helpers");
 
-const questions = {
+const MAIN_CHOICES = [
+  {
+    name: "Change current mock",
+    value: "mock",
+  },
+  {
+    name: "Change route variant",
+    value: "variant",
+  },
+  {
+    name: "Restore routes variants",
+    value: "restoreVariants",
+  },
+  {
+    name: "Change delay",
+    value: "delay",
+  },
+  {
+    name: "Restart server",
+    value: "restart",
+  },
+  {
+    name: "Change log level",
+    value: "logLevel",
+  },
+  {
+    name: "Switch watch",
+    value: "watch",
+  },
+  {
+    name: "Display server logs",
+    value: "logs",
+  },
+  {
+    name: "Legacy: Change behavior",
+    value: "behavior",
+    isLegacy: true,
+  },
+  {
+    name: "Legacy: Switch watch",
+    value: "watchLegacy",
+    isLegacy: true,
+  },
+];
+
+const QUESTIONS = {
   main: {
     type: "list",
     message: "Select action:",
     name: "value",
-    choices: [
-      {
-        name: "Change current behavior",
-        value: "behavior",
-      },
-      {
-        name: "Change delay",
-        value: "delay",
-      },
-      {
-        name: "Restart server",
-        value: "restart",
-      },
-      {
-        name: "Change log level",
-        value: "logLevel",
-      },
-      {
-        name: "Switch watch",
-        value: "watch",
-      },
-      {
-        name: "Display server logs",
-        value: "logs",
-      },
-    ],
+    choices: MAIN_CHOICES,
   },
   logLevel: {
     type: "list",
@@ -54,10 +74,20 @@ const questions = {
     name: "value",
     choices: ["silly", "debug", "verbose", "info", "warn", "error"],
   },
+  mock: {
+    type: "autocomplete",
+    name: "value",
+    message: "Please choose mock",
+  },
   behavior: {
     type: "autocomplete",
     name: "value",
     message: "Please choose behavior",
+  },
+  variant: {
+    type: "autocomplete",
+    name: "value",
+    message: "Please choose route variant",
   },
   delay: {
     type: "input",
@@ -73,9 +103,20 @@ const questions = {
   },
 };
 
+const mainChoices = (legacyMode) => {
+  return MAIN_CHOICES.filter((choice) => !(choice.isLegacy && !legacyMode));
+};
+
+const getQuestions = (legacyMode) => {
+  const questions = QUESTIONS;
+  questions.main.choices = mainChoices(legacyMode);
+  return questions;
+};
+
 const SCREENS = {
   MAIN: "main",
   BEHAVIOR: "behavior",
+  MOCK: "mock",
   DELAY: "delay",
   LOG_LEVEL: "log-level",
   LOGS: "logs",
@@ -96,7 +137,7 @@ class Cli {
 
     this._core.addSetting({
       name: "cli",
-      type: "booleanString", // Workaround to maintain backward compaitbility with --cli=false
+      type: "boolean",
       description: "Start interactive CLI plugin",
       default: true,
     });
@@ -106,12 +147,7 @@ class Cli {
     if (!this._settings.get("cli")) {
       return Promise.resolve();
     }
-    this._questions = questions;
-    this._cli = new inquirer.Inquirer(
-      this._questions,
-      this._header.bind(this),
-      this._alertsHeader.bind(this)
-    );
+    this._cli = new inquirer.Inquirer(this._header.bind(this), this._alertsHeader.bind(this));
     this._stopListeningChangeSettings = this._core.onChangeSettings(this._onChangeSettings);
     this._inited = true;
     return Promise.resolve();
@@ -127,13 +163,16 @@ class Cli {
     this._started = true;
     if (this._stopListeningChangeMocks) {
       this._stopListeningChangeMocks();
+      this._stopListeningChangeLegacyMocks();
       this._stopListeningChangeAlerts();
     }
     this._stopListeningChangeAlerts = this._core.onChangeAlerts(this._onChangeAlerts);
     this._stopListeningChangeMocks = this._core.onChangeMocks(this._onChangeMocks);
+    this._stopListeningChangeLegacyMocks = this._core.onChangeLegacyMocks(this._onChangeMocks);
     this._logLevel = this._settings.get("log");
     this._silentTraces();
-    return this._displayMainMenu();
+    this._displayMainMenu();
+    return Promise.resolve();
   }
 
   stop() {
@@ -142,9 +181,9 @@ class Cli {
     }
     this._started = false;
     this._stopListeningChangeMocks();
+    this._stopListeningChangeLegacyMocks();
     this._stopListeningChangeAlerts();
     this._settings.set("log", this._logLevel);
-    this._cli.removeListeners();
     this._cli.logsMode();
     this._cli.clearScreen({
       header: false,
@@ -154,7 +193,6 @@ class Cli {
 
   _refreshMainMenu() {
     if (this._currentScreen === SCREENS.MAIN) {
-      this._cli.removeListeners();
       return this._displayMainMenu();
     }
     return Promise.resolve();
@@ -180,11 +218,14 @@ class Cli {
         }
       }
       if (
-        newSettings.hasOwnProperty("behavior") ||
+        newSettings.hasOwnProperty("mock") ||
         newSettings.hasOwnProperty("delay") ||
         newSettings.hasOwnProperty("host") ||
         newSettings.hasOwnProperty("log") ||
-        newSettings.hasOwnProperty("watch")
+        newSettings.hasOwnProperty("watch") ||
+        // To be deprecated
+        newSettings.hasOwnProperty("watchLegacy") ||
+        newSettings.hasOwnProperty("behavior")
       ) {
         return this._refreshMainMenu();
       }
@@ -205,21 +246,55 @@ class Cli {
 
   _header() {
     const delay = this._settings.get("delay");
+    const watchLegacyEnabled = this._settings.get("watchLegacy");
+    const watchEnabled = this._settings.get("watch");
+    const legacyMode = !!this._settings.get("pathLegacy");
+
+    const currentMock = this._core.mocks.current || "-";
     const behaviorsCount = this._core.behaviors.count;
     const currentBehavior = this._core.behaviors.currentId || "-";
     const currentFixtures = this._core.fixtures.count;
-    const watchEnabled = this._settings.get("watch");
-    const header = [
+    const availableMocks = this._core.mocks.plainMocks.length;
+    const availableRoutes = this._core.mocks.plainRoutes.length;
+    const availableRoutesVariants = this._core.mocks.plainRoutesVariants.length;
+
+    const currentMockMessage = this._core.mocks.customRoutesVariants.length
+      ? `${currentMock} (custom variants: ${this._core.mocks.customRoutesVariants.join(",")})`
+      : currentMock;
+
+    const headers = [
       renderHeader(`Mocks server listening at`, this._serverUrl),
       renderHeader(`Delay`, delay, delay > 0 ? 1 : 0),
-      renderHeader(`Behaviors`, behaviorsCount, behaviorsCount < 1 ? 2 : 0),
-      renderHeader(`Current behavior`, currentBehavior, currentBehavior === "-" ? 2 : 0),
-      renderHeader(`Current fixtures`, currentFixtures, currentFixtures < 1 ? 2 : 0),
+      renderHeader(
+        `Current mock`,
+        currentMockMessage,
+        getCurrentMockMessageLevel(this._core.mocks.customRoutesVariants, currentMock)
+      ),
+      renderHeader(`Mocks`, availableMocks, availableMocks < 1 ? 2 : 0),
+      renderHeader(`Routes`, availableRoutes, availableRoutes < 1 ? 2 : 0),
+      renderHeader(
+        `Routes variants`,
+        availableRoutesVariants,
+        availableRoutesVariants < 1 ? 2 : 0
+      ),
       renderHeader(`Log level`, this._logLevel),
       renderHeader(`Watch enabled`, watchEnabled, !!watchEnabled ? 0 : 1),
     ];
 
-    return header;
+    const legacyHeaders = legacyMode
+      ? [
+          renderHeader(`Legacy: Watch enabled`, watchLegacyEnabled, !!watchLegacyEnabled ? 0 : 1),
+          renderHeader(`Legacy: behaviors`, behaviorsCount, behaviorsCount < 1 ? 2 : 0),
+          renderHeader(
+            `Legacy: Current behavior`,
+            currentBehavior,
+            currentBehavior === "-" ? 2 : 0
+          ),
+          renderHeader(`Legacy: Current fixtures`, currentFixtures, currentFixtures < 1 ? 2 : 0),
+        ]
+      : [];
+
+    return [...headers, ...legacyHeaders];
   }
 
   _alertsHeader() {
@@ -227,13 +302,18 @@ class Cli {
   }
 
   async _displayMainMenu() {
+    this._cli.questions = getQuestions(!!this._settings.get("pathLegacy"));
     this._cli.clearScreen();
     this._cli.exitLogsMode();
     this._currentScreen = SCREENS.MAIN;
     const action = await this._cli.inquire("main");
     switch (action) {
-      case "behavior":
-        return this._changeCurrentBehavior();
+      case "mock":
+        return this._changeCurrentMock();
+      case "variant":
+        return this._changeRouteVariant();
+      case "restoreVariants":
+        return this._restoreRoutesVariants();
       case "delay":
         return this._changeDelay();
       case "restart":
@@ -244,7 +324,55 @@ class Cli {
         return this._switchWatch();
       case "logs":
         return this._displayLogs();
+      // Legacy, to be removed
+      case "behavior":
+        return this._changeCurrentBehavior();
+      case "watchLegacy":
+        return this._switchWatchLegacy();
     }
+  }
+
+  async _changeCurrentMock() {
+    this._currentScreen = SCREENS.MOCK;
+    this._cli.clearScreen();
+    const mocksIds = this._core.mocks.ids;
+    if (!mocksIds.length) {
+      return this._displayMainMenu();
+    }
+    const mockId = await this._cli.inquire("mock", {
+      source: (answers, input) => {
+        if (!input || !input.length) {
+          return Promise.resolve(mocksIds);
+        }
+        return Promise.resolve(mocksIds.filter((currentMock) => currentMock.includes(input)));
+      },
+    });
+    this._settings.set("mock", mockId);
+    return this._displayMainMenu();
+  }
+
+  async _changeRouteVariant() {
+    this._currentScreen = SCREENS.MOCK;
+    this._cli.clearScreen();
+    const routeVariantsIds = this._core.mocks.plainRoutesVariants.map((variant) => variant.id);
+    if (!routeVariantsIds.length) {
+      return this._displayMainMenu();
+    }
+    const variantId = await this._cli.inquire("variant", {
+      source: (answers, input) => {
+        if (!input || !input.length) {
+          return Promise.resolve(routeVariantsIds);
+        }
+        return Promise.resolve(routeVariantsIds.filter((variant) => variant.includes(input)));
+      },
+    });
+    this._core.mocks.useRouteVariant(variantId);
+    return this._displayMainMenu();
+  }
+
+  async _restoreRoutesVariants() {
+    this._core.mocks.restoreRoutesVariants();
+    return this._displayMainMenu();
   }
 
   async _changeCurrentBehavior() {
@@ -285,6 +413,11 @@ class Cli {
 
   async _switchWatch() {
     this._settings.set("watch", !this._settings.get("watch"));
+    return this._displayMainMenu();
+  }
+
+  async _switchWatchLegacy() {
+    this._settings.set("watchLegacy", !this._settings.get("watchLegacy"));
     return this._displayMainMenu();
   }
 

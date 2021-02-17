@@ -1,4 +1,5 @@
 /*
+Copyright 2021 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -12,9 +13,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const inquirer = require("inquirer");
 const autocomplete = require("inquirer-autocomplete-prompt");
-const { cloneDeep, map } = require("lodash");
+const { cloneDeep } = require("lodash");
 
-const packageInfo = require("../package.json");
 const {
   renderSectionHeader,
   renderSectionFooter,
@@ -34,32 +34,35 @@ const MAIN_MENU_ID = "main";
 const DEFAULT_QUIT_NAME = "Exit";
 const QUIT_ACTION_ID = "quit";
 
-// require("events").EventEmitter.defaultMaxListeners = 100;
+const QUIT_QUESTION = {
+  name: DEFAULT_QUIT_NAME,
+  value: QUIT_ACTION_ID,
+};
+
+const exitProcess = () => process.exit();
+
+require("events").EventEmitter.defaultMaxListeners = 100;
 
 const Inquirer = class Inquirer {
-  constructor(questions, header, alerts) {
+  constructor(header, alerts) {
     this._alertsHeader = alerts;
     this._header = header;
-    this._questions = this._initQuestions(questions);
-    this._exitLogsMode = this._exitLogsMode.bind(this);
-  }
 
-  get displayName() {
-    return packageInfo.name;
+    this._exitLogsMode = this._exitLogsMode.bind(this);
+    this._currentInquirers = new Set();
   }
 
   _initQuestions(questions) {
     const clonedQuestions = cloneDeep(questions);
-    const quitQuestion = {
-      name: DEFAULT_QUIT_NAME,
-      value: QUIT_ACTION_ID,
-    };
     if (clonedQuestions[MAIN_MENU_ID] && clonedQuestions[MAIN_MENU_ID].choices) {
       clonedQuestions[MAIN_MENU_ID].choices.push(new inquirer.Separator());
-      clonedQuestions[MAIN_MENU_ID].choices.push(quitQuestion);
-      this._quit = () => process.exit();
+      clonedQuestions[MAIN_MENU_ID].choices.push(QUIT_QUESTION);
     }
     return clonedQuestions;
+  }
+
+  set questions(questions) {
+    this._questions = this._initQuestions(questions);
   }
 
   exitLogsMode() {
@@ -100,20 +103,36 @@ const Inquirer = class Inquirer {
     });
   }
 
-  async inquire(questionKey, extendProperties) {
-    const answers = await inquirer.prompt({
-      ...this._questions[questionKey],
-      ...extendProperties,
+  _resolvePreviousInquirers() {
+    this._currentInquirers.forEach((inquirerPromise) => {
+      inquirerPromise(null);
+      this._currentInquirers.delete(inquirerPromise);
     });
+  }
+
+  async inquire(questionKey, extendProperties) {
+    this._resolvePreviousInquirers();
     this.removeListeners();
-    if (questionKey === MAIN_MENU_ID && answers.value === QUIT_ACTION_ID) {
-      return this._quit();
-    }
-    return answers.value;
+    return new Promise((resolve) => {
+      this._currentInquirers.add(resolve);
+      inquirer
+        .prompt({
+          ...this._questions[questionKey],
+          ...extendProperties,
+        })
+        .then((answers) => {
+          this._currentInquirers.delete(resolve);
+          this.removeListeners();
+          if (questionKey === MAIN_MENU_ID && answers.value === QUIT_ACTION_ID) {
+            this.quit();
+          }
+          resolve(answers.value);
+        });
+    });
   }
 
   quit() {
-    this._quit();
+    exitProcess();
   }
 
   clearScreen(opts) {
@@ -136,7 +155,7 @@ const Inquirer = class Inquirer {
 
   removeListeners() {
     const listeners = process.stdin.listeners(EVENT_LISTENER);
-    map(listeners, (listener) => {
+    listeners.forEach((listener) => {
       process.stdin.removeListener(EVENT_LISTENER, listener);
     });
   }

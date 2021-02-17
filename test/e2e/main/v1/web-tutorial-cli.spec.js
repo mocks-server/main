@@ -9,15 +9,16 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { request, wait, BINARY_PATH } = require("../support/utils");
-const InteractiveCliRunner = require("../support/InteractiveCliRunner");
+const { request, wait, BINARY_PATH } = require("./support/utils");
+const InteractiveCliRunner = require("../../inquirer/support/InteractiveCliRunner");
 
 describe("web tutorial", () => {
+  jest.setTimeout(15000);
   let cli;
   const cwdPath = path.resolve(__dirname, "fixtures");
 
   beforeAll(async () => {
-    cli = new InteractiveCliRunner([BINARY_PATH, "--path=web-tutorial"], {
+    cli = new InteractiveCliRunner([BINARY_PATH, "--pathLegacy=web-tutorial"], {
       cwd: cwdPath,
     });
     await wait();
@@ -29,7 +30,7 @@ describe("web tutorial", () => {
 
   describe("When started", () => {
     it("should have 3 behaviors available", async () => {
-      expect(cli.logs).toEqual(expect.stringContaining("Behaviors: 3"));
+      expect(cli.logs).toEqual(expect.stringContaining("behaviors: 3"));
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -53,6 +54,7 @@ describe("web tutorial", () => {
 
   describe('When changing current behavior to "user2"', () => {
     it("should display new selected behavior", async () => {
+      await cli.cursorDown(8);
       await cli.pressEnter();
       await cli.cursorDown();
       const newScreen = await cli.pressEnter();
@@ -80,6 +82,7 @@ describe("web tutorial", () => {
 
   describe('When changing current behavior to "dynamic"', () => {
     it("should display new selected behavior", async () => {
+      await cli.cursorDown(8);
       await cli.pressEnter();
       await cli.cursorDown(2);
       const newScreen = await cli.pressEnter();

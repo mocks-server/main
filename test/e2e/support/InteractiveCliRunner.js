@@ -7,14 +7,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
-
-const { CliRunner, wait } = require("./utils");
+const CliRunner = require("./CliRunner");
 
 const LOG = "[CLI]: ";
 
 module.exports = class InteractiveCliRunner {
-  constructor(cliArguments, cliOptions) {
+  constructor(cliArguments, cliOptions, wait) {
     this._cli = new CliRunner(cliArguments, cliOptions);
+    this._wait = wait;
   }
 
   _log(log) {
@@ -22,7 +22,7 @@ module.exports = class InteractiveCliRunner {
   }
 
   async getCurrentScreen() {
-    await wait(500);
+    await this._wait(500);
     return this._cli.currentScreen;
   }
 

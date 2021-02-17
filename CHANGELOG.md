@@ -4,15 +4,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [To be deprecated]
-- Remove Server and Cli constructors. @mocks-server/core has to be used instead.
+## [To be removed]
+- Do not export deprecated Behavior Class
 
 ## [unreleased]
 ### Added
 ### Changed
-- docs(readme): Add main features. Add interactive cli image
 ### Fixed
 ### Removed
+### Breaking change
+
+## [2.0.0-beta.2] - 2021-02-16
+
+### Added
+- docs(readme): Add links
+
+### Changed
+- chore(deps): Update dependencies. Adapt tests.
+
+## [2.0.0-beta.1] - 2021-02-15
+
+### Changed
+- docs(readme): Add main features. Add interactive cli image
+- test(e2e): Remove duplicated e2e tests. Add scaffold e2e tests
+
+### Breaking change
+- Remove Server and Cli constructors. @mocks-server/core has to be used instead.
 
 ## [1.9.0] - 2020-12-25
 

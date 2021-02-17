@@ -1,17 +1,18 @@
 {
   "name": "@mocks-server/main",
-  "version": "1.9.0",
-  "description": "Mocks server supporting multiple api behaviors",
+  "version": "2.0.0-beta.2",
+  "description": "Mock Server supporting multiple route variants and mocks",
   "keywords": [
-    "mocks",
-    "server",
     "mock",
-    "fixtures",
-    "behaviors",
+    "server",
+    "mocks",
+    "route",
+    "route variants",
     "api",
     "rest",
     "cli",
     "express",
+    "middlewares",
     "testing",
     "development"
   ],
@@ -39,25 +40,26 @@
     "test:unit": "npm run test"
   },
   "dependencies": {
-    "@mocks-server/core": "1.6.0",
-    "@mocks-server/plugin-admin-api": "1.5.0",
-    "@mocks-server/plugin-inquirer-cli": "1.4.1"
+    "@mocks-server/core": "2.0.0",
+    "@mocks-server/plugin-admin-api": "2.0.0",
+    "@mocks-server/plugin-inquirer-cli": "2.0.0"
   },
   "devDependencies": {
     "eslint": "7.20.0",
     "eslint-config-prettier": "7.2.0",
     "eslint-plugin-prettier": "3.3.1",
+    "cross-fetch": "3.0.6",
+    "cross-spawn": "7.0.3",
     "fs-extra": "9.1.0",
     "husky": "4.3.8",
     "jest": "26.6.3",
     "lint-staged": "10.5.4",
     "lodash": "4.17.20",
     "prettier": "2.2.1",
-    "request": "2.88.2",
-    "request-promise": "4.2.6",
     "sinon": "9.2.4",
     "strip-ansi": "6.0.0",
-    "tree-kill-sync": "1.0.0"
+    "tree-kill": "1.2.2",
+    "wait-on": "5.2.1"
   },
   "lint-staged": {
     "lib/**/*.js": "eslint",

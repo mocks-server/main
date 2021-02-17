@@ -16,14 +16,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.0.0] - 2021-02-17
 
-### Added
-- docs(readme): Add links
-
-### Changed
-- chore(deps): Update dependencies. Adapt tests.
-
-## [2.0.0-beta.1] - 2021-02-15
-
 ### Changed
 - docs(readme): Add main features. Add interactive cli image
 - test(e2e): Remove duplicated e2e tests. Add scaffold e2e tests

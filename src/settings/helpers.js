@@ -5,7 +5,6 @@ function getOptionParser(optionDetails) {
   if (optionDetails.type === "number") {
     return parseInt;
   }
-  return;
 }
 
 module.exports = {

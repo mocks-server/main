@@ -14,6 +14,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [2.0.0] - 2021-02-17
+
+### Added
+- docs(readme): Add links
+
+### Changed
+- chore(deps): Update dependencies. Adapt tests.
+
+## [2.0.0-beta.1] - 2021-02-15
+
+### Changed
+- docs(readme): Add main features. Add interactive cli image
+- test(e2e): Remove duplicated e2e tests. Add scaffold e2e tests
+
+### BREAKING CHANGES
+- Core and plugins updated to v2. Please read the [migration from v1.x guide](https://www.mocks-server.org/docs/guides-migrating-from-v1) and the [Core v2 release notes](https://github.com/mocks-server/core/releases/tag/v2.0.0) for further info.
+- Remove Server and Cli constructors. @mocks-server/core has to be used instead.
+
 ## [2.0.0-beta.2] - 2021-02-16
 
 ### Added

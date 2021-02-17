@@ -7,9 +7,11 @@
 
 # [![Mocks Server][logo-url]][website-url] Mocks Server Plugin Admin Api
 
-Plugin for [Mocks Server][website-url] that provides an API REST that allows to change dinamically the current behavior, change delay time, and another [Mocks Server options][options-url].
+Plugin for [Mocks Server][website-url] that provides an API REST that allows to change the current behavior, change delay time, and another [Mocks Server options][options-url].
 
-This is __very useful when running acceptance tests, as you can change the behavior of the api__ simply making an HTTP request in your tests `before` method, for example.
+This is __very useful when running acceptance tests, as you can change the current mock__ simply with a HTTP request in the `before` method of your tests, for example.
+
+A __client for the administration api__ is also distributed as a separated package: [@mocks-server/admin-api-client](https://www.npmjs.com/package/@mocks-server/admin-api-client).
 
 ## Usage
 
@@ -17,29 +19,34 @@ This plugin is included in the [main distribution of the Mocks Server project][m
 
 ## Options
 
-* `adminApiPath` - Base path for the administration api. Default is "/admin". You should change it only if there is any conflict with the api you are mocking.
-* `adminApiDeprecatedPaths` - Boolean option, disables deprecated "/mocks" api path, which is still enabled by default.
+* __`adminApiPath`__ _(String)_: Path for the administration api. Default is `/admin`. You should change it only in case there is any conflict with the api you are mocking.
 
-Read more about [how to define options for the mocks-server plugins here](https://www.mocks-server.org/docs/configuration-options).
+Read more about [how to set options in Mocks Server here](https://www.mocks-server.org/docs/configuration-options).
 
 ## API Resources
 
 Available api resources are:
 
-* `GET` `/admin/about` Returns plugin information.
+* `GET` `/admin/about` Returns "plugin-admin-api" information.
   * Response body example: `{ "version": "1.2.0" }`
-* `GET` `/admin/behaviors` Returns behaviors collection.
-* `GET` `/admin/behaviors/:id` Returns an specific behavior.
-* `GET` `/admin/fixtures` Returns fixtures collection.
-* `GET` `/admin/fixtures/:id` Returns an specific fixture.
+* `GET` `/admin/mocks` Returns mocks.
+* `GET` `/admin/mocks/:id` Returns a specific mock.
+* `GET` `/admin/routes` Returns routes collection.
+* `GET` `/admin/routes/:id` Returns a specific route.
+* `GET` `/admin/routes-variants` Returns routes variants collection.
+* `GET` `/admin/routes-variants/:id` Returns a specific route variant.
+* `GET` `/admin/mock-custom-routes-variants` Returns an array of currently custom routes variants ids.
+* `POST` `/admin/mock-custom-routes-variants` Defines a route variant to be used by current mock.
+  * Request body example: `{ "id": "users:error" }`
+* `DELETE` `/admin/mock-custom-routes-variants` Restore routes variants to those defined in current mock.
 * `GET` `/admin/settings` Returns current server settings.
-  * Response body example: `{ "delay": 0, behavior: "foo-behavior", path: "mocks" }`
+  * Response body example: `{ "delay": 0, mock: "foo-mock", path: "mocks" }`
 * `PATCH` `/admin/settings` Changes current server settings.
   * Request body example: `{ "delay": 3000 }`
 * `GET` `/admin/alerts` Returns current alerts.
-* `GET` `/admin/alerts/:id` Returns an specific alert. The alert `id` is equivalent to the alert `context`.
+* `GET` `/admin/alerts/:id` Returns a specific alert. The alert `id` is equivalent to the alert `context` _(read the [developing plugins chapter](plugins-developing-plugins.md) for further info about alerts)_.
 
-> Deprecated api resources under "/mocks" api path are still available.
+> v1.x deprecated api resources are also still available under the `/legacy` path.
 
 ## Contributing
 

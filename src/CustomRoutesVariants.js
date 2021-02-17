@@ -12,49 +12,47 @@ Unless required by applicable law or agreed to in writing, software distributed 
 "use strict";
 
 const express = require("express");
+const Boom = require("@hapi/boom");
 
-const { addCollectionMiddleware, addModelMiddleware } = require("./support/middlewares");
+const { addCollectionMiddleware } = require("./support/middlewares");
 
-class AlertsApi {
+class CustomRoutesVariants {
   constructor(core) {
     this._core = core;
     this._tracer = core.tracer;
     this._router = express.Router();
     addCollectionMiddleware(this._router, {
-      name: "alerts",
-      getItems: this._parseCollection.bind(this),
-      tracer: core.tracer,
-    });
-    addModelMiddleware(this._router, {
-      name: "alert",
+      name: "custom routes variants",
       getItems: this._getCollection.bind(this),
-      parseItem: this._parseModel.bind(this),
       tracer: core.tracer,
-      finder: (context) => (item) => item.context === context,
     });
-  }
 
-  _parseModel(alert) {
-    return {
-      id: alert.context,
-      context: alert.context,
-      message: alert.message,
-      error: alert.error
-        ? {
-            name: alert.error.name,
-            message: alert.error.message,
-            stack: alert.error.stack,
-          }
-        : null,
-    };
-  }
-
-  _parseCollection() {
-    return this._core.alerts.map(this._parseModel);
+    this._router.post("/", this.add.bind(this));
+    this._router.delete("/", this.delete.bind(this));
   }
 
   _getCollection() {
-    return this._core.alerts;
+    return this._core.mocks.customRoutesVariants;
+  }
+
+  add(req, res, next) {
+    const id = req.body.id;
+    const routeVariant = this._core.mocks.plainRoutesVariants.find(
+      (routeVariantCandidate) => routeVariantCandidate.id === id
+    );
+    if (routeVariant) {
+      this._core.mocks.useRouteVariant(id);
+      res.status(204);
+      res.send();
+    } else {
+      next(Boom.badRequest(`Route variant with id "${id}" was not found`));
+    }
+  }
+
+  delete(req, res) {
+    this._core.mocks.restoreRoutesVariants();
+    res.status(204);
+    res.send();
   }
 
   get router() {
@@ -62,4 +60,4 @@ class AlertsApi {
   }
 }
 
-module.exports = AlertsApi;
+module.exports = CustomRoutesVariants;

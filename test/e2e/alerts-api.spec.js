@@ -7,110 +7,81 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
-const path = require("path");
-const fsExtra = require("fs-extra");
 
-const { CliRunner, request, fixturesFolder, wait } = require("./support/utils");
+const { startServer, fetch, waitForServer, wait, fixturesFolder } = require("./support/helpers");
 
 describe("alerts api", () => {
-  let cli;
+  let server;
   beforeAll(async () => {
-    fsExtra.removeSync(fixturesFolder("files-watch"));
-    fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
-    cli = new CliRunner(["node", "start.js", "--path=files-watch", "--behavior=foo"], {
-      cwd: path.resolve(__dirname, "fixtures"),
+    server = await startServer("web-tutorial", {
+      mock: "foo",
     });
-    await wait(2000);
+    await waitForServer();
   });
 
   afterAll(async () => {
-    await cli.kill();
+    await server.stop();
   });
 
   describe("when started", () => {
-    it("should return behavior not found alert", async () => {
-      const response = await request("/admin/alerts");
-      expect(response.length).toEqual(1);
+    it("should return mock not found alert", async () => {
+      const response = await fetch("/admin/alerts");
+      expect(response.body.length).toEqual(1);
     });
 
     it("should return specific alert when requested by id", async () => {
-      const response = await request("/admin/alerts/mocks%3Abehaviors%3Acurrent");
-      expect(response).toEqual({
-        id: "mocks:behaviors:current",
-        context: "mocks:behaviors:current",
-        message: 'Defined behavior "foo" was not found. The first one found was used instead',
+      const response = await fetch("/admin/alerts/mocks%3Acurrent%3Asettings");
+      expect(response.body).toEqual({
+        id: "mocks:current:settings",
+        context: "mocks:current:settings",
+        message: 'Mock "foo" was not found. Using the first one found',
         error: null,
       });
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
-      const users = await request("/api/users");
-      expect(users).toEqual([
+      const users = await fetch("/api/users");
+      expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
       ]);
     });
   });
 
-  describe("when behavior is modified", () => {
+  describe("when mock is modified", () => {
     beforeAll(async () => {
-      await request("/admin/settings", {
+      await fetch("/admin/settings", {
         method: "PATCH",
         body: {
-          behavior: "dynamic",
+          mock: "base",
         },
       });
       await wait();
     }, 10000);
 
     it("should return no alerts", async () => {
-      const response = await request("/admin/alerts");
-      expect(response.length).toEqual(0);
+      const response = await fetch("/admin/alerts");
+      expect(response.body.length).toEqual(0);
     });
   });
 
-  describe("when files contain an error", () => {
+  describe("when there is an error loading files", () => {
     beforeAll(async () => {
-      fsExtra.copySync(fixturesFolder("files-error"), fixturesFolder("files-watch"));
-      await wait(6000);
+      await fetch("/admin/settings", {
+        method: "PATCH",
+        body: {
+          path: fixturesFolder("files-error-routes"),
+        },
+      });
+      await wait();
     }, 10000);
 
-    it("should return one alert", async () => {
-      const response = await request("/admin/alerts");
-      expect(response.length).toEqual(1);
-    });
-
-    it("should return specific alert when requested by id", async () => {
-      const response = await request(
-        "/admin/alerts/plugins%3A%40mocks-server%2Fcore%2Fplugin-files-loader%3Aload"
+    it("should return alert containing error", async () => {
+      const response = await fetch("/admin/alerts");
+      expect(response.body.length).toEqual(1);
+      expect(response.body[0].error.message).toEqual(
+        expect.stringContaining("Cannot find module '../db/users'")
       );
-      expect(response.id).toEqual("plugins:@mocks-server/core/plugin-files-loader:load");
-      expect(response.message).toEqual(expect.stringContaining("test/e2e/fixtures/files-watch"));
-      expect(response.error.name).toEqual("ReferenceError");
-      expect(response.error.message).toEqual("FOO is not defined");
-      expect(response.error.stack).toEqual(
-        expect.stringContaining("test/e2e/fixtures/files-watch/fixtures/users.js:2:18")
-      );
-    });
-  });
-
-  describe("when files error is fixed", () => {
-    beforeAll(async () => {
-      fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("files-watch"));
-      await wait(6000);
-    }, 10000);
-
-    it("should return no alerts", async () => {
-      const response = await request("/admin/alerts");
-      expect(response.length).toEqual(0);
-    });
-
-    it("should serve users collection mock under the /api/users path", async () => {
-      const users = await request("/api/users");
-      expect(users).toEqual([
-        { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" },
-      ]);
     });
   });
 });

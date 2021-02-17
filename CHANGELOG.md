@@ -5,15 +5,30 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [To be deprecated]
-- Remove deprecated "/mocks" api path.
-- Remove property "name" from behavior model.
 
 ## [unreleased]
 ### Added
 ### Changed
 ### Fixed
-- docs(readme): Add missed API resources.
 ### Removed
+
+## [2.0.0-beta.2] - 2021-01-16
+
+### Changed
+- chore(deps): Update mocks-server/core dependency. Adapt tests.
+
+## [2.0.0-beta.1] - 2021-01-14
+
+### Added
+- Add mocks, routes, routes-variants and mock-custom-routes-variants apis
+
+### Changed
+- Move behaviors and fixtures apis under legacy folder
+- refactor: Use helper to create routers with same structure
+
+### Removed
+- Remove deprecated api paths
+- Remove adminApiDeprecatedPaths option.
 
 ## [1.5.0] - 2020-12-25
 

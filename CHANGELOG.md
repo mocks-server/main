@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Add legacy path
 - feat: Add mock-custom-routes-variants path
 
+### Changed
+- Update dependencies
+
 ### BREAKING CHANGES
 - Behaviors and fixtures routes have to be used under legacy path
 

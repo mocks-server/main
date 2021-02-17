@@ -11,56 +11,52 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-const { isUndefined } = require("lodash");
-
 const commander = require("commander");
 commander.storeOptionsAsProperties(true);
+
+const { getOptionParser } = require("./helpers");
 
 class CommandLineArguments {
   constructor(defaultOptions) {
     this._options = {};
     this._optionsNames = Object.keys(defaultOptions);
+    this._booleanOptionsWithTrueDefaults = [];
     // TODO, generate initial options dynamically from Options object using the "addCustom" method
     this._commander = commander
-      .option("--path <path>", "Define folder from which load mocks")
-      .option("--behavior <behavior>", "Define current behavior")
+      // TODO, remove v1 legacy code
+      .option("--behavior <behavior>", "Current behavior for legacy mocks")
+      .option("--mock <mock>", "Current mock")
       .option("--delay <delay>", "Define delay time")
       .option("--host <host>", "Host for server")
       .option("--log <log>", "Log level")
-      .option("--port <port>", "Port for server", parseInt)
-      .option("--watch <watch>", "Watch or not", this._stringToBoolean) // TODO, change by --no-watch option
-      // TODO, remove deprecated options
-      .option("--feature <feature>", "Define current behavior")
-      .option("--features <features>", "Define folder from which load mocks")
-      .option("--behaviors <behaviors>", "Define folder from which load mocks");
+      .option("--port <port>", "Port for server", parseInt);
   }
 
   init() {
-    this._options = this._commander.parse(process.argv);
+    const commanderParsed = this._commander.parse(process.argv);
+    this._options = this._optionsNames.reduce((options, optionName) => {
+      if (
+        commanderParsed.hasOwnProperty(optionName) &&
+        // Remove boolean options with true value by default, as commander always defines them explicitly as true
+        !(
+          this._booleanOptionsWithTrueDefaults.includes(optionName) &&
+          commanderParsed[optionName] === true
+        )
+      ) {
+        options[optionName] = commanderParsed[optionName];
+      }
+      return options;
+    }, {});
+
     return Promise.resolve();
   }
 
-  // TODO, deprecate "booleanString" options. Use --no- commander feature (boolean type)
-  _stringToBoolean(val) {
-    if (isUndefined(val) || val === "true") {
-      return true;
-    } else if (val === "false") {
-      return false;
-    }
-    throw new Error("Invalid boolean value");
-  }
-
   addCustom(optionDetails) {
-    const optionPrefix =
-      optionDetails.type === "boolean" && optionDetails.default === true ? "--no-" : "--";
-    const optionValueGetter = optionDetails.type === "boolean" ? "" : ` <${optionDetails.name}>`;
-    const optionParser = optionDetails.parse
-      ? optionDetails.parse
-      : optionDetails.type === "number"
-      ? parseInt
-      : optionDetails.type === "booleanString" // TODO, deprecate
-      ? this._stringToBoolean
-      : undefined;
+    const isBoolean = optionDetails.type === "boolean";
+    const defaultIsTrue = optionDetails.default === true;
+    const optionPrefix = isBoolean && defaultIsTrue ? "--no-" : "--";
+    const optionValueGetter = isBoolean ? "" : ` <${optionDetails.name}>`;
+    const optionParser = getOptionParser(optionDetails);
 
     this._commander.option(
       `${optionPrefix}${optionDetails.name}${optionValueGetter}`,
@@ -68,6 +64,9 @@ class CommandLineArguments {
       optionParser
     );
     this._optionsNames.push(optionDetails.name);
+    if (isBoolean && defaultIsTrue) {
+      this._booleanOptionsWithTrueDefaults.push(optionDetails.name);
+    }
   }
 
   get options() {

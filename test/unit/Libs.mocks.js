@@ -18,6 +18,8 @@ jest.mock("node-watch");
 const express = require("express");
 const watch = require("node-watch");
 const fsExtra = require("fs-extra");
+const fs = require("fs");
+const globule = require("globule");
 
 class CallBackRunner {
   constructor() {
@@ -79,14 +81,36 @@ class Mock {
     watchStub.triggerChange = watchRunner.triggerChange;
 
     const ensureDirSyncStub = this._sandbox.stub(fsExtra, "ensureDirSync");
+    const existsSyncStub = this._sandbox.stub(fsExtra, "existsSync");
+    const copySyncStub = this._sandbox.stub(fsExtra, "copySync");
+
+    const readFileStub = this._sandbox
+      .stub(fs, "readFile")
+      .callsFake((filePath, encoding, cb) => cb());
+    const writeFileStub = this._sandbox
+      .stub(fs, "writeFile")
+      .callsFake((filePath, fileContent, encoding, cb) => cb());
+
+    const expressRouterStub = {
+      get: this._sandbox.stub(),
+      post: this._sandbox.stub(),
+      patch: this._sandbox.stub(),
+      put: this._sandbox.stub(),
+      delete: this._sandbox.stub(),
+    };
 
     this._stubs = {
       watch: watchStub,
       watchTriggerChange: watchRunner.triggerChange,
       watchClose,
+      expressRouter: expressRouterStub,
       express: {
         use: this._sandbox.stub(),
         options: this._sandbox.stub(),
+        Router: express.Router,
+      },
+      globule: {
+        find: this._sandbox.stub(globule, "find"),
       },
       http: {
         createServer: {
@@ -99,12 +123,19 @@ class Mock {
       },
       fsExtra: {
         ensureDirSync: ensureDirSyncStub,
+        existsSync: existsSyncStub,
+        copySync: copySyncStub,
+      },
+      fs: {
+        readFile: readFileStub,
+        writeFileStub: writeFileStub,
       },
     };
 
     express.mockImplementation(() => this._stubs.express);
     watch.mockImplementation(this._stubs.watch);
     this._sandbox.stub(http, "createServer").returns(this._stubs.http.createServer);
+    this._sandbox.stub(express, "Router").returns(this._stubs.expressRouter);
   }
 
   get stubs() {

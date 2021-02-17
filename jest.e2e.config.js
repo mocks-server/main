@@ -5,12 +5,14 @@ module.exports = {
   // Automatically clear mock calls and instances between every test
   clearMocks: true,
 
-  testMatch: ["**/test/e2e/**/?(*.)+(spec|test).js?(x)"],
-  // testMatch: ["**/test/e2e/files-loader.spec.js"],
+  testMatch: ["<rootDir>/test/e2e/**/*.spec.js"],
+  // testMatch: ["<rootDir>/test/e2e/**/watch-enabled.spec.js"],
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: false,
 
   // The test environment that will be used for testing
   testEnvironment: "node",
+
+  setupFilesAfterEnv: ["./jest.e2e.setup.js"],
 };

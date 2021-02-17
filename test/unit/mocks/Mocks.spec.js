@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2021 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -9,82 +9,181 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
-const Boom = require("@hapi/boom");
+const express = require("express");
 
-const BehaviorsMocks = require("./Behaviors.mocks.js");
-const FixturesMocks = require("./Fixtures.mocks.js");
-const LoadersMocks = require("../Loaders.mocks");
-const CoreMocks = require("../Core.mocks.js");
+const MockMock = require("./Mock.mock.js");
 
 const Mocks = require("../../../src/mocks/Mocks");
+const DefaultRoutesHandler = require("../../../src/routes-handlers/default/DefaultRoutesHandler");
 
-describe("Behaviors", () => {
-  const fooBoomError = new Error("foo boom error");
-  let callbacks;
+describe("Mocks", () => {
   let sandbox;
-  let coreMocks;
-  let loadersMocks;
-  let behaviorsMocks;
-  let fixturesMocks;
-  let coreInstance;
+  let mockMock;
   let mocks;
+  let core;
+  let methods;
+  let routerMock;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    callbacks = {
+    mockMock = new MockMock();
+    routerMock = sandbox.stub();
+    sandbox.stub(express, "Router").returns(routerMock);
+
+    core = {};
+    methods = {
+      getLoadedMocks: sandbox.stub().returns([]),
+      getLoadedRoutes: sandbox.stub().returns([]),
+      getCurrentMock: sandbox.stub().returns(null),
+      getDelay: sandbox.stub(),
+      onChange: sandbox.stub(),
       addAlert: sandbox.stub(),
       removeAlerts: sandbox.stub(),
     };
-    sandbox.stub(Boom, "badData").returns(fooBoomError);
-    coreMocks = new CoreMocks();
-    coreInstance = coreMocks.stubs.instance;
-    loadersMocks = new LoadersMocks();
-    behaviorsMocks = new BehaviorsMocks();
-    fixturesMocks = new FixturesMocks();
-    mocks = new Mocks(
-      coreInstance._eventEmitter,
-      coreInstance.settings,
-      loadersMocks.stubs.instance,
-      coreInstance,
-      callbacks
-    );
+
+    mocks = new Mocks(methods, core);
+    mocks.init([DefaultRoutesHandler]);
   });
 
   afterEach(() => {
     sandbox.restore();
-    loadersMocks.restore();
-    behaviorsMocks.restore();
-    fixturesMocks.restore();
-    coreMocks.restore();
+    mockMock.restore();
   });
 
-  describe("addFixturesHandler method", () => {
-    it("should add Handler to fixturesHandler", async () => {
-      mocks.addFixturesHandler({});
-      expect(mocks._fixturesHandler._handlers.length).toEqual(2);
+  describe("load method", () => {
+    it("should process loaded mocks", () => {
+      mocks.load();
+      expect(mocks.plainMocks).toEqual([]);
+    });
+
+    it("should process loaded routes", () => {
+      mocks.load();
+      expect(mocks.plainRoutes).toEqual([]);
+    });
+
+    it("should process routesVariants routes", () => {
+      mocks.load();
+      expect(mocks.plainRoutesVariants).toEqual([]);
+    });
+
+    it("should call onChange method", () => {
+      mocks.load();
+      expect(methods.onChange.callCount).toEqual(1);
     });
   });
 
-  describe("behaviors getter", () => {
-    it("should return behaviors", async () => {
-      expect(mocks.behaviors).toEqual(behaviorsMocks.stubs.instance);
+  describe("when there are no mocks", () => {
+    it("should call to create express router", () => {
+      mocks.load();
+      expect(express.Router.callCount).toEqual(1);
+      mocks.router();
+      expect(routerMock.callCount).toEqual(1);
+    });
+
+    it("should return null as current", () => {
+      mocks.load();
+      expect(mocks.current).toEqual(null);
+    });
+
+    it("should return empty array in ids", () => {
+      mocks.load();
+      expect(mocks.ids).toEqual([]);
     });
   });
 
-  describe("fixtures getter", () => {
-    it("should return fixtures", async () => {
-      await mocks.init();
-      expect(mocks.fixtures.collection.length).toEqual(0);
+  describe("when there are valid mocks and routes", () => {
+    beforeEach(() => {
+      methods.getLoadedMocks.returns([
+        {
+          id: "mock-1",
+          routesVariants: ["route-1:variant-1", "route-2:variant-1"],
+        },
+        {
+          id: "mock-2",
+          from: "mock-1",
+          routesVariants: ["route-2:variant-2"],
+        },
+      ]);
+      methods.getLoadedRoutes.returns([
+        {
+          id: "route-1",
+          variants: [{ id: "variant-1", method: "GET", response: { body: {}, status: 200 } }],
+        },
+        {
+          id: "route-2",
+          delay: 500,
+          variants: [
+            { id: "variant-1", method: "GET", response: { body: {}, status: 200 } },
+            { id: "variant-2", delay: 1000, method: "GET", response: { body: {}, status: 200 } },
+          ],
+        },
+      ]);
+    });
+
+    describe("when loaded", () => {
+      it("should return mock id", () => {
+        mocks.load();
+        expect(mocks.current).toEqual("mock-id");
+      });
+
+      it("should return array of ids in ids getter", () => {
+        mocks.load();
+        expect(mocks.ids).toEqual(["mock-id", "mock-id"]);
+      });
+    });
+
+    describe("when setting current mock", () => {
+      it("should set current mock when it exists", () => {
+        mocks.load();
+        mocks.current = "mock-id";
+        expect(mocks.current).toEqual("mock-id");
+      });
+
+      it("should set default mock when id does not exists", () => {
+        mocks.load();
+        mocks.current = "foo-id";
+        expect(mocks.current).toEqual("mock-id");
+      });
+    });
+
+    describe("when setting custom route variant", () => {
+      it("should return customVariants", () => {
+        mocks.load();
+        mocks.useRouteVariant("route-2:variant-2");
+        expect(mocks.customRoutesVariants).toEqual(["route-2:variant-2"]);
+      });
+    });
+
+    describe("when restoring custom route variants", () => {
+      it("should return empty array", () => {
+        mocks.load();
+        mocks.useRouteVariant("route-2:variant-2");
+        expect(mocks.customRoutesVariants).toEqual(["route-2:variant-2"]);
+        mocks.restoreRoutesVariants();
+        expect(mocks.customRoutesVariants).toEqual([]);
+      });
     });
   });
 
-  describe("processLoadedMocks method", () => {
-    it("should call to process fixtures and behaviors", async () => {
-      expect.assertions(2);
-      await mocks.init();
-      await mocks.processLoadedMocks();
-      expect(behaviorsMocks.stubs.instance.process.callCount).toEqual(1);
-      expect(fixturesMocks.stubs.instance.process.callCount).toEqual(1);
+  describe("when there are no valid mocks", () => {
+    beforeEach(() => {
+      methods.getLoadedMocks.returns([null]);
+      methods.getLoadedRoutes.returns([]);
+    });
+
+    describe("when loaded", () => {
+      it("should add an alert", () => {
+        mocks.load();
+        expect(methods.addAlert.calledWith("process:mocks")).toEqual(true);
+      });
+    });
+
+    describe("when setting current mock", () => {
+      it("should not set mock when id does not exists", () => {
+        mocks.load();
+        mocks.current = "foo-id";
+        expect(mocks.current).toEqual(null);
+      });
     });
   });
 });

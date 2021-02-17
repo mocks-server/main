@@ -13,7 +13,8 @@ const sinon = require("sinon");
 
 const CoreMocks = require("./Core.mocks.js");
 const ServerMocks = require("./server/Server.mocks.js");
-const MocksMock = require("./mocks/Mocks.mocks.js");
+const MocksMock = require("./mocks/Mocks.mock.js");
+const LegacyMocksMock = require("./mocks-legacy/Mocks.mocks.js");
 
 const Orchestrator = require("../../src/Orchestrator");
 
@@ -22,27 +23,31 @@ describe("Orchestrator", () => {
   let serverMocks;
   let coreMocks;
   let coreInstance;
+  let legacyMocksMock;
   let mocksMock;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     serverMocks = new ServerMocks();
     coreMocks = new CoreMocks();
+    legacyMocksMock = new LegacyMocksMock();
     mocksMock = new MocksMock();
     coreInstance = coreMocks.stubs.instance;
     new Orchestrator(
       coreInstance._eventEmitter,
-      mocksMock.stubs.instance,
-      serverMocks.stubs.instance
+      legacyMocksMock.stubs.instance,
+      serverMocks.stubs.instance,
+      mocksMock.stubs.instance
     );
     expect.assertions(1);
   });
 
   afterEach(() => {
     sandbox.restore();
-    mocksMock.restore();
+    legacyMocksMock.restore();
     coreMocks.restore();
     serverMocks.restore();
+    mocksMock.restore();
   });
 
   describe("when settings change", () => {
@@ -71,14 +76,47 @@ describe("Orchestrator", () => {
       coreInstance._eventEmitter.on.getCall(0).args[1]({
         behavior: "behavior2",
       });
-      expect(mocksMock.stubs.instance.behaviors.current).toEqual("behavior2");
+      expect(legacyMocksMock.stubs.instance.behaviors.current).toEqual("behavior2");
+    });
+
+    it("should set new mock as current one if mock has changed", async () => {
+      coreInstance._eventEmitter.on.getCall(0).args[1]({
+        mock: "mock2",
+      });
+      expect(mocksMock.stubs.instance.current).toEqual("mock2");
+    });
+  });
+
+  describe("when core emits load:mocks:legacy", () => {
+    it("should process fixtures and behaviors again", async () => {
+      coreInstance._eventEmitter.on.getCall(1).args[1]();
+      expect(legacyMocksMock.stubs.instance.processLoadedMocks.callCount).toEqual(1);
     });
   });
 
   describe("when core emits load:mocks", () => {
-    it("should process fixtures and behaviors again", async () => {
-      coreInstance._eventEmitter.on.getCall(1).args[1]();
-      expect(mocksMock.stubs.instance.processLoadedMocks.callCount).toEqual(1);
+    it("should not call to load mocks if load:routes was not emitted", async () => {
+      coreInstance._eventEmitter.on.getCall(3).args[1]();
+      expect(mocksMock.stubs.instance.load.callCount).toEqual(0);
+    });
+
+    it("should call to load mocks if load:routes was emitted", async () => {
+      coreInstance._eventEmitter.on.getCall(2).args[1]();
+      coreInstance._eventEmitter.on.getCall(3).args[1]();
+      expect(mocksMock.stubs.instance.load.callCount).toEqual(1);
+    });
+  });
+
+  describe("when core emits load:routes", () => {
+    it("should not call to load mocks if load:mocks was not emitted", async () => {
+      coreInstance._eventEmitter.on.getCall(2).args[1]();
+      expect(mocksMock.stubs.instance.load.callCount).toEqual(0);
+    });
+
+    it("should call to load mocks if load:mocks was emitted", async () => {
+      coreInstance._eventEmitter.on.getCall(3).args[1]();
+      coreInstance._eventEmitter.on.getCall(2).args[1]();
+      expect(mocksMock.stubs.instance.load.callCount).toEqual(1);
     });
   });
 });

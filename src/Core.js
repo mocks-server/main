@@ -14,10 +14,13 @@ const {
   INIT,
   START,
   STOP,
-  LOAD_MOCKS,
+  CHANGE_LEGACY_MOCKS,
   CHANGE_MOCKS,
   CHANGE_SETTINGS,
   CHANGE_ALERTS,
+  LOAD_LEGACY_MOCKS,
+  LOAD_MOCKS,
+  LOAD_ROUTES,
 } = require("./eventNames");
 const tracer = require("./tracer");
 
@@ -26,90 +29,118 @@ const Orchestrator = require("./Orchestrator");
 const Loaders = require("./Loaders");
 const Alerts = require("./Alerts");
 
+const RoutesHandlers = require("./routes-handlers/RoutesHandlers");
+const Mocks = require("./mocks/Mocks");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
-const Mocks = require("./mocks/Mocks");
+const LegacyMocks = require("./mocks-legacy/Mocks");
 const Settings = require("./settings/Settings");
 
-const { scopedAlertsMethods } = require("./support/helpers");
+const { scopedAlertsMethods, addEventListener } = require("./support/helpers");
 
 class Core {
-  constructor(config) {
+  constructor(programmaticConfig) {
     this._eventEmitter = new EventEmitter();
 
-    // TODO, refactor all pieces as the next one. They should receive prepared callbacks
-    // They should never access directly to the full core
-    // (expect in cases where it is needed to be passed to plugins or another external pieces)
     this._alerts = new Alerts({
-      onChangeValues: (alerts) => {
+      onChange: (alerts) => {
         this._eventEmitter.emit(CHANGE_ALERTS, alerts);
       },
     });
 
-    // TODO, move loaders inside mocks folder, or rename it
-    this._loaders = new Loaders(this);
-    this._config = new Config(
-      scopedAlertsMethods("config", this._alerts.add, this._alerts.remove),
-      config
-    );
+    // TODO, remove v1 legacy code
+    this._legacyMocksLoaders = new Loaders({
+      onLoad: () => {
+        this._eventEmitter.emit(LOAD_LEGACY_MOCKS);
+      },
+    });
 
+    this._mocksLoaders = new Loaders({
+      onLoad: () => {
+        this._eventEmitter.emit(LOAD_MOCKS);
+      },
+    });
+
+    this._routesLoaders = new Loaders({
+      onLoad: () => {
+        this._eventEmitter.emit(LOAD_ROUTES);
+      },
+    });
+
+    this._config = new Config({
+      programmaticConfig,
+      ...scopedAlertsMethods("config", this._alerts.add, this._alerts.remove),
+    });
+
+    // TODO, refactor. Pass specific callbacks instead of objects
     this._settings = new Settings(this._eventEmitter, this._config);
 
     this._plugins = new Plugins(
-      this._config,
-      this._loaders,
-      this,
-      scopedAlertsMethods("plugins", this._alerts.add, this._alerts.remove, this._alerts.rename)
+      {
+        createLegacyMocksLoader: () => {
+          return this._legacyMocksLoaders.new();
+        },
+        createMocksLoader: () => {
+          return this._mocksLoaders.new();
+        },
+        createRoutesLoader: () => {
+          return this._routesLoaders.new();
+        },
+        ...scopedAlertsMethods(
+          "plugins",
+          this._alerts.add,
+          this._alerts.remove,
+          this._alerts.rename
+        ),
+      },
+      this //To be used only by plugins
     );
+
+    this._routesHandlers = new RoutesHandlers();
 
     this._mocks = new Mocks(
-      this._eventEmitter,
-      this._settings,
-      this._loaders,
-      this,
-      scopedAlertsMethods("mocks", this._alerts.add, this._alerts.remove)
+      {
+        getLoadedMocks: () => this._mocksLoaders.contents,
+        getLoadedRoutes: () => this._routesLoaders.contents,
+        getCurrentMock: () => this._settings.get("mock"),
+        getDelay: () => this._settings.get("delay"),
+        onChange: () => this._eventEmitter.emit(CHANGE_MOCKS),
+        ...scopedAlertsMethods(
+          "mocks",
+          this._alerts.add,
+          this._alerts.remove,
+          this._alerts.rename
+        ),
+      },
+      this //To be used only by routeHandlers
     );
 
-    this._server = new Server(
+    // TODO, remove v1 legacy code
+    this._legacyMocks = new LegacyMocks(
       this._eventEmitter,
       this._settings,
-      this._mocks,
+      this._legacyMocksLoaders,
       this,
-      scopedAlertsMethods("server", this._alerts.add, this._alerts.remove)
+      scopedAlertsMethods("legacy-mocks", this._alerts.add, this._alerts.remove)
     );
 
-    // TODO, rename into eventsOrchestrator, convert into a function
-    this._orchestrator = new Orchestrator(this._eventEmitter, this._mocks, this._server);
+    // TODO, refactor. Pass specific callbacks instead of objects
+    this._server = new Server(this._eventEmitter, this._settings, this._legacyMocks, this, {
+      mocksRouter: this._mocks.router,
+      ...scopedAlertsMethods("server", this._alerts.add, this._alerts.remove),
+    });
+
+    // TODO, refactor. Pass specific callbacks instead of objects
+    this._orchestrator = new Orchestrator(
+      this._eventEmitter,
+      this._legacyMocks,
+      this._server,
+      this._mocks
+    );
 
     this._inited = false;
     this._stopPluginsPromise = null;
     this._startPluginsPromise = null;
-  }
-
-  async init(options) {
-    if (this._inited) {
-      return Promise.resolve();
-    }
-    await this._config.init(options);
-    this._inited = true;
-    // Register plugins, let them add their custom settings
-    await this._plugins.register();
-    // Init settings, read command line arguments, etc.
-    await this._settings.init(this._config.options);
-    // Settings are ready, init all
-    await this._mocks.init();
-    await this._server.init();
-    return this._plugins.init().then(() => {
-      this._eventEmitter.emit(INIT, this);
-    });
-  }
-
-  async start() {
-    await this.init(); // in case it has not been initializated manually before
-    await this._server.start();
-    return this._startPlugins().then(() => {
-      this._eventEmitter.emit(START, this);
-    });
   }
 
   async _startPlugins() {
@@ -130,10 +161,70 @@ class Core {
     });
   }
 
-  // TODO, deprecate method, use addRouter
-  addCustomRouter(path, router) {
-    tracer.deprecationWarn("addCustomRouter", "addRouter");
-    return this.addRouter(path, router);
+  // Public methods
+
+  async init(options) {
+    if (this._inited) {
+      return Promise.resolve();
+    }
+    await this._config.init(options);
+    this._inited = true;
+    // Register plugins, let them add their custom settings
+    await this._plugins.register(this._config.coreOptions.plugins);
+    // Register routes handlers
+    await this._routesHandlers.register(this._config.coreOptions.routesHandlers);
+    // Init settings, read command line arguments, etc.
+    await this._settings.init(this._config.options);
+    // Settings are ready, init all
+    this._mocks.init(this._routesHandlers.handlers);
+    await this._legacyMocks.init();
+    await this._server.init();
+    return this._plugins.init().then(() => {
+      this._eventEmitter.emit(INIT, this);
+    });
+  }
+
+  async start() {
+    await this.init(); // in case it has not been initializated manually before
+    await this._server.start();
+    return this._startPlugins().then(() => {
+      this._eventEmitter.emit(START, this);
+    });
+  }
+
+  async stop() {
+    await this._server.stop();
+    return this._stopPlugins().then(() => {
+      this._eventEmitter.emit(STOP, this);
+    });
+  }
+
+  addSetting(option) {
+    return this._settings.addCustom(option);
+  }
+
+  addRoutesHandler(RoutesHandler) {
+    this._routesHandlers.add(RoutesHandler);
+  }
+
+  // Listeners
+
+  onChangeMocks(listener) {
+    return addEventListener(listener, CHANGE_MOCKS, this._eventEmitter);
+  }
+
+  onChangeSettings(listener) {
+    return addEventListener(listener, CHANGE_SETTINGS, this._eventEmitter);
+  }
+
+  onChangeAlerts(listener) {
+    return addEventListener(listener, CHANGE_ALERTS, this._eventEmitter);
+  }
+
+  // Expose Server methods and getters
+
+  restartServer() {
+    return this._server.restart();
   }
 
   addRouter(path, router) {
@@ -144,87 +235,7 @@ class Core {
     return this._server.removeCustomRouter(path, router);
   }
 
-  // TODO, deprecate method, use addSetting
-  addCustomSetting(option) {
-    tracer.deprecationWarn("addCustomSetting", "addSetting");
-    return this.addSetting(option);
-  }
-
-  addSetting(option) {
-    return this._settings.addCustom(option);
-  }
-
-  addFixturesHandler(Handler) {
-    return this._mocks.addFixturesHandler(Handler);
-  }
-
-  // Listeners
-
-  // TODO, deprecate method
-  onLoadFiles(cb) {
-    tracer.deprecationWarn("onLoadFiles", "onChangeMocks");
-    const removeCallback = () => {
-      this._eventEmitter.removeListener(LOAD_MOCKS, cb);
-    };
-    this._eventEmitter.on(LOAD_MOCKS, cb);
-    return removeCallback;
-  }
-
-  // TODO, deprecate method, use onChangeMocks
-  onLoadMocks(cb) {
-    tracer.deprecationWarn("onLoadMocks", "onChangeMocks");
-    return this.onChangeMocks(cb);
-  }
-
-  onChangeMocks(cb) {
-    const removeCallback = () => {
-      this._eventEmitter.removeListener(CHANGE_MOCKS, cb);
-    };
-    this._eventEmitter.on(CHANGE_MOCKS, cb);
-    return removeCallback;
-  }
-
-  onChangeSettings(cb) {
-    const removeCallback = () => {
-      this._eventEmitter.removeListener(CHANGE_SETTINGS, cb);
-    };
-    this._eventEmitter.on(CHANGE_SETTINGS, cb);
-    return removeCallback;
-  }
-
-  onChangeAlerts(cb) {
-    const removeCallback = () => {
-      this._eventEmitter.removeListener(CHANGE_ALERTS, cb);
-    };
-    this._eventEmitter.on(CHANGE_ALERTS, cb);
-    return removeCallback;
-  }
-
-  async stop() {
-    await this._server.stop();
-    return this._stopPlugins().then(() => {
-      this._eventEmitter.emit(STOP, this);
-    });
-  }
-
-  // Expose Server methods and getters
-
-  // TODO, deprecate method, use restartServer
-  restart() {
-    tracer.deprecationWarn("restart", "restartServer");
-    return this.restartServer();
-  }
-
-  restartServer() {
-    return this._server.restart();
-  }
-
-  // TODO, deprecate
-  get serverError() {
-    return this._server.error;
-  }
-
-  // Expose child objects needed
+  // Expose child objects
 
   get alerts() {
     return this._alerts.values;
@@ -234,22 +245,32 @@ class Core {
     return this._settings;
   }
 
-  get behaviors() {
-    return this._mocks.behaviors;
-  }
-
-  get fixtures() {
-    return this._mocks.fixtures;
-  }
-
-  // TODO, deprecate getter
-  get features() {
-    tracer.deprecationWarn("features getter", "behaviors getter");
-    return this._mocks.behaviors;
+  get mocks() {
+    return this._mocks;
   }
 
   get tracer() {
     return tracer;
+  }
+
+  // TODO, remove v1 legacy code
+  addFixturesHandler(Handler) {
+    return this._legacyMocks.addFixturesHandler(Handler);
+  }
+
+  // TODO, remove v1 legacy code
+  onChangeLegacyMocks(listener) {
+    return addEventListener(listener, CHANGE_LEGACY_MOCKS, this._eventEmitter);
+  }
+
+  // TODO, remove v1 legacy code
+  get behaviors() {
+    return this._legacyMocks.behaviors;
+  }
+
+  // TODO, remove v1 legacy code
+  get fixtures() {
+    return this._legacyMocks.fixtures;
   }
 }
 

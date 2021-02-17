@@ -11,8 +11,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const tracer = require("./tracer");
 
 class Alerts {
-  constructor({ onChangeValues }) {
-    this._onChangeValues = onChangeValues;
+  constructor({ onChange }) {
+    this._onChange = onChange;
     this._alerts = new Set();
     this.add = this.add.bind(this);
     this.remove = this.remove.bind(this);
@@ -38,7 +38,7 @@ class Alerts {
     } else {
       tracer.warn(message);
     }
-    this._onChangeValues(this.values);
+    this._onChange(this.values);
   }
 
   remove(context) {
@@ -51,7 +51,7 @@ class Alerts {
       }
     });
     if (changed) {
-      this._onChangeValues(this.values);
+      this._onChange(this.values);
     }
   }
 
@@ -69,7 +69,7 @@ class Alerts {
       }
     });
     if (changed) {
-      this._onChangeValues(this.values);
+      this._onChange(this.values);
     }
   }
 

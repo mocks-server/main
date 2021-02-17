@@ -8,18 +8,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { LOAD_MOCKS } = require("./eventNames");
-
 class Loader {
-  constructor(core) {
-    this._core = core;
+  constructor({ onLoad }) {
+    this._onLoad = onLoad;
     this.load = this.load.bind(this);
     this._contents = [];
   }
 
   load(contents) {
     this._contents = contents;
-    this._core._eventEmitter.emit(LOAD_MOCKS);
+    this._onLoad();
   }
 
   get contents() {
@@ -28,13 +26,13 @@ class Loader {
 }
 
 class Loaders {
-  constructor(core) {
-    this._core = core;
+  constructor({ onLoad }) {
+    this._onLoad = onLoad;
     this._loaders = [];
   }
 
   new() {
-    const loader = new Loader(this._core);
+    const loader = new Loader({ onLoad: this._onLoad });
     this._loaders.push(loader);
     return loader.load;
   }

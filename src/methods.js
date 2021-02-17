@@ -1,81 +1,93 @@
-import fetch from "cross-fetch";
-
 import {
-  DEFAULT_BASE_PATH,
-  ABOUT,
-  SETTINGS,
-  BEHAVIORS,
-  FIXTURES,
-  ALERTS,
-} from "@mocks-server/admin-api-paths";
+  about,
+  behaviors,
+  behavior,
+  fixtures,
+  fixture,
+  settings,
+  alerts,
+  alert,
+  mocks,
+  mock,
+  routes,
+  route,
+  routesVariants,
+  routeVariant,
+  mockCustomRoutesVariants,
+} from "./entities";
 
-const DEFAULT_OPTIONS = {
-  apiPath: DEFAULT_BASE_PATH,
-  baseUrl: "http://localhost:3100",
-};
-
-let configuration = {
-  ...DEFAULT_OPTIONS,
-};
-
-export const config = (options) => {
-  configuration = {
-    ...configuration,
-    ...options,
-  };
-};
-
-class Fetcher {
-  constructor(url, id) {
-    this._url = url;
-    this._id = id ? `/${encodeURIComponent(id)}` : "";
-  }
-
-  get url() {
-    return `${configuration.baseUrl}${configuration.apiPath}${this._url}${this._id}`;
-  }
-
-  _read() {
-    return fetch(this.url).then((res) => res.json());
-  }
-
-  _patch(data) {
-    return fetch(this.url, {
-      method: "PATCH",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  }
-
-  read() {
-    return this._read();
-  }
-
-  update(data) {
-    return this._patch(data);
-  }
+export function readAbout() {
+  return about.read();
 }
 
-export const about = new Fetcher(ABOUT);
+export function readSettings() {
+  return settings.read();
+}
 
-export const settings = new Fetcher(SETTINGS);
+export function updateSettings(newSettings) {
+  return settings.update(newSettings);
+}
 
-export const behaviors = new Fetcher(BEHAVIORS);
+export function readAlerts() {
+  return alerts.read();
+}
 
-export const behavior = (name) => {
-  return new Fetcher(BEHAVIORS, name);
-};
+export function readAlert(id) {
+  return alert(id).read();
+}
 
-export const fixtures = new Fetcher(FIXTURES);
+export function readMocks() {
+  return mocks.read();
+}
 
-export const fixture = (id) => {
-  return new Fetcher(FIXTURES, id);
-};
+export function readMock(id) {
+  return mock(id).read();
+}
 
-export const alerts = new Fetcher(ALERTS);
+export function readRoutes() {
+  return routes.read();
+}
 
-export const alert = (id) => {
-  return new Fetcher(ALERTS, id);
-};
+export function readRoute(id) {
+  return route(id).read();
+}
+
+export function readRoutesVariants() {
+  return routesVariants.read();
+}
+
+export function readRouteVariant(id) {
+  return routeVariant(id).read();
+}
+
+export function readCustomRoutesVariants() {
+  return mockCustomRoutesVariants.read();
+}
+
+export function useRouteVariant(id) {
+  return mockCustomRoutesVariants.create({
+    id,
+  });
+}
+
+export function restoreRoutesVariants() {
+  return mockCustomRoutesVariants.delete();
+}
+
+// legacy
+
+export function readBehaviors() {
+  return behaviors.read();
+}
+
+export function readBehavior(name) {
+  return behavior(name).read();
+}
+
+export function readFixtures() {
+  return fixtures.read();
+}
+
+export function readFixture(id) {
+  return fixture(id).read();
+}

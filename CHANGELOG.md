@@ -9,6 +9,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Fixed
 ### Removed
+### Breaking change
+
+## [3.0.0-beta.2] - 2021-02-16
+
+### Changed
+- chore(deps): Update dependencies. Adapt tests
+- feat: Rename `apiPath` config property into `adminApiPath`
+- feat: Rename `readMockCustomRoutesVariants` method into `readCustomRoutesVariants`
+- feat: Rename `addMockCustomRouteVariant` method into `useRouteVariant`
+- feat: Rename `restoreMockRoutesVariants` method into `restoreRoutesVariants`
+
+## [3.0.0-beta.1] - 2021-02-15
+
+### Added
+- feat: Expose one different method for each action.
+- feat: Reject promises in case of status code different to 2xx
+
+### Changed
+- feat: Update mocks-server dependencies to v2 beta versions and adapt routes and tests.
+
+### Removed
+- feat: Make entities private
+
+### Breaking change
+- Removed previous entity-based methods
 
 ## [2.1.0] - 2020-12-26
 

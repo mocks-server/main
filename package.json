@@ -1,8 +1,10 @@
 {
   "name": "@mocks-server/admin-api-client",
-  "version": "2.1.0",
+  "version": "3.0.0-beta.2",
   "description": "Client of @mocks-server/plugin-admin-api",
   "keywords": [
+    "mocks-server",
+    "plugin",
     "administration",
     "admin",
     "api",
@@ -32,7 +34,7 @@
   },
   "dependencies": {
     "cross-fetch": "3.0.6",
-    "@mocks-server/admin-api-paths": "1.1.0"
+    "@mocks-server/admin-api-paths": "2.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "7.12.16",

@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "mocks": "mocks-server",
-    "mocks:ci": "mocks-server --cli=false"
+    "mocks:ci": "mocks-server --no-cli"
   },
   "devDependencies": {
-    "@mocks-server/main": "1.9.0"
+    "@mocks-server/main": "2.0.0"
   }
 }

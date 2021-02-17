@@ -41,23 +41,18 @@ describe("Inquirer", () => {
     sandbox.restore();
   });
 
-  describe("display name", () => {
-    it("should return package name", async () => {
-      const cli = new Inquirer(fooQuestions);
-      expect(cli.displayName).toEqual("@mocks-server/plugin-inquirer-cli");
-    });
-  });
-
-  describe("when initing questions", () => {
+  describe("when setting questions", () => {
     it("should add an extra exit option to main menu", () => {
-      const cli = new Inquirer(fooQuestions);
+      const cli = new Inquirer();
+      cli.questions = fooQuestions;
       expect(cli._questions.main.choices[2].name).toEqual("Exit");
     });
 
     it("should not add an extra option if main question does not exists", () => {
       const questionsWithoutMain = { notMain: fooQuestions.main };
 
-      const cli = new Inquirer(questionsWithoutMain);
+      const cli = new Inquirer();
+      cli.questions = questionsWithoutMain;
       expect(cli._questions.notMain.choices.length).toEqual(1);
     });
   });
@@ -65,7 +60,7 @@ describe("Inquirer", () => {
   describe("quit method", () => {
     it("should call to exit process", () => {
       sandbox.stub(process, "exit");
-      const cli = new Inquirer(fooQuestions);
+      const cli = new Inquirer();
       cli.quit();
       expect(process.exit.callCount).toEqual(1);
     });
@@ -74,7 +69,7 @@ describe("Inquirer", () => {
   describe("clearScreen method", () => {
     it("should write Clear screen characters in process stdout", () => {
       sandbox.stub(process.stdout, "write");
-      const cli = new Inquirer(fooQuestions);
+      const cli = new Inquirer();
       cli.clearScreen();
       expect(process.stdout.write.calledWith("\x1Bc")).toEqual(true);
     });
@@ -82,7 +77,7 @@ describe("Inquirer", () => {
     it("should print all strings returned by header method provided to constructor", () => {
       const fooHeader = "foo header";
       sandbox.stub(process.stdout, "write");
-      const cli = new Inquirer(fooQuestions, () => [fooHeader]);
+      const cli = new Inquirer(() => [fooHeader]);
       cli.clearScreen();
       // Get console call 3 (From 0 to 2 are rendering section header)
       expect(console.log.getCall(3).args[0]).toEqual(expect.stringContaining(fooHeader));
@@ -92,7 +87,6 @@ describe("Inquirer", () => {
       const fooAlert = "foo header";
       sandbox.stub(process.stdout, "write");
       const cli = new Inquirer(
-        fooQuestions,
         () => [],
         () => [fooAlert]
       );
@@ -104,7 +98,7 @@ describe("Inquirer", () => {
     it("should not print header if header option is set to false", () => {
       const fooHeader = "foo header";
       sandbox.stub(process.stdout, "write");
-      const cli = new Inquirer(fooQuestions, () => [fooHeader]);
+      const cli = new Inquirer(() => [fooHeader]);
       cli.clearScreen({
         header: false,
       });
@@ -117,14 +111,32 @@ describe("Inquirer", () => {
       expect.assertions(1);
       const fooValue = "foo-value";
       sandbox.stub(inquirer, "prompt").usingPromise().resolves({ value: fooValue });
-      const cli = new Inquirer(fooQuestions);
+      const cli = new Inquirer();
+      cli.questions = fooQuestions;
       expect(await cli.inquire("main")).toEqual(fooValue);
+    });
+
+    it("should resolve previous questions", async () => {
+      expect.assertions(4);
+      const fooValue = "foo-value";
+      sandbox.stub(inquirer, "prompt").usingPromise().resolves({ value: fooValue });
+      const cli = new Inquirer();
+      cli.questions = fooQuestions;
+      const resolvePreviousQuestion1 = sandbox.spy();
+      const resolvePreviousQuestion2 = sandbox.spy();
+      cli._currentInquirers.add(resolvePreviousQuestion1);
+      cli._currentInquirers.add(resolvePreviousQuestion2);
+      expect(await cli.inquire("main")).toEqual(fooValue);
+      expect(resolvePreviousQuestion1.callCount).toEqual(1);
+      expect(resolvePreviousQuestion2.callCount).toEqual(1);
+      expect(cli._currentInquirers.size).toEqual(0);
     });
 
     it("should call to inquire prompt method, passing the correspondant question", async () => {
       expect.assertions(1);
       sandbox.stub(inquirer, "prompt").usingPromise().resolves({});
-      const cli = new Inquirer(fooQuestions);
+      const cli = new Inquirer();
+      cli.questions = fooQuestions;
       await cli.inquire("main");
       expect(inquirer.prompt.getCall(0).args[0].message).toEqual("Select action:");
     });
@@ -132,8 +144,11 @@ describe("Inquirer", () => {
     it("should call to remove keypress listener after inquire has finished", async () => {
       expect.assertions(1);
       sandbox.stub(inquirer, "prompt").usingPromise().resolves({});
-      const cli = new Inquirer(fooQuestions);
-      process.stdin.on("keypress", () => {});
+      const cli = new Inquirer();
+      cli.questions = fooQuestions;
+      process.stdin.on("keypress", () => {
+        // do nothing
+      });
       sandbox.stub(process.stdin, "removeListener");
       await cli.inquire("main");
       expect(process.stdin.removeListener.getCall(0).args[0]).toEqual("keypress");
@@ -143,7 +158,8 @@ describe("Inquirer", () => {
       expect.assertions(1);
       sandbox.stub(process, "exit");
       sandbox.stub(inquirer, "prompt").usingPromise().resolves({ value: "quit" });
-      const cli = new Inquirer(fooQuestions);
+      const cli = new Inquirer();
+      cli.questions = fooQuestions;
       await cli.inquire("main");
       expect(process.exit.callCount).toEqual(1);
     });
@@ -188,13 +204,15 @@ describe("Inquirer", () => {
     });
 
     it("should call to clear Screen", async () => {
-      const cli = new Inquirer(fooQuestions);
+      const cli = new Inquirer();
+      cli.questions = fooQuestions;
       await cli.logsMode();
       expect(process.stdout.write.calledWith("\x1Bc")).toEqual(true);
     });
 
     it("should print that logs mode started", async () => {
-      const cli = new Inquirer(fooQuestions);
+      const cli = new Inquirer();
+      cli.questions = fooQuestions;
       await cli.logsMode();
       expect(
         console.log.calledWith(
@@ -204,7 +222,8 @@ describe("Inquirer", () => {
     });
 
     it("should call to provided callback", async () => {
-      const cli = new Inquirer(fooQuestions);
+      const cli = new Inquirer();
+      cli.questions = fooQuestions;
       const fooCallBack = sinon.spy();
       await cli.logsMode(fooCallBack);
       expect(fooCallBack.callCount).toEqual(1);
@@ -212,7 +231,8 @@ describe("Inquirer", () => {
 
     it("should call to exit process if pressed key is equal to CTRL+C", async () => {
       fooKeyPresser.key = "\u0003";
-      const cli = new Inquirer(fooQuestions);
+      const cli = new Inquirer();
+      cli.questions = fooQuestions;
       await cli.logsMode();
       expect(process.exit.callCount).toEqual(1);
     });
@@ -224,7 +244,8 @@ describe("Inquirer", () => {
         fakeRawMode = true;
         process.stdin.setRawMode = sandbox.stub();
       }
-      const cli = new Inquirer(fooQuestions);
+      const cli = new Inquirer();
+      cli.questions = fooQuestions;
       await cli.logsMode();
       expect(process.stdin.setRawMode.callCount).toEqual(2);
     });
@@ -238,7 +259,8 @@ describe("Inquirer", () => {
       }
       const originalStdin = process.stdin;
       process.stdin.setRawMode = false;
-      const cli = new Inquirer(fooQuestions);
+      const cli = new Inquirer();
+      cli.questions = fooQuestions;
       await cli.logsMode();
       process.stdin = originalStdin;
       expect(process.stdin.setRawMode.callCount).toEqual(undefined);
@@ -251,7 +273,8 @@ describe("Inquirer", () => {
     });
 
     it("should do nothing if logs mode is not currently enabled", async () => {
-      const cli = new Inquirer(fooQuestions);
+      const cli = new Inquirer();
+      cli.questions = fooQuestions;
       cli.exitLogsMode();
       expect(process.stdin.removeListener.callCount).toEqual(0);
     });

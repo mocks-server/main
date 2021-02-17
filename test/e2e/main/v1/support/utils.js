@@ -14,14 +14,14 @@ const requestPromise = require("request-promise");
 
 const SERVER_PORT = 3100;
 
-const BINARY_PATH = "../../mocks-server";
+const BINARY_PATH = "./starter";
 
 const defaultRequestOptions = {
   method: "GET",
 };
 
 const fixturesFolder = (folderName) => {
-  return path.resolve(__dirname, "..", "main", "fixtures", folderName);
+  return path.resolve(__dirname, "..", "fixtures", folderName);
 };
 
 const request = (uri, options = {}) => {

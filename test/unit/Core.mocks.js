@@ -14,6 +14,10 @@ jest.mock("@mocks-server/core");
 
 const { Core } = require("@mocks-server/core");
 
+const doNothing = () => {
+  // do nothing
+};
+
 class CoreMock {
   constructor() {
     this._sandbox = sinon.createSandbox();
@@ -35,10 +39,10 @@ class CoreMock {
         warn: this._sandbox.stub(),
         error: this._sandbox.stub(),
       },
-      onChangeSettings: this._sandbox.stub().returns(() => {}),
-      onChangeAlerts: this._sandbox.stub().returns(() => {}),
-      onChangeMocks: this._sandbox.stub().returns(() => {}),
-      onChangeLegacyMocks: this._sandbox.stub().returns(() => {}),
+      onChangeSettings: this._sandbox.stub().returns(doNothing),
+      onChangeAlerts: this._sandbox.stub().returns(doNothing),
+      onChangeMocks: this._sandbox.stub().returns(doNothing),
+      onChangeLegacyMocks: this._sandbox.stub().returns(doNothing),
       addRouter: this._sandbox.stub(),
       addSetting: this._sandbox.stub(),
       mocks: {

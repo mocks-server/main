@@ -14,7 +14,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const { isNumber } = require("lodash");
 
 const inquirer = require("./Inquirer");
-const { renderHeader, renderAlert } = require("./helpers");
+const { renderHeader, renderAlert, getCurrentMockMessageLevel } = require("./helpers");
 
 const MAIN_CHOICES = [
   {
@@ -268,7 +268,7 @@ class Cli {
       renderHeader(
         `Current mock`,
         currentMockMessage,
-        this._core.mocks.customRoutesVariants.length ? 1 : currentMock === "-" ? 2 : 0
+        getCurrentMockMessageLevel(this._core.mocks.customRoutesVariants, currentMock)
       ),
       renderHeader(`Mocks`, availableMocks, availableMocks < 1 ? 2 : 0),
       renderHeader(`Routes`, availableRoutes, availableRoutes < 1 ? 2 : 0),

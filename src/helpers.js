@@ -45,6 +45,16 @@ function clearScreen() {
   process.stdout.write(CLRS);
 }
 
+function getCurrentMockMessageLevel(customRoutesVariants, currentMock) {
+  if (customRoutesVariants.length) {
+    return 1;
+  }
+  if (currentMock === "-") {
+    return 2;
+  }
+  return 0;
+}
+
 module.exports = {
   renderSectionHeader,
   renderSectionFooter,
@@ -53,4 +63,5 @@ module.exports = {
   renderLogsMode,
   formatError,
   clearScreen,
+  getCurrentMockMessageLevel,
 };

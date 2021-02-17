@@ -23,9 +23,9 @@
   },
   "devDependencies": {
     "@mocks-server/main": "2.0.0",
-    "babel-plugin-module-resolver": "4.0.0",
+    "babel-plugin-module-resolver": "4.1.0",
     "cross-env": "7.0.3",
-    "cypress": "5.6.0",
+    "cypress": "6.5.0",
     "start-server-and-test": "1.11.6"
   }
 }

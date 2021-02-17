@@ -1,20 +1,20 @@
 const { Behavior } = require("@mocks-server/main");
 
 const getStandard = {
-  url: "/api/response",
+  url: "/api/legacy-response",
   method: "GET",
   response: {
     status: 200,
-    body: { display: "standard-response" },
+    body: { display: "legacy-standard-response" },
   },
 };
 
 const getCustom = {
-  url: "/api/response",
+  url: "/api/legacy-response",
   method: "GET",
   response: {
     status: 200,
-    body: { display: "custom-response" },
+    body: { display: "legacy-custom-response" },
   },
 };
 

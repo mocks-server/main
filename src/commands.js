@@ -1,36 +1,89 @@
-const adminApiClient = require("@mocks-server/admin-api-client");
+const apiClient = require("@mocks-server/admin-api-client");
 
-const setBehavior = (behavior) => {
-  return adminApiClient.settings.update({
-    behavior,
-  });
-};
+const {
+  isFalsy,
+  ENABLED_ENVIRONMENT_VAR,
+  BASE_URL_ENVIRONMENT_VAR,
+  ADMIN_API_PATH_ENVIRONMENT_VAR,
+} = require("./helpers");
 
-const setDelay = (delay) => {
-  return adminApiClient.settings.update({
-    delay,
-  });
-};
+function commands(Cypress) {
+  const isDisabled = () => {
+    return isFalsy(Cypress.env(ENABLED_ENVIRONMENT_VAR));
+  };
 
-const setSettings = (newSettings) => {
-  return adminApiClient.settings.update(newSettings);
-};
+  const doNothing = () => {
+    return Promise.resolve();
+  };
 
-// TODO, remove when admin-api-client supports adminApiPath option
-const mapConfig = (customConfig) => {
-  const configToSet = {};
-  if (customConfig.adminApiPath) {
-    configToSet.apiPath = customConfig.adminApiPath;
+  const setBehavior = (behavior) => {
+    if (isDisabled()) {
+      return doNothing();
+    }
+    return apiClient.updateSettings({
+      behavior,
+    });
+  };
+
+  const setMock = (id) => {
+    if (isDisabled()) {
+      return doNothing();
+    }
+    return apiClient.updateSettings({
+      mock: id,
+    });
+  };
+
+  const setDelay = (delay) => {
+    if (isDisabled()) {
+      return doNothing();
+    }
+    return apiClient.updateSettings({
+      delay,
+    });
+  };
+
+  const setSettings = (newSettings) => {
+    if (isDisabled()) {
+      return doNothing();
+    }
+    return apiClient.updateSettings(newSettings);
+  };
+
+  const useRouteVariant = (id) => {
+    if (isDisabled()) {
+      return doNothing();
+    }
+    return apiClient.useRouteVariant(id);
+  };
+
+  const restoreRoutesVariants = () => {
+    if (isDisabled()) {
+      return doNothing();
+    }
+    return apiClient.restoreRoutesVariants();
+  };
+
+  const config = (customConfig) => {
+    return apiClient.config(customConfig);
+  };
+
+  if (Cypress.env(ADMIN_API_PATH_ENVIRONMENT_VAR)) {
+    config({ adminApiPath: Cypress.env(ADMIN_API_PATH_ENVIRONMENT_VAR) });
   }
-  if (customConfig.baseUrl) {
-    configToSet.baseUrl = customConfig.baseUrl;
+  if (Cypress.env(BASE_URL_ENVIRONMENT_VAR)) {
+    config({ baseUrl: Cypress.env(BASE_URL_ENVIRONMENT_VAR) });
   }
-  return adminApiClient.config(configToSet);
-};
 
-module.exports = {
-  setBehavior,
-  setDelay,
-  setSettings,
-  config: mapConfig,
-};
+  return {
+    setBehavior,
+    setMock,
+    setDelay,
+    setSettings,
+    config,
+    useRouteVariant,
+    restoreRoutesVariants,
+  };
+}
+
+module.exports = commands;

@@ -29,12 +29,12 @@
     "test:unit": "npm run test"
   },
   "devDependencies": {
-    "@babel/preset-env": "7.12.13",
+    "@babel/preset-env": "7.12.16",
     "@rollup/plugin-babel": "5.2.3",
-    "@rollup/plugin-commonjs": "15.1.0",
+    "@rollup/plugin-commonjs": "16.0.0",
     "@rollup/plugin-node-resolve": "9.0.0",
     "babel-jest": "26.6.3",
-    "eslint": "7.19.0",
+    "eslint": "7.20.0",
     "eslint-config-prettier": "6.15.0",
     "eslint-plugin-prettier": "3.3.1",
     "husky": "4.3.8",

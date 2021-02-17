@@ -40,9 +40,9 @@
     "test:unit": "npm run test"
   },
   "dependencies": {
-    "@mocks-server/core": "2.0.0-beta.2",
-    "@mocks-server/plugin-admin-api": "2.0.0-beta.2",
-    "@mocks-server/plugin-inquirer-cli": "2.0.0-beta.2"
+    "@mocks-server/core": "2.0.0",
+    "@mocks-server/plugin-admin-api": "2.0.0",
+    "@mocks-server/plugin-inquirer-cli": "2.0.0"
   },
   "devDependencies": {
     "eslint": "7.20.0",

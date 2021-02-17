@@ -32,7 +32,7 @@
     "test:unit": "npm run test"
   },
   "peerDependencies": {
-    "@mocks-server/core": ">=2.0.0"
+    "@mocks-server/core": "2.x"
   },
   "dependencies": {
     "chalk": "4.1.0",
@@ -42,7 +42,7 @@
     "node-emoji": "1.10.0"
   },
   "devDependencies": {
-    "@mocks-server/core": "2.0.0-beta.2",
+    "@mocks-server/core": "2.0.0",
     "cross-fetch": "3.0.6",
     "cross-spawn": "7.0.3",
     "eslint": "7.15.0",

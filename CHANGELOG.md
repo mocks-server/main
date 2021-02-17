@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - refactor: Refactor Loaders to receive specific onLoad callback instead of full core instance
 - refactor: Refactor Config to receive a single argument with all options
 - refactor: Refactor Plugins to receive a single argument with all options
+- chore: Update dependencies
 
 ### Fixed
 - fix: Boolean options with default value of `true` were not working when defined as `false` in config file

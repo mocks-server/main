@@ -26,6 +26,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Remove deprecated api paths
 - Remove adminApiDeprecatedPaths option.
 
+### BREAKING CHANGES
+- Move behaviors and fixtures apis under legacy folder
+- Remove deprecated api paths
+- Remove adminApiDeprecatedPaths option.
+
 ## [2.0.0-beta.2] - 2021-02-16
 
 ### Changed

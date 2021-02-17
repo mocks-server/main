@@ -146,7 +146,9 @@ describe("Inquirer", () => {
       sandbox.stub(inquirer, "prompt").usingPromise().resolves({});
       const cli = new Inquirer();
       cli.questions = fooQuestions;
-      process.stdin.on("keypress", () => {});
+      process.stdin.on("keypress", () => {
+        // do nothing
+      });
       sandbox.stub(process.stdin, "removeListener");
       await cli.inquire("main");
       expect(process.stdin.removeListener.getCall(0).args[0]).toEqual("keypress");

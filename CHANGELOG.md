@@ -10,6 +10,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [2.0.0] - 2021-02-17
+
+### Added
+- feat: Add mocks, routes and routes-variants paths
+- feat: Add legacy path
+- feat: Add mock-custom-routes-variants path
+
+### BREAKING CHANGES
+- Behaviors and fixtures routes have to be used under legacy path
+
 ## [2.0.0-beta.2] - 2021-02-14
 
 ### Added

@@ -36,12 +36,10 @@ const fixturesFolder = (folderName) => {
 };
 
 const createCore = () => {
-  const core = new Core({
+  return new Core({
     onlyProgrammaticOptions: true,
     plugins: [AdminApiPlugin],
   });
-
-  return core;
 };
 
 const startExistingCore = (core, mocksPath, options = {}) => {

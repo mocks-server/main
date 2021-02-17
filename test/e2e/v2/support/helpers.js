@@ -37,12 +37,10 @@ const fixturesFolder = (folderName) => {
 };
 
 const createCore = (options = {}) => {
-  const core = new Core({
+  return new Core({
     onlyProgrammaticOptions: true,
     plugins: options.plugins,
   });
-
-  return core;
 };
 
 const startExistingCore = (core, mocksPath, options = {}) => {

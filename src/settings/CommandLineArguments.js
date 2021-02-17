@@ -14,6 +14,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const commander = require("commander");
 commander.storeOptionsAsProperties(true);
 
+const { getOptionParser } = require("./helpers");
+
 class CommandLineArguments {
   constructor(defaultOptions) {
     this._options = {};
@@ -54,11 +56,7 @@ class CommandLineArguments {
     const defaultIsTrue = optionDetails.default === true;
     const optionPrefix = isBoolean && defaultIsTrue ? "--no-" : "--";
     const optionValueGetter = isBoolean ? "" : ` <${optionDetails.name}>`;
-    const optionParser = optionDetails.parse
-      ? optionDetails.parse
-      : optionDetails.type === "number"
-      ? parseInt
-      : undefined;
+    const optionParser = getOptionParser(optionDetails);
 
     this._commander.option(
       `${optionPrefix}${optionDetails.name}${optionValueGetter}`,

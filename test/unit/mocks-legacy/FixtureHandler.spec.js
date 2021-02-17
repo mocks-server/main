@@ -48,7 +48,9 @@ describe("FixtureHandler", () => {
         FixtureHandler.recognize({
           url: "foo",
           method: "GET",
-          response: () => {},
+          response: () => {
+            // do nothing
+          },
         })
       ).toEqual(true);
     });
@@ -197,13 +199,15 @@ describe("FixtureHandler", () => {
         {
           url: "foo/:id",
           method: "GET",
-          response: () => {},
+          response: () => {
+            // do nothing
+          },
         },
         coreInstance
       );
       expect(fixture.response).toEqual({
         type: "dynamic",
-        function: "() => {}",
+        function: expect.stringContaining("() => "),
       });
     });
   });

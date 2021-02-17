@@ -99,7 +99,9 @@ describe("Plugins", () => {
     it("should register object plugins with register method", async () => {
       await plugins.register([
         {
-          register: () => {},
+          register: () => {
+            // do nothing
+          },
         },
       ]);
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
@@ -317,7 +319,9 @@ describe("Plugins", () => {
       await plugins.register([
         FooPlugin,
         FooPlugin2,
-        () => {},
+        () => {
+          // do nothing
+        },
         true,
         false,
         "foo",
@@ -416,9 +420,7 @@ describe("Plugins", () => {
       expect.assertions(1);
       const fooPlugin = {
         init: () => {
-          return new Promise((resolve, reject) => {
-            reject(new Error());
-          });
+          return Promise.reject(new Error());
         },
       };
       const fooPlugin2 = {
@@ -519,9 +521,7 @@ describe("Plugins", () => {
       expect.assertions(1);
       const fooPlugin = {
         start: () => {
-          return new Promise((resolve, reject) => {
-            reject(new Error());
-          });
+          return Promise.reject(new Error());
         },
       };
       const fooPlugin2 = {
@@ -622,9 +622,7 @@ describe("Plugins", () => {
       expect.assertions(1);
       const fooPlugin = {
         stop: () => {
-          return new Promise((resolve, reject) => {
-            reject(new Error());
-          });
+          return Promise.reject(new Error());
         },
       };
       const fooPlugin2 = {

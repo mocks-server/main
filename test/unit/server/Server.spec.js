@@ -180,7 +180,9 @@ describe("Server", () => {
       await server.start();
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
       libsMocks.stubs.express.use.reset();
-      await server.removeCustomRouter("fooPath", () => {});
+      await server.removeCustomRouter("fooPath", () => {
+        // do nothing
+      });
       expect(http.createServer.callCount).toEqual(1);
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(1);
     });

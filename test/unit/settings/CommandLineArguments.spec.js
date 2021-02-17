@@ -111,7 +111,9 @@ describe("command line arguments", () => {
         const option = {
           name: "foo",
           type: "string",
-          parse: () => {},
+          parse: () => {
+            // do nothing
+          },
         };
         optionStub.callsFake((commandName, description, parser) => {
           if (commandName.includes("--foo")) {

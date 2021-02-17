@@ -26,11 +26,8 @@ function addMockRoutesVariants(mockRoutesVariants, routesVariantsToAdd) {
 function getMockRoutesVariants(mock, mocks, routesVariants, routesVariantsToAdd = []) {
   const mockRoutesVariants = mock.routesVariants
     .map((routeId) => {
-      const mockRoute = routesVariants.find((routeVariant) => routeVariant.variantId === routeId);
-      /* if (!mockRoute) {
-        // TODO, add alert
-      } */
-      return mockRoute;
+      // TODO, add alert if not found
+      return routesVariants.find((routeVariant) => routeVariant.variantId === routeId);
     })
     .filter((route) => !!route);
   if (mock.from) {
@@ -117,6 +114,20 @@ function getIds(objs) {
   return objs.map((obj) => obj.id);
 }
 
+function hasDelayPropery(obj) {
+  return obj.hasOwnProperty("delay");
+}
+
+function getRouteHandlerDelay(variant, route) {
+  if (hasDelayPropery(variant)) {
+    return variant.delay;
+  }
+  if (hasDelayPropery(route)) {
+    return route.delay;
+  }
+  return null;
+}
+
 module.exports = {
   getMockRoutesVariants,
   getVariantId,
@@ -125,4 +136,5 @@ module.exports = {
   getPlainRoutesVariants,
   addCustomVariant,
   getIds,
+  getRouteHandlerDelay,
 };

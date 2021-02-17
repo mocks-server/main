@@ -23,6 +23,7 @@ const {
   getPlainRoutesVariants,
   addCustomVariant,
   getIds,
+  getRouteHandlerDelay,
 } = require("./helpers");
 
 class Mocks {
@@ -125,11 +126,7 @@ class Mocks {
             },
             this._core
           );
-          routeHandler.delay = variant.hasOwnProperty("delay")
-            ? variant.delay
-            : route.hasOwnProperty("delay")
-            ? route.delay
-            : null;
+          routeHandler.delay = getRouteHandlerDelay(variant, route);
           routeHandler.id = variant.id;
           routeHandler.variantId = variantId;
           routeHandler.routeId = route.id;

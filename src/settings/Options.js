@@ -25,9 +25,7 @@ const DEFAULT_OPTIONS = {
   behavior: null,
 };
 
-const DEPRECATED_OPTIONS = {
-  // deprecatedKey: "newKey", Uncomment deprecated options methods if necessary
-};
+const DEPRECATED_OPTIONS = {};
 
 class Options {
   constructor(config) {
@@ -36,7 +34,6 @@ class Options {
     this._optionsNames = Object.keys(DEFAULT_OPTIONS);
     this._customDefaults = {};
     this._initialized = false;
-    // this._removeDeprecatedOption = this._removeDeprecatedOption.bind(this);
     this._commandLineArguments = new CommandLineArguments(DEFAULT_OPTIONS);
   }
 
@@ -109,11 +106,6 @@ class Options {
     if (this._optionsNames.includes(optionName) && !DEPRECATED_OPTIONS[optionName]) {
       return optionName;
     }
-    /* if (DEPRECATED_OPTIONS[optionName]) {
-      tracer.deprecationWarn(`${optionName} option`, `${DEPRECATED_OPTIONS[optionName]} option`);
-      // TODO, add alert
-      return DEPRECATED_OPTIONS[optionName];
-    } */
     return null;
   }
 
@@ -134,26 +126,8 @@ class Options {
     }, {});
   }
 
-  /* _removeDeprecatedOption(options, optionName) {
-    if (options[optionName] !== DEFAULT_OPTIONS[optionName]) {
-      const newOption = DEPRECATED_OPTIONS[optionName];
-      if (options[newOption] === DEFAULT_OPTIONS[newOption]) {
-        options[newOption] = options[optionName];
-      }
-      tracer.deprecationWarn(`--${optionName} option`, `--${DEPRECATED_OPTIONS[optionName]}`);
-      // TODO, add alert
-    }
-    delete options[optionName];
-    return options;
-  } */
-
   _removeDeprecatedOptions(options) {
-    let newOptions = { ...options };
-    /* Object.keys(DEPRECATED_OPTIONS).forEach((optionName) => {
-      newOptions = this._removeDeprecatedOption(newOptions, optionName);
-    }); */
-
-    return newOptions;
+    return { ...options };
   }
 }
 

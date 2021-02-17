@@ -68,7 +68,12 @@ describe("DefaultRoutesHandler", () => {
 
     it("should return function if response is a function", () => {
       defaultRoutesHandler = new DefaultRoutesHandler(
-        { ...FOO_ROUTE, response: () => {} },
+        {
+          ...FOO_ROUTE,
+          response: () => {
+            // do nothing
+          },
+        },
         coreInstance
       );
       expect(defaultRoutesHandler.plainResponsePreview).toEqual("function");
@@ -107,7 +112,12 @@ describe("DefaultRoutesHandler", () => {
 
     it("should return function if response is a function", () => {
       defaultRoutesHandler = new DefaultRoutesHandler(
-        { ...FOO_ROUTE, response: () => {} },
+        {
+          ...FOO_ROUTE,
+          response: () => {
+            // do nothing
+          },
+        },
         coreInstance
       );
       expect(defaultRoutesHandler.plainResponsePreview).toEqual("function");

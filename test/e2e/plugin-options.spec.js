@@ -7,120 +7,37 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
-const path = require("path");
-const {
-  startServer,
-  stopServer,
-  request,
-  CliRunner,
-  wait,
-  fixturesFolder,
-} = require("./support/utils");
+const { startServer, fetch, fixturesFolder, waitForServer } = require("./support/helpers");
 
 describe("plugin options", () => {
   let server;
-  let cli;
-
-  describe("adminApiDeprecatedPaths option", () => {
-    beforeAll(async () => {
-      server = await startServer("web-tutorial", {
-        adminApiDeprecatedPaths: false,
-      });
-    });
-
-    afterAll(async () => {
-      await stopServer(server);
-    });
-
-    it("should disable deprecated behaviors api path", async () => {
-      const behaviorsResponse = await request("/mocks/behaviors", {
-        resolveWithFullResponse: true,
-        simple: false,
-      });
-      expect(behaviorsResponse.statusCode).toEqual(404);
-    });
-
-    it("should disable deprecated features api path", async () => {
-      const behaviorsResponse = await request("/mocks/features", {
-        resolveWithFullResponse: true,
-        simple: false,
-      });
-      expect(behaviorsResponse.statusCode).toEqual(404);
-    });
-
-    it("should disable deprecated settings api path", async () => {
-      const behaviorsResponse = await request("/mocks/settings", {
-        resolveWithFullResponse: true,
-        simple: false,
-      });
-      expect(behaviorsResponse.statusCode).toEqual(404);
-    });
-  });
-
-  describe("adminApiDeprecatedPaths option used from CLI", () => {
-    beforeAll(async () => {
-      cli = new CliRunner(
-        ["node", "start.js", "--path=web-tutorial", "--no-adminApiDeprecatedPaths"],
-        {
-          cwd: path.resolve(__dirname, "fixtures"),
-        }
-      );
-      await wait(2000);
-    });
-
-    afterAll(async () => {
-      await cli.kill();
-    });
-
-    it("should disable deprecated behaviors api path", async () => {
-      console.log(cli.logs);
-      const behaviorsResponse = await request("/mocks/behaviors", {
-        resolveWithFullResponse: true,
-        simple: false,
-      });
-      expect(behaviorsResponse.statusCode).toEqual(404);
-    });
-
-    it("should disable deprecated features api path", async () => {
-      const behaviorsResponse = await request("/mocks/features", {
-        resolveWithFullResponse: true,
-        simple: false,
-      });
-      expect(behaviorsResponse.statusCode).toEqual(404);
-    });
-
-    it("should disable deprecated settings api path", async () => {
-      const behaviorsResponse = await request("/mocks/settings", {
-        resolveWithFullResponse: true,
-        simple: false,
-      });
-      expect(behaviorsResponse.statusCode).toEqual(404);
-    });
-  });
 
   describe("adminApiPath option", () => {
     beforeAll(async () => {
       server = await startServer("web-tutorial", {
         adminApiPath: "/foo",
       });
+      await waitForServer();
     });
 
-    afterAll(() => {
-      stopServer(server);
+    afterAll(async () => {
+      await server.stop();
     });
 
     it("should change the administration api path", async () => {
-      const adminResponse = await request("/foo/settings");
-      expect(adminResponse).toEqual({
-        behavior: "standard",
+      const adminResponse = await fetch("/foo/settings");
+      expect(adminResponse.body).toEqual({
+        behavior: null,
         path: fixturesFolder("web-tutorial"),
         delay: 0,
         host: "0.0.0.0",
         port: 3100,
         watch: false,
-        log: "silly",
+        log: "silent",
         adminApiPath: "/foo",
-        adminApiDeprecatedPaths: true,
+        pathLegacy: null,
+        watchLegacy: true,
+        mock: null,
       });
     });
   });

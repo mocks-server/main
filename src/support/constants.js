@@ -8,26 +8,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startServer, fetch, waitForServer } = require("./support/helpers");
-const { version } = require("../../package.json");
-
-describe("about api", () => {
-  let server;
-  beforeAll(async () => {
-    server = await startServer("web-tutorial");
-    await waitForServer();
-  });
-
-  afterAll(async () => {
-    await server.stop();
-  });
-
-  describe("get /", () => {
-    it("should return current version", async () => {
-      const response = await fetch("/admin/about");
-      expect(response.body).toEqual({
-        version,
-      });
-    });
-  });
-});
+module.exports = {
+  ADMIN_API_PATH_OPTION: "adminApiPath",
+  ADMIN_API_DEPRECATED_PATHS_OPTION: "adminApiDeprecatedPaths",
+  PLUGIN_NAME: "plugin-admin-api",
+};

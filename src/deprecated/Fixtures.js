@@ -16,44 +16,45 @@ const Boom = require("@hapi/boom");
 
 const { PLUGIN_NAME } = require("../support/constants");
 
-class BehaviorsApi {
+class FixturesApi {
   constructor(core) {
     this._core = core;
     this._tracer = core.tracer;
-    this._behaviors = this._core.behaviors;
+    this._fixtures = this._core.fixtures;
     this._router = express.Router();
     this._router.get("/", this.getCollection.bind(this));
     this._router.get("/:id", this.getModel.bind(this));
   }
 
-  _parseModel(behavior) {
+  _parseModel(fixture) {
     return {
-      id: behavior.id,
-      name: behavior.name, // TODO, deprecate name property
-      fixtures: behavior.fixtures.map((fixture) => fixture.id),
-      extendedFrom: behavior.extendedFrom,
+      id: fixture.id,
+      requestMatchId: fixture.requestMatchId,
+      handler: fixture.constructor.displayName,
+      request: fixture.request,
+      response: fixture.response,
     };
   }
 
   _parseCollection() {
-    return this._behaviors.collection.map(this._parseModel);
+    return this._fixtures.collection.map(this._parseModel);
   }
 
   getCollection(req, res) {
-    this._tracer.verbose(`${PLUGIN_NAME}: Sending behaviors | ${req.id}`);
+    this._tracer.verbose(`${PLUGIN_NAME}: Sending fixtures | ${req.id}`);
     res.status(200);
     res.send(this._parseCollection());
   }
 
   getModel(req, res, next) {
     const id = req.params.id;
-    this._tracer.verbose(`${PLUGIN_NAME}: Sending behavior ${id} | ${req.id}`);
-    const foundBehavior = this._behaviors.collection.find((behavior) => behavior.id === id);
-    if (foundBehavior) {
+    this._tracer.verbose(`${PLUGIN_NAME}: Sending fixture ${id} | ${req.id}`);
+    const foundFixture = this._fixtures.collection.find((fixture) => fixture.id === id);
+    if (foundFixture) {
       res.status(200);
-      res.send(this._parseModel(foundBehavior));
+      res.send(this._parseModel(foundFixture));
     } else {
-      next(Boom.notFound(`Behavior with id "${id}" was not found`));
+      next(Boom.notFound(`Fixture with id "${id}" was not found`));
     }
   }
 
@@ -62,4 +63,4 @@ class BehaviorsApi {
   }
 }
 
-module.exports = BehaviorsApi;
+module.exports = FixturesApi;

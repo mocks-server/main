@@ -13,14 +13,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 
-const { PLUGIN_NAME } = require("./constants");
+const { PLUGIN_NAME } = require("./support/constants");
 const { version } = require("../package.json");
 
 class AboutApi {
   constructor(core) {
     this._core = core;
     this._tracer = core.tracer;
-    this._fixtures = this._core.fixtures;
     this._router = express.Router();
     this._router.get("/", this.getAbout.bind(this));
   }

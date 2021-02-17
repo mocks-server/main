@@ -8,26 +8,24 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startServer, fetch, waitForServer } = require("./support/helpers");
-const { version } = require("../../package.json");
+// /mocks/behaviors.js
 
-describe("about api", () => {
-  let server;
-  beforeAll(async () => {
-    server = await startServer("web-tutorial");
-    await waitForServer();
-  });
+const { Behavior } = require("@mocks-server/core");
 
-  afterAll(async () => {
-    await server.stop();
-  });
+const { getUsers, getUser, getUser2, getRealUser } = require("./fixtures/users");
 
-  describe("get /", () => {
-    it("should return current version", async () => {
-      const response = await fetch("/admin/about");
-      expect(response.body).toEqual({
-        version,
-      });
-    });
-  });
+const behavior1 = new Behavior([getUsers, getUser], {
+  id: "standard",
 });
+
+// Extends the standard behavior adding "getUser2" fixture.
+const behavior2 = behavior1.extend([getUser2], {
+  id: "user2",
+});
+
+// Extends the standard behavior adding "getRealUser" dynamic fixture.
+const behavior3 = behavior1.extend([getRealUser], {
+  id: "dynamic",
+});
+
+module.exports = [behavior1, behavior2, behavior3];

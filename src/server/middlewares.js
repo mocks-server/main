@@ -22,12 +22,6 @@ const addRequestId = expressRequestId();
 const jsonBodyParser = bodyParser.json();
 const enableCors = cors();
 
-const addCommonHeaders = (req, res, next) => {
-  res.header("Accept-Encoding", "gzip, deflate, br");
-  res.header("Accept-Language", "es-ES,es;q=0.9,en;q=0.8,la;q=0.7,fr;q=0.6"); // TODO, remove harcoded language headers
-  next();
-};
-
 const traceRequest = (req, res, next) => {
   tracer.verbose(`Request received | ${req.method} => ${req.url} | Assigned id: ${req.id}`);
   next();
@@ -59,7 +53,6 @@ module.exports = {
   jsonBodyParser,
   traceRequest,
   enableCors,
-  addCommonHeaders,
   notFound,
   errorHandler,
 };

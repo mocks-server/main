@@ -7,20 +7,20 @@
 
 # [![Mocks Server][logo-url]][website-url] Mocks Server Core
 
-This package provides the plugabble core of the [@mocks-server][website-url] project.
+This package provides the plugabble core of the [Mocks Server][website-url] project.
 
-Use it if you want to start the mocks-server programmatically by your own, or even create your own mocks-server distribution with your desired plugins. Until that, you'll probably should prefer using the [main distribution of the @mocks-server project][main-url].
+Use it if you want to start the mocks-server programmatically by your own, or even create your own mocks-server distribution with your desired plugins. If not, you would probably prefer using the [main distribution of the Mocks Server project][main-url].
 
 ## Documentation
 
 Please refer to the [project documentation website][website-url]:
 
 * [Get started](https://www.mocks-server.org/docs/get-started-intro)
-* [Guides](https://www.mocks-server.org/docs/guides-defining-fixtures)
+* [Guides](https://www.mocks-server.org/docs/guides-organizing-files)
 * [Configuration](https://www.mocks-server.org/docs/configuration-options)
 * [Plugins](https://www.mocks-server.org/docs/plugins-adding-plugins)
 * [Integrations](https://www.mocks-server.org/docs/integrations-cypress)
-* [Api](https://www.mocks-server.org/docs/advanced-programmatic-usage)
+* [API](https://www.mocks-server.org/docs/api-mocks-server-api)
 
 ## Contributing
 

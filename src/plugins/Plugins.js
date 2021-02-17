@@ -14,17 +14,30 @@ const { isObject, isFunction } = require("lodash");
 const tracer = require("../tracer");
 
 // FilesLoader built-in plugin
-const FilesLoader = require("./FilesLoader");
+const FilesLoaderLegacy = require("./files-loader-legacy/FilesLoaderLegacy");
+const FilesLoader = require("./files-loader/FilesLoader");
+
 const { scopedAlertsMethods } = require("../support/helpers");
 
 class Plugins {
-  constructor(config, loaders, core, { addAlert, removeAlerts, renameAlerts }) {
+  constructor(
+    {
+      addAlert,
+      removeAlerts,
+      renameAlerts,
+      createLegacyMocksLoader,
+      createMocksLoader,
+      createRoutesLoader,
+    },
+    core
+  ) {
     this._addAlert = addAlert;
     this._removeAlerts = removeAlerts;
     this._renameAlerts = renameAlerts;
-    this._config = config;
+    this._createMocksLoader = createMocksLoader;
+    this._createRoutesLoader = createRoutesLoader;
+    this._createLegacyMocksLoader = createLegacyMocksLoader;
     this._core = core;
-    this._loaders = loaders;
     this._pluginsInstances = [];
     this._pluginsMethods = [];
     this._pluginsRegistered = 0;
@@ -33,9 +46,10 @@ class Plugins {
     this._pluginsStopped = 0;
   }
 
-  register() {
-    this._plugins = this._config.coreOptions.plugins || [];
+  register(plugins = []) {
+    this._plugins = plugins;
     this._plugins.unshift(FilesLoader);
+    this._plugins.unshift(FilesLoaderLegacy);
     return this._registerPlugins().then(() => {
       tracer.verbose(`Registered ${this._pluginsRegistered} plugins without errors`);
       return Promise.resolve();
@@ -118,9 +132,13 @@ class Plugins {
     if (pluginIndex === this._plugins.length) {
       return Promise.resolve();
     }
-    const loadMocks = this._loaders.new();
+    const loadLegacyMocks = this._createLegacyMocksLoader();
+    const loadMocks = this._createMocksLoader();
+    const loadRoutes = this._createRoutesLoader();
     const pluginMethods = {
+      loadLegacyMocks,
       loadMocks,
+      loadRoutes,
       ...scopedAlertsMethods(
         () => this.pluginDisplayName(pluginIndex),
         this._addAlert,

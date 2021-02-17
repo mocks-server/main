@@ -10,27 +10,22 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-const CoreMocks = require("./Core.mocks.js");
-
 const Loaders = require("../../src/Loaders");
 
 describe("Loaders", () => {
   let sandbox;
-  let coreMocks;
-  let coreInstance;
+  let onLoad;
   let loaders;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
     sandbox.spy(console, "log");
-    coreMocks = new CoreMocks();
-    coreInstance = coreMocks.stubs.instance;
-    loaders = new Loaders(coreInstance);
+    onLoad = sandbox.stub();
+    loaders = new Loaders({ onLoad });
   });
 
   afterEach(() => {
     sandbox.restore();
-    coreMocks.restore();
   });
 
   describe("new method", () => {
@@ -40,10 +35,10 @@ describe("Loaders", () => {
   });
 
   describe("load function", () => {
-    it("should emit a load:mocks event", async () => {
+    it("should call to onLoad callback", async () => {
       const load = loaders.new();
       load(["foo1", "foo2"]);
-      expect(coreInstance._eventEmitter.emit.calledWith("load:mocks")).toEqual(true);
+      expect(onLoad.callCount).toEqual(1);
     });
 
     it("should replace all previously loaded contents", async () => {

@@ -16,24 +16,16 @@ const tracer = require("../tracer");
 const CommandLineArguments = require("./CommandLineArguments");
 
 const DEFAULT_OPTIONS = {
-  behavior: null,
-  path: "mocks",
+  mock: null,
   delay: 0,
   host: "0.0.0.0",
   port: 3100,
-  watch: true,
   log: "info",
-  // TODO, remove deprecated options
-  feature: null,
-  features: null,
-  behaviors: null,
+  // TODO, remove v1 legacy code
+  behavior: null,
 };
 
-const DEPRECATED_OPTIONS = {
-  feature: "behavior",
-  behaviors: "path",
-  features: "path",
-};
+const DEPRECATED_OPTIONS = {};
 
 class Options {
   constructor(config) {
@@ -42,7 +34,6 @@ class Options {
     this._optionsNames = Object.keys(DEFAULT_OPTIONS);
     this._customDefaults = {};
     this._initialized = false;
-    this._removeDeprecatedOption = this._removeDeprecatedOption.bind(this);
     this._commandLineArguments = new CommandLineArguments(DEFAULT_OPTIONS);
   }
 
@@ -79,26 +70,30 @@ class Options {
   }
 
   addCustom(optionDetails) {
+    const optionName = optionDetails && optionDetails.name;
     if (this._initialized) {
-      this._rejectCustomOption("Options are already initializated. No more options can be added");
+      this._rejectCustomOption(
+        `Options are already initializated. Option ${optionName} couldn't be added`
+      );
     }
     if (!optionDetails) {
-      this._rejectCustomOption("Please provide option details when adding a new option");
+      this._rejectCustomOption(`Please provide option details when adding a new option`);
     }
     if (!optionDetails.name) {
       this._rejectCustomOption("Please provide option name when adding a new option");
     }
-    if (this._optionsNames.includes(optionDetails.name)) {
-      this._rejectCustomOption(`Option with name ${optionDetails.name} is already registered`);
+    if (this._optionsNames.includes(optionName)) {
+      this._rejectCustomOption(`Option with name "${optionName}" is already registered`);
     }
-    if (
-      !optionDetails.type ||
-      !["string", "number", "boolean", "booleanString"].includes(optionDetails.type)
-    ) {
-      this._rejectCustomOption("Please provide a valid option type: string, number, boolean");
+    if (!optionDetails.type || !["string", "number", "boolean"].includes(optionDetails.type)) {
+      this._rejectCustomOption(
+        `Option "${optionName}" with type "${optionDetails.type}" not valid. Please provide a valid option type: string, number, boolean`
+      );
     }
     if (!optionDetails.description) {
-      tracer.warn("Please provide option description when adding a new option");
+      tracer.warn(
+        `Missed description in option "${optionName}". Please provide option description when adding a new option`
+      );
       optionDetails.description = "";
     }
 
@@ -110,10 +105,6 @@ class Options {
   getValidOptionName(optionName) {
     if (this._optionsNames.includes(optionName) && !DEPRECATED_OPTIONS[optionName]) {
       return optionName;
-    }
-    if (DEPRECATED_OPTIONS[optionName]) {
-      tracer.deprecationWarn(`${optionName} option`, `${DEPRECATED_OPTIONS[optionName]} option`);
-      return DEPRECATED_OPTIONS[optionName];
     }
     return null;
   }
@@ -135,25 +126,8 @@ class Options {
     }, {});
   }
 
-  _removeDeprecatedOption(options, optionName) {
-    if (options[optionName] !== DEFAULT_OPTIONS[optionName]) {
-      const newOption = DEPRECATED_OPTIONS[optionName];
-      if (options[newOption] === DEFAULT_OPTIONS[newOption]) {
-        options[newOption] = options[optionName];
-      }
-      tracer.deprecationWarn(`--${optionName} option`, `--${DEPRECATED_OPTIONS[optionName]}`);
-    }
-    delete options[optionName];
-    return options;
-  }
-
   _removeDeprecatedOptions(options) {
-    let newOptions = options;
-    Object.keys(DEPRECATED_OPTIONS).forEach((optionName) => {
-      newOptions = this._removeDeprecatedOption(newOptions, optionName);
-    });
-
-    return newOptions;
+    return { ...options };
   }
 }
 

@@ -11,12 +11,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const SettingsMocks = require("./settings/Settings.mocks.js");
-const MocksMocks = require("./mocks/Mocks.mocks.js");
+const MocksMock = require("./mocks/Mocks.mock.js");
+const LegacyMocksMock = require("./mocks-legacy/Mocks.mocks.js");
 const ServerMocks = require("./server/Server.mocks.js");
 const PluginsMocks = require("./plugins/Plugins.mocks.js");
 const OrchestratorMocks = require("./Orchestrator.mocks.js");
 const ConfigMocks = require("./Config.mocks.js");
 const AlertsMocks = require("./Alerts.mocks.js");
+const LoadersMocks = require("./Loaders.mocks.js");
 
 const Core = require("../../src/Core");
 const tracer = require("../../src/tracer");
@@ -25,9 +27,11 @@ describe("Core", () => {
   let sandbox;
   let settingsMocks;
   let settingsInstance;
-  let mocksMocks;
-  let orchestratorMocks;
+  let legacyMocksMock;
+  let mocksMock;
   let mocksInstance;
+  let orchestratorMocks;
+  let legacyMocksInstance;
   let serverMocks;
   let serverInstance;
   let pluginsMocks;
@@ -35,14 +39,17 @@ describe("Core", () => {
   let configMocks;
   let alertsMocks;
   let alertsInstance;
+  let loadersMocks;
   let core;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
     settingsMocks = new SettingsMocks();
     settingsInstance = settingsMocks.stubs.instance;
-    mocksMocks = new MocksMocks();
-    mocksInstance = mocksMocks.stubs.instance;
+    mocksMock = new MocksMock();
+    mocksInstance = mocksMock.stubs.instance;
+    legacyMocksMock = new LegacyMocksMock();
+    legacyMocksInstance = legacyMocksMock.stubs.instance;
     serverMocks = new ServerMocks();
     serverInstance = serverMocks.stubs.instance;
     pluginsMocks = new PluginsMocks();
@@ -50,6 +57,7 @@ describe("Core", () => {
     orchestratorMocks = new OrchestratorMocks();
     alertsMocks = new AlertsMocks();
     alertsInstance = alertsMocks.stubs.instance;
+    loadersMocks = new LoadersMocks();
     configMocks = new ConfigMocks();
 
     core = new Core();
@@ -59,19 +67,96 @@ describe("Core", () => {
   afterEach(() => {
     sandbox.restore();
     settingsMocks.restore();
-    mocksMocks.restore();
+    mocksMock.restore();
+    legacyMocksMock.restore();
     orchestratorMocks.restore();
     serverMocks.restore();
     configMocks.restore();
     pluginsMocks.restore();
     alertsMocks.restore();
+    loadersMocks.restore();
   });
 
   describe("when created", () => {
     it("should create Config with received config", () => {
       const fooConfig = { foo: "foo" };
       core = new Core(fooConfig);
-      expect(configMocks.stubs.Constructor.mock.calls[1][1]).toEqual(fooConfig);
+      expect(configMocks.stubs.Constructor.mock.calls[1][0].programmaticConfig).toEqual(fooConfig);
+    });
+  });
+
+  describe("Plugins callbacks", () => {
+    describe("createLegacyMocksLoader", () => {
+      it("should return a new loader", () => {
+        const FOO_LOADER = "foo";
+        loadersMocks.stubs.instance.new.returns(FOO_LOADER);
+        expect(pluginsMocks.stubs.Constructor.mock.calls[0][0].createLegacyMocksLoader()).toEqual(
+          FOO_LOADER
+        );
+      });
+    });
+
+    describe("createMocksLoader", () => {
+      it("should return a new loader", () => {
+        const FOO_LOADER = "foo";
+        loadersMocks.stubs.instance.new.returns(FOO_LOADER);
+        expect(pluginsMocks.stubs.Constructor.mock.calls[0][0].createMocksLoader()).toEqual(
+          FOO_LOADER
+        );
+      });
+    });
+
+    describe("createRoutesLoader", () => {
+      it("should return a new loader", () => {
+        const FOO_LOADER = "foo";
+        loadersMocks.stubs.instance.new.returns(FOO_LOADER);
+        expect(pluginsMocks.stubs.Constructor.mock.calls[0][0].createRoutesLoader()).toEqual(
+          FOO_LOADER
+        );
+      });
+    });
+  });
+
+  describe("Mocks callbacks", () => {
+    describe("getLoadedMocks", () => {
+      it("should return mocksLoaders contents", () => {
+        expect(mocksMock.stubs.Constructor.mock.calls[0][0].getLoadedMocks()).toEqual(
+          core._mocksLoaders.contents
+        );
+      });
+    });
+
+    describe("getLoadedRoutes", () => {
+      it("should return routesLoaders contents", () => {
+        expect(mocksMock.stubs.Constructor.mock.calls[0][0].getLoadedRoutes()).toEqual(
+          core._routesLoaders.contents
+        );
+      });
+    });
+
+    describe("getCurrentMock", () => {
+      it("should return current mock from core settings", () => {
+        expect(mocksMock.stubs.Constructor.mock.calls[0][0].getCurrentMock()).toEqual(
+          core._settings.get("mock")
+        );
+      });
+    });
+
+    describe("getCurrentDelay", () => {
+      it("should return current delay from core settings", () => {
+        expect(mocksMock.stubs.Constructor.mock.calls[0][0].getDelay()).toEqual(
+          core._settings.get("delay")
+        );
+      });
+    });
+
+    describe("onChange", () => {
+      it("should emit a change:mocks event", () => {
+        const spy = sandbox.spy();
+        core.onChangeMocks(spy);
+        mocksMock.stubs.Constructor.mock.calls[0][0].onChange();
+        expect(spy.callCount).toEqual(1);
+      });
     });
   });
 
@@ -93,7 +178,7 @@ describe("Core", () => {
     });
 
     it("should init mocks", () => {
-      expect(mocksInstance.init.callCount).toEqual(1);
+      expect(legacyMocksInstance.init.callCount).toEqual(1);
     });
 
     it("should init server", () => {
@@ -146,13 +231,6 @@ describe("Core", () => {
     });
   });
 
-  describe("addCustomRouter method", () => {
-    it("should add custom router to server", () => {
-      core.addCustomRouter();
-      expect(serverInstance.addCustomRouter.callCount).toEqual(1);
-    });
-  });
-
   describe("addRouter method", () => {
     it("should add router to server", () => {
       core.addRouter();
@@ -167,13 +245,6 @@ describe("Core", () => {
     });
   });
 
-  describe("addCustomSetting method", () => {
-    it("should add custom setting to settings", () => {
-      core.addCustomSetting();
-      expect(settingsInstance.addCustom.callCount).toEqual(1);
-    });
-  });
-
   describe("addSetting method", () => {
     it("should add setting to settings", () => {
       core.addSetting();
@@ -181,17 +252,26 @@ describe("Core", () => {
     });
   });
 
+  describe("addRoutesHandler method", () => {
+    it("should add Route Handler", () => {
+      core.addRoutesHandler("foo");
+      // TODO, do not use private properties in testing
+      expect(core._routesHandlers._routeHandlers.length).toEqual(2);
+      expect(core._routesHandlers._routeHandlers[1]).toEqual("foo");
+    });
+  });
+
   describe("addFixturesHandler method", () => {
     it("should add fixturesHandler to mocks", () => {
       core.addFixturesHandler();
-      expect(mocksInstance.addFixturesHandler.callCount).toEqual(1);
+      expect(legacyMocksInstance.addFixturesHandler.callCount).toEqual(1);
     });
   });
 
-  describe("onLoadMocks method", () => {
+  describe("onChangeMocks method", () => {
     it("should add listener to eventEmitter", () => {
       const spy = sandbox.spy();
-      core.onLoadMocks(spy);
+      core.onChangeMocks(spy);
       core._eventEmitter.emit("change:mocks");
       expect(spy.callCount).toEqual(1);
     });
@@ -199,7 +279,7 @@ describe("Core", () => {
     it("should return a function to remove listener", () => {
       expect.assertions(2);
       const spy = sandbox.spy();
-      const removeCallback = core.onLoadMocks(spy);
+      const removeCallback = core.onChangeMocks(spy);
       core._eventEmitter.emit("change:mocks");
       expect(spy.callCount).toEqual(1);
       removeCallback();
@@ -208,22 +288,22 @@ describe("Core", () => {
     });
   });
 
-  describe("onLoadFiles method", () => {
+  describe("onChangeLegacyMocks method", () => {
     it("should add listener to eventEmitter", () => {
       const spy = sandbox.spy();
-      core.onLoadFiles(spy);
-      core._eventEmitter.emit("load:mocks");
+      core.onChangeLegacyMocks(spy);
+      core._eventEmitter.emit("change:mocks:legacy");
       expect(spy.callCount).toEqual(1);
     });
 
     it("should return a function to remove listener", () => {
       expect.assertions(2);
       const spy = sandbox.spy();
-      const removeCallback = core.onLoadFiles(spy);
-      core._eventEmitter.emit("load:mocks");
+      const removeCallback = core.onChangeLegacyMocks(spy);
+      core._eventEmitter.emit("change:mocks:legacy");
       expect(spy.callCount).toEqual(1);
       removeCallback();
-      core._eventEmitter.emit("load:mocks");
+      core._eventEmitter.emit("change:mocks:legacy");
       expect(spy.callCount).toEqual(1);
     });
   });
@@ -249,11 +329,11 @@ describe("Core", () => {
   });
 
   describe("onChangeAlerts method", () => {
-    it("should execute callback when alerts execute onChangeValues callback", () => {
+    it("should execute callback when alerts execute onChange callback", () => {
       const FOO_ALERTS = ["foo", "foo2"];
       const spy = sandbox.spy();
       core.onChangeAlerts(spy);
-      alertsMocks.stubs.Constructor.mock.calls[0][0].onChangeValues(FOO_ALERTS);
+      alertsMocks.stubs.Constructor.mock.calls[0][0].onChange(FOO_ALERTS);
       expect(spy.calledWith(FOO_ALERTS)).toEqual(true);
     });
 
@@ -266,6 +346,39 @@ describe("Core", () => {
       removeCallback();
       core._eventEmitter.emit("change:alerts");
       expect(spy.callCount).toEqual(1);
+    });
+  });
+
+  describe("when legacyMocksLoaders load", () => {
+    it("should emit an event", (done) => {
+      expect.assertions(1);
+      core._eventEmitter.on("load:mocks:legacy", () => {
+        expect(true).toEqual(true);
+        done();
+      });
+      loadersMocks.stubs.Constructor.mock.calls[0][0].onLoad();
+    });
+  });
+
+  describe("when mocksLoaders load", () => {
+    it("should emit an event", (done) => {
+      expect.assertions(1);
+      core._eventEmitter.on("load:mocks", () => {
+        expect(true).toEqual(true);
+        done();
+      });
+      loadersMocks.stubs.Constructor.mock.calls[1][0].onLoad();
+    });
+  });
+
+  describe("when routesLoaders load", () => {
+    it("should emit an event", (done) => {
+      expect.assertions(1);
+      core._eventEmitter.on("load:routes", () => {
+        expect(true).toEqual(true);
+        done();
+      });
+      loadersMocks.stubs.Constructor.mock.calls[2][0].onLoad();
     });
   });
 
@@ -298,13 +411,6 @@ describe("Core", () => {
     });
   });
 
-  describe("restart method", () => {
-    it("should restart server", async () => {
-      await core.restart();
-      expect(serverInstance.restart.callCount).toEqual(1);
-    });
-  });
-
   describe("restartServer method", () => {
     it("should restart server", async () => {
       await core.restartServer();
@@ -318,9 +424,9 @@ describe("Core", () => {
     });
   });
 
-  describe("serverError getter", () => {
-    it("should return server error", () => {
-      expect(core.serverError).toEqual(serverInstance.error);
+  describe("mocks getter", () => {
+    it("should return mocks instance", () => {
+      expect(core.mocks).toEqual(mocksInstance);
     });
   });
 
@@ -338,19 +444,13 @@ describe("Core", () => {
 
   describe("behaviors getter", () => {
     it("should return mocks behaviors", () => {
-      expect(core.behaviors).toEqual(mocksInstance.behaviors);
-    });
-  });
-
-  describe("features getter", () => {
-    it("should return mocks behaviors", () => {
-      expect(core.features).toEqual(mocksInstance.behaviors);
+      expect(core.behaviors).toEqual(legacyMocksInstance.behaviors);
     });
   });
 
   describe("fixtures getter", () => {
     it("should return mocks fixtures", () => {
-      expect(core.fixtures).toEqual(mocksInstance.fixtures);
+      expect(core.fixtures).toEqual(legacyMocksInstance.fixtures);
     });
   });
 });

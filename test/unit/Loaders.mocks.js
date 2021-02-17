@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
-const Behavior = require("../../src/mocks/Behavior");
+const Behavior = require("../../src/mocks-legacy/Behavior");
 
 jest.mock("../../src/Loaders");
 

@@ -4,28 +4,70 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [To be deprecated]
-- Deprecate options "features", "behaviors" and "feature".
-- Remove "features" getter from Server
-- Remove "currentFromCollection" and "currentTotalFixtures" getters from Behaviors.
-- Remove "addCustomRouter" method. Use "addRouter".
-- Remove "addCustomSetting" method. Use "addSetting".
-- Do not provide the core instance to request handlers. This was made only to maintain temporarily backward compatibility with api plugin, because it is responding with full behaviors collection in deprecated api endpoints, producing a circular reference if the core is saved as a private property of the FixtureHandler Class.
-- Remove "booleanString" option type (--cli=false). Use commander boolean type, which is used appending "--no-" to the option name (--no-cli);
-- Remove "onLoadFiles" method
-- Remove "onLoadMocks" method, use "onChangeMocks"
-- Remove the addition of extra properties when reading files. Define a name for the behavior with a mandatory option.
-- Remove "restart" method, use "restartServer"
-- Remove behavior "name" property. Use id instead.
-- Remove behaviors "currentName" getter. Use "currentId" instead
-- Remove behaviors "names" getter. Use "ids" instead
-- Remove "serverError" getter. Use alerts instead
+## [To be removed]
+- Remove all legacy plugins, options and methods related to v1
 
 ## [unreleased]
 ### Added
 ### Changed
 ### Fixed
 ### Removed
+### BREAKING CHANGES
+
+## [2.0.0-beta.2] - 2021-01-16
+
+### Added
+- feat: Add legacy options to config scaffold
+
+### Changed
+- feat: Include `from` and original `routesVariants` in plain mocks
+
+## [2.0.0-beta.1] - 2021-01-14
+
+### Added
+- feat: Add new Mocks and Routes handler, and related getters to core.
+- feat: Add `mock` option. Legacy mocks continue using `behavior` for backward compatibility
+- feat: Add new plugin for loading files with routes and mocks in v2 format
+- feat: Pass new method `loadRoutes` to plugins
+- feat: Add alert when legacy behaviors are loaded
+- feat: Add option and method `addRoutesHandlers`
+- feat: Add store to tracer
+- feat: Create configuration file from scaffold file when it does not exist
+- feat: Create folder with examples from scaffold file when path does not exist
+
+### Changed
+- feat: Improve traces when checking plugin options
+- refactor: Move `path` and `watch` options inside files-loader plugin
+- refactor: Reorganize files and folders
+- refactor: Refactor Loaders to receive specific onLoad callback instead of full core instance
+- refactor: Refactor Config to receive a single argument with all options
+- refactor: Refactor Plugins to receive a single argument with all options
+
+### Fixed
+- fix: Boolean options with default value of `true` were not working when defined as `false` in config file
+
+### Removed
+- feat: Do not add `no behaviors` alert. As behaviors are legacy in v2, now it is not considered a problem
+
+### BREAKING CHANGES
+- feat: Renamed configuration file from `mocks-server.config.js` to `mocks.config.js`
+- feat: Remove deprecated options `features` and `behaviors`, `path` option should be used instead
+- feat: Remove deprecated option `feature`, `behavior` option should be used instead
+- feat: Legacy mocks defined using v1 format have to be loaded from folder defined using option `pathLegacy` instead of `path`, which now is used to define the folder from which load routes and mocks in v2 format. Folder defined with `pathLegacy` option will not be created automatically if it is not found, and the option is not required
+- feat: Watching files for mocks in legacy v1 format has to be disabled using `watchLegacy` option instead of `watch`, which now affects only to routes and mocks in v2 format
+- feat: `watch` option now is a standard commander boolean, so, to disable watch, argument `--no-watch` has to be provided. (`--no-watchLegacy` for legacy v1 mocks folder)
+- feat: Remove `booleanString` option type. Now only `number`, `boolean` or `string` can be used.
+- feat: Remove deprecated `onLoadMocks` method, `onChangeMocks` must be used instead
+- feat: Remove `onLoadFiles` method. There is no alternative, as it is an internal event of the files-loader plugin and it should't be used by other external pieces
+- feat: Legacy mocks have to be loaded using plugins custom method `loadLegacyMocks`. `loadMocks` will be able to handle only v2 mocks
+- feat: Listening to changes on legacy mocks has to be added using `onChangeLegacyMocks` instead of `onChangeMocks`, which only is triggered when v2 mocks change
+- feat: Remove Accept and language default headers
+- feat: Remove `addCustomRouter` method. `addRouter` has to be used instead
+- feat: Remove `addCustomSetting` method. `addSetting` has to be used instead
+- feat: Remove `features` getter from Server. legacy `behaviors` has to be used instead
+- feat: Remove `serverError` getter. Use alerts instead
+- feat: Remove `restart` method, use `restartServer` instead
+
 
 ## [1.6.0] - 2020-12-25
 

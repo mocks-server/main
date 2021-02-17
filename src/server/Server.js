@@ -19,10 +19,12 @@ const tracer = require("../tracer");
 const middlewares = require("./middlewares");
 
 class Server {
-  constructor(eventEmitter, settings, mocks, core, { addAlert, removeAlerts }) {
+  constructor(eventEmitter, settings, legacyMocks, core, { addAlert, removeAlerts, mocksRouter }) {
     // TODO, deprecate, the core is being passed only to maintain temporarily backward compatibility with API plugin. This is not published in documentation.
     this._core = core; // Use this reference only to provide it to external functions for customization purposes
-    this._mocks = mocks;
+    this._legacyMocks = legacyMocks;
+
+    this._mocksRouter = mocksRouter;
     this._eventEmitter = eventEmitter;
     this._customRouters = [];
     this._settings = settings;
@@ -47,17 +49,18 @@ class Server {
     if (this._serverInitted) {
       return;
     }
-    tracer.debug("Initializing server");
+    tracer.debug("Configuring server");
     this._express = express();
 
     // Add middlewares
     this._express.use(middlewares.addRequestId);
     this._express.use(middlewares.enableCors);
-    this._express.use(middlewares.addCommonHeaders);
     this._express.options("*", middlewares.enableCors);
     this._express.use(middlewares.jsonBodyParser);
     this._express.use(middlewares.traceRequest);
     this._registerCustomRouters();
+    this._express.use(this._mocksRouter);
+    // TODO, remove v1 legacy code
     this._express.use(this._fixturesMiddleware.bind(this));
     this._express.use(middlewares.notFound);
     this._express.use(middlewares.errorHandler);
@@ -123,15 +126,16 @@ class Server {
   }
 
   _registerCustomRouters() {
-    tracer.debug("Adding custom routers to server");
+    tracer.debug("Registering custom routers in server");
     this._customRouters.forEach((customRouter) => {
-      tracer.silly(`Adding custom router with path ${customRouter.path}`);
+      tracer.silly(`Registering custom router with path ${customRouter.path}`);
       this._express.use(customRouter.path, customRouter.router);
     });
   }
 
+  // TODO, remove v1 legacy code
   _fixturesMiddleware(req, res, next) {
-    const fixture = this._mocks.behaviors.current.getRequestMatchingFixture(req);
+    const fixture = this._legacyMocks.behaviors.current.getRequestMatchingFixture(req);
     if (fixture) {
       delay(() => {
         // TODO, deprecate passing the core to handlers. Fixtures handlers already have a reference that is passed to the constructor.
@@ -182,6 +186,7 @@ class Server {
   }
 
   addCustomRouter(path, router) {
+    tracer.info(`Adding custom router with path ${path}`);
     this._customRouters.push({
       path,
       router,
@@ -190,6 +195,7 @@ class Server {
   }
 
   removeCustomRouter(path, router) {
+    tracer.info(`Removing custom router with path ${path}`);
     let indexToRemove = this._getCustomRouterIndex(path, router);
     if (indexToRemove !== null) {
       this._customRouters.splice(indexToRemove, 1);

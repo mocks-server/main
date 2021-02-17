@@ -19,37 +19,7 @@ class CoreMock {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      init: this._sandbox.stub().resolves(),
       start: this._sandbox.stub().resolves(),
-      stop: this._sandbox.stub().resolves(),
-      restart: this._sandbox.stub().resolves(),
-      settings: {
-        get: this._sandbox.stub(),
-        set: this._sandbox.stub(),
-      },
-      tracer: {
-        silly: this._sandbox.stub(),
-        debug: this._sandbox.stub(),
-        verbose: this._sandbox.stub(),
-        info: this._sandbox.stub(),
-        warn: this._sandbox.stub(),
-        error: this._sandbox.stub(),
-      },
-      onChangeSettings: this._sandbox.stub(),
-      onChangeMocks: this._sandbox.stub(),
-      onLoadMocks: this._sandbox.stub(),
-      addCustomRouter: this._sandbox.stub(),
-      addCustomSetting: this._sandbox.stub(),
-      behaviors: {
-        currentFromCollection: "foo-current",
-        collection: "foo-behaviors-collection",
-      },
-      serverError: null,
-      _eventEmitter: {
-        on: this._sandbox.stub(),
-        removeListener: this._sandbox.stub(),
-        emit: this._sandbox.stub(),
-      },
     };
 
     Core.mockImplementation(() => this._stubs);

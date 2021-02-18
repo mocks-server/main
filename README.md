@@ -42,7 +42,7 @@ Add next script to your `package.json` file:
 
 ## Usage
 
-Now, you can start the Mocks Server with the command:
+Now, you can start Mocks Server with the command:
 
 ```bash
 npm run mocks
@@ -134,7 +134,7 @@ Working with Node.js, it integrates better in front-end projects as any other NP
 
 ## Why "Mocks" in plural?
 
-As explained, the Mocks Server can store different mocks, which are sets of different route variants. So it simulates multiple api behaviors and send different responses to the same request at your convenience, so it is like having different mock servers that can be changed while running.
+As explained, Mocks Server can store different mocks, which are sets of different route variants. So it simulates multiple api behaviors and send different responses to the same request at your convenience, so it is like having different mock servers that can be changed while running.
 
 ## Customization
 

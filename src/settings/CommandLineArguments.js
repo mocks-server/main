@@ -20,7 +20,7 @@ class CommandLineArguments {
   constructor(defaultOptions) {
     this._options = {};
     this._optionsNames = Object.keys(defaultOptions);
-    this._booleanOptionsWithTrueDefaults = [];
+    this._booleanOptionsWithTrueDefaults = ["cors"];
     // TODO, generate initial options dynamically from Options object using the "addCustom" method
     this._commander = commander
       // TODO, remove v1 legacy code
@@ -29,7 +29,8 @@ class CommandLineArguments {
       .option("--delay <delay>", "Define delay time")
       .option("--host <host>", "Host for server")
       .option("--log <log>", "Log level")
-      .option("--port <port>", "Port for server", parseInt);
+      .option("--port <port>", "Port for server", parseInt)
+      .option("--no-cors", "Disable cors middleware");
   }
 
   init() {

@@ -33,7 +33,11 @@ class Orchestrator {
   }
 
   _onChangeSettings(changeDetails) {
-    if (changeDetails.hasOwnProperty("port") || changeDetails.hasOwnProperty("host")) {
+    if (
+      changeDetails.hasOwnProperty("port") ||
+      changeDetails.hasOwnProperty("host") ||
+      changeDetails.hasOwnProperty("cors")
+    ) {
       this._server.restart();
     }
     if (changeDetails.hasOwnProperty("behavior")) {

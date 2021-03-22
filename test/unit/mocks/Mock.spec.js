@@ -37,6 +37,12 @@ describe("Mock", () => {
         delay: 1000,
         middleware: sandbox.stub(),
       },
+      {
+        method: ["PUT", "PATCH"],
+        url: "url-3",
+        delay: 1000,
+        middleware: sandbox.stub(),
+      },
     ];
     middlewareMethodsStubs = {
       req: {
@@ -77,11 +83,18 @@ describe("Mock", () => {
   });
 
   describe("router", () => {
-    it("should add a two routers for each routeVariant using correspondant method", () => {
+    it("should add two routers for each routeVariant using correspondant method", () => {
       expect(libsMocks.stubs.expressRouter.get.getCall(0).args[0]).toEqual("url-1");
       expect(libsMocks.stubs.expressRouter.get.getCall(1).args[0]).toEqual("url-1");
       expect(libsMocks.stubs.expressRouter.post.getCall(0).args[0]).toEqual("url-2");
       expect(libsMocks.stubs.expressRouter.post.getCall(1).args[0]).toEqual("url-2");
+    });
+
+    it("should add two routers for each routeVariant using correspondant method when it is an array", () => {
+      expect(libsMocks.stubs.expressRouter.put.getCall(0).args[0]).toEqual("url-3");
+      expect(libsMocks.stubs.expressRouter.put.getCall(1).args[0]).toEqual("url-3");
+      expect(libsMocks.stubs.expressRouter.patch.getCall(0).args[0]).toEqual("url-3");
+      expect(libsMocks.stubs.expressRouter.patch.getCall(1).args[0]).toEqual("url-3");
     });
 
     it("should not apply delay in first router middleware if routeVariant has not delay and getDelay returns null", () => {

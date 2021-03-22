@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
+- feat: Support array of methods in routes (#139)
 ### Changed
 ### Fixed
 ### Removed

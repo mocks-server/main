@@ -31,7 +31,7 @@ describe("mocks and routes", () => {
       expect(core.mocks.plainRoutes.length).toEqual(2);
     });
 
-    it("should have four route variants", async () => {
+    it("should have five route variants", async () => {
       expect(core.mocks.plainRoutesVariants.length).toEqual(5);
     });
   });

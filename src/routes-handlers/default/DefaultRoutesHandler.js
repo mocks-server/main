@@ -18,8 +18,6 @@ class DefaultRoutesHandler {
   }
 
   constructor(route, core) {
-    this._method = route.method;
-    this._url = route.url;
     this._response = route.response;
     this._variantId = route.variantId;
     this._core = core;

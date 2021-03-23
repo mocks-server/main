@@ -241,7 +241,7 @@ describe("Server", () => {
       expect(libsMocks.stubs.express.use.callCount).toEqual(8);
     });
 
-    it("should not add cors middleware if cors option is enabled", async () => {
+    it("should not add cors middleware if cors option is disabled", async () => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
       coreInstance.settings.get.withArgs("cors").returns(false);
       await server.init();

@@ -18,6 +18,9 @@ const METHODS = {
   PATCH: "patch",
   DELETE: "delete",
   PUT: "put",
+  OPTIONS: "options",
+  HEAD: "head",
+  TRACE: "trace",
 };
 
 class Mock {
@@ -31,21 +34,26 @@ class Mock {
   _initRouter() {
     this._router = express.Router();
     this._routesVariants.forEach((routeVariant) => {
-      this._router[METHODS[routeVariant.method]](routeVariant.url, (req, res, next) => {
-        const delay = routeVariant.delay !== null ? routeVariant.delay : this._getDelay();
-        if (delay > 0) {
-          tracer.verbose(`Applying delay of ${delay}ms to route variant "${this._id}"`);
-          setTimeout(() => {
+      const methods = Array.isArray(routeVariant.method)
+        ? routeVariant.method
+        : [routeVariant.method];
+      methods.forEach((method) => {
+        this._router[METHODS[method]](routeVariant.url, (req, res, next) => {
+          const delay = routeVariant.delay !== null ? routeVariant.delay : this._getDelay();
+          if (delay > 0) {
+            tracer.verbose(`Applying delay of ${delay}ms to route variant "${this._id}"`);
+            setTimeout(() => {
+              next();
+            }, delay);
+          } else {
             next();
-          }, delay);
-        } else {
-          next();
-        }
+          }
+        });
+        this._router[METHODS[method]](
+          routeVariant.url,
+          routeVariant.middleware.bind(routeVariant)
+        );
       });
-      this._router[METHODS[routeVariant.method]](
-        routeVariant.url,
-        routeVariant.middleware.bind(routeVariant)
-      );
     });
   }
 

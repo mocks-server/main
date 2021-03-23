@@ -13,14 +13,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const bodyParser = require("body-parser");
 const Boom = require("@hapi/boom");
-const cors = require("cors");
+
 const expressRequestId = require("express-request-id");
 
 const tracer = require("../tracer");
 
 const addRequestId = expressRequestId();
 const jsonBodyParser = bodyParser.json();
-const enableCors = cors();
 
 const traceRequest = (req, res, next) => {
   tracer.verbose(`Request received | ${req.method} => ${req.url} | Assigned id: ${req.id}`);
@@ -52,7 +51,6 @@ module.exports = {
   addRequestId,
   jsonBodyParser,
   traceRequest,
-  enableCors,
   notFound,
   errorHandler,
 };

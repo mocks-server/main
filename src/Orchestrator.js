@@ -33,9 +33,15 @@ class Orchestrator {
   }
 
   _onChangeSettings(changeDetails) {
-    if (changeDetails.hasOwnProperty("port") || changeDetails.hasOwnProperty("host")) {
+    if (
+      changeDetails.hasOwnProperty("port") ||
+      changeDetails.hasOwnProperty("host") ||
+      changeDetails.hasOwnProperty("cors") ||
+      changeDetails.hasOwnProperty("corsPreFlight")
+    ) {
       this._server.restart();
     }
+    // TODO, remove legacy
     if (changeDetails.hasOwnProperty("behavior")) {
       this._legacyMocks.behaviors.current = changeDetails.behavior;
     }

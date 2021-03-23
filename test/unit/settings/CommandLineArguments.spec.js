@@ -21,6 +21,8 @@ describe("command line arguments", () => {
     host: "0.0.0.0",
     port: 3100,
     log: "info",
+    cors: true,
+    corsPreFlight: true,
   };
   let sandbox;
   let optionStub;
@@ -52,7 +54,7 @@ describe("command line arguments", () => {
   describe("init method", () => {
     it("should call to commander to get user options from command line", async () => {
       await commandLineArguments.init();
-      expect(optionStub.callCount).toEqual(5); //First call is not registered
+      expect(optionStub.callCount).toEqual(7); //First call is not registered
     });
 
     it("should call to convert to number received value in --port option", async () => {

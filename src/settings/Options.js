@@ -22,6 +22,7 @@ const DEFAULT_OPTIONS = {
   port: 3100,
   log: "info",
   cors: true,
+  corsPreFlight: true,
   // TODO, remove v1 legacy code
   behavior: null,
 };

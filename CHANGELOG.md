@@ -9,13 +9,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
-- feat: Support array of methods in routes (#139)
-- feat: Support OPTIONS, HEAD and TRACE http methods in routes (#140)
-- feat: Add cors and corsPreFlight options (#140)
 ### Changed
 ### Fixed
 ### Removed
 ### BREAKING CHANGES
+
+## [2.1.0] - 2021-03-23
+
+### Added
+- feat: Support array of methods in routes (#139)
+- feat: Support OPTIONS, HEAD and TRACE http methods in routes (#140)
+- feat: Add cors and corsPreFlight options (#140)
+
+### Changed
+
+- chore(deps): Update dependencies
 
 ## [2.0.0] - 2021-01-17
 

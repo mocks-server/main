@@ -233,6 +233,22 @@ describe("Server", () => {
       expect(http.createServer.callCount).toEqual(1);
     });
 
+    it("should add cors middleware if cors option is enabled", async () => {
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      coreInstance.settings.get.withArgs("cors").returns(true);
+      await server.init();
+      await server.start();
+      expect(libsMocks.stubs.express.use.callCount).toEqual(8);
+    });
+
+    it("should not add cors middleware if cors option is enabled", async () => {
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      coreInstance.settings.get.withArgs("cors").returns(false);
+      await server.init();
+      await server.start();
+      expect(libsMocks.stubs.express.use.callCount).toEqual(7);
+    });
+
     it("should reject the promise if an error occurs when calling to server listen method", async () => {
       const error = new Error("Foo error");
       libsMocks.stubs.http.createServer.listen.throws(error);

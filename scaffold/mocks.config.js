@@ -32,6 +32,12 @@ module.exports = {
     // Server host
     // host: "0.0.0.0",
 
+    // Cors middleware
+    // cors: true,
+
+    // Cors pre-flight
+    // corsPreFlight: true,
+
     // Legacy path containing mocks in v1 format
     // pathLegacy: "mocks-legacy",
 

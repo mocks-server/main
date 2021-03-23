@@ -15,6 +15,7 @@ const http = require("http");
 
 const express = require("express");
 const { delay } = require("lodash");
+const cors = require("cors");
 const tracer = require("../tracer");
 const middlewares = require("./middlewares");
 
@@ -54,8 +55,13 @@ class Server {
 
     // Add middlewares
     this._express.use(middlewares.addRequestId);
-    this._express.use(middlewares.enableCors);
-    this._express.options("*", middlewares.enableCors);
+    if (this._settings.get("cors")) {
+      this._express.use(
+        cors({
+          preflightContinue: !this._settings.get("corsPreFlight"),
+        })
+      );
+    }
     this._express.use(middlewares.jsonBodyParser);
     this._express.use(middlewares.traceRequest);
     this._registerCustomRouters();

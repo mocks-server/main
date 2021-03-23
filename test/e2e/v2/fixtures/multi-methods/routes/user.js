@@ -14,7 +14,7 @@ module.exports = [
   {
     id: "get-user",
     url: "/api/users/:id",
-    method: ["PUT", "GET", "PATCH", "POST", "DELETE"],
+    method: ["PUT", "GET", "PATCH", "POST", "DELETE", "OPTIONS", "HEAD", "TRACE"],
     variants: [
       {
         id: "1",

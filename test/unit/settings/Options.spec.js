@@ -175,6 +175,8 @@ describe("options", () => {
         host: "0.0.0.0",
         log: "info",
         delay: 0,
+        cors: true,
+        corsPreFlight: true,
         behavior: "foo-behavior",
         mock: null,
       });
@@ -194,6 +196,8 @@ describe("options", () => {
         host: "0.0.0.0",
         log: "info",
         delay: 0,
+        cors: true,
+        corsPreFlight: true,
         behavior: "foo-behavior",
         mock: null,
       });
@@ -221,6 +225,8 @@ describe("options", () => {
         cli: true,
         foo: "foo",
         delay: 0,
+        cors: true,
+        corsPreFlight: true,
         behavior: "foo-behavior",
         mock: null,
       });
@@ -234,6 +240,8 @@ describe("options", () => {
         host: "0.0.0.0",
         log: "info",
         delay: 0,
+        cors: true,
+        corsPreFlight: true,
         behavior: null,
         mock: null,
       });
@@ -251,6 +259,8 @@ describe("options", () => {
         host: "0.0.0.0",
         log: "info",
         delay: 0,
+        cors: true,
+        corsPreFlight: true,
         behavior: "foo-behavior",
         mock: null,
       });
@@ -276,6 +286,8 @@ describe("options", () => {
         host: "0.0.0.0",
         log: "info",
         delay: 0,
+        cors: true,
+        corsPreFlight: true,
         behavior: "foo-behavior",
         mock: null,
       });
@@ -296,6 +308,8 @@ describe("options", () => {
         host: "0.0.0.0",
         log: "info",
         delay: 0,
+        cors: true,
+        corsPreFlight: true,
         behavior: "foo-behavior",
         mock: null,
       });
@@ -323,6 +337,8 @@ describe("options", () => {
         cli: true,
         foo: "foo",
         delay: 0,
+        cors: true,
+        corsPreFlight: true,
         behavior: "foo-behavior",
         mock: null,
       });
@@ -340,6 +356,8 @@ describe("options", () => {
         host: "0.0.0.0",
         log: "info",
         delay: 0,
+        cors: true,
+        corsPreFlight: true,
         behavior: "foo-behavior",
         mock: null,
       });

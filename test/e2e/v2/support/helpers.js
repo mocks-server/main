@@ -77,7 +77,8 @@ const fetch = (uri, options = {}) => {
   }).then((res) => {
     return res
       .json()
-      .then((processedRes) => ({ body: processedRes, status: res.status, headers: res.headers }));
+      .then((processedRes) => ({ body: processedRes, status: res.status, headers: res.headers }))
+      .catch(() => ({ body: null, status: res.status, headers: res.headers }));
   });
 };
 

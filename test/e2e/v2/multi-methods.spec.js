@@ -11,10 +11,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const { startCore, waitForServer, fetch } = require("./support/helpers");
 
 describe("when method is defined as array", () => {
+  let requestNumber = 1;
   let core;
 
   beforeAll(async () => {
-    core = await startCore("multi-methods");
+    // disable cors to test custom options method
+    core = await startCore("multi-methods", { corsPreFlight: false, log: "debug" });
     await waitForServer();
   });
 
@@ -60,7 +62,7 @@ describe("when method is defined as array", () => {
           {
             id: "get-user",
             url: "/api/users/:id",
-            method: ["PUT", "GET", "PATCH", "POST", "DELETE"],
+            method: ["PUT", "GET", "PATCH", "POST", "DELETE", "OPTIONS", "HEAD", "TRACE"],
             delay: null,
             variants: ["get-user:1", "get-user:2"],
           },
@@ -148,65 +150,33 @@ describe("when method is defined as array", () => {
       ]);
     });
 
-    it("should serve user 1 under the /api/users/1 path with GET method", async () => {
-      const users = await fetch("/api/users/1?req=2");
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 1, name: "John Doe" });
-    });
+    const testMethod = (method, id, expectBody = true) => {
+      it(`should serve user 1 under the /api/users/${id} path with ${method} method`, async () => {
+        const users = await fetch(`/api/users/${id}?req=${requestNumber}`, { method });
+        requestNumber++;
+        expect(users.status).toEqual(200);
+        if (expectBody) {
+          expect(users.body).toEqual({ id: 1, name: "John Doe" });
+        }
+      });
+    };
 
-    it("should serve user 1 under the /api/users/2 path with GET method", async () => {
-      const users = await fetch("/api/users/2?req=3");
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 1, name: "John Doe" });
-    });
-
-    it("should serve user 1 under the /api/users/1 path with PUT method", async () => {
-      const users = await fetch("/api/users/1?req=2", { method: "PUT" });
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 1, name: "John Doe" });
-    });
-
-    it("should serve user 1 under the /api/users/2 path with PUT method", async () => {
-      const users = await fetch("/api/users/2?req=3", { method: "PUT" });
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 1, name: "John Doe" });
-    });
-
-    it("should serve user 1 under the /api/users/1 path with POST method", async () => {
-      const users = await fetch("/api/users/1?req=4", { method: "POST" });
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 1, name: "John Doe" });
-    });
-
-    it("should serve user 1 under the /api/users/2 path with PUT method", async () => {
-      const users = await fetch("/api/users/2?req=5", { method: "POST" });
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 1, name: "John Doe" });
-    });
-
-    it("should serve user 1 under the /api/users/1 path with PATCH method", async () => {
-      const users = await fetch("/api/users/1?req=6", { method: "PATCH" });
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 1, name: "John Doe" });
-    });
-
-    it("should serve user 1 under the /api/users/2 path with PATCH method", async () => {
-      const users = await fetch("/api/users/2?req=7", { method: "PATCH" });
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 1, name: "John Doe" });
-    });
-
-    it("should serve user 1 under the /api/users/1 path with DELETE method", async () => {
-      const users = await fetch("/api/users/1?req=8", { method: "DELETE" });
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 1, name: "John Doe" });
-    });
-
-    it("should serve user 1 under the /api/users/2 path with DELETE method", async () => {
-      const users = await fetch("/api/users/2?req=9", { method: "DELETE" });
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 1, name: "John Doe" });
-    });
+    testMethod("GET", "1");
+    testMethod("GET", "2");
+    testMethod("PUT", "1");
+    testMethod("PUT", "2");
+    testMethod("POST", "1");
+    testMethod("POST", "2");
+    testMethod("PATCH", "1");
+    testMethod("PATCH", "2");
+    testMethod("DELETE", "1");
+    testMethod("DELETE", "2");
+    testMethod("OPTIONS", "1");
+    testMethod("OPTIONS", "2");
+    testMethod("HEAD", "1", false);
+    testMethod("HEAD", "2", false);
+    testMethod("TRACE", "1");
+    testMethod("TRACE", "2");
   });
 
   describe('when using route variant "get-user:2"', () => {
@@ -220,64 +190,32 @@ describe("when method is defined as array", () => {
       ]);
     });
 
-    it("should serve user 2 under the /api/users/1 path with GET method", async () => {
-      const users = await fetch("/api/users/1?req=11");
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
-    });
+    const testMethod = (method, id, expectBody = true) => {
+      it(`should serve user 2 under the /api/users/${id} path with ${method} method`, async () => {
+        const users = await fetch(`/api/users/${id}?req=${requestNumber}`, { method });
+        requestNumber++;
+        expect(users.status).toEqual(200);
+        if (expectBody) {
+          expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
+        }
+      });
+    };
 
-    it("should serve user 2 under the /api/users/2 path with GET method", async () => {
-      const users = await fetch("/api/users/2?req=12");
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
-    });
-
-    it("should serve user 2 under the /api/users/1 path with PUT method", async () => {
-      const users = await fetch("/api/users/1?req=13", { method: "PUT" });
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
-    });
-
-    it("should serve user 2 under the /api/users/2 path with PUT method", async () => {
-      const users = await fetch("/api/users/2?req=14", { method: "PUT" });
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
-    });
-
-    it("should serve user 2 under the /api/users/1 path with POST method", async () => {
-      const users = await fetch("/api/users/1?req=15", { method: "POST" });
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
-    });
-
-    it("should serve user 2 under the /api/users/2 path with POST method", async () => {
-      const users = await fetch("/api/users/2?req=16", { method: "POST" });
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
-    });
-
-    it("should serve user 2 under the /api/users/1 path with PATCH method", async () => {
-      const users = await fetch("/api/users/1?req=17", { method: "PATCH" });
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
-    });
-
-    it("should serve user 2 under the /api/users/2 path with PATCH method", async () => {
-      const users = await fetch("/api/users/2?req=6", { method: "PATCH" });
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
-    });
-
-    it("should serve user 2 under the /api/users/1 path with DELETE method", async () => {
-      const users = await fetch("/api/users/1?req=5", { method: "DELETE" });
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
-    });
-
-    it("should serve user 2 under the /api/users/2 path with DELETE method", async () => {
-      const users = await fetch("/api/users/2?req=6", { method: "DELETE" });
-      expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
-    });
+    testMethod("GET", "1");
+    testMethod("GET", "2");
+    testMethod("PUT", "1");
+    testMethod("PUT", "2");
+    testMethod("POST", "1");
+    testMethod("POST", "2");
+    testMethod("PATCH", "1");
+    testMethod("PATCH", "2");
+    testMethod("DELETE", "1");
+    testMethod("DELETE", "2");
+    testMethod("OPTIONS", "1");
+    testMethod("OPTIONS", "2");
+    testMethod("HEAD", "1", false);
+    testMethod("HEAD", "2", false);
+    testMethod("TRACE", "1");
+    testMethod("TRACE", "2");
   });
 });

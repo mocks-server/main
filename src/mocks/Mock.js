@@ -18,6 +18,9 @@ const METHODS = {
   PATCH: "patch",
   DELETE: "delete",
   PUT: "put",
+  OPTIONS: "options",
+  HEAD: "head",
+  TRACE: "trace",
 };
 
 class Mock {

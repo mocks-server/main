@@ -37,7 +37,7 @@
     "@mocks-server/admin-api-paths": "2.0.0"
   },
   "devDependencies": {
-    "@babel/preset-env": "7.12.16",
+    "@babel/preset-env": "7.13.12",
     "@rollup/plugin-babel": "5.2.3",
     "@rollup/plugin-commonjs": "16.0.0",
     "@rollup/plugin-node-resolve": "9.0.0",

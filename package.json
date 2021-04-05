@@ -45,7 +45,7 @@
     "@mocks-server/core": "2.1.0",
     "cross-fetch": "3.0.6",
     "cross-spawn": "7.0.3",
-    "eslint": "7.15.0",
+    "eslint": "7.23.0",
     "eslint-plugin-no-only-tests": "2.4.0",
     "eslint-config-prettier": "7.2.0",
     "eslint-plugin-prettier": "3.3.0",

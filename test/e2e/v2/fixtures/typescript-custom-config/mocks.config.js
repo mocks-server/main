@@ -15,8 +15,7 @@ module.exports = {
   babelRegisterOptions: {
     only: [
       (filePath) => {
-        console.log(filePath);
-        return filePath.includes("/typescript/") || filePath.includes("/typescript-imports/");
+        return filePath.includes(`fixtures${path.sep}typescript${path.sep}`) || filePath.includes(`fixtures${path.sep}typescript-imports${path.sep}`);
       },
     ],
     extensions: [".ts", ".js"]

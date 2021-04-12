@@ -60,7 +60,7 @@
     "cross-fetch": "3.1.4",
     "cross-spawn": "7.0.3",
     "eslint": "7.24.0",
-    "eslint-plugin-no-only-tests": "2.4.0",
+    "eslint-plugin-no-only-tests": "2.5.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-prettier": "3.3.1",
     "husky": "4.3.8",

@@ -13,49 +13,54 @@ const { mocksRunner, fetch, waitForServer, fixturesFolder, wait } = require("./s
 describe("when babelRegister is enabled and typescript files are used", () => {
   let mocks;
 
-  describe("When started", () => {
-    beforeAll(async () => {
-      mocks = mocksRunner([], {
-        cwd: fixturesFolder("typescript-config"),
+  const runTests = (config) => {
+    describe(`When started using ${config} config`, () => {
+      beforeAll(async () => {
+        mocks = mocksRunner([], {
+          cwd: fixturesFolder(config),
+        });
+        await waitForServer();
+        await wait(3000);
       });
-      await waitForServer();
-      await wait(3000);
-    });
 
-    afterAll(async () => {
-      await mocks.kill();
-    });
+      afterAll(async () => {
+        await mocks.kill();
+      });
 
-    it("should have log level silly", async () => {
-      expect(mocks.logs).toEqual(expect.stringContaining("[Mocks silly]"));
-    });
+      it("should have log level silly", async () => {
+        expect(mocks.logs).toEqual(expect.stringContaining("[Mocks silly]"));
+      });
 
-    it("should serve users in /api/users path", async () => {
-      const users = await fetch("/api/users");
-      expect(users.body).toEqual([
-        { id: 1, name: "John Doe" },
-        { id: 2, name: "Jane Doe" },
-      ]);
-    });
+      it("should serve users in /api/users path", async () => {
+        const users = await fetch("/api/users");
+        expect(users.body).toEqual([
+          { id: 1, name: "John Doe" },
+          { id: 2, name: "Jane Doe" },
+        ]);
+      });
 
-    it("middleware should trace request and add headers", async () => {
-      const users = await fetch("/api/users");
-      expect(users.headers.get("x-mocks-server-example")).toEqual("custom-header-typescript");
-      expect(mocks.logs).toEqual(
-        expect.stringContaining(
-          "Custom header added by add-headers:enabled route variant middleware using TypeScript"
-        )
-      );
-    });
+      it("middleware should trace request and add headers", async () => {
+        const users = await fetch("/api/users");
+        expect(users.headers.get("x-mocks-server-example")).toEqual("custom-header-typescript");
+        expect(mocks.logs).toEqual(
+          expect.stringContaining(
+            "Custom header added by add-headers:enabled route variant middleware using TypeScript"
+          )
+        );
+      });
 
-    it("should serve user 1 in /api/users/1 path", async () => {
-      const users = await fetch("/api/users/1");
-      expect(users.body).toEqual({ id: 1, name: "John Doe" });
-    });
+      it("should serve user 1 in /api/users/1 path", async () => {
+        const users = await fetch("/api/users/1");
+        expect(users.body).toEqual({ id: 1, name: "John Doe" });
+      });
 
-    it("should serve user 2 in /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2");
-      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
+      it("should serve user 2 in /api/users/2 path", async () => {
+        const users = await fetch("/api/users/2");
+        expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
+      });
     });
-  });
+  };
+
+  runTests("typescript-config");
+  runTests("typescript-custom-config");
 });

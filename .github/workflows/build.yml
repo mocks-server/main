@@ -5,6 +5,7 @@ on:
       - master
       - release
       - pre-release
+      - feat-typescript-support
   pull_request:
 jobs:
   test:

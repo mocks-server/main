@@ -177,6 +177,17 @@ describe("FilesLoader", () => {
       }
     });
 
+    it("should require babel/register if babelRegister config is enabled", async () => {
+      const requireSpy = sandbox.stub().returns(() => {});
+      coreInstance.lowLevelConfig = { babelRegister: true };
+      filesLoader = new FilesLoader(coreInstance, pluginMethods, {
+        requireCache,
+        require: requireSpy,
+      });
+      await filesLoader.init();
+      expect(requireSpy.getCall(0).args[0]).toEqual("@babel/register");
+    });
+
     it("should clean require cache for mocks folder", async () => {
       const fooCachePath = "foo-path";
 

@@ -132,6 +132,37 @@ describe("Config", () => {
       expect(config.coreOptions.configFile).toEqual("/foo");
     });
 
+    it("should set babelRegister option received programmatically", async () => {
+      config = new Config({
+        ...callbacks,
+        programmaticConfig: {
+          babelRegister: true,
+        },
+      });
+      expect(config.coreOptions.babelRegister).toEqual(true);
+    });
+
+    it("should set babelRegisterOptions received programmatically", async () => {
+      const fooOptions = {
+        foo: "foo",
+      };
+      config = new Config({
+        ...callbacks,
+        programmaticConfig: {
+          babelRegisterOptions: fooOptions,
+        },
+      });
+      expect(config.coreOptions.babelRegisterOptions).toEqual(fooOptions);
+    });
+
+    it("should init babelRegisterOptions with empty object if are not defined", async () => {
+      config = new Config({
+        ...callbacks,
+        programmaticConfig: {},
+      });
+      expect(config.coreOptions.babelRegisterOptions).toEqual({});
+    });
+
     it("should set received options", async () => {
       config = new Config({
         ...callbacks,

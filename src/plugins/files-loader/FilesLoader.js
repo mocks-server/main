@@ -78,7 +78,7 @@ class FilesLoaderBase {
   }
 
   _readFile(filePath) {
-    const content = require(filePath);
+    const content = this._require(filePath);
     return content.default || content;
   }
 
@@ -132,7 +132,7 @@ class FilesLoaderBase {
     this._path = this._ensureFolder(resolvedFolder);
     this._tracer.info(`Loading files from folder ${this._path}`);
     if (!!this._core.lowLevelConfig[BABEL_REGISTER_OPTION]) {
-      require("@babel/register")(
+      this._require("@babel/register")(
         babelRegisterDefaultOptions(
           resolvedFolder,
           this._core.lowLevelConfig[BABEL_REGISTER_OPTIONS_OPTION]

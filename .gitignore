@@ -10,6 +10,7 @@
 /coverage
 /mocks
 /mocks-legacy
+/mocks-ts
 /test/e2e/v1/fixtures/files-watch
 /test/e2e/v2/fixtures/temp
 /test/e2e/v2/fixtures/mocks
@@ -18,6 +19,8 @@
 /mocks.config.js
 /test/e2e/v1/fixtures/mocks.config.js
 /test/e2e/v2/fixtures/mocks.config.js
+babel.config.js
+tsconfig.json
 
 # misc
 .DS_Store

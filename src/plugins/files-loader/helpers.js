@@ -10,6 +10,46 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const fsExtra = require("fs-extra");
 
+// **/*
+
+const DEFAULT_EXTENSIONS = [".js", ".json"];
+const BABEL_DEFAULT_EXTENSIONS = [".es6", ".es", ".jsx", ".js", ".mjs", ".ts"];
+
+const globuleExtensionPattern = (extension) => `**/*${extension}`;
+
+const extensionsGlobulePatterns = (extensions) => {
+  return extensions.map(globuleExtensionPattern);
+};
+
+const addDefaultExtensionsAndGetGlobulePatterns = (extensions) => {
+  return extensionsGlobulePatterns(extensions.concat(DEFAULT_EXTENSIONS));
+};
+
+const getFilesGlobule = (babelRegister, babelRegisterOptions) => {
+  if (!!babelRegister) {
+    if (babelRegisterOptions.extensions) {
+      return addDefaultExtensionsAndGetGlobulePatterns(babelRegisterOptions.extensions);
+    }
+    return addDefaultExtensionsAndGetGlobulePatterns(BABEL_DEFAULT_EXTENSIONS);
+  }
+  return extensionsGlobulePatterns(DEFAULT_EXTENSIONS);
+};
+
+const babelRegisterOnlyFilter = (resolvedFolder) => {
+  return (filePath) => {
+    return filePath.indexOf(resolvedFolder) === 0;
+  };
+};
+
+const babelRegisterDefaultOptions = (resolvedFolder, babelRegisterOptions) => {
+  return {
+    only: [babelRegisterOnlyFilter(resolvedFolder)],
+    cache: false,
+    extensions: BABEL_DEFAULT_EXTENSIONS,
+    ...babelRegisterOptions,
+  };
+};
+
 function mocksFileToUse(mocksFileJs, mocksFileJson) {
   if (fsExtra.existsSync(mocksFileJs)) {
     return mocksFileJs;
@@ -22,4 +62,6 @@ function mocksFileToUse(mocksFileJs, mocksFileJson) {
 
 module.exports = {
   mocksFileToUse,
+  babelRegisterDefaultOptions,
+  getFilesGlobule,
 };

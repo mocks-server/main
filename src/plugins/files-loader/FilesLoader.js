@@ -13,13 +13,14 @@ const path = require("path");
 const globule = require("globule");
 const watch = require("node-watch");
 const fsExtra = require("fs-extra");
-
 const { map, debounce, flatten } = require("lodash");
 
-const { mocksFileToUse } = require("./helpers");
+const { mocksFileToUse, babelRegisterDefaultOptions, getFilesGlobule } = require("./helpers");
 const { createMocksFolder } = require("../../support/scaffold");
 
 const PLUGIN_NAME = "@mocks-server/core/plugin-files-loader";
+const BABEL_REGISTER_OPTION = "babelRegister";
+const BABEL_REGISTER_OPTIONS_OPTION = "babelRegisterOptions";
 const PATH_OPTION = "path";
 const WATCH_OPTION = "watch";
 const DEFAULT_PATH = "mocks";
@@ -76,6 +77,11 @@ class FilesLoaderBase {
     }
   }
 
+  _readFile(filePath) {
+    const content = require(filePath);
+    return content.default || content;
+  }
+
   _cleanRequireCacheFolder() {
     map(this._cache(), (cacheData, filePath) => {
       if (filePath.indexOf(this._path) === 0) {
@@ -125,6 +131,14 @@ class FilesLoaderBase {
     const resolvedFolder = this._resolveFolder(pathName);
     this._path = this._ensureFolder(resolvedFolder);
     this._tracer.info(`Loading files from folder ${this._path}`);
+    if (!!this._core.lowLevelConfig[BABEL_REGISTER_OPTION]) {
+      require("@babel/register")(
+        babelRegisterDefaultOptions(
+          resolvedFolder,
+          this._core.lowLevelConfig[BABEL_REGISTER_OPTIONS_OPTION]
+        )
+      );
+    }
     this._cleanRequireCacheFolder();
     this._loadRoutesFiles();
     this._loadMocksFile();
@@ -134,7 +148,10 @@ class FilesLoaderBase {
     const routesPath = path.resolve(this._path, ROUTES_FOLDER);
     try {
       const routeFiles = globule.find({
-        src: ["**/*.js", "**/*.json"],
+        src: getFilesGlobule(
+          this._core.lowLevelConfig[BABEL_REGISTER_OPTION],
+          this._core.lowLevelConfig[BABEL_REGISTER_OPTIONS_OPTION]
+        ),
         srcBase: routesPath,
         prefixBase: true,
       });
@@ -142,7 +159,7 @@ class FilesLoaderBase {
       const routes = flatten(
         routeFiles.map((filePath) => {
           // TODO, validate basic routes structure, add warning for not valid routes
-          return this._require(filePath);
+          return this._readFile(filePath);
         })
       );
       this._loadRoutes(routes);
@@ -160,7 +177,7 @@ class FilesLoaderBase {
     let mocksFile = mocksFileToUse(mocksFileJs, mocksFileJson);
     if (mocksFile) {
       try {
-        const mocks = this._require(mocksFile);
+        const mocks = this._readFile(mocksFile);
         // TODO, validate mocks, add warning for not valid mocks
         this._loadMocks(mocks);
         this._tracer.silly(`Loaded mocks from file ${mocksFile}`);

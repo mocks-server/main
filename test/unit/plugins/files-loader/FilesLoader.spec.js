@@ -178,7 +178,9 @@ describe("FilesLoader", () => {
     });
 
     it("should require babel/register if babelRegister config is enabled", async () => {
-      const requireSpy = sandbox.stub().returns(() => {});
+      const requireSpy = sandbox.stub().returns(() => {
+        //do nothing
+      });
       coreInstance.lowLevelConfig = { babelRegister: true, babelRegisterOptions: {} };
       filesLoader = new FilesLoader(coreInstance, pluginMethods, {
         requireCache,

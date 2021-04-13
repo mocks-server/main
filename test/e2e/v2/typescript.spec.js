@@ -39,6 +39,14 @@ describe("when babelRegister is enabled and typescript files are used", () => {
         ]);
       });
 
+      it("should serve books in /api/books path", async () => {
+        const users = await fetch("/api/books");
+        expect(users.body).toEqual([
+          { id: 1, title: "1984" },
+          { id: 2, title: "Brave New World" },
+        ]);
+      });
+
       it("middleware should trace request and add headers", async () => {
         const users = await fetch("/api/users");
         expect(users.headers.get("x-mocks-server-example")).toEqual("custom-header-typescript");

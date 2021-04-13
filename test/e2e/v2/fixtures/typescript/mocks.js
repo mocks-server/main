@@ -1,7 +1,7 @@
 export default [
   {
     "id": "base",
-    "routesVariants": ["add-headers:enabled", "get-users:success", "get-user:success", "get-users-new:success"]
+    "routesVariants": ["add-headers:enabled", "get-users:success", "get-user:success", "get-users-new:success", "get-books:success"]
   },
   {
     "id": "no-headers",

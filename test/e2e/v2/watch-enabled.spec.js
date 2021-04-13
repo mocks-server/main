@@ -45,6 +45,7 @@ describe("when files watch is enabled", () => {
 
   describe("When files are modified", () => {
     it("should serve users modified in /api/users path", async () => {
+      await wait(2000);
       await fsExtra.copy(fixturesFolder("web-tutorial-modified"), fixturesFolder("temp"));
       await waitForServerUrl("/api/new-users");
       const users = await fetch("/api/users");

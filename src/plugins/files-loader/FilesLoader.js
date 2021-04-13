@@ -25,7 +25,6 @@ const PATH_OPTION = "path";
 const WATCH_OPTION = "watch";
 const DEFAULT_PATH = "mocks";
 const ROUTES_FOLDER = "routes";
-const MOCKS_FILE = "mocks";
 
 class FilesLoaderBase {
   constructor(core, methods, extraOptions = {}) {
@@ -172,9 +171,11 @@ class FilesLoaderBase {
   }
 
   _loadMocksFile() {
-    const mocksFileJs = path.resolve(this._path, `${MOCKS_FILE}.js`);
-    const mocksFileJson = path.resolve(this._path, `${MOCKS_FILE}.json`);
-    let mocksFile = mocksFileToUse(mocksFileJs, mocksFileJson);
+    let mocksFile = mocksFileToUse(
+      this._path,
+      this._core.lowLevelConfig[BABEL_REGISTER_OPTION],
+      this._core.lowLevelConfig[BABEL_REGISTER_OPTIONS_OPTION]
+    );
     if (mocksFile) {
       try {
         const mocks = this._readFile(mocksFile);

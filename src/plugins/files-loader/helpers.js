@@ -9,53 +9,67 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const fsExtra = require("fs-extra");
+const path = require("path");
 
 // **/*
-
-const DEFAULT_EXTENSIONS = [".js", ".json"];
+const MOCKS_FILE_NAME = "mocks";
+const DEFAULT_EXTENSIONS = [".json", ".js"];
 const BABEL_DEFAULT_EXTENSIONS = [".es6", ".es", ".jsx", ".js", ".mjs", ".ts"];
 
-const globuleExtensionPattern = (extension) => `**/*${extension}`;
+function globuleExtensionPattern(extension) {
+  return `**/*${extension}`;
+}
 
-const extensionsGlobulePatterns = (extensions) => {
+function extensionsGlobulePatterns(extensions) {
   return extensions.map(globuleExtensionPattern);
-};
+}
 
-const addDefaultExtensionsAndGetGlobulePatterns = (extensions) => {
-  return extensionsGlobulePatterns(extensions.concat(DEFAULT_EXTENSIONS));
-};
+function getGlobulePatterns(extensions) {
+  return extensionsGlobulePatterns(extensions);
+}
 
-const getFilesGlobule = (babelRegister, babelRegisterOptions) => {
+function getFilesExtensions(babelRegister, babelRegisterOptions) {
   if (!!babelRegister) {
     if (babelRegisterOptions.extensions) {
-      return addDefaultExtensionsAndGetGlobulePatterns(babelRegisterOptions.extensions);
+      return DEFAULT_EXTENSIONS.concat(babelRegisterOptions.extensions);
     }
-    return addDefaultExtensionsAndGetGlobulePatterns(BABEL_DEFAULT_EXTENSIONS);
+    return DEFAULT_EXTENSIONS.concat(BABEL_DEFAULT_EXTENSIONS);
   }
-  return extensionsGlobulePatterns(DEFAULT_EXTENSIONS);
-};
+  return DEFAULT_EXTENSIONS;
+}
 
-const babelRegisterOnlyFilter = (resolvedFolder) => {
+function getFilesGlobule(babelRegister, babelRegisterOptions) {
+  return getGlobulePatterns(getFilesExtensions(babelRegister, babelRegisterOptions));
+}
+
+function babelRegisterOnlyFilter(mocksFolder) {
   return (filePath) => {
-    return filePath.indexOf(resolvedFolder) === 0;
+    return filePath.indexOf(mocksFolder) === 0;
   };
-};
+}
 
-const babelRegisterDefaultOptions = (resolvedFolder, babelRegisterOptions) => {
+function babelRegisterDefaultOptions(mocksFolder, babelRegisterOptions) {
   return {
-    only: [babelRegisterOnlyFilter(resolvedFolder)],
+    only: [babelRegisterOnlyFilter(mocksFolder)],
     cache: false,
     extensions: BABEL_DEFAULT_EXTENSIONS,
     ...babelRegisterOptions,
   };
-};
+}
 
-function mocksFileToUse(mocksFileJs, mocksFileJson) {
-  if (fsExtra.existsSync(mocksFileJs)) {
-    return mocksFileJs;
-  }
-  if (fsExtra.existsSync(mocksFileJson)) {
-    return mocksFileJson;
+function mocksFilePath(mocksFolder, extension) {
+  return path.resolve(mocksFolder, `${MOCKS_FILE_NAME}${extension}`);
+}
+
+function mocksFileToUse(mocksFolder, babelRegister, babelRegisterOptions) {
+  const extensions = getFilesExtensions(babelRegister, babelRegisterOptions);
+
+  const existentExtension = extensions.find((extension) => {
+    return fsExtra.existsSync(mocksFilePath(mocksFolder, extension));
+  });
+
+  if (existentExtension) {
+    return mocksFilePath(mocksFolder, existentExtension);
   }
   return null;
 }

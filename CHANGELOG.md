@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [2.2.0] - 2021-04-14
+
+### Changed
+- chore(deps): Update mocks-server/core dependency to 2.2.0 (Babel support)
+- chore(deps): Update devDependencies
+
 ## [2.1.0] - 2021-03-24
 
 ### Changed

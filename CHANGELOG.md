@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - chore: update node versions in pipeline
+- chore(deps): update dependencies
 
 ## [2.1.0] - 2021-03-23
 

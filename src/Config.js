@@ -153,6 +153,10 @@ class Config {
     if (config.hasOwnProperty("configFile")) {
       this._coreOptions.configFile = config.configFile;
     }
+    if (config.hasOwnProperty("babelRegister")) {
+      this._coreOptions.babelRegister = config.babelRegister;
+    }
+    this._coreOptions.babelRegisterOptions = config.babelRegisterOptions || {};
   }
 
   get coreOptions() {

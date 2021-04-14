@@ -14,6 +14,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGES
 
+## [2.2.0] - 2021-04-14
+
+### Added
+- feat: Add `babelRegister` and `babelRegisterOptions` low level configuration options, allowing to enable Babel when loading mocks and routes (#151);
+- feat: Add `lowLevelConfig` getter to core, returning low level configuration properties.
+
+### Changed
+- chore: update node versions in pipeline
+- chore(deps): update dependencies
+
 ## [2.1.0] - 2021-03-23
 
 ### Added

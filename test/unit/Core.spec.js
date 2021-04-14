@@ -436,6 +436,12 @@ describe("Core", () => {
     });
   });
 
+  describe("lowLevelConfig getter", () => {
+    it("should return low level configuration", () => {
+      expect(core.lowLevelConfig).toEqual(configMocks.stubs.instance.coreOptions);
+    });
+  });
+
   describe("alerts getter", () => {
     it("should return alerts", () => {
       expect(core.alerts).toEqual(alertsInstance.values);

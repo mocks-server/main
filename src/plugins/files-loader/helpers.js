@@ -9,17 +9,73 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const fsExtra = require("fs-extra");
+const path = require("path");
 
-function mocksFileToUse(mocksFileJs, mocksFileJson) {
-  if (fsExtra.existsSync(mocksFileJs)) {
-    return mocksFileJs;
+// **/*
+const MOCKS_FILE_NAME = "mocks";
+const DEFAULT_EXTENSIONS = [".json", ".js"];
+const BABEL_DEFAULT_EXTENSIONS = [".es6", ".es", ".jsx", ".js", ".mjs", ".ts"];
+
+function globuleExtensionPattern(extension) {
+  return `**/*${extension}`;
+}
+
+function extensionsGlobulePatterns(extensions) {
+  return extensions.map(globuleExtensionPattern);
+}
+
+function getGlobulePatterns(extensions) {
+  return extensionsGlobulePatterns(extensions);
+}
+
+function getFilesExtensions(babelRegister, babelRegisterOptions) {
+  if (!!babelRegister) {
+    if (babelRegisterOptions.extensions) {
+      return DEFAULT_EXTENSIONS.concat(babelRegisterOptions.extensions);
+    }
+    return DEFAULT_EXTENSIONS.concat(BABEL_DEFAULT_EXTENSIONS);
   }
-  if (fsExtra.existsSync(mocksFileJson)) {
-    return mocksFileJson;
+  return DEFAULT_EXTENSIONS;
+}
+
+function getFilesGlobule(babelRegister, babelRegisterOptions) {
+  return getGlobulePatterns(getFilesExtensions(babelRegister, babelRegisterOptions));
+}
+
+function babelRegisterOnlyFilter(mocksFolder) {
+  return (filePath) => {
+    return filePath.indexOf(mocksFolder) === 0;
+  };
+}
+
+function babelRegisterDefaultOptions(mocksFolder, babelRegisterOptions) {
+  return {
+    only: [babelRegisterOnlyFilter(mocksFolder)],
+    cache: false,
+    extensions: BABEL_DEFAULT_EXTENSIONS,
+    ...babelRegisterOptions,
+  };
+}
+
+function mocksFilePath(mocksFolder, extension) {
+  return path.resolve(mocksFolder, `${MOCKS_FILE_NAME}${extension}`);
+}
+
+function mocksFileToUse(mocksFolder, babelRegister, babelRegisterOptions) {
+  const extensions = getFilesExtensions(babelRegister, babelRegisterOptions);
+
+  const existentExtension = extensions.find((extension) => {
+    return fsExtra.existsSync(mocksFilePath(mocksFolder, extension));
+  });
+
+  if (existentExtension) {
+    return mocksFilePath(mocksFolder, existentExtension);
   }
   return null;
 }
 
 module.exports = {
   mocksFileToUse,
+  babelRegisterDefaultOptions,
+  getFilesGlobule,
 };

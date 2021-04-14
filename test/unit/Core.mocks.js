@@ -50,6 +50,7 @@ class CoreMock {
         removeListener: this._sandbox.stub(),
         emit: this._sandbox.stub(),
       },
+      lowLevelConfig: {},
       loadMocks: this._sandbox.stub(),
     };
 

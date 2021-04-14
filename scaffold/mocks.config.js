@@ -49,6 +49,9 @@ module.exports = {
   },
 
   // low level config
+
+  // babelRegister: false,
+  // babelRegisterOptions: {} // For a detailed explanation regarding each Babel register option, visit: https://babeljs.io/docs/en/babel-register
   // addPlugins: [],
   // addRoutesHandlers: [],
 };

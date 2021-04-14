@@ -207,7 +207,7 @@ describe("FixtureHandler", () => {
       );
       expect(fixture.response).toEqual({
         type: "dynamic",
-        function: expect.stringContaining("() => "),
+        function: expect.stringContaining("() => {"),
       });
     });
   });

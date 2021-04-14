@@ -43,9 +43,11 @@ describe("Config", () => {
   });
 
   describe("when created", () => {
-    it("should init coreOptions as empty object if no received", async () => {
+    it("should init coreOptions with minimum default options if no received", async () => {
       config = new Config(callbacks);
-      expect(config.coreOptions).toEqual({});
+      expect(config.coreOptions).toEqual({
+        babelRegisterOptions: {},
+      });
     });
 
     it("should set disableCommandLineArguments as true if onlyProgrammaticOptions is true", async () => {
@@ -128,6 +130,37 @@ describe("Config", () => {
         },
       });
       expect(config.coreOptions.configFile).toEqual("/foo");
+    });
+
+    it("should set babelRegister option received programmatically", async () => {
+      config = new Config({
+        ...callbacks,
+        programmaticConfig: {
+          babelRegister: true,
+        },
+      });
+      expect(config.coreOptions.babelRegister).toEqual(true);
+    });
+
+    it("should set babelRegisterOptions received programmatically", async () => {
+      const fooOptions = {
+        foo: "foo",
+      };
+      config = new Config({
+        ...callbacks,
+        programmaticConfig: {
+          babelRegisterOptions: fooOptions,
+        },
+      });
+      expect(config.coreOptions.babelRegisterOptions).toEqual(fooOptions);
+    });
+
+    it("should init babelRegisterOptions with empty object if are not defined", async () => {
+      config = new Config({
+        ...callbacks,
+        programmaticConfig: {},
+      });
+      expect(config.coreOptions.babelRegisterOptions).toEqual({});
     });
 
     it("should set received options", async () => {
@@ -288,6 +321,7 @@ describe("Config", () => {
         delay: 500,
       });
       expect(config.coreOptions).toEqual({
+        babelRegisterOptions: {},
         configFile: "config.object.js",
         plugins: ["foo"],
       });
@@ -310,6 +344,7 @@ describe("Config", () => {
       });
       await config.init();
       expect(config.coreOptions).toEqual({
+        babelRegisterOptions: {},
         configFile: "config.add-plugins.js",
         plugins: ["foo", "foo2"],
       });
@@ -325,6 +360,7 @@ describe("Config", () => {
       });
       await config.init();
       expect(config.coreOptions).toEqual({
+        babelRegisterOptions: {},
         configFile: "config.object.js",
         plugins: ["foo"],
       });
@@ -344,6 +380,7 @@ describe("Config", () => {
       });
       await config.init();
       expect(config.coreOptions).toEqual({
+        babelRegisterOptions: {},
         configFile: "config.function.js",
         plugins: ["foo"],
       });
@@ -363,6 +400,7 @@ describe("Config", () => {
       });
       await config.init();
       expect(config.coreOptions).toEqual({
+        babelRegisterOptions: {},
         configFile: "config.promise.js",
         plugins: ["foo"],
       });
@@ -382,6 +420,7 @@ describe("Config", () => {
       });
       await config.init();
       expect(config.coreOptions).toEqual({
+        babelRegisterOptions: {},
         configFile: "config.async.js",
         plugins: ["foo"],
       });
@@ -408,6 +447,7 @@ describe("Config", () => {
         foo2: "foo2",
       });
       expect(config.coreOptions).toEqual({
+        babelRegisterOptions: {},
         configFile: "config.modify.js",
         plugins: ["foo", "foo2"],
       });

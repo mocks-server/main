@@ -20,5 +20,13 @@
     "no-only-tests/no-only-tests": [2]
   },
   "extends": ["prettier"],
-  "root": true
+  "root": true,
+  "overrides": [
+    {
+      "files": ["jest.setup.js"],
+      "parserOptions": {
+        "sourceType": "module"
+      }
+    }
+  ]
 }

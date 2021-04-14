@@ -245,6 +245,10 @@ class Core {
     return this._settings;
   }
 
+  get lowLevelConfig() {
+    return { ...this._config.coreOptions };
+  }
+
   get mocks() {
     return this._mocks;
   }

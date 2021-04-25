@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2021 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -15,7 +15,12 @@ const watch = require("node-watch");
 const fsExtra = require("fs-extra");
 const { map, debounce, flatten } = require("lodash");
 
-const { mocksFileToUse, babelRegisterDefaultOptions, getFilesGlobule } = require("./helpers");
+const {
+  mocksFileToUse,
+  babelRegisterDefaultOptions,
+  getFilesGlobule,
+  validateFileContent,
+} = require("./helpers");
 const { createMocksFolder } = require("../../support/scaffold");
 
 const PLUGIN_NAME = "@mocks-server/core/plugin-files-loader";
@@ -78,7 +83,7 @@ class FilesLoaderBase {
 
   _readFile(filePath) {
     const content = this._require(filePath);
-    return content.default || content;
+    return (content && content.default) || content;
   }
 
   _cleanRequireCacheFolder() {
@@ -155,15 +160,25 @@ class FilesLoaderBase {
         prefixBase: true,
       });
 
+      this._removeAlerts("load:routes");
       const routes = flatten(
-        routeFiles.map((filePath) => {
-          // TODO, validate basic routes structure, add warning for not valid routes
-          return this._readFile(filePath);
-        })
+        routeFiles
+          .map((filePath) => {
+            const fileContent = this._readFile(filePath);
+            const fileErrors = validateFileContent(fileContent);
+            if (!!fileErrors) {
+              this._addAlert(
+                `load:routes:file:${filePath}`,
+                `Error loading routes from file ${filePath}: ${fileErrors}.`
+              );
+              return null;
+            }
+            return fileContent;
+          })
+          .filter((fileContent) => !!fileContent)
       );
       this._loadRoutes(routes);
       this._tracer.silly(`Loaded routes from folder ${routesPath}`);
-      this._removeAlerts("load:routes");
     } catch (error) {
       this._loadRoutes([]);
       this._addAlert("load:routes", `Error loading routes from folder ${routesPath}`, error);
@@ -179,7 +194,10 @@ class FilesLoaderBase {
     if (mocksFile) {
       try {
         const mocks = this._readFile(mocksFile);
-        // TODO, validate mocks, add warning for not valid mocks
+        const fileErrors = validateFileContent(mocks);
+        if (!!fileErrors) {
+          throw new Error(fileErrors);
+        }
         this._loadMocks(mocks);
         this._tracer.silly(`Loaded mocks from file ${mocksFile}`);
         this._removeAlerts("load:mocks");
@@ -189,6 +207,7 @@ class FilesLoaderBase {
       }
     } else {
       this._loadMocks([]);
+      // TODO, add supported extensions to trace
       this._addAlert("load:mocks", `No mocks.(js|json) file was found in ${this._path}`);
     }
   }

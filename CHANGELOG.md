@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
+- feat: Validate that routes and mocks files export an array (#101)
 ### Changed
 ### Fixed
 ### Removed

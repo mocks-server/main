@@ -10,20 +10,18 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 const tracer = require("../tracer");
-const { flatten } = require("lodash");
-
-const DEFAULT_ROUTES_HANDLER = "default";
+const { compact } = require("lodash");
 
 const Mock = require("./Mock");
 const {
-  getVariantId,
   getMockRoutesVariants,
   getPlainMocks,
   getPlainRoutes,
   getPlainRoutesVariants,
   addCustomVariant,
   getIds,
-  getRouteHandlerDelay,
+  compileRouteValidator,
+  getRouteVariants,
 } = require("./helpers");
 
 class Mocks {
@@ -77,8 +75,8 @@ class Mocks {
     tracer.debug("Processing loaded mocks");
     let errorsProcessing = 0;
     tracer.silly(JSON.stringify(this._mocksDefinitions));
-    this._mocks = this._mocksDefinitions
-      .map((mockDefinition) => {
+    this._mocks = compact(
+      this._mocksDefinitions.map((mockDefinition) => {
         try {
           return new Mock({
             id: mockDefinition.id,
@@ -96,8 +94,8 @@ class Mocks {
           return null;
         }
       })
-      // TODO, move to a helper
-      .filter((mock) => !!mock);
+    );
+
     if (errorsProcessing > 0) {
       this._addAlert("process:mocks", `${errorsProcessing} errors found while loading mocks`);
     } else {
@@ -108,35 +106,14 @@ class Mocks {
   _processRoutes() {
     tracer.debug("Processing loaded routes");
     tracer.silly(JSON.stringify(this._routesDefinitions));
-    this._routesVariants = flatten(
-      this._routesDefinitions.map((route) => {
-        // TODO, validate and handle errors
-        return route.variants.map((variant) => {
-          const variantId = getVariantId(route.id, variant.id);
-          const handlerId = variant.handler || DEFAULT_ROUTES_HANDLER;
-          const Handler = this._routesVariantsHandlers.find(
-            (routeHandlerCandidate) => routeHandlerCandidate.id === handlerId
-          );
-          const routeHandler = new Handler(
-            {
-              ...variant,
-              variantId,
-              url: route.url,
-              method: route.method,
-            },
-            this._core
-          );
-          routeHandler.delay = getRouteHandlerDelay(variant, route);
-          routeHandler.id = variant.id;
-          routeHandler.variantId = variantId;
-          routeHandler.routeId = route.id;
-          routeHandler.url = route.url;
-          routeHandler.method = route.method;
-          return routeHandler;
-          // TODO, check that handler exists, if not, add a warning
-        });
-      })
-    ).filter((route) => !!route);
+    this._removeAlerts("validation:route");
+    this._routesVariants = getRouteVariants({
+      routesDefinitions: this._routesDefinitions,
+      addAlert: this._addAlert,
+      routeHandlers: this._routesVariantsHandlers,
+      core: this._core,
+    });
+    tracer.debug(`Processed ${this._routesVariants.length} route variants`);
   }
 
   load() {
@@ -153,6 +130,7 @@ class Mocks {
   }
 
   init(routesHandlers) {
+    compileRouteValidator(routesHandlers);
     this._routesVariantsHandlers = routesHandlers;
   }
 

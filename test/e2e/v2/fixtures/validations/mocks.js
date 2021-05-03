@@ -8,4 +8,7 @@ module.exports = [
     from: "base",
     routesVariants: ["get-user-variant-invalid:2"],
   },
+  {
+    id: "invalid-mock",
+  },
 ];

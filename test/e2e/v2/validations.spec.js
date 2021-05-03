@@ -46,7 +46,7 @@ describe("mocks and routes validations", () => {
 
   describe("when routes are not valid", () => {
     beforeAll(async () => {
-      core = await startCore("validation-routes");
+      core = await startCore("validations");
       await waitForServer();
     });
 
@@ -56,17 +56,19 @@ describe("mocks and routes validations", () => {
 
     it("should have added an alert about route variant not valid", () => {
       expect(filterAlerts("validation:route:", core.alerts)[0].message).toEqual(
-        expect.stringContaining(
-          'Variant with id "2" in route with id "get-user-variant-invalid" is invalid: Property "response" should be an object or a function'
-        )
+        'Variant with id "2" in route with id "get-user-variant-invalid" is invalid: Property "response" should be an object or a function'
       );
     });
 
     it("should have added an alert about route not valid", () => {
       expect(filterAlerts("validation:route:", core.alerts)[1].message).toEqual(
-        expect.stringContaining(
-          'Route with id "get-users-invalid" is invalid: Property "method" should be a string or an array with unique items. Allowed values for "method" are "GET,POST,PATCH,DELETE,PUT,OPTIONS,HEAD,TRACE"'
-        )
+        'Route with id "get-users-invalid" is invalid: Property "method" should be a string or an array with unique items. Allowed values for "method" are "GET,POST,PATCH,DELETE,PUT,OPTIONS,HEAD,TRACE"'
+      );
+    });
+
+    it("should have added an alert about mock not valid", () => {
+      expect(filterAlerts("validation:mock:", core.alerts)[0].message).toEqual(
+        'Mock with id "invalid-mock" is invalid: Should have a property "routesVariants"'
       );
     });
 
@@ -78,7 +80,7 @@ describe("mocks and routes validations", () => {
       expect(core.mocks.plainRoutesVariants.length).toEqual(3);
     });
 
-    it("should have loaded mocks", () => {
+    it("should have not loaded invalid mocks", () => {
       expect(core.mocks.plainMocks.length).toEqual(2);
     });
 

@@ -15,4 +15,9 @@ module.exports = [
   {
     id: "invalid-mock",
   },
+  {
+    id: "invalid-from",
+    from: "foo",
+    routesVariants: ["get-user:2"],
+  },
 ];

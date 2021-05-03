@@ -104,6 +104,12 @@ describe("mocks and routes validations", () => {
       );
     });
 
+    it("should have added an alert about mock with invalid from", () => {
+      expect(findAlert("mocks:validation:mock:4:from", core.alerts).message).toEqual(
+        'Mock with invalid "from" property detected, "foo" was not found'
+      );
+    });
+
     it("should have added an alert about errors processing mocks", () => {
       expect(filterAlerts("mocks:process:mocks", core.alerts)[1].message).toEqual(
         "Critical errors found while loading mocks: 1"
@@ -119,7 +125,7 @@ describe("mocks and routes validations", () => {
     });
 
     it("should have not loaded invalid mocks", () => {
-      expect(core.mocks.plainMocks.length).toEqual(2);
+      expect(core.mocks.plainMocks.length).toEqual(3);
     });
 
     it("should return user 2 at /api/users/1", async () => {

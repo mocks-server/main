@@ -47,7 +47,14 @@ function addMockRoutesVariants(mockRoutesVariants, routesVariantsToAdd) {
   return replacedMocksRoutesVariants;
 }
 
-function getMockRoutesVariants(mock, mocks, routesVariants, routesVariantsToAdd = []) {
+function getMockRoutesVariants(
+  mock,
+  mocks,
+  routesVariants,
+  addAlert,
+  alertScope,
+  routesVariantsToAdd = []
+) {
   const mockRoutesVariants = compact(
     mock.routesVariants.map((variantId) => {
       return findRouteVariantByVariantId(routesVariants, variantId);
@@ -60,9 +67,16 @@ function getMockRoutesVariants(mock, mocks, routesVariants, routesVariantsToAdd 
         from,
         mocks,
         routesVariants,
+        addAlert,
+        alertScope,
         addMockRoutesVariants(mockRoutesVariants, routesVariantsToAdd)
       );
-    } // TODO, add alert if from is not found
+    }
+    // TODO, throw an error in strict validation mode
+    addAlert(
+      `${alertScope}:from`,
+      `Mock with invalid "from" property detected, "${mock.from}" was not found`
+    );
   }
   return addMockRoutesVariants(mockRoutesVariants, routesVariantsToAdd);
 }
@@ -310,7 +324,13 @@ function getMock({
   try {
     mock = new Mock({
       id: mockDefinition.id,
-      routesVariants: getMockRoutesVariants(mockDefinition, mocksDefinitions, routeVariants),
+      routesVariants: getMockRoutesVariants(
+        mockDefinition,
+        mocksDefinitions,
+        routeVariants,
+        addAlert,
+        alertScope
+      ),
       getDelay: getGlobalDelay,
     });
   } catch (error) {

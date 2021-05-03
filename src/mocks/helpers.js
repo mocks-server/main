@@ -172,8 +172,11 @@ function getVariantHandler({
   routeHandlers,
   core,
   addAlert,
+  removeAlerts,
   alertScope,
+  processAlertScope,
 }) {
+  let routeHandler = null;
   const variantId = getVariantId(route.id, variant.id);
   const handlerId = variant.handler || DEFAULT_ROUTES_HANDLER;
   const Handler = findRouteHandler(routeHandlers, handlerId);
@@ -183,31 +186,41 @@ function getVariantHandler({
     tracer.silly(`Variant validation errors: ${JSON.stringify(variantErrors.errors)}`);
     return null;
   }
+  const processVariantAlertScope = `${processAlertScope}:variant:${variantIndex}`;
+  removeAlerts(processVariantAlertScope);
 
-  const routeHandler = new Handler(
-    {
-      ...variant,
-      variantId,
-      url: route.url,
-      method: route.method,
-    },
-    core
-  );
-  routeHandler.delay = getRouteHandlerDelay(variant, route);
-  routeHandler.id = variant.id;
-  routeHandler.variantId = variantId;
-  routeHandler.routeId = route.id;
-  routeHandler.url = route.url;
-  routeHandler.method = route.method;
+  try {
+    routeHandler = new Handler(
+      {
+        ...variant,
+        variantId,
+        url: route.url,
+        method: route.method,
+      },
+      core
+    );
+    routeHandler.delay = getRouteHandlerDelay(variant, route);
+    routeHandler.id = variant.id;
+    routeHandler.variantId = variantId;
+    routeHandler.routeId = route.id;
+    routeHandler.url = route.url;
+    routeHandler.method = route.method;
+  } catch (error) {
+    addAlert(processVariantAlertScope, error.message);
+    tracer.error(`Error processing route variant: ${error.message}`);
+  }
   return routeHandler;
 }
 
-function getRouteVariants({ routesDefinitions, addAlert, routeHandlers, core }) {
+function getRouteVariants({ routesDefinitions, addAlert, removeAlerts, routeHandlers, core }) {
+  removeAlerts("validation:route");
+  removeAlerts("process:route");
   return compact(
     flatten(
       routesDefinitions.map((route, index) => {
         const routeErrors = routeValidationErrors(route);
         const alertScope = `validation:route:${index}`;
+        const processAlertScope = `process:route:${index}`;
         if (!!routeErrors) {
           addAlert(alertScope, routeErrors.message);
           tracer.silly(`Route validation errors: ${JSON.stringify(routeErrors.errors)}`);
@@ -221,7 +234,9 @@ function getRouteVariants({ routesDefinitions, addAlert, routeHandlers, core }) 
             routeHandlers,
             core,
             addAlert,
+            removeAlerts,
             alertScope,
+            processAlertScope,
           });
         });
       })

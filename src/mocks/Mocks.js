@@ -85,10 +85,10 @@ class Mocks {
   _processRoutes() {
     tracer.debug("Processing loaded routes");
     tracer.silly(JSON.stringify(this._routesDefinitions));
-    this._removeAlerts("validation:route");
     this._routesVariants = getRouteVariants({
       routesDefinitions: this._routesDefinitions,
       addAlert: this._addAlert,
+      removeAlerts: this._removeAlerts,
       routeHandlers: this._routesVariantsHandlers,
       core: this._core,
     });

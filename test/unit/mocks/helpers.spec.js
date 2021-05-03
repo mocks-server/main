@@ -495,6 +495,7 @@ describe("mocks helpers", () => {
         routeHandlers: [DefaultRoutesHandler],
         core: {},
         addAlert,
+        removeAlerts,
         alertScope: "foo",
       });
 
@@ -513,6 +514,7 @@ describe("mocks helpers", () => {
         routeHandlers: [DefaultRoutesHandler],
         core: {},
         addAlert,
+        removeAlerts,
         alertScope: "foo",
       });
 
@@ -525,6 +527,36 @@ describe("mocks helpers", () => {
       expect(variantHandler.method).toEqual("POST");
     });
 
+    it("should add an Alert and return null is there is an error instantiating Handler", () => {
+      class FooHandler {
+        static get id() {
+          return "foo-handler";
+        }
+
+        constructor() {
+          throw new Error("Error creating variant handler");
+        }
+      }
+      const variantHandler = getVariantHandler({
+        route: { ...VALID_ROUTE, delay: 3000 },
+        variant: {
+          ...VALID_VARIANT,
+          handler: "foo-handler",
+        },
+        variantIndex: 0,
+        routeHandlers: [FooHandler, DefaultRoutesHandler],
+        core: {},
+        addAlert,
+        removeAlerts,
+        alertScope: "foo",
+        processAlertScope: "process:route:1",
+      });
+
+      expect(variantHandler).toEqual(null);
+      expect(addAlert.getCall(0).args[0]).toEqual("process:route:1:variant:0");
+      expect(addAlert.getCall(0).args[1]).toEqual("Error creating variant handler");
+    });
+
     it("should return variant delay if defined", () => {
       const variantHandler = getVariantHandler({
         route: { ...VALID_ROUTE, delay: 3000 },
@@ -533,6 +565,7 @@ describe("mocks helpers", () => {
         routeHandlers: [DefaultRoutesHandler],
         core: {},
         addAlert,
+        removeAlerts,
         alertScope: "foo",
       });
       expect(variantHandler.delay).toEqual(5000);
@@ -550,6 +583,7 @@ describe("mocks helpers", () => {
         routeHandlers: [DefaultRoutesHandler],
         core: {},
         addAlert,
+        removeAlerts,
       });
 
       expect(routeVariants).toEqual([]);
@@ -570,6 +604,7 @@ describe("mocks helpers", () => {
         routeHandlers: [DefaultRoutesHandler],
         core: {},
         addAlert,
+        removeAlerts,
       });
 
       expect(routeVariants).toEqual([]);
@@ -590,6 +625,7 @@ describe("mocks helpers", () => {
         routeHandlers: [DefaultRoutesHandler],
         core: {},
         addAlert,
+        removeAlerts,
       });
 
       expect(routeVariants[0]).toBeInstanceOf(DefaultRoutesHandler);
@@ -617,6 +653,7 @@ describe("mocks helpers", () => {
         routeHandlers: [DefaultRoutesHandler],
         core: {},
         addAlert,
+        removeAlerts,
       });
 
       expect(addAlert.callCount).toEqual(3);

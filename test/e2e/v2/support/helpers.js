@@ -123,6 +123,10 @@ const mocksRunner = (args = [], options = {}) => {
   return new MocksRunner(argsToSend, options);
 };
 
+const filterAlerts = (alertContextFragment, alerts) => {
+  return alerts.filter((alert) => alert.context.includes(alertContextFragment));
+};
+
 const findAlert = (alertContextFragment, alerts) => {
   return alerts.find((alert) => alert.context.includes(alertContextFragment));
 };
@@ -143,6 +147,7 @@ module.exports = {
   waitForServer,
   waitForServerUrl,
   fixturesFolder,
+  filterAlerts,
   findAlert,
   findTrace,
 };

@@ -112,9 +112,10 @@ const routesSchema = {
           },
         },
       },
+      errorMessage: `Property "variants" should be an array`,
     },
   },
-  required: ["id", "url", "method"],
+  required: ["id", "url", "method", "variants"],
   additionalProperties: {
     not: true,
     errorMessage: "Extra property ${0#} is not allowed",
@@ -125,6 +126,7 @@ const routesSchema = {
       id: 'Should have a string property "id"',
       url: 'Should have a property "url"',
       method: 'Should have a property "method"',
+      variants: 'Should have a property "variants"',
     },
   },
 };
@@ -218,26 +220,41 @@ function getPlainMocks(mocks, mocksDefinitions) {
   });
 }
 
+function getPlainRouteVariants(route, routesVariants) {
+  if (!route.variants || !Array.isArray(route.variants)) {
+    return [];
+  }
+  return compact(
+    route.variants.map((variant) => {
+      if (!variant) {
+        return null;
+      }
+      const variantId = getVariantId(route.id, variant.id);
+      const variantHandler = routesVariants.find(
+        (routeVariant) => routeVariant.variantId === variantId
+      );
+      if (variantHandler) {
+        return variantId;
+      }
+    })
+  );
+}
+
 function getPlainRoutes(routes, routesVariants) {
-  return routes.map((route) => {
-    return {
-      id: route.id,
-      url: route.url,
-      method: route.method,
-      delay: route.delay || null,
-      variants: route.variants
-        .map((variant) => {
-          const variantId = getVariantId(route.id, variant.id);
-          const variantHandler = routesVariants.find(
-            (routeVariant) => routeVariant.variantId === variantId
-          );
-          if (variantHandler) {
-            return variantId;
-          }
-        })
-        .filter((variant) => !!variant),
-    };
-  });
+  return compact(
+    routes.map((route) => {
+      if (!route || !routesVariants.find((routeVariant) => routeVariant.routeId === route.id)) {
+        return null;
+      }
+      return {
+        id: route.id,
+        url: route.url,
+        method: route.method,
+        delay: route.delay || null,
+        variants: getPlainRouteVariants(route, routesVariants),
+      };
+    })
+  );
 }
 
 function getPlainRoutesVariants(routesVariants) {
@@ -272,15 +289,15 @@ function getIds(objs) {
   return objs.map((obj) => obj.id);
 }
 
-function hasDelayPropery(obj) {
+function hasDelayProperty(obj) {
   return obj.hasOwnProperty("delay");
 }
 
 function getRouteHandlerDelay(variant, route) {
-  if (hasDelayPropery(variant)) {
+  if (hasDelayProperty(variant)) {
     return variant.delay;
   }
-  if (hasDelayPropery(route)) {
+  if (hasDelayProperty(route)) {
     return route.delay;
   }
   return null;
@@ -324,13 +341,14 @@ function variantValidationErrors(route, variant, Handler) {
       errors: variantValidator.errors,
     };
   }
+  return null;
 }
 
 function findRouteHandler(routeHandlers, handlerId) {
   return routeHandlers.find((routeHandlerCandidate) => routeHandlerCandidate.id === handlerId);
 }
 
-function getRouteHandler({
+function getVariantHandler({
   route,
   variant,
   variantIndex,
@@ -379,7 +397,7 @@ function getRouteVariants({ routesDefinitions, addAlert, routeHandlers, core }) 
           return null;
         }
         return route.variants.map((variant, index) => {
-          return getRouteHandler({
+          return getVariantHandler({
             route,
             variant,
             variantIndex: index,
@@ -404,8 +422,11 @@ module.exports = {
   getIds,
   getRouteHandlerDelay,
   routeValidationErrors,
+  variantValidationErrors,
   HTTP_METHODS,
   compileRouteValidator,
-  getRouteHandler,
+  getVariantHandler,
   getRouteVariants,
+  hasDelayProperty,
+  validationSingleMessage,
 };

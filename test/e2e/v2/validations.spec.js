@@ -66,8 +66,20 @@ describe("mocks and routes validations", () => {
       );
     });
 
-    it("should have added an alert about mock not valid", () => {
+    it("should have added an alert about base mock not valid", () => {
       expect(filterAlerts("validation:mock:", core.alerts)[0].message).toEqual(
+        'Mock with id "base" is invalid: routeVariant with id "get-users-invalid:success" was not found, use a valid "routeId:variantId" identifier'
+      );
+    });
+
+    it("should have added an alerts about invalid-variant mock not valid", () => {
+      expect(filterAlerts("validation:mock:", core.alerts)[1].message).toEqual(
+        'Mock with id "invalid-variant" is invalid: routeVariant with id "get-user-variant-invalid:2" was not found, use a valid "routeId:variantId" identifier'
+      );
+    });
+
+    it("should have added an alerts about invalid-mock mock not valid", () => {
+      expect(filterAlerts("validation:mock:", core.alerts)[2].message).toEqual(
         'Mock with id "invalid-mock" is invalid: Should have a property "routesVariants"'
       );
     });

@@ -203,12 +203,49 @@ function validationSingleMessage(errors) {
     .join(". ");
 }
 
+function findRouteVariantByVariantId(routesVariants, variantId) {
+  return routesVariants.find((routeVariant) => routeVariant.variantId === variantId);
+}
+
+function notValidRouteVariantMessage(variantId) {
+  return {
+    message: `routeVariant with id "${variantId}" was not found, use a valid "routeId:variantId" identifier`,
+  };
+}
+
+function mockInvalidRouteVariants(mock, routeVariants) {
+  const variants =
+    mock && mock.routesVariants && Array.isArray(mock.routesVariants) ? mock.routesVariants : [];
+  return {
+    errors: variants
+      .filter((variantId) => {
+        return !findRouteVariantByVariantId(routeVariants, variantId);
+      })
+      .map(notValidRouteVariantMessage),
+  };
+}
+
+function mockErrorsMessage(mock, errors) {
+  const idTrace = mock && mock.id ? `with id "${mock.id}" ` : "";
+  return `Mock ${idTrace}is invalid: ${validationSingleMessage(errors)}`;
+}
+
+function mockRouteVariantsValidationErrors(mock, routeVariants) {
+  const invalidRouteVariants = mockInvalidRouteVariants(mock, routeVariants);
+  if (invalidRouteVariants.errors.length) {
+    return {
+      message: mockErrorsMessage(mock, invalidRouteVariants.errors),
+      errors: invalidRouteVariants.errors,
+    };
+  }
+  return null;
+}
+
 function mockValidationErrors(mock) {
   const isValid = mockValidator(mock);
   if (!isValid) {
-    const idTrace = mock && mock.id ? `with id "${mock.id}" ` : "";
     return {
-      message: `Mock ${idTrace}is invalid: ${validationSingleMessage(mockValidator.errors)}`,
+      message: mockErrorsMessage(mock, mockValidator.errors),
       errors: mockValidator.errors,
     };
   }
@@ -253,4 +290,6 @@ module.exports = {
   variantValidationErrors,
   compileRouteValidator,
   validationSingleMessage,
+  findRouteVariantByVariantId,
+  mockRouteVariantsValidationErrors,
 };

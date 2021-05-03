@@ -169,7 +169,7 @@ class FilesLoaderBase {
             if (!!fileErrors) {
               this._addAlert(
                 `load:routes:file:${filePath}`,
-                `Error loading routes from file ${filePath}: ${fileErrors}.`
+                `Error loading routes from file ${filePath}: ${fileErrors}`
               );
               return null;
             }

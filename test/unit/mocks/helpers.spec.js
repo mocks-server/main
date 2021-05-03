@@ -668,6 +668,28 @@ describe("mocks helpers", () => {
   });
 
   describe("getMock", () => {
+    it("should add an alert if mock contains not valid routeVariants", () => {
+      const mock = getMock({
+        mockDefinition: {
+          id: "foo-id",
+          routesVariants: ["foo-route:foo-id"],
+        },
+        mockIndex: "foo-index",
+        mocksDefinitions: [],
+        routeVariants: [],
+        getGlobalDelay: () => {
+          //do nothing
+        },
+        addAlert,
+        removeAlerts,
+      });
+      expect(mock.id).toEqual("foo-id");
+      expect(addAlert.getCall(0).args[0]).toEqual("validation:mock:foo-index:variants");
+      expect(addAlert.getCall(0).args[1]).toEqual(
+        'Mock with id "foo-id" is invalid: routeVariant with id "foo-route:foo-id" was not found, use a valid "routeId:variantId" identifier'
+      );
+    });
+
     it("should add an alert if instantiating Mock throws an error", () => {
       sandbox.stub(express, "Router").throws(new Error("Error creating mock"));
       const mock = getMock({
@@ -677,7 +699,12 @@ describe("mocks helpers", () => {
         },
         mockIndex: "foo-index",
         mocksDefinitions: [],
-        routeVariants: [],
+        routeVariants: [
+          {
+            id: "foo-route",
+            variantId: "foo-route:foo-id",
+          },
+        ],
         getGlobalDelay: () => {
           //do nothing
         },

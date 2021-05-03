@@ -72,7 +72,6 @@ class Mocks {
   _processMocks() {
     tracer.debug("Processing loaded mocks");
     tracer.silly(JSON.stringify(this._mocksDefinitions));
-    this._removeAlerts("process:mocks");
     this._mocks = getMocks({
       mocksDefinitions: this._mocksDefinitions,
       addAlert: this._addAlert,

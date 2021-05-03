@@ -10,19 +10,17 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 const tracer = require("../tracer");
-const { compact } = require("lodash");
 
-const Mock = require("./Mock");
 const {
-  getMockRoutesVariants,
   getPlainMocks,
   getPlainRoutes,
   getPlainRoutesVariants,
   addCustomVariant,
-  getIds,
-  compileRouteValidator,
   getRouteVariants,
+  getMocks,
+  getMock,
 } = require("./helpers");
+const { getIds, compileRouteValidator } = require("./validations");
 
 class Mocks {
   constructor(
@@ -73,34 +71,15 @@ class Mocks {
 
   _processMocks() {
     tracer.debug("Processing loaded mocks");
-    let errorsProcessing = 0;
     tracer.silly(JSON.stringify(this._mocksDefinitions));
-    this._mocks = compact(
-      this._mocksDefinitions.map((mockDefinition) => {
-        try {
-          return new Mock({
-            id: mockDefinition.id,
-            routesVariants: getMockRoutesVariants(
-              mockDefinition,
-              this._mocksDefinitions,
-              this._routesVariants
-            ),
-            getDelay: this._getDelay,
-          });
-        } catch (err) {
-          errorsProcessing++;
-          tracer.error("Error processing mock");
-          console.log(err);
-          return null;
-        }
-      })
-    );
-
-    if (errorsProcessing > 0) {
-      this._addAlert("process:mocks", `${errorsProcessing} errors found while loading mocks`);
-    } else {
-      this._removeAlerts("process:mocks");
-    }
+    this._removeAlerts("process:mocks");
+    this._mocks = getMocks({
+      mocksDefinitions: this._mocksDefinitions,
+      addAlert: this._addAlert,
+      removeAlerts: this._removeAlerts,
+      routeVariants: this._routesVariants,
+      getGlobalDelay: this._getDelay,
+    });
   }
 
   _processRoutes() {
@@ -117,7 +96,6 @@ class Mocks {
   }
 
   load() {
-    // TODO, validate
     this._routesDefinitions = this._getLoadedRoutes();
     this._mocksDefinitions = this._getLoadedMocks();
     this._processRoutes();
@@ -184,17 +162,18 @@ class Mocks {
 
   _createCustomMock() {
     const currentMockId = this._currentId;
-    this._customVariantsMock = new Mock({
-      id: `custom-variants:from:${currentMockId}`,
-      routesVariants: getMockRoutesVariants(
-        {
-          from: currentMockId,
-          routesVariants: this._customVariants,
-        },
-        this._mocksDefinitions,
-        this._routesVariants
-      ),
-      getDelay: this._getDelay,
+    this._customVariantsMock = getMock({
+      mockDefinition: {
+        id: `custom-variants:from:${currentMockId}`,
+        from: currentMockId,
+        routesVariants: this._customVariants,
+      },
+      mockIndex: "custom",
+      mocksDefinitions: this._mocksDefinitions,
+      routeVariants: this._routesVariants,
+      getGlobalDelay: this._getDelay,
+      addAlert: this._addAlert,
+      removeAlerts: this._removeAlerts,
     });
   }
 

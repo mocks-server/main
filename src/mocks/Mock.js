@@ -12,7 +12,7 @@ const express = require("express");
 
 const tracer = require("../tracer");
 
-const { HTTP_METHODS } = require("./helpers");
+const { HTTP_METHODS } = require("./validations");
 
 class Mock {
   constructor({ id, routesVariants, getDelay }) {

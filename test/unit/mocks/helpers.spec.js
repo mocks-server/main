@@ -9,6 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
+const express = require("express");
 
 const {
   getVariantId,
@@ -17,16 +18,13 @@ const {
   getPlainRoutes,
   getPlainRoutesVariants,
   addCustomVariant,
-  getIds,
   hasDelayProperty,
   getRouteHandlerDelay,
-  validationSingleMessage,
-  compileRouteValidator,
-  routeValidationErrors,
-  variantValidationErrors,
   getVariantHandler,
   getRouteVariants,
+  getMock,
 } = require("../../../src/mocks/helpers");
+const { compileRouteValidator } = require("../../../src/mocks/validations");
 const DefaultRoutesHandler = require("../../../src/routes-handlers/default/DefaultRoutesHandler");
 
 describe("mocks helpers", () => {
@@ -51,12 +49,16 @@ describe("mocks helpers", () => {
       body: {},
     },
   };
-  let sandbox;
-  let addAlert;
+  let sandbox, addAlert, removeAlerts;
+
+  beforeAll(() => {
+    compileRouteValidator([{ id: "foo-handler" }]);
+  });
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     addAlert = sandbox.stub();
+    removeAlerts = sandbox.stub();
   });
 
   afterEach(() => {
@@ -452,12 +454,6 @@ describe("mocks helpers", () => {
     });
   });
 
-  describe("getIds", () => {
-    it("should return array with ids", () => {
-      expect(getIds([{ id: "id-1" }, { id: "id-2" }])).toEqual(["id-1", "id-2"]);
-    });
-  });
-
   describe("hasDelayProperty", () => {
     it('should return true if object has property "delay"', () => {
       expect(hasDelayProperty({ delay: 500 })).toEqual(true);
@@ -487,248 +483,6 @@ describe("mocks helpers", () => {
 
     it("should return null if there is no delay in variant nor route", () => {
       expect(getRouteHandlerDelay({ foo: 500 }, { foo: 1000 })).toEqual(null);
-    });
-  });
-
-  describe("validationSingleMessage", () => {
-    it("should return all message properties joined", () => {
-      expect(
-        validationSingleMessage([
-          {
-            message: "foo",
-          },
-          {
-            message: "foo2",
-          },
-        ])
-      ).toEqual("foo. foo2");
-    });
-
-    it("should omit empty messages", () => {
-      expect(
-        validationSingleMessage([
-          {
-            message: "foo",
-          },
-          {
-            message: "",
-          },
-          {
-            message: "foo3",
-          },
-        ])
-      ).toEqual("foo. foo3");
-    });
-  });
-
-  describe("routeValidationErrors", () => {
-    beforeEach(() => {
-      compileRouteValidator([{ id: "foo-handler" }]);
-    });
-
-    it("should return null if route is valid", () => {
-      expect(routeValidationErrors(VALID_ROUTE)).toEqual(null);
-    });
-
-    it("should return error if route has not id", () => {
-      const errors = routeValidationErrors({
-        ...VALID_ROUTE,
-        id: undefined,
-      });
-      expect(errors.message).toEqual('Route is invalid: Should have a string property "id"');
-      expect(errors.errors.length).toEqual(3);
-    });
-
-    it("should return error if route id is not string", () => {
-      const errors = routeValidationErrors({
-        ...VALID_ROUTE,
-        id: 4,
-      });
-      expect(errors.message).toEqual(
-        'Route with id "4" is invalid: Property "id" should be string'
-      );
-      expect(errors.errors.length).toEqual(3);
-    });
-
-    it("should return error if route url is not valid", () => {
-      const errors = routeValidationErrors({
-        ...VALID_ROUTE,
-        url: 4,
-      });
-      expect(errors.message).toEqual(
-        'Route with id "foo-route" is invalid: Property "url" should be a string or a RegExp'
-      );
-      expect(errors.errors.length).toEqual(3);
-    });
-
-    it("should not return error if route url is a Regexp", () => {
-      const errors = routeValidationErrors({
-        ...VALID_ROUTE,
-        url: /^foo/g,
-      });
-      expect(errors).toEqual(null);
-    });
-
-    it("should return error if method is not valid", () => {
-      const errors = routeValidationErrors({
-        ...VALID_ROUTE,
-        method: "FOO",
-      });
-      expect(errors.message).toEqual(
-        'Route with id "foo-route" is invalid: Property "method" should be a string or an array with unique items. Allowed values for "method" are "GET,POST,PATCH,DELETE,PUT,OPTIONS,HEAD,TRACE"'
-      );
-    });
-
-    it("should return error if delay is not valid", () => {
-      const errors = routeValidationErrors({
-        ...VALID_ROUTE,
-        delay: -2,
-      });
-      expect(errors.message).toEqual(
-        'Route with id "foo-route" is invalid: Property "delay" should be a positive integer'
-      );
-    });
-
-    it("should return error if variants is not valid", () => {
-      const errors = routeValidationErrors({
-        ...VALID_ROUTE,
-        variants: "foo",
-      });
-      expect(errors.message).toEqual(
-        'Route with id "foo-route" is invalid: Property "variants" should be an array'
-      );
-    });
-
-    it("should return error if variant id is not valid", () => {
-      const errors = routeValidationErrors({
-        ...VALID_ROUTE,
-        variants: [
-          {
-            id: 4,
-          },
-          {
-            id: 2,
-          },
-        ],
-      });
-      expect(errors.message).toEqual(
-        'Route with id "foo-route" is invalid: Property "id" should be string in variant 0. Property "id" should be string in variant 1'
-      );
-    });
-
-    it("should return error if variant handler is not defined", () => {
-      const errors = routeValidationErrors({
-        ...VALID_ROUTE,
-        variants: [
-          {
-            id: "foo",
-            handler: "var",
-          },
-        ],
-      });
-      expect(errors.message).toEqual(
-        'Route with id "foo-route" is invalid: Property "handler" should be one of "foo-handler" in variant 0'
-      );
-    });
-
-    it("should return error if variant delay is not valid", () => {
-      const errors = routeValidationErrors({
-        ...VALID_ROUTE,
-        variants: [
-          {
-            id: "foo",
-            handler: "foo-handler",
-            delay: -2,
-          },
-        ],
-      });
-      expect(errors.message).toEqual(
-        'Route with id "foo-route" is invalid: Property "delay" should be a positive integer in variant 0'
-      );
-    });
-
-    it("should return all errors together", () => {
-      const errors = routeValidationErrors({
-        id: 4,
-        method: "foo",
-        delay: -1,
-        variants: [
-          {
-            id: 5,
-            handler: "foo",
-            delay: -2,
-          },
-        ],
-      });
-      expect(errors.message).toEqual(
-        'Route with id "4" is invalid: Property "id" should be string. Property "method" should be a string or an array with unique items. Allowed values for "method" are "GET,POST,PATCH,DELETE,PUT,OPTIONS,HEAD,TRACE". Property "delay" should be a positive integer. Property "id" should be string in variant 0. Property "handler" should be one of "foo-handler" in variant 0. Property "delay" should be a positive integer in variant 0. Should have a property "url"'
-      );
-    });
-  });
-
-  describe("variantValidationErrors", () => {
-    it("should return null if Hanlder has not validationSchema", () => {
-      expect(variantValidationErrors({}, {}, {})).toEqual(null);
-    });
-  });
-
-  describe("variantValidationErrors using DefaultRoutesHandler schema", () => {
-    it("should return null if variant is valid", () => {
-      expect(
-        variantValidationErrors({ id: "foo-route" }, VALID_VARIANT, DefaultRoutesHandler)
-      ).toEqual(null);
-    });
-
-    it("should return error if variant has not response property", () => {
-      const errors = variantValidationErrors(
-        { id: "foo-route" },
-        { ...VALID_VARIANT, id: undefined, response: undefined },
-        DefaultRoutesHandler
-      );
-      expect(errors.message).toEqual(
-        'Variant in route with id "foo-route" is invalid: Should have a property "response"'
-      );
-    });
-
-    it("should return error if variant has not response property", () => {
-      const errors = variantValidationErrors(
-        { id: "foo-route" },
-        { ...VALID_VARIANT, response: undefined },
-        DefaultRoutesHandler
-      );
-      expect(errors.message).toEqual(
-        'Variant with id "foo-variant" in route with id "foo-route" is invalid: Should have a property "response"'
-      );
-    });
-
-    it("should return error if variant response headers is not an object", () => {
-      const errors = variantValidationErrors(
-        { id: "foo-route" },
-        {
-          ...VALID_VARIANT,
-          response: {
-            headers: "foo",
-          },
-        },
-        DefaultRoutesHandler
-      );
-      expect(errors.message).toEqual(
-        'Variant with id "foo-variant" in route with id "foo-route" is invalid: Property "headers" should be an object. Property "response" should be an object or a function'
-      );
-    });
-
-    it("should allow defining variant response as a function", () => {
-      const errors = variantValidationErrors(
-        { id: "foo-route" },
-        {
-          ...VALID_VARIANT,
-          response: () => {
-            // do nothing
-          },
-        },
-        DefaultRoutesHandler
-      );
-      expect(errors).toEqual(null);
     });
   });
 
@@ -873,6 +627,29 @@ describe("mocks helpers", () => {
       expect(routeVariants[0].routeId).toEqual("foo-route");
       expect(routeVariants[0].url).toEqual("/foo");
       expect(routeVariants[0].method).toEqual("POST");
+    });
+  });
+
+  describe("getMock", () => {
+    it("should add an alert if instantiating Mock throws an error", () => {
+      sandbox.stub(express, "Router").throws(new Error("Error creating mock"));
+      const mock = getMock({
+        mockDefinition: {
+          id: "foo-id",
+          routesVariants: ["foo-route:foo-id"],
+        },
+        mockIndex: "foo-index",
+        mocksDefinitions: [],
+        routeVariants: [],
+        getGlobalDelay: () => {
+          //do nothing
+        },
+        addAlert,
+        removeAlerts,
+      });
+      expect(mock).toEqual(null);
+      expect(addAlert.getCall(0).args[0]).toEqual("process:mock:foo-index");
+      expect(addAlert.getCall(0).args[1]).toEqual("Error creating mock");
     });
   });
 });

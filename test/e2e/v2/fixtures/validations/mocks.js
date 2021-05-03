@@ -4,6 +4,10 @@ module.exports = [
     routesVariants: ["get-users-invalid:success", "get-user-variant-invalid:1", "get-user:2"],
   },
   {
+    id: "base",
+    routesVariants: [],
+  },
+  {
     id: "invalid-variant",
     from: "base",
     routesVariants: ["get-user-variant-invalid:2"],

@@ -104,11 +104,18 @@ function getPlainRouteVariants(route, routesVariants) {
 }
 
 function getPlainRoutes(routes, routesVariants) {
+  let ids = [];
   return compact(
     routes.map((route) => {
-      if (!route || !routesVariants.find((routeVariant) => routeVariant.routeId === route.id)) {
+      if (
+        !route ||
+        !route.id ||
+        ids.includes(route.id) ||
+        !routesVariants.find((routeVariant) => routeVariant.routeId === route.id)
+      ) {
         return null;
       }
+      ids.push(route.id);
       return {
         id: route.id,
         url: route.url,
@@ -250,7 +257,7 @@ function getRouteVariants({ routesDefinitions, addAlert, removeAlerts, routeHand
             alertScope,
             processAlertScope,
           });
-          if (variantHandler && variantHandler.id) {
+          if (variantHandler) {
             if (routeVariantsIds.includes(variantHandler.id)) {
               addAlert(
                 `${alertScope}:variant:${index}:duplicated`,

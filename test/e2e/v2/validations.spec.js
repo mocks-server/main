@@ -54,33 +54,59 @@ describe("mocks and routes validations", () => {
       await core.stop();
     });
 
+    it("should have added an alert about route variant with duplicated id", () => {
+      expect(
+        findAlert("mocks:validation:route:1:variant:1:duplicated", core.alerts).message
+      ).toEqual(
+        'Route variant with duplicated id "1" detected in route "get-user-variant-invalid". It has been ignored'
+      );
+    });
+
     it("should have added an alert about route variant not valid", () => {
-      expect(filterAlerts("validation:route:", core.alerts)[0].message).toEqual(
+      expect(findAlert("mocks:validation:route:1:2", core.alerts).message).toEqual(
         'Variant with id "2" in route with id "get-user-variant-invalid" is invalid: Property "response" should be an object or a function'
       );
     });
 
-    it("should have added an alert about route not valid", () => {
-      expect(filterAlerts("validation:route:", core.alerts)[1].message).toEqual(
+    it("should have added an alert about route duplicated", () => {
+      expect(findAlert("mocks:validation:route:2:duplicated", core.alerts).message).toEqual(
+        'Route with duplicated id "get-user-variant-invalid" detected. It has been ignored'
+      );
+    });
+
+    it("should have added an alert about route invalid", () => {
+      expect(findAlert("mocks:validation:route:3", core.alerts).message).toEqual(
         'Route with id "get-users-invalid" is invalid: Property "method" should be a string or an array with unique items. Allowed values for "method" are "GET,POST,PATCH,DELETE,PUT,OPTIONS,HEAD,TRACE"'
       );
     });
 
-    it("should have added an alert about base mock not valid", () => {
-      expect(filterAlerts("validation:mock:", core.alerts)[0].message).toEqual(
+    it("should have added an alert about mock routeVariant not found", () => {
+      expect(findAlert("mocks:validation:mock:0:variants", core.alerts).message).toEqual(
         'Mock with id "base" is invalid: routeVariant with id "get-users-invalid:success" was not found, use a valid "routeId:variantId" identifier'
       );
     });
 
-    it("should have added an alerts about invalid-variant mock not valid", () => {
-      expect(filterAlerts("validation:mock:", core.alerts)[1].message).toEqual(
+    it("should have added an alert about mock duplicated", () => {
+      expect(findAlert("mocks:process:mocks:1:duplicated", core.alerts).message).toEqual(
+        'Mock with duplicated id "base" detected. It has been ignored'
+      );
+    });
+
+    it("should have added an alert about mock routeVariant not found in mock 2", () => {
+      expect(findAlert("mocks:validation:mock:2:variants", core.alerts).message).toEqual(
         'Mock with id "invalid-variant" is invalid: routeVariant with id "get-user-variant-invalid:2" was not found, use a valid "routeId:variantId" identifier'
       );
     });
 
-    it("should have added an alerts about invalid-mock mock not valid", () => {
-      expect(filterAlerts("validation:mock:", core.alerts)[2].message).toEqual(
+    it("should have added an alert about invalid mock 3", () => {
+      expect(findAlert("mocks:validation:mock:3", core.alerts).message).toEqual(
         'Mock with id "invalid-mock" is invalid: Should have a property "routesVariants"'
+      );
+    });
+
+    it("should have added an alert about errors processing mocks", () => {
+      expect(filterAlerts("mocks:process:mocks", core.alerts)[1].message).toEqual(
+        "Critical errors found while loading mocks: 1"
       );
     });
 

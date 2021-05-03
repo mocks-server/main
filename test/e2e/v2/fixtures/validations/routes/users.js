@@ -54,8 +54,29 @@ module.exports = [
         },
       },
       {
+        id: "1",
+        response: {
+          status: 200,
+          body: USERS[0],
+        },
+      },
+      {
         id: "2",
         response: null,
+      },
+    ],
+  },
+  {
+    id: "get-user-variant-invalid",
+    url: "/api/invalid-users/:id",
+    method: "GET",
+    variants: [
+      {
+        id: "2",
+        response: {
+          status: 200,
+          body: USERS[1],
+        },
       },
     ],
   },

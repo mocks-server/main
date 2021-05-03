@@ -28,6 +28,15 @@ const { compileRouteValidator } = require("../../../src/mocks/validations");
 const DefaultRoutesHandler = require("../../../src/routes-handlers/default/DefaultRoutesHandler");
 
 describe("mocks helpers", () => {
+  class FooHandler {
+    static get id() {
+      return "foo-handler";
+    }
+
+    constructor() {
+      throw new Error("Error creating variant handler");
+    }
+  }
   const VALID_ROUTE = {
     id: "foo-route",
     url: "/foo",
@@ -251,6 +260,7 @@ describe("mocks helpers", () => {
       { variantId: "route-id-1:variant-1", routeId: "route-id-1" },
       { variantId: "route-id-1:variant-2", routeId: "route-id-1" },
       { variantId: "route-id-2:variant-1", routeId: "route-id-2" },
+      { variantId: "route-id-5:variant-1", routeId: "route-id-5" },
     ];
 
     it("should return routes in plain format", () => {
@@ -341,6 +351,14 @@ describe("mocks helpers", () => {
               foo: "route-foo-1",
               variants: [{ id: "variant-1" }, { id: "variant-2" }, { id: "variant-3" }, null],
             },
+            {
+              id: "route-id-5",
+              url: "route-url-1",
+              method: "route-method-1",
+              delay: "route-delay-1",
+              foo: "route-foo-1",
+              variants: "foo",
+            },
             null,
             "foo",
             {
@@ -352,7 +370,7 @@ describe("mocks helpers", () => {
               variants: [{ id: "variant-1" }, { id: "variant-2" }],
             },
             {
-              id: "route-id-2",
+              id: "route-id-3",
               url: "route-url-2",
               method: "route-method-2",
               delay: "route-delay-2",
@@ -371,18 +389,52 @@ describe("mocks helpers", () => {
           variants: ["route-id-1:variant-1", "route-id-1:variant-2"],
         },
         {
-          id: "route-id-2",
-          url: "route-url-2",
-          method: "route-method-2",
-          delay: "route-delay-2",
-          variants: ["route-id-2:variant-1"],
+          id: "route-id-5",
+          url: "route-url-1",
+          method: "route-method-1",
+          delay: "route-delay-1",
+          variants: [],
         },
         {
           id: "route-id-2",
           url: "route-url-2",
           method: "route-method-2",
           delay: "route-delay-2",
-          variants: [],
+          variants: ["route-id-2:variant-1"],
+        },
+      ]);
+    });
+
+    it("should omit duplicated route variants", () => {
+      expect(
+        getPlainRoutes(
+          [
+            {
+              id: "route-id-1",
+              url: "route-url-1",
+              method: "route-method-1",
+              delay: "route-delay-1",
+              foo: "route-foo-1",
+              variants: [{ id: "variant-1" }, { id: "variant-2" }, { id: "variant-3" }, null],
+            },
+            {
+              id: "route-id-1",
+              url: "route-url-1",
+              method: "route-method-1",
+              delay: "route-delay-1",
+              foo: "route-foo-1",
+              variants: [{ id: "variant-1" }, { id: "variant-2" }, { id: "variant-3" }, null],
+            },
+          ],
+          ROUTES_VARIANTS
+        )
+      ).toEqual([
+        {
+          id: "route-id-1",
+          url: "route-url-1",
+          method: "route-method-1",
+          delay: "route-delay-1",
+          variants: ["route-id-1:variant-1", "route-id-1:variant-2"],
         },
       ]);
     });
@@ -528,15 +580,6 @@ describe("mocks helpers", () => {
     });
 
     it("should add an Alert and return null is there is an error instantiating Handler", () => {
-      class FooHandler {
-        static get id() {
-          return "foo-handler";
-        }
-
-        constructor() {
-          throw new Error("Error creating variant handler");
-        }
-      }
       const variantHandler = getVariantHandler({
         route: { ...VALID_ROUTE, delay: 3000 },
         variant: {
@@ -664,6 +707,68 @@ describe("mocks helpers", () => {
       expect(routeVariants[0].routeId).toEqual("foo-route");
       expect(routeVariants[0].url).toEqual("/foo");
       expect(routeVariants[0].method).toEqual("POST");
+    });
+
+    it("should omit duplicated routes", () => {
+      const routeVariants = getRouteVariants({
+        routesDefinitions: [
+          {
+            ...VALID_ROUTE,
+            variants: [VALID_VARIANT],
+          },
+          {
+            ...VALID_ROUTE,
+            variants: [VALID_VARIANT],
+          },
+        ],
+        routeHandlers: [DefaultRoutesHandler],
+        core: {},
+        addAlert,
+        removeAlerts,
+      });
+
+      expect(routeVariants.length).toEqual(1);
+      expect(addAlert.callCount).toEqual(1);
+      expect(addAlert.getCall(0).args[0]).toEqual("validation:route:1:duplicated");
+    });
+
+    it("should omit duplicated variants", () => {
+      const routeVariants = getRouteVariants({
+        routesDefinitions: [
+          {
+            ...VALID_ROUTE,
+            variants: [VALID_VARIANT, VALID_VARIANT],
+          },
+        ],
+        routeHandlers: [DefaultRoutesHandler],
+        core: {},
+        addAlert,
+        removeAlerts,
+      });
+
+      expect(routeVariants.length).toEqual(1);
+      expect(addAlert.callCount).toEqual(1);
+      expect(addAlert.getCall(0).args[0]).toEqual("validation:route:0:variant:1:duplicated");
+    });
+
+    it("should omit not valid variants", () => {
+      compileRouteValidator([DefaultRoutesHandler, FooHandler]);
+      const routeVariants = getRouteVariants({
+        routesDefinitions: [
+          {
+            ...VALID_ROUTE,
+            variants: [{ ...VALID_VARIANT, handler: "foo-handler" }],
+          },
+        ],
+        routeHandlers: [FooHandler],
+        core: {},
+        addAlert,
+        removeAlerts,
+      });
+
+      expect(routeVariants.length).toEqual(0);
+      expect(addAlert.callCount).toEqual(1);
+      expect(addAlert.getCall(0).args[0]).toEqual("process:route:0:variant:0");
     });
   });
 

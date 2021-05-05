@@ -18,9 +18,4 @@ module.exports = [
     from: "base",
     routesVariants: ["get-user:2"],
   },
-  {
-    id: "user-real",
-    from: "base",
-    routesVariants: ["get-user:real"],
-  },
 ];

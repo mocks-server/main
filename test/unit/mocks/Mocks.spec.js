@@ -128,7 +128,7 @@ describe("Mocks", () => {
 
       it("should return array of ids in ids getter", () => {
         mocks.load();
-        expect(mocks.ids).toEqual(["mock-id", "mock-id"]);
+        expect(mocks.ids).toEqual(["mock-id"]);
       });
     });
 

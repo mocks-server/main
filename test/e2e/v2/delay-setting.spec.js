@@ -93,4 +93,65 @@ describe("delay setting", () => {
       expect(timeCounter.total).toBeGreaterThan(1999);
     });
   });
+
+  describe("When route has delay and route variant has zero delay", () => {
+    afterEach(() => {
+      core.mocks.restoreRoutesVariants();
+    });
+
+    it("should respond with no delay", async () => {
+      core.mocks.useRouteVariant("get-user:zero-delay");
+      const timeCounter = new TimeCounter();
+      await fetch("/api/users/1");
+      timeCounter.stop();
+      expect(timeCounter.total).toBeLessThan(500);
+    });
+
+    it("should have zero delay in plain route variant", async () => {
+      expect(core.mocks.plainRoutesVariants[2]).toEqual({
+        handler: "default",
+        id: "get-user:zero-delay",
+        delay: 0,
+        response: {
+          status: 200,
+          body: {
+            id: 1,
+            name: "John Doe",
+          },
+        },
+        routeId: "get-user",
+      });
+    });
+  });
+
+  describe("When route has delay and route variant has null delay", () => {
+    afterEach(() => {
+      core.mocks.restoreRoutesVariants();
+    });
+
+    it("should respond with global server delay", async () => {
+      core.settings.set("delay", 3000);
+      core.mocks.useRouteVariant("get-user:null-delay");
+      const timeCounter = new TimeCounter();
+      await fetch("/api/users/1");
+      timeCounter.stop();
+      expect(timeCounter.total).toBeGreaterThan(2999);
+    });
+
+    it("should have null delay in plain route variant", async () => {
+      expect(core.mocks.plainRoutesVariants[3]).toEqual({
+        handler: "default",
+        id: "get-user:null-delay",
+        delay: null,
+        response: {
+          status: 200,
+          body: {
+            id: 1,
+            name: "John Doe",
+          },
+        },
+        routeId: "get-user",
+      });
+    });
+  });
 });

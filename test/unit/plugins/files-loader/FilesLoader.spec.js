@@ -82,6 +82,7 @@ describe("FilesLoader", () => {
       requireCache,
     });
     sandbox.stub(path, "isAbsolute").returns(true);
+    sandbox.stub(console, "log");
     coreInstance.settings.get.withArgs("path").returns("foo-path");
     libsMocks.stubs.fsExtra.existsSync.returns(true);
     libsMocks.stubs.globule.find.returns([]);
@@ -112,6 +113,26 @@ describe("FilesLoader", () => {
       libsMocks.stubs.globule.find.returns(["foo"]);
       await filesLoader.init();
       expect(pluginMethods.addAlert.calledWith("load:routes")).toEqual(true);
+    });
+
+    it("should add an alert when a routes file content does not pass validation", async () => {
+      libsMocks.stubs.globule.find.returns(["foo"]);
+      filesLoader = new FilesLoader(coreInstance, pluginMethods, {
+        requireCache,
+        require: () => ({}),
+      });
+      await filesLoader.init();
+      expect(pluginMethods.addAlert.calledWith("load:routes:file:foo")).toEqual(true);
+    });
+
+    it("should not add an alert when a routes file content pass validation", async () => {
+      libsMocks.stubs.globule.find.returns(["foo"]);
+      filesLoader = new FilesLoader(coreInstance, pluginMethods, {
+        requireCache,
+        require: () => [],
+      });
+      await filesLoader.init();
+      expect(pluginMethods.addAlert.calledWith("load:routes:file:foo")).toEqual(false);
     });
 
     it("should not throw and add an alert if there is an error loading mocks file", async () => {

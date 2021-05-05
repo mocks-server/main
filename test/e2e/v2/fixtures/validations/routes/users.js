@@ -8,13 +8,22 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { USERS } = require("../db/users");
+const USERS = [
+  {
+    id: 1,
+    name: "John Doe",
+  },
+  {
+    id: 2,
+    name: "Jane Doe",
+  },
+];
 
 module.exports = [
   {
     id: "get-user",
     url: "/api/users/:id",
-    method: "get",
+    method: "GET",
     variants: [
       {
         id: "1",
@@ -30,22 +39,55 @@ module.exports = [
           body: USERS[1],
         },
       },
+    ],
+  },
+  {
+    id: "get-user-variant-invalid",
+    url: "/api/invalid-users/:id",
+    method: "GET",
+    variants: [
       {
-        id: "real",
-        response: (req, res) => {
-          const userId = req.params.id;
-          const user = USERS.find((userData) => userData.id === Number(userId));
-          if (user) {
-            res.status(200);
-            res.send(user);
-          } else {
-            res.status(404);
-            res.send({
-              message: "User not found",
-            });
-          }
+        id: "1",
+        response: {
+          status: 200,
+          body: USERS[0],
+        },
+      },
+      {
+        id: "1",
+        response: {
+          status: 200,
+          body: USERS[0],
+        },
+      },
+      {
+        id: "2",
+        response: null,
+      },
+    ],
+  },
+  {
+    id: "get-user-variant-invalid",
+    url: "/api/invalid-users/:id",
+    method: "GET",
+    variants: [
+      {
+        id: "2",
+        response: {
+          status: 200,
+          body: USERS[1],
         },
       },
     ],
+  },
+  {
+    id: "get-users-invalid",
+    url: "/api/invalid-users",
+    method: "foo",
+    variants: [
+      {
+        id: "success",
+      }
+    ]
   },
 ];

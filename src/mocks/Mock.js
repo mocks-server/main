@@ -12,16 +12,7 @@ const express = require("express");
 
 const tracer = require("../tracer");
 
-const METHODS = {
-  GET: "get",
-  POST: "post",
-  PATCH: "patch",
-  DELETE: "delete",
-  PUT: "put",
-  OPTIONS: "options",
-  HEAD: "head",
-  TRACE: "trace",
-};
+const { HTTP_METHODS } = require("./validations");
 
 class Mock {
   constructor({ id, routesVariants, getDelay }) {
@@ -38,7 +29,8 @@ class Mock {
         ? routeVariant.method
         : [routeVariant.method];
       methods.forEach((method) => {
-        this._router[METHODS[method]](routeVariant.url, (req, res, next) => {
+        const httpMethod = HTTP_METHODS[method.toUpperCase()];
+        this._router[httpMethod](routeVariant.url, (req, res, next) => {
           const delay = routeVariant.delay !== null ? routeVariant.delay : this._getDelay();
           if (delay > 0) {
             tracer.verbose(`Applying delay of ${delay}ms to route variant "${this._id}"`);
@@ -49,10 +41,7 @@ class Mock {
             next();
           }
         });
-        this._router[METHODS[method]](
-          routeVariant.url,
-          routeVariant.middleware.bind(routeVariant)
-        );
+        this._router[httpMethod](routeVariant.url, routeVariant.middleware.bind(routeVariant));
       });
     });
   }

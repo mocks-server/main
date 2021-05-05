@@ -17,6 +17,44 @@ class DefaultRoutesHandler {
     return "default";
   }
 
+  static get validationSchema() {
+    return {
+      type: "object",
+      properties: {
+        response: {
+          oneOf: [
+            {
+              type: "object",
+              properties: {
+                headers: {
+                  type: "object",
+                  errorMessage: 'Property "headers" should be an object',
+                },
+              },
+              required: ["status", "body"],
+              errorMessage: {
+                required: {
+                  id: 'Should have an integer property "status"',
+                },
+              },
+            },
+            {
+              instanceof: "Function",
+            },
+          ],
+          errorMessage: 'Property "response" should be an object or a function',
+        },
+      },
+      required: ["response"],
+      errorMessage: {
+        type: "Should be an object",
+        required: {
+          response: 'Should have a property "response"',
+        },
+      },
+    };
+  }
+
   constructor(route, core) {
     this._response = route.response;
     this._variantId = route.variantId;

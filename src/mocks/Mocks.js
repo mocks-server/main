@@ -10,21 +10,17 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 const tracer = require("../tracer");
-const { flatten } = require("lodash");
 
-const DEFAULT_ROUTES_HANDLER = "default";
-
-const Mock = require("./Mock");
 const {
-  getVariantId,
-  getMockRoutesVariants,
   getPlainMocks,
   getPlainRoutes,
   getPlainRoutesVariants,
   addCustomVariant,
-  getIds,
-  getRouteHandlerDelay,
+  getRouteVariants,
+  getMocks,
+  getMock,
 } = require("./helpers");
+const { getIds, compileRouteValidator } = require("./validations");
 
 class Mocks {
   constructor(
@@ -75,72 +71,30 @@ class Mocks {
 
   _processMocks() {
     tracer.debug("Processing loaded mocks");
-    let errorsProcessing = 0;
     tracer.silly(JSON.stringify(this._mocksDefinitions));
-    this._mocks = this._mocksDefinitions
-      .map((mockDefinition) => {
-        try {
-          return new Mock({
-            id: mockDefinition.id,
-            routesVariants: getMockRoutesVariants(
-              mockDefinition,
-              this._mocksDefinitions,
-              this._routesVariants
-            ),
-            getDelay: this._getDelay,
-          });
-        } catch (err) {
-          errorsProcessing++;
-          tracer.error("Error processing mock");
-          console.log(err);
-          return null;
-        }
-      })
-      // TODO, move to a helper
-      .filter((mock) => !!mock);
-    if (errorsProcessing > 0) {
-      this._addAlert("process:mocks", `${errorsProcessing} errors found while loading mocks`);
-    } else {
-      this._removeAlerts("process:mocks");
-    }
+    this._mocks = getMocks({
+      mocksDefinitions: this._mocksDefinitions,
+      addAlert: this._addAlert,
+      removeAlerts: this._removeAlerts,
+      routeVariants: this._routesVariants,
+      getGlobalDelay: this._getDelay,
+    });
   }
 
   _processRoutes() {
     tracer.debug("Processing loaded routes");
     tracer.silly(JSON.stringify(this._routesDefinitions));
-    this._routesVariants = flatten(
-      this._routesDefinitions.map((route) => {
-        // TODO, validate and handle errors
-        return route.variants.map((variant) => {
-          const variantId = getVariantId(route.id, variant.id);
-          const handlerId = variant.handler || DEFAULT_ROUTES_HANDLER;
-          const Handler = this._routesVariantsHandlers.find(
-            (routeHandlerCandidate) => routeHandlerCandidate.id === handlerId
-          );
-          const routeHandler = new Handler(
-            {
-              ...variant,
-              variantId,
-              url: route.url,
-              method: route.method,
-            },
-            this._core
-          );
-          routeHandler.delay = getRouteHandlerDelay(variant, route);
-          routeHandler.id = variant.id;
-          routeHandler.variantId = variantId;
-          routeHandler.routeId = route.id;
-          routeHandler.url = route.url;
-          routeHandler.method = route.method;
-          return routeHandler;
-          // TODO, check that handler exists, if not, add a warning
-        });
-      })
-    ).filter((route) => !!route);
+    this._routesVariants = getRouteVariants({
+      routesDefinitions: this._routesDefinitions,
+      addAlert: this._addAlert,
+      removeAlerts: this._removeAlerts,
+      routeHandlers: this._routesVariantsHandlers,
+      core: this._core,
+    });
+    tracer.debug(`Processed ${this._routesVariants.length} route variants`);
   }
 
   load() {
-    // TODO, validate
     this._routesDefinitions = this._getLoadedRoutes();
     this._mocksDefinitions = this._getLoadedMocks();
     this._processRoutes();
@@ -153,6 +107,7 @@ class Mocks {
   }
 
   init(routesHandlers) {
+    compileRouteValidator(routesHandlers);
     this._routesVariantsHandlers = routesHandlers;
   }
 
@@ -206,17 +161,18 @@ class Mocks {
 
   _createCustomMock() {
     const currentMockId = this._currentId;
-    this._customVariantsMock = new Mock({
-      id: `custom-variants:from:${currentMockId}`,
-      routesVariants: getMockRoutesVariants(
-        {
-          from: currentMockId,
-          routesVariants: this._customVariants,
-        },
-        this._mocksDefinitions,
-        this._routesVariants
-      ),
-      getDelay: this._getDelay,
+    this._customVariantsMock = getMock({
+      mockDefinition: {
+        id: `custom-variants:from:${currentMockId}`,
+        from: currentMockId,
+        routesVariants: this._customVariants,
+      },
+      mockIndex: "custom",
+      mocksDefinitions: this._mocksDefinitions,
+      routeVariants: this._routesVariants,
+      getGlobalDelay: this._getDelay,
+      addAlert: this._addAlert,
+      removeAlerts: this._removeAlerts,
     });
   }
 

@@ -32,6 +32,22 @@ module.exports = [
           body: USERS[1],
         },
       },
+      {
+        id: "zero-delay",
+        delay: 0,
+        response: {
+          status: 200,
+          body: USERS[0],
+        },
+      },
+      {
+        id: "null-delay",
+        delay: null,
+        response: {
+          status: 200,
+          body: USERS[0],
+        },
+      },
     ],
   },
 ];

@@ -74,8 +74,16 @@ function mocksFileToUse(mocksFolder, babelRegister, babelRegisterOptions) {
   return null;
 }
 
+function validateFileContent(fileContent) {
+  if (!Array.isArray(fileContent)) {
+    return "File does not export an array";
+  }
+  return null;
+}
+
 module.exports = {
   mocksFileToUse,
   babelRegisterDefaultOptions,
   getFilesGlobule,
+  validateFileContent,
 };

@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Validate that routes and mocks files export an array (#101)
 - feat: Validate routes and route variants format (#101)
 - feat: Validate mocks format (#101)
-- feat: Add an alert when mocks contains not-existant routeVariants (#101)
+- feat: Add an alert when mocks contains non existent routeVariants (#101)
 - feat: Ignore mocks, routes and route variants with duplicated ids (#101)
 - feat: Add an alert if mock "from" property is not valid (not correspondent to any mock id) (#101)
 - feat: Add an alert if there are many variants of the same route in the same mock (#101)

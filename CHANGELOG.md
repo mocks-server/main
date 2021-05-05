@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Ignore mocks, routes and route variants with duplicated ids (#101)
 - feat: Add an alert if mock "from" property is not valid (not correspondent to any mock id) (#101)
 - feat: Add an alert if there are many variants of the same route in the same mock (#101)
+- feat: Support defining http methods in lowercase
 ### Changed
 ### Fixed
 ### Removed

@@ -14,7 +14,7 @@ module.exports = [
   {
     id: "get-user",
     url: "/api/users/:id",
-    method: "GET",
+    method: "get",
     variants: [
       {
         id: "1",

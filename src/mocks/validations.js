@@ -110,16 +110,9 @@ const routesSchema = {
       )}"`,
     },
     delay: {
-      oneOf: [
-        {
-          type: "null",
-        },
-        {
-          type: "integer",
-          minimum: 0,
-        },
-      ],
-      errorMessage: `Property "delay" should be a positive integer or "null"`,
+      type: "integer",
+      minimum: 0,
+      errorMessage: `Property "delay" should be a positive integer`,
     },
     variants: {
       type: "array",

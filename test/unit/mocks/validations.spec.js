@@ -15,6 +15,7 @@ const {
   routeValidationErrors,
   variantValidationErrors,
   mockValidationErrors,
+  mockRouteVariantsValidationErrors,
 } = require("../../../src/mocks/validations");
 const DefaultRoutesHandler = require("../../../src/routes-handlers/default/DefaultRoutesHandler");
 
@@ -325,6 +326,86 @@ describe("mocks validations", () => {
       expect(errors.message).toEqual(
         'Mock is invalid: Extra property "foo" is not allowed. Property "from" should be string. Should have a string property "id". Should have a property "routesVariants"'
       );
+    });
+  });
+
+  describe("mockRouteVariantsValidationErrors", () => {
+    const ROUTE_VARIANTS = [
+      {
+        routeId: "foo",
+        variantId: "foo:success",
+      },
+      {
+        routeId: "foo",
+        variantId: "foo:error",
+      },
+      {
+        routeId: "foo2",
+        variantId: "foo2:error",
+      },
+    ];
+
+    it("should return null if all routeVariants exist", () => {
+      expect(
+        mockRouteVariantsValidationErrors(
+          {
+            id: "foo",
+            from: "foo-base",
+            routesVariants: ["foo:success", "foo2:error"],
+          },
+          ROUTE_VARIANTS
+        )
+      ).toEqual(null);
+    });
+
+    it("should return error containing one message for each non existant routeVariant", () => {
+      const errors = mockRouteVariantsValidationErrors(
+        {
+          id: "foo",
+          from: "foo-base",
+          routesVariants: ["foo:fake", "foo2:success"],
+        },
+        ROUTE_VARIANTS
+      );
+      expect(errors.message).toEqual(
+        'Mock with id "foo" is invalid: routeVariant with id "foo:fake" was not found, use a valid "routeId:variantId" identifier. routeVariant with id "foo2:success" was not found, use a valid "routeId:variantId" identifier'
+      );
+    });
+
+    it("should return error containing one message for each duplicated route in variants", () => {
+      const errors = mockRouteVariantsValidationErrors(
+        {
+          id: "foo",
+          from: "foo-base",
+          routesVariants: ["foo:error", "foo:success"],
+        },
+        ROUTE_VARIANTS
+      );
+      expect(errors.message).toEqual(
+        'Mock with id "foo" is invalid: route with id "foo" is used more than once in the same mock'
+      );
+    });
+
+    it("should return all error messages together", () => {
+      const errors = mockRouteVariantsValidationErrors(
+        {
+          id: "foo",
+          from: "foo-base",
+          routesVariants: ["foo:error", "foo:success", "foo2:success"],
+        },
+        ROUTE_VARIANTS
+      );
+      expect(errors.message).toEqual(
+        'Mock with id "foo" is invalid: route with id "foo" is used more than once in the same mock. routeVariant with id "foo2:success" was not found, use a valid "routeId:variantId" identifier'
+      );
+    });
+
+    it("should wotk when no routeVariants are provided in mock", () => {
+      const errors = mockRouteVariantsValidationErrors({
+        id: "foo",
+        from: "foo-base",
+      });
+      expect(errors).toEqual(null);
     });
   });
 });

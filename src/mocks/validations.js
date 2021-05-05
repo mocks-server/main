@@ -9,6 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const Ajv = require("ajv");
+const { compact } = require("lodash");
 
 const ajv = new Ajv({ allErrors: true });
 const initAjvErrors = require("ajv-errors");
@@ -207,21 +208,40 @@ function findRouteVariantByVariantId(routesVariants, variantId) {
   return routesVariants.find((routeVariant) => routeVariant.variantId === variantId);
 }
 
-function notValidRouteVariantMessage(variantId) {
+function notFoundRouteVariantMessage(variantId) {
   return {
     message: `routeVariant with id "${variantId}" was not found, use a valid "routeId:variantId" identifier`,
   };
+}
+
+function duplicatedRouteMessage(routeId) {
+  return {
+    message: `route with id "${routeId}" is used more than once in the same mock`,
+  };
+}
+
+function mockRouteVariantsErrors(variants, routeVariants) {
+  let routes = [];
+  return compact(
+    variants.map((variantId) => {
+      const routeVariant = findRouteVariantByVariantId(routeVariants, variantId);
+      if (!routeVariant) {
+        return notFoundRouteVariantMessage(variantId);
+      }
+      if (routes.includes(routeVariant.routeId)) {
+        return duplicatedRouteMessage(routeVariant.routeId);
+      }
+      routes.push(routeVariant.routeId);
+      return null;
+    })
+  );
 }
 
 function mockInvalidRouteVariants(mock, routeVariants) {
   const variants =
     mock && mock.routesVariants && Array.isArray(mock.routesVariants) ? mock.routesVariants : [];
   return {
-    errors: variants
-      .filter((variantId) => {
-        return !findRouteVariantByVariantId(routeVariants, variantId);
-      })
-      .map(notValidRouteVariantMessage),
+    errors: mockRouteVariantsErrors(variants, routeVariants),
   };
 }
 

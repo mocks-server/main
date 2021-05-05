@@ -20,4 +20,9 @@ module.exports = [
     from: "foo",
     routesVariants: ["get-user:2"],
   },
+  {
+    id: "duplicated-route",
+    from: "base",
+    routesVariants: ["get-user:2", "get-user:1"],
+  },
 ];

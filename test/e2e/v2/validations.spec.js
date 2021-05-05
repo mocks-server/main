@@ -110,6 +110,12 @@ describe("mocks and routes validations", () => {
       );
     });
 
+    it("should have added an alert about mock with duplicated routes", () => {
+      expect(findAlert("mocks:validation:mock:5:variants", core.alerts).message).toEqual(
+        'Mock with id "duplicated-route" is invalid: route with id "get-user" is used more than once in the same mock'
+      );
+    });
+
     it("should have added an alert about errors processing mocks", () => {
       expect(filterAlerts("mocks:process:mocks", core.alerts)[1].message).toEqual(
         "Critical errors found while loading mocks: 1"
@@ -125,7 +131,7 @@ describe("mocks and routes validations", () => {
     });
 
     it("should have not loaded invalid mocks", () => {
-      expect(core.mocks.plainMocks.length).toEqual(3);
+      expect(core.mocks.plainMocks.length).toEqual(4);
     });
 
     it("should return user 2 at /api/users/1", async () => {

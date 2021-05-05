@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Support defining http methods in lowercase
 ### Changed
 ### Fixed
+- fix: Routes with delay 0 had delay null in plain representation
 ### Removed
 ### BREAKING CHANGES
 

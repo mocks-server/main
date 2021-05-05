@@ -134,7 +134,7 @@ function getPlainRoutes(routes, routesVariants) {
         id: route.id,
         url: route.url,
         method: route.method,
-        delay: route.delay || null,
+        delay: hasDelayProperty(route) ? route.delay : null,
         variants: getPlainRouteVariants(route, routesVariants),
       };
     })

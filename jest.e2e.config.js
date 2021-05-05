@@ -6,7 +6,7 @@ module.exports = {
   clearMocks: true,
 
   testMatch: ["<rootDir>/test/e2e/**/*.spec.js"],
-  // testMatch: ["<rootDir>/test/e2e/v2/**/validations.spec.js"],
+  // testMatch: ["<rootDir>/test/e2e/v2/**/delay-setting.spec.js"],
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: false,

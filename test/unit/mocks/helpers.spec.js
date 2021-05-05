@@ -282,6 +282,14 @@ describe("mocks helpers", () => {
               foo: "route-foo-2",
               variants: [{ id: "variant-1" }],
             },
+            {
+              id: "route-id-5",
+              url: "route-url-5",
+              method: "route-method-5",
+              foo: "route-foo-5",
+              delay: 0,
+              variants: [{ id: "variant-1" }],
+            },
           ],
           ROUTES_VARIANTS
         )
@@ -299,6 +307,13 @@ describe("mocks helpers", () => {
           method: "route-method-2",
           delay: null,
           variants: ["route-id-2:variant-1"],
+        },
+        {
+          id: "route-id-5",
+          url: "route-url-5",
+          method: "route-method-5",
+          delay: 0,
+          variants: ["route-id-5:variant-1"],
         },
       ]);
     });

@@ -110,9 +110,16 @@ const routesSchema = {
       )}"`,
     },
     delay: {
-      type: "integer",
-      minimum: 0,
-      errorMessage: `Property "delay" should be a positive integer`,
+      oneOf: [
+        {
+          type: "null",
+        },
+        {
+          type: "integer",
+          minimum: 0,
+        },
+      ],
+      errorMessage: `Property "delay" should be a positive integer or "null"`,
     },
     variants: {
       type: "array",
@@ -129,9 +136,17 @@ const routesSchema = {
             errorMessage: "", // this error message is defined when validator is compiled
           },
           delay: {
-            type: "integer",
-            minimum: 0,
-            errorMessage: 'Property "delay" should be a positive integer in variant ${1#}',
+            oneOf: [
+              {
+                type: "null",
+              },
+              {
+                type: "integer",
+                minimum: 0,
+              },
+            ],
+            errorMessage:
+              'Property "delay" should be a positive integer or "null" in variant ${1#}',
           },
         },
         required: ["id"],

@@ -143,7 +143,7 @@ describe("mocks validations", () => {
         delay: -2,
       });
       expect(errors.message).toEqual(
-        'Route with id "foo-route" is invalid: Property "delay" should be a positive integer'
+        'Route with id "foo-route" is invalid: Property "delay" should be a positive integer or "null"'
       );
     });
 
@@ -201,7 +201,7 @@ describe("mocks validations", () => {
         ],
       });
       expect(errors.message).toEqual(
-        'Route with id "foo-route" is invalid: Property "delay" should be a positive integer in variant 0'
+        'Route with id "foo-route" is invalid: Property "delay" should be a positive integer or "null" in variant 0'
       );
     });
 
@@ -219,7 +219,7 @@ describe("mocks validations", () => {
         ],
       });
       expect(errors.message).toEqual(
-        'Route with id "4" is invalid: Property "id" should be string. Property "method" should be a string or an array with unique items. Allowed values for "method" are "GET,POST,PATCH,DELETE,PUT,OPTIONS,HEAD,TRACE". Property "delay" should be a positive integer. Property "id" should be string in variant 0. Property "handler" should be one of "foo-handler" in variant 0. Property "delay" should be a positive integer in variant 0. Should have a property "url"'
+        'Route with id "4" is invalid: Property "id" should be string. Property "method" should be a string or an array with unique items. Allowed values for "method" are "GET,POST,PATCH,DELETE,PUT,OPTIONS,HEAD,TRACE". Property "delay" should be a positive integer or "null". Property "id" should be string in variant 0. Property "handler" should be one of "foo-handler" in variant 0. Property "delay" should be a positive integer or "null" in variant 0. Should have a property "url"'
       );
     });
   });

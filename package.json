@@ -41,7 +41,7 @@
   "dependencies": {
     "@babel/register": "7.13.14",
     "@hapi/boom": "9.1.2",
-    "ajv": "8.1.0",
+    "ajv": "8.2.0",
     "ajv-errors": "3.0.0",
     "body-parser": "1.19.0",
     "commander": "6.2.1",

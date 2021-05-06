@@ -271,7 +271,7 @@ describe("mocks validations", () => {
         DefaultRoutesHandler
       );
       expect(errors.message).toEqual(
-        'Variant with id "foo-variant" in route with id "foo-route" is invalid: Property "headers" should be an object. Property "response" should be an object or a function'
+        'Variant with id "foo-variant" in route with id "foo-route" is invalid: Property "response.headers" should be an object. Should have an integer property "response.status". Property "response" should be a valid object or a function'
       );
     });
 

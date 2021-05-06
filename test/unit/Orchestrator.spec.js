@@ -25,6 +25,7 @@ describe("Orchestrator", () => {
   let coreInstance;
   let legacyMocksMock;
   let mocksMock;
+  let orchestrator;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -33,7 +34,7 @@ describe("Orchestrator", () => {
     legacyMocksMock = new LegacyMocksMock();
     mocksMock = new MocksMock();
     coreInstance = coreMocks.stubs.instance;
-    new Orchestrator(
+    orchestrator = new Orchestrator(
       coreInstance._eventEmitter,
       legacyMocksMock.stubs.instance,
       serverMocks.stubs.instance,
@@ -52,10 +53,12 @@ describe("Orchestrator", () => {
 
   describe("when settings change", () => {
     it("should restart the server when port changes", async () => {
+      expect.assertions(2);
       coreInstance._eventEmitter.on.getCall(0).args[1]({
         port: 4540,
       });
       expect(serverMocks.stubs.instance.restart.callCount).toEqual(1);
+      expect(orchestrator).toBeInstanceOf(Orchestrator);
     });
 
     it("should restart the server when host changes", async () => {

@@ -28,13 +28,13 @@ class DefaultRoutesHandler {
               properties: {
                 headers: {
                   type: "object",
-                  errorMessage: 'Property "headers" should be an object',
+                  errorMessage: 'Property "response.headers" should be an object',
                 },
               },
-              required: ["status", "body"],
+              required: ["status"],
               errorMessage: {
                 required: {
-                  id: 'Should have an integer property "status"',
+                  status: 'Should have an integer property "response.status"',
                 },
               },
             },
@@ -42,7 +42,7 @@ class DefaultRoutesHandler {
               instanceof: "Function",
             },
           ],
-          errorMessage: 'Property "response" should be an object or a function',
+          errorMessage: 'Property "response" should be a valid object or a function',
         },
       },
       required: ["response"],

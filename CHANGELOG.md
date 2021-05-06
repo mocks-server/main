@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.3.0] - 2021-05-06
 
+### Added
+- chore: Support Node.js v16.x
+
 ### Changed
 - chore(deps): Update mocks-server/core dependency to 2.3.0 (Validations)
 - chore(deps): Update devDependencies

@@ -64,7 +64,7 @@ describe("mocks and routes validations", () => {
 
     it("should have added an alert about route variant not valid", () => {
       expect(findAlert("mocks:validation:route:1:2", core.alerts).message).toEqual(
-        'Variant with id "2" in route with id "get-user-variant-invalid" is invalid: Property "response" should be an object or a function'
+        'Variant with id "2" in route with id "get-user-variant-invalid" is invalid: Property "response" should be a valid object or a function'
       );
     });
 

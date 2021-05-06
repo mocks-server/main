@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - fix: make body property in response not mandatory
 
+### Changed
+- chore(deps): update dependencies
+
 ## [2.3.0] - 2021-05-05
 
 ### Added

@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [2.3.1] - 2021-05-06
+
+### Changed
+- chore(deps): Update mocks-server/core dependency to 2.3.1 (fix response validation)
+
 ## [2.3.0] - 2021-05-06
 
 ### Added

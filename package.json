@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/main",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Mock Server supporting multiple route variants and mocks",
   "keywords": [
     "mock",
@@ -40,7 +40,7 @@
     "test:unit": "npm run test"
   },
   "dependencies": {
-    "@mocks-server/core": "2.3.0",
+    "@mocks-server/core": "2.3.1",
     "@mocks-server/plugin-admin-api": "2.0.0",
     "@mocks-server/plugin-inquirer-cli": "2.0.0"
   },

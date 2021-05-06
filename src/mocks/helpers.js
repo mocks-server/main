@@ -259,11 +259,11 @@ function getRouteVariants({ routesDefinitions, addAlert, removeAlerts, routeHand
         }
         routeIds.push(route.id);
 
-        return route.variants.map((variant, index) => {
+        return route.variants.map((variant, variantIndex) => {
           const variantHandler = getVariantHandler({
             route,
             variant,
-            variantIndex: index,
+            variantIndex,
             routeHandlers,
             core,
             addAlert,
@@ -274,7 +274,7 @@ function getRouteVariants({ routesDefinitions, addAlert, removeAlerts, routeHand
           if (variantHandler) {
             if (routeVariantsIds.includes(variantHandler.id)) {
               addAlert(
-                `${alertScope}:variant:${index}:duplicated`,
+                `${alertScope}:variant:${variantIndex}:duplicated`,
                 `Route variant with duplicated id "${variantHandler.id}" detected in route "${route.id}". It has been ignored`
               );
               return null;

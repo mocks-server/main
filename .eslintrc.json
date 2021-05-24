@@ -4,7 +4,7 @@
     "es6": true
   },
   "parserOptions": { 
-    "ecmaVersion": "2018"
+    "ecmaVersion": 2018
   },
   "plugins": ["prettier", "no-only-tests"],
   "rules": {
@@ -15,6 +15,7 @@
         "parser": "flow"
       }
     ],
+    "no-shadow": "error",
     "no-undef": "error",
     "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }],
     "no-only-tests/no-only-tests": [2]

@@ -38,6 +38,8 @@ describe("plugin options", () => {
         pathLegacy: null,
         watchLegacy: true,
         mock: null,
+        cors: true,
+        corsPreFlight: true,
       });
     });
   });

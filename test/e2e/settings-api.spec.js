@@ -43,6 +43,8 @@ describe("settings api", () => {
         adminApiPath: "/admin",
         watchLegacy: true,
         pathLegacy: null,
+        cors: true,
+        corsPreFlight: true,
       });
     });
   });

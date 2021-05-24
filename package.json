@@ -36,7 +36,8 @@
     "lint-staged": "lint-staged",
     "test": "jest",
     "test:e2e": "jest --config=jest.e2e.config.js --runInBand --detectOpenHandles",
-    "test:unit": "npm run test"
+    "test:unit": "npm run test",
+    "prepare": "is-ci || husky install"
   },
   "dependencies": {
     "@babel/register": "7.13.16",
@@ -65,10 +66,11 @@
     "cross-fetch": "3.1.4",
     "cross-spawn": "7.0.3",
     "eslint": "7.25.0",
-    "eslint-plugin-no-only-tests": "2.6.0",
     "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-no-only-tests": "2.6.0",
     "eslint-plugin-prettier": "3.4.0",
-    "husky": "4.3.8",
+    "husky": "6.0.0",
+    "is-ci": "3.0.0",
     "jest": "26.6.3",
     "lint-staged": "10.5.4",
     "prettier": "2.2.1",
@@ -83,11 +85,6 @@
     "src/**/*.js": "eslint",
     "test/**/*.js": "eslint",
     "*.js": "eslint"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint-staged"
-    }
   },
   "engines": {
     "node": "12.x || 14.x || 15.x || 16.x"

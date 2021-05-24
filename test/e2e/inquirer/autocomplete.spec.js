@@ -93,7 +93,7 @@ describe("when autocomplete fixture is executed", () => {
     expect(newScreen).toEqual(expect.stringContaining("Selected option: a-tag"));
   });
 
-  it('should allow to choose only "b-tag" tag when "Select tags" is selected, and "b" is pressed', async () => {
+  it.skip('should allow to choose only "b-tag" tag when "Select tags" is selected, and "b" is pressed', async () => {
     expect.assertions(4);
     await cliRunner.hasPrinted(END_SCREEN, RENDER_TIME_OUT);
     await cliRunner.newScreenAfter(cliRunner.pressEnter, RENDER_TIME_OUT);

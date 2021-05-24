@@ -58,12 +58,12 @@ describe("react-admin-client methods used with node", () => {
         });
         await wait(2000);
         const alerts = await readAlerts();
-        expect(alerts.length).toEqual(4);
+        expect(alerts.length).toEqual(6);
       });
 
       it("alert about files error should exist", async () => {
         const alerts = await readAlerts();
-        const alertId = alerts[3].id;
+        const alertId = alerts[5].id;
         const alert = await readAlert(alertId);
         expect(alert.id).toEqual(alertId);
         expect(alert.message).toEqual(expect.stringContaining("Error loading mocks"));

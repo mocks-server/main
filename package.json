@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/admin-api-client",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Client of @mocks-server/plugin-admin-api",
   "keywords": [
     "mocks-server",
@@ -30,32 +30,34 @@
     "mocks:install": "cd mocks && npm i",
     "mocks:ci": "cd mocks && npm run mocks:ci",
     "test": "jest",
-    "test:unit": "npm run mocks:install && start-server-and-test mocks:ci tcp:3200 test"
+    "test:unit": "npm run mocks:install && start-server-and-test mocks:ci tcp:3200 test",
+    "prepare": "is-ci || husky install"
   },
   "dependencies": {
-    "cross-fetch": "3.0.6",
-    "@mocks-server/admin-api-paths": "2.0.0"
+    "cross-fetch": "3.1.4",
+    "@mocks-server/admin-api-paths": "2.1.0"
   },
   "devDependencies": {
-    "@babel/preset-env": "7.12.16",
-    "@rollup/plugin-babel": "5.2.3",
-    "@rollup/plugin-commonjs": "16.0.0",
-    "@rollup/plugin-node-resolve": "9.0.0",
+    "@babel/preset-env": "7.14.2",
+    "@rollup/plugin-babel": "5.3.0",
+    "@rollup/plugin-commonjs": "19.0.0",
+    "@rollup/plugin-node-resolve": "13.0.0",
     "babel-eslint": "10.1.0",
     "babel-jest": "26.6.3",
     "babel-polyfill": "6.26.0",
-    "eslint": "7.20.0",
-    "eslint-config-prettier": "6.15.0",
-    "eslint-plugin-prettier": "3.3.1",
-    "eslint-plugin-react": "7.22.0",
-    "husky": "4.3.8",
+    "eslint": "7.27.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-prettier": "3.4.0",
+    "eslint-plugin-react": "7.23.2",
+    "husky": "6.0.0",
+    "is-ci": "3.0.0",
     "jest": "26.6.3",
-    "lint-staged": "10.5.4",
-    "prettier": "2.2.1",
-    "rollup": "2.39.0",
+    "lint-staged": "11.0.0",
+    "prettier": "2.3.0",
+    "rollup": "2.49.0",
     "rollup-plugin-terser": "7.0.2",
-    "sinon": "9.2.4",
-    "start-server-and-test": "1.12.0"
+    "sinon": "10.0.0",
+    "start-server-and-test": "1.12.2"
   },
   "lint-staged": {
     "test/**/*.js": "eslint",
@@ -64,12 +66,7 @@
     "mocks/*.js": "eslint",
     "mocks/mocks/*.js": "eslint"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint-staged"
-    }
-  },
   "engines": {
-    "node": "12.x || 14.x || 15.x"
+    "node": "12.x || 14.x || 15.x || 16.x"
   }
 }

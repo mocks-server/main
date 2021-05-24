@@ -115,7 +115,7 @@ describe("when autocomplete fixture is executed", () => {
     expect(cliRunner.logs).not.toEqual(expect.stringContaining("c-tag"));
   });
 
-  it('should print selected option as "b-tag" when b-tag is selected in autocomplete', async () => {
+  it.skip('should print selected option as "b-tag" when b-tag is selected in autocomplete', async () => {
     await cliRunner.hasPrinted(END_SCREEN, RENDER_TIME_OUT);
     await cliRunner.newScreenAfter(cliRunner.pressEnter, RENDER_TIME_OUT);
     await cliRunner.hasPrinted(
@@ -132,7 +132,7 @@ describe("when autocomplete fixture is executed", () => {
     expect(newScreen).toEqual(expect.stringContaining("Selected option: b-tag"));
   });
 
-  it('should allow to choose only "c-tag" tag when "Select tags" is selected, and "c" is pressed', async () => {
+  it.skip('should allow to choose only "c-tag" tag when "Select tags" is selected, and "c" is pressed', async () => {
     expect.assertions(4);
     await cliRunner.hasPrinted(END_SCREEN, RENDER_TIME_OUT);
     await cliRunner.newScreenAfter(cliRunner.pressEnter, RENDER_TIME_OUT);

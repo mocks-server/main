@@ -45,7 +45,7 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [npm-dependencies-url]: https://david-dm.org/mocks-server/core
 [greenkeeper-image]: https://badges.greenkeeper.io/mocks-server/core.svg
 [greenkeeper-url]: https://greenkeeper.io/
-[quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=mocks-server-core&metric=alert_status
-[quality-gate-url]: https://sonarcloud.io/dashboard?id=mocks-server-core
+[quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=mocks-server_core&metric=alert_status
+[quality-gate-url]: https://sonarcloud.io/dashboard?id=mocks-server_core
 [release-image]: https://img.shields.io/github/release-date/mocks-server/core.svg
 [release-url]: https://github.com/mocks-server/core/releases

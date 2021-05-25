@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Fixed
 ### Removed
+### BREAKING CHANGES
+
+## [3.0.0] - 2021-05-25
+
+### Added
+- feat: Support node 16
+- feat: Add client methods for Mocks Server v2 API
+
+### Changed
+- chore(deps): Update devDependencies
+
+### BREAKING CHANGES
+- chore(deps): Update to data-provider v3
+- chore(deps): Update to mocks-server v2
 
 ## [2.1.0] - 2020-12-26
 

@@ -32,10 +32,10 @@ const example = async () => {
   console.log("Current mocks-server settings are", currentSettings);
 
   await settings.update({
-    behavior: "user-super-admin",
+    mock: "user-super-admin",
     delay: 1000
   });
-  console.log("Behavior and delay changed");
+  console.log("Mock and delay changed");
 };
 
 example();
@@ -43,22 +43,38 @@ example();
 
 ## Usage with data-provider
 
-Exported properties `about`, `settings`, `behaviors`, `behaviorsModel`, `fixtures` and `fixturesModel` are [`@data-provider/axios`](https://github.com/data-provider/axios) providers, so can be used to define @data-provider Selectors. Methods can also be connected to frameworks using another `data-provider` packages, such as [`@data-provider/react`](https://github.com/data-provider/react).
+Exported properties `about`, `settings`, `mocks`, `mocksModel`, `routes`, `routesModel`, `routesVariants` and `routesVariantsModel` are [`@data-provider/axios`](https://github.com/data-provider/axios) providers, so can be used to define @data-provider Selectors. Methods can also be connected to frameworks using another `data-provider` packages, such as [`@data-provider/react`](https://github.com/data-provider/react).
 
 ## Api
 
 * `about.read()` - Returns info about `mocks-server/plugin-admin-api`, such as current version.
 * `settings.read()` - Returns current `mocks-server` settings.
 * `settings.update(settingsObject)` - Updates `mocks-server` settings. A settings object has to be provided. Read the [`mocks-server` configuration documentation](https://www.mocks-server.org/docs/configuration-options) for further info.
-* `behaviors.read()` - Returns collection of available behaviors.
-* `behavior(behaviorName).read()` - Returns an specific behavior.
-* `behaviorsModel.queries.byName(behaviorName).read()` - Returns an specific behavior.
-* `fixtures.read()` - Returns collection of available fixtures.
-* `fixture(id).read()` - Returns an specific fixture.
-* `fixturesModel.queries.byId(id).read()` - Returns an specific fixture.
 * `alerts.read()` - Returns collection of current alerts.
-* `alert(id).read()` - Returns an specific alert.
-* `alertsModel.queries.byId(id).read()` - Returns an specific alert.
+* `alert(id).read()` - Returns a specific alert.
+* `alertsModel.queries.byId(id).read()` - Returns a specific alert.
+* `mocks.read()` - Returns collection of available mocks.
+* `mock(mockId).read()` - Returns a specific mock.
+* `mocksModel.queries.byId(mockId).read()` - Returns a specific mock.
+* `routes.read()` - Returns collection of available routes.
+* `route(id).read()` - Returns a specific route.
+* `routes.queries.byId(id).read()` - Returns an specific route.
+* `routesVariants.read()` - Returns collection of available routes variants.
+* `routeVariant(id).read()` - Returns a specific route variant.
+* `routesVariants.queries.byId(id).read()` - Returns an specific route variant.
+* `customRouteVariants.read()` - Returns collection of current custom route variants.
+* `customRouteVariants.create(id)` - Sets a specific route variant to be used by current mock.
+* `customRouteVariants.delete()` - Restore routes variants to those defined in current mock.
+
+### Legacy methods
+Next methods correspond to Mocks Server legacy methods
+
+* `behaviors.read()` - Returns collection of available behaviors.
+* `behavior(behaviorName).read()` - Returns a specific behavior.
+* `behaviorsModel.queries.byName(behaviorName).read()` - Returns a specific behavior.
+* `fixtures.read()` - Returns collection of available fixtures.
+* `fixture(id).read()` - Returns a specific fixture.
+* `fixturesModel.queries.byId(id).read()` - Returns a specific fixture.
 
 ## Configuration
 

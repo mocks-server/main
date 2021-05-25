@@ -2,10 +2,10 @@ import {
   SETTINGS,
   ABOUT,
   ALERTS,
-  /* MOCKS,
+  MOCKS,
   ROUTES,
   ROUTES_VARIANTS,
-  MOCK_CUSTOM_ROUTES_VARIANTS, */
+  MOCK_CUSTOM_ROUTES_VARIANTS,
   LEGACY,
   BEHAVIORS,
   FIXTURES,
@@ -22,12 +22,38 @@ function addByIdQuery(model) {
   }));
 }
 
-const initialState = (data) => ({
-  initialState: {
-    data,
-    loading: true,
-  },
-});
+function initialState(data) {
+  return {
+    initialState: {
+      data,
+      loading: true,
+    },
+  };
+}
+
+function createRestEntityOrigins({ id, baseUrl }) {
+  const collectionOrigin = new Axios({
+    id,
+    url: baseUrl,
+    tags: [TAG],
+    ...initialState([]),
+  });
+
+  const modelOrigin = new Axios({
+    id: `${id}-model`,
+    url: `${baseUrl}/:id`,
+    tags: [TAG],
+    ...initialState({}),
+  });
+
+  addByIdQuery(modelOrigin);
+
+  const modelGetter = (modelId) => {
+    return modelOrigin.queries.byId(modelId);
+  };
+
+  return [collectionOrigin, modelOrigin, modelGetter];
+}
 
 export const about = new Axios({
   id: "about",
@@ -44,25 +70,34 @@ export const settings = new Axios({
   ...initialState({}),
 });
 
-export const alerts = new Axios({
-  id: "alerts",
-  url: ALERTS,
-  tags: [TAG],
-  ...initialState([]),
+const alertsOrigins = createRestEntityOrigins({ id: "alerts", baseUrl: ALERTS });
+export const alerts = alertsOrigins[0];
+export const alertsModel = alertsOrigins[1];
+export const alert = alertsOrigins[2];
+
+const mocksOrigins = createRestEntityOrigins({ id: "mocks", baseUrl: MOCKS });
+export const mocks = mocksOrigins[0];
+export const mocksModel = mocksOrigins[1];
+export const mock = mocksOrigins[2];
+
+const routesOrigins = createRestEntityOrigins({ id: "routes", baseUrl: ROUTES });
+export const routes = routesOrigins[0];
+export const routesModel = routesOrigins[1];
+export const route = routesOrigins[2];
+
+const routesVariantsOrigins = createRestEntityOrigins({
+  id: "routes-variants",
+  baseUrl: ROUTES_VARIANTS,
 });
+export const routesVariants = routesVariantsOrigins[0];
+export const routesVariantsModel = routesVariantsOrigins[1];
+export const routeVariant = routesVariantsOrigins[2];
 
-export const alertsModel = new Axios({
-  id: "alerts-model",
-  url: `${ALERTS}/:id`,
-  tags: [TAG],
-  ...initialState({}),
+const customRoutesVariantsOrigins = createRestEntityOrigins({
+  id: "custom-routes-variants",
+  baseUrl: MOCK_CUSTOM_ROUTES_VARIANTS,
 });
-
-addByIdQuery(alertsModel);
-
-export const alert = (id) => {
-  return alertsModel.queries.byId(id);
-};
+export const customRoutesVariants = customRoutesVariantsOrigins[0];
 
 // Legacy methods
 

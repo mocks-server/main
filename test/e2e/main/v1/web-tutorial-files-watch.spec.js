@@ -219,7 +219,7 @@ describe("files watcher", () => {
 
     it("should remove alerts when error is fixed", async () => {
       fsExtra.copySync(fixturesFolder("files-modification"), fixturesFolder("files-watch"));
-      await wait(2000);
+      await wait(3000);
       expect(interactiveCli.currentScreen).toEqual(
         expect.not.stringContaining("main/v1/fixtures/files-watch: FOO is not defined")
       );

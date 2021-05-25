@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [2.3.2] - 2021-05-25
+
+### Changed
+- Update dependencies
+
 ## [2.3.1] - 2021-05-06
 
 ### Changed

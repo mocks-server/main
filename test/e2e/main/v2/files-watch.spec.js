@@ -182,7 +182,7 @@ describe("files watcher", () => {
 
     it("should remove alerts when error is fixed", async () => {
       fsExtra.copySync(fixturesFolder("web-tutorial-modified"), fixturesFolder("temp"));
-      await wait(2000);
+      await wait(3000);
       expect(mocks.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
     });
   });

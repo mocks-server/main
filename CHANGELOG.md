@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGE
 
+## [2.1.0] - 2021-05-24
+
+### Added
+- feat: Add node v16.x to engines
+
+### Changed
+- Update dependencies
+
 ## [2.0.0] - 2021-02-17
 
 ### Added

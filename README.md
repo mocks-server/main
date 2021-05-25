@@ -166,7 +166,7 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [npm-downloads-url]: https://www.npmjs.com/package/@mocks-server/main
 [npm-dependencies-image]: https://img.shields.io/david/mocks-server/main.svg
 [npm-dependencies-url]: https://david-dm.org/mocks-server/main
-[quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=mocks-server-main&metric=alert_status
-[quality-gate-url]: https://sonarcloud.io/dashboard?id=mocks-server-main
+[quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=mocks-server_main&metric=alert_status
+[quality-gate-url]: https://sonarcloud.io/dashboard?id=mocks-server_main
 [release-image]: https://img.shields.io/github/release-date/mocks-server/main.svg
 [release-url]: https://github.com/mocks-server/main/releases

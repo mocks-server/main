@@ -14,10 +14,20 @@ import { Axios } from "@data-provider/axios";
 
 import TAG from "./tag";
 
-function addByIdQuery(model) {
-  model.addQuery("byId", (id) => ({
+function getModelMethod(methodName) {
+  return methodName || "byId";
+}
+
+function getModelParam(param) {
+  return param || "id";
+}
+
+function addModelQuery(model, methodName, modelGetterParam) {
+  const method = getModelMethod(methodName);
+  const param = getModelParam(modelGetterParam);
+  model.addQuery(method, (paramValue) => ({
     urlParams: {
-      id,
+      [param]: paramValue,
     },
   }));
 }
@@ -31,28 +41,47 @@ function initialState(data) {
   };
 }
 
-function createRestEntityOrigins({ id, baseUrl }) {
-  const collectionOrigin = new Axios({
+function createCollectionOrigin({ id, url }) {
+  return new Axios({
     id,
-    url: baseUrl,
+    url: url,
     tags: [TAG],
     ...initialState([]),
   });
+}
 
-  const modelOrigin = new Axios({
+function createModelOrigin({ id, baseUrl, modelId }) {
+  const modelUrlId = modelId || ":id";
+  console.log(modelUrlId);
+  return new Axios({
     id: `${id}-model`,
-    url: `${baseUrl}/:id`,
+    url: `${baseUrl}/${modelUrlId}`,
     tags: [TAG],
     ...initialState({}),
   });
+}
 
-  addByIdQuery(modelOrigin);
-
-  const modelGetter = (modelId) => {
-    return modelOrigin.queries.byId(modelId);
+function modelGetter(modelOrigin, methodName) {
+  const method = getModelMethod(methodName);
+  return (modelId) => {
+    return modelOrigin.queries[method](modelId);
   };
+}
 
-  return [collectionOrigin, modelOrigin, modelGetter];
+function createRestEntityOrigins({ id, baseUrl, modelId, modelGetterMethod, modelGetterParam }) {
+  const collectionOrigin = createCollectionOrigin({
+    id,
+    url: baseUrl,
+  });
+
+  const modelOrigin = createModelOrigin({
+    id,
+    baseUrl,
+    modelId,
+  });
+
+  addModelQuery(modelOrigin, modelGetterMethod, modelGetterParam);
+  return [collectionOrigin, modelOrigin, modelGetter(modelOrigin, modelGetterMethod)];
 }
 
 export const about = new Axios({
@@ -93,54 +122,28 @@ export const routesVariants = routesVariantsOrigins[0];
 export const routesVariantsModel = routesVariantsOrigins[1];
 export const routeVariant = routesVariantsOrigins[2];
 
-const customRoutesVariantsOrigins = createRestEntityOrigins({
+export const customRoutesVariants = createCollectionOrigin({
   id: "custom-routes-variants",
-  baseUrl: MOCK_CUSTOM_ROUTES_VARIANTS,
+  url: MOCK_CUSTOM_ROUTES_VARIANTS,
 });
-export const customRoutesVariants = customRoutesVariantsOrigins[0];
 
 // Legacy methods
 
-export const behaviors = new Axios({
+const behaviorsOrigins = createRestEntityOrigins({
   id: "behaviors",
-  url: `${LEGACY}/${BEHAVIORS}`,
-  tags: [TAG],
-  ...initialState([]),
+  baseUrl: `${LEGACY}/${BEHAVIORS}`,
+  modelId: ":name",
+  modelGetterMethod: "byName",
+  modelGetterParam: "name",
 });
+export const behaviors = behaviorsOrigins[0];
+export const behaviorsModel = behaviorsOrigins[1];
+export const behavior = behaviorsOrigins[2];
 
-export const behaviorsModel = new Axios({
-  id: "behaviors-model",
-  url: `${LEGACY}/${BEHAVIORS}/:name`,
-  tags: [TAG],
-  ...initialState({}),
-});
-
-behaviorsModel.addQuery("byName", (name) => ({
-  urlParams: {
-    name,
-  },
-}));
-
-export const behavior = (name) => {
-  return behaviorsModel.queries.byName(name);
-};
-
-export const fixtures = new Axios({
+const fixturesOrigins = createRestEntityOrigins({
   id: "fixtures",
-  url: `${LEGACY}/${FIXTURES}`,
-  tags: [TAG],
-  ...initialState([]),
+  baseUrl: `${LEGACY}/${FIXTURES}`,
 });
-
-export const fixturesModel = new Axios({
-  id: "fixtures-model",
-  url: `${LEGACY}/${FIXTURES}/:id`,
-  tags: [TAG],
-  ...initialState({}),
-});
-
-addByIdQuery(fixturesModel);
-
-export const fixture = (id) => {
-  return fixturesModel.queries.byId(id);
-};
+export const fixtures = fixturesOrigins[0];
+export const fixturesModel = fixturesOrigins[1];
+export const fixture = fixturesOrigins[2];

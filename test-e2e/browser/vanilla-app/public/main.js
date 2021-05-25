@@ -16,10 +16,10 @@ var $alertsContainer;
 
 var currentBehavior = new dataProvider.Selector(
   adminApiClient.settings,
-  function (query, prevResults) {
-    return adminApiClient.behaviorsModel.queries.byName(prevResults[0].behavior);
+  function (query, settingsResults) {
+    return adminApiClient.behaviorsModel.queries.byName(settingsResults.behavior);
   },
-  function (settingsResults, behaviorResult) {
+  function (query, settingsResults, behaviorResult) {
     return behaviorResult;
   },
   {
@@ -31,12 +31,12 @@ var currentBehavior = new dataProvider.Selector(
 
 var currentFixture = new dataProvider.Selector(
   currentBehavior,
-  function (query, prevResults) {
+  function (query, behaviorResults) {
     return adminApiClient.fixturesModel.queries.byId(
-      prevResults[0].fixtures[prevResults[0].fixtures.length - 1]
+      behaviorResults.fixtures[behaviorResults.fixtures.length - 1]
     );
   },
-  function (currentBehaviorResult, fixtureResult) {
+  function (query, currentBehaviorResult, fixtureResult) {
     return fixtureResult;
   },
   {

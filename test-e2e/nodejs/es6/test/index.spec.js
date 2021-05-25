@@ -19,9 +19,9 @@ describe("react-admin-client methods used through node", () => {
   });
 
   describe("when reading alerts", () => {
-    it("should return one alert", async () => {
+    it("should return three alert", async () => {
       const alerts = await readAlerts();
-      expect(alerts.length).toEqual(1);
+      expect(alerts.length).toEqual(3);
     });
 
     it("alert model should exist", async () => {

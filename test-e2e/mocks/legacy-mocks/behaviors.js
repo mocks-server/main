@@ -7,5 +7,5 @@ const user2 = new Behavior([getUser2]);
 
 module.exports = {
   base,
-  user2
+  user2,
 };

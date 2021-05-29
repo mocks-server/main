@@ -20,7 +20,7 @@ const {
   getMocks,
   getMock,
 } = require("./helpers");
-const { getIds, compileRouteValidator } = require("./validations");
+const { getIds, compileRouteValidator, catchInitValidatorError } = require("./validations");
 
 class Mocks {
   constructor(
@@ -107,6 +107,14 @@ class Mocks {
   }
 
   init(routesHandlers) {
+    if (catchInitValidatorError()) {
+      this._addAlert(
+        "validation:init",
+        new Error(
+          "Error loading ajv-errors dependency, validations won't be executed. Visit https://mocks-server.org/docs/how-to-fix-ajv-errors-installation for further info."
+        )
+      );
+    }
     compileRouteValidator(routesHandlers);
     this._routesVariantsHandlers = routesHandlers;
   }

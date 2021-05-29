@@ -16,6 +16,9 @@ const {
   variantValidationErrors,
   mockValidationErrors,
   mockRouteVariantsValidationErrors,
+  catchInitValidatorError,
+  undoInitValidator,
+  restoreValidator,
 } = require("../../../src/mocks/validations");
 const DefaultRoutesHandler = require("../../../src/routes-handlers/default/DefaultRoutesHandler");
 
@@ -41,6 +44,62 @@ describe("mocks validations", () => {
       body: {},
     },
   };
+
+  beforeAll(() => {
+    catchInitValidatorError();
+  });
+
+  describe("validation initialization", () => {
+    afterAll(() => {
+      restoreValidator();
+    });
+
+    describe("catchInitValidatorError", () => {
+      it("should return error if there is an error initializating validator", () => {
+        undoInitValidator();
+        expect(catchInitValidatorError()).toBeInstanceOf(Error);
+      });
+
+      it("should do nothing if validator was already inited", () => {
+        restoreValidator();
+        expect(catchInitValidatorError()).toEqual(null);
+      });
+    });
+
+    describe("compileRouteValidator", () => {
+      it("should initialize a fake routeValidator if there was an error initializating validator", () => {
+        undoInitValidator();
+        compileRouteValidator();
+        expect(
+          routeValidationErrors({
+            ...VALID_ROUTE,
+            id: undefined,
+          })
+        ).toEqual(null);
+      });
+    });
+
+    describe("undo init validator", () => {
+      it("should not fail if called twice", () => {
+        undoInitValidator();
+        undoInitValidator();
+        expect(
+          routeValidationErrors({
+            ...VALID_ROUTE,
+            id: undefined,
+          })
+        ).toEqual(null);
+      });
+    });
+
+    describe("restore validator", () => {
+      it("should not fail if called twice", () => {
+        restoreValidator();
+        restoreValidator();
+        expect(catchInitValidatorError()).toEqual(null);
+      });
+    });
+  });
 
   describe("getIds", () => {
     it("should return array with ids", () => {

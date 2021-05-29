@@ -14,6 +14,7 @@ const express = require("express");
 const MockMock = require("./Mock.mock.js");
 
 const Mocks = require("../../../src/mocks/Mocks");
+const { undoInitValidator, restoreValidator } = require("../../../src/mocks/validations");
 const DefaultRoutesHandler = require("../../../src/routes-handlers/default/DefaultRoutesHandler");
 
 describe("Mocks", () => {
@@ -48,6 +49,18 @@ describe("Mocks", () => {
   afterEach(() => {
     sandbox.restore();
     mockMock.restore();
+  });
+
+  describe("init method", () => {
+    afterAll(() => {
+      restoreValidator();
+    });
+
+    it("should add an alert if there is an error initializing validator", () => {
+      undoInitValidator();
+      mocks.init([DefaultRoutesHandler]);
+      expect(methods.addAlert.getCall(0).args[0]).toEqual("validation:init");
+    });
   });
 
   describe("load method", () => {

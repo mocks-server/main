@@ -12,7 +12,6 @@ const Ajv = require("ajv");
 const { compact } = require("lodash");
 
 const ajv = new Ajv({ allErrors: true });
-const initAjvErrors = require("ajv-errors");
 
 const HTTP_METHODS = {
   GET: "get",
@@ -29,8 +28,6 @@ const CLASSES = { Function: Function, RegExp: RegExp };
 
 const validHttpMethods = objectKeys(HTTP_METHODS);
 const validHttpMethodsLowerAndUpper = arrayLowerAndUpper(validHttpMethods);
-
-initAjvErrors(ajv, { singleError: true, keepErrors: false });
 
 ajv.addKeyword({
   keyword: "instanceof",
@@ -169,20 +166,65 @@ const routesSchema = {
   },
 };
 
-const mockValidator = ajv.compile(mocksSchema);
-let routeValidator;
+let validatorInited, mockValidator, routeValidator, originalMockValidator, originalRouteValidator;
+
+function undoInitValidator() {
+  if (validatorInited) {
+    validatorInited = false;
+    originalMockValidator = mockValidator;
+    mockValidator = null;
+    originalRouteValidator = routeValidator;
+    routeValidator = null;
+  }
+}
+
+function restoreValidator() {
+  if (!validatorInited) {
+    validatorInited = true;
+    mockValidator = originalMockValidator;
+    routeValidator = originalRouteValidator;
+  }
+}
+
+function fooValidator() {
+  return true;
+}
+
+function initValidator() {
+  const initAjvErrors = require("ajv-errors");
+  initAjvErrors(ajv, { singleError: true, keepErrors: false });
+  mockValidator = ajv.compile(mocksSchema);
+  validatorInited = true;
+}
+
+function catchInitValidatorError() {
+  let error = null;
+  if (!validatorInited) {
+    try {
+      initValidator();
+    } catch (err) {
+      error = err;
+      mockValidator = fooValidator;
+    }
+  }
+  return error;
+}
 
 function getIds(objs) {
   return objs.map((obj) => obj.id);
 }
 
 function compileRouteValidator(routesHandlers) {
-  const supportedRouteHandlersIds = getIds(routesHandlers);
-  routesSchema.properties.variants.items.properties.handler.enum = supportedRouteHandlersIds;
-  routesSchema.properties.variants.items.properties.handler.errorMessage = `Property "handler" should be one of "${supportedRouteHandlersIds.join(
-    ","
-  )}" in variant \${1#}`;
-  routeValidator = ajv.compile(routesSchema);
+  if (validatorInited) {
+    const supportedRouteHandlersIds = getIds(routesHandlers);
+    routesSchema.properties.variants.items.properties.handler.enum = supportedRouteHandlersIds;
+    routesSchema.properties.variants.items.properties.handler.errorMessage = `Property "handler" should be one of "${supportedRouteHandlersIds.join(
+      ","
+    )}" in variant \${1#}`;
+    routeValidator = ajv.compile(routesSchema);
+  } else {
+    routeValidator = fooValidator;
+  }
 }
 
 function toLowerCase(str) {
@@ -293,7 +335,7 @@ function routeValidationErrors(route) {
 }
 
 function variantValidationErrors(route, variant, Handler) {
-  if (!Handler.validationSchema) {
+  if (!Handler.validationSchema || !validatorInited) {
     return null;
   }
   const variantValidator = ajv.compile(Handler.validationSchema);
@@ -320,4 +362,9 @@ module.exports = {
   validationSingleMessage,
   findRouteVariantByVariantId,
   mockRouteVariantsValidationErrors,
+  catchInitValidatorError,
+  initValidator,
+  // use only for testing
+  undoInitValidator,
+  restoreValidator,
 };

@@ -24,7 +24,10 @@ const {
   getRouteVariants,
   getMock,
 } = require("../../../src/mocks/helpers");
-const { compileRouteValidator } = require("../../../src/mocks/validations");
+const {
+  compileRouteValidator,
+  catchInitValidatorError,
+} = require("../../../src/mocks/validations");
 const DefaultRoutesHandler = require("../../../src/routes-handlers/default/DefaultRoutesHandler");
 
 describe("mocks helpers", () => {
@@ -61,6 +64,7 @@ describe("mocks helpers", () => {
   let sandbox, addAlert, removeAlerts;
 
   beforeAll(() => {
+    catchInitValidatorError();
     compileRouteValidator([{ id: "foo-handler" }]);
   });
 

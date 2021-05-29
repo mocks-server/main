@@ -1,9 +1,9 @@
 const path = require("path");
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
 
-module.exports = config => {
+module.exports = (config) => {
   config.resolve.plugins = config.resolve.plugins.filter(
-    plugin => !(plugin instanceof ModuleScopePlugin)
+    (plugin) => !(plugin instanceof ModuleScopePlugin)
   );
   config.resolve.alias = {
     ...config.resolve.alias,
@@ -22,7 +22,7 @@ module.exports = config => {
       "core",
       "dist",
       "index.cjs"
-    )
+    ),
   };
   return config;
 };

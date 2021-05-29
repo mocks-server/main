@@ -8,6 +8,6 @@ describe("alerts", () => {
   });
 
   it("should display alerts collection", () => {
-    cy.get(SELECTORS.ALERTS_COLLECTION_ITEM).should("have.length", 1);
+    cy.get(SELECTORS.ALERTS_COLLECTION_ITEM).should("have.length", 4);
   });
 });

@@ -10,10 +10,10 @@ import CurrentBehaviorView from "./CurrentBehaviorView";
 
 const currentBehavior = new Selector(
   settings,
-  (query, prevResults) => {
-    return behaviorsModel.queries.byName(prevResults[0].behavior);
+  (query, settingsResults) => {
+    return behaviorsModel.queries.byName(settingsResults.behavior);
   },
-  (settingsResults, behaviorResult) => {
+  (query, settingsResults, behaviorResult) => {
     return behaviorResult;
   },
   {
@@ -25,10 +25,12 @@ const currentBehavior = new Selector(
 
 const currentFixture = new Selector(
   currentBehavior,
-  (query, prevResults) => {
-    return fixturesModel.queries.byId(prevResults[0].fixtures[prevResults[0].fixtures.length - 1]);
+  (query, currentBehaviorResults) => {
+    return fixturesModel.queries.byId(
+      currentBehaviorResults.fixtures[currentBehaviorResults.fixtures.length - 1]
+    );
   },
-  (currentBehaviorResult, fixtureResult) => {
+  (query, currentBehaviorResult, fixtureResult) => {
     return fixtureResult;
   },
   {

@@ -4,7 +4,7 @@
     "node": true
   },
   "parserOptions": { 
-    "ecmaVersion": "2018",
+    "ecmaVersion": 2018,
     "sourceType": "module"
   },
   "plugins": ["prettier"],
@@ -16,6 +16,7 @@
         "parser": "flow"
       }
     ],
+    "no-shadow": "error",
     "no-undef": "error",
     "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }]
   },

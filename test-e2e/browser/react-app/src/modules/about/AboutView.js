@@ -5,6 +5,7 @@ const format = (value) => {
 };
 
 const AboutView = ({ about }) => {
+  console.log(about);
   return (
     <div className="content">
       <p className="content__title">About</p>

@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - chore(deps): Update mocks-server/core dependency to 2.3.3 (disable validations if ajv initialization fails)
+- chore(deps): Update devDependencies
 
 ## [2.3.2] - 2021-05-25
 

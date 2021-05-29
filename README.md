@@ -121,7 +121,7 @@ MIT, see [LICENSE](./LICENSE) for details.
 [npm-downloads-url]: https://www.npmjs.com/package/@mocks-server/cypress-commands
 [npm-dependencies-image]: https://img.shields.io/david/mocks-server/cypress-commands.svg
 [npm-dependencies-url]: https://david-dm.org/mocks-server/cypress-commands
-[quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=mocks-server-cypress-commands&metric=alert_status
-[quality-gate-url]: https://sonarcloud.io/dashboard?id=mocks-server-cypress-commands
+[quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=mocks-server_cypress-commands&metric=alert_status
+[quality-gate-url]: https://sonarcloud.io/dashboard?id=mocks-server_cypress-commands
 [release-image]: https://img.shields.io/github/release-date/mocks-server/cypress-commands.svg
 [release-url]: https://github.com/mocks-server/cypress-commands/releases

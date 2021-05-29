@@ -11,9 +11,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 ### Changed
 ### Fixed
-- fix: Disable validations if ajv-errors initialization fails. Add an alert with a link to https://mocks-server.org/docs/how-to-fix-ajv-errors-installation in that case
 ### Removed
 ### BREAKING CHANGES
+
+## [2.3.3] - 2021-05-29
+
+### Changed
+- chore(deps): Update devDependencies
+
+### Fixed
+- fix: Disable validations if ajv-errors initialization fails. Add an alert with a link to https://mocks-server.org/docs/how-to-fix-ajv-errors-installation in that case
 
 ## [2.3.2] - 2021-05-24
 

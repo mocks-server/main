@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/cypress-commands",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Extends Cypress' cy commands with methods for administrating Mocks Server",
   "keywords": [
     "cypress",
@@ -42,7 +42,7 @@
   "devDependencies": {
     "babel-eslint": "10.1.0",
     "eslint": "7.27.0",
-    "eslint-config-prettier": "8.0.0",
+    "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "3.4.0",
     "husky": "6.0.0",
     "is-ci": "3.0.0",

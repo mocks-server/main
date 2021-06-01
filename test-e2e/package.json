@@ -22,7 +22,7 @@
     "test:ci": "npm run build:app && npm run test:app && npm run build:app:custom-config && npm run test:app:custom-config"
   },
   "devDependencies": {
-    "@mocks-server/main": "2.3.2",
+    "@mocks-server/main": "2.3.3",
     "babel-plugin-module-resolver": "4.1.0",
     "cross-env": "7.0.3",
     "cypress": "7.4.0",

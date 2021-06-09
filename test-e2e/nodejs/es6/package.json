@@ -9,6 +9,6 @@
   },
   "devDependencies": {
     "jest": "27.0.4",
-    "start-server-and-test": "1.12.3"
+    "start-server-and-test": "1.12.5"
   }
 }

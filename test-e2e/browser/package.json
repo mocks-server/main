@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@testing-library/cypress": "7.0.6",
-    "cypress": "7.4.0",
+    "cypress": "7.5.0",
     "cypress-fail-fast": "2.3.3",
     "start-server-and-test": "1.12.5"
   }

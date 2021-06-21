@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "7.14.5",
-    "@data-provider/axios": "3.0.2",
+    "@data-provider/axios": "3.1.0",
     "@data-provider/core": "3.0.1",
     "@rollup/plugin-babel": "5.3.0",
     "@rollup/plugin-commonjs": "19.0.0",

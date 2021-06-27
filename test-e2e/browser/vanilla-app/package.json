@@ -11,6 +11,6 @@
   "devDependencies": {
     "cross-env": "7.0.3",
     "fs-extra": "10.0.0",
-    "serve": "11.3.2"
+    "serve": "12.0.0"
   }
 }

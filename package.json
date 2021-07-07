@@ -40,9 +40,9 @@
     "prepare": "is-ci || husky install"
   },
   "dependencies": {
-    "@babel/register": "7.13.16",
+    "@babel/register": "7.14.5",
     "@hapi/boom": "9.1.2",
-    "ajv": "8.5.0",
+    "ajv": "8.6.0",
     "ajv-errors": "3.0.0",
     "body-parser": "1.19.0",
     "commander": "7.2.0",
@@ -58,28 +58,28 @@
     "require-all": "3.0.0",
     "route-parser": "0.0.5",
     "winston": "3.3.3",
-    "winston-array-transport": "1.1.1"
+    "winston-array-transport": "1.1.4"
   },
   "devDependencies": {
-    "@babel/preset-env": "7.14.4",
-    "@babel/preset-typescript": "7.13.0",
+    "@babel/preset-env": "7.14.7",
+    "@babel/preset-typescript": "7.14.5",
     "cross-fetch": "3.1.4",
     "cross-spawn": "7.0.3",
-    "eslint": "7.27.0",
+    "eslint": "7.29.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-no-only-tests": "2.6.0",
     "eslint-plugin-prettier": "3.4.0",
     "husky": "6.0.0",
     "is-ci": "3.0.0",
-    "jest": "27.0.3",
+    "jest": "27.0.5",
     "lint-staged": "11.0.0",
-    "prettier": "2.3.0",
+    "prettier": "2.3.2",
     "request": "2.88.2",
     "request-promise": "4.2.6",
     "sinon": "11.1.1",
     "strip-ansi": "6.0.0",
     "tree-kill": "1.2.2",
-    "wait-on": "5.3.0"
+    "wait-on": "6.0.0"
   },
   "lint-staged": {
     "src/**/*.js": "eslint",

@@ -238,7 +238,7 @@ describe("Server", () => {
       coreInstance.settings.get.withArgs("cors").returns(true);
       await server.init();
       await server.start();
-      expect(libsMocks.stubs.express.use.callCount).toEqual(8);
+      expect(libsMocks.stubs.express.use.callCount).toEqual(9);
     });
 
     it("should not add cors middleware if cors option is disabled", async () => {
@@ -246,7 +246,7 @@ describe("Server", () => {
       coreInstance.settings.get.withArgs("cors").returns(false);
       await server.init();
       await server.start();
-      expect(libsMocks.stubs.express.use.callCount).toEqual(7);
+      expect(libsMocks.stubs.express.use.callCount).toEqual(8);
     });
 
     it("should reject the promise if an error occurs when calling to server listen method", async () => {

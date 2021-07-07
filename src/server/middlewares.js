@@ -20,6 +20,7 @@ const tracer = require("../tracer");
 
 const addRequestId = expressRequestId();
 const jsonBodyParser = bodyParser.json();
+const formBodyParser = bodyParser.urlencoded({ extended: true });
 
 const traceRequest = (req, res, next) => {
   tracer.verbose(`Request received | ${req.method} => ${req.url} | Assigned id: ${req.id}`);
@@ -50,6 +51,7 @@ const errorHandler = (err, req, res, next) => {
 module.exports = {
   addRequestId,
   jsonBodyParser,
+  formBodyParser,
   traceRequest,
   notFound,
   errorHandler,

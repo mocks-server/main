@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 ### Added
+* parsing of body with content-type application/x-www-form-urlencoded 
 ### Changed
 ### Fixed
 ### Removed

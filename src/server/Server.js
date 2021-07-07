@@ -63,6 +63,7 @@ class Server {
       );
     }
     this._express.use(middlewares.jsonBodyParser);
+    this._express.use(middlewares.formBodyParser);
     this._express.use(middlewares.traceRequest);
     this._registerCustomRouters();
     this._express.use(this._mocksRouter);

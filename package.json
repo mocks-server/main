@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/main",
-  "version": "2.3.3",
+  "version": "2.4.0",
   "description": "Mock Server supporting multiple route variants and mocks",
   "keywords": [
     "mock",
@@ -41,7 +41,7 @@
     "prepare": "is-ci || husky install"
   },
   "dependencies": {
-    "@mocks-server/core": "2.3.3",
+    "@mocks-server/core": "2.4.0",
     "@mocks-server/plugin-admin-api": "2.1.0",
     "@mocks-server/plugin-inquirer-cli": "2.1.0"
   },

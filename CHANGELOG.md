@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [2.4.0] - 2021-07-07
+
+### Changed
+- chore(deps): Update mocks-server/core dependency to 2.4.0 (Support application/x-www-form-urlencoded)
+- chore(deps): Update devDependencies
+
 ## [2.3.3] - 2021-05-29
 
 ### Changed

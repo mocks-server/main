@@ -76,7 +76,7 @@
     "prettier": "2.3.2",
     "request": "2.88.2",
     "request-promise": "4.2.6",
-    "sinon": "11.1.1",
+    "sinon": "11.1.2",
     "strip-ansi": "6.0.0",
     "tree-kill": "1.2.2",
     "wait-on": "6.0.0"

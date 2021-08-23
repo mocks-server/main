@@ -41,7 +41,7 @@
     "@mocks-server/admin-api-paths": "2.1.0"
   },
   "devDependencies": {
-    "@babel/preset-env": "7.14.7",
+    "@babel/preset-env": "7.15.0",
     "@data-provider/axios": "3.1.0",
     "@data-provider/core": "3.0.1",
     "@rollup/plugin-babel": "5.3.0",

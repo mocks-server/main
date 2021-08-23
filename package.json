@@ -72,7 +72,7 @@
     "husky": "7.0.1",
     "is-ci": "3.0.0",
     "jest": "27.0.6",
-    "lint-staged": "11.0.0",
+    "lint-staged": "11.1.2",
     "prettier": "2.3.2",
     "request": "2.88.2",
     "request-promise": "4.2.6",

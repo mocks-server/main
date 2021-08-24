@@ -19,6 +19,6 @@
     "@testing-library/cypress": "7.0.7",
     "cypress": "7.7.0",
     "cypress-fail-fast": "2.4.0",
-    "start-server-and-test": "1.12.5"
+    "start-server-and-test": "1.13.1"
   }
 }

@@ -57,7 +57,7 @@
     "jest": "27.1.1",
     "lint-staged": "11.1.2",
     "lodash": "4.17.21",
-    "prettier": "2.3.2",
+    "prettier": "2.4.0",
     "sinon": "11.1.2",
     "strip-ansi": "6.0.0",
     "tree-kill": "1.2.2",

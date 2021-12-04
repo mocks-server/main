@@ -322,7 +322,7 @@ describe("Server", () => {
       coreInstance.settings.get.withArgs("port").returns(3000);
       await server.start();
       expect(
-        tracer.info.calledWith("Server started and listening at http://localhost:3000")
+        tracer.info.calledWith("Server started and listening at http://127.0.0.1:3000")
       ).toEqual(true);
     });
 

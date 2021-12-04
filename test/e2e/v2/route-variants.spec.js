@@ -18,6 +18,7 @@ describe("route variants", () => {
       mock: "base",
     });
     await waitForServer();
+    console.log("Server available!!!");
   });
 
   afterAll(async () => {

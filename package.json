@@ -40,9 +40,9 @@
     "prepare": "is-ci || husky install"
   },
   "dependencies": {
-    "@babel/register": "7.15.3",
+    "@babel/register": "7.16.0",
     "@hapi/boom": "9.1.4",
-    "ajv": "8.6.3",
+    "ajv": "8.8.2",
     "ajv-errors": "3.0.0",
     "body-parser": "1.19.0",
     "commander": "8.3.0",
@@ -61,19 +61,19 @@
     "winston-array-transport": "1.1.5"
   },
   "devDependencies": {
-    "@babel/preset-env": "7.15.8",
-    "@babel/preset-typescript": "7.15.0",
+    "@babel/preset-env": "7.16.4",
+    "@babel/preset-typescript": "7.16.0",
     "cross-fetch": "3.1.4",
     "cross-spawn": "7.0.3",
-    "eslint": "7.32.0",
+    "eslint": "8.4.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-no-only-tests": "2.6.0",
-    "eslint-plugin-prettier": "3.4.1",
+    "eslint-plugin-prettier": "4.0.0",
     "husky": "7.0.4",
-    "is-ci": "3.0.0",
-    "jest": "27.3.1",
-    "lint-staged": "11.1.2",
-    "prettier": "2.4.1",
+    "is-ci": "3.0.1",
+    "jest": "27.4.3",
+    "lint-staged": "12.1.2",
+    "prettier": "2.5.0",
     "request": "2.88.2",
     "request-promise": "4.2.6",
     "sinon": "11.1.2",
@@ -87,6 +87,6 @@
     "*.js": "eslint"
   },
   "engines": {
-    "node": "12.x || 14.x || 15.x || 16.x"
+    "node": ">=12.x"
   }
 }

@@ -64,7 +64,7 @@ const request = (uri, options = {}) => {
   };
 
   return requestPromise({
-    uri: `http://localhost:${options.port || SERVER_PORT}${uri}`,
+    uri: `http://127.0.0.1:${options.port || SERVER_PORT}${uri}`,
     json: true,
     ...requestOptions,
   });

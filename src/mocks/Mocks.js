@@ -107,12 +107,12 @@ class Mocks {
   }
 
   init(routesHandlers) {
-    if (catchInitValidatorError()) {
+    const initValidationError = catchInitValidatorError();
+    if (initValidationError) {
       this._addAlert(
         "validation:init",
-        new Error(
-          "Error loading ajv-errors dependency, validations won't be executed. Visit https://mocks-server.org/docs/how-to-fix-ajv-errors-installation for further info."
-        )
+        "Error loading ajv-errors dependency, validations won't be executed. Visit https://mocks-server.org/docs/how-to-fix-ajv-errors-installation for further info.",
+        initValidationError
       );
     }
     compileRouteValidator(routesHandlers);

@@ -63,7 +63,7 @@ const startCore = (mocksPath, options = {}) => {
 };
 
 const serverUrl = (port) => {
-  return `http://localhost:${port || SERVER_PORT}`;
+  return `http://127.0.0.1:${port || SERVER_PORT}`;
 };
 
 const fetch = (uri, options = {}) => {
@@ -110,7 +110,7 @@ const wait = (time = 1000) => {
 };
 
 const waitForServer = (port) => {
-  return waitOn({ resources: [`tcp:localhost:${port || SERVER_PORT}`] });
+  return waitOn({ resources: [`tcp:127.0.0.1:${port || SERVER_PORT}`] });
 };
 
 const waitForServerUrl = (url) => {

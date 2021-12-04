@@ -21,7 +21,7 @@ const DEFAULT_BINARY_PATH = "./starter";
 
 const defaultOptions = {
   port: SERVER_PORT,
-  log: "silly",
+  log: "silent",
   watch: false,
 };
 

@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### BREAKING CHANGES
 
 
-## [unreleased]
+## [2.5.0] - 2021-12-04
 
 ### Changed
 - chore: Support any NodeJs version >=12.x.

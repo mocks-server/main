@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGES
 
+## [2.5.1] - 2021-12-04
+
+### Fixed
+- docs: Remove broken npm dependencies badge
 
 ## [2.5.0] - 2021-12-04
 

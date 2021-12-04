@@ -1,6 +1,6 @@
 [![Build status][build-image]][build-url]  [![Coverage Status][coveralls-image]][coveralls-url] [![Quality Gate][quality-gate-image]][quality-gate-url]
 
-[![NPM dependencies][npm-dependencies-image]][npm-dependencies-url] [![Renovate](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com) [![Last commit][last-commit-image]][last-commit-url] [![Last release][release-image]][release-url] 
+[![Renovate](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com) [![Last commit][last-commit-image]][last-commit-url] [![Last release][release-image]][release-url] 
 
 [![NPM downloads][npm-downloads-image]][npm-downloads-url] [![License][license-image]][license-url]
 
@@ -41,8 +41,6 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [license-url]: https://github.com/mocks-server/core/blob/master/LICENSE
 [npm-downloads-image]: https://img.shields.io/npm/dm/@mocks-server/core.svg
 [npm-downloads-url]: https://www.npmjs.com/package/@mocks-server/core
-[npm-dependencies-image]: https://img.shields.io/david/mocks-server/core.svg
-[npm-dependencies-url]: https://david-dm.org/mocks-server/core
 [greenkeeper-image]: https://badges.greenkeeper.io/mocks-server/core.svg
 [greenkeeper-url]: https://greenkeeper.io/
 [quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=mocks-server_core&metric=alert_status

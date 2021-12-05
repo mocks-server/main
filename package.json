@@ -44,7 +44,7 @@
     "@mocks-server/core": "2.5.1",
     "@mocks-server/plugin-admin-api": "2.2.0",
     "@mocks-server/plugin-inquirer-cli": "2.2.0",
-    "@mocks-server/plugin-proxy": "1.0.2"
+    "@mocks-server/plugin-proxy": "1.0.3"
   },
   "devDependencies": {
     "cross-fetch": "3.1.4",

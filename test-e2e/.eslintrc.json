@@ -3,8 +3,9 @@
     "browser": true,
     "es6": true
   },
+  "parser": "@babel/eslint-parser",
   "parserOptions": {
-    "sourceType": "module"
-  },
-  "parser": "babel-eslint"
+    "sourceType": "module",
+    "requireConfigFile" : false
+  }
 }

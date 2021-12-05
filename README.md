@@ -1,6 +1,6 @@
 [![Build status][build-image]][build-url] [![Coverage Status][coveralls-image]][coveralls-url] [![Quality Gate][quality-gate-image]][quality-gate-url]
 
-[![NPM dependencies][npm-dependencies-image]][npm-dependencies-url] [![Renovate](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com) [![Last commit][last-commit-image]][last-commit-url] [![Last release][release-image]][release-url] 
+[![Renovate](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com) [![Last commit][last-commit-image]][last-commit-url] [![Last release][release-image]][release-url] 
 
 [![NPM downloads][npm-downloads-image]][npm-downloads-url] [![License][license-image]][license-url]
 
@@ -61,11 +61,11 @@ Legacy method that sets behavior in Mocks Server v1.x
 
 ## Configuration
 
-By default, the API client is configured to request to `http://localhost:3100/admin`, based in the [default Mocks Server options][mocks-server-options-url]
+By default, the API client is configured to request to `http://127.0.0.1:3100/admin`, based in the [default Mocks Server options][mocks-server-options-url]
 
 You can change both the base url of Mocks Server, and the api path of the administration API using the `cy.mocksConfig` command mentioned above, or the plugin environment variables:
 
-* __`MOCKS_SERVER_BASE_URL`__: Modifies the base url of Mocks Server. Default is `http://localhost:3100`.
+* __`MOCKS_SERVER_BASE_URL`__: Modifies the base url of Mocks Server. Default is `http://127.0.0.1:3100`.
 * __`MOCKS_SERVER_ADMIN_API_PATH`__: Modifies the path of the Mocks Server administration API. Default is `/admin`.
 * __`MOCKS_SERVER_ENABLED`__: Disables requests to Mocks Server, so the commands will not fail even when Mocks Server is not running. This is useful to reuse same tests with mocks and a real API, because commands to change Mocks Server settings will be ignored.
 
@@ -119,8 +119,6 @@ MIT, see [LICENSE](./LICENSE) for details.
 [license-url]: https://github.com/mocks-server/cypress-commands/blob/master/LICENSE
 [npm-downloads-image]: https://img.shields.io/npm/dm/@mocks-server/cypress-commands.svg
 [npm-downloads-url]: https://www.npmjs.com/package/@mocks-server/cypress-commands
-[npm-dependencies-image]: https://img.shields.io/david/mocks-server/cypress-commands.svg
-[npm-dependencies-url]: https://david-dm.org/mocks-server/cypress-commands
 [quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=mocks-server_cypress-commands&metric=alert_status
 [quality-gate-url]: https://sonarcloud.io/dashboard?id=mocks-server_cypress-commands
 [release-image]: https://img.shields.io/github/release-date/mocks-server/cypress-commands.svg

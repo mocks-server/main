@@ -43,15 +43,16 @@ describe("when removeListeners is executed", () => {
     expect(cliRunner.logs).toEqual(expect.stringContaining("Selected option: None"));
   });
 
-  it("should do nothing after removing Listeners even when user tries to select an option", async (done) => {
-    await cliRunner.hasPrinted(END_SCREEN);
-    setTimeout(async () => {
-      try {
-        await cliRunner.newScreenAfter(cliRunner.pressEnter);
-      } catch (error) {
-        expect(error.message).toEqual(expect.stringContaining("No new screen was rendered"));
-        done();
-      }
-    }, 600);
+  it("should do nothing after removing Listeners even when user tries to select an option", (done) => {
+    cliRunner.hasPrinted(END_SCREEN).then(() => {
+      setTimeout(async () => {
+        try {
+          await cliRunner.newScreenAfter(cliRunner.pressEnter);
+        } catch (error) {
+          expect(error.message).toEqual(expect.stringContaining("No new screen was rendered"));
+          done();
+        }
+      }, 600);
+    });
   });
 });

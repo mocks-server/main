@@ -12,6 +12,8 @@ This project provides a mock server that can store and simulate multiple API beh
 
 Providing an interactive command line user interface and a REST API for changing the responses of the API, it is easy to use both for development and testing.
 
+[Read the whole docs in the project's website](https://www.mocks-server.org/)
+
 ### Main features
 
 * __Route variants__: Define many responses for a same [route](https://www.mocks-server.org/docs/get-started-routes).

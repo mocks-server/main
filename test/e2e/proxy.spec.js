@@ -37,6 +37,11 @@ describe("scaffold", () => {
       expect(mocks.currentScreen).toEqual(expect.stringContaining("Mocks: 2"));
     });
 
+    it("should not display alerts", async () => {
+      console.log(mocks.currentScreen);
+      expect(mocks.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
+    });
+
     it("should serve users collection mock under the /api/users path", async () => {
       const users = await fetch("/api/users");
       expect(users.body).toEqual([

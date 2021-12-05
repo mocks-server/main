@@ -9,8 +9,8 @@
 # tests
 /coverage
 /mocks
-/test/e2e/fixtures/mocks
-/test/e2e/fixtures/mocks.config.js
+/test/e2e/fixtures/scaffold/mocks
+/test/e2e/fixtures/scaffold/mocks.config.js
 
 # misc
 .DS_Store

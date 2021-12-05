@@ -14,6 +14,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [2.5.0] - 2021-12-05
+
+### Changed
+- chore: Support any NodeJs version >=12.0.0
+- chore: Run tests also in NodeJs 17 in pipelines. Remove tests execution using NodeJs 15
+- chore: Update devDependencies
+- chore: Update dependencies
+
+### Fixed
+- docs: Remove broken npm dependencies badge
+
 ## [2.4.0] - 2021-07-07
 
 ### Changed

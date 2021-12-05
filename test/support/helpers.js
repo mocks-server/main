@@ -1,7 +1,7 @@
 import { config } from "../../index";
 
 config({
-  baseUrl: "http://localhost:3200",
+  baseUrl: "http://127.0.0.1:3200",
 });
 
 const wait = (time = 1000) => {

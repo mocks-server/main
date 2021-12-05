@@ -6,7 +6,7 @@ import { config } from "../../src/config";
 import TAG from "../../src/tag";
 
 describe("config method", () => {
-  const BASE_URL = "http://localhost:3001";
+  const BASE_URL = "http://127.0.0.1:3001";
   const API_PATH = "/foo-admin";
 
   let sandbox;

@@ -5,10 +5,10 @@
   "scripts": {
     "mocks:ci": "cd ../../mocks && npm run mocks:ci",
     "test": "jest",
-    "test:ci": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about test"
+    "test:ci": "start-server-and-test mocks:ci http-get://127.0.0.1:3100/admin/about test"
   },
   "devDependencies": {
-    "jest": "27.0.6",
-    "start-server-and-test": "1.13.1"
+    "jest": "27.4.3",
+    "start-server-and-test": "1.14.0"
   }
 }

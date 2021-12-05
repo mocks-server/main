@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [2.2.0] - 2021-12-05
 
 ### Changed
-- chore: Support any NodeJs version >=12.x.
+- chore: Support any NodeJs version >=12.0.0
 - chore: Run tests also in NodeJs 17 in pipelines. Remove tests execution using NodeJs 15
 - chore: Update devDependencies
 

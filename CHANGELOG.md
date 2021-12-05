@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - chore: Update devDependencies
 
 ### Fixed
+- fix: Remove console
 - docs: Remove broken npm dependencies badge
 
 ## [3.0.0] - 2021-05-25

@@ -52,7 +52,6 @@ function createCollectionOrigin({ id, url }) {
 
 function createModelOrigin({ id, baseUrl, modelId }) {
   const modelUrlId = modelId || ":id";
-  console.log(modelUrlId);
   return new Axios({
     id: `${id}-model`,
     url: `${baseUrl}/${modelUrlId}`,

@@ -30,7 +30,7 @@
     "mocks:install": "cd mocks && npm i",
     "mocks:ci": "cd mocks && npm run mocks:ci",
     "test": "jest",
-    "test:unit": "npm run mocks:install && start-server-and-test mocks:ci tcp:3200 test",
+    "test:unit": "npm run mocks:install && start-server-and-test mocks:ci tcp:127.0.0.1:3200 test",
     "prepare": "is-ci || husky install"
   },
   "dependencies": {

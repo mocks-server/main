@@ -10,6 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
+const PluginProxy = require("@mocks-server/plugin-proxy");
 const AdminApi = require("@mocks-server/plugin-admin-api");
 const InquirerCli = require("@mocks-server/plugin-inquirer-cli");
 
@@ -32,10 +33,10 @@ describe("start method", () => {
     coreMocks.restore();
   });
 
-  it("should create a new Core, passing to it AdminApi and CLI plugins", async () => {
+  it("should create a new Core, passing to it Proxy, AdminApi and CLI plugins", async () => {
     await start();
     expect(coreMocks.stubs.Constructor.mock.calls[0][0]).toEqual({
-      plugins: [AdminApi, InquirerCli],
+      plugins: [PluginProxy, AdminApi, InquirerCli],
     });
   });
 

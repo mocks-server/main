@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - chore: Run tests also in NodeJs 17 in pipelines. Remove tests execution using NodeJs 15
 - chore: Update devDependencies
 
+### Fixed
+- docs: Remove broken npm dependencies badge
+
 ## [2.1.0] - 2021-02-17
 
 ### Added

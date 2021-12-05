@@ -2,11 +2,10 @@
   "name": "app-fetch",
   "version": "1.0.0",
   "private": true,
-  "dependencies": {},
   "scripts": {
     "serve": "serve -l 3000"
   },
   "devDependencies": {
-    "serve": "12.0.0"
+    "serve": "13.0.2"
   }
 }

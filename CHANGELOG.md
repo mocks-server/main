@@ -9,7 +9,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Fixed
 ### Removed
-### Breaking changes
+
+## [3.0.0] - 2021-12-05
+
+### Changed
+- chore(deps): BREAKING CHANGE - Update `@mocks-server/admin-api-client` to 4.0.0, so from now default `MOCKS_SERVER_BASE_URL` is `http://127.0.0.1:3100`
+- chore: Support any NodeJs version >=12.0.0
+- chore: Run tests also in NodeJs 17 in pipelines. Remove tests execution using NodeJs 15
+- chore: Update devDependencies
+
+### Fixed
+- docs: Remove broken npm dependencies badge
 
 ## [2.1.0] - 2021-05-29
 ### Added

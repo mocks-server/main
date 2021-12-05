@@ -12,20 +12,21 @@
     "cypress:verify": "cypress verify",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "cypress:run:custom-config": "cross-env CYPRESS_MOCKS_SERVER_BASE_URL=http://localhost:3200 CYPRESS_MOCKS_SERVER_ADMIN_API_PATH=/foo cypress run",
+    "cypress:run:custom-config": "cross-env CYPRESS_MOCKS_SERVER_BASE_URL=http://127.0.0.1:3200 CYPRESS_MOCKS_SERVER_ADMIN_API_PATH=/foo cypress run",
     "start:app": "cd app && npm run serve",
-    "mocks:ci-and-start:app": "start-server-and-test mocks:ci http-get://localhost:3100/admin/about start:app",
-    "mocks:ci:custom-config-and-start:app": "start-server-and-test mocks:ci:custom-config http-get://localhost:3200/foo/about start:app",
-    "test:app": "start-server-and-test mocks:ci-and-start:app http-get://localhost:3000 cypress:run",
-    "test:app:custom-config": "start-server-and-test mocks:ci:custom-config-and-start:app http-get://localhost:3000 cypress:run:custom-config",
+    "mocks:ci-and-start:app": "start-server-and-test mocks:ci http-get://127.0.0.1:3100/admin/about start:app",
+    "mocks:ci:custom-config-and-start:app": "start-server-and-test mocks:ci:custom-config http-get://127.0.0.1:3200/foo/about start:app",
+    "test:app": "start-server-and-test mocks:ci-and-start:app http-get://127.0.0.1:3000 cypress:run",
+    "test:app:custom-config": "start-server-and-test mocks:ci:custom-config-and-start:app http-get://127.0.0.1:3000 cypress:run:custom-config",
     "apps:install": "cd app && npm i",
     "test:ci": "npm run build:app && npm run test:app && npm run build:app:custom-config && npm run test:app:custom-config"
   },
   "devDependencies": {
-    "@mocks-server/main": "2.4.0",
+    "@cypress/webpack-preprocessor": "5.10.0",
+    "@mocks-server/main": "2.5.0",
     "babel-plugin-module-resolver": "4.1.0",
     "cross-env": "7.0.3",
-    "cypress": "7.5.0",
-    "start-server-and-test": "1.13.1"
+    "cypress": "9.1.1",
+    "start-server-and-test": "1.14.0"
   }
 }

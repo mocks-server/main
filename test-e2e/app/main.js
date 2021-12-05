@@ -9,7 +9,7 @@ var $legacyResponseTime;
 
 var loadResponse = async function (url, $responseElement, $responseTimeElement) {
   const startDate = new Date();
-  const responseData = await fetch(`http://localhost:${PORT}/api/${url}`);
+  const responseData = await fetch(`http://127.0.0.1:${PORT}/api/${url}`);
   const responseJson = await responseData.json();
   const endDate = new Date();
   const totalTime = endDate - startDate;

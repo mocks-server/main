@@ -11,9 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
-## [3.2.0] - 2021-12-05
+## [4.0.0] - 2021-12-05
 
 ### Changed
+- feat: Change default `baseUrl` config to `http://127.0.0.1:3100` for better NodeJS 17 support
 - chore: Support any NodeJs version >=12.0.0
 - chore: Run tests also in NodeJs 17 in pipelines. Remove tests execution using NodeJs 15
 - chore: Update devDependencies

@@ -16,7 +16,7 @@ import {
 
 const DEFAULT_OPTIONS = {
   adminApiPath: DEFAULT_BASE_PATH,
-  baseUrl: "http://localhost:3100",
+  baseUrl: "http://127.0.0.1:3100",
 };
 
 let configuration = {

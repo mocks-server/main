@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.6.0] - 2021-12-05
 
-### Changed
+### Added
 - feat: Add `@mocks-server/plugin-proxy`. Support route variants of type "proxy"
 
 ## [2.5.0] - 2021-12-05

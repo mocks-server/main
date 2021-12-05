@@ -18,6 +18,7 @@ Providing an interactive command line user interface and a REST API for changing
 * __Multiple mocks__: Group different [route variants](https://www.mocks-server.org/docs/get-started-routes) into different [mocks](https://www.mocks-server.org/docs/get-started-mocks). Change the current mock while the server is running using the [interactive command line interface](https://www.mocks-server.org/docs/plugins-inquirer-cli) or the [REST API](https://www.mocks-server.org/docs/plugins-admin-api).
 * __Multiple formats__: Responses can be defined [using `json` or JavaScript files](https://www.mocks-server.org/docs/guides-organizing-files). [Babel](https://babeljs.io/) is also supported, so [ESM modules and TypeScript can also be used](https://www.mocks-server.org/docs/guides-using-babel).
 * __Express middlewares__: Route variants [can be defined as `express` middlewares](https://www.mocks-server.org/docs/guides-using-middlewares).
+* __Proxy routes__: Route variants [can be configured to proxy request to another host](https://github.com/mocks-server/plugin-proxy), and even modify the request or the response.
 * __Multiple interfaces__: Settings can be changed using the [interactive CLI](https://www.mocks-server.org/docs/plugins-inquirer-cli) or the [admin REST API](https://www.mocks-server.org/docs/plugins-admin-api). The CLI is perfect for development, and the API can be used from tests, for example.
 * __Integrations__: Integrations with other tools are available, as the [Cypress plugin](https://www.mocks-server.org/docs/integrations-cypress).
 * __Customizable__: You can [develop your own plugins](https://www.mocks-server.org/docs/plugins-developing-plugins), or even [routes handlers](https://www.mocks-server.org/docs/api-routes-handler), that allows to customize the format in which route variants are defined.
@@ -84,6 +85,16 @@ module.exports = [
         }
       },
       {
+        id: "one-user", // id of the variant
+        response: {
+          status: 200, // status to send
+          body: [{ // body to send
+            id: 1,
+            name: "John Doe"
+          }]
+        }
+      },
+      {
         id: "error", // id of the variant
         response: {
           status: 400, // status to send
@@ -91,6 +102,11 @@ module.exports = [
             message: "Error"
           }
         }
+      },
+      {
+        id: "proxied", // id of the variant
+        handler: "proxy", // Type of route variant handler
+        host: "https://jsonplaceholder.typicode.com/users" // Host for "proxy" variant
       }
     ]
   }
@@ -110,6 +126,11 @@ The server will respond to the requests with the route variants defined in the c
     "id": "users-error", //id of the mock
     "from": "base", //inherits the route variants of "base" mock
     "routesVariants": ["get-users:error"] //get-users route uses another variant
+  },
+  {
+    "id": "users-proxied", //id of the mock
+    "from": "base", //inherits the route variants of "base" mock
+    "routesVariants": ["get-users:proxied"] //get-users route uses another variant
   }
 ]
 ```

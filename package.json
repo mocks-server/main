@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@hapi/boom": "9.1.4",
-    "@mocks-server/admin-api-paths": "2.1.0",
+    "@mocks-server/admin-api-paths": "2.2.0",
     "express": "4.17.1"
   },
   "devDependencies": {

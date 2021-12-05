@@ -15,7 +15,7 @@ const waitOn = require("wait-on");
 
 const InteractiveCliRunner = require("./InteractiveCliRunner");
 
-const DEFAULT_BINARY_PATH = "../../../bin/mocks-server";
+const DEFAULT_BINARY_PATH = "../../../../bin/mocks-server";
 
 const SERVER_PORT = 3100;
 
@@ -26,12 +26,14 @@ const defaultRequestOptions = {
   },
 };
 
-const defaultMocksRunnerOptions = {
-  cwd: path.resolve(__dirname, "..", "fixtures"),
-};
+const baseFixturesFolder = path.resolve(__dirname, "..", "fixtures");
 
 const fixturesFolder = (folderName) => {
-  return path.resolve(__dirname, "..", "fixtures", folderName);
+  return path.resolve(baseFixturesFolder, folderName);
+};
+
+const defaultMocksRunnerOptions = {
+  cwd: fixturesFolder("scaffold"),
 };
 
 const serverUrl = (port) => {
@@ -94,10 +96,6 @@ const waitForServer = (port) => {
   return waitOn({ resources: [`tcp:127.0.0.1:${port || SERVER_PORT}`] });
 };
 
-const waitForServerUrl = (url) => {
-  return waitOn({ resources: [`${serverUrl()}${url}`] });
-};
-
 const waitForServerAndCli = async (port) => {
   await waitForServer(port);
   await wait();
@@ -122,7 +120,6 @@ module.exports = {
   mocksRunner,
   wait,
   waitForServer,
-  waitForServerUrl,
   waitForServerAndCli,
   fixturesFolder,
 };

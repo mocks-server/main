@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/main",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "Mock Server supporting multiple route variants and mocks",
   "keywords": [
     "mock",
@@ -43,7 +43,8 @@
   "dependencies": {
     "@mocks-server/core": "2.5.1",
     "@mocks-server/plugin-admin-api": "2.2.0",
-    "@mocks-server/plugin-inquirer-cli": "2.2.0"
+    "@mocks-server/plugin-inquirer-cli": "2.2.0",
+    "@mocks-server/plugin-proxy": "1.0.3"
   },
   "devDependencies": {
     "cross-fetch": "3.1.4",

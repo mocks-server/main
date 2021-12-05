@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 
-const requestPromise = require("request-promise");
+const crossFetch = require("cross-fetch");
 
 const SERVER_PORT = 3100;
 
@@ -18,22 +18,27 @@ const BINARY_PATH = "./starter";
 
 const defaultRequestOptions = {
   method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+  },
 };
 
 const fixturesFolder = (folderName) => {
   return path.resolve(__dirname, "..", "fixtures", folderName);
 };
 
-const request = (uri, options = {}) => {
-  const requestOptions = {
-    ...defaultRequestOptions,
-    ...options,
-  };
+const serverUrl = (port) => {
+  return `http://127.0.0.1:${port || SERVER_PORT}`;
+};
 
-  return requestPromise({
-    uri: `http://localhost:${SERVER_PORT}${uri}`,
-    json: true,
-    ...requestOptions,
+const request = (uri, { resolveWithFullResponse = false } = {}) => {
+  return crossFetch(`${serverUrl()}${uri}`, defaultRequestOptions).then((res) => {
+    return res.json().then((processedRes) => {
+      if (resolveWithFullResponse) {
+        return { body: processedRes, statusCode: res.status, headers: res.headers };
+      }
+      return processedRes;
+    });
   });
 };
 

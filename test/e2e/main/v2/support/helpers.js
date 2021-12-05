@@ -35,7 +35,7 @@ const fixturesFolder = (folderName) => {
 };
 
 const serverUrl = (port) => {
-  return `http://localhost:${port || SERVER_PORT}`;
+  return `http://127.0.0.1:${port || SERVER_PORT}`;
 };
 
 const fetch = (uri, options = {}) => {

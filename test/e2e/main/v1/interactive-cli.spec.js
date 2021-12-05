@@ -93,7 +93,6 @@ describe("interactive CLI", () => {
     it("should return not found for /api/users/3 path", async () => {
       const usersResponse = await request("/api/users/3", {
         resolveWithFullResponse: true,
-        simple: false,
       });
       expect(usersResponse.statusCode).toEqual(404);
     });

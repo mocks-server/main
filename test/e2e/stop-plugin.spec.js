@@ -31,6 +31,7 @@ describe("when stopping plugin", () => {
   describe("when stopped", () => {
     it("should respond not found when requesting setting", async () => {
       await server._stopPlugins();
+      await waitForServer();
       const response = await fetch("/admin/settings");
       expect(response.status).toEqual(404);
     });
@@ -64,6 +65,7 @@ describe("when stopping plugin", () => {
 
     it("should have not started the plugin", async () => {
       await server._stopPlugins();
+      await waitForServer();
       const response = await fetch("/admin/settings");
       expect(response.status).toEqual(404);
     });
@@ -72,6 +74,7 @@ describe("when stopping plugin", () => {
   describe("when plugins are started", () => {
     it("should respond with same mock", async () => {
       await server._startPlugins();
+      await waitForServer();
       const response = await fetch("/api/users/2");
       expect(response.body).toEqual({
         id: 2,

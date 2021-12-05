@@ -49,8 +49,8 @@ jobs:
       - name: Test E2E Node 17
         if: ${{ matrix.node == '17.2.0'}}
         run: npm run test:e2e:ci
-        with:
-          NODE_OPTIONS:--openssl-legacy-provider 
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider 
         id: test-e2e
       - name: Upload E2E tests screenshots
         if: ${{ always() && steps.test-e2e.outcome == 'failure' }}

@@ -51,7 +51,7 @@ jobs:
         run: npm run test:e2e:ci
         env:
           NODE_OPTIONS: --openssl-legacy-provider 
-        id: test-e2e
+        id: test-e2e-node-17
       - name: Upload E2E tests screenshots
         if: ${{ always() && steps.test-e2e.outcome == 'failure' }}
         uses: actions/upload-artifact@v2

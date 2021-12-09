@@ -7,6 +7,6 @@
     "mocks:ci": "mocks-server --no-cli"
   },
   "devDependencies": {
-    "@mocks-server/main": "2.5.0"
+    "@mocks-server/main": "2.6.0"
   }
 }

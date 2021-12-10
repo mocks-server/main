@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@data-provider/axios": "4.0.0",
+    "@data-provider/axios": "4.1.0",
     "@data-provider/core": "3.0.1",
     "@data-provider/react": "1.5.2",
     "prop-types": "15.7.2",

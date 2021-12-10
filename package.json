@@ -45,7 +45,7 @@
     "@babel/preset-env": "7.16.4",
     "@babel/preset-react": "7.16.0",
     "@data-provider/axios": "4.1.0",
-    "@data-provider/core": "3.0.1",
+    "@data-provider/core": "3.1.0",
     "@rollup/plugin-babel": "5.3.0",
     "@rollup/plugin-commonjs": "21.0.1",
     "@rollup/plugin-node-resolve": "13.0.6",

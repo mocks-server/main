@@ -40,7 +40,7 @@
     "prepare": "is-ci || husky install"
   },
   "dependencies": {
-    "@babel/register": "7.16.0",
+    "@babel/register": "7.16.5",
     "@hapi/boom": "9.1.4",
     "ajv": "8.8.2",
     "ajv-errors": "3.0.0",
@@ -61,8 +61,8 @@
     "winston-array-transport": "1.1.5"
   },
   "devDependencies": {
-    "@babel/preset-env": "7.16.4",
-    "@babel/preset-typescript": "7.16.0",
+    "@babel/preset-env": "7.16.5",
+    "@babel/preset-typescript": "7.16.5",
     "cross-fetch": "3.1.4",
     "cross-spawn": "7.0.3",
     "eslint": "8.4.1",

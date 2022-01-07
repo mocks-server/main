@@ -55,7 +55,7 @@
     "is-ci": "3.0.1",
     "is-promise": "4.0.0",
     "jest": "27.4.5",
-    "lint-staged": "12.1.2",
+    "lint-staged": "12.1.7",
     "prettier": "2.5.1",
     "sinon": "12.0.1",
     "strip-ansi": "6.0.0",

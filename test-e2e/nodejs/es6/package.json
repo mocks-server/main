@@ -8,7 +8,7 @@
     "test:ci": "start-server-and-test mocks:ci http-get://127.0.0.1:3100/admin/about test"
   },
   "devDependencies": {
-    "jest": "27.4.5",
+    "jest": "27.4.7",
     "start-server-and-test": "1.14.0"
   }
 }

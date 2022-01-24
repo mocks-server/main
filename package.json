@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.16.5",
-    "@babel/preset-env": "7.16.7",
+    "@babel/preset-env": "7.16.11",
     "@babel/preset-react": "7.16.7",
     "@data-provider/axios": "4.1.0",
     "@data-provider/core": "3.1.0",

@@ -57,7 +57,7 @@
     "node-watch": "0.7.3",
     "require-all": "3.0.0",
     "route-parser": "0.0.5",
-    "winston": "3.4.0",
+    "winston": "3.5.0",
     "winston-array-transport": "1.1.7"
   },
   "devDependencies": {

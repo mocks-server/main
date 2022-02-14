@@ -62,7 +62,7 @@
     "sinon": "12.0.1",
     "strip-ansi": "6.0.0",
     "tree-kill": "1.2.2",
-    "wait-on": "6.0.0"
+    "wait-on": "6.0.1"
   },
   "lint-staged": {
     "lib/**/*.js": "eslint",

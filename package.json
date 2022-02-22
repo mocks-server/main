@@ -46,7 +46,7 @@
     "babel-jest": "27.5.1",
     "babel-polyfill": "6.26.0",
     "eslint": "8.9.0",
-    "eslint-config-prettier": "8.3.0",
+    "eslint-config-prettier": "8.4.0",
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-react": "7.28.0",
     "husky": "7.0.4",

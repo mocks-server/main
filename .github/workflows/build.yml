@@ -36,6 +36,8 @@ jobs:
         id: affected-report
         run: echo "::set-output name=REPORT::$(pnpm run affected:report)"
       - name: Comment affected
+        run: echo "${{ steps.affected-report.outputs.REPORT }}"
+      - name: Comment affected
         if: github.event_name == 'pull_request'
         uses: unsplash/comment-on-pr@v1.3.0
         env:

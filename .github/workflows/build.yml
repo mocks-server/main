@@ -19,10 +19,12 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Git fetch branches
-        run: git fetch origin master:refs/remotes/origin/master
+      #- name: Git fetch base
+        #run: git fetch origin release:refs/remotes/origin/release
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
+        with:
+          main-branch-name: 'monorepo-poc'
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
@@ -39,7 +41,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Affected report preview
-        run: pnpm run nx print-affected -- --base release
+        run: pnpm run nx print-affected -- --base monorepo-poc
       - name: Affected report preview
         run: pnpm run affected:report
       - name: Affected report

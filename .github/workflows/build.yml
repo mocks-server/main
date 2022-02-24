@@ -51,7 +51,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          msg: "${{env.AFFECTED_REPORT}}"
+          msg: $(pnpm run affected:report)
           check_for_duplicate_msg: false
       - name: Lint
         run: pnpm run lint

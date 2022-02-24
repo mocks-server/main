@@ -46,7 +46,7 @@ jobs:
         run: |
           REPORT=$(pnpm run affected:report)
           echo "---------------"
-          echo $REPORT
+          echo "$REPORT"
           echo "---------------"
           echo "AFFECTED_REPORT=${{$REPORT}}" >> $GITHUB_ENV
       - name: Preview affected report output

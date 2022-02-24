@@ -44,14 +44,14 @@ jobs:
         id: affected-report
         run: echo "AFFECTED_REPORT=$(pnpm run affected:report)" >> $GITHUB_ENV
       - name: Preview affected report output
-        run: echo "${{$AFFECTED_REPORT}}"
+        run: echo "${{env.AFFECTED_REPORT}}"
       - name: Comment affected
         if: github.event_name == 'pull_request'
         uses: unsplash/comment-on-pr@v1.3.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          msg: ${{$AFFECTED_REPORT}}
+          msg: ${{env.AFFECTED_REPORT}}
       - name: Lint
         run: pnpm run lint
       - name: Test unit

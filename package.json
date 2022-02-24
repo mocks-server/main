@@ -1,9 +1,13 @@
 {
   "private": true,
   "scripts": {
-    "lint": "eslint packages",
+    "nx": "nx",
+    "lint": "eslint packages test",
     "lint-staged": "lint-staged",
-    "prepare": "is-ci || husky install"
+    "prepare": "is-ci || husky install",
+    "test:unit:all": "nx run-many --target=test:unit --all",
+    "test:e2e:all": "nx run-many --target=test:e2e --all",
+    "test:all": "pnpm run test:unit:all && npm run test:e2e:all"
   },
   "devDependencies": {
     "eslint": "8.9.0",
@@ -11,8 +15,14 @@
     "eslint-plugin-prettier": "4.0.0",
     "husky": "7.0.4",
     "is-ci": "3.0.1",
+    "jest": "27.5.1",
     "lint-staged": "12.3.4",
-    "prettier": "2.5.1"
+    "prettier": "2.5.1",
+    "@nrwl/workspace": "13.8.3",
+    "@nrwl/cli": "13.8.3",
+    "@nrwl/tao": "13.8.3",
+    "sinon": "12.0.1",
+    "typescript": "4.2.4"
   },
   "engines": {
     "node": ">=12.0.0"

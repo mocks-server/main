@@ -34,10 +34,9 @@ jobs:
       - name: Lint
         run: pnpm run lint
       - name: Test unit
-        run: cd packages/main && pnpm run test:unit
+        run: pnpm run test:unit:all
       - name: Test E2E
-        run: cd packages/main && pnpm run test:e2e
-        id: test-e2e
+        run: pnpm run test:e2e:all
       - name: Upload test results
         uses: actions/upload-artifact@v2
         with:

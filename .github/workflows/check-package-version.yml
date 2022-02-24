@@ -1,8 +1,5 @@
 name: check-package-version
 on:
-  push:
-    branches:
-      - monorepo-poc
   pull_request:
     branches:
       - master

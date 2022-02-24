@@ -15,7 +15,7 @@ const waitOn = require("wait-on");
 
 const InteractiveCliRunner = require("./InteractiveCliRunner");
 
-const DEFAULT_BINARY_PATH = "../../../../bin/mocks-server";
+const DEFAULT_BINARY_PATH = "../../../../../packages/main/bin/mocks-server";
 
 const SERVER_PORT = 3100;
 
@@ -103,6 +103,7 @@ const waitForServerAndCli = async (port) => {
 
 const mocksRunner = (args = [], options = {}) => {
   const argsToSend = [...args];
+  console.log(path.resolve(process.cwd(), DEFAULT_BINARY_PATH));
   argsToSend.unshift(DEFAULT_BINARY_PATH);
   return new InteractiveCliRunner(
     argsToSend,

@@ -16,7 +16,7 @@ const InquirerCli = require("@mocks-server/plugin-inquirer-cli");
 
 const CoreMocks = require("./Core.mocks.js");
 
-const { start } = require("../../lib/start");
+const { start } = require("../lib/start");
 
 describe("start method", () => {
   let sandbox;

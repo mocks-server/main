@@ -5,7 +5,7 @@ module.exports = {
   // Automatically clear mock calls and instances between every test
   clearMocks: true,
 
-  testMatch: ["<rootDir>/test/e2e/*.spec.js"],
+  testMatch: ["<rootDir>/src/*.spec.js"],
   // testMatch: ["<rootDir>/test/e2e/proxy.spec.js"],
   // testMatch: ["<rootDir>/test/e2e/cli-disabled-runtime.spec.js"],
 

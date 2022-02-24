@@ -4,9 +4,11 @@ importers:
 
   .:
     specifiers:
+      '@babel/eslint-parser': 7.17.0
       '@nrwl/cli': 13.8.3
       '@nrwl/tao': 13.8.3
       '@nrwl/workspace': 13.8.3
+      cross-spawn: 7.0.3
       eslint: 8.9.0
       eslint-config-prettier: 8.4.0
       eslint-plugin-prettier: 4.0.0
@@ -18,9 +20,11 @@ importers:
       sinon: 12.0.1
       typescript: 4.2.4
     devDependencies:
+      '@babel/eslint-parser': 7.17.0_eslint@8.9.0
       '@nrwl/cli': 13.8.3
       '@nrwl/tao': 13.8.3
       '@nrwl/workspace': 13.8.3_60bba80c491c210521e73ddf4c9fa63d
+      cross-spawn: 7.0.3
       eslint: 8.9.0
       eslint-config-prettier: 8.4.0_eslint@8.9.0
       eslint-plugin-prettier: 4.0.0_9f62b85ce3ce02949dbd2ccffcebe95f
@@ -104,6 +108,19 @@ packages:
       semver: 6.3.0
     transitivePeerDependencies:
       - supports-color
+
+  /@babel/eslint-parser/7.17.0_eslint@8.9.0:
+    resolution: {integrity: sha512-PUEJ7ZBXbRkbq3qqM/jZ2nIuakUBqCYc7Qf52Lj7dlZ6zERnqisdHioL0l4wwQZnmskMeasqUNzLBFKs3nylXA==}
+    engines: {node: ^10.13.0 || ^12.13.0 || >=14.0.0}
+    peerDependencies:
+      '@babel/core': '>=7.11.0'
+      eslint: ^7.5.0 || ^8.0.0
+    dependencies:
+      eslint: 8.9.0
+      eslint-scope: 5.1.1
+      eslint-visitor-keys: 2.1.0
+      semver: 6.3.0
+    dev: true
 
   /@babel/generator/7.17.3:
     resolution: {integrity: sha512-+R6Dctil/MgUsZsZAkYgK+ADNSZzJRRy0TvY65T71z/CR854xHQ1EweBYXdfT+HNeN7w0cSJJEzgxZMv40pxsg==}
@@ -1960,6 +1977,14 @@ packages:
       prettier-linter-helpers: 1.0.0
     dev: true
 
+  /eslint-scope/5.1.1:
+    resolution: {integrity: sha512-2NxwbF/hZ0KpepYN0cNbo+FN6XoK7GaHlQhgx/hIZl6Va0bF45RQOOwhLIy8lQDbuCiadSLCBnH2CFYquit5bw==}
+    engines: {node: '>=8.0.0'}
+    dependencies:
+      esrecurse: 4.3.0
+      estraverse: 4.3.0
+    dev: true
+
   /eslint-scope/7.1.1:
     resolution: {integrity: sha512-QKQM/UXpIiHcLqJ5AOyIW7XZmzjkzQXYE54n1++wb0u9V/abW3l9uQnxX8Z5Xd18xyKIMTUAyQ0k1e8pz6LUrw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -2059,6 +2084,11 @@ packages:
     engines: {node: '>=4.0'}
     dependencies:
       estraverse: 5.3.0
+    dev: true
+
+  /estraverse/4.3.0:
+    resolution: {integrity: sha512-39nnKffWz8xN1BU/2c79n9nB9HDzo0niYUqx6xyqUnyoAnQyyWpOTdZEeiCch8BBu515t4wp9ZmgVfVhn9EBpw==}
+    engines: {node: '>=4.0'}
     dev: true
 
   /estraverse/5.3.0:

@@ -1,5 +1,8 @@
 name: publish-to-npm
 on:
+  push:
+    branches:
+      - monorepo-poc
   release:
     types: [created]
 jobs:

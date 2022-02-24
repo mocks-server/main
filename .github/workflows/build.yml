@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Affected report preview
-        run: pnpm run nx print-affected
+        run: pnpm run nx print-affected -- --base release
       - name: Affected report preview
         run: pnpm run affected:report
       - name: Affected report

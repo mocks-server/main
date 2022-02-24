@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Git fetch branches
-        run: git fetch origin main:refs/remotes/origin/main
+        run: git fetch origin master:refs/remotes/origin/master
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
       - name: Extract branch name

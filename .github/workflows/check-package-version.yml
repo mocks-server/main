@@ -14,7 +14,7 @@ jobs:
         uses: EndBug/version-check@v2.1.0
         with:
           diff-search: true
-          file-name: ./package.json
+          file-name: ./packages/main/package.json
           file-url: https://unpkg.com/@mocks-server/main@latest/package.json
           static-checking: localIsNew
       - name: Check version is new
@@ -30,12 +30,12 @@ jobs:
         uses: mindsers/changelog-reader-action@v2.0.0
         with:
           version: ${{ steps.package-version.outputs.current-version }}
-          path: ./CHANGELOG.md
+          path: ./packages/main/CHANGELOG.md
       - name: Read version from Sonar config
         id: sonar-version
         uses: christian-draeger/read-properties@1.0.1
         with:
-          path: './sonar-project.properties'
+          path: './packages/main/sonar-project.properties'
           property: 'sonar.projectVersion'
       - name: Check Sonar version
         if: steps.sonar-version.outputs.value != steps.package-version.outputs.current-version

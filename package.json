@@ -1,9 +1,24 @@
 {
   "private": true,
   "scripts": {
-    "lint-staged": "echo ok"
+    "lint": "eslint packages",
+    "lint-staged": "lint-staged",
+    "prepare": "is-ci || husky install"
+  },
+  "devDependencies": {
+    "eslint": "8.9.0",
+    "eslint-config-prettier": "8.4.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "husky": "7.0.4",
+    "is-ci": "3.0.1",
+    "lint-staged": "12.3.4",
+    "prettier": "2.5.1"
   },
   "engines": {
-    "node": ">=16.5.0"
+    "node": ">=12.0.0"
+  },
+  "lint-staged": {
+    "packages/**/*.js": "eslint",
+    "*.js": "eslint"
   }
 }

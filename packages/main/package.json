@@ -33,14 +33,12 @@
     "mocks-server": "./bin/mocks-server"
   },
   "scripts": {
-    "lint": "eslint *.js lib test",
-    "lint-staged": "lint-staged",
     "test": "jest",
     "test:e2e": "jest --config=jest.e2e.config.js --runInBand",
-    "test:unit": "npm run test",
-    "prepare": "is-ci || husky install"
+    "test:unit": "npm run test"
   },
   "dependencies": {
+    "@babel/core": "7.17.5",
     "@mocks-server/core": "2.5.1",
     "@mocks-server/plugin-admin-api": "2.2.0",
     "@mocks-server/plugin-inquirer-cli": "2.2.0",
@@ -49,25 +47,13 @@
   "devDependencies": {
     "cross-fetch": "3.1.5",
     "cross-spawn": "7.0.3",
-    "eslint": "8.9.0",
-    "eslint-config-prettier": "8.4.0",
-    "eslint-plugin-prettier": "4.0.0",
     "fs-extra": "10.0.0",
-    "husky": "7.0.4",
-    "is-ci": "3.0.1",
     "jest": "27.5.1",
-    "lint-staged": "12.3.4",
     "lodash": "4.17.21",
-    "prettier": "2.5.1",
     "sinon": "12.0.1",
     "strip-ansi": "6.0.0",
     "tree-kill": "1.2.2",
     "wait-on": "6.0.1"
-  },
-  "lint-staged": {
-    "lib/**/*.js": "eslint",
-    "test/**/*.js": "eslint",
-    "*.js": "eslint"
   },
   "engines": {
     "node": ">=12.0.0"

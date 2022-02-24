@@ -6,9 +6,6 @@ function getJsonFromReport(textReport) {
 }
 
 function parseReport(textReport) {
-  console.log("----------------");
-  console.log(textReport);
-  console.log("----------------");
   let result;
   try {
     result = JSON.parse(getJsonFromReport(textReport));

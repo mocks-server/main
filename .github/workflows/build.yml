@@ -19,13 +19,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Git fetch base
-        run: |
-          git fetch --all
-          echo "git branch -------------"
-          git branch
-          echo "git branch -r -------------"
-          git branch -r
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
         with:
@@ -42,13 +35,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Affected report preview
-        run: pnpm run nx print-affected -- --base origin/release
-      - name: Affected report preview
         run: pnpm run affected:report
       - name: Affected report
         id: affected-report
         run: echo "::set-output name=REPORT::$(pnpm run affected:report)"
-      - name: Comment affected
+      - name: Preview affected report output
         run: echo "${{ steps.affected-report.outputs.REPORT }}"
       - name: Comment affected
         if: github.event_name == 'pull_request'

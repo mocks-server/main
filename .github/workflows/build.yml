@@ -43,7 +43,6 @@ jobs:
       - name: Affected report
         id: affected-report
         run: |
-          pnpm run affected:report | tr "\n" "-"
           echo "::set-output name=report::$(pnpm run affected:report | tr '\n' '-')"
       - name: Preview affected report output
         run: echo "${{ steps.affected-report.outputs.report }}"

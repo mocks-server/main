@@ -23,6 +23,10 @@ jobs:
         uses: nrwl/nx-set-shas@v2
         with:
           main-branch-name: 'release'
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
+        id: extract-branch
       - name: Install pnpm
         uses: pnpm/action-setup@v2.0.1
         with:
@@ -38,7 +42,8 @@ jobs:
         run: pnpm run affected:report
       - name: Affected report
         id: affected-report
-        run: echo "::set-output name=REPORT::$(pnpm run affected:report)"
+        shell: bash
+        run: echo "##[set-output name=REPORT;]$(pnpm run affected:report)"
       - name: Preview affected report output
         run: echo "${{ steps.affected-report.outputs.REPORT }}"
       - name: Comment affected

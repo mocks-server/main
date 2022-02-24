@@ -48,7 +48,7 @@ jobs:
           echo "---------------"
           echo "$REPORT"
           echo "---------------"
-          echo "AFFECTED_REPORT=${{$REPORT}}" >> $GITHUB_ENV
+          echo "AFFECTED_REPORT=${{REPORT}}" >> $GITHUB_ENV
       - name: Preview affected report output
         run: echo "${{env.AFFECTED_REPORT}}"
       - name: Comment affected

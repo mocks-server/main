@@ -6,6 +6,12 @@
 # dependencies
 /node_modules
 
+# tests
+/coverage
+/mocks
+/test/e2e/fixtures/scaffold/mocks
+/test/e2e/fixtures/scaffold/mocks.config.js
+
 # misc
 .DS_Store
 .env.local

@@ -21,7 +21,7 @@ function parseReport(textReport) {
 
 export async function affected() {
   const textReport = parseReport(
-    await pnpmRun(["nx", "print-affected", "--", "--base", "monorepo-poc"])
+    await pnpmRun(["nx", "print-affected", "--", "--base", "release"], { silent: true })
   );
   return textReport.projects || [];
 }

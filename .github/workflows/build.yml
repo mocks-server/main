@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0
       - name: Git fetch base
         run: |
-          git fetch origin
+          git fetch
           git branch
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2

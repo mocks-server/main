@@ -42,7 +42,9 @@ jobs:
         run: pnpm run affected:report
       - name: Affected report
         id: affected-report
-        run: echo "::set-output name=report::$(pnpm run affected:report)\n"
+        run: |
+          echo "$(pnpm run affected:report)"
+          echo "::set-output name=report::$(pnpm run affected:report)\n"
       - name: Preview affected report output
         run: echo "${{ steps.affected-report.outputs.report }}"
       - name: Comment affected

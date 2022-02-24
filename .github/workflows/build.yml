@@ -5,8 +5,8 @@ on:
       - master
       - release
       - pre-release
-      - monorepo-poc
-      - monorepo-poc-affected
+  #    - monorepo-poc
+  #    - monorepo-poc-affected
   pull_request:
 jobs:
   test:

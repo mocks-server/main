@@ -61,7 +61,7 @@ jobs:
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          base-path: packages/main
+          base-path: packages/main/
       - name: SonarCloud Scan
         if: env.SONAR_TOKEN != ''
         uses: sonarsource/sonarcloud-github-action@master

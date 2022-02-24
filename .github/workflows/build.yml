@@ -18,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          fetch-depth: 1000
+          fetch-depth: "0"
       - name: Git fetch base
         run: git fetch
       - name: Derive appropriate SHAs for base and head for `nx affected` commands

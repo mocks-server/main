@@ -33,6 +33,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Affected report preview
+        run: pnpm run nx print-affected -- --base monorepo-poc
+      - name: Affected report preview
         run: pnpm run affected:report
       - name: Affected report
         id: affected-report

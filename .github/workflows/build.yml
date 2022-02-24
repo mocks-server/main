@@ -43,7 +43,7 @@ jobs:
         run: pnpm run affected:report
       - name: Affected report
         id: affected-report
-        run: echo 'AFFECTED_REPORT=$(pnpm run affected:report)' >> $GITHUB_ENV
+        run: echo "AFFECTED_REPORT=$(pnpm run affected:report)" >> $GITHUB_ENV
       - name: Preview affected report output
         run: echo "${{env.AFFECTED_REPORT}}"
       - name: Comment affected

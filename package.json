@@ -7,7 +7,8 @@
     "prepare": "is-ci || husky install",
     "test:unit:all": "nx run-many --target=test:unit --all",
     "test:e2e:all": "nx run-many --target=test:e2e --all",
-    "test:all": "pnpm run test:unit:all && npm run test:e2e:all"
+    "test:all": "pnpm run test:unit:all && npm run test:e2e:all",
+    "graph": "nx graph"
   },
   "devDependencies": {
     "eslint": "8.9.0",

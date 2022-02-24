@@ -22,7 +22,9 @@ jobs:
       - name: Git fetch base
         run: |
           git fetch --all
+          echo "git branch -------------"
           git branch
+          echo "git branch -r -------------"
           git branch -r
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2

@@ -28,7 +28,7 @@ export async function printAffectedReport() {
   const projectsLength = affectedProjects.length;
   if (projectsLength) {
     console.log(
-      `${affectedProjects.length} projects affected by changes: ${affectedProjects.join(", ")}`
+      `|${affectedProjects.length} projects affected by changes: ${affectedProjects.join(", ")}`
     );
   } else {
     console.log("No affected projects");

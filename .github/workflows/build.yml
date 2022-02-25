@@ -40,10 +40,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Affected report preview
-        run: pnpm run affected:report
+        run: ./scripts/commands/affected-report.sh
       - name: Affected report
         id: affected-report
-        run: echo "::set-output name=report::$(pnpm run affected:report | tr '\n' ' ')"
+        run: echo "::set-output name=report::$(./scripts/commands/affected-report.sh)"
       - name: Preview affected report output
         run: echo "${{ steps.affected-report.outputs.report }}"
       - name: Comment affected

@@ -90,13 +90,19 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: Check Sonar config
+        id: check-sonar-config
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "packages/${{ matrix.projectName }}/sonar-project.properties" # TODO, get projectPath based on projectName from config using sh
       - name: Download test results
+        if: steps.check-sonar-config.outputs.files_exists == 'true'
         uses: actions/download-artifact@v2
         with:
           name: coverage-16.1.0
           path: packages/${{ matrix.projectName }}/coverage # TODO, get projectPath based on projectName from config using sh
       - name: SonarCloud Scan
-        if: env.SONAR_TOKEN != ''
+        if: ${{ env.SONAR_TOKEN != '' &&  steps.check-sonar-config.outputs.files_exists == 'true' }}
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -109,7 +115,7 @@ jobs:
     strategy:
       matrix:
         node: ["12.22.1", "14.17.0", "16.1.0", "17.2.0"]
-        projectName: ${{fromJson(needs.get-affected.outputs.matrix)}} # TODO, build matrix dinamically based on affected projects with e2e target
+        projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
     steps:
       - name: Checkout
         uses: actions/checkout@v2

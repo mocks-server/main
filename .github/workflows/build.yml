@@ -1,6 +1,6 @@
 name: build
 on:
-  push: # TODO, create another workflow for push on long-living branches
+  push:
     branches:
       - master
       - release
@@ -60,9 +60,10 @@ jobs:
         with:
           fetch-depth: 0
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        if: github.event_name == 'pull_request'
         uses: nrwl/nx-set-shas@v2
         with:
-          main-branch-name: 'release'
+          main-branch-name: ${{github.event.pull_request.base.ref}}
       - name: Install pnpm
         uses: pnpm/action-setup@v2.0.1
         with:
@@ -74,15 +75,16 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
-      # TODO, return all if is branch build instead of PR
       - name: Get affected
-        if: github.event_name == 'pull_request'
         id: get-projects-array
-        run: echo "::set-output name=report::$(./scripts/commands/affected-print-array.sh origin/${{github.event.pull_request.base.ref}})"
+        # TODO, add command to return all projects
+        run: |
+            if [[ "${{github.event.pull_request.base.ref}}" ]]; then
+              echo "::set-output name=report::$(./scripts/commands/affected-print-array.sh origin/${{github.event.pull_request.base.ref}})"
+            else
+              echo '::set-output name=report::["main", "main-e2e"]'
+            fi
       - name: Get all
-        if: github.event_name == 'push'
-        id: get-projects-array
-        run: echo '::set-output name=report::["main","main-e2e"]'
     outputs:
       matrix: ${{ steps.get-projects-array.outputs.report }}
   sonar:

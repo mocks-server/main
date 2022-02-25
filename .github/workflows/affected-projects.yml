@@ -15,7 +15,7 @@ jobs:
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
         with:
-          main-branch-name: origin/${{github.event.pull_request.base.ref}}
+          main-branch-name: ${{github.event.pull_request.base.ref}}
       - name: Install pnpm
         uses: pnpm/action-setup@v2.0.1
         with:

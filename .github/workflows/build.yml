@@ -51,6 +51,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           msg: ${{ steps.affected-report.outputs.report }}
+          check_for_duplicate_msg: false
       - name: Lint
         run: pnpm run lint
       - name: Test unit

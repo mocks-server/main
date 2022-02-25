@@ -32,7 +32,12 @@ function arrayHasMany(array) {
   return array.length > 1;
 }
 
-export async function printAffectedReport({ format, prepend, base = DEFAULT_BASE }) {
+export async function printAffectedArray({ prepend = "", base = DEFAULT_BASE }) {
+  const affectedProjects = await affected(base);
+  console.log(`${prepend}${JSON.stringify(affectedProjects)}`);
+}
+
+export async function printAffectedReport({ format, prepend = "", base = DEFAULT_BASE }) {
   const template =
     format === REPORT_FORMAT_TEXT ? "affectedReportText.hbs" : "affectedReportHtml.hbs";
   const affectedProjects = await affected(base);
@@ -55,7 +60,7 @@ export async function printAffectedReport({ format, prepend, base = DEFAULT_BASE
   console.log(report);
 }
 
-export async function printAffectedCheckReport({ format, prepend, base = DEFAULT_BASE }) {
+export async function printAffectedCheckReport({ format, prepend = "", base = DEFAULT_BASE }) {
   const template =
     format === REPORT_FORMAT_TEXT ? "affectedCheckReportText.hbs" : "affectedCheckReportHtml.hbs";
   const affectedProjects = await affected(base);

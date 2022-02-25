@@ -5,6 +5,7 @@
     "lint": "eslint packages test scripts",
     "lint-staged": "lint-staged",
     "prepare": "is-ci || husky install",
+    "affected:print:array": "node ./scripts/commands/affected-print-array.js",
     "affected:report": "node ./scripts/commands/affected-report.js",
     "affected:check": "node ./scripts/commands/affected-check.js",
     "affected:check:report": "node ./scripts/commands/affected-check-report.js",

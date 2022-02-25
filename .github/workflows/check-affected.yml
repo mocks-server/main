@@ -1,8 +1,11 @@
-name: affected-projects
+name: check-affected
 on:
   pull_request:
+    branches:
+      #- master
+      - monorepo-poc
 jobs:
-  comment-affected:
+  check-affected:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,14 +27,17 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
-      - name: Affected report
-        id: affected-report
-        run: echo "::set-output name=report::$(./scripts/commands/affected-report.sh origin/${{github.event.pull_request.base.ref}})"
-      - name: Comment affected
+      - name: Check affected report
+        id: check-affected-report
+        run: echo "::set-output name=report::$(./scripts/commands/affected-check-report.sh origin/${{github.event.pull_request.base.ref}})"
+      - name: Comment check affected
         uses: unsplash/comment-on-pr@v1.3.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          msg: ${{ steps.affected-report.outputs.report }}
-          delete_prev_regex_msg: ${{ steps.affected-report.outputs.report }}
+          msg: ${{ steps.check-affected-report.outputs.report }}
+          delete_prev_regex_msg: ${{ steps.check-affected-report.outputs.report }}
           check_for_duplicate_msg: false
+      - name: Check affected
+        id: check-affected
+        run: ./scripts/commands/affected-check.sh origin/${{github.event.pull_request.base.ref}}

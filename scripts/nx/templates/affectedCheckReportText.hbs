@@ -2,7 +2,7 @@
 Check affected projects
 
 {{#each statuses}}
-{{#if this.name}}
+{{#unless this.private}}
   - [{{#if this.readyToPublish}}OK{{else}}KO{{/if}}] {{{this.project}}}: {{{this.name}}}@{{{this.version}}}
   {{#unless this.readyToPublish}}
     {{#if this.isPublished}}
@@ -17,7 +17,7 @@ Check affected projects
   {{/unless}}
 {{else}}
   - [  ] {{{this.project}}}: Private package
-{{/if}}
+{{/unless}}
 {{/each}}
 
 {{#if ok}}

@@ -2,7 +2,7 @@
 <h3>Check affected projects</h3>
 <ul>
 {{#each statuses}}
-{{#if this.name}}
+{{#unless this.private}}
 <li>
   {{#if this.readyToPublish}}🟢{{else}}🚫{{/if}} {{{this.project}}}: <code>{{{this.name}}}@{{{this.version}}}</code>
   {{#unless this.readyToPublish}}
@@ -21,7 +21,7 @@
 </li>
 {{else}}
 <li>⚪ {{{this.project}}}: Private package</li>
-{{/if}}
+{{/unless}}
 {{/each}}
 </ul>
 {{#if ok}}

@@ -42,9 +42,9 @@ jobs:
   test-e2e:
     runs-on: ubuntu-latest
     strategy:
-    matrix:
-      node: ["12.22.1", "14.17.0", "16.1.0", "17.2.0"]
-      projectName: ["main"] # TODO, build matrix dinamically based on affected projects
+      matrix:
+        node: ["12.22.1", "14.17.0", "16.1.0", "17.2.0"]
+        projectName: ["main"] # TODO, build matrix dinamically based on affected projects
     steps:
       - name: Checkout
         uses: actions/checkout@v2

@@ -22,3 +22,8 @@ export function catchCommandError(command) {
 export function readFile(filePath) {
   return fsExtra.readFile(filePath, READ_WRITE_FILE_OPTIONS);
 }
+
+export async function readJson(filePath) {
+  const fileContent = await readFile(filePath);
+  return JSON.parse(fileContent);
+}

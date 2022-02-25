@@ -1,0 +1,15 @@
+|<h3>✍ Changes impact</h3>
+{{#if affected.length}}
+{{#if applications.length}}
+<ul><li>Applications: {{#each applications}}{{#if @index}}, {{/if}}<code>{{{this}}}</code>{{/each}}</li></ul>
+{{/if}}
+{{#if libraries.length}}
+<ul><li>Libraries: {{#each libraries}}{{#if @index}}, {{/if}}<code>{{{this}}}</code>{{/each}}</li></ul>
+{{/if}}
+{{#if tests.length}}
+<ul><li>Tests: {{#each tests}}{{#if @index}}, {{/if}}<code>{{{this}}}</code>{{/each}}</li></ul>
+{{/if}}
+<strong>Total: {{affected.length}} affected projects</strong> 
+{{else}}
+<strong>No affected projects found</strong>
+{{/if}}

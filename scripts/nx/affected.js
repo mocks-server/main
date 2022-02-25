@@ -4,6 +4,8 @@ import handlebars from "handlebars";
 import { pnpmRun } from "../pnpm/run.js";
 import { dirName, readFile } from "../common/utils.js";
 
+import { filterApplications, filterTests, filterLibraries } from "./config.js";
+
 const __DIRNAME = dirName(import.meta.url);
 
 function templatePath(templateName) {
@@ -35,17 +37,12 @@ export async function affected() {
 
 export async function printAffectedReport() {
   const affectedProjects = await affected();
-  const templateContent = await readFile(templatePath("affectedReportMarkdown.hbs"));
+  const templateContent = await readFile(templatePath("affectedReportHtml.hbs"));
   const report = handlebars.compile(templateContent)({
     affected: affectedProjects,
+    applications: await filterApplications(affectedProjects),
+    tests: await filterTests(affectedProjects),
+    libraries: await filterLibraries(affectedProjects),
   });
   console.log(report);
-  /* const projectsLength = affectedProjects.length;
-  if (projectsLength) {
-    console.log(
-      `|${affectedProjects.length} projects affected by changes: ${affectedProjects.join(", ")}`
-    );
-  } else {
-    console.log("No affected projects");
-  } */
 }

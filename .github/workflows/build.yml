@@ -5,16 +5,15 @@ on:
       - master
       - release
       - pre-release
-  #    - monorepo-poc
-  #    - monorepo-poc-affected
-  pull_request:
+      # - monorepo-poc
+      # - monorepo-poc-affected
+  # pull_request:
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # node: ["12.22.1", "14.17.0", "16.1.0", "17.2.0"]
-        node: ["16.1.0"]
+        node: ["12.22.1", "14.17.0", "16.1.0", "17.2.0"]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -39,20 +38,6 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
-      - name: Affected report preview
-        run: ./scripts/commands/affected-report.sh
-      - name: Affected report
-        id: affected-report
-        run: echo "::set-output name=report::$(./scripts/commands/affected-report.sh)"
-      - name: Comment affected
-        if: github.event_name == 'pull_request'
-        uses: unsplash/comment-on-pr@v1.3.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          msg: ${{ steps.affected-report.outputs.report }}
-          delete_prev_regex_msg: ${{ steps.affected-report.outputs.report }}
-          check_for_duplicate_msg: false
       - name: Lint
         run: pnpm run lint
       - name: Test unit
@@ -65,30 +50,30 @@ jobs:
           name: coverage-${{ matrix.node }}
           path: packages/main/coverage
           retention-days: 1
-#  quality:
-#    runs-on: ubuntu-latest
-#    needs: test
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#        with:
-#          fetch-depth: 0
-#      - name: Download test results
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: coverage-16.1.0
-#          path: packages/main/coverage
-#      - name: Coveralls
-#        uses: coverallsapp/github-action@master
-#        with:
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
-#          base-path: packages/main/
-#          path-to-lcov: ./packages/main/coverage/lcov.info
-#      - name: SonarCloud Scan
-#        if: env.SONAR_TOKEN != ''
-#        uses: sonarsource/sonarcloud-github-action@master
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#        with:
-#          projectBaseDir: packages/main/
+  quality:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Download test results
+        uses: actions/download-artifact@v2
+        with:
+          name: coverage-16.1.0
+          path: packages/main/coverage
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          base-path: packages/main/
+          path-to-lcov: ./packages/main/coverage/lcov.info
+      - name: SonarCloud Scan
+        if: env.SONAR_TOKEN != ''
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: packages/main/

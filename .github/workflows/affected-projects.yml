@@ -1,0 +1,45 @@
+name: build
+on:
+  pull_request:
+jobs:
+  comment-affected:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ["16.1.0"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+        with:
+          main-branch-name: 'release'
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
+        id: extract-branch
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.15.1
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Affected report
+        id: affected-report
+        run: echo "::set-output name=report::$(./scripts/commands/affected-report.sh)"
+      - name: Comment affected
+        if: github.event_name == 'pull_request'
+        uses: unsplash/comment-on-pr@v1.3.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          msg: ${{ steps.affected-report.outputs.report }}
+          delete_prev_regex_msg: ${{ steps.affected-report.outputs.report }}
+          check_for_duplicate_msg: false

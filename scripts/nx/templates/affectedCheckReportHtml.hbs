@@ -8,19 +8,19 @@
   {{#unless this.readyToPublish}}
   <ul>
     {{#if this.isPublished}}
-      <li>Version in <code>package.json</code> file is already published</li>
+      <li>Version <code>{{{this.version}}}</code> is already published</li>
     {{/if}}
     {{#unless this.changelogUpdated}}
-      <li>Version is not defined in <code>CHANGELOG.md</code> file</li>
+      <li>Version <code>{{{this.version}}}</code> is not defined in <code>CHANGELOG.md</code> file</li>
     {{/unless}}
     {{#unless this.sonarConfigUpdated}}
-      <li>Version in </code>sonar-project.properties</code> file is wrong</li>
+      <li>Version in </code>sonar-project.properties</code> file is not <code>{{{this.version}}}</code></li>
     {{/unless}}
   </ul>
   {{/unless}}
 </li>
 {{else}}
-<li>⚪ {{{this.project}}}: Private package</li>
+<li>⚪ <strong>{{{this.project}}}</strong>: Private package</li>
 {{/unless}}
 {{/each}}
 </ul>

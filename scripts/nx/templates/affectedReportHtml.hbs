@@ -1,6 +1,6 @@
 {{{prepend}}}
 <h3> Affected projects</h3>
-🔎 Comparing current branch with <code>{{{base}}}</code>
+🔎 Comparing current branch with <code>{{{base}}}</code><br/>
 {{#if affected.length}}
 <ul>
 {{#if applications.length}}
@@ -15,5 +15,5 @@
 </ul>
 <strong>Total: {{affected.length}} project{{#if affectedArePlural}}s are{{else}} is{{/if}} affected by changes</h4>
 {{else}}
-<h4>No projects are affected by changes</h4>
+<strong>No projects are affected by changes<strong>
 {{/if}}

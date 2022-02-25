@@ -79,7 +79,7 @@ jobs:
         id: get-projects-array
         # TODO, add command to return all projects
         run: |
-            if [[ "${{github.event.pull_request.base.ref}}" ]]; then
+            if [[ "${{github.event.pull_request.base.ref}}" != "" ]]; then
               echo "::set-output name=report::$(./scripts/commands/affected-print-array.sh origin/${{github.event.pull_request.base.ref}})"
             else
               echo '::set-output name=report::["main", "main-e2e"]'

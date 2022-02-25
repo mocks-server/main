@@ -1,5 +1,7 @@
 import path from "node:path";
 
-const { pathname: root } = new URL("../src", import.meta.url);
+import { dirName } from "./utils.js";
 
-export const ROOT_PATH = path.resolve(root, "..", "..");
+const __DIRNAME = dirName(import.meta.url);
+
+export const ROOT_PATH = path.resolve(__DIRNAME, "..", "..");

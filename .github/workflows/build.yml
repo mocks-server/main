@@ -54,7 +54,6 @@ jobs:
           path-to-lcov: ./packages/main/coverage/lcov.info # TODO, read merged coverage
   get-affected:
     runs-on: ubuntu-latest
-    needs: test
     steps:
       - uses: actions/checkout@v2
         with:
@@ -81,7 +80,7 @@ jobs:
       matrix: ${{ steps.get-affected-array.outputs.report }}
   sonar:
     runs-on: ubuntu-latest
-    needs: get-affected
+    needs: [test, get-affected]
     strategy:
       matrix:
         projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}

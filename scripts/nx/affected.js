@@ -41,7 +41,7 @@ function arrayHasMany(array) {
   return array.length > 1;
 }
 
-export async function printAffectedReport(format) {
+export async function printAffectedReport({ format, prepend }) {
   const template =
     format === REPORT_FORMAT_TEXT ? "affectedReportText.hbs" : "affectedReportHtml.hbs";
   const affectedProjects = await affected();
@@ -50,6 +50,7 @@ export async function printAffectedReport(format) {
   const test = await filterTests(affectedProjects);
   const libraries = await filterLibraries(affectedProjects);
   const report = handlebars.compile(templateContent)({
+    prepend,
     affected: affectedProjects,
     affectedArePlural: arrayHasMany(affectedProjects),
     applications,

@@ -2,13 +2,13 @@
 {{#if affected.length}}
 <ul>
 {{#if applications.length}}
-<li>Applications: {{#each applications}}{{#if @index}}, {{/if}}<code>{{{this}}}</code>{{/each}}</li>
+<li>{{{applications.length}}} {{#if applicationsArePlural}}applications{{else}}application{{/if}}: {{#each applications}}{{#if @index}}, {{/if}}<code>{{{this}}}</code>{{/each}}</li>
 {{/if}}
 {{#if libraries.length}}
-<li>Libraries: {{#each libraries}}{{#if @index}}, {{/if}}<code>{{{this}}}</code>{{/each}}</li>
+<li>{{{libraries.length}}} {{#if librariesArePlural}}libraries{{else}}library{{/if}}: {{#each libraries}}{{#if @index}}, {{/if}}<code>{{{this}}}</code>{{/each}}</li>
 {{/if}}
-{{#if tests.length}}
-<li>Tests: {{#each tests}}{{#if @index}}, {{/if}}<code>{{{this}}}</code>{{/each}}</li>
+{{#if test.length}}
+<li>{{{test.length}}} test: {{#each test}}{{#if @index}}, {{/if}}<code>{{{this}}}</code>{{/each}}</li>
 {{/if}}
 </ul>
 <strong>Total: {{affected.length}} affected projects</strong> 

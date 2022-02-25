@@ -38,11 +38,17 @@ export async function affected() {
 export async function printAffectedReport() {
   const affectedProjects = await affected();
   const templateContent = await readFile(templatePath("affectedReportHtml.hbs"));
+  const applications = await filterApplications(affectedProjects);
+  const test = await filterTests(affectedProjects);
+  const libraries = await filterLibraries(affectedProjects);
   const report = handlebars.compile(templateContent)({
     affected: affectedProjects,
-    applications: await filterApplications(affectedProjects),
-    tests: await filterTests(affectedProjects),
-    libraries: await filterLibraries(affectedProjects),
+    applications,
+    applicationsArePlural: applications.length > 1,
+    test,
+    testArePlural: test.length > 1,
+    libraries,
+    librariesArePlural: libraries.length > 1,
   });
   console.log(report);
 }

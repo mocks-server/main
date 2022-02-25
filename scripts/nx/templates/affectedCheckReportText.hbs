@@ -6,13 +6,13 @@ Check affected projects
   - [{{#if this.readyToPublish}}OK{{else}}KO{{/if}}] {{{this.project}}}: {{{this.name}}}@{{{this.version}}}
   {{#unless this.readyToPublish}}
     {{#if this.isPublished}}
-    - Version in package.json file already exists
+    - Version in package.json file is already published
     {{/if}}
     {{#unless this.changelogUpdated}}
-    - CHANGELOG.md file not updated
+    - Version is not defined in CHANGELOG.md file</code>
     {{/unless}}
     {{#unless this.sonarConfigUpdated}}
-    - sonar-project.properties file not updated
+    - Version in sonar-project.properties file is wrong
     {{/unless}}
   {{/unless}}
 {{else}}

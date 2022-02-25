@@ -12,7 +12,7 @@
 <li>{{{test.length}}} test: {{#each test}}{{#if @index}}, {{/if}}<code>{{{this}}}</code>{{/each}}</li>
 {{/if}}
 </ul>
-<strong>Total: 5 project{{#if affectedArePlural}}s are{{else}} is{{/if}} affected by changes</h4>
+<strong>Total: {{affected.length}} project{{#if affectedArePlural}}s are{{else}} is{{/if}} affected by changes</h4>
 {{else}}
 <h4>No projects are affected by changes</h4>
 {{/if}}

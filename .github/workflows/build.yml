@@ -84,7 +84,6 @@ jobs:
             else
               echo '::set-output name=report::["main", "main-e2e"]'
             fi
-      - name: Get all
     outputs:
       matrix: ${{ steps.get-projects-array.outputs.report }}
   sonar:

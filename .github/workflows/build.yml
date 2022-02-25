@@ -6,7 +6,7 @@ on:
       - release
       - pre-release
       # - monorepo-poc
-      # - monorepo-poc-affected
+      - monorepo-poc-affected
   # pull_request:
 jobs:
   test:
@@ -42,6 +42,7 @@ jobs:
         run: pnpm run lint
       - name: Test unit
         run: pnpm run test:unit:all
+      # TODO, run affected projects E2E tests in a matrix
       - name: Test E2E
         run: pnpm run test:e2e:all
       - name: Upload test results
@@ -50,7 +51,8 @@ jobs:
           name: coverage-${{ matrix.node }}
           path: packages/main/coverage
           retention-days: 1
-  quality:
+  # TODO, merge coverage of all unit tests
+  coveralls:
     runs-on: ubuntu-latest
     needs: test
     steps:
@@ -69,6 +71,23 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           base-path: packages/main/
           path-to-lcov: ./packages/main/coverage/lcov.info
+  # TODO, build matrix dinamically based on affected projects
+  sonar:
+    runs-on: ubuntu-latest
+    needs: test
+    strategy:
+      matrix:
+        projectPath: ["packages/main"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Download test results
+        uses: actions/download-artifact@v2
+        with:
+          name: coverage-16.1.0
+          path: ${{ matrix.projectPath }}/coverage
       - name: SonarCloud Scan
         if: env.SONAR_TOKEN != ''
         uses: sonarsource/sonarcloud-github-action@master
@@ -76,4 +95,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectBaseDir: packages/main/
+          projectBaseDir: ${{ matrix.projectPath }}/

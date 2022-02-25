@@ -4,6 +4,7 @@ on:
     branches:
       - master
       - release
+      - monorepo-poc-affected
   pull_request:
 jobs:
   test:
@@ -73,18 +74,23 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
+      # TODO, return all if is branch build instead of PR
       - name: Get affected
-        id: get-affected-array
+        if: github.event_name == 'pull_request'
+        id: get-projects-array
         run: echo "::set-output name=report::$(./scripts/commands/affected-print-array.sh origin/${{github.event.pull_request.base.ref}})"
+      - name: Get all
+        if: github.event_name == 'push'
+        id: get-projects-array
+        run: echo '::set-output name=report::["main","main-e2e"]'
     outputs:
-      matrix: ${{ steps.get-affected-array.outputs.report }}
+      matrix: ${{ steps.get-projects-array.outputs.report }}
   sonar:
     runs-on: ubuntu-latest
     needs: [test, get-affected]
     strategy:
       matrix:
         projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
-    # TODO, check somehow if project has Sonar config/coverage
     steps:
       - name: Checkout
         uses: actions/checkout@v2

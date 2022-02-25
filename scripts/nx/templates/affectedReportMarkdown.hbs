@@ -1,7 +1,8 @@
 |<h3>Affected projects</h3>
 {{#if affected.length}}
-<ul><li>{{#each affected}}{{#if @index}}, {{/if}}\`{{{this}}}\`{{/each}}</li></ul>
-__Total: {{affected.length}} affected projects__ 
+<ul><li>Applications: {{#each affected}}{{#if @index}}, {{/if}}\`{{{this}}}\`{{/each}}</li></ul>
+<br/>
+<strong>Total: {{affected.length}} affected projects</strong> 
 {{else}}
-No affected projects found
+<strong>No affected projects found</strong>
 {{/if}}

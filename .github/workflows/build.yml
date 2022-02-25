@@ -46,7 +46,7 @@ jobs:
     strategy:
       matrix:
         node: ["12.22.1", "14.17.0", "16.1.0", "17.2.0"]
-        projectName: ["main-e2e"] # TODO, build matrix dinamically based on affected projects
+        projectName: ["main", "main-e2e"] # TODO, build matrix dinamically based on affected projects with e2e target
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -62,7 +62,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Test E2E
-        run: pnpm run nx test:e2e ${{ matrix.projectName }}
+        run: pnpm run nx run-many -- --target test:e2e --projects ${{ matrix.projectName }}
   coveralls:
     runs-on: ubuntu-latest
     needs: test

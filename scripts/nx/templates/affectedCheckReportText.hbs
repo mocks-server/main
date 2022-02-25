@@ -1,0 +1,25 @@
+{{{prepend}}}
+Check affected projects
+
+{{#each statuses}}
+{{#if this.name}}
+  - [{{#if this.readyToPublish}}OK{{else}}KO{{/if}}] {{{this.project}}}: {{{this.name}}}@{{{this.version}}}
+  {{#unless this.readyToPublish}}
+    {{#if this.isPublished}}
+    - Version in package.json file already exists
+    {{/if}}
+    {{#unless this.changelogUpdated}}
+    - CHANGELOG.md file not updated
+    {{/unless}}
+    {{#unless this.sonarConfigUpdated}}
+    - sonar-project.properties file not updated
+    {{/unless}}
+  {{/unless}}
+{{/if}}
+{{/each}}
+
+{{#if ok}}
+All affected projects are upgraded
+{{else}}
+Affected projects are not upgraded properly
+{{/if}}

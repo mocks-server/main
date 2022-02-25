@@ -1,0 +1,29 @@
+{{{prepend}}}
+<h3>Check affected projects</h3>
+<ul>
+{{#each statuses}}
+{{#if this.name}}
+<li>
+  {{#if this.readyToPublish}}🟢{{else}}🚫{{/if}} {{{this.project}}}: <code>{{{this.name}}}@{{{this.version}}}</code>
+  {{#unless this.readyToPublish}}
+  <ul>
+    {{#if this.isPublished}}
+      <li>Version in `package.json` file already exists</li>
+    {{/if}}
+    {{#unless this.changelogUpdated}}
+      <li>`CHANGELOG.md` file not updated</li>
+    {{/unless}}
+    {{#unless this.sonarConfigUpdated}}
+      <li>`sonar-project.properties` file not updated</li>
+    {{/unless}}
+  </ul>
+  {{/unless}}
+</li>
+{{/if}}
+{{/each}}
+</ul>
+{{#if ok}}
+<strong>🎉 All affected projects are upgraded</strong>
+{{else}}
+<strong>😞 Affected projects are not upgraded properly</strong>
+{{/if}}

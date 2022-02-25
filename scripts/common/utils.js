@@ -27,3 +27,8 @@ export async function readJson(filePath) {
   const fileContent = await readFile(filePath);
   return JSON.parse(fileContent);
 }
+
+export function getJsonFromStdout(stdout) {
+  const splitted = stdout.trim().split(/\r?\n/);
+  return splitted.slice(splitted.indexOf("{"), splitted.indexOf("}") + 1).join("");
+}

@@ -1,7 +1,4 @@
-import path from "node:path";
-
-import { ROOT_PATH, PNPM_WORKSPACE_CONFIG } from "../common/paths.js";
-import { readJson } from "../common/utils.js";
+import { readProjectJson } from "../projects/utils.js";
 
 const TYPE_APPLICATION = "application";
 const TYPE_LIBRARY = "library";
@@ -11,23 +8,8 @@ const TEST_SUFFIX = "-e2e";
 
 const PROJECT_CONFIG_FILE = "project.json";
 
-export function pnpmWorskpaceConfig() {
-  return readJson(PNPM_WORKSPACE_CONFIG);
-}
-
-export async function pnpmWorskpaceProjectConfig(projectName) {
-  const config = await pnpmWorskpaceConfig();
-  return config.projects[projectName];
-}
-
-export async function projectPath(projectName) {
-  const projectPathBasedOnPnpmConfig = await pnpmWorskpaceProjectConfig(projectName);
-  return path.resolve(ROOT_PATH, projectPathBasedOnPnpmConfig);
-}
-
 async function projectConfig(projectName) {
-  const projectConfigPath = await projectPath(projectName);
-  return readJson(path.resolve(projectConfigPath, PROJECT_CONFIG_FILE));
+  return readProjectJson(projectName, PROJECT_CONFIG_FILE);
 }
 
 async function projectType(projectName) {

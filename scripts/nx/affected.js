@@ -2,8 +2,9 @@ import path from "node:path";
 import handlebars from "handlebars";
 
 import { pnpmRun } from "../pnpm/run.js";
-import { dirName, readFile } from "../common/utils.js";
+import { dirName, readFile, getJsonFromStdout } from "../common/utils.js";
 import { REPORT_FORMAT_TEXT } from "../common/constants.js";
+import { projectsAreReadyToPublish, projectsStatus } from "../projects/config.js";
 
 import { filterApplications, filterTests, filterLibraries } from "./config.js";
 
@@ -15,13 +16,8 @@ function templatePath(templateName) {
   return path.resolve(__DIRNAME, TEMPLATES_FOLDER, templateName);
 }
 
-function getJsonFromReport(textReport) {
-  const splitted = textReport.trim().split(/\r?\n/);
-  return splitted.slice(splitted.indexOf("{"), splitted.indexOf("}") + 1).join("");
-}
-
 function parseReport(textReport) {
-  return JSON.parse(getJsonFromReport(textReport));
+  return JSON.parse(getJsonFromStdout(textReport));
 }
 
 export async function affected(base) {
@@ -36,7 +32,7 @@ function arrayHasMany(array) {
   return array.length > 1;
 }
 
-export async function printAffectedReport({ format, prepend, base = DEFAULT_BASE, head }) {
+export async function printAffectedReport({ format, prepend, base = DEFAULT_BASE }) {
   const template =
     format === REPORT_FORMAT_TEXT ? "affectedReportText.hbs" : "affectedReportHtml.hbs";
   const affectedProjects = await affected(base);
@@ -46,7 +42,6 @@ export async function printAffectedReport({ format, prepend, base = DEFAULT_BASE
   const libraries = await filterLibraries(affectedProjects);
   const report = handlebars.compile(templateContent)({
     base,
-    head,
     prepend,
     affected: affectedProjects,
     affectedArePlural: arrayHasMany(affectedProjects),
@@ -58,4 +53,31 @@ export async function printAffectedReport({ format, prepend, base = DEFAULT_BASE
     librariesArePlural: arrayHasMany(libraries),
   });
   console.log(report);
+}
+
+export async function printAffectedCheckReport({ format, prepend, base = DEFAULT_BASE }) {
+  const template =
+    format === REPORT_FORMAT_TEXT ? "affectedCheckReportText.hbs" : "affectedCheckReportHtml.hbs";
+  const affectedProjects = await affected(base);
+  const templateContent = await readFile(templatePath(template));
+  const statuses = await projectsStatus(affectedProjects);
+  const ok = await projectsAreReadyToPublish(affectedProjects);
+
+  console.log(statuses);
+
+  const report = handlebars.compile(templateContent)({
+    base,
+    prepend,
+    statuses,
+    ok,
+  });
+  console.log(report);
+}
+
+export async function checkAffected({ base = DEFAULT_BASE }) {
+  const affectedProjects = await affected(base);
+  const ok = await projectsAreReadyToPublish(affectedProjects);
+  if (!ok) {
+    throw new Error("Affected projects not upgraded properly");
+  }
 }

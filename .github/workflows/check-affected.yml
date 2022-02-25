@@ -40,4 +40,4 @@ jobs:
           check_for_duplicate_msg: false
       - name: Check affected
         id: check-affected
-        run: pnpm run affected:check -- --base origin/${{github.event.pull_request.base.ref}})
+        run: pnpm run affected:check -- --base origin/${{github.event.pull_request.base.ref}}

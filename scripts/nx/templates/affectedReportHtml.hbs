@@ -1,5 +1,6 @@
-|<h3>✏️ Changes impact</h3>
+|
 {{#if affected.length}}
+<h4>✏️ {{affected.length}} project{{#if affectedArePlural}}s are{{else}} is{{/if}} affected by changes:</h4>
 <ul>
 {{#if applications.length}}
 <li>{{{applications.length}}} {{#if applicationsArePlural}}applications{{else}}application{{/if}}: {{#each applications}}{{#if @index}}, {{/if}}<code>{{{this}}}</code>{{/each}}</li>
@@ -11,7 +12,6 @@
 <li>{{{test.length}}} test: {{#each test}}{{#if @index}}, {{/if}}<code>{{{this}}}</code>{{/each}}</li>
 {{/if}}
 </ul>
-<strong>Total: {{affected.length}} affected projects</strong> 
 {{else}}
-<strong>No affected projects found</strong>
+<h4>✏️ No projects are affected by changes</h4>
 {{/if}}

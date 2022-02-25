@@ -3,13 +3,15 @@ import handlebars from "handlebars";
 
 import { pnpmRun } from "../pnpm/run.js";
 import { dirName, readFile } from "../common/utils.js";
+import { REPORT_FORMAT_TEXT } from "../common/constants.js";
 
 import { filterApplications, filterTests, filterLibraries } from "./config.js";
 
+const TEMPLATES_FOLDER = "templates";
 const __DIRNAME = dirName(import.meta.url);
 
 function templatePath(templateName) {
-  return path.resolve(__DIRNAME, "templates", templateName);
+  return path.resolve(__DIRNAME, TEMPLATES_FOLDER, templateName);
 }
 
 function getJsonFromReport(textReport) {
@@ -35,20 +37,27 @@ export async function affected() {
   return textReport.projects || [];
 }
 
-export async function printAffectedReport() {
+function arrayHasMany(array) {
+  return array.length > 1;
+}
+
+export async function printAffectedReport(format) {
+  const template =
+    format === REPORT_FORMAT_TEXT ? "affectedReportText.hbs" : "affectedReportHtml.hbs";
   const affectedProjects = await affected();
-  const templateContent = await readFile(templatePath("affectedReportHtml.hbs"));
+  const templateContent = await readFile(templatePath(template));
   const applications = await filterApplications(affectedProjects);
   const test = await filterTests(affectedProjects);
   const libraries = await filterLibraries(affectedProjects);
   const report = handlebars.compile(templateContent)({
     affected: affectedProjects,
+    affectedArePlural: arrayHasMany(affectedProjects),
     applications,
-    applicationsArePlural: applications.length > 1,
+    applicationsArePlural: arrayHasMany(applications),
     test,
-    testArePlural: test.length > 1,
+    testArePlural: arrayHasMany(test),
     libraries,
-    librariesArePlural: libraries.length > 1,
+    librariesArePlural: arrayHasMany(libraries),
   });
   console.log(report);
 }

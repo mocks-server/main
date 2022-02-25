@@ -62,7 +62,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Test E2E
-        run: pnpm run nx test-e2e ${{ matrix.projectName }}
+        run: pnpm run nx test:e2e ${{ matrix.projectName }}
   coveralls:
     runs-on: ubuntu-latest
     needs: test

@@ -46,13 +46,12 @@ jobs:
         run: echo "::set-output name=report::$(./scripts/commands/affected-report.sh)"
       - name: Comment affected
         if: github.event_name == 'pull_request'
-        uses: unsplash/comment-on-pr@v1.3.0
+        uses: unsplash/comment-on-pr@v1.3.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           msg: ${{ steps.affected-report.outputs.report }}
           check_for_duplicate_msg: true
-          duplicate_msg_pattern: ${{ steps.affected-report.outputs.report }}
       - name: Lint
         run: pnpm run lint
       - name: Test unit

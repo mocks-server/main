@@ -7,6 +7,7 @@ import { REPORT_FORMAT_TEXT } from "../common/constants.js";
 
 import { filterApplications, filterTests, filterLibraries } from "./config.js";
 
+const DEFAULT_BASE = "origin/release";
 const TEMPLATES_FOLDER = "templates";
 const __DIRNAME = dirName(import.meta.url);
 
@@ -20,19 +21,13 @@ function getJsonFromReport(textReport) {
 }
 
 function parseReport(textReport) {
-  let result;
-  try {
-    result = JSON.parse(getJsonFromReport(textReport));
-  } catch (error) {
-    console.warn("Error parsing nx report");
-    result = {};
-  }
-  return result;
+  return JSON.parse(getJsonFromReport(textReport));
 }
 
-export async function affected() {
+export async function affected(base) {
+  const baseArgument = base || DEFAULT_BASE;
   const textReport = parseReport(
-    await pnpmRun(["nx", "print-affected", "--", "--base", "origin/release"], { silent: true })
+    await pnpmRun(["nx", "print-affected", "--", "--base", baseArgument], { silent: true })
   );
   return textReport.projects || [];
 }
@@ -41,15 +36,17 @@ function arrayHasMany(array) {
   return array.length > 1;
 }
 
-export async function printAffectedReport({ format, prepend }) {
+export async function printAffectedReport({ format, prepend, base = DEFAULT_BASE, head }) {
   const template =
     format === REPORT_FORMAT_TEXT ? "affectedReportText.hbs" : "affectedReportHtml.hbs";
-  const affectedProjects = await affected();
+  const affectedProjects = await affected(base);
   const templateContent = await readFile(templatePath(template));
   const applications = await filterApplications(affectedProjects);
   const test = await filterTests(affectedProjects);
   const libraries = await filterLibraries(affectedProjects);
   const report = handlebars.compile(templateContent)({
+    base,
+    head,
     prepend,
     affected: affectedProjects,
     affectedArePlural: arrayHasMany(affectedProjects),

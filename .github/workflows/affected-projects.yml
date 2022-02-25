@@ -15,11 +15,7 @@ jobs:
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
         with:
-          main-branch-name: 'release'
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
-        id: extract-branch
+          main-branch-name: ${{github.event.pull_request.base.ref}}
       - name: Install pnpm
         uses: pnpm/action-setup@v2.0.1
         with:
@@ -33,7 +29,7 @@ jobs:
         run: pnpm install
       - name: Affected report
         id: affected-report
-        run: echo "::set-output name=report::$(./scripts/commands/affected-report.sh)"
+        run: echo "::set-output name=report::$(./scripts/commands/affected-report.sh ${{github.event.pull_request.base.ref}})"
       - name: Comment affected
         if: github.event_name == 'pull_request'
         uses: unsplash/comment-on-pr@v1.3.0

@@ -10,8 +10,9 @@ program
       .choices([REPORT_FORMAT_TEXT, REPORT_FORMAT_HTML])
       .default(REPORT_FORMAT_TEXT)
   )
-  .addOption(new Option("--prepend <prepend>", "Prepend text to the report"));
+  .addOption(new Option("--prepend <prepend>", "Prepend text to the report"))
+  .addOption(new Option("--base <base>", "Base of the current branch"));
 
-const { format, prepend } = program.parse(process.argv).opts();
+const { format, prepend, base } = program.parse(process.argv).opts();
 
-catchCommandError(printAffectedReport({ format, prepend }));
+catchCommandError(printAffectedReport({ format, prepend, base }));

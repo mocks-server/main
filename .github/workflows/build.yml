@@ -4,10 +4,7 @@ on:
     branches:
       - master
       - release
-      - pre-release
-      # - monorepo-poc
-      - monorepo-poc-affected
-  # pull_request:
+  pull_request:
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -17,16 +14,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
         with:
           main-branch-name: 'release'
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
-        id: extract-branch
       - name: Install pnpm
         uses: pnpm/action-setup@v2.0.1
         with:
@@ -42,42 +33,57 @@ jobs:
         run: pnpm run lint
       - name: Test unit
         run: pnpm run test:unit:all
-      # TODO, run affected projects E2E tests in a matrix
-      - name: Test E2E
-        run: pnpm run test:e2e:all
       - name: Upload test results
         uses: actions/upload-artifact@v2
         with:
           name: coverage-${{ matrix.node }}
-          path: packages/main/coverage
+          path: packages/main/coverage # TODO, merge coverage from all unit tests
           retention-days: 1
-  # TODO, merge coverage of all unit tests
+  test-e2e:
+    runs-on: ubuntu-latest
+    strategy:
+    matrix:
+      node: ["12.22.1", "14.17.0", "16.1.0", "17.2.0"]
+      projectName: ["main"] # TODO, build matrix dinamically based on affected projects
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.15.1
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Test E2E
+        run: pnpm run nx test-e2e ${{ matrix.projectName }}
   coveralls:
     runs-on: ubuntu-latest
     needs: test
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - name: Download test results
         uses: actions/download-artifact@v2
         with:
           name: coverage-16.1.0
-          path: packages/main/coverage
+          path: packages/main/coverage # TODO, read merged coverage
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          base-path: packages/main/
-          path-to-lcov: ./packages/main/coverage/lcov.info
-  # TODO, build matrix dinamically based on affected projects
+          base-path: packages/main/ # TODO, read merged coverage
+          path-to-lcov: ./packages/main/coverage/lcov.info # TODO, read merged coverage
   sonar:
     runs-on: ubuntu-latest
     needs: test
     strategy:
       matrix:
-        projectPath: ["packages/main"]
+        projectName: ["main"] # TODO, build matrix dinamically based on affected projects
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -87,7 +93,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: coverage-16.1.0
-          path: ${{ matrix.projectPath }}/coverage
+          path: packages/${{ matrix.projectName }}/coverage # TODO, get projectPath based on projectName from config using sh
       - name: SonarCloud Scan
         if: env.SONAR_TOKEN != ''
         uses: sonarsource/sonarcloud-github-action@master
@@ -95,4 +101,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectBaseDir: ${{ matrix.projectPath }}/
+          projectBaseDir: packages/${{ matrix.projectName }}/ # TODO, get projectPath based on projectName from config using sh

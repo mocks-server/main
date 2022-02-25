@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        #node: ["12.22.1", "14.17.0", "16.1.0", "17.2.0"]
+        # node: ["12.22.1", "14.17.0", "16.1.0", "17.2.0"]
         node: ["16.1.0"]
     steps:
       - name: Checkout
@@ -43,17 +43,16 @@ jobs:
         run: pnpm run affected:report
       - name: Affected report
         id: affected-report
-        run: echo "AFFECTED_REPORT=$(pnpm run affected:report)" >> $GITHUB_ENV
+        run: echo "::set-output name=report::$(pnpm run affected:report | tr '\n' ' ')"
       - name: Preview affected report output
-        run: echo "${{env.AFFECTED_REPORT}}"
+        run: echo "${{ steps.affected-report.outputs.report }}"
       - name: Comment affected
         if: github.event_name == 'pull_request'
         uses: unsplash/comment-on-pr@v1.3.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          msg: $(pnpm run affected:report)
-          check_for_duplicate_msg: false
+          msg: ${{ steps.affected-report.outputs.report }}
       - name: Lint
         run: pnpm run lint
       - name: Test unit

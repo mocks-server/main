@@ -1,6 +1,5 @@
 name: build
 env:
-  NODE_VERSIONS: '["12.22.1","14.17.0","16.1.0","17.2.0"]'
   NODE_CURRENT_VERSION: "16.1.0"
 on:
   push:
@@ -65,7 +64,7 @@ jobs:
     needs: [lint, get-affected]
     strategy:
       matrix:
-        node: ${{fromJson("$NODE_VERSIONS")}}
+        node: ["12.22.1","14.17.0","16.1.0","17.2.0"]
         projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
     env:
       NODE: ${{ matrix.node }}
@@ -154,7 +153,7 @@ jobs:
     needs: get-affected
     strategy:
       matrix:
-        node: ${{fromJson("$NODE_VERSIONS")}}
+        node: ["12.22.1","14.17.0","16.1.0","17.2.0"]
         projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
     steps:
       - name: Checkout

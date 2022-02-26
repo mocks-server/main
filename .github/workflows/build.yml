@@ -32,6 +32,8 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
+      - name: Test all projects
+        run: echo '$(./scripts/commands/projects-print-array.sh)'
       - name: Get affected
         id: get-projects-array
         run: |

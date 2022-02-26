@@ -9,14 +9,19 @@ export async function projectPath(projectName) {
   return path.resolve(ROOT_PATH, projectPathBasedOnPnpmConfig);
 }
 
+export async function projectFilePath(projectName, relativeFilePath) {
+  const projectRootPath = await projectPath(projectName);
+  return path.resolve(projectRootPath, relativeFilePath);
+}
+
 export async function readProjectJson(projectName, fileName) {
-  const projectConfigPath = await projectPath(projectName);
-  return readJson(path.resolve(projectConfigPath, fileName));
+  const projectJson = await projectFilePath(projectName, fileName);
+  return readJson(projectJson);
 }
 
 export async function readProjectFile(projectName, fileName) {
-  const projectConfigPath = await projectPath(projectName);
-  return readFile(path.resolve(projectConfigPath, fileName));
+  const projectFile = await projectFilePath(projectName, fileName);
+  return readFile(projectFile);
 }
 
 export async function allProjectNames() {

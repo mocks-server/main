@@ -1,6 +1,5 @@
 {
   "name": "@mocks-server/main-copy",
-  "private": true,
   "version": "2.6.1",
   "description": "Copy of the main package for testing monorepo purposes",
   "keywords": [

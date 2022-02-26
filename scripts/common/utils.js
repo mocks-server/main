@@ -19,6 +19,10 @@ export function catchCommandError(command) {
   });
 }
 
+export function fileExists(filePath) {
+  return fsExtra.existsSync(filePath);
+}
+
 export function readFile(filePath) {
   return fsExtra.readFile(filePath, READ_WRITE_FILE_OPTIONS);
 }

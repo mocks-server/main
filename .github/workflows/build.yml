@@ -65,7 +65,7 @@ jobs:
     needs: [lint, get-affected]
     strategy:
       matrix:
-        node: ${{fromJson(env.NODE_VERSIONS)}}
+        node: ${{fromJson($NODE_VERSIONS)}}
         projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
     env:
       NODE: ${{ matrix.node }}
@@ -154,7 +154,7 @@ jobs:
     needs: get-affected
     strategy:
       matrix:
-        node: ${{fromJson(env.NODE_VERSIONS)}}
+        node: ${{fromJson($NODE_VERSIONS)}}
         projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
     steps:
       - name: Checkout

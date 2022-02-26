@@ -10,5 +10,5 @@ coverage:
 flags:
   main:
     paths:
-      - packages/main/lib/**/*.js
+      - packages/main/
     carryforward: true

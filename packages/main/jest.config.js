@@ -24,6 +24,8 @@ module.exports = {
     },
   },
 
+  coverageReporters: [["lcov", { projectRoot: "../../" }], "text-summary"],
+
   // The glob patterns Jest uses to detect test files
   testMatch: ["**/test/**/?(*.)+(spec|test).js?(x)"],
   //testMatch: ["**/test/unit/core/Plugins.spec.js"],

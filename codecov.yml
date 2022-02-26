@@ -4,7 +4,9 @@ coverage:
   status:
     project:
       default:
-        target: 90%
+        target: auto
+        threshold: 0%
+        base: auto
       main:
         flags:
           - main

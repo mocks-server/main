@@ -4,7 +4,7 @@
 {{#each statuses}}
 {{#unless this.private}}
 <li>
-  {{#if this.readyToPublish}}{{#if this.showWarning}}🟡{{else}}🟢{{/if}}{{else}}🚫{{/if}} <strong>{{{this.project}}}</strong>: Package <code>{{{this.name}}}@{{{this.version}}}</code>
+  {{#if this.readyToPublish}}🟢{{else}}🚫{{/if}} <strong>{{{this.project}}}</strong>: Package <code>{{{this.name}}}@{{{this.version}}}</code>
   {{#if this.showDetails}}
   <ul>
     {{#if this.isPublished}}

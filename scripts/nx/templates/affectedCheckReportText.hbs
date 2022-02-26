@@ -3,7 +3,7 @@ Check affected projects versions
 
 {{#each statuses}}
 {{#unless this.private}}
-  - [{{#if this.readyToPublish}}{{#if this.showWarning}}WARN{{else}}OK{{/if}}{{else}}KO{{/if}}] {{{this.project}}}: Package {{{this.name}}}@{{{this.version}}}
+  - [{{#if this.readyToPublish}}OK{{else}}KO{{/if}}] {{{this.project}}}: Package {{{this.name}}}@{{{this.version}}}
   {{#if this.showDetails}}
     {{#if this.isPublished}}
     - Version {{{this.version}}} is already published

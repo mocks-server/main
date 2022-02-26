@@ -84,7 +84,6 @@ export async function printAffectedCheckReport({ format, prepend = "", base = DE
       showDetails:
         !status.private &&
         (!status.readyToPublish || status.errorCheckingPublished || !status.hasSonarConfig),
-      showWarning: !status.private && (status.errorCheckingPublished || !status.hasSonarConfig),
     };
   });
 

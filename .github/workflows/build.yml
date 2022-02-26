@@ -12,6 +12,8 @@ jobs:
     strategy:
       matrix:
         node: ["12.22.1", "14.17.0", "16.1.0", "17.2.0"]
+    env:
+      NODE: ${{ matrix.node }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -36,6 +38,15 @@ jobs:
           name: coverage-${{ matrix.node }}
           path: packages/main/coverage # TODO, merge coverage from all unit tests
           retention-days: 1
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          directory: ./packages/main/coverage
+          fail_ci_if_error: true
+          files: ./lcov.info
+          env_vars: NODE
+          flags: main
+          verbose: true
   coveralls:
     runs-on: ubuntu-latest
     needs: test

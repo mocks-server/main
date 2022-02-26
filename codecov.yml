@@ -14,9 +14,9 @@ coverage:
 flags:
   main:
     paths:
-      - packages/main/*
+      - packages/main/**/*.js
     carryforward: true
   main-copy:
     paths:
-      - packages/main-copy/*
+      - packages/main-copy/**/*.js
     carryforward: true

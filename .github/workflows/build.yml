@@ -1,4 +1,7 @@
 name: build
+env:
+  NODE_VERSIONS: ["12.22.1", "14.17.0", "16.1.0", "17.2.0"]
+  NODE_CURRENT_VERSION: "16.1.0"
 on:
   push:
     branches:
@@ -62,7 +65,7 @@ jobs:
     needs: [lint, get-affected]
     strategy:
       matrix:
-        node: ["12.22.1", "14.17.0", "16.1.0", "17.2.0"]
+        node: env.NODE_VERSIONS
         projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
     env:
       NODE: ${{ matrix.node }}
@@ -94,7 +97,7 @@ jobs:
         with:
           files: "${{steps.get-project-path.outputs.prop}}/coverage/lcov.info"
       - name: Upload test results
-        if: matrix.node == '16.1.0'
+        if: matrix.node == env.NODE_CURRENT_VERSION
         uses: actions/upload-artifact@v2
         with:
           name: coverage-${{ matrix.node }}-${{matrix.projectName}}
@@ -136,7 +139,7 @@ jobs:
         if: steps.check-sonar-config.outputs.files_exists == 'true'
         uses: actions/download-artifact@v2
         with:
-          name: coverage-16.1.0-${{matrix.projectName}}
+          name: coverage-${{env.NODE_CURRENT_VERSION}}-${{matrix.projectName}}
           path: ${{steps.get-project-path.outputs.prop}}/coverage
       - name: SonarCloud Scan
         if: ${{ env.SONAR_TOKEN != '' &&  steps.check-sonar-config.outputs.files_exists == 'true' }}
@@ -151,7 +154,7 @@ jobs:
     needs: get-affected
     strategy:
       matrix:
-        node: ["12.22.1", "14.17.0", "16.1.0", "17.2.0"]
+        node: env.NODE_VERSIONS
         projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
     steps:
       - name: Checkout

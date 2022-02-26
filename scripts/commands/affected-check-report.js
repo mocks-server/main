@@ -1,7 +1,7 @@
 import { program, Option } from "commander";
 
 import { catchCommandError } from "../common/utils.js";
-import { printAffectedCheckReport } from "../nx/affected.js";
+import { printAffectedCheckReport } from "../nx/projects.js";
 import { REPORT_FORMAT_HTML, REPORT_FORMAT_TEXT } from "../common/constants.js";
 
 program

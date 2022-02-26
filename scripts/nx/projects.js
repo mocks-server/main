@@ -5,6 +5,7 @@ import { pnpmRun } from "../pnpm/run.js";
 import { dirName, readFile, getJsonFromStdout } from "../common/utils.js";
 import { REPORT_FORMAT_TEXT } from "../common/constants.js";
 import { projectsAreReadyToPublish, projectsStatus } from "../projects/config.js";
+import { allProjectNames } from "../projects/utils.js";
 
 import { filterApplications, filterTests, filterLibraries } from "./config.js";
 
@@ -32,9 +33,18 @@ function arrayHasMany(array) {
   return array.length > 1;
 }
 
+function stringifyObjectWithPrefix(object, prefix) {
+  return `${prefix}${JSON.stringify(object)}`;
+}
+
 export async function printAffectedArray({ prepend = "", base = DEFAULT_BASE }) {
   const affectedProjects = await affected(base);
-  console.log(`${prepend}${JSON.stringify(affectedProjects)}`);
+  console.log(stringifyObjectWithPrefix(affectedProjects, prepend));
+}
+
+export async function printProjectsArray({ prepend = "" }) {
+  const allProjects = await allProjectNames();
+  console.log(stringifyObjectWithPrefix(allProjects, prepend));
 }
 
 export async function printAffectedReport({ format, prepend = "", base = DEFAULT_BASE }) {

@@ -1,7 +1,7 @@
 import { program, Option } from "commander";
 
 import { catchCommandError } from "../common/utils.js";
-import { checkAffected } from "../nx/affected.js";
+import { checkAffected } from "../nx/projects.js";
 
 program.addOption(new Option("--base <base>", "Base of the current branch"));
 

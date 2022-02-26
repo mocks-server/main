@@ -1,7 +1,7 @@
 import { program, Option } from "commander";
 
 import { catchCommandError } from "../common/utils.js";
-import { printAffectedArray } from "../nx/affected.js";
+import { printAffectedArray } from "../nx/projects.js";
 
 program
   .addOption(new Option("--prepend <prepend>", "Prepend text to the report"))

@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - release
+      - monorepo-poc
       - monorepo-poc-affected
   pull_request:
 jobs:
@@ -37,7 +38,7 @@ jobs:
             if [[ "${{github.event.pull_request.base.ref}}" != "" ]]; then
               echo "::set-output name=report::$(./scripts/commands/affected-print-array.sh origin/${{github.event.pull_request.base.ref}})"
             else
-              echo '::set-output name=report::["main", "main-e2e"]'
+              echo '::set-output name=report::$(./scripts/commands/projects-print-array.sh)'
             fi
     outputs:
       matrix: ${{ steps.get-projects-array.outputs.report }}

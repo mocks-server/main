@@ -59,10 +59,11 @@ jobs:
         run: pnpm install
       - name: Lint
         run: pnpm run lint
-  test:
+  test-unit:
     runs-on: ubuntu-latest
     needs: [lint, get-affected]
     strategy:
+      max-parallel: 4
       matrix:
         node: ["12.22.1","14.17.0","16.1.0","17.2.0"]
         projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
@@ -114,8 +115,9 @@ jobs:
           verbose: true
   sonar:
     runs-on: ubuntu-latest
-    needs: [test, get-affected]
+    needs: [test-unit, get-affected]
     strategy:
+      max-parallel: 4
       matrix:
         projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
     steps:
@@ -153,6 +155,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: get-affected
     strategy:
+      max-parallel: 4
       matrix:
         node: ["12.22.1","14.17.0","16.1.0","17.2.0"]
         projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}

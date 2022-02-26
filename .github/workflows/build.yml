@@ -94,7 +94,7 @@ jobs:
         with:
           files: "${{steps.get-project-path.outputs.prop}}/coverage/lcov.info"
       - name: Upload test results
-        if: ${{ steps.check-coverage.outputs.files_exists == 'true' && matrix.node == '16.1.0' }}
+        if: matrix.node == '16.1.0'
         uses: actions/upload-artifact@v2
         with:
           name: coverage-${{ matrix.node }}-${{matrix.projectName}}

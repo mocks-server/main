@@ -1,0 +1,14 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 90%
+      main:
+        target: 100%
+        flags:
+          - main
+flags:
+  main:
+    paths:
+      - packages/main/lib/**/*.js
+    carryforward: true

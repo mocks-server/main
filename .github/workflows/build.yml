@@ -33,14 +33,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Test all projects
-        run: echo '$(./scripts/commands/projects-print-array.sh)'
+        run: ./scripts/commands/projects-print-array.sh
       - name: Get affected
         id: get-projects-array
         run: |
             if [[ "${{github.event.pull_request.base.ref}}" != "" ]]; then
               echo "::set-output name=report::$(./scripts/commands/affected-print-array.sh origin/${{github.event.pull_request.base.ref}})"
             else
-              echo '::set-output name=report::$(./scripts/commands/projects-print-array.sh)'
+              echo "::set-output name=report::$(./scripts/commands/projects-print-array.sh)"
             fi
     outputs:
       matrix: ${{ steps.get-projects-array.outputs.report }}

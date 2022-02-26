@@ -2,34 +2,46 @@
   "private": true,
   "scripts": {
     "nx": "nx",
-    "lint": "eslint packages test",
+    "lint": "eslint packages test scripts",
     "lint-staged": "lint-staged",
     "prepare": "is-ci || husky install",
+    "projects:print:array": "node ./scripts/commands/projects-print-array.js",
+    "affected:print:array": "node ./scripts/commands/affected-print-array.js",
+    "affected:report": "node ./scripts/commands/affected-report.js",
+    "affected:check": "node ./scripts/commands/affected-check.js",
+    "affected:check:report": "node ./scripts/commands/affected-check-report.js",
     "test:unit:all": "nx run-many --target=test:unit --all",
     "test:e2e:all": "nx run-many --target=test:e2e --all",
     "test:all": "pnpm run test:unit:all && npm run test:e2e:all",
     "graph": "nx graph"
   },
   "devDependencies": {
+    "@babel/core": "7.17.5",
+    "@babel/eslint-parser": "7.17.0",
+    "@nrwl/cli": "13.8.3",
+    "@nrwl/tao": "13.8.3",
+    "@nrwl/workspace": "13.8.3",
+    "commander": "^9.0.0",
+    "cross-spawn": "7.0.3",
     "eslint": "8.9.0",
     "eslint-config-prettier": "8.4.0",
     "eslint-plugin-prettier": "4.0.0",
+    "fs-extra": "10.0.1",
+    "handlebars": "4.7.7",
     "husky": "7.0.4",
     "is-ci": "3.0.1",
     "jest": "27.5.1",
     "lint-staged": "12.3.4",
     "prettier": "2.5.1",
-    "@nrwl/workspace": "13.8.3",
-    "@nrwl/cli": "13.8.3",
-    "@nrwl/tao": "13.8.3",
     "sinon": "12.0.1",
     "typescript": "4.2.4"
-  },
-  "engines": {
-    "node": ">=12.0.0"
   },
   "lint-staged": {
     "packages/**/*.js": "eslint",
     "*.js": "eslint"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=12.0.0"
   }
 }

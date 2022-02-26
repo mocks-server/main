@@ -1,0 +1,19 @@
+{{{prepend}}}
+<h3>Affected projects</h3>
+🔎 Comparing current branch with <code>{{{base}}}</code><br/><br/>
+{{#if affected.length}}
+<ul>
+{{#if applications.length}}
+<li>{{{applications.length}}} {{#if applicationsArePlural}}applications{{else}}application{{/if}}: {{#each applications}}{{#if @index}}, {{/if}}<code>{{{this}}}</code>{{/each}}</li>
+{{/if}}
+{{#if libraries.length}}
+<li>{{{libraries.length}}} {{#if librariesArePlural}}libraries{{else}}library{{/if}}: {{#each libraries}}{{#if @index}}, {{/if}}<code>{{{this}}}</code>{{/each}}</li>
+{{/if}}
+{{#if test.length}}
+<li>{{{test.length}}} test: {{#each test}}{{#if @index}}, {{/if}}<code>{{{this}}}</code>{{/each}}</li>
+{{/if}}
+</ul>
+<strong>Total: {{affected.length}} project{{#if affectedArePlural}}s are{{else}} is{{/if}} affected by changes</h4>
+{{else}}
+<strong>No projects are affected by changes<strong>
+{{/if}}

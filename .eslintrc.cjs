@@ -35,5 +35,17 @@ module.exports = {
         it: true,
       },
     },
+    {
+      files: ["scripts/**/*.js"],
+      parser: "@babel/eslint-parser",
+      parserOptions: {
+        sourceType: "module",
+        allowImportExportEverywhere: true,
+        requireConfigFile: false,
+      },
+      globals: {
+        module: true,
+      },
+    },
   ],
 };

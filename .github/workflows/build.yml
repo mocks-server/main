@@ -7,63 +7,6 @@ on:
       - monorepo-poc-affected
   pull_request:
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: ["12.22.1", "14.17.0", "16.1.0", "17.2.0"]
-    env:
-      NODE: ${{ matrix.node }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 6.15.1
-      - name: Use Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node }}
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm install
-      - name: Lint
-        run: pnpm run lint
-      - name: Test unit
-        run: pnpm run test:unit:all
-      - name: Upload test results
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage-${{ matrix.node }}
-          path: packages/main/coverage # TODO, merge coverage from all unit tests
-          retention-days: 1
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          directory: ./packages/main/coverage
-          fail_ci_if_error: true
-          files: lcov.info
-          env_vars: NODE
-          flags: main
-          verbose: true
-  coveralls:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Download test results
-        uses: actions/download-artifact@v2
-        with:
-          name: coverage-16.1.0
-          path: packages/main/coverage # TODO, read merged coverage
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          base-path: packages/main/ # TODO, read merged coverage
-          path-to-lcov: ./packages/main/coverage/lcov.info # TODO, read merged coverage
   get-affected:
     runs-on: ubuntu-latest
     steps:
@@ -82,13 +25,12 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node }}
+          node-version: "16.x"
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
       - name: Get affected
         id: get-projects-array
-        # TODO, add command to return all projects
         run: |
             if [[ "${{github.event.pull_request.base.ref}}" != "" ]]; then
               echo "::set-output name=report::$(./scripts/commands/affected-print-array.sh origin/${{github.event.pull_request.base.ref}})"
@@ -97,6 +39,77 @@ jobs:
             fi
     outputs:
       matrix: ${{ steps.get-projects-array.outputs.report }}
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.15.1
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Lint
+        run: pnpm run lint
+  test:
+    runs-on: ubuntu-latest
+    needs: [lint, get-affected]
+    strategy:
+      matrix:
+        node: ["12.22.1", "14.17.0", "16.1.0", "17.2.0"]
+        projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
+    env:
+      NODE: ${{ matrix.node }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Get project path
+        id: get-project-path
+        uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: "workspace.json"
+          prop_path: "projects.${{matrix.projectName}}"
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.15.1
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Test unit
+        run: pnpm run nx run-many -- --target test:unit --projects ${{ matrix.projectName }}
+      - name: Check if coverage exists
+        id: check-coverage
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "${{steps.get-project-path.outputs.prop}}/coverage/lcov.info"
+      - name: Upload test results
+        if: ${{ steps.check-coverage.outputs.files_exists == 'true' && matrix.node == '16.1.0' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-${{ matrix.node }}-${{matrix.projectName}}
+          path: ${{steps.get-project-path.outputs.prop}}/coverage
+          retention-days: 1
+      - name: Upload coverage to Codecov
+        if: steps.check-coverage.outputs.files_exists == 'true'
+        uses: codecov/codecov-action@v2
+        with:
+          directory: ./${{steps.get-project-path.outputs.prop}}/coverage
+          fail_ci_if_error: true
+          files: lcov.info
+          env_vars: NODE
+          flags: ${{ matrix.projectName }}
+          verbose: true
   sonar:
     runs-on: ubuntu-latest
     needs: [test, get-affected]
@@ -123,7 +136,7 @@ jobs:
         if: steps.check-sonar-config.outputs.files_exists == 'true'
         uses: actions/download-artifact@v2
         with:
-          name: coverage-16.1.0
+          name: coverage-16.1.0-${{matrix.projectName}}
           path: ${{steps.get-project-path.outputs.prop}}/coverage
       - name: SonarCloud Scan
         if: ${{ env.SONAR_TOKEN != '' &&  steps.check-sonar-config.outputs.files_exists == 'true' }}

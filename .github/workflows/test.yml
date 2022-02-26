@@ -1,4 +1,4 @@
-name: build
+name: test
 env:
   NODE_CURRENT_VERSION: "16.1.0"
 on:
@@ -24,7 +24,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2.0.1
         with:
-          version: 6.15.1
+          version: "6.x"
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
@@ -52,7 +52,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2.0.1
         with:
-          version: 6.15.1
+          version: "6.x"
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
@@ -84,7 +84,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2.0.1
         with:
-          version: 6.15.1
+          version: "6.x"
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
@@ -168,7 +168,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2.0.1
         with:
-          version: 6.15.1
+          version: "6.x"
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:

@@ -43,7 +43,7 @@ jobs:
         with:
           directory: ./packages/main/coverage
           fail_ci_if_error: true
-          files: ./lcov.info
+          files: lcov.info
           env_vars: NODE
           flags: main
           verbose: true

@@ -14,10 +14,10 @@
       <li>🚫 Version <code>{{{this.version}}}</code> is not defined in <code>CHANGELOG.md</code> file</li>
     {{/unless}}
     {{#unless this.sonarConfigUpdated}}
-      <li>🚫 Version in </code>sonar-project.properties</code> file is not <code>{{{this.version}}}</code></li>
+      <li>🚫 Version in <code>sonar-project.properties</code> file is not <code>{{{this.version}}}</code></li>
     {{/unless}}
     {{#unless this.hasSonarConfig}}
-      <li>⚠️ Project has not </code>sonar-project.properties</code> file</li>
+      <li>⚠️ Project has not <code>sonar-project.properties</code> file</li>
     {{/unless}}
     {{#if this.errorCheckingPublished}}
       <li>⚠️ There was an error reading package versions</li>

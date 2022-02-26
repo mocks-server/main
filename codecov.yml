@@ -1,14 +1,14 @@
+github_checks:
+    annotations: true
 coverage:
   status:
     project:
       default:
         target: 90%
       main:
-        target: 100%
         flags:
           - main
       main-copy:
-        target: 100%
         flags:
           - main-copy
 flags:

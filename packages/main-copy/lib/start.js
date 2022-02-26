@@ -21,10 +21,7 @@ const handleError = (error) => {
   process.exitCode = 1;
 };
 
-const start = (trace) => {
-  if (trace) {
-    console.log("Hello world!. I'm not covered in coverage!!");
-  }
+const start = () => {
   try {
     const mocksServer = new Core({
       plugins: [PluginProxy, AdminApi, InquirerCli],

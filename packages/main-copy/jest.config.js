@@ -15,14 +15,6 @@ module.exports = {
   coverageDirectory: "coverage",
 
   // An object that configures minimum threshold enforcement for coverage results
-  coverageThreshold: {
-    global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80,
-    },
-  },
 
   coverageReporters: [["lcov", { projectRoot: "../../" }], "text-summary"],
 

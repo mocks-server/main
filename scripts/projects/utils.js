@@ -4,14 +4,18 @@ import { pnpmWorskpaceProjectConfig, pnpmWorskpaceConfig } from "../pnpm/config.
 import { readJson, readFile, copyFile } from "../common/utils.js";
 import { workspacePath } from "../common/paths.js";
 
+export async function projectRelativePath(projectName) {
+  return pnpmWorskpaceProjectConfig(projectName);
+}
+
 export async function projectPath(projectName) {
-  const projectPathBasedOnPnpmConfig = await pnpmWorskpaceProjectConfig(projectName);
+  const projectPathBasedOnPnpmConfig = await projectRelativePath(projectName);
   return workspacePath(projectPathBasedOnPnpmConfig);
 }
 
-export async function projectFilePath(projectName, relativeFilePath) {
+export async function projectFilePath(projectName, ...rest) {
   const projectRootPath = await projectPath(projectName);
-  return path.resolve(projectRootPath, relativeFilePath);
+  return path.resolve.apply(path, [projectRootPath, ...rest]);
 }
 
 export async function readProjectJson(projectName, fileName) {
@@ -32,8 +36,8 @@ export async function allProjectNames() {
 export async function copyWorkspaceFileToProject(
   projectName,
   workspaceRelativePath,
-  projectRelativePath
+  relativePathInProject
 ) {
-  const dest = await projectFilePath(projectName, projectRelativePath || workspaceRelativePath);
+  const dest = await projectFilePath(projectName, relativePathInProject || workspaceRelativePath);
   return copyFile(workspacePath(workspaceRelativePath), dest);
 }

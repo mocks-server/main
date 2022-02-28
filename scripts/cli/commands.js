@@ -11,6 +11,8 @@ export const prependOption = new Option("--prepend <prepend>", "Prepend text to 
 
 export const baseOption = new Option("--base <base>", "Base of the current branch");
 
+export const projectOption = new Option("--project <project>", "Project name");
+
 export function command({ options = [] }) {
   options.forEach((option) => {
     program.addOption(option);

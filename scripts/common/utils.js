@@ -27,6 +27,10 @@ export function readFile(filePath) {
   return fsExtra.readFile(filePath, READ_WRITE_FILE_OPTIONS);
 }
 
+export function writeFile(filePath, content) {
+  return fsExtra.writeFile(filePath, content, READ_WRITE_FILE_OPTIONS);
+}
+
 export function copyFile(origin, dest) {
   return fsExtra.copyFile(origin, dest);
 }

@@ -146,6 +146,8 @@ jobs:
         with:
           name: coverage-${{env.NODE_CURRENT_VERSION}}-${{matrix.projectName}}
           path: ${{steps.get-project-path.outputs.prop}}/coverage
+      - name: Convert coverage paths to relative
+        run: pnpm run project:coverage:to-relative -- --project ${{ matrix.projectName }}
       - name: SonarCloud Scan
         if: ${{ env.SONAR_TOKEN != '' &&  steps.check-sonar-config.outputs.files_exists == 'true' }}
         uses: sonarsource/sonarcloud-github-action@master

@@ -23,7 +23,7 @@ importers:
       jest: 27.5.1
       lint-staged: 12.3.4
       prettier: 2.5.1
-      sinon: 12.0.1
+      sinon: 13.0.1
       typescript: 4.2.4
     devDependencies:
       '@babel/core': 7.17.5
@@ -45,7 +45,7 @@ importers:
       jest: 27.5.1
       lint-staged: 12.3.4
       prettier: 2.5.1
-      sinon: 12.0.1
+      sinon: 13.0.1
       typescript: 4.2.4
 
   packages/main:
@@ -1043,6 +1043,12 @@ packages:
 
   /@sinonjs/fake-timers/8.1.0:
     resolution: {integrity: sha512-OAPJUAtgeINhh/TAlUID4QTs53Njm7xzddaVlEs/SXwgtiD1tW22zAB/W1wdqfrpmikgaWQ9Fw6Ws+hsiRm5Vg==}
+    dependencies:
+      '@sinonjs/commons': 1.8.3
+    dev: true
+
+  /@sinonjs/fake-timers/9.1.0:
+    resolution: {integrity: sha512-M8vapsv9qQupMdzrVzkn5rb9jG7aUTEPAZdMtME2PuBaefksFZVE2C1g4LBRTkF/k3nRDNbDc5tp5NFC1PEYxA==}
     dependencies:
       '@sinonjs/commons': 1.8.3
     dev: true
@@ -4250,7 +4256,7 @@ packages:
     resolution: {integrity: sha512-yr5kW2THW1AkxVmCnKEh4nbYkJdB3I7LUkiUgOvEkOp414mc2UMaHMA7pjq1nYowhdoJZGwEKGaQVbxfpWj10A==}
     dependencies:
       '@sinonjs/commons': 1.8.3
-      '@sinonjs/fake-timers': 8.1.0
+      '@sinonjs/fake-timers': 9.1.0
       '@sinonjs/text-encoding': 0.7.1
       just-extend: 4.2.1
       path-to-regexp: 1.8.0
@@ -4885,11 +4891,11 @@ packages:
       is-arrayish: 0.3.2
     dev: false
 
-  /sinon/12.0.1:
-    resolution: {integrity: sha512-iGu29Xhym33ydkAT+aNQFBINakjq69kKO6ByPvTsm3yyIACfyQttRTP03aBP/I8GfhFmLzrnKwNNkr0ORb1udg==}
+  /sinon/13.0.1:
+    resolution: {integrity: sha512-8yx2wIvkBjIq/MGY1D9h1LMraYW+z1X0mb648KZnKSdvLasvDu7maa0dFaNYdTDczFgbjNw2tOmWdTk9saVfwQ==}
     dependencies:
       '@sinonjs/commons': 1.8.3
-      '@sinonjs/fake-timers': 8.1.0
+      '@sinonjs/fake-timers': 9.1.0
       '@sinonjs/samsam': 6.1.1
       diff: 5.0.0
       nise: 5.1.1

@@ -1,4 +1,5 @@
 module.exports = {
+  root: true,
   env: {
     node: true,
     es6: true,
@@ -6,21 +7,33 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2018,
   },
-  plugins: ["prettier"],
+  plugins: ["prettier", "@nrwl/nx"],
+  extends: ["prettier"],
   rules: {
     "prettier/prettier": [
-      "error",
+      2,
       {
         printWidth: 99,
         parser: "flow",
       },
     ],
-    "no-shadow": "error",
-    "no-undef": "error",
-    "no-unused-vars": ["error", { vars: "all", args: "after-used", ignoreRestSiblings: false }],
+    "no-shadow": [2, { builtinGlobals: true, hoist: "all" }],
+    "no-undef": 2,
+    "no-unused-vars": [2, { vars: "all", args: "after-used", ignoreRestSiblings: false }],
+    // TODO, this plugin seems to not be working
+    "@nrwl/nx/enforce-module-boundaries": [
+      2,
+      {
+        allow: [],
+        depConstraints: [
+          {
+            sourceTag: "type:app",
+            onlyDependOnLibsWithTags: ["type:lib"],
+          },
+        ],
+      },
+    ],
   },
-  extends: ["prettier"],
-  root: true,
   overrides: [
     {
       files: ["packages/*/test/*.js", "test/*/src/*.js"],
@@ -36,7 +49,7 @@ module.exports = {
       },
     },
     {
-      files: ["scripts/**/*.js"],
+      files: ["scripts/**/*.js", "**/*.mjs"],
       parser: "@babel/eslint-parser",
       parserOptions: {
         sourceType: "module",

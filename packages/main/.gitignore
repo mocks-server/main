@@ -26,3 +26,9 @@ yarn-error.log*
 # ides
 .idea
 .vs
+
+# generated
+
+/README.md
+/LICENSE
+/NOTICE

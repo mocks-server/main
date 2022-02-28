@@ -1,5 +1,6 @@
 {
   "root": "test/main-e2e/",
   "projectType": "application",
-  "implicitDependencies": ["main"]
+  "implicitDependencies": ["main"],
+  "tags": ["type:test"]
 }

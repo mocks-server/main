@@ -2,7 +2,6 @@
   "version": 2,
   "projects": {
     "main": "packages/main",
-    "main-copy": "packages/main-copy",
     "main-e2e": "test/main-e2e"
   }
 }

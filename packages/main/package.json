@@ -33,7 +33,8 @@
     "mocks-server": "./bin/mocks-server"
   },
   "scripts": {
-    "test:unit": "jest"
+    "test:unit": "jest",
+    "build": "node scripts/commands/build.mjs"
   },
   "dependencies": {
     "@babel/core": "7.17.5",

@@ -1,6 +1,7 @@
 import { versionIsPublished } from "../npm/check.js";
 
-import { readProjectJson, readProjectFile } from "./utils.js";
+import { readProjectJson, readProjectFile, projectFilePath } from "./utils.js";
+import { fileExists } from "../common/utils.js";
 
 const PACKAGE_JSON = "package.json";
 const CHANGELOG = "CHANGELOG.md";
@@ -20,19 +21,38 @@ export async function sonarConfigHasVersion(projectName, version) {
   return sonarConfigContent.includes(`sonar.projectVersion=${version}\n`);
 }
 
+export async function projectHasSonarConfig(projectName) {
+  const projectFile = await projectFilePath(projectName, SONAR_CONFIG);
+  console.log(projectFile);
+  return fileExists(projectFile);
+}
+
 export async function projectStatus(projectName) {
   const projectPackageInfo = await projectPackageJson(projectName);
   let changelogUpdated = false;
   let projectIsPublished = false;
   let sonarConfigUpdated = false;
+  let errorCheckingPublished = false;
+  let hasSonarConfig = false;
 
   if (!projectPackageInfo.private) {
-    projectIsPublished = await versionIsPublished(
-      projectPackageInfo.name,
-      projectPackageInfo.version
-    );
+    try {
+      projectIsPublished = await versionIsPublished(
+        projectPackageInfo.name,
+        projectPackageInfo.version
+      );
+    } catch (error) {
+      projectIsPublished = false;
+      errorCheckingPublished = true;
+    }
+
     changelogUpdated = await projectChangelogHasVersion(projectName, projectPackageInfo.version);
-    sonarConfigUpdated = await sonarConfigHasVersion(projectName, projectPackageInfo.version);
+    hasSonarConfig = await projectHasSonarConfig(projectName);
+    if (hasSonarConfig) {
+      sonarConfigUpdated = await sonarConfigHasVersion(projectName, projectPackageInfo.version);
+    } else {
+      sonarConfigUpdated = true;
+    }
   }
   return {
     project: projectName,
@@ -40,14 +60,16 @@ export async function projectStatus(projectName) {
     name: projectPackageInfo.name,
     version: projectPackageInfo.version,
     isPublished: projectIsPublished,
+    errorCheckingPublished,
     changelogUpdated,
+    hasSonarConfig,
     sonarConfigUpdated,
     readyToPublish:
       !projectPackageInfo.private &&
       !!projectPackageInfo.name &&
       !projectIsPublished &&
       changelogUpdated &&
-      sonarConfigUpdated,
+      (!hasSonarConfig || sonarConfigUpdated),
   };
 }
 

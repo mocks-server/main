@@ -3,7 +3,7 @@ import handlebars from "handlebars";
 
 import { pnpmRun } from "../pnpm/run.js";
 import { dirName, readFile, getJsonFromStdout } from "../common/utils.js";
-import { REPORT_FORMAT_TEXT } from "../common/constants.js";
+import { REPORT_FORMAT_TEXT } from "../cli/commands.js";
 import { projectsAreReadyToPublish, projectsStatus } from "../projects/config.js";
 import { allProjectNames } from "../projects/utils.js";
 
@@ -78,12 +78,19 @@ export async function printAffectedCheckReport({ format, prepend = "", base = DE
   const statuses = await projectsStatus(affectedProjects);
   const ok = await projectsAreReadyToPublish(affectedProjects);
 
-  console.log(statuses);
+  const templateStatuses = statuses.map((status) => {
+    return {
+      ...status,
+      showDetails:
+        !status.private &&
+        (!status.readyToPublish || status.errorCheckingPublished || !status.hasSonarConfig),
+    };
+  });
 
   const report = handlebars.compile(templateContent)({
     base,
     prepend,
-    statuses,
+    statuses: templateStatuses,
     ok,
   });
   console.log(report);

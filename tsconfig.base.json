@@ -1,3 +1,11 @@
 {
-  "compilerOptions": {}
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@mocks-server/main": [
+        "packages/main/index.js"
+      ]
+    }
+  }
 }

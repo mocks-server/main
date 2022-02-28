@@ -10,13 +10,14 @@ jobs:
     - name: Install pnpm
       uses: pnpm/action-setup@v2.0.1
       with:
-        version: 6.15.1
+        version: "6.x"
     - uses: actions/setup-node@v2
       with:
         node-version: '16.x'
         registry-url: 'https://registry.npmjs.org/'
         cache: 'pnpm'
     - run: pnpm install
-    - run: pnpm -r publish --tag beta
+    - run: pnpm run build:all
+    - run: pnpm -r publish
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

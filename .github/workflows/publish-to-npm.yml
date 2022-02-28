@@ -7,11 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2.0.1
+      with:
+        version: "6.x"
     - uses: actions/setup-node@v2
       with:
         node-version: '16.x'
         registry-url: 'https://registry.npmjs.org/'
-    - run: npm ci
-    - run: npm publish
+        cache: 'pnpm'
+    - run: pnpm install
+    - run: pnpm run build:all
+    - run: pnpm -r publish
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

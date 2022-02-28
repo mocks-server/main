@@ -4,7 +4,13 @@
 .env
 
 # dependencies
-node_modules
+/node_modules
+
+# tests
+/coverage
+/mocks
+/test/e2e/fixtures/scaffold/mocks
+/test/e2e/fixtures/scaffold/mocks.config.js
 
 # misc
 .DS_Store
@@ -20,3 +26,9 @@ yarn-error.log*
 # ides
 .idea
 .vs
+
+# generated
+
+/README.md
+/LICENSE
+/NOTICE

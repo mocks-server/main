@@ -1,0 +1,17 @@
+{{{prepend}}}
+Comparing current branch with {{{base}}}
+
+{{#if affected.length}}
+{{affected.length}} project{{#if affectedArePlural}}s are{{else}} is{{/if}} affected by changes:
+{{#if applications.length}}
+- {{{applications.length}}} {{#if applicationsArePlural}}applications{{else}}application{{/if}}: {{#each applications}}{{#if @index}}, {{/if}}{{{this}}}{{/each}}
+{{/if}}
+{{#if libraries.length}}
+- {{{libraries.length}}} {{#if librariesArePlural}}libraries{{else}}library{{/if}}: {{#each libraries}}{{#if @index}}, {{/if}}{{{this}}}{{/each}}
+{{/if}}
+{{#if test.length}}
+- {{{test.length}}} test: {{#each test}}{{#if @index}}, {{/if}}{{{this}}}{{/each}}
+{{/if}}
+{{else}}
+No projects are affected by changes
+{{/if}}

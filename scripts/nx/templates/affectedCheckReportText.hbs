@@ -1,0 +1,33 @@
+{{{prepend}}}
+Check affected projects versions
+
+{{#each statuses}}
+{{#unless this.private}}
+  - [{{#if this.readyToPublish}}OK{{else}}KO{{/if}}] {{{this.project}}}: Package {{{this.name}}}@{{{this.version}}}
+  {{#if this.showDetails}}
+    {{#if this.isPublished}}
+    - Version {{{this.version}}} is already published
+    {{/if}}
+    {{#unless this.changelogUpdated}}
+    - Version {{{this.version}}} is not defined in CHANGELOG.md file
+    {{/unless}}
+    {{#unless this.sonarConfigUpdated}}
+    - Version in sonar-project.properties file is not {{{this.version}}}
+    {{/unless}}
+    {{#unless this.hasSonarConfig}}
+    - Project has not sonar-project.properties file
+    {{/unless}}
+    {{#if this.errorCheckingPublished}}
+    - There was an error reading package versions
+    {{/if}}
+  {{/if}}
+{{else}}
+  - [  ] {{{this.project}}}: Private package
+{{/unless}}
+{{/each}}
+
+{{#if ok}}
+All affected projects versions are ok
+{{else}}
+Affected projects are not upgraded properly
+{{/if}}

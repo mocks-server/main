@@ -3,7 +3,7 @@ import handlebars from "handlebars";
 
 import { pnpmRun } from "../pnpm/run.js";
 import { dirName, readFile, getJsonFromStdout } from "../common/utils.js";
-import { REPORT_FORMAT_TEXT } from "../common/constants.js";
+import { REPORT_FORMAT_TEXT } from "../cli/commands.js";
 import { projectsAreReadyToPublish, projectsStatus } from "../projects/config.js";
 import { allProjectNames } from "../projects/utils.js";
 

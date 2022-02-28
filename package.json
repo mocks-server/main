@@ -21,7 +21,7 @@
     "@nrwl/cli": "13.8.3",
     "@nrwl/tao": "13.8.3",
     "@nrwl/workspace": "13.8.3",
-    "commander": "^9.0.0",
+    "commander": "9.0.0",
     "cross-spawn": "7.0.3",
     "eslint": "8.9.0",
     "eslint-config-prettier": "8.4.0",

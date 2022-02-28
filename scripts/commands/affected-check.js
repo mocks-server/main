@@ -1,10 +1,7 @@
-import { program, Option } from "commander";
-
+import { command, baseOption } from "../cli/commands.js";
 import { catchCommandError } from "../common/utils.js";
 import { checkAffected } from "../nx/projects.js";
 
-program.addOption(new Option("--base <base>", "Base of the current branch"));
-
-const { base } = program.parse(process.argv).opts();
+const { base } = command({ options: [baseOption] });
 
 catchCommandError(checkAffected({ base }));

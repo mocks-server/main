@@ -73,6 +73,6 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [cypress-commands-status]: https://img.shields.io/npm/v/@mocks-server/cypress-commands.svg
 [cypress-commands-package]: https://npmjs.com/package/@mocks-server/cypress-commands
 
-[website-url]: https://mocks-server.org
-[data-provider]: https://data-provider.org
+[website-url]: https://www.mocks-server.org
+[data-provider]: https://www.data-provider.org
 [cypress]: https://www.cypress.io/

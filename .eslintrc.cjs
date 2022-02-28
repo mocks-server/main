@@ -36,7 +36,7 @@ module.exports = {
       },
     },
     {
-      files: ["scripts/**/*.js"],
+      files: ["scripts/**/*.js", "**/*.mjs"],
       parser: "@babel/eslint-parser",
       parserOptions: {
         sourceType: "module",

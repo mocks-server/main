@@ -1,6 +1,0 @@
-mocks-server. Main distributable
-Copyright 2019 Javier Brea
-
-Portions of this software were developed at XbyOrange company.
-  XByOrange mocks-server v1.0.1, distributed under The Apache Software License, Version 2.0.
-  Github repository "xbyorange/mocks-server" (https://github.com/XbyOrange/mocks-server), branch master, commit 961ca6702569091ed863679a8e675788c6f4fded. The  original project files were wrongly licensed because an error of the main maintainer, Javier Brea, who received instructions from the XbyOrange company about licensing it as Apache2.0, but didn't include the appropiate license header in all repository files by error. The error has been fixed and XbyOrange license headers have been added to all original files, as it was the real intention of the XbyOrange company.

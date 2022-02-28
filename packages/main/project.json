@@ -1,4 +1,5 @@
 {
   "root": "packages/main/",
-  "projectType": "application"
+  "projectType": "application",
+  "tags": ["type:app"]
 }

@@ -20,7 +20,7 @@ It is easy to use both for development and testing because the responses of the 
 
 * Interactive command line user interface
 * REST API client
-* Other integration tools, such as `Cypress` commands
+* Other integration tools, such as [Cypress][cypress] commands
 
 ## Documentation
 
@@ -31,14 +31,19 @@ To check out docs, visit [mocks-server.org][website-url].
 | Project | Status | Description |
 | --- | --- | --- |
 | [main] | [![main-status]][main-package] | Main distribution. It includes all plugins preinstalled |
-| [core] | [![core-status]][core-package] | Pluggable core. It can be started programmatically |
+| [core] | [![core-status]][core-package] | Pluggable core. It can be used programmatically also |
 | [plugin-proxy] | [![plugin-proxy-status]][plugin-proxy-package] | Plugin providing Proxy route handler |
 | [plugin-inquirer-cli] | [![plugin-inquirer-cli-status]][plugin-inquirer-cli-package] | Plugin providing an administration interactive CLI |
 | [plugin-admin-api] | [![plugin-admin-api-status]][plugin-admin-api-package] | Plugin providing an administration REST API |
 | [admin-api-client] | [![admin-api-client-status]][admin-api-client-package] | API client for [plugin-admin-api] |
 | [admin-api-client-data-provider] | [![admin-api-client-data-provider-status]][admin-api-client-data-provider-package] | API client for [plugin-admin-api] built using [data-provider] |
 | [admin-api-paths] | [![admin-api-paths-status]][admin-api-paths-package] | Definition of [plugin-admin-api] routes |
-| [cypress-commands] | [![cypress-commands-status]][cypress-commands-package] | Cypress commands to administrate mocks-server |
+| [cypress-commands] | [![cypress-commands-status]][cypress-commands-package] | [Cypress][cypress] commands to administrate `mocks-server` |
+
+## Contributing
+
+Contributors are welcome.
+Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of conduct](.github/CODE_OF_CONDUCT.md).
 
 [main]: https://github.com/mocks-server/main/tree/master/packages/main
 [main-status]: https://img.shields.io/npm/v/@mocks-server/main.svg
@@ -68,10 +73,6 @@ To check out docs, visit [mocks-server.org][website-url].
 [cypress-commands-status]: https://img.shields.io/npm/v/@mocks-server/cypress-commands.svg
 [cypress-commands-package]: https://npmjs.com/package/@mocks-server/cypress-commands
 
-## Contributing
-
-Contributors are welcome.
-Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of conduct](.github/CODE_OF_CONDUCT.md).
-
 [website-url]: https://mocks-server.org
 [data-provider]: https://data-provider.org
+[cypress]: https://www.cypress.io/

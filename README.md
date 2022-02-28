@@ -68,5 +68,10 @@ To check out docs, visit [mocks-server.org][website-url].
 [cypress-commands-status]: https://img.shields.io/npm/v/@mocks-server/cypress-commands.svg
 [cypress-commands-package]: https://npmjs.com/package/@mocks-server/cypress-commands
 
+## Contributing
+
+Contributors are welcome.
+Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of conduct](.github/CODE_OF_CONDUCT.md).
+
 [website-url]: https://mocks-server.org
 [data-provider]: https://data-provider.org

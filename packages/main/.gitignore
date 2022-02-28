@@ -30,3 +30,5 @@ yarn-error.log*
 # generated
 
 /README.md
+/LICENSE
+/NOTICE

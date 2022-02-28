@@ -18,7 +18,3 @@ flags:
     paths:
       - packages/main/**
     carryforward: true
-  main-copy:
-    paths:
-      - packages/main-copy/**
-    carryforward: true

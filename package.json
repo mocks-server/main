@@ -11,6 +11,7 @@
     "affected:check": "node ./scripts/commands/affected-check.js",
     "affected:check:report": "node ./scripts/commands/affected-check-report.js",
     "affected:build": "nx affected --target=build",
+    "build:all": "nx run-many --target=build --all",
     "test:unit:all": "nx run-many --target=test:unit --all",
     "test:e2e:all": "nx run-many --target=test:e2e --all",
     "test:all": "pnpm run test:unit:all && npm run test:e2e:all",

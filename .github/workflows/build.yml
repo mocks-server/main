@@ -1,4 +1,4 @@
-name: test
+name: build
 env:
   NODE_CURRENT_VERSION: "16.1.0"
 on:

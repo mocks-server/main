@@ -121,7 +121,7 @@ jobs:
           flags: ${{ matrix.projectName }}
           verbose: true
         env:
-          - CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   sonar:
     runs-on: ubuntu-latest
     needs: [test-unit, get-affected]

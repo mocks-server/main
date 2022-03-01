@@ -15,6 +15,7 @@
     "affected:build": "nx affected --target=build",
     "affected:test:unit": "nx affected --target=test:unit",
     "affected:test:e2e": "nx affected --target=test:e2e",
+    "affected:graph": "nx affected:graph",
     "build:all": "nx run-many --target=build --all",
     "test:unit:all": "nx run-many --target=test:unit --all",
     "test:e2e:all": "nx run-many --target=test:e2e --all",

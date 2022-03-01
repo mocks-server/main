@@ -23,6 +23,7 @@
     "tsconfig.base.json": "*",
     "nx.json": "*",
     "scripts/**/*.*": "*",
+    ".github/workflows/*.*": "*",
     "README.md": ["main"],
     "LICENSE": ["main"],
     "NOTICE": ["main"]

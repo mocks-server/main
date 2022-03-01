@@ -120,6 +120,8 @@ jobs:
           env_vars: NODE
           flags: ${{ matrix.projectName }}
           verbose: true
+        env:
+          - CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   sonar:
     runs-on: ubuntu-latest
     needs: [test-unit, get-affected]

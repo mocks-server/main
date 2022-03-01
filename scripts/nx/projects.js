@@ -2,12 +2,15 @@ import path from "node:path";
 import handlebars from "handlebars";
 
 import { pnpmRun } from "../pnpm/run.js";
-import { dirName, readFile, getJsonFromStdout } from "../common/utils.js";
+import { dirName, readFile, getJsonFromStdout, uniqueArray } from "../common/utils.js";
 import { REPORT_FORMAT_TEXT } from "../cli/commands.js";
-import { projectsAreReadyToPublish, projectsStatus } from "../projects/config.js";
+import {
+  projectsAreReadyToPublish,
+  projectsStatus,
+  allProjectNamesWithTarget,
+} from "../projects/config.js";
+import { filterApplications, filterTests, filterLibraries } from "../projects/types.js";
 import { allProjectNames } from "../projects/utils.js";
-
-import { filterApplications, filterTests, filterLibraries } from "./config.js";
 
 const DEFAULT_BASE = "origin/release";
 const TEMPLATES_FOLDER = "templates";
@@ -21,11 +24,16 @@ function parseReport(textReport) {
   return JSON.parse(getJsonFromStdout(textReport));
 }
 
-export async function affected(base) {
+export async function affected(base, { extraArguments = [], fullReport = false } = {}) {
   const baseArgument = base || DEFAULT_BASE;
   const textReport = parseReport(
-    await pnpmRun(["nx", "print-affected", "--", "--base", baseArgument], { silent: true })
+    await pnpmRun(["nx", "print-affected", "--", "--base", baseArgument, ...extraArguments], {
+      silent: true,
+    })
   );
+  if (fullReport) {
+    return textReport;
+  }
   return textReport.projects || [];
 }
 
@@ -37,6 +45,19 @@ function stringifyObjectWithPrefix(object, prefix) {
   return `${prefix}${JSON.stringify(object)}`;
 }
 
+export async function printAffectedTargetArray({ prepend = "", base = DEFAULT_BASE, target }) {
+  const affectedProjectsReport = await affected(base, {
+    extraArguments: ["--target", target],
+    fullReport: true,
+  });
+  const affectedProjects = uniqueArray(
+    affectedProjectsReport.tasks.map((taskInfo) => {
+      return taskInfo.target.project;
+    })
+  );
+  console.log(stringifyObjectWithPrefix(affectedProjects, prepend));
+}
+
 export async function printAffectedArray({ prepend = "", base = DEFAULT_BASE }) {
   const affectedProjects = await affected(base);
   console.log(stringifyObjectWithPrefix(affectedProjects, prepend));
@@ -44,6 +65,11 @@ export async function printAffectedArray({ prepend = "", base = DEFAULT_BASE }) 
 
 export async function printProjectsArray({ prepend = "" }) {
   const allProjects = await allProjectNames();
+  console.log(stringifyObjectWithPrefix(allProjects, prepend));
+}
+
+export async function printProjectsTargetArray({ prepend = "", target }) {
+  const allProjects = await allProjectNamesWithTarget(target);
   console.log(stringifyObjectWithPrefix(allProjects, prepend));
 }
 

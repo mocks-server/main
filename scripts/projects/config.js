@@ -1,14 +1,26 @@
 import { versionIsPublished } from "../npm/check.js";
 
-import { readProjectJson, readProjectFile, projectFilePath } from "./utils.js";
-import { fileExists } from "../common/utils.js";
+import { fileExists, uniqueArray } from "../common/utils.js";
+
+import { readProjectJson, readProjectFile, projectFilePath, allProjectNames } from "./utils.js";
 
 const PACKAGE_JSON = "package.json";
 const CHANGELOG = "CHANGELOG.md";
 const SONAR_CONFIG = "sonar-project.properties";
+const SONAR_TARGET = "sonar";
+const NX_CONFIG = "project.json";
 
 export async function projectPackageJson(projectName) {
   return readProjectJson(projectName, PACKAGE_JSON);
+}
+
+export async function projectScripts(projectName) {
+  const packageJson = await projectPackageJson(projectName);
+  const scripts = packageJson.scripts;
+  if (!scripts) {
+    return [];
+  }
+  return Object.keys(scripts);
 }
 
 export async function projectChangelogHasVersion(projectName, version) {
@@ -23,7 +35,6 @@ export async function sonarConfigHasVersion(projectName, version) {
 
 export async function projectHasSonarConfig(projectName) {
   const projectFile = await projectFilePath(projectName, SONAR_CONFIG);
-  console.log(projectFile);
   return fileExists(projectFile);
 }
 
@@ -79,6 +90,44 @@ export function projectsStatus(projectNames) {
       return projectStatus(projectName);
     })
   );
+}
+
+export async function projectNxConfig(projectName) {
+  return readProjectJson(projectName, NX_CONFIG);
+}
+
+export async function projectNxTargets(projectName) {
+  const scripts = await projectScripts(projectName);
+  const nxConfig = await projectNxConfig(projectName);
+  const nxConfigTargets = nxConfig.targets || [];
+  return uniqueArray([...scripts, ...nxConfigTargets]);
+}
+
+export async function projectConfig(projectName) {
+  const hasSonarConfig = await projectHasSonarConfig(projectName);
+  const targets = await projectNxTargets(projectName);
+  return {
+    name: projectName,
+    hasSonarConfig,
+    targets,
+  };
+}
+
+export async function allProjectNamesWithTarget(target) {
+  const projectNames = await allProjectNames();
+  const projectsWithConfig = await Promise.all(
+    projectNames.map((projectName) => {
+      return projectConfig(projectName);
+    })
+  );
+  return projectsWithConfig
+    .filter((projectWithConfig) => {
+      if (target === SONAR_TARGET) {
+        return projectWithConfig.hasSonarConfig === true;
+      }
+      return projectWithConfig.targets.includes(target);
+    })
+    .map((projectWithConfig) => projectWithConfig.name);
 }
 
 export async function projectsAreReadyToPublish(projectNames) {

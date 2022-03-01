@@ -30,18 +30,22 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
-      - name: Get all projects
-        run: ./scripts/commands/projects-print-array.sh
       - name: Get affected
-        id: get-projects-array
+        id: get-projects-arrays
         run: |
             if [[ "${{github.event.pull_request.base.ref}}" != "" ]]; then
-              echo "::set-output name=report::$(./scripts/commands/affected-print-array.sh origin/${{github.event.pull_request.base.ref}})"
+              echo "::set-output name=test-unit::$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} test:unit)"
+              echo "::set-output name=test-e2e::$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} test:e2e)"
+              echo "::set-output name=sonar::$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} sonar)"
             else
-              echo "::set-output name=report::$(./scripts/commands/projects-print-array.sh)"
+              echo "::set-output name=test-unit::$(./scripts/commands/projects-target-print-array.sh test:unit)"
+              echo "::set-output name=test-e2e::$(./scripts/commands/projects-target-print-array.sh test:e2e)"
+              echo "::set-output name=sonar::$(./scripts/commands/projects-target-print-array.sh sonar)"
             fi
     outputs:
-      matrix: ${{ steps.get-projects-array.outputs.report }}
+      test-unit: ${{ steps.get-projects-arrays.outputs.test-unit }}
+      test-e2e: ${{ steps.get-projects-arrays.outputs.test-e2e }}
+      sonar: ${{ steps.get-projects-arrays.outputs.sonar }}
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -67,7 +71,7 @@ jobs:
       max-parallel: 3
       matrix:
         node: ["12.22.1","14.17.0","16.1.0","17.2.0"]
-        projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
+        projectName: ${{fromJson(needs.get-affected.outputs.test-unit)}}
     env:
       NODE: ${{ matrix.node }}
     steps:
@@ -122,7 +126,7 @@ jobs:
     strategy:
       max-parallel: 3
       matrix:
-        projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
+        projectName: ${{fromJson(needs.get-affected.outputs.sonar)}}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -161,7 +165,7 @@ jobs:
       max-parallel: 3
       matrix:
         node: ["12.22.1","14.17.0","16.1.0","17.2.0"]
-        projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
+        projectName: ${{fromJson(needs.get-affected.outputs.test-e2e)}}
     steps:
       - name: Checkout
         uses: actions/checkout@v2

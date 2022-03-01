@@ -1,4 +1,4 @@
-import { readProjectJson } from "../projects/utils.js";
+import { projectNxConfig } from "./config.js";
 
 const TYPE_APPLICATION = "application";
 const TYPE_LIBRARY = "library";
@@ -6,14 +6,8 @@ const TYPE_TEST = "test";
 
 const TEST_SUFFIX = "-e2e";
 
-const PROJECT_CONFIG_FILE = "project.json";
-
-async function projectConfig(projectName) {
-  return readProjectJson(projectName, PROJECT_CONFIG_FILE);
-}
-
 async function projectType(projectName) {
-  const config = await projectConfig(projectName);
+  const config = await projectNxConfig(projectName);
   const type = config.projectType;
   if (type === TYPE_APPLICATION) {
     if (projectName.endsWith(TEST_SUFFIX)) {

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPORT=$(pnpm run projects:print:array -- --prepend "|" | tr '\n' ' ');
+REPORT=$(pnpm run affected:target:print:array -- --prepend "|" --base $1 --target $2 | tr '\n' ' ');
 
 IFS='|';
 read REPORT_TRACES REPORT_PARAM REPORT_RESULT <<< "$REPORT"

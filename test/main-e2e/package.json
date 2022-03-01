@@ -1,6 +1,6 @@
 {
   "private": true,
-  "description": "Mock Server main package E2E tests",
+  "description": "Mock Server main package E2E test",
   "author": "Javier Brea",
   "scripts": {
     "test:e2e": "jest --runInBand"

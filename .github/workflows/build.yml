@@ -1,75 +1,180 @@
 name: build
+env:
+  NODE_CURRENT_VERSION: "16.1.0"
 on:
   push:
     branches:
       - master
       - release
-      - pre-release
   pull_request:
 jobs:
-  test:
+  get-affected:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: ["12.22.1", "14.17.0", "16.1.0", "17.2.0"]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        if: github.event_name == 'pull_request'
+        uses: nrwl/nx-set-shas@v2
+        with:
+          main-branch-name: ${{github.event.pull_request.base.ref}}
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: "6.x"
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Get all projects
+        run: ./scripts/commands/projects-print-array.sh
+      - name: Get affected
+        id: get-projects-array
+        run: |
+            if [[ "${{github.event.pull_request.base.ref}}" != "" ]]; then
+              echo "::set-output name=report::$(./scripts/commands/affected-print-array.sh origin/${{github.event.pull_request.base.ref}})"
+            else
+              echo "::set-output name=report::$(./scripts/commands/projects-print-array.sh)"
+            fi
+    outputs:
+      matrix: ${{ steps.get-projects-array.outputs.report }}
+  lint:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
-        id: extract-branch
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: "6.x"
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Lint
+        run: pnpm run lint
+  test-unit:
+    runs-on: ubuntu-latest
+    needs: [lint, get-affected]
+    strategy:
+      max-parallel: 3
+      matrix:
+        node: ["12.22.1","14.17.0","16.1.0","17.2.0"]
+        projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
+    env:
+      NODE: ${{ matrix.node }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Get project path
+        id: get-project-path
+        uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: "workspace.json"
+          prop_path: "projects.${{matrix.projectName}}"
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: "6.x"
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node }}
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
-        with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+          cache: 'pnpm'
       - name: Install dependencies
-        run: npm ci
-      - name: Lint
-        run: npm run lint
+        run: pnpm install
       - name: Test unit
-        run: npm run test:unit
-      - name: Test E2E
-        run: npm run test:e2e
-        id: test-e2e
+        run: pnpm run nx run-many -- --target test:unit --projects ${{ matrix.projectName }}
+      - name: Check if coverage exists
+        id: check-coverage
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "${{steps.get-project-path.outputs.prop}}/coverage/lcov.info"
       - name: Upload test results
+        if: matrix.node == env.NODE_CURRENT_VERSION
         uses: actions/upload-artifact@v2
         with:
-          name: coverage-${{ matrix.node }}
-          path: coverage
+          name: coverage-${{ matrix.node }}-${{matrix.projectName}}
+          path: ${{steps.get-project-path.outputs.prop}}/coverage
           retention-days: 1
-  quality:
+      - name: Convert coverage paths to worskpace
+        run: pnpm run project:coverage:to-workspace -- --project ${{ matrix.projectName }}
+      - name: Upload coverage to Codecov
+        if: steps.check-coverage.outputs.files_exists == 'true'
+        uses: codecov/codecov-action@v2
+        with:
+          directory: ./${{steps.get-project-path.outputs.prop}}/coverage
+          fail_ci_if_error: true
+          files: lcov.info
+          env_vars: NODE
+          flags: ${{ matrix.projectName }}
+          verbose: true
+  sonar:
     runs-on: ubuntu-latest
-    needs: test
+    needs: [test-unit, get-affected]
+    strategy:
+      max-parallel: 3
+      matrix:
+        projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: Get project path
+        id: get-project-path
+        uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: "workspace.json"
+          prop_path: "projects.${{matrix.projectName}}"
+      - name: Check Sonar config
+        id: check-sonar-config
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "${{steps.get-project-path.outputs.prop}}/sonar-project.properties"
       - name: Download test results
+        if: steps.check-sonar-config.outputs.files_exists == 'true'
+        continue-on-error: true
         uses: actions/download-artifact@v2
         with:
-          name: coverage-16.1.0
-          path: coverage
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          name: coverage-${{env.NODE_CURRENT_VERSION}}-${{matrix.projectName}}
+          path: ${{steps.get-project-path.outputs.prop}}/coverage
       - name: SonarCloud Scan
-        if: env.SONAR_TOKEN != ''
+        if: ${{ env.SONAR_TOKEN != '' &&  steps.check-sonar-config.outputs.files_exists == 'true' }}
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: ${{steps.get-project-path.outputs.prop}}/
+  test-e2e:
+    runs-on: ubuntu-latest
+    needs: get-affected
+    strategy:
+      max-parallel: 3
+      matrix:
+        node: ["12.22.1","14.17.0","16.1.0","17.2.0"]
+        projectName: ${{fromJson(needs.get-affected.outputs.matrix)}}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: "6.x"
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Test E2E
+        run: pnpm run nx run-many -- --target test:e2e --projects ${{ matrix.projectName }}

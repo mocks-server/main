@@ -1,0 +1,20 @@
+github_checks:
+    annotations: true
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 0%
+        base: auto
+      main:
+        flags:
+          - main
+      main-copy:
+        flags:
+          - main-copy
+flags:
+  main:
+    paths:
+      - packages/main/**
+    carryforward: true

@@ -1,0 +1,49 @@
+{
+  "name": "@mocks-server/main",
+  "version": "2.6.1",
+  "description": "Mock Server supporting multiple route variants and mocks",
+  "keywords": [
+    "mock",
+    "server",
+    "mocks",
+    "route",
+    "route variants",
+    "api",
+    "rest",
+    "cli",
+    "express",
+    "middlewares",
+    "testing",
+    "development"
+  ],
+  "author": "Javier Brea",
+  "license": "Apache-2.0",
+  "repository": "https://github.com/mocks-server/main",
+  "homepage": "https://www.mocks-server.org",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "bin",
+    "src",
+    "index.js"
+  ],
+  "main": "index.js",
+  "bin": {
+    "mocks-server": "./bin/mocks-server"
+  },
+  "scripts": {
+    "test:unit": "jest",
+    "build": "node scripts/commands/build.mjs"
+  },
+  "dependencies": {
+    "@babel/core": "7.17.5",
+    "@mocks-server/core": "2.5.1",
+    "@mocks-server/plugin-admin-api": "2.2.0",
+    "@mocks-server/plugin-inquirer-cli": "2.2.0",
+    "@mocks-server/plugin-proxy": "1.0.3"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  }
+}

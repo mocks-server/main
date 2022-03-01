@@ -1,0 +1,37 @@
+{{{prepend}}}
+<h3>Check affected projects versions</h3>
+<ul>
+{{#each statuses}}
+{{#unless this.private}}
+<li>
+  {{#if this.readyToPublish}}🟢{{else}}🚫{{/if}} <strong>{{{this.project}}}</strong>: Package <code>{{{this.name}}}@{{{this.version}}}</code>
+  {{#if this.showDetails}}
+  <ul>
+    {{#if this.isPublished}}
+      <li>🚫 Version <code>{{{this.version}}}</code> is already published</li>
+    {{/if}}
+    {{#unless this.changelogUpdated}}
+      <li>🚫 Version <code>{{{this.version}}}</code> is not defined in <code>CHANGELOG.md</code> file</li>
+    {{/unless}}
+    {{#unless this.sonarConfigUpdated}}
+      <li>🚫 Version in <code>sonar-project.properties</code> file is not <code>{{{this.version}}}</code></li>
+    {{/unless}}
+    {{#unless this.hasSonarConfig}}
+      <li>⚠️ Project has not <code>sonar-project.properties</code> file</li>
+    {{/unless}}
+    {{#if this.errorCheckingPublished}}
+      <li>⚠️ There was an error reading package versions</li>
+    {{/if}}
+  </ul>
+  {{/if}}
+</li>
+{{else}}
+<li>⚪ <strong>{{{this.project}}}</strong>: Private package</li>
+{{/unless}}
+{{/each}}
+</ul>
+{{#if ok}}
+<strong>🎉 All affected projects versions are ok</strong>
+{{else}}
+<strong>😞 Affected projects are not upgraded properly</strong>
+{{/if}}

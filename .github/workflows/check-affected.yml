@@ -1,0 +1,42 @@
+name: check-affected
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  check-affected:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+        with:
+          main-branch-name: ${{github.event.pull_request.base.ref}}
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.15.1
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Check affected report
+        id: check-affected-report
+        run: echo "::set-output name=report::$(./scripts/commands/affected-check-report.sh origin/${{github.event.pull_request.base.ref}})"
+      - name: Comment check affected
+        uses: unsplash/comment-on-pr@v1.3.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          msg: ${{ steps.check-affected-report.outputs.report }}
+          delete_prev_regex_msg: ${{ steps.check-affected-report.outputs.report }}
+          check_for_duplicate_msg: false
+      - name: Check affected
+        id: check-affected
+        run: pnpm run affected:check -- --base origin/${{github.event.pull_request.base.ref}}

@@ -1,74 +1,55 @@
 {
-  "name": "@mocks-server/main",
-  "version": "2.6.0",
-  "description": "Mock Server supporting multiple route variants and mocks",
-  "keywords": [
-    "mock",
-    "server",
-    "mocks",
-    "route",
-    "route variants",
-    "api",
-    "rest",
-    "cli",
-    "express",
-    "middlewares",
-    "testing",
-    "development"
-  ],
-  "author": "Javier Brea",
-  "license": "Apache-2.0",
-  "repository": "https://github.com/mocks-server/main",
-  "homepage": "https://www.mocks-server.org",
-  "publishConfig": {
-    "access": "public"
-  },
-  "files": [
-    "bin",
-    "lib",
-    "index.js"
-  ],
-  "main": "index.js",
-  "bin": {
-    "mocks-server": "./bin/mocks-server"
-  },
+  "private": true,
   "scripts": {
-    "lint": "eslint *.js lib test",
+    "nx": "nx",
+    "lint": "eslint packages test scripts",
     "lint-staged": "lint-staged",
-    "test": "jest",
-    "test:e2e": "jest --config=jest.e2e.config.js --runInBand",
-    "test:unit": "npm run test",
-    "prepare": "is-ci || husky install"
-  },
-  "dependencies": {
-    "@mocks-server/core": "2.5.1",
-    "@mocks-server/plugin-admin-api": "2.2.0",
-    "@mocks-server/plugin-inquirer-cli": "2.2.0",
-    "@mocks-server/plugin-proxy": "1.0.3"
+    "prepare": "is-ci || husky install",
+    "project:coverage:to-relative": "node ./scripts/commands/project-coverage-to-relative.js",
+    "project:coverage:to-workspace": "node ./scripts/commands/project-coverage-to-workspace.js",
+    "projects:print:array": "node ./scripts/commands/projects-print-array.js",
+    "affected:print:array": "node ./scripts/commands/affected-print-array.js",
+    "affected:report": "node ./scripts/commands/affected-report.js",
+    "affected:check": "node ./scripts/commands/affected-check.js",
+    "affected:check:report": "node ./scripts/commands/affected-check-report.js",
+    "affected:build": "nx affected --target=build",
+    "affected:test:unit": "nx affected --target=test:unit",
+    "affected:test:e2e": "nx affected --target=test:e2e",
+    "affected:graph": "nx affected:graph",
+    "build:all": "nx run-many --target=build --all",
+    "test:unit:all": "nx run-many --target=test:unit --all",
+    "test:e2e:all": "nx run-many --target=test:e2e --all",
+    "test:all": "pnpm run test:unit:all && npm run test:e2e:all",
+    "graph": "nx graph"
   },
   "devDependencies": {
-    "cross-fetch": "3.1.4",
+    "@babel/core": "7.17.5",
+    "@babel/eslint-parser": "7.17.0",
+    "@nrwl/cli": "13.8.3",
+    "@nrwl/eslint-plugin-nx": "13.8.3",
+    "@nrwl/tao": "13.8.3",
+    "@nrwl/workspace": "13.8.3",
+    "@typescript-eslint/parser": "5.10.0",
+    "commander": "9.0.0",
     "cross-spawn": "7.0.3",
-    "eslint": "8.4.0",
-    "eslint-config-prettier": "8.3.0",
+    "eslint": "8.10.0",
+    "eslint-config-prettier": "8.4.0",
     "eslint-plugin-prettier": "4.0.0",
-    "fs-extra": "10.0.0",
+    "fs-extra": "10.0.1",
+    "handlebars": "4.7.7",
     "husky": "7.0.4",
     "is-ci": "3.0.1",
-    "jest": "27.4.3",
-    "lint-staged": "12.1.2",
-    "lodash": "4.17.21",
+    "jest": "27.5.1",
+    "lint-staged": "12.3.4",
     "prettier": "2.5.1",
-    "sinon": "12.0.1",
-    "strip-ansi": "6.0.0",
-    "tree-kill": "1.2.2",
-    "wait-on": "6.0.0"
+    "sinon": "13.0.1",
+    "typescript": "4.2.4"
   },
   "lint-staged": {
-    "lib/**/*.js": "eslint",
-    "test/**/*.js": "eslint",
+    "packages/**/*.js": "eslint",
     "*.js": "eslint"
   },
+  "type": "module",
   "engines": {
     "node": ">=12.0.0"
   }

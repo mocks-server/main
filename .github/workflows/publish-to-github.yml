@@ -25,6 +25,6 @@ jobs:
         # Defaults to the user or organization that owns the workflow file
         scope: '@mocks-server'
         cache: 'pnpm'
-    - run: pnpm -r publish
+    - run: pnpm -r publish --no-git-checks
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

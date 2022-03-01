@@ -2,6 +2,7 @@ import path from "node:path";
 import handlebars from "handlebars";
 
 import { pnpmRun } from "../pnpm/run.js";
+import { SONAR_TARGET } from "../common/constants.js";
 import { dirName, readFile, getJsonFromStdout, uniqueArray } from "../common/utils.js";
 import { REPORT_FORMAT_TEXT } from "../cli/commands.js";
 import {
@@ -45,7 +46,24 @@ function stringifyObjectWithPrefix(object, prefix) {
   return `${prefix}${JSON.stringify(object)}`;
 }
 
-export async function printAffectedTargetArray({ prepend = "", base = DEFAULT_BASE, target }) {
+export async function printAffectedProjectsWithSonarConfigArray({
+  prepend = "",
+  base = DEFAULT_BASE,
+}) {
+  const affectedProjects = await affected(base);
+  const projectsWithSonarConfig = allProjectNamesWithTarget(SONAR_TARGET);
+
+  const affectedProjectsWithSonar = affectedProjects.filter((project) =>
+    projectsWithSonarConfig.includes(project)
+  );
+  console.log(stringifyObjectWithPrefix(affectedProjectsWithSonar, prepend));
+}
+
+export async function printAffectedTargetArrayUsingNx({
+  prepend = "",
+  base = DEFAULT_BASE,
+  target,
+}) {
   const affectedProjectsReport = await affected(base, {
     extraArguments: ["--target", target],
     fullReport: true,
@@ -56,6 +74,13 @@ export async function printAffectedTargetArray({ prepend = "", base = DEFAULT_BA
     })
   );
   console.log(stringifyObjectWithPrefix(affectedProjects, prepend));
+}
+
+export async function printAffectedTargetArray({ prepend = "", base = DEFAULT_BASE, target }) {
+  if (target === SONAR_TARGET) {
+    return printAffectedProjectsWithSonarConfigArray({ prepend, base });
+  }
+  return printAffectedTargetArrayUsingNx({ prepend, base, target });
 }
 
 export async function printAffectedArray({ prepend = "", base = DEFAULT_BASE }) {

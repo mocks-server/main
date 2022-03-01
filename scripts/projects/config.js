@@ -1,13 +1,13 @@
 import { versionIsPublished } from "../npm/check.js";
 
 import { fileExists, uniqueArray } from "../common/utils.js";
+import { SONAR_TARGET } from "../common/constants.js";
 
 import { readProjectJson, readProjectFile, projectFilePath, allProjectNames } from "./utils.js";
 
 const PACKAGE_JSON = "package.json";
 const CHANGELOG = "CHANGELOG.md";
 const SONAR_CONFIG = "sonar-project.properties";
-const SONAR_TARGET = "sonar";
 const NX_CONFIG = "project.json";
 
 export async function projectPackageJson(projectName) {

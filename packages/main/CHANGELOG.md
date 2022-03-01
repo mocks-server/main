@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - chore(deps): Update devDependencies
 - chore(workflow): Migrate to monorepo. Move E2E tests to a separated package
+- refactor: Rename lib folder to src
 
 ## [2.6.0] - 2021-12-05
 

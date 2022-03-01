@@ -8,6 +8,12 @@ export function dirName(importMetaUrl) {
   return new URL(".", importMetaUrl).pathname;
 }
 
+export function uniqueArray(array) {
+  return array.filter((value, index, self) => {
+    return self.indexOf(value) === index;
+  });
+}
+
 export function ensureArray(value) {
   return Array.isArray(value) ? value : [value];
 }

@@ -1,5 +1,41 @@
 {
   "extends": [
-    "github>mocks-server/ci-cd"
-  ]
+    "config:base"
+  ],
+  "baseBranches": ["release"],
+  "automerge": true,
+  "major": {
+    "automerge": false
+  },
+  "minor": {
+    "automerge": true
+  },
+  "separateMultipleMajor": true,
+  "rangeStrategy": "pin",
+  "node": {
+    "supportPolicy": ["active"]
+  },
+  "travis": { "enabled": true },
+  "packageRules": [
+    {
+      "depTypeList": ["peerDependencies", "engines"],
+      "rangeStrategy": "widen"
+    },
+    {
+      "packageNames": ["strip-ansi", "chalk", "unsplash/comment-on-pr"],
+      "enabled": false
+    }
+  ],
+  "labels": [
+    "dependencies",
+    "renovate"
+  ],
+  "prCreation": "not-pending",
+  "stabilityDays": 3,
+  "prHourlyLimit": 5,
+  "prConcurrentLimit": 2,
+  "rebaseStalePrs": true,
+  "timezone": "Europe/Madrid",
+  "schedule": ["after 9pm and before 5pm on every weekday"],
+  "masterIssue": true
 }

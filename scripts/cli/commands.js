@@ -13,6 +13,8 @@ export const baseOption = new Option("--base <base>", "Base of the current branc
 
 export const projectOption = new Option("--project <project>", "Project name");
 
+export const targetOption = new Option("--target <target>", "Project target");
+
 export function command({ options = [] }) {
   options.forEach((option) => {
     program.addOption(option);

@@ -51,7 +51,7 @@ export async function printAffectedProjectsWithSonarConfigArray({
   base = DEFAULT_BASE,
 }) {
   const affectedProjects = await affected(base);
-  const projectsWithSonarConfig = allProjectNamesWithTarget(SONAR_TARGET);
+  const projectsWithSonarConfig = await allProjectNamesWithTarget(SONAR_TARGET);
 
   const affectedProjectsWithSonar = affectedProjects.filter((project) =>
     projectsWithSonarConfig.includes(project)

@@ -2,8 +2,7 @@ name: check-affected
 on:
   pull_request:
     branches:
-      #- master
-      - monorepo-poc
+      - master
 jobs:
   check-affected:
     runs-on: ubuntu-latest

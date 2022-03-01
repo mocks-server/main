@@ -6,8 +6,6 @@ on:
     branches:
       - master
       - release
-      - monorepo-poc
-      - monorepo-poc-affected
   pull_request:
 jobs:
   get-affected:

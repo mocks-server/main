@@ -42,6 +42,11 @@ jobs:
               echo "::set-output name=test-e2e::$(./scripts/commands/projects-target-print-array.sh test:e2e)"
               echo "::set-output name=sonar::$(./scripts/commands/projects-target-print-array.sh sonar)"
             fi
+      - name: Trace
+        run: |
+          echo "$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} test:unit)"
+          echo "$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} test:e2e)"
+          echo "$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} sonar)"
     outputs:
       test-unit: ${{ steps.get-projects-arrays.outputs.test-unit }}
       test-e2e: ${{ steps.get-projects-arrays.outputs.test-e2e }}

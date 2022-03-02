@@ -51,6 +51,30 @@ jobs:
       test-unit: ${{ steps.get-projects-arrays.outputs.test-unit }}
       test-e2e: ${{ steps.get-projects-arrays.outputs.test-e2e }}
       sonar: ${{ steps.get-projects-arrays.outputs.sonar }}
+  trace-outputs:
+    needs: [get-affected]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.2.1
+        with:
+          version: "6.x"
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+          cache: 'pnpm'
+      - name: Trace test-unit
+        if: ${{ needs.get-affected.outputs.test-unit != '[]' }}
+        run: echo "$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} test:unit)"
+      - name: Trace test-e2e
+        if: ${{ needs.get-affected.outputs.test-e2e != '[]' }}
+        run: echo "$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} test:e2e)"
+      - name: Trace sonar
+        if: ${{ needs.get-affected.outputs.sonar != '[]' }}
+        run: echo "$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} sonar)"
   lint:
     runs-on: ubuntu-latest
     steps:

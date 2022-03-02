@@ -20,7 +20,7 @@ jobs:
         with:
           main-branch-name: ${{github.event.pull_request.base.ref}}
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2.2.1
         with:
           version: "6.x"
       - name: Use Node.js
@@ -52,7 +52,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2.2.1
         with:
           version: "6.x"
       - name: Use Node.js
@@ -67,6 +67,7 @@ jobs:
   test-unit:
     runs-on: ubuntu-latest
     needs: [lint, get-affected]
+    if: ${{ needs.get-affected.outputs.test-unit != '[]' }}
     strategy:
       max-parallel: 3
       matrix:
@@ -84,7 +85,7 @@ jobs:
           path: "workspace.json"
           prop_path: "projects.${{matrix.projectName}}"
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2.2.1
         with:
           version: "6.x"
       - name: Use Node.js
@@ -125,6 +126,7 @@ jobs:
   sonar:
     runs-on: ubuntu-latest
     needs: [test-unit, get-affected]
+    if: ${{ needs.get-affected.outputs.sonar != '[]' }}
     strategy:
       max-parallel: 3
       matrix:
@@ -163,6 +165,7 @@ jobs:
   test-e2e:
     runs-on: ubuntu-latest
     needs: get-affected
+    if: ${{ needs.get-affected.outputs.test-e2e != '[]' }}
     strategy:
       max-parallel: 3
       matrix:
@@ -172,7 +175,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2.2.1
         with:
           version: "6.x"
       - name: Use Node.js

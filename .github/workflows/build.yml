@@ -220,3 +220,14 @@ jobs:
         run: pnpm install
       - name: Test E2E
         run: pnpm run nx run-many -- --target test:e2e --projects ${{ matrix.projectName }}
+  build-finished:
+    runs-on: ubuntu-latest
+    needs: [test-unit, test-e2e, sonar]
+    if: |
+      always() &&
+      (needs.test-unit.result == 'success' || needs.test-unit.result == 'skipped') &&
+      (needs.test-e2e.result == 'success' || needs.test-e2e.result == 'skipped') &&
+      (needs.sonar.result == 'success' || needs.sonar.result == 'skipped')
+    steps:
+      - name: Trace
+        run: echo "All jobs finished"

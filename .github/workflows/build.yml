@@ -42,39 +42,10 @@ jobs:
               echo "::set-output name=test-e2e::$(./scripts/commands/projects-target-print-array.sh test:e2e)"
               echo "::set-output name=sonar::$(./scripts/commands/projects-target-print-array.sh sonar)"
             fi
-      - name: Trace
-        run: |
-          echo "$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} test:unit)"
-          echo "$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} test:e2e)"
-          echo "$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} sonar)"
     outputs:
       test-unit: ${{ steps.get-projects-arrays.outputs.test-unit }}
       test-e2e: ${{ steps.get-projects-arrays.outputs.test-e2e }}
       sonar: ${{ steps.get-projects-arrays.outputs.sonar }}
-  trace-outputs:
-    needs: [get-affected]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2.2.1
-        with:
-          version: "6.x"
-      - name: Use Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "16.x"
-          cache: 'pnpm'
-      - name: Trace test-unit
-        if: ${{ fromJson(needs.get-affected.outputs.test-unit)[0] }}
-        run: echo "${{ fromJson(needs.get-affected.outputs.test-unit)[0] }}"
-      - name: Trace test-e2e
-        if: ${{ fromJson(needs.get-affected.outputs.test-e2e)[0] }}
-        run: echo "${{ fromJson(needs.get-affected.outputs.test-e2e)[0] }}"
-      - name: Trace sonar
-        if: ${{ fromJson(needs.get-affected.outputs.sonar)[0] }}
-        run: echo "${{ fromJson(needs.get-affected.outputs.sonar)[0] }}"
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -220,3 +191,14 @@ jobs:
         run: pnpm install
       - name: Test E2E
         run: pnpm run nx run-many -- --target test:e2e --projects ${{ matrix.projectName }}
+  build-finished:
+    runs-on: ubuntu-latest
+    needs: [test-unit, test-e2e, sonar]
+    if: |
+      always() &&
+      (needs.test-unit.result == 'success' || needs.test-unit.result == 'skipped') &&
+      (needs.test-e2e.result == 'success' || needs.test-e2e.result == 'skipped') &&
+      (needs.sonar.result == 'success' || needs.sonar.result == 'skipped')
+    steps:
+      - name: Trace
+        run: echo "All jobs finished"

@@ -155,7 +155,11 @@ jobs:
   sonar:
     runs-on: ubuntu-latest
     needs: [test-unit, get-affected]
-    if: ${{ fromJson(needs.get-affected.outputs.sonar)[0] }}
+    if: |
+      always() &&
+      needs.get-affected.result == 'success' &&
+      (needs.test-unit.result == 'success' || needs.test-unit.result == 'skipped') &&
+      ${{ fromJson(needs.get-affected.outputs.sonar)[0] }}
     strategy:
       max-parallel: 3
       matrix:

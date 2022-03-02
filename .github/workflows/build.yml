@@ -20,7 +20,7 @@ jobs:
         with:
           main-branch-name: ${{github.event.pull_request.base.ref}}
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2.2.1
         with:
           version: "6.x"
       - name: Use Node.js
@@ -52,7 +52,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2.2.1
         with:
           version: "6.x"
       - name: Use Node.js
@@ -67,6 +67,7 @@ jobs:
   test-unit:
     runs-on: ubuntu-latest
     needs: [lint, get-affected]
+    if:  ${{ fromJson(needs.get-affected.outputs.test-unit)[0] }}
     strategy:
       max-parallel: 3
       matrix:
@@ -84,7 +85,7 @@ jobs:
           path: "workspace.json"
           prop_path: "projects.${{matrix.projectName}}"
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2.2.1
         with:
           version: "6.x"
       - name: Use Node.js
@@ -125,6 +126,11 @@ jobs:
   sonar:
     runs-on: ubuntu-latest
     needs: [test-unit, get-affected]
+    if: |
+      always() &&
+      needs.get-affected.result == 'success' &&
+      (needs.test-unit.result == 'success' || needs.test-unit.result == 'skipped') &&
+      fromJson(needs.get-affected.outputs.sonar)[0]
     strategy:
       max-parallel: 3
       matrix:
@@ -163,6 +169,7 @@ jobs:
   test-e2e:
     runs-on: ubuntu-latest
     needs: get-affected
+    if: ${{ fromJson(needs.get-affected.outputs.test-e2e)[0] }}
     strategy:
       max-parallel: 3
       matrix:
@@ -172,7 +179,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2.2.1
         with:
           version: "6.x"
       - name: Use Node.js
@@ -184,3 +191,14 @@ jobs:
         run: pnpm install
       - name: Test E2E
         run: pnpm run nx run-many -- --target test:e2e --projects ${{ matrix.projectName }}
+  build-finished:
+    runs-on: ubuntu-latest
+    needs: [test-unit, test-e2e, sonar]
+    if: |
+      always() &&
+      (needs.test-unit.result == 'success' || needs.test-unit.result == 'skipped') &&
+      (needs.test-e2e.result == 'success' || needs.test-e2e.result == 'skipped') &&
+      (needs.sonar.result == 'success' || needs.sonar.result == 'skipped')
+    steps:
+      - name: Trace
+        run: echo "All jobs finished"

@@ -158,8 +158,7 @@ jobs:
     if: |
       always() &&
       needs.get-affected.result == 'success' &&
-      (needs.test-unit.result == 'success' || needs.test-unit.result == 'skipped') &&
-      ${{ fromJson(needs.get-affected.outputs.sonar)[0] }}
+      (needs.test-unit.result == 'success' || needs.test-unit.result == 'skipped')
     strategy:
       max-parallel: 3
       matrix:

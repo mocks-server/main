@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [2.6.2] - 2022-03-03
+
+### Changed
+- chore(deps): Update @mocks-server/core
+- chore(deps): Update @mocks-server/plugin-proxy
+
 ## [2.6.1] - 2022-03-01
 
 ### Changed

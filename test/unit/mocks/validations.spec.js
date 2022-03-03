@@ -283,6 +283,24 @@ describe("mocks validations", () => {
     });
   });
 
+  describe("when adding routeHandlers to routeValidation", () => {
+    it("routeValidationErrors should return null if routes uses new handler", () => {
+      compileRouteValidator([{ id: "foo-handler" }, { id: "foo-new-handler" }]);
+      const errors = routeValidationErrors({
+        id: "foo-new-route",
+        url: "/foo",
+        method: "POST",
+        variants: [
+          {
+            id: "foo-new-variant",
+            handler: "foo-new-handler",
+          },
+        ],
+      });
+      expect(errors).toEqual(null);
+    });
+  });
+
   describe("variantValidationErrors", () => {
     it("should return null if Hanlder has not validationSchema", () => {
       expect(variantValidationErrors({}, {}, {})).toEqual(null);

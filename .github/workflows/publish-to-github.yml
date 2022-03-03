@@ -11,14 +11,14 @@ jobs:
       uses: pnpm/action-setup@v2.2.1
       with:
         version: "6.x"
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: '16.x'
         registry-url: 'https://npm.pkg.github.com'
         cache: 'pnpm'
     - run: pnpm install
     - run: pnpm run build:all
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: '16.x'
         registry-url: 'https://npm.pkg.github.com'

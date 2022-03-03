@@ -9,6 +9,8 @@
 # tests
 /coverage
 /mocks
+/test/e2e/fixtures/.tmp
+/test/e2e/fixtures/mocks.config.js
 
 # misc
 .DS_Store
@@ -24,9 +26,3 @@ yarn-error.log*
 # ides
 .idea
 .vs
-
-# generated
-
-/README.md
-/LICENSE
-/NOTICE

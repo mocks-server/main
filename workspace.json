@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "main": "packages/main",
+    "plugin-proxy": "packages/plugin-proxy",
     "main-e2e": "test/main-e2e"
   }
 }

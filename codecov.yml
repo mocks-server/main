@@ -10,11 +10,15 @@ coverage:
       main:
         flags:
           - main
-      main-copy:
+      plugin-proxy:
         flags:
-          - main-copy
+          - plugin-proxy
 flags:
   main:
     paths:
       - packages/main/**
+    carryforward: true
+  plugin-proxy:
+    paths:
+      - packages/plugin-proxy/**
     carryforward: true

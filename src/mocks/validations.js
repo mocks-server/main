@@ -217,11 +217,12 @@ function getIds(objs) {
 function compileRouteValidator(routesHandlers) {
   if (validatorInited) {
     const supportedRouteHandlersIds = getIds(routesHandlers);
-    routesSchema.properties.variants.items.properties.handler.enum = supportedRouteHandlersIds;
-    routesSchema.properties.variants.items.properties.handler.errorMessage = `Property "handler" should be one of "${supportedRouteHandlersIds.join(
+    const schema = { ...routesSchema };
+    schema.properties.variants.items.properties.handler.enum = supportedRouteHandlersIds;
+    schema.properties.variants.items.properties.handler.errorMessage = `Property "handler" should be one of "${supportedRouteHandlersIds.join(
       ","
     )}" in variant \${1#}`;
-    routeValidator = ajv.compile(routesSchema);
+    routeValidator = ajv.compile(schema);
   } else {
     routeValidator = fooValidator;
   }

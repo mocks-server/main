@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [1.0.4] - 2022-03-03
+
+### Changed
+- chore: Migrated to monorepo
+- chore(deps): Update @mocks-server/core
+- chore(deps): Update devDependencies
+
 ## [1.0.3] - 2021-12-05
 
 ### Fixed

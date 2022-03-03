@@ -1,0 +1,64 @@
+{
+  "name": "@mocks-server/plugin-proxy",
+  "version": "1.0.3",
+  "description": "Mocks Server plugin providing an http-proxy route handler",
+  "keywords": [
+    "mocks-server-plugin",
+    "proxy",
+    "express-http-proxy",
+    "reverse",
+    "http",
+    "https",
+    "mock",
+    "testing",
+    "development"
+  ],
+  "author": "Javier Brea",
+  "license": "MIT",
+  "repository": "https://github.com/mocks-server/plugin-proxy",
+  "homepage": "https://www.mocks-server.org",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src",
+    "index.js"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint *.js src test",
+    "lint-staged": "lint-staged",
+    "test:e2e": "jest  --config=jest.e2e.config.js --runInBand",
+    "test": "npm run test:e2e",
+    "prepare": "is-ci || husky install"
+  },
+  "peerDependencies": {
+    "@mocks-server/core": ">=2.4.0"
+  },
+  "dependencies": {
+    "express-http-proxy": "1.6.3"
+  },
+  "devDependencies": {
+    "@mocks-server/core": "2.5.1",
+    "cross-fetch": "3.1.4",
+    "eslint": "8.4.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-no-only-tests": "2.6.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "husky": "7.0.4",
+    "is-ci": "3.0.1",
+    "jest": "27.4.3",
+    "lint-staged": "12.1.2",
+    "prettier": "2.5.1",
+    "sinon": "12.0.1",
+    "wait-on": "6.0.0"
+  },
+  "lint-staged": {
+    "src/**/*.js": "eslint",
+    "test/**/*.js": "eslint",
+    "*.js": "eslint"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  }
+}

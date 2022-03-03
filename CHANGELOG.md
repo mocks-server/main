@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - fix: validation of added route handlers was not working due to ajv cache
+
 ## [2.5.1] - 2021-12-04
 
 ### Fixed

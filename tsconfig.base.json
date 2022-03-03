@@ -5,6 +5,9 @@
     "paths": {
       "@mocks-server/main": [
         "packages/main/index.js"
+      ],
+      "@mocks-server/plugin-proxy": [
+        "packages/plugin-proxy/index.js"
       ]
     }
   }

@@ -154,7 +154,7 @@ jobs:
       - name: Download test results
         if: steps.check-sonar-config.outputs.files_exists == 'true'
         continue-on-error: true
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: coverage-${{env.NODE_CURRENT_VERSION}}-${{matrix.projectName}}
           path: ${{steps.get-project-path.outputs.prop}}/coverage

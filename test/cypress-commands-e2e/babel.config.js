@@ -5,9 +5,9 @@ module.exports = {
       {
         root: ["."],
         alias: {
-          "@mocks-server/cypress-commands": `../`
-        }
-      }
-    ]
-  ]
+          "@mocks-server/cypress-commands": "../../packages/cypress-commands",
+        },
+      },
+    ],
+  ],
 };

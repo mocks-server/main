@@ -28,8 +28,6 @@
   ],
   "main": "index.js",
   "scripts": {
-    "test:e2e": "cd test-e2e && npm run test:ci",
-    "test:e2e:ci": "cd test-e2e && npm i && npm run apps:install && npm run test:ci",
     "test:unit": "jest"
   },
   "dependencies": {

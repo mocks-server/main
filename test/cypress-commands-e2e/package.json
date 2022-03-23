@@ -1,6 +1,4 @@
 {
-  "name": "cypress-tests",
-  "version": "1.0.0",
   "private": true,
   "scripts": {
     "mocks": "mocks-server",
@@ -19,11 +17,13 @@
     "test:app": "start-server-and-test mocks:ci-and-start:app http-get://127.0.0.1:3000 cypress:run",
     "test:app:custom-config": "start-server-and-test mocks:ci:custom-config-and-start:app http-get://127.0.0.1:3000 cypress:run:custom-config",
     "apps:install": "cd app && npm i",
-    "test:ci": "npm run build:app && npm run test:app && npm run build:app:custom-config && npm run test:app:custom-config"
+    "test:ci": "npm run build:app && npm run test:app && npm run build:app:custom-config && npm run test:app:custom-config",
+    "test:e2e": "npm run apps:install && npm run test:ci"
   },
   "devDependencies": {
+    "@babel/preset-env": "7.16.11",
     "@cypress/webpack-preprocessor": "5.10.0",
-    "@mocks-server/main": "2.5.0",
+    "@mocks-server/main": "workspace:*",
     "babel-loader": "8.2.3",
     "babel-plugin-module-resolver": "4.1.0",
     "cross-env": "7.0.3",

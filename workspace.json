@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "cypress-commands": "packages/cypress-commands",
+    "cypress-commands-e2e": "test/cypress-commands-e2e",
     "main": "packages/main",
     "main-e2e": "test/main-e2e",
     "plugin-proxy": "packages/plugin-proxy"

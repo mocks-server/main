@@ -4,9 +4,6 @@
 .env
 
 # dependencies
-<<<<<<< HEAD:.gitignore
-node_modules
-=======
 /node_modules
 
 # tests
@@ -24,7 +21,6 @@ node_modules
 /test/e2e/v2/fixtures/mocks.config.js
 /babel.config.js
 /_babel.config.js
->>>>>>> core_release:core/.gitignore
 
 # misc
 .DS_Store

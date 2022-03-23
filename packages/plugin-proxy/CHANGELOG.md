@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+### Changed
+- docs: Modify readme badges
+
 ## [1.0.4] - 2022-03-03
 
 ### Changed

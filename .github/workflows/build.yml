@@ -11,7 +11,7 @@ jobs:
   get-affected:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.1
         with:
@@ -77,7 +77,7 @@ jobs:
       NODE: ${{ matrix.node }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Get project path
         id: get-project-path
         uses: notiz-dev/github-action-json-property@release
@@ -137,7 +137,7 @@ jobs:
         projectName: ${{fromJson(needs.get-affected.outputs.sonar)}}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Get project path
@@ -177,7 +177,7 @@ jobs:
         projectName: ${{fromJson(needs.get-affected.outputs.test-e2e)}}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.1
         with:

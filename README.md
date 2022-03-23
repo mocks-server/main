@@ -70,7 +70,7 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [admin-api-paths]: https://github.com/mocks-server/admin-api-paths/tree/master
 [admin-api-paths-status]: https://img.shields.io/npm/v/@mocks-server/admin-api-paths.svg
 [admin-api-paths-package]: https://npmjs.com/package/@mocks-server/admin-api-paths
-[cypress-commands]: https://github.com/mocks-server/cypress-commands/tree/master
+[cypress-commands]: https://github.com/mocks-server/main/tree/master/packages/cypress-commands
 [cypress-commands-status]: https://img.shields.io/npm/v/@mocks-server/cypress-commands.svg
 [cypress-commands-package]: https://npmjs.com/package/@mocks-server/cypress-commands
 

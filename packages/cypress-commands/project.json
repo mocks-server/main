@@ -1,0 +1,5 @@
+{
+  "root": "packages/cypress-commands/",
+  "projectType": "library",
+  "tags": ["type:lib"]
+}

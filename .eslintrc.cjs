@@ -20,7 +20,6 @@ module.exports = {
     "no-shadow": [2, { builtinGlobals: true, hoist: "all" }],
     "no-undef": 2,
     "no-unused-vars": [2, { vars: "all", args: "after-used", ignoreRestSiblings: false }],
-    // TODO, this plugin seems to not be working
     "@nrwl/nx/enforce-module-boundaries": [
       2,
       {
@@ -29,6 +28,10 @@ module.exports = {
           {
             sourceTag: "type:app",
             onlyDependOnLibsWithTags: ["type:lib"],
+          },
+          {
+            sourceTag: "type:test",
+            onlyDependOnLibsWithTags: ["type:lib", "type:app"],
           },
         ],
       },

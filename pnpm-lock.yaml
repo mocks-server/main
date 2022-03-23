@@ -52,6 +52,12 @@ importers:
       typescript: 4.2.4
       wait-on: 6.0.1
 
+  packages/cypress-commands:
+    specifiers:
+      '@mocks-server/admin-api-client': 4.0.0
+    dependencies:
+      '@mocks-server/admin-api-client': 4.0.0
+
   packages/main:
     specifiers:
       '@babel/core': 7.17.5
@@ -748,6 +754,14 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.0.5
       '@jridgewell/sourcemap-codec': 1.4.11
+
+  /@mocks-server/admin-api-client/4.0.0:
+    resolution: {integrity: sha512-whzqOVm9qqNDAz5Erfmx3FrSUbk+JRm9IjTtXHuJw+QQHf+Vvki6BodF28/JlHOjGwiqkzjEHEBvcYBmdVOrkA==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      '@mocks-server/admin-api-paths': 2.2.0
+      cross-fetch: 3.1.4
+    dev: false
 
   /@mocks-server/admin-api-paths/2.2.0:
     resolution: {integrity: sha512-QQEW5igS8YlGgd288IKoibl7VIlLxMhxb4ckvjEgSHZwmljLF1pnhB7WIm5CIRhrOXJ8/ua7t4YUcekU4jxRJg==}
@@ -2080,6 +2094,12 @@ packages:
     dependencies:
       object-assign: 4.1.1
       vary: 1.1.2
+
+  /cross-fetch/3.1.4:
+    resolution: {integrity: sha512-1eAtFWdIubi6T4XPy6ei9iUFoKpUkIF971QLN8lIvvvwueI65+Nw5haMNKUwfJxabqlIIDODJKGrQ66gxC0PbQ==}
+    dependencies:
+      node-fetch: 2.6.1
+    dev: false
 
   /cross-fetch/3.1.5:
     resolution: {integrity: sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==}
@@ -4273,6 +4293,11 @@ packages:
     resolution: {integrity: sha512-wo2DpQkQp7Sjm2A0cq+sN7EHKO6Sl0ctXeBdFZrL9T9+UywORbufTcTZxom8YqpLQt/FqNMUkOpkZrJVYSKD3A==}
     dependencies:
       lodash: 4.17.21
+    dev: false
+
+  /node-fetch/2.6.1:
+    resolution: {integrity: sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==}
+    engines: {node: 4.x || >=6.0.0}
     dev: false
 
   /node-fetch/2.6.7:

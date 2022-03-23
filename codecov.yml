@@ -7,6 +7,9 @@ coverage:
         target: auto
         threshold: 0%
         base: auto
+      cypress-commands:
+        flags:
+          - cypress-commands
       main:
         flags:
           - main
@@ -14,6 +17,10 @@ coverage:
         flags:
           - plugin-proxy
 flags:
+  cypress-commands:
+    paths:
+      - packages/cypress-commands/**
+    carryforward: true
   main:
     paths:
       - packages/main/**

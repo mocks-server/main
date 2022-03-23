@@ -15,7 +15,7 @@ importers:
       cross-fetch: 3.1.5
       cross-spawn: 7.0.3
       eslint: 8.11.0
-      eslint-config-prettier: 8.4.0
+      eslint-config-prettier: 8.5.0
       eslint-plugin-prettier: 4.0.0
       fs-extra: 10.0.1
       handlebars: 4.7.7
@@ -31,7 +31,7 @@ importers:
       '@babel/core': 7.17.8
       '@babel/eslint-parser': 7.17.0_@babel+core@7.17.8+eslint@8.11.0
       '@nrwl/cli': 13.8.3
-      '@nrwl/eslint-plugin-nx': 13.8.3_c7be800b23158bde239069846e974a3f
+      '@nrwl/eslint-plugin-nx': 13.8.3_f9371d57ea5fe666ce0c779f623978ce
       '@nrwl/tao': 13.8.3
       '@nrwl/workspace': 13.8.3_7b4f20ef861f0a8a6ceffa6346b71d32
       '@typescript-eslint/parser': 5.10.0_eslint@8.11.0+typescript@4.2.4
@@ -39,8 +39,8 @@ importers:
       cross-fetch: 3.1.5
       cross-spawn: 7.0.3
       eslint: 8.11.0
-      eslint-config-prettier: 8.4.0_eslint@8.11.0
-      eslint-plugin-prettier: 4.0.0_1de23034537e7705850d3b761ce453be
+      eslint-config-prettier: 8.5.0_eslint@8.11.0
+      eslint-plugin-prettier: 4.0.0_c9d5adccfd1d43a8805a302169f6a967
       fs-extra: 10.0.1
       handlebars: 4.7.7
       husky: 7.0.4
@@ -1825,7 +1825,7 @@ packages:
       tslib: 2.3.1
     dev: true
 
-  /@nrwl/eslint-plugin-nx/13.8.3_c7be800b23158bde239069846e974a3f:
+  /@nrwl/eslint-plugin-nx/13.8.3_f9371d57ea5fe666ce0c779f623978ce:
     resolution: {integrity: sha512-fiDGULPfFYFkjIORBCFTkzpUQNlW48/32C3xWVbZlmmnO1KJ5ql3QyQSaDpaentE5nASM8TbgXeVMRqhYkZbOw==}
     peerDependencies:
       '@typescript-eslint/parser': ~5.10.0
@@ -1841,7 +1841,7 @@ packages:
       '@typescript-eslint/parser': 5.10.0_eslint@8.11.0+typescript@4.2.4
       chalk: 4.1.0
       confusing-browser-globals: 1.0.11
-      eslint-config-prettier: 8.4.0_eslint@8.11.0
+      eslint-config-prettier: 8.5.0_eslint@8.11.0
       tsconfig-paths: 3.12.0
     optionalDependencies:
       '@swc/core-linux-arm64-gnu': 1.2.146
@@ -3810,8 +3810,8 @@ packages:
       source-map: 0.6.1
     dev: true
 
-  /eslint-config-prettier/8.4.0_eslint@8.11.0:
-    resolution: {integrity: sha512-CFotdUcMY18nGRo5KGsnNxpznzhkopOcOo0InID+sgQssPrzjvsyKZPvOgymTFeHrFuC3Tzdf2YndhXtULK9Iw==}
+  /eslint-config-prettier/8.5.0_eslint@8.11.0:
+    resolution: {integrity: sha512-obmWKLUNCnhtQRKc+tmnYuQl0pFU1ibYJQ5BGhTVB08bHe9wC8qUeG7c08dj9XX+AuPj1YSGSQIHl1pnDHZR0Q==}
     hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
@@ -3819,7 +3819,7 @@ packages:
       eslint: 8.11.0
     dev: true
 
-  /eslint-plugin-prettier/4.0.0_1de23034537e7705850d3b761ce453be:
+  /eslint-plugin-prettier/4.0.0_c9d5adccfd1d43a8805a302169f6a967:
     resolution: {integrity: sha512-98MqmCJ7vJodoQK359bqQWaxOE0CS8paAz/GgjaZLyex4TTk3g9HugoO89EqWCrFiOqn9EVvcoo7gZzONCWVwQ==}
     engines: {node: '>=6.0.0'}
     peerDependencies:
@@ -3831,7 +3831,7 @@ packages:
         optional: true
     dependencies:
       eslint: 8.11.0
-      eslint-config-prettier: 8.4.0_eslint@8.11.0
+      eslint-config-prettier: 8.5.0_eslint@8.11.0
       prettier: 2.5.1
       prettier-linter-helpers: 1.0.0
     dev: true

@@ -20,7 +20,7 @@ const isFunction = (response) => {
 
 class Fixture {
   static recognize(fixture) {
-    return (
+    return !!(
       fixture &&
       fixture.url &&
       fixture.method &&

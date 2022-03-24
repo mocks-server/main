@@ -4,9 +4,6 @@
 .env
 
 # dependencies
-<<<<<<< HEAD:.gitignore
-node_modules
-=======
 /node_modules
 
 # tests
@@ -16,7 +13,6 @@ node_modules
 /test/e2e/main/v1/fixtures/mocks.config.js
 /test/e2e/main/v2/fixtures/temp
 /test/e2e/main/v2/fixtures/mocks.config.js
->>>>>>> plugin-inquirer-cli_release:plugin-inquirer-cli/.gitignore
 
 # misc
 .DS_Store

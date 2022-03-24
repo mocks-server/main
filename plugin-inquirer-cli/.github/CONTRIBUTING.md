@@ -14,6 +14,8 @@ The following is a set of guidelines for contributing to this project. These are
 * [Pull Requests](#pull-requests)
 * [Styleguides](#styleguides)
   * [Git Commit Messages](#git-commit-messages)
+  * [JavaScript Styleguide](#javascript-styleguide)
+  * [Tests Styleguide](#tests-styleguide)
 * [Developer's certificate of origin](#developers-certificate-of-origin)
 
 ## Code of Conduct
@@ -63,6 +65,30 @@ This document may also be subject to pull-requests or changes by contributors wh
 * Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
 * Limit the first line to 72 characters or less
 * Reference issues and pull requests liberally after the first line
+
+### JavaScript Styleguide
+
+All JavaScript must adhere to the style defined in the `.eslintrc.json` file.
+
+### Tests Styleguide
+
+- Fail tests first. How do you know if it is actually testing anything if the assert never failed?
+- Treat `describe` as a noun or situation (Situations usually start with "when").
+- Treat `it` as a statement about state or how an operation changes state. Usually, all `it` should start with "should".
+- Prefer fewer asserts per `it`.
+- Prefer one file for all specs of a javascript file, but, if it grows too much, split it into many files adding a sufix describing the behavior being tested in it (`file.behavior.js`)
+
+#### Example
+
+```js
+describe("a dog", () => {
+  describe("when is happy", () => {
+    it("should wags its tail", () => {
+      expect(dog.tail.moving).to.be.true();
+    });
+  });
+});
+```
 
 ## Developer's Certificate of Origin
 

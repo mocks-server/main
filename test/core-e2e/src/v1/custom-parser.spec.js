@@ -18,7 +18,7 @@ const isFunction = (response) => {
 
 class CustomParser {
   static recognize(fixture) {
-    return (
+    return !!(
       fixture.at &&
       fixture.with &&
       fixture.send &&

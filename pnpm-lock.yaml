@@ -116,6 +116,7 @@ importers:
 
   packages/plugin-inquirer-cli:
     specifiers:
+      '@mocks-server/core': workspace:*
       chalk: 4.1.1
       inquirer: 8.2.0
       inquirer-autocomplete-prompt: 1.4.0
@@ -127,6 +128,8 @@ importers:
       inquirer-autocomplete-prompt: 1.4.0_inquirer@8.2.0
       lodash: 4.17.21
       node-emoji: 1.11.0
+    devDependencies:
+      '@mocks-server/core': link:../core
 
   packages/plugin-proxy:
     specifiers:

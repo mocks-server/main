@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@babel/core": "7.17.5",
-    "@mocks-server/core": "2.5.2",
+    "@mocks-server/core": "workspace:*",
     "@mocks-server/plugin-admin-api": "2.2.0",
     "@mocks-server/plugin-inquirer-cli": "2.2.0",
     "@mocks-server/plugin-proxy": "workspace:*"

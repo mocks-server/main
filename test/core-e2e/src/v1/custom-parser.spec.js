@@ -18,15 +18,12 @@ const isFunction = (response) => {
 
 class CustomParser {
   static recognize(fixture) {
-    if (
+    return (
       fixture.at &&
       fixture.with &&
       fixture.send &&
       (isFunction(fixture.send) || fixture.send.status)
-    ) {
-      return true;
-    }
-    return false;
+    );
   }
 
   static get displayName() {

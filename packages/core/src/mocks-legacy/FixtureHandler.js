@@ -20,16 +20,13 @@ const isFunction = (response) => {
 
 class Fixture {
   static recognize(fixture) {
-    if (
+    return (
       fixture &&
       fixture.url &&
       fixture.method &&
       fixture.response &&
       (isFunction(fixture.response) || fixture.response.status)
-    ) {
-      return true;
-    }
-    return false;
+    );
   }
 
   static get displayName() {

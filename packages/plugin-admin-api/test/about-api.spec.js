@@ -9,7 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const { startServer, fetch, waitForServer } = require("./support/helpers");
-const { version } = require("../../package.json");
+const { version } = require("../package.json");
 
 describe("about api", () => {
   let server;

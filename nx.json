@@ -40,6 +40,12 @@
         "target": "build",
         "projects": "dependencies"
       }
+    ],
+    "test:unit": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
     ]
   }
 }

@@ -1,0 +1,40 @@
+{
+  "name": "@mocks-server/admin-api-paths",
+  "version": "2.2.0",
+  "description": "Api paths of @mocks-server/plugin-admin-api",
+  "keywords": [
+    "administration",
+    "admin",
+    "api",
+    "rest",
+    "client"
+  ],
+  "author": "Javier Brea",
+  "license": "MIT",
+  "repository": "https://github.com/mocks-server/main",
+  "homepage": "https://www.mocks-server.org",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.umd.js",
+  "module": "dist/index.esm.js",
+  "scripts": {
+    "build": "rollup --config",
+    "test:unit": "jest"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "7.16.11",
+    "@rollup/plugin-babel": "5.3.1",
+    "@rollup/plugin-commonjs": "21.0.2",
+    "@rollup/plugin-node-resolve": "13.1.3",
+    "babel-jest": "27.5.1",
+    "rollup": "2.68.0",
+    "rollup-plugin-terser": "7.0.2"
+  },
+  "engines": {
+    "node": ">=12.x"
+  }
+}

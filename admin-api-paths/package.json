@@ -1,0 +1,57 @@
+{
+  "name": "@mocks-server/admin-api-paths",
+  "version": "2.2.0",
+  "description": "Api paths of @mocks-server/plugin-admin-api",
+  "keywords": [
+    "administration",
+    "admin",
+    "api",
+    "rest",
+    "client"
+  ],
+  "author": "Javier Brea",
+  "license": "MIT",
+  "repository": "https://github.com/mocks-server/admin-api-paths",
+  "homepage": "https://www.mocks-server.org",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.umd.js",
+  "module": "dist/index.esm.js",
+  "scripts": {
+    "build": "rollup --config",
+    "lint": "eslint *.js test jest.config.js",
+    "lint-staged": "lint-staged",
+    "test": "jest",
+    "test:unit": "npm run test",
+    "prepare": "is-ci || husky install"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "7.16.11",
+    "@rollup/plugin-babel": "5.3.1",
+    "@rollup/plugin-commonjs": "21.0.2",
+    "@rollup/plugin-node-resolve": "13.1.3",
+    "babel-jest": "27.5.1",
+    "eslint": "8.10.0",
+    "eslint-config-prettier": "8.4.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "husky": "7.0.4",
+    "is-ci": "3.0.1",
+    "jest": "27.5.1",
+    "lint-staged": "12.3.4",
+    "prettier": "2.5.1",
+    "rollup": "2.68.0",
+    "rollup-plugin-terser": "7.0.2"
+  },
+  "lint-staged": {
+    "test/**/*.js": "eslint",
+    "*.js": "eslint",
+    "jest.config.js": "eslint"
+  },
+  "engines": {
+    "node": ">=12.x"
+  }
+}

@@ -1,11 +1,16 @@
-[![Build status][build-image]][build-url] [![Coverage Status][coveralls-image]][coveralls-url] [![Quality Gate][quality-gate-image]][quality-gate-url]
+<p align="center"><a href="https://mocks-server.org" target="_blank" rel="noopener noreferrer"><img width="120" src="https://www.mocks-server.org/img/logo_120.png" alt="Mocks Server logo"></a></p>
 
-[![Renovate](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com) [![Last commit][last-commit-image]][last-commit-url] [![Last release][release-image]][release-url] 
+<p align="center">
+  <a href="https://github.com/mocks-server/main/actions?query=workflow%3Abuild+branch%3Amaster"><img src="https://github.com/mocks-server/main/workflows/build/badge.svg?branch=master" alt="Build Status"></a>
+  <a href="https://codecov.io/gh/mocks-server/main"><img src="https://codecov.io/gh/mocks-server/main/branch/master/graph/badge.svg?token=2S8ZR55AJV" alt="Coverage"></a>
+  <a href="https://sonarcloud.io/project/overview?id=mocks-server_main_plugin-inquirer-cli"><img src="https://sonarcloud.io/api/project_badges/measure?project=mocks-server_main_plugin-inquirer-cli&metric=alert_status" alt="Quality Gate"></a>
+  <a href="https://www.npmjs.com/package/@mocks-server/plugin-inquirer-cli"><img src="https://img.shields.io/npm/dm/@mocks-server/plugin-inquirer-cli.svg" alt="Downloads"></a>
+  <a href="https://renovatebot.com"><img src="https://img.shields.io/badge/renovate-enabled-brightgreen.svg" alt="Renovate"></a>
+  <a href="https://github.com/mocks-server/main/blob/master/packages/plugin-inquirer-cli/LICENSE"><img src="https://img.shields.io/npm/l/@mocks-server/plugin-inquirer-cli.svg" alt="License"></a>
+</p>
 
-[![NPM downloads][npm-downloads-image]][npm-downloads-url] [![License][license-image]][license-url]
-
-
-# [![Mocks Server][logo-url]][website-url] Mocks Server Plugin Inquirer CLI
+---
+# Mocks Server Plugin Inquirer CLI
 
 [Mocks Server][website-url] plugin that provides an interactive CLI that allows to change the server settings while it is running and displays logs and alerts.
 
@@ -44,18 +49,3 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [main-distribution-url]: https://www.npmjs.com/package/@mocks-server/main
 [options-url]: https://www.mocks-server.org/docs/configuration-options
 [logo-url]: https://www.mocks-server.org/img/logo_120.png
-
-[coveralls-image]: https://coveralls.io/repos/github/mocks-server/plugin-inquirer-cli/badge.svg
-[coveralls-url]: https://coveralls.io/github/mocks-server/plugin-inquirer-cli
-[build-image]: https://github.com/mocks-server/plugin-inquirer-cli/workflows/build/badge.svg?branch=master
-[build-url]: https://github.com/mocks-server/plugin-inquirer-cli/actions?query=workflow%3Abuild+branch%3Amaster
-[last-commit-image]: https://img.shields.io/github/last-commit/mocks-server/plugin-inquirer-cli.svg
-[last-commit-url]: https://github.com/mocks-server/plugin-inquirer-cli/commits
-[license-image]: https://img.shields.io/npm/l/@mocks-server/plugin-inquirer-cli.svg
-[license-url]: https://github.com/mocks-server/plugin-inquirer-cli/blob/master/LICENSE
-[npm-downloads-image]: https://img.shields.io/npm/dm/@mocks-server/plugin-inquirer-cli.svg
-[npm-downloads-url]: https://www.npmjs.com/package/@mocks-server/plugin-inquirer-cli
-[quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=mocks-server_plugin-inquirer-cli&metric=alert_status
-[quality-gate-url]: https://sonarcloud.io/dashboard?id=mocks-server_plugin-inquirer-cli
-[release-image]: https://img.shields.io/github/release-date/mocks-server/plugin-inquirer-cli.svg
-[release-url]: https://github.com/mocks-server/plugin-inquirer-cli/releases

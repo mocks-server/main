@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "test:e2e": "jest --config=jest.e2e.config.js --runInBand --detectOpenHandles"
+    "test:e2e": "jest --runInBand --detectOpenHandles"
   },
   "devDependencies": {
     "@babel/preset-env": "7.16.11",

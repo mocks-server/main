@@ -105,14 +105,28 @@ importers:
       '@babel/core': 7.17.8
       '@mocks-server/core': workspace:*
       '@mocks-server/plugin-admin-api': 2.2.0
-      '@mocks-server/plugin-inquirer-cli': 2.2.0
+      '@mocks-server/plugin-inquirer-cli': workspace:*
       '@mocks-server/plugin-proxy': workspace:*
     dependencies:
       '@babel/core': 7.17.8
       '@mocks-server/core': link:../core
       '@mocks-server/plugin-admin-api': 2.2.0
-      '@mocks-server/plugin-inquirer-cli': 2.2.0
+      '@mocks-server/plugin-inquirer-cli': link:../plugin-inquirer-cli
       '@mocks-server/plugin-proxy': link:../plugin-proxy
+
+  packages/plugin-inquirer-cli:
+    specifiers:
+      chalk: 4.1.1
+      inquirer: 8.2.0
+      inquirer-autocomplete-prompt: 1.4.0
+      lodash: 4.17.21
+      node-emoji: 1.11.0
+    dependencies:
+      chalk: 4.1.1
+      inquirer: 8.2.0
+      inquirer-autocomplete-prompt: 1.4.0_inquirer@8.2.0
+      lodash: 4.17.21
+      node-emoji: 1.11.0
 
   packages/plugin-proxy:
     specifiers:
@@ -184,6 +198,28 @@ importers:
       strip-ansi: 6.0.0
       tree-kill: 1.2.2
 
+  test/plugin-inquirer-cli-e2e:
+    specifiers:
+      '@mocks-server/core': workspace:*
+      '@mocks-server/plugin-inquirer-cli': workspace:*
+      cross-fetch: 3.1.4
+      cross-spawn: 7.0.3
+      fs-extra: 10.0.1
+      is-promise: 4.0.0
+      strip-ansi: 6.0.0
+      tree-kill: 1.2.2
+      wait-on: 6.0.0
+    devDependencies:
+      '@mocks-server/core': link:../../packages/core
+      '@mocks-server/plugin-inquirer-cli': link:../../packages/plugin-inquirer-cli
+      cross-fetch: 3.1.4
+      cross-spawn: 7.0.3
+      fs-extra: 10.0.1
+      is-promise: 4.0.0
+      strip-ansi: 6.0.0
+      tree-kill: 1.2.2
+      wait-on: 6.0.0
+
 packages:
 
   /@ampproject/remapping/2.1.2:
@@ -236,15 +272,6 @@ packages:
       eslint-scope: 5.1.1
       eslint-visitor-keys: 2.1.0
       semver: 6.3.0
-    dev: true
-
-  /@babel/generator/7.17.3:
-    resolution: {integrity: sha512-+R6Dctil/MgUsZsZAkYgK+ADNSZzJRRy0TvY65T71z/CR854xHQ1EweBYXdfT+HNeN7w0cSJJEzgxZMv40pxsg==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      '@babel/types': 7.17.0
-      jsesc: 2.5.2
-      source-map: 0.5.7
     dev: true
 
   /@babel/generator/7.17.7:
@@ -1798,19 +1825,6 @@ packages:
       '@hapi/boom': 9.1.4
       '@mocks-server/admin-api-paths': 2.2.0
       express: 4.17.1
-    dev: false
-
-  /@mocks-server/plugin-inquirer-cli/2.2.0:
-    resolution: {integrity: sha512-k4DK5sNH+gwsWl6YTjP2RRKUqe1LvOJF0eJvx4Y0lx3z3Z/KGF7GhQGRnbUhJfgPWg8dWL3WITpSFld0wEl+sQ==}
-    engines: {node: '>=12.0.0'}
-    peerDependencies:
-      '@mocks-server/core': '>=2.0.0'
-    dependencies:
-      chalk: 4.1.1
-      inquirer: 8.2.0
-      inquirer-autocomplete-prompt: 1.4.0_inquirer@8.2.0
-      lodash: 4.17.21
-      node-emoji: 1.11.0
     dev: false
 
   /@nodelib/fs.scandir/2.1.5:
@@ -3480,7 +3494,6 @@ packages:
     resolution: {integrity: sha512-1eAtFWdIubi6T4XPy6ei9iUFoKpUkIF971QLN8lIvvvwueI65+Nw5haMNKUwfJxabqlIIDODJKGrQ66gxC0PbQ==}
     dependencies:
       node-fetch: 2.6.1
-    dev: false
 
   /cross-fetch/3.1.5:
     resolution: {integrity: sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==}
@@ -4990,7 +5003,6 @@ packages:
 
   /is-promise/4.0.0:
     resolution: {integrity: sha512-hvpoI6korhJMnej285dSg6nu1+e6uxs7zG3BYAm5byqDsgJNWwxzM6z6iZiAgQR4TJ30JmBTOwqZUw3WlyH3AQ==}
-    dev: false
 
   /is-stream/2.0.1:
     resolution: {integrity: sha512-hFoiJiTl63nn+kstHGBtewWSKnQLpyb155KHheA1l39uvtO9nWIop1p3udqPcUd/xbF1VLMO4n7OI6p7RbngDg==}
@@ -5535,7 +5547,7 @@ packages:
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
       '@babel/core': 7.17.8
-      '@babel/generator': 7.17.3
+      '@babel/generator': 7.17.7
       '@babel/plugin-syntax-typescript': 7.16.7_@babel+core@7.17.8
       '@babel/traverse': 7.17.3
       '@babel/types': 7.17.0
@@ -6155,7 +6167,6 @@ packages:
   /node-fetch/2.6.1:
     resolution: {integrity: sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==}
     engines: {node: 4.x || >=6.0.0}
-    dev: false
 
   /node-fetch/2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}

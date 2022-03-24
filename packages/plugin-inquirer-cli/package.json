@@ -14,7 +14,7 @@
   ],
   "author": "Javier Brea",
   "license": "Apache-2.0",
-  "repository": "https://github.com/mocks-server/plugin-inquirer-cli",
+  "repository": "https://github.com/mocks-server/main",
   "homepage": "https://www.mocks-server.org",
   "publishConfig": {
     "access": "public"
@@ -25,12 +25,7 @@
   ],
   "main": "index.js",
   "scripts": {
-    "lint": "eslint *.js src test",
-    "lint-staged": "lint-staged",
-    "test": "jest",
-    "test:e2e": "jest --config=jest.e2e.config.js --runInBand",
-    "test:unit": "npm run test",
-    "prepare": "is-ci || husky install"
+    "test:unit": "jest"
   },
   "peerDependencies": {
     "@mocks-server/core": ">=2.0.0"
@@ -41,36 +36,6 @@
     "inquirer-autocomplete-prompt": "1.4.0",
     "lodash": "4.17.21",
     "node-emoji": "1.11.0"
-  },
-  "devDependencies": {
-    "@mocks-server/core": "2.5.1",
-    "cross-fetch": "3.1.4",
-    "cross-spawn": "7.0.3",
-    "eslint": "8.10.0",
-    "eslint-config-prettier": "8.3.0",
-    "eslint-plugin-no-only-tests": "2.6.0",
-    "eslint-plugin-prettier": "4.0.0",
-    "fs-extra": "10.0.1",
-    "husky": "7.0.4",
-    "is-ci": "3.0.1",
-    "is-promise": "4.0.0",
-    "jest": "27.4.7",
-    "lint-staged": "12.1.7",
-    "prettier": "2.5.1",
-    "sinon": "12.0.1",
-    "strip-ansi": "6.0.0",
-    "tree-kill": "1.2.2",
-    "wait-on": "6.0.0"
-  },
-  "lint-staged": {
-    "src/**/*.js": "eslint",
-    "test/**/*.js": "eslint",
-    "*.js": "eslint"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint-staged"
-    }
   },
   "engines": {
     "node": ">=12.0.0"

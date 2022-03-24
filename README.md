@@ -55,7 +55,7 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [plugin-proxy]: https://github.com/mocks-server/main/tree/master/packages/plugin-proxy
 [plugin-proxy-status]: https://img.shields.io/npm/v/@mocks-server/plugin-proxy.svg
 [plugin-proxy-package]: https://npmjs.com/package/@mocks-server/plugin-proxy
-[plugin-inquirer-cli]: https://github.com/mocks-server/plugin-inquirer-cli/tree/master
+[plugin-inquirer-cli]: https://github.com/mocks-server/main/tree/master/packages/plugin-inquirer-cli
 [plugin-inquirer-cli-status]: https://img.shields.io/npm/v/@mocks-server/plugin-inquirer-cli.svg
 [plugin-inquirer-cli-package]: https://npmjs.com/package/@mocks-server/plugin-inquirer-cli
 [plugin-admin-api]: https://github.com/mocks-server/plugin-admin-api/tree/master

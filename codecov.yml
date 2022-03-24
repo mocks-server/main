@@ -16,6 +16,9 @@ coverage:
       main:
         flags:
           - main
+      plugin-admin-api:
+        flags:
+          - plugin-admin-api
       plugin-inquirer-cli:
         flags:
           - plugin-inquirer-cli
@@ -34,6 +37,10 @@ flags:
   main:
     paths:
       - packages/main/**
+    carryforward: true
+  plugin-admin-api:
+    paths:
+      - packages/plugin-admin-api/**
     carryforward: true
   plugin-inquirer-cli:
     paths:

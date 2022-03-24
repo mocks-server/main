@@ -104,15 +104,28 @@ importers:
     specifiers:
       '@babel/core': 7.17.8
       '@mocks-server/core': workspace:*
-      '@mocks-server/plugin-admin-api': 2.2.0
+      '@mocks-server/plugin-admin-api': workspace:*
       '@mocks-server/plugin-inquirer-cli': workspace:*
       '@mocks-server/plugin-proxy': workspace:*
     dependencies:
       '@babel/core': 7.17.8
       '@mocks-server/core': link:../core
-      '@mocks-server/plugin-admin-api': 2.2.0
+      '@mocks-server/plugin-admin-api': link:../plugin-admin-api
       '@mocks-server/plugin-inquirer-cli': link:../plugin-inquirer-cli
       '@mocks-server/plugin-proxy': link:../plugin-proxy
+
+  packages/plugin-admin-api:
+    specifiers:
+      '@hapi/boom': 9.1.4
+      '@mocks-server/admin-api-paths': 2.2.0
+      '@mocks-server/core': workspace:*
+      express: 4.17.1
+    dependencies:
+      '@hapi/boom': 9.1.4
+      '@mocks-server/admin-api-paths': 2.2.0
+      express: 4.17.1
+    devDependencies:
+      '@mocks-server/core': link:../core
 
   packages/plugin-inquirer-cli:
     specifiers:
@@ -1817,17 +1830,6 @@ packages:
   /@mocks-server/admin-api-paths/2.2.0:
     resolution: {integrity: sha512-QQEW5igS8YlGgd288IKoibl7VIlLxMhxb4ckvjEgSHZwmljLF1pnhB7WIm5CIRhrOXJ8/ua7t4YUcekU4jxRJg==}
     engines: {node: '>=12.x'}
-    dev: false
-
-  /@mocks-server/plugin-admin-api/2.2.0:
-    resolution: {integrity: sha512-kOq39s6qhtoacGmR8T/hHsUQm4fLnkI8loPuO12ujMd5OYLleFPyJWRX4QdqWpr/+flm5mZ+Vtt7fxmpj+KvUg==}
-    engines: {node: '>=12.0.0'}
-    peerDependencies:
-      '@mocks-server/core': '>=2.0.0'
-    dependencies:
-      '@hapi/boom': 9.1.4
-      '@mocks-server/admin-api-paths': 2.2.0
-      express: 4.17.1
     dev: false
 
   /@nodelib/fs.scandir/2.1.5:

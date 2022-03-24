@@ -10,6 +10,7 @@
 </p>
 
 ---
+
 # Mocks Server Plugin Inquirer CLI
 
 [Mocks Server][website-url] plugin that provides an interactive CLI that allows to change the server settings while it is running and displays logs and alerts.

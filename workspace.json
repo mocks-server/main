@@ -7,6 +7,7 @@
     "cypress-commands-e2e": "test/cypress-commands-e2e",
     "main": "packages/main",
     "main-e2e": "test/main-e2e",
+    "plugin-admin-api": "packages/plugin-admin-api",
     "plugin-inquirer-cli": "packages/plugin-inquirer-cli",
     "plugin-inquirer-cli-e2e": "test/plugin-inquirer-cli-e2e",
     "plugin-proxy": "packages/plugin-proxy"

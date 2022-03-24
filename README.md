@@ -58,7 +58,7 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [plugin-inquirer-cli]: https://github.com/mocks-server/main/tree/master/packages/plugin-inquirer-cli
 [plugin-inquirer-cli-status]: https://img.shields.io/npm/v/@mocks-server/plugin-inquirer-cli.svg
 [plugin-inquirer-cli-package]: https://npmjs.com/package/@mocks-server/plugin-inquirer-cli
-[plugin-admin-api]: https://github.com/mocks-server/plugin-admin-api/tree/master
+[plugin-admin-api]: https://github.com/mocks-server/main/tree/master/packages/plugin-admin-api
 [plugin-admin-api-status]: https://img.shields.io/npm/v/@mocks-server/plugin-admin-api.svg
 [plugin-admin-api-package]: https://npmjs.com/package/@mocks-server/plugin-admin-api
 [admin-api-client]: https://github.com/mocks-server/admin-api-client/tree/master

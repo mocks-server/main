@@ -1,0 +1,43 @@
+{
+  "name": "@mocks-server/plugin-admin-api",
+  "version": "2.2.0",
+  "description": "Mocks Server plugin providing a REST API for administration",
+  "keywords": [
+    "mocks-server-plugin",
+    "administration",
+    "admin",
+    "api",
+    "rest",
+    "testing",
+    "development"
+  ],
+  "author": "Javier Brea",
+  "license": "Apache-2.0",
+  "repository": "https://github.com/mocks-server/main",
+  "homepage": "https://www.mocks-server.org",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src",
+    "index.js"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test:unit": "jest --runInBand"
+  },
+  "peerDependencies": {
+    "@mocks-server/core": ">=2.0.0"
+  },
+  "dependencies": {
+    "@hapi/boom": "9.1.4",
+    "@mocks-server/admin-api-paths": "2.2.0",
+    "express": "4.17.1"
+  },
+  "devDependencies": {
+    "@mocks-server/core": "workspace:*"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  }
+}

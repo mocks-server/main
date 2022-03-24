@@ -1,0 +1,24 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1,
+    "workspacePrefix": "/Users/zc01443/proyectos/mocks-server/main"
+  },
+  "1 info pnpm": {
+    "err": {
+      "name": "Error",
+      "message": "not found: ci",
+      "code": "ENOENT",
+      "stack": "Error: not found: ci\n    at getNotFoundError (/Users/zc01443/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:41575:51)\n    at Function.whichSync [as sync] (/Users/zc01443/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:41652:13)\n    at getCommandAbsolutePathSync (/Users/zc01443/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:43217:44)\n    at default_1 (/Users/zc01443/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:43226:32)\n    at /Users/zc01443/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:178151:39"
+    }
+  },
+  "2 error pnpm": {
+    "code": "ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL",
+    "prefix": "/Users/zc01443/proyectos/mocks-server/main",
+    "err": {
+      "name": "pnpm",
+      "message": "not found: ci",
+      "code": "ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL",
+      "stack": "Error: not found: ci\n    at getNotFoundError (/Users/zc01443/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:41575:51)\n    at Function.whichSync [as sync] (/Users/zc01443/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:41652:13)\n    at getCommandAbsolutePathSync (/Users/zc01443/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:43217:44)\n    at default_1 (/Users/zc01443/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:43226:32)\n    at /Users/zc01443/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:178151:39"
+    }
+  }
+}

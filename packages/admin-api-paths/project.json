@@ -1,0 +1,5 @@
+{
+  "root": "packages/admin-api-paths/",
+  "projectType": "library",
+  "tags": ["type:lib"]
+}

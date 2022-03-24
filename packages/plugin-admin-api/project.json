@@ -1,13 +1,5 @@
 {
   "root": "packages/plugin-admin-api/",
   "projectType": "library",
-  "tags": ["type:lib"],
-  "targetDependencies": {
-    "test:unit": [
-      {
-        "target": "build",
-        "projects": "dependencies"
-      }
-    ]
-  }
+  "tags": ["type:lib"]
 }

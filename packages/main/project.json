@@ -1,13 +1,5 @@
 {
   "root": "packages/main/",
   "projectType": "application",
-  "tags": ["type:app"],
-  "targetDependencies": {
-    "test:unit": [
-      {
-        "target": "build",
-        "projects": "dependencies"
-      }
-    ]
-  }
+  "tags": ["type:app"]
 }

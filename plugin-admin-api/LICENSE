@@ -175,5 +175,9 @@
 
    END OF TERMS AND CONDITIONS
 
+<<<<<<< HEAD:LICENSE
    Copyright 2019-present Javier Brea
+=======
+   Copyright 2019 Javier Brea
+>>>>>>> plugin-admin-api_release:plugin-admin-api/LICENSE
    Copyright 2019 XbyOrange

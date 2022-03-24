@@ -4,7 +4,17 @@
 .env
 
 # dependencies
+<<<<<<< HEAD:.gitignore
 node_modules
+=======
+/node_modules
+
+# tests
+/coverage
+/mocks
+/test/e2e/fixtures/temp
+/test/e2e/fixtures/mocks.config.js
+>>>>>>> plugin-admin-api_release:plugin-admin-api/.gitignore
 
 # misc
 .DS_Store

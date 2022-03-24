@@ -39,7 +39,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["packages/*/test/*.js", "test/*/src/*.js"],
+      files: ["packages/*/test/**/*.js", "test/*/src/**/*.js"],
       globals: {
         jest: true,
         beforeAll: true,

@@ -1,6 +1,8 @@
 {
   "version": 2,
   "projects": {
+    "core": "packages/core",
+    "core-e2e": "test/core-e2e",
     "cypress-commands": "packages/cypress-commands",
     "cypress-commands-e2e": "test/cypress-commands-e2e",
     "main": "packages/main",

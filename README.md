@@ -49,7 +49,7 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [main]: https://github.com/mocks-server/main/tree/master/packages/main
 [main-status]: https://img.shields.io/npm/v/@mocks-server/main.svg
 [main-package]: https://npmjs.com/package/@mocks-server/main
-[core]: https://github.com/mocks-server/core/tree/master
+[core]: https://github.com/mocks-server/main/tree/master/packages/core
 [core-status]: https://img.shields.io/npm/v/@mocks-server/core.svg
 [core-package]: https://npmjs.com/package/@mocks-server/core
 [plugin-proxy]: https://github.com/mocks-server/main/tree/master/packages/plugin-proxy

@@ -3,6 +3,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@mocks-server/core": [
+        "packages/core/index.js"
+      ],
       "@mocks-server/cypress-commands": [
         "packages/cypress-commands/index.js"
       ],

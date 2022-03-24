@@ -1,0 +1,28 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+#environment variables
+.env
+
+# dependencies
+/node_modules
+
+# tests
+/src/main/v1/fixtures/files-watch
+/src/main/v1/fixtures/mocks.config.js
+/src/main/v2/fixtures/temp
+/src/main/v2/fixtures/mocks.config.js
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ides
+.idea
+.vs

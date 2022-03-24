@@ -1,0 +1,6 @@
+{
+  "root": "test/plugin-inquirer-cli-e2e/",
+  "projectType": "application",
+  "implicitDependencies": [],
+  "tags": ["type:test"]
+}

@@ -12,6 +12,9 @@
       "@mocks-server/main": [
         "packages/main/index.js"
       ],
+      "@mocks-server/plugin-inquirer-cli": [
+        "packages/plugin-inquirer-cli/index.js"
+      ],
       "@mocks-server/plugin-proxy": [
         "packages/plugin-proxy/index.js"
       ]

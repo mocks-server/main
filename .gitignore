@@ -4,13 +4,7 @@
 .env
 
 # dependencies
-/node_modules
-
-# tests
-/coverage
-/mocks
-/test/e2e/fixtures/temp
-/test/e2e/fixtures/mocks.config.js
+node_modules
 
 # misc
 .DS_Store

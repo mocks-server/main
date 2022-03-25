@@ -105,6 +105,12 @@ importers:
       fs-extra: 10.0.0
       serve: 13.0.2
 
+  mocks/admin-api-client-unit-mocks:
+    specifiers:
+      '@mocks-server/main': workspace:*
+    devDependencies:
+      '@mocks-server/main': link:../../packages/main
+
   packages/admin-api-client:
     specifiers:
       '@babel/preset-env': 7.16.11
@@ -160,12 +166,6 @@ importers:
       redux: 4.1.2
       rollup: 2.66.1
       rollup-plugin-terser: 7.0.2_rollup@2.66.1
-
-  packages/admin-api-client/mocks:
-    specifiers:
-      '@mocks-server/main': workspace:*
-    devDependencies:
-      '@mocks-server/main': link:../../main
 
   packages/admin-api-paths:
     specifiers:

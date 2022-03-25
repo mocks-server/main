@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "mocks": "mocks-server",
-    "mocks:ci": "mocks-server --no-cli"
+    "start": "mocks-server --no-cli"
   },
   "devDependencies": {
     "@mocks-server/main": "workspace:*"

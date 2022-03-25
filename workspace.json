@@ -16,6 +16,7 @@
     "core-e2e": "test/core-e2e",
     "cypress-commands": "packages/cypress-commands",
     "cypress-commands-e2e": "test/cypress-commands-e2e",
+    "cypress-commands-e2e-vanilla-app": "mocks/cypress-commands-e2e-vanilla-app",
     "main": "packages/main",
     "main-e2e": "test/main-e2e",
     "plugin-admin-api": "packages/plugin-admin-api",

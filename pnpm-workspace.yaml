@@ -1,5 +1,4 @@
 packages:
   - 'mocks/*'
   - 'packages/*'
-  - 'packages/admin-api-client/mocks'
   - 'test/*'

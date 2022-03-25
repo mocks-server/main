@@ -4,7 +4,11 @@ const path = require("path");
 const MAIN_FILE = "main.js";
 
 function appPath(filePath) {
-  return path.resolve(__dirname, "..", "app", filePath);
+  return path.resolve(__dirname, "..", filePath);
+}
+
+function srcPath(filePath) {
+  return path.resolve(appPath("src"), filePath);
 }
 
 function appPublicPath(filePath) {
@@ -12,12 +16,12 @@ function appPublicPath(filePath) {
 }
 
 function port() {
-  return process.argv[2];
+  return process.argv[2].replace("--port=", "");
 }
 
 function readJsFile() {
   return new Promise((resolve, reject) => {
-    fs.readFile(appPath(MAIN_FILE), "utf8", (err, data) => {
+    fs.readFile(srcPath(MAIN_FILE), "utf8", (err, data) => {
       if (err) {
         reject(err);
       } else {

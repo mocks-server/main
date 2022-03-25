@@ -7,6 +7,9 @@ coverage:
         target: auto
         threshold: 0%
         base: auto
+      admin-api-client:
+        flags:
+          - admin-api-client
       admin-api-paths:
         flags:
           - admin-api-paths
@@ -29,6 +32,10 @@ coverage:
         flags:
           - plugin-proxy
 flags:
+  admin-api-client:
+    paths:
+      - packages/admin-api-client/**
+    carryforward: true
   admin-api-paths:
     paths:
       - packages/admin-api-paths/**

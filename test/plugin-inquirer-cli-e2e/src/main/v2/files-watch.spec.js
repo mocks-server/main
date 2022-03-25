@@ -225,9 +225,9 @@ describe("files watcher", () => {
     it("should remove alerts when error is fixed", async () => {
       expect.assertions(2);
       fsExtra.copySync(fixturesFolder("web-tutorial-modified"), fixturesFolder("temp"));
-      await wait(2000);
+      await wait(4000);
       expect(mocks.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
       expect(mocks.currentScreen).toEqual(expect.stringContaining("CURRENT SETTINGS"));
-    });
+    }, 10000);
   });
 });

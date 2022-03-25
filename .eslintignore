@@ -1,4 +1,5 @@
 **/node_modules
 **/.tmp
+/packages/*/dist
 /packages/*/coverage
 /test/core-e2e/src/v2/fixtures/**/*.js

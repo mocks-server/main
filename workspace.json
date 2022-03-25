@@ -1,6 +1,7 @@
 {
   "version": 2,
   "projects": {
+    "admin-api-client": "packages/admin-api-client",
     "admin-api-paths": "packages/admin-api-paths",
     "core": "packages/core",
     "core-e2e": "test/core-e2e",

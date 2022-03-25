@@ -4,11 +4,7 @@
 .env
 
 # dependencies
-/node_modules
-
-# tests
-/coverage
-/dist
+node_modules
 
 # misc
 .DS_Store
@@ -20,6 +16,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
 
 # ides
 .idea

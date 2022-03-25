@@ -1,60 +1,4 @@
 {
-<<<<<<< HEAD:package.json
-  "private": true,
-  "scripts": {
-    "nx": "nx",
-    "lint": "eslint packages test scripts",
-    "lint-staged": "lint-staged",
-    "prepare": "is-ci || husky install",
-    "project:coverage:to-relative": "node ./scripts/commands/project-coverage-to-relative.js",
-    "project:coverage:to-workspace": "node ./scripts/commands/project-coverage-to-workspace.js",
-    "projects:target:print:array": "node ./scripts/commands/projects-target-print-array.js",
-    "affected:print:array": "node ./scripts/commands/affected-print-array.js",
-    "affected:target:print:array": "node ./scripts/commands/affected-target-print-array.js",
-    "affected:report": "node ./scripts/commands/affected-report.js",
-    "affected:check": "node ./scripts/commands/affected-check.js",
-    "affected:check:report": "node ./scripts/commands/affected-check-report.js",
-    "affected:build": "nx affected --target=build",
-    "affected:test:unit": "nx affected --target=test:unit",
-    "affected:test:e2e": "nx affected --target=test:e2e",
-    "affected:graph": "nx affected:graph",
-    "build:all": "nx run-many --target=build --all",
-    "test:unit:all": "nx run-many --target=test:unit --all",
-    "test:e2e:all": "nx run-many --target=test:e2e --all",
-    "test:all": "pnpm run test:unit:all && npm run test:e2e:all",
-    "graph": "nx graph"
-  },
-  "devDependencies": {
-    "@babel/core": "7.17.8",
-    "@babel/eslint-parser": "7.17.0",
-    "@nrwl/cli": "13.8.3",
-    "@nrwl/eslint-plugin-nx": "13.8.3",
-    "@nrwl/tao": "13.8.3",
-    "@nrwl/workspace": "13.8.3",
-    "@typescript-eslint/parser": "5.16.0",
-    "commander": "9.1.0",
-    "cross-fetch": "3.1.5",
-    "cross-spawn": "7.0.3",
-    "eslint": "8.11.0",
-    "eslint-config-prettier": "8.5.0",
-    "eslint-plugin-prettier": "4.0.0",
-    "fs-extra": "10.0.1",
-    "handlebars": "4.7.7",
-    "husky": "7.0.4",
-    "is-ci": "3.0.1",
-    "jest": "27.5.1",
-    "lint-staged": "12.3.7",
-    "prettier": "2.6.0",
-    "sinon": "13.0.1",
-    "typescript": "4.6.2",
-    "wait-on": "6.0.1"
-  },
-  "lint-staged": {
-    "packages/**/*.js": "eslint",
-    "*.js": "eslint"
-  },
-  "type": "module",
-=======
   "name": "@mocks-server/admin-api-client-data-provider",
   "version": "4.0.0",
   "description": "Client of @mocks-server/plugin-admin-api built with @data-provider",
@@ -67,7 +11,7 @@
   ],
   "author": "Javier Brea",
   "license": "MIT",
-  "repository": "https://github.com/mocks-server/admin-api-client-data-provider",
+  "repository": "https://github.com/mocks-server/main",
   "homepage": "https://www.mocks-server.org",
   "publishConfig": {
     "access": "public"
@@ -79,8 +23,6 @@
   "module": "dist/index.esm.js",
   "scripts": {
     "build": "rollup --config",
-    "lint": "eslint *.js test src jest.config.js test-e2e/browser/react-app/src test-e2e/browser/cypress test-e2e/browser/vanilla-app/public/main.js test-e2e/nodejs/es6/test test-e2e/nodejs/es6/index.js test-e2e/mocks/legacy-mocks --resolve-plugins-relative-to=.",
-    "lint-staged": "lint-staged",
     "test": "jest",
     "test:unit": "npm run test",
     "test:e2e:install": "cd test-e2e/mocks && npm i && cd ../nodejs/es6 && npm i && cd ../../browser && npm i && npm run cypress:install && cd react-app && npm i && cd ../vanilla-app && npm i",
@@ -88,7 +30,6 @@
     "test:e2e:nodejs": "cd test-e2e/nodejs/es6 && npm run test:ci",
     "test:e2e": "npm run test:e2e:browser && npm run test:e2e:nodejs",
     "test:e2e:ci": "npm run test:e2e:install && npm run test:e2e",
-    "prepare": "is-ci || husky install"
   },
   "peerDependencies": {
     "@data-provider/axios": ">=3.0.0"
@@ -121,17 +62,6 @@
     "rollup-plugin-terser": "7.0.2",
     "sinon": "12.0.1"
   },
-  "lint-staged": {
-    "test/**/*.js": "eslint",
-    "src/**/*.js": "eslint",
-    "*.js": "eslint",
-    "test-e2e/browser/react-app/src/**/*.js": "eslint",
-    "test-e2e/browser/cypress/**/*.js": "eslint",
-    "test-e2e/browser/vanilla-app/public/main.js": "eslint",
-    "test-e2e/nodejs/es6/test/**/*.js": "eslint",
-    "test-e2e/nodejs/es6/index.js": "eslint"
-  },
->>>>>>> admin-api-client-data-provider_release:admin-api-client-data-provider/package.json
   "engines": {
     "node": ">=12.0.0"
   }

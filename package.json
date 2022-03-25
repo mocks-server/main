@@ -1,0 +1,59 @@
+{
+  "private": true,
+  "scripts": {
+    "nx": "nx",
+    "lint": "eslint packages test scripts",
+    "lint-staged": "lint-staged",
+    "prepare": "is-ci || husky install",
+    "project:coverage:to-relative": "node ./scripts/commands/project-coverage-to-relative.js",
+    "project:coverage:to-workspace": "node ./scripts/commands/project-coverage-to-workspace.js",
+    "projects:target:print:array": "node ./scripts/commands/projects-target-print-array.js",
+    "affected:print:array": "node ./scripts/commands/affected-print-array.js",
+    "affected:target:print:array": "node ./scripts/commands/affected-target-print-array.js",
+    "affected:report": "node ./scripts/commands/affected-report.js",
+    "affected:check": "node ./scripts/commands/affected-check.js",
+    "affected:check:report": "node ./scripts/commands/affected-check-report.js",
+    "affected:build": "nx affected --target=build",
+    "affected:test:unit": "nx affected --target=test:unit",
+    "affected:test:e2e": "nx affected --target=test:e2e",
+    "affected:graph": "nx affected:graph",
+    "build:all": "nx run-many --target=build --all",
+    "test:unit:all": "nx run-many --target=test:unit --all",
+    "test:e2e:all": "nx run-many --target=test:e2e --all",
+    "test:all": "pnpm run test:unit:all && npm run test:e2e:all",
+    "graph": "nx graph"
+  },
+  "devDependencies": {
+    "@babel/core": "7.17.8",
+    "@babel/eslint-parser": "7.17.0",
+    "@nrwl/cli": "13.8.3",
+    "@nrwl/eslint-plugin-nx": "13.8.3",
+    "@nrwl/tao": "13.8.3",
+    "@nrwl/workspace": "13.8.3",
+    "@typescript-eslint/parser": "5.16.0",
+    "commander": "9.1.0",
+    "cross-fetch": "3.1.5",
+    "cross-spawn": "7.0.3",
+    "eslint": "8.11.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "fs-extra": "10.0.1",
+    "handlebars": "4.7.7",
+    "husky": "7.0.4",
+    "is-ci": "3.0.1",
+    "jest": "27.5.1",
+    "lint-staged": "12.3.7",
+    "prettier": "2.6.0",
+    "sinon": "13.0.1",
+    "typescript": "4.6.2",
+    "wait-on": "6.0.1"
+  },
+  "lint-staged": {
+    "packages/**/*.js": "eslint",
+    "*.js": "eslint"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=12.0.0"
+  }
+}

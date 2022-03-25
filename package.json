@@ -52,6 +52,9 @@
   },
   "lint-staged": {
     "packages/**/*.js": "eslint",
+    "test/**/*.js": "eslint",
+    "mocks/**/*.js": "eslint",
+    "scripts/**/*.js": "eslint",
     "*.js": "eslint"
   },
   "type": "module",

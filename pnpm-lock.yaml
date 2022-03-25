@@ -111,7 +111,7 @@ importers:
       '@hapi/boom': 9.1.4
       ajv: 8.9.0
       ajv-errors: 3.0.0
-      body-parser: 1.19.1
+      body-parser: 1.19.2
       commander: 8.3.0
       cors: 2.8.5
       express: 4.17.2
@@ -131,7 +131,7 @@ importers:
       '@hapi/boom': 9.1.4
       ajv: 8.9.0
       ajv-errors: 3.0.0_ajv@8.9.0
-      body-parser: 1.19.1
+      body-parser: 1.19.2
       commander: 8.3.0
       cors: 2.8.5
       express: 4.17.2
@@ -3250,6 +3250,22 @@ packages:
       on-finished: 2.3.0
       qs: 6.9.6
       raw-body: 2.4.2
+      type-is: 1.6.18
+    dev: false
+
+  /body-parser/1.19.2:
+    resolution: {integrity: sha512-SAAwOxgoCKMGs9uUAUFHygfLAyaniaoun6I8mFY9pRAJL9+Kec34aU+oIjDhTycub1jozEfEwx1W1IuOYxVSFw==}
+    engines: {node: '>= 0.8'}
+    dependencies:
+      bytes: 3.1.2
+      content-type: 1.0.4
+      debug: 2.6.9
+      depd: 1.1.2
+      http-errors: 1.8.1
+      iconv-lite: 0.4.24
+      on-finished: 2.3.0
+      qs: 6.9.7
+      raw-body: 2.4.3
       type-is: 1.6.18
     dev: false
 
@@ -6814,6 +6830,11 @@ packages:
     engines: {node: '>=0.6'}
     dev: false
 
+  /qs/6.9.7:
+    resolution: {integrity: sha512-IhMFgUmuNpyRfxA90umL7ByLlgRXu6tIfKPpF5TmcfRLlLCckfP/g3IQmju6jjpu+Hh8rA+2p6A27ZSPOOHdKw==}
+    engines: {node: '>=0.6'}
+    dev: false
+
   /querystring/0.2.0:
     resolution: {integrity: sha1-sgmEkgO7Jd+CDadW50cAWHhSFiA=}
     engines: {node: '>=0.4.x'}
@@ -6850,6 +6871,16 @@ packages:
     engines: {node: '>= 0.8'}
     dependencies:
       bytes: 3.1.1
+      http-errors: 1.8.1
+      iconv-lite: 0.4.24
+      unpipe: 1.0.0
+    dev: false
+
+  /raw-body/2.4.3:
+    resolution: {integrity: sha512-UlTNLIcu0uzb4D2f4WltY6cVjLi+/jEN4lgEUj3E04tpMDpUlkBo/eSn6zou9hum2VMNpCCUone0O0WeJim07g==}
+    engines: {node: '>= 0.8'}
+    dependencies:
+      bytes: 3.1.2
       http-errors: 1.8.1
       iconv-lite: 0.4.24
       unpipe: 1.0.0

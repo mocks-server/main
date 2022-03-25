@@ -16,7 +16,10 @@ function appPublicPath(filePath) {
 }
 
 function port() {
-  return process.argv[2].replace("--port=", "");
+  if (process.argv[2]) {
+    return process.argv[2].replace("--port=", "");
+  }
+  return "3100";
 }
 
 function readJsFile() {

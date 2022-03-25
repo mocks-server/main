@@ -55,6 +55,7 @@
     "fs-extra": "10.0.1",
     "handlebars": "4.7.7",
     "husky": "7.0.4",
+    "if-node-version": "1.1.1",
     "is-ci": "3.0.1",
     "is-promise": "4.0.0",
     "jest": "27.5.1",

@@ -5,10 +5,5 @@
     "cypress:verify": "cypress verify",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
-  },
-  "devDependencies": {
-    "@testing-library/cypress": "8.0.2",
-    "cypress": "9.3.1",
-    "cypress-fail-fast": "3.3.0"
   }
 }

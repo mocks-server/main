@@ -7,10 +7,5 @@
   },
   "dependencies": {
     "@mocks-server/main": "workspace:*"
-  },
-  "devDependencies": {
-    "lodash": "4.17.21",
-    "strip-ansi": "6.0.0",
-    "tree-kill": "1.2.2"
   }
 }

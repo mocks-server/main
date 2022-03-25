@@ -21,14 +21,6 @@
     "test:e2e": "npm run apps:install && npm run test:ci"
   },
   "devDependencies": {
-    "@babel/preset-env": "7.16.11",
-    "@cypress/webpack-preprocessor": "5.10.0",
-    "@mocks-server/main": "workspace:*",
-    "babel-loader": "8.2.3",
-    "babel-plugin-module-resolver": "4.1.0",
-    "cross-env": "7.0.3",
-    "cypress": "9.1.1",
-    "start-server-and-test": "1.14.0",
-    "webpack": "5.64.4"
+    "@mocks-server/main": "workspace:*"
   }
 }

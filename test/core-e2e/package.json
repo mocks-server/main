@@ -4,16 +4,6 @@
     "test:e2e": "jest --runInBand --detectOpenHandles"
   },
   "devDependencies": {
-    "@babel/preset-env": "7.16.11",
-    "@babel/preset-typescript": "7.16.7",
-    "@mocks-server/core": "workspace:*",
-    "cross-fetch": "3.1.5",
-    "cross-spawn": "7.0.3",
-    "prettier": "2.5.1",
-    "request": "2.88.2",
-    "request-promise": "4.2.6",
-    "strip-ansi": "6.0.0",
-    "tree-kill": "1.2.2",
-    "wait-on": "6.0.0"
+    "@mocks-server/core": "workspace:*"
   }
 }

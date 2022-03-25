@@ -3,10 +3,5 @@
   "scripts": {
     "build": "cross-env node ./scripts/copyLibrary.js",
     "serve": "serve -l 3000"
-  },
-  "devDependencies": {
-    "cross-env": "7.0.3",
-    "fs-extra": "10.0.0",
-    "serve": "13.0.2"
   }
 }

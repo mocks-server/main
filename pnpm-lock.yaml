@@ -286,17 +286,15 @@ importers:
     devDependencies:
       '@mocks-server/core': link:../core
 
-  test/admin-api-client-data-provider-browser-e2e:
+  test/admin-api-client-data-provider-e2e-specs:
     specifiers:
       '@testing-library/cypress': 8.0.2
       cypress: 9.3.1
       cypress-fail-fast: 3.3.0
-      start-server-and-test: 1.14.0
     devDependencies:
       '@testing-library/cypress': 8.0.2_cypress@9.3.1
       cypress: 9.3.1
       cypress-fail-fast: 3.3.0_cypress@9.3.1
-      start-server-and-test: 1.14.0
 
   test/admin-api-client-data-provider-nodejs-e2e:
     specifiers:
@@ -304,6 +302,18 @@ importers:
       start-server-and-test: 1.14.0
     devDependencies:
       '@mocks-server/admin-api-client-data-provider': link:../../packages/admin-api-client-data-provider
+      start-server-and-test: 1.14.0
+
+  test/admin-api-client-data-provider-react-app-e2e:
+    specifiers:
+      start-server-and-test: 1.14.0
+    devDependencies:
+      start-server-and-test: 1.14.0
+
+  test/admin-api-client-data-provider-vanilla-app-e2e:
+    specifiers:
+      start-server-and-test: 1.14.0
+    devDependencies:
       start-server-and-test: 1.14.0
 
   test/core-e2e:
@@ -4509,7 +4519,7 @@ packages:
   /axios/0.21.4_debug@4.3.2:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.14.9_debug@4.3.2
+      follow-redirects: 1.14.9_debug@4.3.3
     transitivePeerDependencies:
       - debug
     dev: true
@@ -4517,14 +4527,14 @@ packages:
   /axios/0.24.0:
     resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.3
     transitivePeerDependencies:
       - debug
 
   /axios/0.25.0:
     resolution: {integrity: sha512-cD8FOb0tRH3uuEe6+evtAbgJtfxr7ly3fQjYcMcuPlgkwVS9xboaVIpcDV+cYQe+yGykgwZCs1pzjntcGa6l5g==}
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.3
     transitivePeerDependencies:
       - debug
     dev: true
@@ -6325,7 +6335,7 @@ packages:
       listr2: 3.14.0_enquirer@2.3.6
       lodash: 4.17.21
       log-symbols: 4.1.0
-      minimist: 1.2.5
+      minimist: 1.2.6
       ospath: 1.2.2
       pretty-bytes: 5.6.0
       proxy-from-env: 1.0.0
@@ -7914,8 +7924,9 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: true
 
-  /follow-redirects/1.14.9_debug@4.3.2:
+  /follow-redirects/1.14.9_debug@4.3.3:
     resolution: {integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==}
     engines: {node: '>=4.0'}
     peerDependencies:
@@ -7924,8 +7935,7 @@ packages:
       debug:
         optional: true
     dependencies:
-      debug: 4.3.2
-    dev: true
+      debug: 4.3.3_supports-color@6.1.0
 
   /for-in/1.0.2:
     resolution: {integrity: sha1-gQaNKVqBQuwKxybG4iAMMPttXoA=}
@@ -8597,7 +8607,7 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.3
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -15269,7 +15279,7 @@ packages:
       axios: 0.21.4
       joi: 17.6.0
       lodash: 4.17.21
-      minimist: 1.2.5
+      minimist: 1.2.6
       rxjs: 7.5.4
     transitivePeerDependencies:
       - debug
@@ -15283,7 +15293,7 @@ packages:
       axios: 0.21.4_debug@4.3.2
       joi: 17.6.0
       lodash: 4.17.21
-      minimist: 1.2.5
+      minimist: 1.2.6
       rxjs: 7.5.4
     transitivePeerDependencies:
       - debug

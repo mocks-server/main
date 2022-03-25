@@ -7,7 +7,5 @@
   "parserOptions": {
     "sourceType": "module",
     "requireConfigFile" : false
-  },
-  "globals": {
   }
 }

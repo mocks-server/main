@@ -10,6 +10,9 @@ coverage:
       admin-api-client:
         flags:
           - admin-api-client
+      admin-api-client-data-provider:
+        flags:
+          - admin-api-client-data-provider
       admin-api-paths:
         flags:
           - admin-api-paths
@@ -32,6 +35,10 @@ coverage:
         flags:
           - plugin-proxy
 flags:
+  admin-api-client-data-provider:
+    paths:
+      - packages/admin-api-client-data-provider/**
+    carryforward: true
   admin-api-client:
     paths:
       - packages/admin-api-client/**

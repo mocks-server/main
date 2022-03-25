@@ -35,7 +35,7 @@
     "@data-provider/axios": ">=3.0.0"
   },
   "dependencies": {
-    "@mocks-server/admin-api-paths": "2.2.0"
+    "@mocks-server/admin-api-paths": "workspace:*"
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.16.5",

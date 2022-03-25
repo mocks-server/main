@@ -1,11 +1,8 @@
 {
-  "name": "vanilla-app",
-  "version": "1.0.0",
   "private": true,
   "scripts": {
     "build": "cross-env node ./commands/copyLibrary.js",
-    "serve": "serve -l 3000",
-    "build-and-serve": "npm run build && npm run serve"
+    "serve": "serve -l 3000"
   },
   "devDependencies": {
     "cross-env": "7.0.3",

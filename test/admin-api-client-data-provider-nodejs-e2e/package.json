@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "scripts": {
+    "mocks:ci": "pnpm run nx start admin-api-client-data-provider-e2e-mocks",
+    "test": "jest",
+    "test:ci": "start-server-and-test mocks:ci http-get://127.0.0.1:3100/admin/about test"
+  },
+  "devDependencies": {
+    "start-server-and-test": "1.14.0",
+    "@mocks-server/admin-api-client-data-provider": "workspace:*"
+  }
+}

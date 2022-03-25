@@ -1,11 +1,11 @@
 {
-  "name": "react-app",
-  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@data-provider/axios": "4.1.0",
     "@data-provider/core": "3.1.0",
     "@data-provider/react": "1.6.0",
+    "@mocks-server/admin-api-client-data-provider": "workspace:*",
+    "@mocks-server/admin-api-paths": "workspace:*",
     "prop-types": "15.8.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
@@ -16,8 +16,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "serve": "serve -l 3000",
-    "build-and-serve": "npm run build && npm run serve"
+    "serve": "serve -l 3000"
   },
   "browserslist": {
     "production": [

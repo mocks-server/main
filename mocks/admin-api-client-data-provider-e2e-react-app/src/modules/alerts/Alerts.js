@@ -7,14 +7,14 @@ const Alerts = () => {
     <div className="content">
       <p className="content__title">Alerts</p>
       <ul>
-        {data.map((alert) => {
+        {data.map((alertModel) => {
           return (
             <li
-              key={alert.id}
-              data-testid={`alert-${alert.id}`}
+              key={alertModel.id}
+              data-testid={`alert-${alertModel.id}`}
               className="alerts-collection-item"
             >
-              {JSON.stringify(alert)}
+              {JSON.stringify(alertModel)}
             </li>
           );
         })}

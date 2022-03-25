@@ -1,15 +1,13 @@
 {
-  "name": "browser-tests",
-  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "mocks:ci": "cd ../mocks && npm run mocks:ci",
+    "mocks:ci": "pnpm run nx start admin-api-client-data-provider-e2e-mocks",
     "cypress:install": "cypress install",
     "cypress:verify": "cypress verify",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "start:react-app": "cd react-app && npm run build-and-serve",
-    "start:vanilla-app": "cd vanilla-app && npm run build-and-serve",
+    "start:react-app": "pnpm run nx serve admin-api-client-data-provider-e2e-react-app",
+    "start:vanilla-app": "pnpm run nx serve admin-api-client-data-provider-e2e-vanilla-app",
     "mocks:ci-and-start:react-app": "start-server-and-test mocks:ci http-get://127.0.0.1:3100/admin/about start:react-app",
     "mocks:ci-and-start:vanilla-app": "start-server-and-test mocks:ci http-get://127.0.0.1:3100/admin/about start:vanilla-app",
     "test:react-app": "start-server-and-test mocks:ci-and-start:react-app http-get://127.0.0.1:3000 cypress:run",

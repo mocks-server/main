@@ -60,10 +60,6 @@ export const alertsModel = new Axios({
 
 addByIdQuery(alertsModel);
 
-export const alert = (id) => {
-  return alertsModel.queries.byId(id);
-};
-
 // Legacy methods
 
 export const behaviors = new Axios({
@@ -80,14 +76,14 @@ export const behaviorsModel = new Axios({
   ...initialState({}),
 });
 
-behaviorsModel.addQuery("byName", (name) => ({
+behaviorsModel.addQuery("byName", (nameStr) => ({
   urlParams: {
-    name,
+    name: nameStr,
   },
 }));
 
-export const behavior = (name) => {
-  return behaviorsModel.queries.byName(name);
+export const behavior = (nameStr) => {
+  return behaviorsModel.queries.byName(nameStr);
 };
 
 export const fixtures = new Axios({

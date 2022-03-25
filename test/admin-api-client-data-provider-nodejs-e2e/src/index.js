@@ -7,7 +7,7 @@ const {
   settings,
   alerts,
   alert,
-} = require("../../../dist/index.cjs");
+} = require("@mocks-server/admin-api-client-data-provider/dist/index.cjs");
 
 const readAbout = () => {
   return about.read();

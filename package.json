@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "nx": "nx",
-    "lint": "eslint packages test scripts",
+    "lint": "eslint mocks packages test scripts",
     "lint-staged": "lint-staged",
     "prepare": "is-ci || husky install",
     "project:coverage:to-relative": "node ./scripts/commands/project-coverage-to-relative.js",
@@ -26,6 +26,8 @@
   "devDependencies": {
     "@babel/core": "7.17.8",
     "@babel/eslint-parser": "7.17.0",
+    "@babel/preset-env": "7.16.11",
+    "@babel/preset-react": "7.16.7",
     "@nrwl/cli": "13.8.3",
     "@nrwl/eslint-plugin-nx": "13.8.3",
     "@nrwl/tao": "13.8.3",

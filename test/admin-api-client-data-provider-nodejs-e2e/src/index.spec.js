@@ -8,7 +8,7 @@ const {
   updateSettings,
   readAlerts,
   readAlert,
-} = require("../index");
+} = require("./index");
 
 describe("react-admin-client methods used through node", () => {
   describe("when reading about", () => {

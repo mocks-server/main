@@ -3,20 +3,20 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@mocks-server/admin-api-client-data-provider": [
-        "packages/admin-api-client-data-provider/index.js"
+      "@mocks-server/admin-api-client-data-provider/*": [
+        "packages/admin-api-client-data-provider/*"
       ],
-      "@mocks-server/admin-api-client": [
-        "packages/admin-api-client/index.js"
+      "@mocks-server/admin-api-client/*": [
+        "packages/admin-api-client/*"
       ],
-      "@mocks-server/admin-api-paths": [
-        "packages/admin-api-paths/index.js"
+      "@mocks-server/admin-api-paths/*": [
+        "packages/admin-api-paths/*"
       ],
       "@mocks-server/core": [
         "packages/core/index.js"
       ],
-      "@mocks-server/cypress-commands": [
-        "packages/cypress-commands/index.js"
+      "@mocks-server/cypress-commands/*": [
+        "packages/cypress-commands/*"
       ],
       "@mocks-server/main": [
         "packages/main/index.js"

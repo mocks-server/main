@@ -1,5 +1,7 @@
 **/node_modules
 **/.tmp
+/mocks/*/build
+/mocks/admin-api-client-data-provider-e2e-vanilla-app/public/js
 /packages/*/dist
 /packages/*/coverage
-/test/core-e2e/src/v2/fixtures/**/*.js
+/test/core-e2e/src/v2/fixtures

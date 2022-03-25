@@ -1,0 +1,5 @@
+{
+  "root": "test/admin-api-client-data-provider-e2e-specs/",
+  "projectType": "application",
+  "tags": ["type:specs"]
+}

@@ -26,8 +26,12 @@ module.exports = {
         allow: [],
         depConstraints: [
           {
-            sourceTag: "type:lib",
+            sourceTag: "type:mock",
             onlyDependOnLibsWithTags: ["type:lib"],
+          },
+          {
+            sourceTag: "type:lib",
+            onlyDependOnLibsWithTags: ["type:lib", "type:mock"],
           },
           {
             sourceTag: "type:app",
@@ -35,7 +39,7 @@ module.exports = {
           },
           {
             sourceTag: "type:test",
-            onlyDependOnLibsWithTags: ["type:lib", "type:app"],
+            onlyDependOnLibsWithTags: ["type:lib", "type:app", "type:mock", "type:specs"],
           },
         ],
       },
@@ -50,6 +54,20 @@ module.exports = {
         beforeEach: true,
         afterEach: true,
         afterAll: true,
+        describe: true,
+        expect: true,
+        it: true,
+      },
+    },
+    {
+      files: ["test/*/cypress/**/*.js"],
+      globals: {
+        Cypress: true,
+        cy: true,
+        before: true,
+        beforeEach: true,
+        afterEach: true,
+        after: true,
         describe: true,
         expect: true,
         it: true,

@@ -1,0 +1,12 @@
+{
+  "public": "build",
+  "trailingSlash": false,
+  "directoryListing": false,
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/index.html"
+    }
+  ]
+}

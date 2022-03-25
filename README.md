@@ -49,27 +49,35 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [main]: https://github.com/mocks-server/main/tree/master/packages/main
 [main-status]: https://img.shields.io/npm/v/@mocks-server/main.svg
 [main-package]: https://npmjs.com/package/@mocks-server/main
+
 [core]: https://github.com/mocks-server/main/tree/master/packages/core
 [core-status]: https://img.shields.io/npm/v/@mocks-server/core.svg
 [core-package]: https://npmjs.com/package/@mocks-server/core
+
 [plugin-proxy]: https://github.com/mocks-server/main/tree/master/packages/plugin-proxy
 [plugin-proxy-status]: https://img.shields.io/npm/v/@mocks-server/plugin-proxy.svg
 [plugin-proxy-package]: https://npmjs.com/package/@mocks-server/plugin-proxy
+
 [plugin-inquirer-cli]: https://github.com/mocks-server/main/tree/master/packages/plugin-inquirer-cli
 [plugin-inquirer-cli-status]: https://img.shields.io/npm/v/@mocks-server/plugin-inquirer-cli.svg
 [plugin-inquirer-cli-package]: https://npmjs.com/package/@mocks-server/plugin-inquirer-cli
+
 [plugin-admin-api]: https://github.com/mocks-server/main/tree/master/packages/plugin-admin-api
 [plugin-admin-api-status]: https://img.shields.io/npm/v/@mocks-server/plugin-admin-api.svg
 [plugin-admin-api-package]: https://npmjs.com/package/@mocks-server/plugin-admin-api
+
 [admin-api-client]: https://github.com/mocks-server/main/tree/master/packages/admin-api-client
 [admin-api-client-status]: https://img.shields.io/npm/v/@mocks-server/admin-api-client.svg
 [admin-api-client-package]: https://npmjs.com/package/@mocks-server/admin-api-client
-[admin-api-client-data-provider]: https://github.com/mocks-server/admin-api-client-data-provider/tree/master
+
+[admin-api-client-data-provider]: https://github.com/mocks-server/main/tree/master/packages/admin-api-client-data-provider
 [admin-api-client-data-provider-status]: https://img.shields.io/npm/v/@mocks-server/admin-api-client-data-provider.svg
 [admin-api-client-data-provider-package]: https://npmjs.com/package/@mocks-server/admin-api-client-data-provider
+
 [admin-api-paths]: https://github.com/mocks-server/main/tree/master/packages/admin-api-paths
 [admin-api-paths-status]: https://img.shields.io/npm/v/@mocks-server/admin-api-paths.svg
 [admin-api-paths-package]: https://npmjs.com/package/@mocks-server/admin-api-paths
+
 [cypress-commands]: https://github.com/mocks-server/main/tree/master/packages/cypress-commands
 [cypress-commands-status]: https://img.shields.io/npm/v/@mocks-server/cypress-commands.svg
 [cypress-commands-package]: https://npmjs.com/package/@mocks-server/cypress-commands

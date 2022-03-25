@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "cross-env node ./scripts/build.js",
+    "start": "serve -l 3000"
+  }
+}

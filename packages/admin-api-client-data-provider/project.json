@@ -1,0 +1,5 @@
+{
+  "root": "packages/admin-api-client-data-provider/",
+  "projectType": "library",
+  "tags": ["type:lib"]
+}

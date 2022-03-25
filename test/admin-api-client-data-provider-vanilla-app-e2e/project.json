@@ -1,0 +1,10 @@
+{
+  "root": "test/admin-api-client-data-provider-vanilla-app-e2e/",
+  "projectType": "application",
+  "implicitDependencies": [
+    "admin-api-client-data-provider-e2e-mocks",
+    "admin-api-client-data-provider-e2e-vanilla-app",
+    "admin-api-client-data-provider-e2e-specs"
+  ],
+  "tags": ["type:test"]
+}

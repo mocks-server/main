@@ -25,25 +25,13 @@
   "module": "dist/index.esm.js",
   "scripts": {
     "build": "rollup --config",
-    "mocks:ci": "cd mocks && npm run mocks:ci",
+    "mocks:ci": "pnpm -w run nx start admin-api-client-unit-mocks",
     "test": "jest",
     "test:unit": "start-server-and-test mocks:ci tcp:127.0.0.1:3200 test"
   },
   "dependencies": {
     "@mocks-server/admin-api-paths": "workspace:*",
     "cross-fetch": "3.1.5"
-  },
-  "devDependencies": {
-    "@babel/preset-env": "7.16.11",
-    "@rollup/plugin-babel": "5.3.0",
-    "@rollup/plugin-commonjs": "21.0.1",
-    "@rollup/plugin-node-resolve": "13.1.3",
-    "babel-eslint": "10.1.0",
-    "babel-jest": "27.5.1",
-    "babel-polyfill": "6.26.0",
-    "rollup": "2.68.0",
-    "rollup-plugin-terser": "7.0.2",
-    "start-server-and-test": "1.14.0"
   },
   "engines": {
     "node": ">=12.0.0"

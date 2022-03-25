@@ -69,7 +69,7 @@ jobs:
     needs: [lint, get-affected]
     if:  ${{ fromJson(needs.get-affected.outputs.test-unit)[0] }}
     strategy:
-      max-parallel: 3
+      max-parallel: 2
       matrix:
         node: ["16.1.0"]
         projectName: ${{fromJson(needs.get-affected.outputs.test-unit)}}
@@ -132,7 +132,7 @@ jobs:
       (needs.test-unit.result == 'success' || needs.test-unit.result == 'skipped') &&
       fromJson(needs.get-affected.outputs.sonar)[0]
     strategy:
-      max-parallel: 3
+      max-parallel: 2
       matrix:
         projectName: ${{fromJson(needs.get-affected.outputs.sonar)}}
     steps:
@@ -171,7 +171,7 @@ jobs:
     needs: get-affected
     if: ${{ fromJson(needs.get-affected.outputs.test-e2e)[0] }}
     strategy:
-      max-parallel: 3
+      max-parallel: 5
       matrix:
         node: ["12.22.1","14.17.0","16.1.0","17.2.0"]
         projectName: ${{fromJson(needs.get-affected.outputs.test-e2e)}}

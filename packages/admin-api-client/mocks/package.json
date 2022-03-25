@@ -1,12 +1,10 @@
 {
-  "name": "mocks",
-  "version": "1.0.0",
   "private": true,
   "scripts": {
     "mocks": "mocks-server",
     "mocks:ci": "mocks-server --no-cli"
   },
   "devDependencies": {
-    "@mocks-server/main": "2.6.0"
+    "@mocks-server/main": "workspace:*"
   }
 }

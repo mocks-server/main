@@ -61,7 +61,7 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [plugin-admin-api]: https://github.com/mocks-server/main/tree/master/packages/plugin-admin-api
 [plugin-admin-api-status]: https://img.shields.io/npm/v/@mocks-server/plugin-admin-api.svg
 [plugin-admin-api-package]: https://npmjs.com/package/@mocks-server/plugin-admin-api
-[admin-api-client]: https://github.com/mocks-server/admin-api-client/tree/master
+[admin-api-client]: https://github.com/mocks-server/main/tree/master/packages/admin-api-client
 [admin-api-client-status]: https://img.shields.io/npm/v/@mocks-server/admin-api-client.svg
 [admin-api-client-package]: https://npmjs.com/package/@mocks-server/admin-api-client
 [admin-api-client-data-provider]: https://github.com/mocks-server/admin-api-client-data-provider/tree/master

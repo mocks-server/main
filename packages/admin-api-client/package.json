@@ -13,7 +13,7 @@
   ],
   "author": "Javier Brea",
   "license": "MIT",
-  "repository": "https://github.com/mocks-server/admin-api-client",
+  "repository": "https://github.com/mocks-server/main",
   "homepage": "https://www.mocks-server.org",
   "publishConfig": {
     "access": "public"
@@ -25,16 +25,12 @@
   "module": "dist/index.esm.js",
   "scripts": {
     "build": "rollup --config",
-    "lint": "eslint *.js test src mocks/*.js mocks/mocks/*.js",
-    "lint-staged": "lint-staged",
-    "mocks:install": "cd mocks && npm i",
     "mocks:ci": "cd mocks && npm run mocks:ci",
     "test": "jest",
-    "test:unit": "npm run mocks:install && start-server-and-test mocks:ci tcp:127.0.0.1:3200 test",
-    "prepare": "is-ci || husky install"
+    "test:unit": "start-server-and-test mocks:ci tcp:127.0.0.1:3200 test"
   },
   "dependencies": {
-    "@mocks-server/admin-api-paths": "2.2.0",
+    "@mocks-server/admin-api-paths": "workspace:*",
     "cross-fetch": "3.1.5"
   },
   "devDependencies": {
@@ -45,26 +41,9 @@
     "babel-eslint": "10.1.0",
     "babel-jest": "27.5.1",
     "babel-polyfill": "6.26.0",
-    "eslint": "8.9.0",
-    "eslint-config-prettier": "8.4.0",
-    "eslint-plugin-prettier": "4.0.0",
-    "eslint-plugin-react": "7.28.0",
-    "husky": "7.0.4",
-    "is-ci": "3.0.1",
-    "jest": "27.5.1",
-    "lint-staged": "12.3.4",
-    "prettier": "2.5.1",
     "rollup": "2.68.0",
     "rollup-plugin-terser": "7.0.2",
-    "sinon": "12.0.1",
     "start-server-and-test": "1.14.0"
-  },
-  "lint-staged": {
-    "test/**/*.js": "eslint",
-    "src/**/*.js": "eslint",
-    "*.js": "eslint",
-    "mocks/*.js": "eslint",
-    "mocks/mocks/*.js": "eslint"
   },
   "engines": {
     "node": ">=12.0.0"

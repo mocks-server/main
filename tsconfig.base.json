@@ -3,6 +3,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@mocks-server/admin-api-client": [
+        "packages/admin-api-client/index.js"
+      ],
       "@mocks-server/admin-api-paths": [
         "packages/admin-api-paths/index.js"
       ],

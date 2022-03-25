@@ -16,8 +16,9 @@ function appPublicPath(filePath) {
 }
 
 function port() {
-  if (process.argv[2]) {
-    return process.argv[2].replace("--port=", "");
+  const portArg = process.argv[2];
+  if (portArg) {
+    return portArg.replace("--port=", "");
   }
   return "3100";
 }

@@ -123,7 +123,6 @@ importers:
       '@data-provider/react': 1.6.0
       '@mocks-server/admin-api-client-data-provider': workspace:*
       '@mocks-server/admin-api-paths': workspace:*
-      babel-jest: 26.6.0
       prop-types: 15.8.1
       react: 17.0.2
       react-dom: 17.0.2
@@ -140,8 +139,6 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       react-redux: 7.2.6_react-dom@17.0.2+react@17.0.2
       redux: 4.1.2
-    devDependencies:
-      babel-jest: 26.6.0_@babel+core@7.17.8
 
   mocks/admin-api-client-data-provider-e2e-vanilla-app:
     specifiers: {}
@@ -4510,25 +4507,6 @@ packages:
     engines: {node: '>=4'}
     dependencies:
       babylon: 6.18.0
-    dev: true
-
-  /babel-jest/26.6.0_@babel+core@7.17.8:
-    resolution: {integrity: sha512-JI66yILI7stzjHccAoQtRKcUwJrJb4oMIxLTirL3GdAjGpaUBQSjZDFi9LsPkN4gftsS4R2AThAJwOjJxadwbg==}
-    engines: {node: '>= 10.14.2'}
-    peerDependencies:
-      '@babel/core': ^7.0.0
-    dependencies:
-      '@babel/core': 7.17.8
-      '@jest/transform': 26.6.2
-      '@jest/types': 26.6.2
-      '@types/babel__core': 7.1.18
-      babel-plugin-istanbul: 6.1.1
-      babel-preset-jest: 26.6.2_@babel+core@7.17.8
-      chalk: 4.1.2
-      graceful-fs: 4.2.9
-      slash: 3.0.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-jest/26.6.3_@babel+core@7.12.3:

@@ -10,6 +10,10 @@ export async function projectRelativePath(projectName) {
 
 export async function projectPath(projectName) {
   const projectPathBasedOnPnpmConfig = await projectRelativePath(projectName);
+  console.log({
+    projectPathBasedOnPnpmConfig,
+    workspacePath: workspacePath(projectPathBasedOnPnpmConfig),
+  });
   return workspacePath(projectPathBasedOnPnpmConfig);
 }
 

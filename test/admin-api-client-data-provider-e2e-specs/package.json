@@ -4,6 +4,6 @@
     "cypress:install": "cypress install",
     "cypress:verify": "cypress verify",
     "cypress:open": "cypress open",
-    "cypress:run": "if-node-version '<17' cross-env cypress run && if-node-version '>=17' cross-env NODE_OPTIONS=--openssl-legacy-provider cypress run"
+    "cypress:run": "if-node-version '<17' cypress run && if-node-version '>=17' cross-env NODE_OPTIONS=--openssl-legacy-provider cypress run"
   }
 }

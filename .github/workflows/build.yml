@@ -189,6 +189,10 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
+      - name: Set env vars
+        run: |
+          echo "NODE_OPTIONS=--openssl-legacy-provider" >> $GITHUB_ENV
+        if: ${{ matrix.node == '17.2.0' }}
       - name: Test E2E
         run: pnpm run nx run-many -- --target test:e2e --projects ${{ matrix.projectName }}
   test-e2e-windows:

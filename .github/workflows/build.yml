@@ -171,7 +171,7 @@ jobs:
     needs: get-affected
     if: ${{ fromJson(needs.get-affected.outputs.test-e2e)[0] }}
     strategy:
-      max-parallel: 5
+      max-parallel: 4
       matrix:
         node: ["12.22.1","14.17.0","16.1.0","17.2.0"]
         projectName: ${{fromJson(needs.get-affected.outputs.test-e2e)}}
@@ -195,12 +195,16 @@ jobs:
         if: ${{ matrix.node == '17.2.0' }}
       - name: Test E2E
         run: pnpm run nx run-many -- --target test:e2e --projects ${{ matrix.projectName }}
+      - name: Unset env vars
+        if: always() && ${{ matrix.node == '17.2.0' }}
+        run: |
+          echo "NODE_OPTIONS=" >> $GITHUB_ENV
   test-e2e-windows:
     runs-on: windows-2019
     needs: get-affected
     if: ${{ fromJson(needs.get-affected.outputs.test-e2e)[0] }}
     strategy:
-      max-parallel: 1
+      max-parallel: 2
       matrix:
         node: ["16.1.0"]
         projectName: ${{fromJson(needs.get-affected.outputs.test-e2e)}}

@@ -199,7 +199,7 @@ describe("files watcher", () => {
       );
       expect(interactiveCli.currentScreen).toEqual(
         expect.stringContaining(
-          `${pathJoin("main", "v1", "fixtures", "files-watch")} FOO is not defined`
+          `${pathJoin("main", "v1", "fixtures", "files-watch")}: FOO is not defined`
         )
       );
       expect(interactiveCli.currentScreen).toEqual(

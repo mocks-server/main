@@ -1,9 +1,15 @@
-[![Build status][build-image]][build-url] [![Coverage Status][coveralls-image]][coveralls-url] [![Quality Gate][quality-gate-image]][quality-gate-url]
+<p align="center"><a href="https://mocks-server.org" target="_blank" rel="noopener noreferrer"><img width="120" src="https://www.mocks-server.org/img/logo_120.png" alt="Mocks Server logo"></a></p>
 
-[![Renovate](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com) [![Last commit][last-commit-image]][last-commit-url] [![Last release][release-image]][release-url] 
+<p align="center">
+  <a href="https://github.com/mocks-server/main/actions?query=workflow%3Abuild+branch%3Amaster"><img src="https://github.com/mocks-server/main/workflows/build/badge.svg?branch=master" alt="Build Status"></a>
+  <a href="https://codecov.io/gh/mocks-server/main"><img src="https://codecov.io/gh/mocks-server/main/branch/master/graph/badge.svg?token=2S8ZR55AJV" alt="Coverage"></a>
+  <a href="https://sonarcloud.io/project/overview?id=mocks-server_main_admin-api-client-data-provider"><img src="https://sonarcloud.io/api/project_badges/measure?project=mocks-server_main_admin-api-client-data-provider&metric=alert_status" alt="Quality Gate"></a>
+  <a href="https://www.npmjs.com/package/@mocks-server/admin-api-client-data-provider"><img src="https://img.shields.io/npm/dm/@mocks-server/admin-api-client-data-provider.svg" alt="Downloads"></a>
+  <a href="https://renovatebot.com"><img src="https://img.shields.io/badge/renovate-enabled-brightgreen.svg" alt="Renovate"></a>
+  <a href="https://github.com/mocks-server/main/blob/master/packages/admin-api-client-data-provider/LICENSE"><img src="https://img.shields.io/npm/l/@mocks-server/admin-api-client-data-provider.svg" alt="License"></a>
+</p>
 
-[![NPM downloads][npm-downloads-image]][npm-downloads-url] [![License][license-image]][license-url]
-
+---
 
 # Mocks-server administration api client built with @data-provider
 
@@ -97,18 +103,3 @@ Contributors are welcome.
 Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of conduct](.github/CODE_OF_CONDUCT.md).
 
 [plugin-admin-api-url]: https://github.com/mocks-server/plugin-admin-api
-
-[coveralls-image]: https://coveralls.io/repos/github/mocks-server/admin-api-client-data-provider/badge.svg
-[coveralls-url]: https://coveralls.io/github/mocks-server/admin-api-client-data-provider
-[build-image]: https://github.com/mocks-server/admin-api-client-data-provider/workflows/build/badge.svg?branch=master
-[build-url]: https://github.com/mocks-server/admin-api-client-data-provider/actions?query=workflow%3Abuild+branch%3Amaster
-[last-commit-image]: https://img.shields.io/github/last-commit/mocks-server/admin-api-client-data-provider.svg
-[last-commit-url]: https://github.com/mocks-server/admin-api-client-data-provider/commits
-[license-image]: https://img.shields.io/npm/l/@mocks-server/admin-api-client-data-provider.svg
-[license-url]: https://github.com/mocks-server/admin-api-client-data-provider/blob/master/LICENSE
-[npm-downloads-image]: https://img.shields.io/npm/dm/@mocks-server/admin-api-client-data-provider.svg
-[npm-downloads-url]: https://www.npmjs.com/package/@mocks-server/admin-api-client-data-provider
-[quality-gate-image]: https://sonarcloud.io/api/project_badges/measure?project=mocks-server_admin-api-client-data-provider&metric=alert_status
-[quality-gate-url]: https://sonarcloud.io/dashboard?id=mocks-server_admin-api-client-data-provider
-[release-image]: https://img.shields.io/github/release-date/mocks-server/admin-api-client-data-provider.svg
-[release-url]: https://github.com/mocks-server/admin-api-client-data-provider/releases

@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGE
 
+## [2.2.1] - 2022-03-28
+
+### Changed
+- chore(deps): Update dependencies
+- chore(deps): Update devDependencies
+- chore: Migrate to monorepo
+
 ## [2.2.0] - 2021-12-05
 
 ### Changed

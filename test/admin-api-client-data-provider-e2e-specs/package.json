@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "scripts": {
+    "cypress:install": "cypress install",
+    "cypress:verify": "cypress verify",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
+  }
+}

@@ -7,16 +7,50 @@ coverage:
         target: auto
         threshold: 0%
         base: auto
+      admin-api-client:
+        flags:
+          - admin-api-client
+      admin-api-client-data-provider:
+        flags:
+          - admin-api-client-data-provider
+      admin-api-paths:
+        flags:
+          - admin-api-paths
+      core:
+        flags:
+          - core
       cypress-commands:
         flags:
           - cypress-commands
       main:
         flags:
           - main
+      plugin-admin-api:
+        flags:
+          - plugin-admin-api
+      plugin-inquirer-cli:
+        flags:
+          - plugin-inquirer-cli
       plugin-proxy:
         flags:
           - plugin-proxy
 flags:
+  admin-api-client-data-provider:
+    paths:
+      - packages/admin-api-client-data-provider/**
+    carryforward: true
+  admin-api-client:
+    paths:
+      - packages/admin-api-client/**
+    carryforward: true
+  admin-api-paths:
+    paths:
+      - packages/admin-api-paths/**
+    carryforward: true
+  core:
+    paths:
+      - packages/core/**
+    carryforward: true
   cypress-commands:
     paths:
       - packages/cypress-commands/**
@@ -24,6 +58,14 @@ flags:
   main:
     paths:
       - packages/main/**
+    carryforward: true
+  plugin-admin-api:
+    paths:
+      - packages/plugin-admin-api/**
+    carryforward: true
+  plugin-inquirer-cli:
+    paths:
+      - packages/plugin-inquirer-cli/**
     carryforward: true
   plugin-proxy:
     paths:

@@ -1,0 +1,6 @@
+{
+  "root": "packages/admin-api-client/",
+  "projectType": "library",
+  "implicitDependencies": ["admin-api-client-unit-mocks"],
+  "tags": ["type:lib"]
+}

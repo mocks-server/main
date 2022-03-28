@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "scripts": {
+    "mocks": "mocks-server",
+    "start": "mocks-server"
+  },
+  "devDependencies": {
+    "@mocks-server/main": "workspace:*"
+  }
+}

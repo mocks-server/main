@@ -1,0 +1,6 @@
+{
+  "root": "mocks/admin-api-client-unit-mocks/",
+  "projectType": "application",
+  "implicitDependencies": ["main"],
+  "tags": ["type:mock"]
+}

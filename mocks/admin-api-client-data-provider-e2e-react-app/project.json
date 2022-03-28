@@ -1,0 +1,6 @@
+{
+  "root": "mocks/admin-api-client-data-provider-e2e-react-app/",
+  "projectType": "application",
+  "implicitDependencies": [],
+  "tags": ["type:mock"]
+}

@@ -35,7 +35,19 @@
         "projects": "dependencies"
       }
     ],
+    "serve": [
+      {
+        "target": "build",
+        "projects": "self"
+      }
+    ],
     "test:e2e": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ],
+    "test:unit": [
       {
         "target": "build",
         "projects": "dependencies"

@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/main",
-  "version": "2.6.2",
+  "version": "2.6.3",
   "description": "Mock Server supporting multiple route variants and mocks",
   "keywords": [
     "mock",
@@ -34,13 +34,13 @@
   },
   "scripts": {
     "test:unit": "jest",
-    "build": "node scripts/commands/build.mjs"
+    "build": "cross-env node scripts/commands/build.mjs"
   },
   "dependencies": {
-    "@babel/core": "7.17.5",
-    "@mocks-server/core": "2.5.2",
-    "@mocks-server/plugin-admin-api": "2.2.0",
-    "@mocks-server/plugin-inquirer-cli": "2.2.0",
+    "@babel/core": "7.17.8",
+    "@mocks-server/core": "workspace:*",
+    "@mocks-server/plugin-admin-api": "workspace:*",
+    "@mocks-server/plugin-inquirer-cli": "workspace:*",
     "@mocks-server/plugin-proxy": "workspace:*"
   },
   "engines": {

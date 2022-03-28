@@ -1,11 +1,12 @@
 import fsExtra from "fs-extra";
+import * as url from "url";
 
 const READ_WRITE_FILE_OPTIONS = {
   encoding: "utf8",
 };
 
 export function dirName(importMetaUrl) {
-  return new URL(".", importMetaUrl).pathname;
+  return url.fileURLToPath(new URL(".", importMetaUrl));
 }
 
 export function uniqueArray(array) {

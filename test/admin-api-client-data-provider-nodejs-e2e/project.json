@@ -1,0 +1,8 @@
+{
+  "root": "test/admin-api-client-data-provider-nodejs-e2e/",
+  "projectType": "application",
+  "implicitDependencies": [
+    "admin-api-client-data-provider-e2e-mocks"
+  ],
+  "tags": ["type:test"]
+}

@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 const fsExtra = require("fs-extra");
-const { request, fixturesFolder, wait, BINARY_PATH } = require("./support/utils");
+const { request, fixturesFolder, wait, pathJoin, BINARY_PATH } = require("./support/utils");
 const InteractiveCliRunner = require("../../inquirer/support/InteractiveCliRunner");
 
 describe("files watcher", () => {
@@ -198,10 +198,12 @@ describe("files watcher", () => {
         expect.stringContaining("Error: Error loading files from legacy folder")
       );
       expect(interactiveCli.currentScreen).toEqual(
-        expect.stringContaining("main/v1/fixtures/files-watch: FOO is not defined")
+        expect.stringContaining(
+          `${pathJoin("main", "v1", "fixtures", "files-watch")}: FOO is not defined`
+        )
       );
       expect(interactiveCli.currentScreen).toEqual(
-        expect.stringContaining("files-watch/fixtures/users.js:2:18")
+        expect.stringContaining(`${pathJoin("files-watch", "fixtures", "users.js")}:2:18`)
       );
     });
 
@@ -221,7 +223,9 @@ describe("files watcher", () => {
       fsExtra.copySync(fixturesFolder("files-modification"), fixturesFolder("files-watch"));
       await wait(3000);
       expect(interactiveCli.currentScreen).toEqual(
-        expect.not.stringContaining("main/v1/fixtures/files-watch: FOO is not defined")
+        expect.not.stringContaining(
+          `${pathJoin("main", "v1", "fixtures", "files-watch")}: FOO is not defined`
+        )
       );
     });
   });
@@ -263,7 +267,7 @@ describe("files watcher", () => {
         expect.stringContaining("Error: Error loading files from legacy folder")
       );
       expect(interactiveCli.currentScreen).toEqual(
-        expect.stringContaining("files-watch/fixtures/users.js:2:18")
+        expect.stringContaining(`${pathJoin("files-watch", "fixtures", "users.js")}:2:18`)
       );
     });
 

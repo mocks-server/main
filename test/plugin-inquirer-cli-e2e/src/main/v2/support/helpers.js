@@ -102,6 +102,10 @@ const mocksRunner = (args = [], options = {}) => {
   });
 };
 
+function pathJoin(...args) {
+  return args.join(path.sep);
+}
+
 module.exports = {
   fetch,
   TimeCounter,
@@ -111,4 +115,5 @@ module.exports = {
   waitForServerUrl,
   waitForServerAndCli,
   fixturesFolder,
+  pathJoin,
 };

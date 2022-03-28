@@ -34,7 +34,7 @@
   },
   "scripts": {
     "test:unit": "jest",
-    "build": "node scripts/commands/build.mjs"
+    "build": "cross-env node scripts/commands/build.mjs"
   },
   "dependencies": {
     "@babel/core": "7.17.8",

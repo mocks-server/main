@@ -69,10 +69,15 @@ const wait = (time = 2000) => {
   });
 };
 
+function pathJoin(...args) {
+  return args.join(path.sep);
+}
+
 module.exports = {
   request,
   TimeCounter,
   wait,
   fixturesFolder,
   BINARY_PATH,
+  pathJoin,
 };

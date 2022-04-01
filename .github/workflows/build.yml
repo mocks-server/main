@@ -104,7 +104,7 @@ jobs:
           files: "${{steps.get-project-path.outputs.prop}}/coverage/lcov.info"
       - name: Upload test results
         if: matrix.node == env.NODE_CURRENT_VERSION
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage-${{ matrix.node }}-${{matrix.projectName}}
           path: ${{steps.get-project-path.outputs.prop}}/coverage

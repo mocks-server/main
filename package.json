@@ -60,7 +60,7 @@
     "jest": "27.5.1",
     "lint-staged": "12.3.8",
     "lodash": "4.17.21",
-    "prettier": "2.6.0",
+    "prettier": "2.6.2",
     "react": "17.0.2",
     "react-app-rewired": "2.1.11",
     "react-scripts": "4.0.3",

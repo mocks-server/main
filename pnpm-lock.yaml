@@ -40,7 +40,7 @@ importers:
       jest: 27.5.1
       lint-staged: 12.3.8
       lodash: 4.17.21
-      prettier: 2.6.0
+      prettier: 2.6.2
       react: 17.0.2
       react-app-rewired: 2.1.11
       react-scripts: 4.0.3
@@ -64,9 +64,9 @@ importers:
       '@babel/preset-typescript': 7.16.7_@babel+core@7.17.8
       '@cypress/webpack-preprocessor': 5.10.0_f39d58d52c0448c509467234b9bf3518
       '@nrwl/cli': 13.8.3
-      '@nrwl/eslint-plugin-nx': 13.8.3_b8f1bb57671ab3e029a56d4db2a399a2
+      '@nrwl/eslint-plugin-nx': 13.8.3_7fb4d905f4838381f4e19a0924ada0ae
       '@nrwl/tao': 13.8.3
-      '@nrwl/workspace': 13.8.3_3223c7b9385cad2e0937fbbbdc9ff629
+      '@nrwl/workspace': 13.8.3_c61d53e3f128be4ef4f3374caad21238
       '@rollup/plugin-babel': 5.3.1_@babel+core@7.17.8+rollup@2.68.0
       '@rollup/plugin-commonjs': 21.1.0_rollup@2.68.0
       '@rollup/plugin-node-resolve': 13.1.3_rollup@2.68.0
@@ -84,7 +84,7 @@ importers:
       cypress-fail-fast: 3.3.0_cypress@9.3.1
       eslint: 8.11.0
       eslint-config-prettier: 8.5.0_eslint@8.11.0
-      eslint-plugin-prettier: 4.0.0_68edcf5670f37721baf5d2cac6124e4d
+      eslint-plugin-prettier: 4.0.0_d787f974c3263c3f552a159664c9f51b
       fs-extra: 10.0.1
       handlebars: 4.7.7
       husky: 7.0.4
@@ -93,7 +93,7 @@ importers:
       jest: 27.5.1
       lint-staged: 12.3.8
       lodash: 4.17.21
-      prettier: 2.6.0
+      prettier: 2.6.2
       react: 17.0.2
       react-app-rewired: 2.1.11_react-scripts@4.0.3
       react-scripts: 4.0.3_react@17.0.2+typescript@4.6.3
@@ -2556,7 +2556,7 @@ packages:
       tslib: 2.3.1
     dev: true
 
-  /@nrwl/eslint-plugin-nx/13.8.3_b8f1bb57671ab3e029a56d4db2a399a2:
+  /@nrwl/eslint-plugin-nx/13.8.3_7fb4d905f4838381f4e19a0924ada0ae:
     resolution: {integrity: sha512-fiDGULPfFYFkjIORBCFTkzpUQNlW48/32C3xWVbZlmmnO1KJ5ql3QyQSaDpaentE5nASM8TbgXeVMRqhYkZbOw==}
     peerDependencies:
       '@typescript-eslint/parser': ~5.10.0
@@ -2566,7 +2566,7 @@ packages:
         optional: true
     dependencies:
       '@nrwl/devkit': 13.8.3
-      '@nrwl/workspace': 13.8.3_3223c7b9385cad2e0937fbbbdc9ff629
+      '@nrwl/workspace': 13.8.3_c61d53e3f128be4ef4f3374caad21238
       '@swc-node/register': 1.4.2
       '@typescript-eslint/experimental-utils': 5.10.2_eslint@8.11.0+typescript@4.6.3
       '@typescript-eslint/parser': 5.16.0_eslint@8.11.0+typescript@4.6.3
@@ -2657,7 +2657,7 @@ packages:
       yargs-parser: 20.0.0
     dev: true
 
-  /@nrwl/workspace/13.8.3_3223c7b9385cad2e0937fbbbdc9ff629:
+  /@nrwl/workspace/13.8.3_c61d53e3f128be4ef4f3374caad21238:
     resolution: {integrity: sha512-B2LpbJjxT+WqW0PMxzdy8rmyY0woQytOi4BazPzpcFqaO7zO5/XvLF7txhcvYgRn8n6o0lPsMD0P0Pgeri8oaQ==}
     peerDependencies:
       prettier: ^2.5.1
@@ -2684,7 +2684,7 @@ packages:
       minimatch: 3.0.4
       npm-run-path: 4.0.1
       open: 8.4.0
-      prettier: 2.6.0
+      prettier: 2.6.2
       rxjs: 6.6.7
       semver: 7.3.4
       tmp: 0.2.1
@@ -7052,7 +7052,7 @@ packages:
       minimatch: 3.1.2
     dev: true
 
-  /eslint-plugin-prettier/4.0.0_68edcf5670f37721baf5d2cac6124e4d:
+  /eslint-plugin-prettier/4.0.0_d787f974c3263c3f552a159664c9f51b:
     resolution: {integrity: sha512-98MqmCJ7vJodoQK359bqQWaxOE0CS8paAz/GgjaZLyex4TTk3g9HugoO89EqWCrFiOqn9EVvcoo7gZzONCWVwQ==}
     engines: {node: '>=6.0.0'}
     peerDependencies:
@@ -7065,7 +7065,7 @@ packages:
     dependencies:
       eslint: 8.11.0
       eslint-config-prettier: 8.5.0_eslint@8.11.0
-      prettier: 2.6.0
+      prettier: 2.6.2
       prettier-linter-helpers: 1.0.0
     dev: true
 
@@ -12678,8 +12678,8 @@ packages:
       fast-diff: 1.2.0
     dev: true
 
-  /prettier/2.6.0:
-    resolution: {integrity: sha512-m2FgJibYrBGGgQXNzfd0PuDGShJgRavjUoRCw1mZERIWVSXF0iLzLm+aOqTAbLnC3n6JzUhAA8uZnFVghHJ86A==}
+  /prettier/2.6.2:
+    resolution: {integrity: sha512-PkUpF+qoXTqhOeWL9fu7As8LXsIUZ1WYaJiY/a7McAQzxjk82OF0tibkFXVCDImZtWxbvojFjerkiLb0/q8mew==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true

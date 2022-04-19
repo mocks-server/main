@@ -196,7 +196,7 @@ importers:
       require-all: 3.0.0
       route-parser: 0.0.5
       winston: 3.5.0
-      winston-array-transport: 1.1.7
+      winston-array-transport: 1.1.9
     dependencies:
       '@babel/register': 7.17.7_@babel+core@7.17.9
       '@hapi/boom': 9.1.4
@@ -216,7 +216,7 @@ importers:
       require-all: 3.0.0
       route-parser: 0.0.5
       winston: 3.5.0
-      winston-array-transport: 1.1.7
+      winston-array-transport: 1.1.9
 
   packages/cypress-commands:
     specifiers:
@@ -15645,20 +15645,11 @@ packages:
       string-width: 4.2.3
     dev: true
 
-  /winston-array-transport/1.1.7:
-    resolution: {integrity: sha512-EDdtO8ITVvbUDMm1c+A3x8qNgnPYxTShmt3ZFegUatqjtjAxxiMsOq3iGs7z9GGRbpm3hbehqZWGuq1b9BDrzg==}
+  /winston-array-transport/1.1.9:
+    resolution: {integrity: sha512-KBh1dlSuP8N3Whq5XQDO1eC9SsUbsukPLsL2rcJx3qFK2fKiQba2PFxoHPhGn1mvrVxAoW8SM3nbEvADj32c6A==}
     engines: {node: '>=10'}
     dependencies:
-      winston-transport: 4.4.2
-    dev: false
-
-  /winston-transport/4.4.2:
-    resolution: {integrity: sha512-9jmhltAr5ygt5usgUTQbEiw/7RYXpyUbEAFRCSicIacpUzPkrnQsQZSPGEI12aLK9Jth4zNcYJx3Cvznwrl8pw==}
-    engines: {node: '>= 6.4.0'}
-    dependencies:
-      logform: 2.4.0
-      readable-stream: 3.6.0
-      triple-beam: 1.3.0
+      winston-transport: 4.5.0
     dev: false
 
   /winston-transport/4.5.0:

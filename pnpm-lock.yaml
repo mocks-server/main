@@ -126,18 +126,18 @@ importers:
       prop-types: 15.8.1
       react: 17.0.2
       react-dom: 17.0.2
-      react-redux: 7.2.6
+      react-redux: 7.2.8
       redux: 4.1.2
     dependencies:
       '@data-provider/axios': 4.1.0_@data-provider+core@3.1.0
       '@data-provider/core': 3.1.0_redux@4.1.2
-      '@data-provider/react': 1.6.0_45ad0f4abbb8c9537c141464ed19036e
+      '@data-provider/react': 1.6.0_f1bca3deeca712f082491ec5ebab3f7d
       '@mocks-server/admin-api-client-data-provider': link:../../packages/admin-api-client-data-provider
       '@mocks-server/admin-api-paths': link:../../packages/admin-api-paths
       prop-types: 15.8.1
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      react-redux: 7.2.6_react-dom@17.0.2+react@17.0.2
+      react-redux: 7.2.8_react-dom@17.0.2+react@17.0.2
       redux: 4.1.2
 
   mocks/admin-api-client-data-provider-e2e-vanilla-app:
@@ -1972,7 +1972,7 @@ packages:
       lodash.isplainobject: 4.0.6
       redux: 4.1.2
 
-  /@data-provider/react/1.6.0_45ad0f4abbb8c9537c141464ed19036e:
+  /@data-provider/react/1.6.0_f1bca3deeca712f082491ec5ebab3f7d:
     resolution: {integrity: sha512-isp+5miboMt4NmZS48he249NWD30vKYQ9DFi54KK6E0s3yJ9PPUqBpykun+Zjf1Jg1xrNutEK50pQemuTgkH0g==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -1983,7 +1983,7 @@ packages:
       '@data-provider/core': 3.1.0_redux@4.1.2
       hoist-non-react-statics: 3.3.2
       react: 17.0.2
-      react-redux: 7.2.6_react-dom@17.0.2+react@17.0.2
+      react-redux: 7.2.8_react-dom@17.0.2+react@17.0.2
     dev: false
 
   /@eslint/eslintrc/0.4.3:
@@ -13030,10 +13030,10 @@ packages:
   /react-is/17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
 
-  /react-redux/7.2.6_react-dom@17.0.2+react@17.0.2:
-    resolution: {integrity: sha512-10RPdsz0UUrRL1NZE0ejTkucnclYSgXp5q+tB5SWx2qeG2ZJQJyymgAhwKy73yiL/13btfB6fPr+rgbMAaZIAQ==}
+  /react-redux/7.2.8_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha512-6+uDjhs3PSIclqoCk0kd6iX74gzrGc3W5zcAjbrFgEdIjRSQObdIwfx80unTkVUYvbQ95Y8Av3OvFHq1w5EOUw==}
     peerDependencies:
-      react: ^16.8.3 || ^17
+      react: ^16.8.3 || ^17 || ^18
       react-dom: '*'
       react-native: '*'
     peerDependenciesMeta:

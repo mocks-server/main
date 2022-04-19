@@ -49,7 +49,7 @@ importers:
       rollup: 2.68.0
       rollup-plugin-terser: 7.0.2
       serve: 13.0.2
-      sinon: 13.0.1
+      sinon: 13.0.2
       start-server-and-test: 1.14.0
       strip-ansi: 6.0.0
       tree-kill: 1.2.2
@@ -102,7 +102,7 @@ importers:
       rollup: 2.68.0
       rollup-plugin-terser: 7.0.2_rollup@2.68.0
       serve: 13.0.2
-      sinon: 13.0.1
+      sinon: 13.0.2
       start-server-and-test: 1.14.0
       strip-ansi: 6.0.0
       tree-kill: 1.2.2
@@ -2885,8 +2885,8 @@ packages:
       '@sinonjs/commons': 1.8.3
     dev: true
 
-  /@sinonjs/fake-timers/9.1.0:
-    resolution: {integrity: sha512-M8vapsv9qQupMdzrVzkn5rb9jG7aUTEPAZdMtME2PuBaefksFZVE2C1g4LBRTkF/k3nRDNbDc5tp5NFC1PEYxA==}
+  /@sinonjs/fake-timers/9.1.2:
+    resolution: {integrity: sha512-BPS4ynJW/o92PUR4wgriz2Ud5gpST5vz6GQfMixEDK0Z8ZCUv2M7SkBLykH56T++Xs+8ln9zTGbOvNGIe02/jw==}
     dependencies:
       '@sinonjs/commons': 1.8.3
     dev: true
@@ -11268,7 +11268,7 @@ packages:
     resolution: {integrity: sha512-yr5kW2THW1AkxVmCnKEh4nbYkJdB3I7LUkiUgOvEkOp414mc2UMaHMA7pjq1nYowhdoJZGwEKGaQVbxfpWj10A==}
     dependencies:
       '@sinonjs/commons': 1.8.3
-      '@sinonjs/fake-timers': 9.1.0
+      '@sinonjs/fake-timers': 9.1.2
       '@sinonjs/text-encoding': 0.7.1
       just-extend: 4.2.1
       path-to-regexp: 1.8.0
@@ -14048,11 +14048,11 @@ packages:
     dependencies:
       is-arrayish: 0.3.2
 
-  /sinon/13.0.1:
-    resolution: {integrity: sha512-8yx2wIvkBjIq/MGY1D9h1LMraYW+z1X0mb648KZnKSdvLasvDu7maa0dFaNYdTDczFgbjNw2tOmWdTk9saVfwQ==}
+  /sinon/13.0.2:
+    resolution: {integrity: sha512-KvOrztAVqzSJWMDoxM4vM+GPys1df2VBoXm+YciyB/OLMamfS3VXh3oGh5WtrAGSzrgczNWFFY22oKb7Fi5eeA==}
     dependencies:
       '@sinonjs/commons': 1.8.3
-      '@sinonjs/fake-timers': 9.1.0
+      '@sinonjs/fake-timers': 9.1.2
       '@sinonjs/samsam': 6.1.1
       diff: 5.0.0
       nise: 5.1.1

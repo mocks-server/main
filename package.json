@@ -69,7 +69,7 @@
     "rollup": "2.68.0",
     "rollup-plugin-terser": "7.0.2",
     "serve": "13.0.2",
-    "sinon": "13.0.1",
+    "sinon": "13.0.2",
     "start-server-and-test": "1.14.0",
     "strip-ansi": "6.0.0",
     "tree-kill": "1.2.2",

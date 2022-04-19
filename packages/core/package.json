@@ -35,7 +35,7 @@
     "test:unit": "jest"
   },
   "dependencies": {
-    "@babel/register": "7.16.9",
+    "@babel/register": "7.17.7",
     "@hapi/boom": "9.1.4",
     "ajv": "8.9.0",
     "ajv-errors": "3.0.0",

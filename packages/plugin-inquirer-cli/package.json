@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "chalk": "4.1.1",
-    "inquirer": "8.2.0",
+    "inquirer": "8.2.2",
     "inquirer-autocomplete-prompt": "1.4.0",
     "lodash": "4.17.21",
     "node-emoji": "1.11.0"

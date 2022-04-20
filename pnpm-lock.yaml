@@ -16,7 +16,7 @@ importers:
       '@nrwl/workspace': 13.8.3
       '@rollup/plugin-babel': 5.3.1
       '@rollup/plugin-commonjs': 21.1.0
-      '@rollup/plugin-node-resolve': 13.1.3
+      '@rollup/plugin-node-resolve': 13.2.1
       '@testing-library/cypress': 8.0.2
       '@typescript-eslint/parser': 5.16.0
       babel-jest: 27.5.1
@@ -69,7 +69,7 @@ importers:
       '@nrwl/workspace': 13.8.3_c61d53e3f128be4ef4f3374caad21238
       '@rollup/plugin-babel': 5.3.1_@babel+core@7.17.9+rollup@2.68.0
       '@rollup/plugin-commonjs': 21.1.0_rollup@2.68.0
-      '@rollup/plugin-node-resolve': 13.1.3_rollup@2.68.0
+      '@rollup/plugin-node-resolve': 13.2.1_rollup@2.68.0
       '@testing-library/cypress': 8.0.2_cypress@9.3.1
       '@typescript-eslint/parser': 5.16.0_eslint@8.11.0+typescript@4.6.3
       babel-jest: 27.5.1_@babel+core@7.17.9
@@ -2843,8 +2843,8 @@ packages:
       rollup: 2.68.0
     dev: true
 
-  /@rollup/plugin-node-resolve/13.1.3_rollup@2.68.0:
-    resolution: {integrity: sha512-BdxNk+LtmElRo5d06MGY4zoepyrXX1tkzX2hrnPEZ53k78GuOMWLqmJDGIIOPwVRIFZrLQOo+Yr6KtCuLIA0AQ==}
+  /@rollup/plugin-node-resolve/13.2.1_rollup@2.68.0:
+    resolution: {integrity: sha512-btX7kzGvp1JwShQI9V6IM841YKNPYjKCvUbNrQ2EcVYbULtUd/GH6wZ/qdqH13j9pOHBER+EZXNN2L8RSJhVRA==}
     engines: {node: '>= 10.0.0'}
     peerDependencies:
       rollup: ^2.42.0

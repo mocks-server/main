@@ -38,7 +38,7 @@
     "@rollup/plugin-commonjs": "21.1.0",
     "@rollup/plugin-node-resolve": "13.2.1",
     "@testing-library/cypress": "8.0.2",
-    "@typescript-eslint/parser": "5.16.0",
+    "@typescript-eslint/parser": "5.20.0",
     "babel-jest": "27.5.1",
     "babel-loader": "8.2.4",
     "babel-plugin-module-resolver": "4.1.0",

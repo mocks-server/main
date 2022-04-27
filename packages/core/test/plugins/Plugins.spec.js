@@ -11,14 +11,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const CoreMocks = require("../Core.mocks.js");
-const LoadersMocks = require("../Loaders.mocks.js");
 const ConfigMocks = require("../Config.mocks.js");
 const LibsMocks = require("../Libs.mocks.js");
 
 const Plugins = require("../../src/plugins/Plugins");
 const tracer = require("../../src/tracer");
 
-const NATIVE_PLUGINS_QUANTITY = 2;
+const NATIVE_PLUGINS_QUANTITY = 1;
 
 const pluginsTrace = (method, quantity) => {
   return `${method}ed ${quantity} plugins without errors`;
@@ -37,25 +36,21 @@ describe("Plugins", () => {
   let sandbox;
   let coreMocks;
   let coreInstance;
-  let loaderMocks;
   let plugins;
   let configMocks;
   let configInstance;
   let libsMocks;
-  let loadLegacyMocks;
   let loadMocks;
   let loadRoutes;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
-    loadLegacyMocks = sandbox.stub();
     loadMocks = sandbox.stub();
     loadRoutes = sandbox.stub();
     callbacks = {
       addAlert: sandbox.stub(),
       removeAlerts: sandbox.stub(),
       renameAlerts: sandbox.stub(),
-      createLegacyMocksLoader: sandbox.stub().returns(loadLegacyMocks),
       createMocksLoader: sandbox.stub().returns(loadMocks),
       createRoutesLoader: sandbox.stub().returns(loadRoutes),
     };
@@ -64,19 +59,16 @@ describe("Plugins", () => {
     sandbox.stub(tracer, "error");
     sandbox.spy(console, "log");
     coreMocks = new CoreMocks();
-    loaderMocks = new LoadersMocks();
     configMocks = new ConfigMocks();
     libsMocks = new LibsMocks();
     coreInstance = coreMocks.stubs.instance;
     configInstance = configMocks.stubs.instance;
     coreInstance.settings.get.withArgs("path").returns("foo-path");
-    coreInstance.settings.get.withArgs("pathLegacy").returns("foo-path");
     libsMocks.stubs.fsExtra.existsSync.returns(true);
     plugins = new Plugins(callbacks, coreInstance);
   });
 
   afterEach(() => {
-    loaderMocks.restore();
     sandbox.restore();
     coreMocks.restore();
     configMocks.restore();
@@ -88,6 +80,7 @@ describe("Plugins", () => {
     const METHOD = "Register";
     it("should do nothing if there are no plugins to register", async () => {
       await plugins.register();
+      console.log(pluginsTraceAddingNative(METHOD, 0));
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
 
@@ -116,22 +109,20 @@ describe("Plugins", () => {
     });
 
     it("should register object plugins with register method passing to them custom methods", async () => {
-      expect.assertions(5);
+      expect.assertions(4);
       const fooPlugin = {
-        register: (coreIns, methods) => {
+        register: (_coreIns, methods) => {
           methods.loadRoutes();
           methods.loadMocks();
-          methods.loadLegacyMocks();
           methods.addAlert("foo", "Foo message");
           methods.removeAlerts();
         },
       };
       await plugins.register([fooPlugin]);
-      expect(loadLegacyMocks.callCount).toEqual(1);
       expect(loadMocks.callCount).toEqual(1);
       expect(loadRoutes.callCount).toEqual(1);
-      expect(callbacks.addAlert.calledWith("2:foo", "Foo message")).toEqual(true);
-      expect(callbacks.removeAlerts.calledWith("2:")).toEqual(true);
+      expect(callbacks.addAlert.calledWith("1:foo", "Foo message")).toEqual(true);
+      expect(callbacks.removeAlerts.calledWith("1:")).toEqual(true);
     });
 
     it("should not register object plugins with register method throwing an error", async () => {
@@ -178,9 +169,8 @@ describe("Plugins", () => {
     });
 
     it("should register function plugins executing them passing custom methods", async () => {
-      expect.assertions(5);
-      const fooPlugin = (coreIns, methods) => {
-        methods.loadLegacyMocks();
+      expect.assertions(4);
+      const fooPlugin = (_coreIns, methods) => {
         methods.loadMocks();
         methods.loadRoutes();
         methods.addAlert("foo", "Foo message");
@@ -188,7 +178,6 @@ describe("Plugins", () => {
         return {};
       };
       await plugins.register([fooPlugin]);
-      expect(loadLegacyMocks.callCount).toEqual(1);
       expect(loadMocks.callCount).toEqual(1);
       expect(loadRoutes.callCount).toEqual(1);
       expect(callbacks.addAlert.calledWith(`${addNativePlugins(0)}:foo`, "Foo message")).toEqual(
@@ -237,10 +226,9 @@ describe("Plugins", () => {
     });
 
     it("should register class plugins, instantiating them passing custom methods", async () => {
-      expect.assertions(5);
+      expect.assertions(4);
       class FooPlugin {
-        constructor(core, methods) {
-          methods.loadLegacyMocks();
+        constructor(_core, methods) {
           methods.loadMocks();
           methods.loadRoutes();
           methods.addAlert("foo", "Foo message");
@@ -249,7 +237,6 @@ describe("Plugins", () => {
         }
       }
       await plugins.register([FooPlugin]);
-      expect(loadLegacyMocks.callCount).toEqual(1);
       expect(loadMocks.callCount).toEqual(1);
       expect(loadRoutes.callCount).toEqual(1);
       expect(callbacks.addAlert.calledWith(`${addNativePlugins(0)}:foo`, "Foo message")).toEqual(
@@ -655,10 +642,10 @@ describe("Plugins", () => {
     let fooPlugin;
     beforeEach(() => {
       fooPlugin = {
-        register: (core, { addAlert }) => {
+        register: (_core, { addAlert }) => {
           addAlert("test-register", "Testing register alert");
         },
-        start: (core, { addAlert }) => {
+        start: (_core, { addAlert }) => {
           addAlert("test-start", "Testing start alert");
         },
         displayName: "foo-name",
@@ -667,7 +654,7 @@ describe("Plugins", () => {
 
     it("should have as scope the plugin index during the register method", async () => {
       await plugins.register([fooPlugin]);
-      expect(callbacks.addAlert.calledWith("2:test-register", "Testing register alert")).toEqual(
+      expect(callbacks.addAlert.calledWith("1:test-register", "Testing register alert")).toEqual(
         true
       );
     });
@@ -676,7 +663,7 @@ describe("Plugins", () => {
       expect.assertions(2);
       await plugins.register([fooPlugin]);
       await plugins.start();
-      expect(callbacks.renameAlerts.calledWith("2:", "foo-name:")).toEqual(true);
+      expect(callbacks.renameAlerts.calledWith("1:", "foo-name:")).toEqual(true);
       expect(callbacks.addAlert.calledWith("foo-name:test-start", "Testing start alert")).toEqual(
         true
       );

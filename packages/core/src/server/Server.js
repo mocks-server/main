@@ -14,17 +14,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const http = require("http");
 
 const express = require("express");
-const { delay } = require("lodash");
 const cors = require("cors");
 const tracer = require("../tracer");
 const middlewares = require("./middlewares");
 
 class Server {
-  constructor(eventEmitter, settings, legacyMocks, core, { addAlert, removeAlerts, mocksRouter }) {
-    // TODO, deprecate, the core is being passed only to maintain temporarily backward compatibility with API plugin. This is not published in documentation.
-    this._core = core; // Use this reference only to provide it to external functions for customization purposes
-    this._legacyMocks = legacyMocks;
-
+  constructor(eventEmitter, settings, { addAlert, removeAlerts, mocksRouter }) {
     this._mocksRouter = mocksRouter;
     this._eventEmitter = eventEmitter;
     this._customRouters = [];
@@ -67,8 +62,6 @@ class Server {
     this._express.use(middlewares.traceRequest);
     this._registerCustomRouters();
     this._express.use(this._mocksRouter);
-    // TODO, remove v1 legacy code
-    this._express.use(this._fixturesMiddleware.bind(this));
     this._express.use(middlewares.notFound);
     this._express.use(middlewares.errorHandler);
 
@@ -138,19 +131,6 @@ class Server {
       tracer.silly(`Registering custom router with path ${customRouter.path}`);
       this._express.use(customRouter.path, customRouter.router);
     });
-  }
-
-  // TODO, remove v1 legacy code
-  _fixturesMiddleware(req, res, next) {
-    const fixture = this._legacyMocks.behaviors.current.getRequestMatchingFixture(req);
-    if (fixture) {
-      delay(() => {
-        // TODO, deprecate passing the core to handlers. Fixtures handlers already have a reference that is passed to the constructor.
-        fixture.handleRequest(req, res, next, this._core);
-      }, this._settings.get("delay"));
-    } else {
-      next();
-    }
   }
 
   stop() {

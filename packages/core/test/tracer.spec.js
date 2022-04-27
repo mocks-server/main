@@ -18,7 +18,6 @@ describe("tracer", () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    sandbox.stub(tracer, "debug");
     sandbox.spy(console, "log");
   });
 
@@ -37,6 +36,16 @@ describe("tracer", () => {
       tracer.set("silent");
       tracer.error("foo error");
       expect(console.log.callCount).toEqual(0);
+    });
+  });
+
+  describe("deprecationWarn method", () => {
+    it("should call to logger warn method providing the new method name", () => {
+      sandbox.stub(tracer._logger, "warn");
+      tracer.deprecationWarn("deprecatedName", "newName");
+      expect(tracer._logger.warn.getCall(0).args[0]).toEqual(
+        "Deprecation warning: deprecatedName will be deprecated. Use newName instead"
+      );
     });
   });
 });

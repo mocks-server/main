@@ -15,8 +15,4 @@ describe("index", () => {
   it("should export a Core constructor", () => {
     expect(index.Core).toBeDefined();
   });
-
-  it("should export a Behavior constructor", () => {
-    expect(index.Behavior).toBeDefined();
-  });
 });

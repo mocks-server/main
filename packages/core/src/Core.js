@@ -14,11 +14,9 @@ const {
   INIT,
   START,
   STOP,
-  CHANGE_LEGACY_MOCKS,
   CHANGE_MOCKS,
   CHANGE_SETTINGS,
   CHANGE_ALERTS,
-  LOAD_LEGACY_MOCKS,
   LOAD_MOCKS,
   LOAD_ROUTES,
 } = require("./eventNames");
@@ -33,7 +31,6 @@ const RoutesHandlers = require("./routes-handlers/RoutesHandlers");
 const Mocks = require("./mocks/Mocks");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
-const LegacyMocks = require("./mocks-legacy/Mocks");
 const Settings = require("./settings/Settings");
 
 const { scopedAlertsMethods, addEventListener } = require("./support/helpers");
@@ -45,13 +42,6 @@ class Core {
     this._alerts = new Alerts({
       onChange: (alerts) => {
         this._eventEmitter.emit(CHANGE_ALERTS, alerts);
-      },
-    });
-
-    // TODO, remove v1 legacy code
-    this._legacyMocksLoaders = new Loaders({
-      onLoad: () => {
-        this._eventEmitter.emit(LOAD_LEGACY_MOCKS);
       },
     });
 
@@ -77,9 +67,6 @@ class Core {
 
     this._plugins = new Plugins(
       {
-        createLegacyMocksLoader: () => {
-          return this._legacyMocksLoaders.new();
-        },
         createMocksLoader: () => {
           return this._mocksLoaders.new();
         },
@@ -115,28 +102,14 @@ class Core {
       this //To be used only by routeHandlers
     );
 
-    // TODO, remove v1 legacy code
-    this._legacyMocks = new LegacyMocks(
-      this._eventEmitter,
-      this._settings,
-      this._legacyMocksLoaders,
-      this,
-      scopedAlertsMethods("legacy-mocks", this._alerts.add, this._alerts.remove)
-    );
-
     // TODO, refactor. Pass specific callbacks instead of objects
-    this._server = new Server(this._eventEmitter, this._settings, this._legacyMocks, this, {
+    this._server = new Server(this._eventEmitter, this._settings, {
       mocksRouter: this._mocks.router,
       ...scopedAlertsMethods("server", this._alerts.add, this._alerts.remove),
     });
 
     // TODO, refactor. Pass specific callbacks instead of objects
-    this._orchestrator = new Orchestrator(
-      this._eventEmitter,
-      this._legacyMocks,
-      this._server,
-      this._mocks
-    );
+    this._orchestrator = new Orchestrator(this._eventEmitter, this._server, this._mocks);
 
     this._inited = false;
     this._stopPluginsPromise = null;
@@ -165,6 +138,7 @@ class Core {
 
   async init(options) {
     if (this._inited) {
+      // in case it has been initializated manually before
       return Promise.resolve();
     }
     await this._config.init(options);
@@ -177,7 +151,6 @@ class Core {
     await this._settings.init(this._config.options);
     // Settings are ready, init all
     this._mocks.init(this._routesHandlers.handlers);
-    await this._legacyMocks.init();
     await this._server.init();
     return this._plugins.init().then(() => {
       this._eventEmitter.emit(INIT, this);
@@ -185,7 +158,7 @@ class Core {
   }
 
   async start() {
-    await this.init(); // in case it has not been initializated manually before
+    await this.init();
     await this._server.start();
     return this._startPlugins().then(() => {
       this._eventEmitter.emit(START, this);
@@ -255,26 +228,6 @@ class Core {
 
   get tracer() {
     return tracer;
-  }
-
-  // TODO, remove v1 legacy code
-  addFixturesHandler(Handler) {
-    return this._legacyMocks.addFixturesHandler(Handler);
-  }
-
-  // TODO, remove v1 legacy code
-  onChangeLegacyMocks(listener) {
-    return addEventListener(listener, CHANGE_LEGACY_MOCKS, this._eventEmitter);
-  }
-
-  // TODO, remove v1 legacy code
-  get behaviors() {
-    return this._legacyMocks.behaviors;
-  }
-
-  // TODO, remove v1 legacy code
-  get fixtures() {
-    return this._legacyMocks.fixtures;
   }
 }
 

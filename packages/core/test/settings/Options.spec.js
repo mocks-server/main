@@ -111,7 +111,7 @@ describe("options", () => {
       expect.assertions(2);
       try {
         options.addCustom({
-          name: "behavior",
+          name: "mock",
         });
       } catch (error) {
         const errorMessageContains = "already registered";
@@ -164,7 +164,6 @@ describe("options", () => {
   describe("options getter", () => {
     it("should only get values from keys defined in default values", async () => {
       commandLineArgumentsMocks.stubs.instance.options = {
-        behavior: "foo-behavior",
         cli: true,
         foo: undefined,
         foo2: "foooo",
@@ -177,14 +176,12 @@ describe("options", () => {
         delay: 0,
         cors: true,
         corsPreFlight: true,
-        behavior: "foo-behavior",
         mock: null,
       });
     });
 
     it("should remove deprecated options", async () => {
       commandLineArgumentsMocks.stubs.instance.options = {
-        behavior: "foo-behavior",
         cli: true,
         foo: undefined,
         foo2: "foooo",
@@ -198,14 +195,12 @@ describe("options", () => {
         delay: 0,
         cors: true,
         corsPreFlight: true,
-        behavior: "foo-behavior",
         mock: null,
       });
     });
 
     it("should get values from keys defined in new options", async () => {
       commandLineArgumentsMocks.stubs.instance.options = {
-        behavior: "foo-behavior",
         cli: true,
         foo: "foo",
       };
@@ -227,7 +222,6 @@ describe("options", () => {
         delay: 0,
         cors: true,
         corsPreFlight: true,
-        behavior: "foo-behavior",
         mock: null,
       });
     });
@@ -242,14 +236,12 @@ describe("options", () => {
         delay: 0,
         cors: true,
         corsPreFlight: true,
-        behavior: null,
         mock: null,
       });
     });
 
     it("should extend default options with user options, ommiting undefined values", async () => {
       commandLineArgumentsMocks.stubs.instance.options = {
-        behavior: "foo-behavior",
         cli: true,
         foo: undefined,
       };
@@ -261,7 +253,6 @@ describe("options", () => {
         delay: 0,
         cors: true,
         corsPreFlight: true,
-        behavior: "foo-behavior",
         mock: null,
       });
     });
@@ -275,7 +266,6 @@ describe("options", () => {
 
     it("should only get values from keys defined in default values", async () => {
       configMocks.stubs.instance.options = {
-        behavior: "foo-behavior",
         cli: true,
         foo: undefined,
         foo2: "foooo",
@@ -288,14 +278,12 @@ describe("options", () => {
         delay: 0,
         cors: true,
         corsPreFlight: true,
-        behavior: "foo-behavior",
         mock: null,
       });
     });
 
     it("should remove deprecated options", async () => {
       configMocks.stubs.instance.options = {
-        behavior: "foo-behavior",
         cli: true,
         behaviors: "foo/behaviors/path",
         foo: undefined,
@@ -310,7 +298,6 @@ describe("options", () => {
         delay: 0,
         cors: true,
         corsPreFlight: true,
-        behavior: "foo-behavior",
         mock: null,
       });
     });
@@ -325,7 +312,6 @@ describe("options", () => {
         type: "string",
       });
       configMocks.stubs.instance.options = {
-        behavior: "foo-behavior",
         cli: true,
         foo: "foo",
       };
@@ -339,14 +325,12 @@ describe("options", () => {
         delay: 0,
         cors: true,
         corsPreFlight: true,
-        behavior: "foo-behavior",
         mock: null,
       });
     });
 
     it("should extend default options with user options, ommiting undefined values", async () => {
       configMocks.stubs.instance.options = {
-        behavior: "foo-behavior",
         cli: true,
         foo: undefined,
       };
@@ -358,7 +342,6 @@ describe("options", () => {
         delay: 0,
         cors: true,
         corsPreFlight: true,
-        behavior: "foo-behavior",
         mock: null,
       });
     });
@@ -373,7 +356,7 @@ describe("options", () => {
 
     it("should return option name if option is valid", async () => {
       await options.init();
-      expect(options.getValidOptionName("behavior")).toEqual("behavior");
+      expect(options.getValidOptionName("mock")).toEqual("mock");
     });
 
     it.skip("should return new option name if option is deprecated", async () => {
@@ -407,7 +390,7 @@ describe("options", () => {
 
     it("should return option name if option is valid", async () => {
       await options.init();
-      expect(options.checkValidOptionName("behavior")).toEqual("behavior");
+      expect(options.checkValidOptionName("mock")).toEqual("mock");
     });
 
     it.skip("should return new option name if option is deprecated", async () => {

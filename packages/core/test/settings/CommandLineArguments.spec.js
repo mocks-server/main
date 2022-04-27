@@ -54,12 +54,12 @@ describe("command line arguments", () => {
   describe("init method", () => {
     it("should call to commander to get user options from command line", async () => {
       await commandLineArguments.init();
-      expect(optionStub.callCount).toEqual(7); //First call is not registered
+      expect(optionStub.callCount).toEqual(6); //First call is not registered
     });
 
     it("should call to convert to number received value in --port option", async () => {
       expect.assertions(1);
-      optionStub.callsFake((commandName, description, parser) => {
+      optionStub.callsFake((commandName, _description, parser) => {
         if (commandName.includes("--port")) {
           expect(parser("5")).toEqual(5);
         }

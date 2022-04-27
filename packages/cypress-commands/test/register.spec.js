@@ -38,9 +38,5 @@ describe("register", () => {
     it("should register mocksRestoreRoutesVariants command", () => {
       expect(cypressMock.stubs.Commands.add.calledWith("mocksRestoreRoutesVariants")).toBe(true);
     });
-
-    it("should register mocksSetBehavior command", () => {
-      expect(cypressMock.stubs.Commands.add.calledWith("mocksSetBehavior")).toBe(true);
-    });
   });
 });

@@ -9,7 +9,6 @@
 # tests
 /coverage
 /mocks
-/mocks-legacy
 /mocks-ts
 /testing.js
 /mocks.config.js

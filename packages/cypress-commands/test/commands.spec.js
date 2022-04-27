@@ -8,7 +8,7 @@ const commands = require("../src/commands");
 describe("commands", () => {
   let sandbox;
   let cypressMock;
-  let setMock, setBehavior, setDelay, setSettings, useRouteVariant, restoreRoutesVariants, config;
+  let setMock, setDelay, setSettings, useRouteVariant, restoreRoutesVariants, config;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -17,15 +17,9 @@ describe("commands", () => {
     sandbox.stub(apiClient, "restoreRoutesVariants");
     sandbox.stub(apiClient, "config");
     cypressMock = new CypressMock();
-    ({
-      setMock,
-      setBehavior,
-      setDelay,
-      setSettings,
-      useRouteVariant,
-      restoreRoutesVariants,
-      config,
-    } = commands(cypressMock.stubs));
+    ({ setMock, setDelay, setSettings, useRouteVariant, restoreRoutesVariants, config } = commands(
+      cypressMock.stubs
+    ));
   });
 
   afterEach(() => {
@@ -124,23 +118,6 @@ describe("commands", () => {
       cypressMock.stubs.env.returns(false);
       restoreRoutesVariants();
       expect(apiClient.restoreRoutesVariants.callCount).toEqual(0);
-    });
-  });
-
-  describe("setBehavior command", () => {
-    it("should call to update behavior", () => {
-      setBehavior("foo-behavior");
-      expect(
-        apiClient.updateSettings.calledWith({
-          behavior: "foo-behavior",
-        })
-      ).toBe(true);
-    });
-
-    it("should do nothing if plugin is disabled", () => {
-      cypressMock.stubs.env.returns(false);
-      setBehavior("foo-behavior");
-      expect(apiClient.updateSettings.callCount).toEqual(0);
     });
   });
 

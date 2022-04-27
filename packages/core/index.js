@@ -10,6 +10,4 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const Core = require("./src/Core");
 
-module.exports = {
-  Core,
-};
+module.exports = Core;

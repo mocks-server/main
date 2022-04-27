@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGES
 
+## [unreleased]
+
+### Removed
+- feat: BREAKING CHANGE: Remove v1 legacy methods related to behaviors and fixtures.
+
 ## [4.0.1] - 2022-03-28
 
 ### Changed

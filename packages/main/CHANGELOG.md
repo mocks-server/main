@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [unreleased]
+
+### Changed
+- feat: BREAKING CHANGE. Export Core as default export. Stop exporting v1 legacy Behavior object
+
 ## [2.6.3] - 2022-03-28
 
 ### Changed

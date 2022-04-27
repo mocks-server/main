@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGE
 
+## [unreleased]
+
+### Removed
+- feat: BREAKING CHANGE. Remove support for v1 legacy mode
+
 ## [2.2.1] - 2022-03-28
 
 ### Changed

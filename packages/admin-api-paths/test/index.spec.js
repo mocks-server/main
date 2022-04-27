@@ -7,9 +7,6 @@ import {
   ROUTES,
   ROUTES_VARIANTS,
   MOCK_CUSTOM_ROUTES_VARIANTS,
-  LEGACY,
-  BEHAVIORS,
-  FIXTURES,
 } from "../index";
 
 describe("Exported paths", () => {
@@ -43,17 +40,5 @@ describe("Exported paths", () => {
 
   it("should contain the mock-custom-routes-variants path", () => {
     expect(MOCK_CUSTOM_ROUTES_VARIANTS).toBeDefined();
-  });
-
-  it("should contain the legacy path", () => {
-    expect(LEGACY).toBeDefined();
-  });
-
-  it("should contain the behaviors path", () => {
-    expect(BEHAVIORS).toBeDefined();
-  });
-
-  it("should contain the fixtures path", () => {
-    expect(FIXTURES).toBeDefined();
   });
 });

@@ -52,8 +52,6 @@ Available api resources are:
 * `GET` `/admin/alerts` Returns current alerts.
 * `GET` `/admin/alerts/:id` Returns a specific alert. The alert `id` is equivalent to the alert `context` _(read the [developing plugins chapter](plugins-developing-plugins.md) for further info about alerts)_.
 
-> v1.x deprecated api resources are also still available under the `/legacy` path.
-
 ## Contributing
 
 Contributors are welcome.

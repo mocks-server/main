@@ -86,15 +86,6 @@ describe("Cli", () => {
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(0).args[0]).toEqual("main");
     });
 
-    it("should refresh main menu when behavior option is changed and current screen is main menu", async () => {
-      expect.assertions(2);
-      coreInstance.onChangeSettings.getCall(0).args[0]({
-        behavior: "foo",
-      });
-      expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
-      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
-    });
-
     it("should refresh main menu when delay option is changed and current screen is main menu", async () => {
       expect.assertions(2);
       coreInstance.onChangeSettings.getCall(0).args[0]({
@@ -141,7 +132,7 @@ describe("Cli", () => {
     it("should not display main menu when core settings are changed and current screen is not main menu", async () => {
       cli._currentScreen = "FOO";
       coreInstance.onChangeSettings.getCall(0).args[0]({
-        behavior: "foo",
+        mock: "foo",
       });
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
     });
@@ -298,79 +289,6 @@ describe("Cli", () => {
       await cli.stop();
       await cli.stop();
       expect(inquirerMocks.stubs.inquirer.clearScreen.callCount).toEqual(2);
-    });
-  });
-
-  describe('when user selects "Change current behavior"', () => {
-    const fooSelectedBehavior = "foo behavior";
-    let originalIds;
-
-    beforeEach(() => {
-      originalIds = coreInstance.behaviors.ids;
-      coreInstance.behaviors.ids = ["foo-behavior"];
-      inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("behavior");
-      inquirerMocks.stubs.inquirer.inquire.onCall(1).resolves(fooSelectedBehavior);
-    });
-
-    afterEach(() => {
-      coreInstance.behaviors.ids = originalIds;
-    });
-
-    it("should call to clear screen", async () => {
-      await cli.start();
-      expect(inquirerMocks.stubs.inquirer.clearScreen.callCount).toEqual(3);
-    });
-
-    it("should display main menu if there are not behaviors", async () => {
-      coreInstance.behaviors.ids = [];
-      await cli.start();
-      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
-    });
-
-    it("should call to display behavior menu", async () => {
-      await cli.start();
-      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("behavior");
-    });
-
-    it("should set current selected behavior", async () => {
-      await cli.start();
-      expect(coreInstance.settings.set.getCall(1).args).toEqual(["behavior", fooSelectedBehavior]);
-    });
-
-    it("should not filter current behaviors if there is no input", async () => {
-      const fooBehaviorsNames = ["foo1", "foo2"];
-      inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
-      inquirerMocks.stubs.inquirer.inquireFake.returns(null);
-      inquirerMocks.stubs.inquirer.inquire
-        .onCall(0)
-        .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.behaviors.ids = fooBehaviorsNames;
-      await cli._changeCurrentBehavior();
-      expect(coreInstance.settings.set.getCall(0).args).toEqual(["behavior", fooBehaviorsNames]);
-    });
-
-    it("should not filter current features if current input is empty", async () => {
-      const fooBehaviorsNames = ["foo1", "foo2"];
-      inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
-      inquirerMocks.stubs.inquirer.inquireFake.returns([]);
-      inquirerMocks.stubs.inquirer.inquire
-        .onCall(0)
-        .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.behaviors.ids = fooBehaviorsNames;
-      await cli._changeCurrentBehavior();
-      expect(coreInstance.settings.set.getCall(0).args).toEqual(["behavior", fooBehaviorsNames]);
-    });
-
-    it("should filter current behaviors and returns all that includes current input", async () => {
-      const fooBehaviorsNames = ["foo1", "foo2", "not-included"];
-      inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
-      inquirerMocks.stubs.inquirer.inquireFake.returns("foo");
-      inquirerMocks.stubs.inquirer.inquire
-        .onCall(0)
-        .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.behaviors.ids = fooBehaviorsNames;
-      await cli._changeCurrentBehavior();
-      expect(coreInstance.settings.set.getCall(0).args).toEqual(["behavior", ["foo1", "foo2"]]);
     });
   });
 
@@ -616,24 +534,6 @@ describe("Cli", () => {
     });
   });
 
-  describe('when user selects "Switch watch legacy"', () => {
-    beforeEach(() => {
-      inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("watchLegacy");
-    });
-
-    it("should call to switchWatchLegacy server method, passing true if it was disabled", async () => {
-      coreInstance.settings.get.withArgs("watchLegacy").returns(false);
-      await cli.start();
-      expect(coreInstance.settings.set.getCall(1).args).toEqual(["watchLegacy", true]);
-    });
-
-    it("should call to switchWatchLegacy server method, passing false if it was enabled", async () => {
-      coreInstance.settings.get.withArgs("watchLegacy").returns(true);
-      await cli.start();
-      expect(coreInstance.settings.set.getCall(1).args).toEqual(["watchLegacy", false]);
-    });
-  });
-
   describe('when user selects "Display server logs"', () => {
     beforeEach(() => {
       inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("logs");
@@ -754,60 +654,6 @@ describe("Cli", () => {
       coreInstance.settings.get.withArgs("watch").returns(true);
       await cli.start();
       expect(cli._header()[7]).toEqual(expect.stringContaining(chalk.green("true")));
-    });
-  });
-
-  describe("when printing header with legacy mode enabled", () => {
-    beforeEach(() => {
-      coreInstance.settings.get.withArgs("pathLegacy").returns(true);
-    });
-
-    it("should print behaviors in red if are equal to 0", async () => {
-      coreInstance.behaviors.count = 0;
-      await cli.start();
-      expect(cli._header()[9]).toEqual(expect.stringContaining(chalk.red("0")));
-    });
-
-    it("should print behaviors in green if are greater than 0", async () => {
-      coreInstance.behaviors.count = 10;
-      await cli.start();
-      expect(cli._header()[9]).toEqual(expect.stringContaining(chalk.green("10")));
-    });
-
-    it("should print current behavior in red if it is null", async () => {
-      coreInstance.behaviors.currentId = null;
-      await cli.start();
-      expect(cli._header()[10]).toEqual(expect.stringContaining(chalk.red("-")));
-    });
-
-    it("should print current behavior in green if it is defined", async () => {
-      coreInstance.behaviors.currentId = "foo";
-      await cli.start();
-      expect(cli._header()[10]).toEqual(expect.stringContaining(chalk.green("foo")));
-    });
-
-    it("should print current fixtures in red if there are less than 1", async () => {
-      coreInstance.fixtures.count = 0;
-      await cli.start();
-      expect(cli._header()[11]).toEqual(expect.stringContaining(chalk.red("0")));
-    });
-
-    it("should print current fixtures in green if there are less than 1", async () => {
-      coreInstance.fixtures.count = 10;
-      await cli.start();
-      expect(cli._header()[11]).toEqual(expect.stringContaining(chalk.green("10")));
-    });
-
-    it("should print watch in yellow if it is disabled", async () => {
-      coreInstance.settings.get.withArgs("watchLegacy").returns(false);
-      await cli.start();
-      expect(cli._header()[8]).toEqual(expect.stringContaining(chalk.yellow("false")));
-    });
-
-    it("should print watch in yellow if it is enabled", async () => {
-      coreInstance.settings.get.withArgs("watchLegacy").returns(true);
-      await cli.start();
-      expect(cli._header()[8]).toEqual(expect.stringContaining(chalk.green("true")));
     });
   });
 

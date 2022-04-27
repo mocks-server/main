@@ -72,16 +72,6 @@ Exported properties `about`, `settings`, `mocks`, `mocksModel`, `routes`, `route
 * `customRouteVariants.create(id)` - Sets a specific route variant to be used by current mock.
 * `customRouteVariants.delete()` - Restore routes variants to those defined in current mock.
 
-### Legacy methods
-Next methods correspond to Mocks Server legacy methods
-
-* `behaviors.read()` - Returns collection of available behaviors.
-* `behavior(behaviorName).read()` - Returns a specific behavior.
-* `behaviorsModel.queries.byName(behaviorName).read()` - Returns a specific behavior.
-* `fixtures.read()` - Returns collection of available fixtures.
-* `fixture(id).read()` - Returns a specific fixture.
-* `fixturesModel.queries.byId(id).read()` - Returns a specific fixture.
-
 ## Configuration
 
 By default, the client is configured to request to http://localhost:3100/admin, based in the [default options of `mocks-server`](https://www.mocks-server.org/docs/configuration-options)

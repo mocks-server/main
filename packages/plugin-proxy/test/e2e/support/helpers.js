@@ -3,7 +3,7 @@ const path = require("path");
 const crossFetch = require("cross-fetch");
 const waitOn = require("wait-on");
 
-const { Core } = require("@mocks-server/core");
+const Core = require("@mocks-server/core");
 const Plugin = require("../../../index");
 
 const SERVER_PORT = 3100;

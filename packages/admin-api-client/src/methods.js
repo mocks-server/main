@@ -1,9 +1,5 @@
 import {
   about,
-  behaviors,
-  behavior,
-  fixtures,
-  fixture,
   settings,
   alerts,
   alert,
@@ -72,22 +68,4 @@ export function useRouteVariant(id) {
 
 export function restoreRoutesVariants() {
   return mockCustomRoutesVariants.delete();
-}
-
-// legacy
-
-export function readBehaviors() {
-  return behaviors.read();
-}
-
-export function readBehavior(name) {
-  return behavior(name).read();
-}
-
-export function readFixtures() {
-  return fixtures.read();
-}
-
-export function readFixture(id) {
-  return fixture(id).read();
 }

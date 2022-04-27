@@ -73,13 +73,6 @@ example();
 * `useRouteVariant(id)` - Sets a specific route variant to be used by current mock.
 * `restoreRoutesVariants()` - Restore routes variants to those defined in current mock.
 
-##### Legacy methods
-
-* `readBehaviors()` - Returns collection of available behaviors.
-* `readBehavior(behaviorName)` - Returns an specific behavior.
-* `readFixtures()` - Returns collection of available fixtures.
-* `readFixture(fixtureId)` - Returns an specific fixture.
-
 ## Configuration
 
 By default, the client is configured to request to `http://127.0.0.1:3100/admin`, based in the [default options of Mocks Server](https://www.mocks-server.org/docs/configuration-options)

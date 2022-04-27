@@ -12,7 +12,7 @@ const sinon = require("sinon");
 
 jest.mock("@mocks-server/core");
 
-const { Core } = require("@mocks-server/core");
+const Core = require("@mocks-server/core");
 
 const doNothing = () => {
   // do nothing
@@ -42,7 +42,6 @@ class CoreMock {
       onChangeSettings: this._sandbox.stub().returns(doNothing),
       onChangeAlerts: this._sandbox.stub().returns(doNothing),
       onChangeMocks: this._sandbox.stub().returns(doNothing),
-      onChangeLegacyMocks: this._sandbox.stub().returns(doNothing),
       addRouter: this._sandbox.stub(),
       addSetting: this._sandbox.stub(),
       mocks: {
@@ -55,14 +54,7 @@ class CoreMock {
         useRouteVariant: this._sandbox.stub(),
         restoreRoutesVariants: this._sandbox.stub(),
       },
-      behaviors: {
-        count: 0,
-        currentId: "foo-current",
-      },
       alerts: [],
-      fixtures: {
-        count: 0,
-      },
       serverError: null,
       _eventEmitter: {
         on: this._sandbox.stub(),

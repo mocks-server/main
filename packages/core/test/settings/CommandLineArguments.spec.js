@@ -16,7 +16,6 @@ const CommandLineArguments = require("../../src/settings/CommandLineArguments");
 
 describe("command line arguments", () => {
   const DEFAULT_OPTIONS = {
-    behavior: null,
     delay: 0,
     host: "0.0.0.0",
     port: 3100,
@@ -74,13 +73,13 @@ describe("command line arguments", () => {
 
     it("should omit undefined values", async () => {
       const options = {
-        behavior: "foo-behavior",
+        port: 3300,
         path: undefined,
       };
       parseStub.returns(options);
       await commandLineArguments.init();
       expect(commandLineArguments.options).toEqual({
-        behavior: "foo-behavior",
+        port: 3300,
       });
     });
   });

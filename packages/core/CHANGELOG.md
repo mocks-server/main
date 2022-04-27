@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGES
 
+## [unreleased]
+
+### Removed
+
+- feat: BREAKING CHANGE. Export Core as default export, not as a property
+- feat: BREAKING CHANGE. Remove v1 legacy methods
+
 ## [2.5.3] - 2022-03-28
 
 ### Changed

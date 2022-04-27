@@ -19,11 +19,9 @@ const {
   ROUTES_VARIANTS,
   MOCK_CUSTOM_ROUTES_VARIANTS,
   ALERTS,
-  LEGACY,
 } = require("@mocks-server/admin-api-paths");
 
 const packageInfo = require("../package.json");
-const DeprecatedApi = require("./deprecated/Api");
 
 const About = require("./About");
 const Settings = require("./Settings");
@@ -34,12 +32,11 @@ const { ADMIN_API_PATH_OPTION, PLUGIN_NAME } = require("./support/constants");
 const { readCollectionAndModelRouter } = require("./support/routers");
 
 class Plugin {
-  constructor(core, { addAlert }) {
+  constructor(core) {
     this._core = core;
     this._tracer = core.tracer;
     this._settings = this._core.settings;
 
-    this._legacyApi = new DeprecatedApi(core, { addAlert });
     this._settingsApi = new Settings(this._core);
     this._alertsApi = new Alerts(this._core);
     this._aboutApi = new About(this._core);
@@ -81,7 +78,6 @@ class Plugin {
   }
 
   init() {
-    this._legacyApi.init();
     this._initRouter();
   }
 
@@ -105,8 +101,6 @@ class Plugin {
     this._router.use(ROUTES, this._routesApi);
     this._router.use(ROUTES_VARIANTS, this._routesVariantsApi);
     this._router.use(MOCK_CUSTOM_ROUTES_VARIANTS, this._customRoutesVariantsApi.router);
-
-    this._router.use(LEGACY, this._legacyApi.router);
   }
 
   _addRouter() {

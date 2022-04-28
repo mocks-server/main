@@ -16,7 +16,7 @@ module.exports = [
         handler: "proxy",
         host: "http://127.0.0.1:3200",
         options: {
-          userResDecorator: function (proxyRes, proxyResData) {
+          userResDecorator: function (_proxyRes, proxyResData) {
             const data = JSON.parse(proxyResData.toString("utf8"));
             let newData;
             if (Array.isArray(data)) {
@@ -31,7 +31,7 @@ module.exports = [
       },
       {
         id: "disabled",
-        response: (req, res, next) => next(),
+        response: (_req, _res, next) => next(),
       },
     ],
   },

@@ -14,7 +14,7 @@ module.exports = [
       },
       {
         id: "disabled",
-        response: (req, res, next) => next(),
+        response: (_req, _res, next) => next(),
       },
     ],
   },

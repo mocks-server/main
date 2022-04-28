@@ -116,7 +116,7 @@ describe("command line arguments", () => {
             // do nothing
           },
         };
-        optionStub.callsFake((commandName, description, parser) => {
+        optionStub.callsFake((commandName, _description, parser) => {
           if (commandName.includes("--foo")) {
             expect(parser).toEqual(option.parse);
           }
@@ -236,7 +236,7 @@ describe("command line arguments", () => {
           description: "foo description",
           type: "number",
         };
-        optionStub.callsFake((commandName, description, parser) => {
+        optionStub.callsFake((commandName, _description, parser) => {
           if (commandName.includes("--foo")) {
             expect(parser("4")).toEqual(4);
           }
@@ -258,7 +258,7 @@ describe("command line arguments", () => {
           parse: (val) => val,
         };
         sandbox.spy(option, "parse");
-        optionStub.callsFake((commandName, description, parser) => {
+        optionStub.callsFake((commandName, _description, parser) => {
           if (commandName.includes("--foo")) {
             expect(parser("5")).toEqual("5");
             expect(option.parse.callCount).toEqual(1);

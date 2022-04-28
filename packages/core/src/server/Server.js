@@ -19,11 +19,21 @@ const tracer = require("../tracer");
 const middlewares = require("./middlewares");
 
 class Server {
-  constructor(eventEmitter, settings, { addAlert, removeAlerts, mocksRouter }) {
+  constructor({
+    addAlert,
+    getHostOption,
+    getCorsOption,
+    getPortOption,
+    getCorsPreFlightOption,
+    removeAlerts,
+    mocksRouter,
+  }) {
+    this._getHostOption = getHostOption;
+    this._getPortOption = getPortOption;
+    this._getCorsOption = getCorsOption;
+    this._getCorsPreFlightOption = getCorsPreFlightOption;
     this._mocksRouter = mocksRouter;
-    this._eventEmitter = eventEmitter;
     this._customRouters = [];
-    this._settings = settings;
     this._error = null;
     this._addAlert = addAlert;
     this._removeAlerts = removeAlerts;
@@ -50,10 +60,10 @@ class Server {
 
     // Add middlewares
     this._express.use(middlewares.addRequestId);
-    if (this._settings.get("cors")) {
+    if (this._getCorsOption()) {
       this._express.use(
         cors({
-          preflightContinue: !this._settings.get("corsPreFlight"),
+          preflightContinue: !this._getCorsPreFlightOption(),
         })
       );
     }
@@ -92,8 +102,8 @@ class Server {
   }
 
   _startServer(resolve, reject) {
-    const host = this._settings.get("host");
-    const port = this._settings.get("port");
+    const host = this._getHostOption();
+    const port = this._getPortOption();
     const hostName = host === "0.0.0.0" ? "localhost" : host;
 
     try {

@@ -15,7 +15,7 @@ const { fetch, fixturesFolder, waitForServer } = require("./support/helpers");
 
 describe("when using custom router", () => {
   const customRouter = express.Router();
-  customRouter.get("/", (req, res) => {
+  customRouter.get("/", (_req, res) => {
     res.status(200);
     res.send({
       customRouterListening: true,

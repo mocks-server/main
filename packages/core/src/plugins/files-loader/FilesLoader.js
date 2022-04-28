@@ -86,7 +86,7 @@ class FilesLoaderBase {
   }
 
   _cleanRequireCacheFolder() {
-    map(this._cache(), (cacheData, filePath) => {
+    map(this._cache(), (_cacheData, filePath) => {
       if (filePath.indexOf(this._path) === 0) {
         this._cleanRequireCache(this._cache()[filePath]);
       }

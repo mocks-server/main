@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { mocksRunner, fetch, waitForServer, wait, TimeCounter } = require("./support/helpers");
+const { mocksRunner, fetch, waitForServer, TimeCounter } = require("./support/helpers");
 
 describe("command line arguments with cli disabled", () => {
   let mocks;
@@ -20,7 +20,7 @@ describe("command line arguments with cli disabled", () => {
   describe("interactive cli", () => {
     it("should not be started", async () => {
       mocks = mocksRunner(["--path=web-tutorial", "--no-cli"]);
-      await wait(3000);
+      await waitForServer();
       expect(mocks.logs).toEqual(expect.not.stringContaining("Select action"));
     });
   });
@@ -28,7 +28,7 @@ describe("command line arguments with cli disabled", () => {
   describe("path option", () => {
     it("should set mocks folder", async () => {
       mocks = mocksRunner(["--path=web-tutorial", "--no-cli"]);
-      await wait();
+      await waitForServer();
       const users = await fetch("/api/users");
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -41,7 +41,7 @@ describe("command line arguments with cli disabled", () => {
     describe("when not provided", () => {
       it("should set as current behavior the first one found", async () => {
         mocks = mocksRunner(["--path=web-tutorial", "--no-cli"]);
-        await wait();
+        await waitForServer();
         const users = await fetch("/api/users/2");
         expect(users.body).toEqual({ id: 1, name: "John Doe" });
       });
@@ -50,7 +50,7 @@ describe("command line arguments with cli disabled", () => {
     describe("when provided and exists", () => {
       it("should set current behavior", async () => {
         mocks = mocksRunner(["--path=web-tutorial", "--no-cli", "--mock=user-2"]);
-        await wait();
+        await waitForServer();
         const users = await fetch("/api/users/2");
         expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
       });

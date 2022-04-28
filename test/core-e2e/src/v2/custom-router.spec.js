@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 
-const { Core } = require("@mocks-server/core");
+const Core = require("@mocks-server/core");
 const { fetch, fixturesFolder, waitForServer } = require("./support/helpers");
 
 describe("when using custom router", () => {

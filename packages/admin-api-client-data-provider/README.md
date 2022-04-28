@@ -64,10 +64,10 @@ Exported properties `about`, `settings`, `mocks`, `mocksModel`, `routes`, `route
 * `mocksModel.queries.byId(mockId).read()` - Returns a specific mock.
 * `routes.read()` - Returns collection of available routes.
 * `route(id).read()` - Returns a specific route.
-* `routes.queries.byId(id).read()` - Returns an specific route.
+* `routesModel.queries.byId(id).read()` - Returns an specific route.
 * `routesVariants.read()` - Returns collection of available routes variants.
 * `routeVariant(id).read()` - Returns a specific route variant.
-* `routesVariants.queries.byId(id).read()` - Returns an specific route variant.
+* `routesVariantsModel.queries.byId(id).read()` - Returns an specific route variant.
 * `customRouteVariants.read()` - Returns collection of current custom route variants.
 * `customRouteVariants.create(id)` - Sets a specific route variant to be used by current mock.
 * `customRouteVariants.delete()` - Restore routes variants to those defined in current mock.

@@ -4,9 +4,6 @@ var PORT = "";
 
 var $response;
 var $responseTime;
-var $legacyResponse;
-var $legacyResponseTime;
-
 var loadResponse = async function (url, $responseElement, $responseTimeElement) {
   const startDate = new Date();
   const responseData = await fetch(`http://127.0.0.1:${PORT}/api/${url}`);
@@ -20,11 +17,6 @@ var loadResponse = async function (url, $responseElement, $responseTimeElement) 
 $.when($.ready).then(function () {
   $response = $("#response");
   $responseTime = $("#response-time");
-  $legacyResponse = $("#legacy-response");
-  $legacyResponseTime = $("#legacy-response-time");
 
-  Promise.all([
-    loadResponse("response", $response, $responseTime),
-    loadResponse("legacy-response", $legacyResponse, $legacyResponseTime),
-  ]);
+  Promise.all([loadResponse("response", $response, $responseTime)]);
 });

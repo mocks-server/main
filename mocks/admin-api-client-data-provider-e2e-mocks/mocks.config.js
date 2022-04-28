@@ -7,6 +7,5 @@ module.exports = {
   options: {
     port: 3100,
     cli: false,
-    pathLegacy: "legacy-mocks",
   },
 };

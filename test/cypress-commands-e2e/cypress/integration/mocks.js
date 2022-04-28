@@ -34,35 +34,8 @@ describe("Mocks server responses", () => {
       cy.get(SELECTORS.RESPONSE).should("have.text", "custom-response");
     });
 
-    it("should display standard legacy response", () => {
-      cy.get(SELECTORS.LEGACY_RESPONSE).should("have.text", "legacy-standard-response");
-    });
-
     it("should load response fast", () => {
       cy.get(SELECTORS.RESPONSE_TIME).should(($div) => {
-        const text = $div.text();
-
-        expect(Number(text)).to.be.lessThan(1000);
-      });
-    });
-  });
-
-  describe("when behavior is changed to custom", () => {
-    before(() => {
-      cy.mocksSetBehavior("custom");
-      cy.visit("/");
-    });
-
-    it("should display custom response", () => {
-      cy.get(SELECTORS.RESPONSE).should("have.text", "custom-response");
-    });
-
-    it("should display custom legacy response", () => {
-      cy.get(SELECTORS.LEGACY_RESPONSE).should("have.text", "legacy-custom-response");
-    });
-
-    it("should load legacy response fast", () => {
-      cy.get(SELECTORS.LEGACY_RESPONSE_TIME).should(($div) => {
         const text = $div.text();
 
         expect(Number(text)).to.be.lessThan(1000);
@@ -82,14 +55,6 @@ describe("Mocks server responses", () => {
 
     it("should load response with delay", () => {
       cy.get(SELECTORS.RESPONSE_TIME).should(($div) => {
-        const text = $div.text();
-
-        expect(Number(text)).to.be.greaterThan(1000);
-      });
-    });
-
-    it("should load legacy response with delay", () => {
-      cy.get(SELECTORS.LEGACY_RESPONSE_TIME).should(($div) => {
         const text = $div.text();
 
         expect(Number(text)).to.be.greaterThan(1000);

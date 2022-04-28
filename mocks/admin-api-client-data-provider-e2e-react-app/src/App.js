@@ -4,9 +4,9 @@ import { storeManager } from "@data-provider/core";
 
 import About from "./modules/about";
 import Settings from "./modules/settings";
-import Behaviors from "./modules/behaviors";
-import CurrentBehavior from "./modules/current-behavior";
-import Fixtures from "./modules/fixtures";
+import Mocks from "./modules/mocks";
+import CurrentRouteVariant from "./modules/current-route-variant";
+import Routes from "./modules/routes";
 import Alerts from "./modules/alerts";
 
 import "./App.css";
@@ -27,9 +27,9 @@ function App() {
         <header className="App-header">
           <About />
           <Settings />
-          <Behaviors />
-          <CurrentBehavior />
-          <Fixtures />
+          <Mocks />
+          <CurrentRouteVariant />
+          <Routes />
           <Alerts />
         </header>
       </div>

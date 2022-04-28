@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+### Removed
+- feat: BREAKING CHANGE. Remove LEGACY, BEHAVIORS and FIXTURES path
+
 ## [2.2.1] - 2022-03-28
 
 ### Changed

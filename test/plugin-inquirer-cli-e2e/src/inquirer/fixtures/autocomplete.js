@@ -45,7 +45,7 @@ const MyCli = class MyCli {
     this._cli.clearScreen();
     const tags = ["a-tag", "b-tag", "c-tag"];
     this._selectedOption = await this._cli.inquire("tags", {
-      source: (answers, input) => {
+      source: (_answers, input) => {
         const currentInput = input ? input.split(" ").pop() : null;
         if (!currentInput) {
           return Promise.resolve(tags);

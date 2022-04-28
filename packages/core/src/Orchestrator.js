@@ -8,23 +8,20 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { CHANGE_SETTINGS, LOAD_LEGACY_MOCKS, LOAD_MOCKS, LOAD_ROUTES } = require("./eventNames");
+const { CHANGE_SETTINGS, LOAD_MOCKS, LOAD_ROUTES } = require("./eventNames");
 
 class Orchestrator {
-  constructor(eventEmitter, legacyMocks, server, mocks) {
+  constructor(eventEmitter, server, mocks) {
     this._eventEmitter = eventEmitter;
 
     this._mocks = mocks;
-    this._legacyMocks = legacyMocks;
     this._server = server;
 
     this._onChangeSettings = this._onChangeSettings.bind(this);
-    this._onLoadLegacyMocks = this._onLoadLegacyMocks.bind(this);
     this._onLoadMocks = this._onLoadMocks.bind(this);
     this._onLoadRoutes = this._onLoadRoutes.bind(this);
 
     this._eventEmitter.on(CHANGE_SETTINGS, this._onChangeSettings);
-    this._eventEmitter.on(LOAD_LEGACY_MOCKS, this._onLoadLegacyMocks);
 
     this._loadedMocks = false;
     this._loadedRoutes = false;
@@ -41,17 +38,9 @@ class Orchestrator {
     ) {
       this._server.restart();
     }
-    // TODO, remove legacy
-    if (changeDetails.hasOwnProperty("behavior")) {
-      this._legacyMocks.behaviors.current = changeDetails.behavior;
-    }
     if (changeDetails.hasOwnProperty("mock")) {
       this._mocks.current = changeDetails.mock;
     }
-  }
-
-  _onLoadLegacyMocks() {
-    this._legacyMocks.processLoadedMocks();
   }
 
   _onLoadMocks() {

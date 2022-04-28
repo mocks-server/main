@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 "use strict";
 
-const { Core } = require("@mocks-server/core");
+const Core = require("@mocks-server/core");
 const InquirerCli = require("@mocks-server/plugin-inquirer-cli");
 
 const handleError = (error) => {

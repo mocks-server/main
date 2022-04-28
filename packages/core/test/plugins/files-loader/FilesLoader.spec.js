@@ -73,7 +73,6 @@ describe("FilesLoader", () => {
     pluginMethods = {
       loadRoutes: sandbox.stub(),
       loadMocks: sandbox.stub(),
-      loadLegacyMocks: sandbox.stub(),
       addAlert: sandbox.stub(),
       removeAlerts: sandbox.stub(),
     };

@@ -23,8 +23,6 @@ const DEFAULT_OPTIONS = {
   log: "info",
   cors: true,
   corsPreFlight: true,
-  // TODO, remove v1 legacy code
-  behavior: null,
 };
 
 const DEPRECATED_OPTIONS = {};

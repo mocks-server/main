@@ -1,9 +1,10 @@
 const {
   about,
-  behaviors,
-  behavior,
-  fixtures,
-  fixture,
+  mocks,
+  mock,
+  routes,
+  route,
+  routeVariant,
   settings,
   alerts,
   alert,
@@ -13,20 +14,20 @@ const readAbout = () => {
   return about.read();
 };
 
-const readBehaviors = () => {
-  return behaviors.read();
+const readMocks = () => {
+  return mocks.read();
 };
 
-const readBehavior = (name) => {
-  return behavior(name).read();
+const readMock = (name) => {
+  return mock(name).read();
 };
 
-const readFixtures = () => {
-  return fixtures.read();
+const readRoutes = () => {
+  return routes.read();
 };
 
-const readFixture = (id) => {
-  return fixture(id).read();
+const readRoute = (id) => {
+  return route(id).read();
 };
 
 const readSettings = () => {
@@ -45,14 +46,19 @@ const readAlert = (id) => {
   return alert(id).read();
 };
 
+const readRouteVariant = (id) => {
+  return routeVariant(id).read();
+};
+
 module.exports = {
   readAbout,
-  readBehaviors,
-  readBehavior,
-  readFixtures,
-  readFixture,
+  readMocks,
+  readMock,
+  readRoutes,
+  readRoute,
   readSettings,
   updateSettings,
   readAlerts,
   readAlert,
+  readRouteVariant,
 };

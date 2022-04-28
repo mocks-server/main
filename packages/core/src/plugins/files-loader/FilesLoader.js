@@ -36,7 +36,6 @@ class FilesLoaderBase {
     this._core = core;
     this._loadMocks = methods.loadMocks;
     this._loadRoutes = methods.loadRoutes;
-    this._loadLegacy = methods.loadLegacyMocks;
     this._addAlert = methods.addAlert;
     this._removeAlerts = methods.removeAlerts;
     this._tracer = core.tracer;
@@ -87,7 +86,7 @@ class FilesLoaderBase {
   }
 
   _cleanRequireCacheFolder() {
-    map(this._cache(), (cacheData, filePath) => {
+    map(this._cache(), (_cacheData, filePath) => {
       if (filePath.indexOf(this._path) === 0) {
         this._cleanRequireCache(this._cache()[filePath]);
       }

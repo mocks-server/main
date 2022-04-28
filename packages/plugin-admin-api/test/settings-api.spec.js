@@ -32,7 +32,6 @@ describe("settings api", () => {
     it("should return current settings", async () => {
       const settingsResponse = await fetch("/admin/settings");
       expect(settingsResponse.body).toEqual({
-        behavior: null,
         mock: null,
         path: fixturesFolder("web-tutorial"),
         delay: 0,
@@ -41,8 +40,6 @@ describe("settings api", () => {
         watch: false,
         log: "silent",
         adminApiPath: "/admin",
-        watchLegacy: true,
-        pathLegacy: null,
         cors: true,
         corsPreFlight: true,
       });

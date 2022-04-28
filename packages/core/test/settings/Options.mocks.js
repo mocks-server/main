@@ -26,7 +26,6 @@ class Mock {
       checkValidOptionName: this._sandbox.stub(),
       options: {
         log: "foo-log-level",
-        behavior: "foo-behavior",
       },
     };
 

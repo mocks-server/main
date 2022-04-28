@@ -9,7 +9,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
-const Behavior = require("../../../src/mocks-legacy/Behavior");
 
 jest.mock("../../../src/plugins/files-loader/FilesLoader");
 
@@ -18,33 +17,9 @@ const FilesLoader = require("../../../src/plugins/files-loader/FilesLoader");
 let INITIAL_FILES = {
   file1: {
     _mocksServer_isFile: true,
-    behavior1: new Behavior([
-      {
-        url: "/api/foo/foo-uri",
-        method: "GET",
-        response: {
-          status: 200,
-          body: {
-            fooProperty: "foo",
-          },
-        },
-      },
-    ]),
   },
   file2: {
     _mocksServer_isFile: true,
-    behavior2: new Behavior([
-      {
-        url: "/api/foo/foo-uri-2",
-        method: "POST",
-        response: {
-          status: 422,
-          body: {
-            fooProperty2: "foo2",
-          },
-        },
-      },
-    ]),
   },
   folder: {
     folder2: {

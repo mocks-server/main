@@ -13,7 +13,6 @@ const sinon = require("sinon");
 const http = require("http");
 
 const LibsMocks = require("../Libs.mocks.js");
-const MocksMocks = require("../mocks-legacy/Mocks.mocks.js");
 const CoreMocks = require("../Core.mocks.js");
 
 const Server = require("../../src/server/Server");
@@ -31,7 +30,6 @@ describe("Server", () => {
   let sandbox;
   let callbacks;
   let libsMocks;
-  let mocksMocks;
   let coreMocks;
   let coreInstance;
   let processOnStub;
@@ -49,16 +47,9 @@ describe("Server", () => {
     sandbox.stub(tracer, "info");
     sandbox.stub(tracer, "debug");
     libsMocks = new LibsMocks();
-    mocksMocks = new MocksMocks();
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
-    server = new Server(
-      coreInstance._eventEmitter,
-      coreInstance.settings,
-      mocksMocks.stubs.instance,
-      coreInstance,
-      callbacks
-    );
+    server = new Server(coreInstance._eventEmitter, coreInstance.settings, callbacks);
     expect.assertions(1);
     libsMocks.stubs.http.createServer.onListen.delay(200);
   });
@@ -67,12 +58,11 @@ describe("Server", () => {
     libsMocks.restore();
     sandbox.restore();
     coreMocks.restore();
-    mocksMocks.restore();
   });
 
   describe("when initialized", () => {
     it("should be listening to process exit signals and stop the server if occurs", async () => {
-      processOnStub.callsFake((event, cb) => {
+      processOnStub.callsFake((_event, cb) => {
         wait().then(() => {
           cb();
         });
@@ -238,7 +228,7 @@ describe("Server", () => {
       coreInstance.settings.get.withArgs("cors").returns(true);
       await server.init();
       await server.start();
-      expect(libsMocks.stubs.express.use.callCount).toEqual(9);
+      expect(libsMocks.stubs.express.use.callCount).toEqual(8);
     });
 
     it("should not add cors middleware if cors option is disabled", async () => {
@@ -246,7 +236,7 @@ describe("Server", () => {
       coreInstance.settings.get.withArgs("cors").returns(false);
       await server.init();
       await server.start();
-      expect(libsMocks.stubs.express.use.callCount).toEqual(8);
+      expect(libsMocks.stubs.express.use.callCount).toEqual(7);
     });
 
     it("should reject the promise if an error occurs when calling to server listen method", async () => {
@@ -430,46 +420,6 @@ describe("Server", () => {
       } catch (err) {
         expect(server.error).toEqual(error);
       }
-    });
-  });
-
-  describe("behaviors middleware", () => {
-    const fooRequest = {
-      method: "get",
-      url: "foo-route",
-    };
-    let resMock;
-    let nextSpy;
-
-    beforeEach(async () => {
-      resMock = {};
-      nextSpy = sandbox.spy();
-      libsMocks.stubs.http.createServer.onListen.returns(null);
-      coreInstance.settings.get.withArgs("delay").returns(0);
-    });
-
-    it("should call to current fixture matching handleRequest method", async () => {
-      expect.assertions(3);
-      const handleRequestSpy = sandbox.spy();
-      mocksMocks.stubs.instance.behaviors.current.getRequestMatchingFixture.returns({
-        handleRequest: handleRequestSpy,
-      });
-      await server.start();
-
-      server._fixturesMiddleware(fooRequest, resMock, nextSpy);
-      await wait(10);
-      expect(handleRequestSpy.getCall(0).args[0]).toEqual(fooRequest);
-      expect(handleRequestSpy.getCall(0).args[1]).toEqual(resMock);
-      expect(handleRequestSpy.getCall(0).args[2]).toEqual(nextSpy);
-    });
-
-    it("should call next if no matching fixture is found", async () => {
-      mocksMocks.stubs.instance.behaviors.current.getRequestMatchingFixture.returns(null);
-      await server.start();
-
-      server._fixturesMiddleware(fooRequest, resMock, nextSpy);
-      await wait(10);
-      expect(nextSpy.callCount).toEqual(1);
     });
   });
 });

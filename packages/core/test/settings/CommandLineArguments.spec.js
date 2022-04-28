@@ -16,7 +16,6 @@ const CommandLineArguments = require("../../src/settings/CommandLineArguments");
 
 describe("command line arguments", () => {
   const DEFAULT_OPTIONS = {
-    behavior: null,
     delay: 0,
     host: "0.0.0.0",
     port: 3100,
@@ -54,12 +53,12 @@ describe("command line arguments", () => {
   describe("init method", () => {
     it("should call to commander to get user options from command line", async () => {
       await commandLineArguments.init();
-      expect(optionStub.callCount).toEqual(7); //First call is not registered
+      expect(optionStub.callCount).toEqual(6); //First call is not registered
     });
 
     it("should call to convert to number received value in --port option", async () => {
       expect.assertions(1);
-      optionStub.callsFake((commandName, description, parser) => {
+      optionStub.callsFake((commandName, _description, parser) => {
         if (commandName.includes("--port")) {
           expect(parser("5")).toEqual(5);
         }
@@ -74,13 +73,13 @@ describe("command line arguments", () => {
 
     it("should omit undefined values", async () => {
       const options = {
-        behavior: "foo-behavior",
+        port: 3300,
         path: undefined,
       };
       parseStub.returns(options);
       await commandLineArguments.init();
       expect(commandLineArguments.options).toEqual({
-        behavior: "foo-behavior",
+        port: 3300,
       });
     });
   });
@@ -117,7 +116,7 @@ describe("command line arguments", () => {
             // do nothing
           },
         };
-        optionStub.callsFake((commandName, description, parser) => {
+        optionStub.callsFake((commandName, _description, parser) => {
           if (commandName.includes("--foo")) {
             expect(parser).toEqual(option.parse);
           }
@@ -237,7 +236,7 @@ describe("command line arguments", () => {
           description: "foo description",
           type: "number",
         };
-        optionStub.callsFake((commandName, description, parser) => {
+        optionStub.callsFake((commandName, _description, parser) => {
           if (commandName.includes("--foo")) {
             expect(parser("4")).toEqual(4);
           }
@@ -259,7 +258,7 @@ describe("command line arguments", () => {
           parse: (val) => val,
         };
         sandbox.spy(option, "parse");
-        optionStub.callsFake((commandName, description, parser) => {
+        optionStub.callsFake((commandName, _description, parser) => {
           if (commandName.includes("--foo")) {
             expect(parser("5")).toEqual("5");
             expect(option.parse.callCount).toEqual(1);

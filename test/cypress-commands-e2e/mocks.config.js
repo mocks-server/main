@@ -8,7 +8,6 @@ module.exports = {
     // mock to use on start
     mock: "standard",
 
-    pathLegacy: "mocks-legacy",
     behavior: "standard",
 
     // mocks and routes path

@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+### Removed
+- feat: BREAKING CHANGE. Remove mocksSetBehavior v1 legacy command
+
 ## [3.0.2] - 2022-03-28
 
 ### Changed

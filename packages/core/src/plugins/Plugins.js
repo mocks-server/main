@@ -14,21 +14,13 @@ const { isObject, isFunction } = require("lodash");
 const tracer = require("../tracer");
 
 // FilesLoader built-in plugin
-const FilesLoaderLegacy = require("./files-loader-legacy/FilesLoaderLegacy");
 const FilesLoader = require("./files-loader/FilesLoader");
 
 const { scopedAlertsMethods } = require("../support/helpers");
 
 class Plugins {
   constructor(
-    {
-      addAlert,
-      removeAlerts,
-      renameAlerts,
-      createLegacyMocksLoader,
-      createMocksLoader,
-      createRoutesLoader,
-    },
+    { addAlert, removeAlerts, renameAlerts, createMocksLoader, createRoutesLoader },
     core
   ) {
     this._addAlert = addAlert;
@@ -36,7 +28,6 @@ class Plugins {
     this._renameAlerts = renameAlerts;
     this._createMocksLoader = createMocksLoader;
     this._createRoutesLoader = createRoutesLoader;
-    this._createLegacyMocksLoader = createLegacyMocksLoader;
     this._core = core;
     this._pluginsInstances = [];
     this._pluginsMethods = [];
@@ -49,7 +40,6 @@ class Plugins {
   register(plugins = []) {
     this._plugins = plugins;
     this._plugins.unshift(FilesLoader);
-    this._plugins.unshift(FilesLoaderLegacy);
     return this._registerPlugins().then(() => {
       tracer.verbose(`Registered ${this._pluginsRegistered} plugins without errors`);
       return Promise.resolve();
@@ -132,11 +122,9 @@ class Plugins {
     if (pluginIndex === this._plugins.length) {
       return Promise.resolve();
     }
-    const loadLegacyMocks = this._createLegacyMocksLoader();
     const loadMocks = this._createMocksLoader();
     const loadRoutes = this._createRoutesLoader();
     const pluginMethods = {
-      loadLegacyMocks,
       loadMocks,
       loadRoutes,
       ...scopedAlertsMethods(

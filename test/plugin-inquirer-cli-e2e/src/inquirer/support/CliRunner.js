@@ -120,7 +120,7 @@ module.exports = class CliRunner {
     return this._exitPromise;
   }
 
-  async hasPrinted(data, inputAction, inputTimeOut = 1000) {
+  async hasPrinted(data, inputAction, inputTimeOut = 2000) {
     let timeOut = inputTimeOut;
     let action = inputAction;
     if (isNumber(action)) {

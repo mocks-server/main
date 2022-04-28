@@ -49,7 +49,7 @@ class CustomRoutesVariants {
     }
   }
 
-  delete(req, res) {
+  delete(_req, res) {
     this._core.mocks.restoreRoutesVariants();
     res.status(204);
     res.send();

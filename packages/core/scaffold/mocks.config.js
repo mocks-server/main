@@ -37,15 +37,6 @@ module.exports = {
 
     // Cors pre-flight
     // corsPreFlight: true,
-
-    // Legacy path containing mocks in v1 format
-    // pathLegacy: "mocks-legacy",
-
-    // Legacy option for setting v1 behavior
-    // behavior: "base",
-
-    // files watch enabled in legacy path
-    // watchLegacy: true,
   },
 
   // low level config

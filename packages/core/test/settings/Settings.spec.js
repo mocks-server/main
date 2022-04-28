@@ -63,11 +63,6 @@ describe("Settings", () => {
       expect(settings.get("log")).toEqual("foo-log-level");
     });
 
-    it("should return current deprecated option value", () => {
-      optionsInstance.checkValidOptionName.returns("behavior");
-      expect(settings.get("log")).toEqual("foo-behavior");
-    });
-
     it("should return new value if set is called", () => {
       settings.set("log", "foo-new-value");
       expect(settings.get("log")).toEqual("foo-new-value");
@@ -81,9 +76,9 @@ describe("Settings", () => {
     });
 
     it("should set new option if provided one is deprecated", () => {
-      optionsInstance.checkValidOptionName.returns("behavior");
+      optionsInstance.checkValidOptionName.returns("path");
       settings.set("log", "foo");
-      expect(settings.get("behavior")).toEqual("foo");
+      expect(settings.get("path")).toEqual("foo");
     });
 
     it("should emit change if setting has changed value", () => {
@@ -109,7 +104,7 @@ describe("Settings", () => {
   describe("getValidOptionName method", () => {
     it("should return the result of getValidOptionName options method", () => {
       optionsInstance.getValidOptionName.returns("foo");
-      expect(settings.getValidOptionName("behavior")).toEqual("foo");
+      expect(settings.getValidOptionName("path")).toEqual("foo");
     });
   });
 
@@ -117,7 +112,6 @@ describe("Settings", () => {
     it("should return all current settings", () => {
       expect(settings.all).toEqual({
         log: "foo-log-level",
-        behavior: "foo-behavior",
       });
     });
 

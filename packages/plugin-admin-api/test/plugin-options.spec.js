@@ -27,7 +27,6 @@ describe("plugin options", () => {
     it("should change the administration api path", async () => {
       const adminResponse = await fetch("/foo/settings");
       expect(adminResponse.body).toEqual({
-        behavior: null,
         path: fixturesFolder("web-tutorial"),
         delay: 0,
         host: "0.0.0.0",
@@ -35,8 +34,6 @@ describe("plugin options", () => {
         watch: false,
         log: "silent",
         adminApiPath: "/foo",
-        pathLegacy: null,
-        watchLegacy: true,
         mock: null,
         cors: true,
         corsPreFlight: true,

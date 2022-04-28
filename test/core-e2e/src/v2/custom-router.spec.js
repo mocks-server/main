@@ -10,12 +10,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 
-const { Core } = require("@mocks-server/core");
+const Core = require("@mocks-server/core");
 const { fetch, fixturesFolder, waitForServer } = require("./support/helpers");
 
 describe("when using custom router", () => {
   const customRouter = express.Router();
-  customRouter.get("/", (req, res) => {
+  customRouter.get("/", (_req, res) => {
     res.status(200);
     res.send({
       customRouterListening: true,

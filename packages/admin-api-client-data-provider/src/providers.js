@@ -6,9 +6,6 @@ import {
   ROUTES,
   ROUTES_VARIANTS,
   MOCK_CUSTOM_ROUTES_VARIANTS,
-  LEGACY,
-  BEHAVIORS,
-  FIXTURES,
 } from "@mocks-server/admin-api-paths";
 import { Axios } from "@data-provider/axios";
 
@@ -125,24 +122,3 @@ export const customRoutesVariants = createCollectionOrigin({
   id: "custom-routes-variants",
   url: MOCK_CUSTOM_ROUTES_VARIANTS,
 });
-
-// Legacy methods
-
-const behaviorsOrigins = createRestEntityOrigins({
-  id: "behaviors",
-  baseUrl: `${LEGACY}/${BEHAVIORS}`,
-  modelId: ":name",
-  modelGetterMethod: "byName",
-  modelGetterParam: "name",
-});
-export const behaviors = behaviorsOrigins[0];
-export const behaviorsModel = behaviorsOrigins[1];
-export const behavior = behaviorsOrigins[2];
-
-const fixturesOrigins = createRestEntityOrigins({
-  id: "fixtures",
-  baseUrl: `${LEGACY}/${FIXTURES}`,
-});
-export const fixtures = fixturesOrigins[0];
-export const fixturesModel = fixturesOrigins[1];
-export const fixture = fixturesOrigins[2];

@@ -11,26 +11,27 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../src/settings/CommandLineArguments");
+jest.mock("@mocks-server/config/src/Settings");
 
-const CommandLineArguments = require("../../src/settings/CommandLineArguments");
+const Settings = require("@mocks-server/config/src/Settings");
 
 class Mock {
   constructor() {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      init: this._sandbox.stub(),
+      get: this._sandbox.stub(),
+      set: this._sandbox.stub(),
+      init: this._sandbox.stub().resolves(),
       addCustom: this._sandbox.stub(),
-      options: {},
     };
 
-    CommandLineArguments.mockImplementation(() => this._stubs);
+    Settings.mockImplementation(() => this._stubs);
   }
 
   get stubs() {
     return {
-      Constructor: CommandLineArguments,
+      Constructor: Settings,
       instance: this._stubs,
     };
   }

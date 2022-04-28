@@ -10,11 +10,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-const SettingsMocks = require("./settings/Settings.mocks.js");
+const SettingsMocks = require("./Settings.mocks.js");
 const MocksMock = require("./mocks/Mocks.mock.js");
 const ServerMocks = require("./server/Server.mocks.js");
 const PluginsMocks = require("./plugins/Plugins.mocks.js");
-const OrchestratorMocks = require("./Orchestrator.mocks.js");
 const ConfigMocks = require("./Config.mocks.js");
 const AlertsMocks = require("./Alerts.mocks.js");
 const LoadersMocks = require("./Loaders.mocks.js");
@@ -28,7 +27,6 @@ describe("Core", () => {
   let settingsInstance;
   let mocksMock;
   let mocksInstance;
-  let orchestratorMocks;
   let serverMocks;
   let serverInstance;
   let pluginsMocks;
@@ -49,7 +47,6 @@ describe("Core", () => {
     serverInstance = serverMocks.stubs.instance;
     pluginsMocks = new PluginsMocks();
     pluginsInstance = pluginsMocks.stubs.instance;
-    orchestratorMocks = new OrchestratorMocks();
     alertsMocks = new AlertsMocks();
     alertsInstance = alertsMocks.stubs.instance;
     loadersMocks = new LoadersMocks();
@@ -63,7 +60,6 @@ describe("Core", () => {
     sandbox.restore();
     settingsMocks.restore();
     mocksMock.restore();
-    orchestratorMocks.restore();
     serverMocks.restore();
     configMocks.restore();
     pluginsMocks.restore();
@@ -97,6 +93,54 @@ describe("Core", () => {
         expect(pluginsMocks.stubs.Constructor.mock.calls[0][0].createRoutesLoader()).toEqual(
           FOO_LOADER
         );
+      });
+    });
+  });
+
+  describe("Settings callbacks", () => {
+    describe("onChange", () => {
+      it("should emit a change:mocks event", () => {
+        const spy = sandbox.spy();
+        core.onChangeSettings(spy);
+        settingsMocks.stubs.Constructor.mock.calls[0][0].onChange({});
+        expect(spy.callCount).toEqual(1);
+      });
+
+      it("should not set current mock if mock property didn't change", () => {
+        expect(mocksMock.stubs.instance.current).toEqual("foo");
+        settingsMocks.stubs.Constructor.mock.calls[0][0].onChange({});
+        expect(mocksMock.stubs.instance.current).toEqual("foo");
+      });
+
+      it("should set current mock if mock property changed", () => {
+        expect(mocksMock.stubs.instance.current).toEqual("foo");
+        settingsMocks.stubs.Constructor.mock.calls[0][0].onChange({ mock: "foo-another-mock" });
+        expect(mocksMock.stubs.instance.current).toEqual("foo-another-mock");
+      });
+
+      it("should restart server if port option changed", () => {
+        settingsMocks.stubs.Constructor.mock.calls[0][0].onChange({ port: "foo" });
+        expect(serverMocks.stubs.instance.restart.callCount).toEqual(1);
+      });
+
+      it("should restart server if host option changed", () => {
+        settingsMocks.stubs.Constructor.mock.calls[0][0].onChange({ host: "foo" });
+        expect(serverMocks.stubs.instance.restart.callCount).toEqual(1);
+      });
+
+      it("should restart server if cors option changed", () => {
+        settingsMocks.stubs.Constructor.mock.calls[0][0].onChange({ cors: false });
+        expect(serverMocks.stubs.instance.restart.callCount).toEqual(1);
+      });
+
+      it("should restart server if corsPreFlight option changed", () => {
+        settingsMocks.stubs.Constructor.mock.calls[0][0].onChange({ corsPreFlight: true });
+        expect(serverMocks.stubs.instance.restart.callCount).toEqual(1);
+      });
+
+      it("should not restart server if the option is not one of port,host,cors or corsPreFlight", () => {
+        settingsMocks.stubs.Constructor.mock.calls[0][0].onChange({ foo: true });
+        expect(serverMocks.stubs.instance.restart.callCount).toEqual(0);
       });
     });
   });
@@ -140,6 +184,38 @@ describe("Core", () => {
         core.onChangeMocks(spy);
         mocksMock.stubs.Constructor.mock.calls[0][0].onChange();
         expect(spy.callCount).toEqual(1);
+      });
+    });
+  });
+
+  describe("Server callbacks", () => {
+    describe("getHostOption", () => {
+      it("should return host option from settings", () => {
+        settingsMocks.stubs.instance.get.returns("foo-host");
+        expect(serverMocks.stubs.Constructor.mock.calls[0][0].getHostOption()).toEqual("foo-host");
+      });
+    });
+
+    describe("getPortOption", () => {
+      it("should return port option from settings", () => {
+        settingsMocks.stubs.instance.get.returns("foo-port");
+        expect(serverMocks.stubs.Constructor.mock.calls[0][0].getPortOption()).toEqual("foo-port");
+      });
+    });
+
+    describe("getCorsOption", () => {
+      it("should return cors option from settings", () => {
+        settingsMocks.stubs.instance.get.returns("foo-cors");
+        expect(serverMocks.stubs.Constructor.mock.calls[0][0].getCorsOption()).toEqual("foo-cors");
+      });
+    });
+
+    describe("getCorsPreFlightOption", () => {
+      it("should return getCorsPreFlightOption option from settings", () => {
+        settingsMocks.stubs.instance.get.returns("foo-corsPreFlight");
+        expect(serverMocks.stubs.Constructor.mock.calls[0][0].getCorsPreFlightOption()).toEqual(
+          "foo-corsPreFlight"
+        );
       });
     });
   });
@@ -311,6 +387,19 @@ describe("Core", () => {
       });
       loadersMocks.stubs.Constructor.mock.calls[0][0].onLoad();
     });
+
+    it("should not load mocks if routes are not loaded", () => {
+      expect.assertions(1);
+      loadersMocks.stubs.Constructor.mock.calls[0][0].onLoad();
+      expect(core._mocks.load.callCount).toEqual(0);
+    });
+
+    it("should load mocks if routes are loaded", () => {
+      expect.assertions(1);
+      loadersMocks.stubs.Constructor.mock.calls[1][0].onLoad();
+      loadersMocks.stubs.Constructor.mock.calls[0][0].onLoad();
+      expect(core._mocks.load.callCount).toEqual(1);
+    });
   });
 
   describe("when routesLoaders load", () => {
@@ -321,6 +410,19 @@ describe("Core", () => {
         done();
       });
       loadersMocks.stubs.Constructor.mock.calls[1][0].onLoad();
+    });
+
+    it("should not load mocks if mocks are not loaded", () => {
+      expect.assertions(1);
+      loadersMocks.stubs.Constructor.mock.calls[1][0].onLoad();
+      expect(core._mocks.load.callCount).toEqual(0);
+    });
+
+    it("should load mocks if mocks are loaded", () => {
+      expect.assertions(1);
+      loadersMocks.stubs.Constructor.mock.calls[0][0].onLoad();
+      loadersMocks.stubs.Constructor.mock.calls[1][0].onLoad();
+      expect(core._mocks.load.callCount).toEqual(1);
     });
   });
 

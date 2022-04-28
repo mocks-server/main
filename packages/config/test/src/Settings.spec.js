@@ -12,39 +12,44 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const OptionsMocks = require("./Options.mocks.js");
-const CoreMocks = require("../Core.mocks.js");
-const ConfigMocks = require("../Config.mocks.js");
+const ConfigMocks = require("./Config.mocks.js");
 
-const Settings = require("../../src/settings/Settings");
-const tracer = require("../../src/tracer");
+const Settings = require("../../src/Settings");
 
 describe("Settings", () => {
   let optionsMocks;
   let optionsInstance;
-  let coreMocks;
-  let coreInstance;
   let configMocks;
   let sandbox;
   let settings;
+  let tracer;
+  let onChange;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
     optionsMocks = new OptionsMocks();
     optionsInstance = optionsMocks.stubs.instance;
     optionsInstance.checkValidOptionName.callsFake((name) => name);
-    coreMocks = new CoreMocks();
     configMocks = new ConfigMocks();
-    coreInstance = coreMocks.stubs.instance;
-    sandbox.stub(tracer, "set");
-    sandbox.stub(tracer, "info");
-    settings = new Settings(coreInstance._eventEmitter, configMocks.stubs.instance);
+    tracer = {
+      debug: sandbox.stub(),
+      set: sandbox.stub(),
+      info: sandbox.stub(),
+      error: sandbox.stub(),
+      verbose: sandbox.stub(),
+    };
+    onChange = sandbox.stub();
+    settings = new Settings({
+      onChange,
+      config: configMocks.stubs.instance,
+      tracer,
+    });
     await settings.init();
   });
 
   afterEach(() => {
     sandbox.restore();
     optionsMocks.restore();
-    coreMocks.restore();
     configMocks.restore();
   });
 
@@ -84,7 +89,7 @@ describe("Settings", () => {
     it("should emit change if setting has changed value", () => {
       settings.set("foo", "foo-new-value");
       expect(
-        coreInstance._eventEmitter.emit.calledWith("change:settings", {
+        onChange.calledWith({
           foo: "foo-new-value",
         })
       ).toEqual(true);
@@ -97,7 +102,7 @@ describe("Settings", () => {
       setFoo();
       setFoo();
       setFoo();
-      expect(coreInstance._eventEmitter.emit.callCount).toEqual(1);
+      expect(onChange.callCount).toEqual(1);
     });
   });
 

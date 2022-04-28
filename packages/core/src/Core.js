@@ -10,6 +10,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const EventEmitter = require("events");
 
+const { Config, Settings } = require("@mocks-server/config");
+
 const {
   INIT,
   START,
@@ -21,16 +23,12 @@ const {
   LOAD_ROUTES,
 } = require("./eventNames");
 const tracer = require("./tracer");
-
-const Config = require("./Config");
 const Loaders = require("./Loaders");
 const Alerts = require("./Alerts");
-
 const RoutesHandlers = require("./routes-handlers/RoutesHandlers");
 const Mocks = require("./mocks/Mocks");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
-const Settings = require("./settings/Settings");
 
 const { scopedAlertsMethods, addEventListener } = require("./support/helpers");
 
@@ -66,10 +64,10 @@ class Core {
       },
     });
 
-    // TODO, move Config and Settings to a separated package.
     this._config = new Config({
       programmaticConfig,
       ...scopedAlertsMethods("config", this._alerts.add, this._alerts.remove),
+      tracer,
     });
 
     this._settings = new Settings({
@@ -89,6 +87,7 @@ class Core {
         }
       },
       config: this._config,
+      tracer,
     });
 
     this._plugins = new Plugins(

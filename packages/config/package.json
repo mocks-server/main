@@ -1,0 +1,40 @@
+{
+  "name": "@mocks-server/config",
+  "version": "1.0.0",
+  "description": "Configuration handler for @mocks-server/core",
+  "keywords": [
+    "config",
+    "settings",
+    "options",
+    "handler",
+    "loader",
+    "environment",
+    "file",
+    "cli"
+  ],
+  "author": "Javier Brea",
+  "license": "MIT",
+  "repository": "https://github.com/mocks-server/main",
+  "homepage": "https://www.mocks-server.org",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "scaffold",
+    "src",
+    "index.js"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test:unit": "jest"
+  },
+  "dependencies": {
+    "commander": "8.3.0",
+    "fs-extra": "10.0.0",
+    "is-promise": "4.0.0",
+    "lodash": "4.17.21"
+  },
+  "engines": {
+    "node": ">=12.x"
+  }
+}

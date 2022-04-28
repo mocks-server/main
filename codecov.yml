@@ -16,6 +16,9 @@ coverage:
       admin-api-paths:
         flags:
           - admin-api-paths
+      config:
+        flags:
+          - config
       core:
         flags:
           - core
@@ -46,6 +49,10 @@ flags:
   admin-api-paths:
     paths:
       - packages/admin-api-paths/**
+    carryforward: true
+  config:
+    paths:
+      - packages/config/**
     carryforward: true
   core:
     paths:

@@ -12,7 +12,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const commander = require("commander");
 
-const CommandLineArguments = require("../../src/settings/CommandLineArguments");
+const CommandLineArguments = require("../../src/CommandLineArguments");
 
 describe("command line arguments", () => {
   const DEFAULT_OPTIONS = {

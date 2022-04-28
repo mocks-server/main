@@ -13,8 +13,7 @@ const path = require("path");
 const fsExtra = require("fs-extra");
 const fs = require("fs");
 
-const Config = require("../src/Config");
-const tracer = require("../src/tracer");
+const Config = require("../../src/Config");
 
 describe("Config", () => {
   let callbacks;
@@ -26,16 +25,19 @@ describe("Config", () => {
     sandbox = sinon.createSandbox();
     callbacks = {
       addAlert: sandbox.stub(),
+      tracer: {
+        debug: sandbox.stub(),
+        set: sandbox.stub(),
+        info: sandbox.stub(),
+        error: sandbox.stub(),
+      },
     };
-    sandbox.stub(tracer, "info");
-    sandbox.stub(tracer, "error");
-    sandbox.stub(tracer, "set");
     sandbox.stub(process, "cwd").returns(FIXTURES_FOLDER);
     sandbox.spy(path, "resolve");
     sandbox.spy(fsExtra, "pathExists");
     sandbox.stub(fsExtra, "copySync");
-    sandbox.stub(fs, "readFile").callsFake((filePath, encoding, cb) => cb());
-    sandbox.stub(fs, "writeFile").callsFake((filePath, fileContent, encoding, cb) => cb());
+    sandbox.stub(fs, "readFile").callsFake((_filePath, _encoding, cb) => cb());
+    sandbox.stub(fs, "writeFile").callsFake((_filePath, _fileContent, _encoding, cb) => cb());
   });
 
   afterEach(() => {
@@ -186,7 +188,7 @@ describe("Config", () => {
           },
         },
       });
-      expect(tracer.set.calledWith("silly")).toEqual(true);
+      expect(callbacks.tracer.set.calledWith("silly")).toEqual(true);
     });
   });
 
@@ -265,7 +267,7 @@ describe("Config", () => {
         },
       });
       await config.init();
-      expect(tracer.info.calledWith("Configuration file not found")).toEqual(true);
+      expect(callbacks.tracer.info.calledWith("Configuration file not found")).toEqual(true);
     });
 
     it("should create configuration file if not found", async () => {
@@ -280,7 +282,9 @@ describe("Config", () => {
     });
 
     it("should catch errors when creating config file", async () => {
-      fs.writeFile.callsFake((filePath, fileContent, encoding, cb) => cb(new Error("foo error")));
+      fs.writeFile.callsFake((__filePath, __fileContent, __encoding, cb) =>
+        cb(new Error("foo error"))
+      );
       config = new Config({
         ...callbacks,
         programmaticConfig: {
@@ -288,11 +292,13 @@ describe("Config", () => {
         },
       });
       await config.init();
-      expect(tracer.error.calledWith("Error creating config file: foo error")).toEqual(true);
+      expect(callbacks.tracer.error.calledWith("Error creating config file: foo error")).toEqual(
+        true
+      );
     });
 
     it("should catch errors when reading config file scaffold", async () => {
-      fs.readFile.callsFake((filePath, encoding, cb) => cb(new Error("foo error")));
+      fs.readFile.callsFake((__filePath, __encoding, cb) => cb(new Error("foo error")));
       config = new Config({
         ...callbacks,
         programmaticConfig: {
@@ -300,7 +306,9 @@ describe("Config", () => {
         },
       });
       await config.init();
-      expect(tracer.error.calledWith("Error creating config file: foo error")).toEqual(true);
+      expect(callbacks.tracer.error.calledWith("Error creating config file: foo error")).toEqual(
+        true
+      );
     });
 
     it("should extend programmatic, initialization and file options", async () => {

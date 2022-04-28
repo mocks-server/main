@@ -40,6 +40,10 @@ describe("Server", () => {
     callbacks = {
       addAlert: sandbox.stub(),
       removeAlerts: sandbox.stub(),
+      getHostOption: sandbox.stub(),
+      getCorsOption: sandbox.stub(),
+      getPortOption: sandbox.stub(),
+      getCorsPreFlightOption: sandbox.stub(),
     };
     processOnStub = sandbox.stub(process, "on");
     sandbox.stub(process, "exit");
@@ -49,7 +53,7 @@ describe("Server", () => {
     libsMocks = new LibsMocks();
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
-    server = new Server(coreInstance._eventEmitter, coreInstance.settings, callbacks);
+    server = new Server(callbacks);
     expect.assertions(1);
     libsMocks.stubs.http.createServer.onListen.delay(200);
   });
@@ -225,7 +229,7 @@ describe("Server", () => {
 
     it("should add cors middleware if cors option is enabled", async () => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
-      coreInstance.settings.get.withArgs("cors").returns(true);
+      callbacks.getCorsOption.returns(true);
       await server.init();
       await server.start();
       expect(libsMocks.stubs.express.use.callCount).toEqual(8);
@@ -308,8 +312,8 @@ describe("Server", () => {
 
     it("should log the server host and port", async () => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
-      coreInstance.settings.get.withArgs("host").returns("0.0.0.0");
-      coreInstance.settings.get.withArgs("port").returns(3000);
+      callbacks.getHostOption.returns("0.0.0.0");
+      callbacks.getPortOption.returns(3000);
       await server.start();
       expect(
         tracer.info.calledWith("Server started and listening at http://localhost:3000")
@@ -318,8 +322,8 @@ describe("Server", () => {
 
     it("should log the server host and port when host is custom", async () => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
-      coreInstance.settings.get.withArgs("host").returns("foo-host");
-      coreInstance.settings.get.withArgs("port").returns(5000);
+      callbacks.getHostOption.returns("foo-host");
+      callbacks.getPortOption.returns(5000);
       await server.start();
       expect(
         tracer.info.calledWith("Server started and listening at http://foo-host:5000")

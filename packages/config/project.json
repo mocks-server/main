@@ -1,0 +1,5 @@
+{
+  "root": "packages/config/",
+  "projectType": "library",
+  "tags": ["type:lib"]
+}

@@ -1,5 +1,6 @@
 /*
 Copyright 2019 Javier Brea
+Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -10,22 +11,30 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../src/Orchestrator");
+jest.mock("../../src/Options");
 
-const Orchestrator = require("../src/Orchestrator");
+const Options = require("../../src/Options");
 
-class OrchestratorMock {
+class Mock {
   constructor() {
     this._sandbox = sinon.createSandbox();
 
-    this._stubs = {};
+    this._stubs = {
+      init: this._sandbox.stub(),
+      addCustom: this._sandbox.stub(),
+      getValidOptionName: this._sandbox.stub(),
+      checkValidOptionName: this._sandbox.stub(),
+      options: {
+        log: "foo-log-level",
+      },
+    };
 
-    Orchestrator.mockImplementation(() => this._stubs);
+    Options.mockImplementation(() => this._stubs);
   }
 
   get stubs() {
     return {
-      Constructor: Orchestrator,
+      Constructor: Options,
       instance: this._stubs,
     };
   }
@@ -33,10 +42,6 @@ class OrchestratorMock {
   restore() {
     this._sandbox.restore();
   }
-
-  reset() {
-    this._sandbox.reset();
-  }
 }
 
-module.exports = OrchestratorMock;
+module.exports = Mock;

@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
  - feat: BREAKING CHANGE. Remove legacy APIs under /legacy path
+ - feat: BREAKING CHANGE. Remove `adminApiDeprecatedPaths` option.
 
 ## [2.2.1] - 2022-03-28
 

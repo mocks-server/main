@@ -19,7 +19,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 - feat: BREAKING CHANGE. Export Core as default export, not as a property
-- feat: BREAKING CHANGE. Remove v1 legacy methods
+- feat: BREAKING CHANGE. The `Core` object now is export as `default`.
+- feat: BREAKING CHANGE. The `Behavior` object has been removed and it is not exported any more.
+- feat: BREAKING CHANGE. The `addFixturesHandler` and `onChangeLegacyMocks` have been removed from the `Core` API.
+- feat: BREAKING CHANGE. The `behaviors` and `fixtures` getters have been removed from the `Core` API.
+- feat: BREAKING CHANGE. The `pathLegacy`, `behavior` and `watchLegacy` options are not supported any more.
+- feat: BREAKING CHANGE. The `--behavior` command line argument has been removed.
+- feat: BREAKING CHANGE. The `load:mocks:legacy` and `change:mocks:legacy` events are not emitted any more.
 
 ## [2.5.3] - 2022-03-28
 

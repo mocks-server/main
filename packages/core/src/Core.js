@@ -57,13 +57,30 @@ class Core {
       },
     });
 
+    // TODO, move Config and Settings to a separated package.
     this._config = new Config({
       programmaticConfig,
       ...scopedAlertsMethods("config", this._alerts.add, this._alerts.remove),
     });
 
-    // TODO, refactor. Pass specific callbacks instead of objects
-    this._settings = new Settings(this._eventEmitter, this._config);
+    this._settings = new Settings({
+      onChange: (changeDetails) => {
+        this._eventEmitter.emit(CHANGE_SETTINGS, changeDetails);
+        // TODO, define in options if they should produce a server restart
+        if (
+          changeDetails.hasOwnProperty("port") ||
+          changeDetails.hasOwnProperty("host") ||
+          changeDetails.hasOwnProperty("cors") ||
+          changeDetails.hasOwnProperty("corsPreFlight")
+        ) {
+          this._server.restart();
+        }
+        if (changeDetails.hasOwnProperty("mock")) {
+          this._mocks.current = changeDetails.mock;
+        }
+      },
+      config: this._config,
+    });
 
     this._plugins = new Plugins(
       {
@@ -109,7 +126,7 @@ class Core {
     });
 
     // TODO, refactor. Pass specific callbacks instead of objects
-    this._orchestrator = new Orchestrator(this._eventEmitter, this._server, this._mocks);
+    this._orchestrator = new Orchestrator(this._eventEmitter, this._mocks);
 
     this._inited = false;
     this._stopPluginsPromise = null;

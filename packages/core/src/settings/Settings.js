@@ -12,11 +12,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const Options = require("./Options");
 
 const tracer = require("../tracer");
-const { CHANGE_SETTINGS } = require("../eventNames");
 
 class Settings {
-  constructor(eventEmitter, config) {
-    this._eventEmitter = eventEmitter;
+  constructor({ onChange, config }) {
+    this._onChange = onChange;
     this._optionsHandler = new Options(config);
     this._newSettings = {};
   }
@@ -35,7 +34,7 @@ class Settings {
   }
 
   _emitChange() {
-    this._eventEmitter.emit(CHANGE_SETTINGS, { ...this._newSettings });
+    this._onChange({ ...this._newSettings });
     this._newSettings = {};
   }
 

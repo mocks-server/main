@@ -39,7 +39,8 @@ To check out docs, visit [mocks-server.org][website-url].
 | [admin-api-client] | [![admin-api-client-status]][admin-api-client-package] | API client for [plugin-admin-api] |
 | [admin-api-client-data-provider] | [![admin-api-client-data-provider-status]][admin-api-client-data-provider-package] | API client for [plugin-admin-api] built using [data-provider] |
 | [admin-api-paths] | [![admin-api-paths-status]][admin-api-paths-package] | Definition of [plugin-admin-api] routes |
-| [cypress-commands] | [![cypress-commands-status]][cypress-commands-package] | [Cypress][cypress] commands to administrate `mocks-server` |
+| [cypress-commands] | [![cypress-commands-status]][cypress-commands-package] | [Cypress][cypress] commands to administrate Mocks Server |
+| [config] | [![config-status]][config-package] | Provides configuration to [core][core] components and plugins |
 
 ## Contributing
 
@@ -81,6 +82,10 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [cypress-commands]: https://github.com/mocks-server/main/tree/master/packages/cypress-commands
 [cypress-commands-status]: https://img.shields.io/npm/v/@mocks-server/cypress-commands.svg
 [cypress-commands-package]: https://npmjs.com/package/@mocks-server/cypress-commands
+
+[config]: https://github.com/mocks-server/main/tree/master/packages/config
+[config-status]: https://img.shields.io/npm/v/@mocks-server/config.svg
+[config-package]: https://npmjs.com/package/@mocks-server/config
 
 [website-url]: https://www.mocks-server.org
 [data-provider]: https://www.data-provider.org

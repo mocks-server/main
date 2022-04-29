@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - release
+      - feat-config
   pull_request:
 jobs:
   get-affected:

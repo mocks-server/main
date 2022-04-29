@@ -1,7 +1,10 @@
+const { isUndefined } = require("lodash");
+
 class Option {
   constructor(properties) {
     // TODO, validate properties
     this._name = properties.name;
+    this._default = properties.default;
   }
 
   get name() {
@@ -9,12 +12,13 @@ class Option {
   }
 
   get value() {
-    return this._value;
+    return isUndefined(this._value) ? this._default : this._value;
   }
 
   set value(value) {
-    // TODO, validate
-    this._value = value;
+    if (!isUndefined(value)) {
+      this._value = value;
+    }
   }
 }
 

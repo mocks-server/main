@@ -1,3 +1,4 @@
+const Option = require("./Option");
 class Namespace {
   constructor(name) {
     this._name = name;
@@ -5,7 +6,9 @@ class Namespace {
   }
 
   addOption(optionProperties) {
-    this._options.add(optionProperties);
+    const option = new Option(optionProperties);
+    this._options.add(option);
+    return option;
   }
 
   addOptions(options) {
@@ -18,6 +21,14 @@ class Namespace {
         option.value = configuration[this._name][option.name];
       });
     }
+  }
+
+  get name() {
+    return this._name;
+  }
+
+  get options() {
+    return this._options;
   }
 }
 

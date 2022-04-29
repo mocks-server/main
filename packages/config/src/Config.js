@@ -17,15 +17,15 @@ const CONFIG_OPTIONS = [
 ];
 
 class Config {
-  constructor({ programmaticConfig = {} }) {
-    this._programmaticConfig = { ...programmaticConfig };
+  constructor({ moduleName } = {}) {
+    this._programmaticConfig = {};
     this._fileConfig = {};
     this._envConfig = {};
     this._argsConfig = {};
 
-    this._files = new Files();
+    this._files = new Files(moduleName);
     this._args = new CommandLineArguments();
-    this._environment = new Environment();
+    this._environment = new Environment(moduleName);
 
     this._namespaces = new Set();
 
@@ -41,7 +41,7 @@ class Config {
   }
 
   async _loadFromEnv() {
-    return this._environment.read();
+    return this._environment.read(this._namespaces);
   }
 
   async _loadFromArgs() {
@@ -49,17 +49,18 @@ class Config {
   }
 
   _mergeConfig() {
-    return deepMerge(
+    return deepMerge.all([
       this._programmaticConfig,
       this._fileConfig,
       this._envConfig,
-      this._argsConfig
-    );
+      this._argsConfig,
+    ]);
   }
 
   _initNamespaces() {
+    const mergedConfig = this._mergeConfig();
     this._namespaces.forEach((namespace) => {
-      namespace.init(this._mergeConfig());
+      namespace.init(mergedConfig);
     });
   }
 
@@ -73,7 +74,7 @@ class Config {
     this._initNamespaces();
   }
 
-  async init(programmaticConfig) {
+  async init(programmaticConfig = {}) {
     this._programmaticConfig = deepMerge(this._programmaticConfig, programmaticConfig);
     await this._load();
   }

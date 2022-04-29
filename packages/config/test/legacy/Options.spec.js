@@ -12,25 +12,30 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const CommandLineArgumentsMocks = require("./CommandLineArguments.mocks.js");
-const ConfigMocks = require("../Config.mocks.js");
+const ConfigMocks = require("./Config.mocks.js");
 
-const Options = require("../../src/settings/Options");
-const tracer = require("../../src/tracer");
+const Options = require("../../legacy/Options");
 
 describe("options", () => {
   let sandbox;
   let options;
   let commandLineArgumentsMocks;
   let configMocks;
+  let tracer;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    sandbox.spy(tracer, "warn");
-    sandbox.spy(tracer, "deprecationWarn");
-    sandbox.stub(tracer, "error");
+    tracer = {
+      debug: sandbox.stub(),
+      set: sandbox.stub(),
+      info: sandbox.stub(),
+      error: sandbox.stub(),
+      deprecationWarn: sandbox.stub(),
+      warn: sandbox.stub(),
+    };
     commandLineArgumentsMocks = new CommandLineArgumentsMocks();
     configMocks = new ConfigMocks();
-    options = new Options(configMocks.stubs.instance);
+    options = new Options(configMocks.stubs.instance, tracer);
   });
 
   afterEach(() => {
@@ -261,7 +266,7 @@ describe("options", () => {
   describe("options getter when config return options", () => {
     beforeEach(() => {
       configMocks.stubs.instance.disableCommandLineArguments = true;
-      options = new Options(configMocks.stubs.instance);
+      options = new Options(configMocks.stubs.instance, tracer);
     });
 
     it("should only get values from keys defined in default values", async () => {

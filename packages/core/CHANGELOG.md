@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: BREAKING CHANGE. The `--behavior` command line argument has been removed.
 - feat: BREAKING CHANGE. The `load:mocks:legacy` and `change:mocks:legacy` events are not emitted any more.
 
+### Changed
+- refactor: Use callbacks internally instead of events. Remove Orchestrator
+- refactor: Move Settings and Config to a separated package
+
 ## [2.5.3] - 2022-03-28
 
 ### Changed

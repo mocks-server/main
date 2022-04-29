@@ -1,6 +1,5 @@
 /*
 Copyright 2019 Javier Brea
-Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -11,30 +10,26 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../src/settings/Options");
+jest.mock("../../legacy/Config");
 
-const Options = require("../../src/settings/Options");
+const Config = require("../../legacy/Config");
 
-class Mock {
+class ConfigMock {
   constructor() {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      init: this._sandbox.stub(),
-      addCustom: this._sandbox.stub(),
-      getValidOptionName: this._sandbox.stub(),
-      checkValidOptionName: this._sandbox.stub(),
-      options: {
-        log: "foo-log-level",
-      },
+      init: this._sandbox.stub().resolves(),
+      coreOptions: {},
+      options: {},
     };
 
-    Options.mockImplementation(() => this._stubs);
+    Config.mockImplementation(() => this._stubs);
   }
 
   get stubs() {
     return {
-      Constructor: Options,
+      Constructor: Config,
       instance: this._stubs,
     };
   }
@@ -44,4 +39,4 @@ class Mock {
   }
 }
 
-module.exports = Mock;
+module.exports = ConfigMock;

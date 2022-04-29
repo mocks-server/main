@@ -11,9 +11,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../src/settings/CommandLineArguments");
+jest.mock("../../legacy/CommandLineArguments");
 
-const CommandLineArguments = require("../../src/settings/CommandLineArguments");
+const CommandLineArguments = require("../../legacy/CommandLineArguments");
 
 class Mock {
   constructor() {

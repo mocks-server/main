@@ -11,13 +11,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const Options = require("./Options");
 
-const tracer = require("../tracer");
-const { CHANGE_SETTINGS } = require("../eventNames");
-
 class Settings {
-  constructor(eventEmitter, config) {
-    this._eventEmitter = eventEmitter;
-    this._optionsHandler = new Options(config);
+  constructor({ onChange, config, tracer }) {
+    this._tracer = tracer;
+    this._onChange = onChange;
+    this._optionsHandler = new Options(config, tracer);
     this._newSettings = {};
   }
 
@@ -25,24 +23,24 @@ class Settings {
     await this._optionsHandler.init(options);
     this._settings = { ...this._optionsHandler.options };
     this._setTracerLevel();
-    tracer.info("Settings ready");
-    tracer.verbose(`Current settings: ${JSON.stringify(this._settings, null, 2)}`);
+    this._tracer.info("Settings ready");
+    this._tracer.verbose(`Current settings: ${JSON.stringify(this._settings, null, 2)}`);
     return Promise.resolve();
   }
 
   _setTracerLevel() {
-    tracer.set(this._settings.log);
+    this._tracer.set(this._settings.log);
   }
 
   _emitChange() {
-    this._eventEmitter.emit(CHANGE_SETTINGS, { ...this._newSettings });
+    this._onChange({ ...this._newSettings });
     this._newSettings = {};
   }
 
   set(option, value) {
     const optionName = this._optionsHandler.checkValidOptionName(option);
     if (this._settings[optionName] !== value) {
-      tracer.debug(`Changing setting "${optionName}" to new value ${value}`);
+      this._tracer.debug(`Changing setting "${optionName}" to new value ${value}`);
       this._settings[optionName] = value;
       this._newSettings[optionName] = value;
       this._emitChange();

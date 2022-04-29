@@ -12,6 +12,7 @@
     "admin-api-client-data-provider-vanilla-app-e2e": "test/admin-api-client-data-provider-vanilla-app-e2e",
     "admin-api-client-unit-mocks": "mocks/admin-api-client-unit-mocks",
     "admin-api-paths": "packages/admin-api-paths",
+    "config": "packages/config",
     "core": "packages/core",
     "core-e2e": "test/core-e2e",
     "cypress-commands": "packages/cypress-commands",

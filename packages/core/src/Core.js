@@ -10,6 +10,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const EventEmitter = require("events");
 
+const { Config, Settings } = require("@mocks-server/config");
+
 const {
   INIT,
   START,
@@ -21,23 +23,20 @@ const {
   LOAD_ROUTES,
 } = require("./eventNames");
 const tracer = require("./tracer");
-
-const Config = require("./Config");
-const Orchestrator = require("./Orchestrator");
 const Loaders = require("./Loaders");
 const Alerts = require("./Alerts");
-
 const RoutesHandlers = require("./routes-handlers/RoutesHandlers");
 const Mocks = require("./mocks/Mocks");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
-const Settings = require("./settings/Settings");
 
 const { scopedAlertsMethods, addEventListener } = require("./support/helpers");
 
 class Core {
   constructor(programmaticConfig) {
     this._eventEmitter = new EventEmitter();
+    this._loadedMocks = false;
+    this._loadedRoutes = false;
 
     this._alerts = new Alerts({
       onChange: (alerts) => {
@@ -48,22 +47,48 @@ class Core {
     this._mocksLoaders = new Loaders({
       onLoad: () => {
         this._eventEmitter.emit(LOAD_MOCKS);
+        this._loadedMocks = true;
+        if (this._loadedRoutes) {
+          this._mocks.load();
+        }
       },
     });
 
     this._routesLoaders = new Loaders({
       onLoad: () => {
         this._eventEmitter.emit(LOAD_ROUTES);
+        this._loadedRoutes = true;
+        if (this._loadedMocks) {
+          this._mocks.load();
+        }
       },
     });
 
     this._config = new Config({
       programmaticConfig,
       ...scopedAlertsMethods("config", this._alerts.add, this._alerts.remove),
+      tracer,
     });
 
-    // TODO, refactor. Pass specific callbacks instead of objects
-    this._settings = new Settings(this._eventEmitter, this._config);
+    this._settings = new Settings({
+      onChange: (changeDetails) => {
+        this._eventEmitter.emit(CHANGE_SETTINGS, changeDetails);
+        // TODO, define in options whether they should produce a server restart or not
+        if (
+          changeDetails.hasOwnProperty("port") ||
+          changeDetails.hasOwnProperty("host") ||
+          changeDetails.hasOwnProperty("cors") ||
+          changeDetails.hasOwnProperty("corsPreFlight")
+        ) {
+          this._server.restart();
+        }
+        if (changeDetails.hasOwnProperty("mock")) {
+          this._mocks.current = changeDetails.mock;
+        }
+      },
+      config: this._config,
+      tracer,
+    });
 
     this._plugins = new Plugins(
       {
@@ -99,17 +124,17 @@ class Core {
           this._alerts.rename
         ),
       },
-      this //To be used only by routeHandlers
+      this // To be used only by routeHandlers
     );
 
-    // TODO, refactor. Pass specific callbacks instead of objects
-    this._server = new Server(this._eventEmitter, this._settings, {
+    this._server = new Server({
+      getHostOption: () => this._settings.get("host"),
+      getPortOption: () => this._settings.get("port"),
+      getCorsOption: () => this._settings.get("cors"),
+      getCorsPreFlightOption: () => this._settings.get("corsPreFlight"),
       mocksRouter: this._mocks.router,
       ...scopedAlertsMethods("server", this._alerts.add, this._alerts.remove),
     });
-
-    // TODO, refactor. Pass specific callbacks instead of objects
-    this._orchestrator = new Orchestrator(this._eventEmitter, this._server, this._mocks);
 
     this._inited = false;
     this._stopPluginsPromise = null;

@@ -157,7 +157,7 @@ function addCustomVariant(variantId, customVariants) {
   const newCustomVariants = [...customVariants];
   let inserted = false;
   newCustomVariants.forEach((customVariantId, index) => {
-    // TODO, use better method, store base id and variant id in an object to avoid conflicts with possible routes ids containing :
+    // TODO, use better method, store base id and variant id in an object to avoid conflicts with possible routes ids containing ":"
     if (!inserted && customVariantId.split(":")[0] === variantId.split(":")[0]) {
       newCustomVariants.splice(index, 1, variantId);
       inserted = true;

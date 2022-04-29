@@ -9,18 +9,18 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const fsExtra = require("fs-extra");
 
-const tracer = require("./tracer");
+const fsExtra = require("fs-extra");
 const isPromise = require("is-promise");
 const { isFunction, isObject } = require("lodash");
 
-const { createConfigFile } = require("./support/scaffold");
+const { createConfigFile } = require("./scaffold");
 
 const CONFIG_FILE = "mocks.config.js";
 
 class Config {
-  constructor({ addAlert, programmaticConfig = {} }) {
+  constructor({ addAlert, programmaticConfig = {}, tracer }) {
+    this._tracer = tracer;
     this._coreOptions = {};
     this._addAlert = addAlert;
     this._options = {};
@@ -40,12 +40,12 @@ class Config {
 
   _readConfigFileSuccess(configFileResult) {
     delete this._coreOptions.options;
-    tracer.info(`Configuration file successfully loaded`);
+    this._tracer.info(`Configuration file successfully loaded`);
     return Promise.resolve(configFileResult);
   }
 
   _readFileConfig(configFilePath) {
-    tracer.info("Reading configuration file");
+    this._tracer.info("Reading configuration file");
     try {
       const configFile = require(configFilePath);
       if (isFunction(configFile)) {
@@ -88,27 +88,27 @@ class Config {
     return this._readFileConfig(configFilePath).then((fileConfig) => {
       this._getCoreOptions(fileConfig);
       this._getOptions(fileConfig.options);
-      tracer.debug(`Config in file: ${JSON.stringify(fileConfig, null, 2)}`);
+      this._tracer.debug(`Config in file: ${JSON.stringify(fileConfig, null, 2)}`);
       return Promise.resolve();
     });
   }
 
   _getFileConfig() {
     if (this._coreOptions.disableConfigFile) {
-      tracer.info(`Configuration file is disabled`);
+      this._tracer.info(`Configuration file is disabled`);
       return Promise.resolve();
     }
     const configFilePath = this._getFileConfigPath(this._coreOptions.configFile || CONFIG_FILE);
     return fsExtra.pathExists(configFilePath).then((exists) => {
       if (!exists) {
-        tracer.info(`Configuration file not found`);
+        this._tracer.info(`Configuration file not found`);
         return createConfigFile(configFilePath)
           .then(() => {
-            tracer.info(`Created configuration file from scaffold`);
+            this._tracer.info(`Created configuration file from scaffold`);
             return this._readConfig(configFilePath);
           })
           .catch((err) => {
-            tracer.error(`Error creating config file: ${err.message}`);
+            this._tracer.error(`Error creating config file: ${err.message}`);
             return Promise.resolve();
           });
       }
@@ -122,7 +122,7 @@ class Config {
       ...options,
     };
     if (this._options.log) {
-      tracer.set(this._options.log);
+      this._tracer.set(this._options.log);
     }
   }
 

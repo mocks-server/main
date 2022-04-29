@@ -1,5 +1,6 @@
 **/node_modules
 **/.tmp
+/mocks/*/public
 /mocks/*/build
 /mocks/admin-api-client-data-provider-e2e-vanilla-app/public/js
 /packages/*/dist

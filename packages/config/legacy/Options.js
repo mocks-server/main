@@ -11,8 +11,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { isUndefined } = require("lodash");
 
-const tracer = require("../tracer");
-
 const CommandLineArguments = require("./CommandLineArguments");
 
 const DEFAULT_OPTIONS = {
@@ -28,7 +26,8 @@ const DEFAULT_OPTIONS = {
 const DEPRECATED_OPTIONS = {};
 
 class Options {
-  constructor(config) {
+  constructor(config, tracer) {
+    this._tracer = tracer;
     this._config = config;
     this._options = {};
     this._optionsNames = Object.keys(DEFAULT_OPTIONS);
@@ -65,7 +64,7 @@ class Options {
   }
 
   _rejectCustomOption(errorMessage) {
-    tracer.error(errorMessage);
+    this._tracer.error(errorMessage);
     throw new Error(errorMessage);
   }
 
@@ -91,7 +90,7 @@ class Options {
       );
     }
     if (!optionDetails.description) {
-      tracer.warn(
+      this._tracer.warn(
         `Missed description in option "${optionName}". Please provide option description when adding a new option`
       );
       optionDetails.description = "";

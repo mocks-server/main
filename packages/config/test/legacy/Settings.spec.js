@@ -14,7 +14,7 @@ const sinon = require("sinon");
 const OptionsMocks = require("./Options.mocks.js");
 const ConfigMocks = require("./Config.mocks.js");
 
-const Settings = require("../../src/Settings");
+const Settings = require("../../legacy/Settings");
 
 describe("Settings", () => {
   let optionsMocks;

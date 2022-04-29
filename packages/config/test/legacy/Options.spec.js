@@ -14,7 +14,7 @@ const sinon = require("sinon");
 const CommandLineArgumentsMocks = require("./CommandLineArguments.mocks.js");
 const ConfigMocks = require("./Config.mocks.js");
 
-const Options = require("../../src/Options");
+const Options = require("../../legacy/Options");
 
 describe("options", () => {
   let sandbox;

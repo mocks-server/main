@@ -11,9 +11,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../src/Options");
+jest.mock("../../legacy/Options");
 
-const Options = require("../../src/Options");
+const Options = require("../../legacy/Options");
 
 class Mock {
   constructor() {

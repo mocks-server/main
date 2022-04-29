@@ -13,7 +13,7 @@ const path = require("path");
 const fsExtra = require("fs-extra");
 const fs = require("fs");
 
-const Config = require("../../src/Config");
+const Config = require("../../legacy/Config");
 
 describe("Config", () => {
   let callbacks;

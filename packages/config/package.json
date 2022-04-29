@@ -21,7 +21,7 @@
   },
   "files": [
     "scaffold",
-    "src",
+    "legacy",
     "index.js"
   ],
   "main": "index.js",

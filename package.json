@@ -29,7 +29,7 @@
     "@babel/preset-env": "7.16.11",
     "@babel/preset-react": "7.16.7",
     "@babel/preset-typescript": "7.16.7",
-    "@cypress/webpack-preprocessor": "5.10.0",
+    "@cypress/webpack-preprocessor": "5.11.1",
     "@nrwl/cli": "13.8.3",
     "@nrwl/eslint-plugin-nx": "13.8.3",
     "@nrwl/tao": "13.8.3",

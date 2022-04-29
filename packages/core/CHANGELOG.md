@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - refactor: Use callbacks internally instead of events. Remove Orchestrator
+- refactor: Move Settings and Config to a separated package
 
 ## [2.5.3] - 2022-03-28
 

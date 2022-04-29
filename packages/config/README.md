@@ -13,9 +13,11 @@
 
 # Mocks Server Config
 
-This package handles the configuration of [Mocks Server](website-url).
+Configuration provider. Reads config from command line arguments, environment variables, files and options received programmatically.
 
-Each external element can add options under its own namespace. This module is at charge of reading properties from command line arguments, environment variables, files and objects received programmatically, and assign each value to its correspondent option. So, each different component inside Mocks Server or external plugin is the unique who knows about its own options, but all options values can be defined using the same methods.
+Each external element can define its options under its own namespace. So, each different component is the unique who knows about its own options, but all options values can be defined using the same methods.
+
+This module provides configuration to [Mocks Server](website-url) components and plugins, but it may be used anywhere else because it is fully configurable.
 
 ## Usage
 
@@ -24,7 +26,7 @@ A brief example:
 ```js
 const { Config } = require("@mocks-server/config");
 
-const config = new Config({ moduleName: "MOCKS_SERVER" });
+const config = new Config({ moduleName: "MOCKS" });
 const namespace = config.addNamespace("fooComponent");
 const option = namespace.addOption({
   name: "fooOption",

@@ -1,13 +1,11 @@
 const { isUndefined, snakeCase } = require("lodash");
 
-function formatVarSegment(segment) {
+function varSegment(segment) {
   return snakeCase(segment).toUpperCase();
 }
 
 function envVarName(moduleName, namespaceName, optionName) {
-  return `${formatVarSegment(moduleName)}_${formatVarSegment(namespaceName)}_${formatVarSegment(
-    optionName
-  )}`;
+  return `${varSegment(moduleName)}_${varSegment(namespaceName)}_${varSegment(optionName)}`;
 }
 
 class Environment {

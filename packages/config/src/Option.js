@@ -1,3 +1,4 @@
+const deepMerge = require("deepmerge");
 const { isUndefined } = require("lodash");
 
 class Option {
@@ -7,6 +8,7 @@ class Option {
     this._type = properties.type;
     this._default = properties.default;
     this._parser = properties.parser;
+    this._value = this._default;
   }
 
   get name() {
@@ -22,11 +24,15 @@ class Option {
   }
 
   get value() {
-    return isUndefined(this._value) ? this._default : this._value;
+    return this._value;
   }
 
   get parser() {
     return this._parser;
+  }
+
+  merge(value) {
+    this._value = deepMerge(this._value || {}, value || {});
   }
 
   set value(value) {

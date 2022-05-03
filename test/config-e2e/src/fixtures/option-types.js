@@ -8,6 +8,7 @@ const component = config.addNamespace("component");
 component.addOption({ name: "booleanDefaultTrue", default: true, type: "Boolean" });
 component.addOption({ name: "booleanDefaultFalse", default: false, type: "Boolean" });
 component.addOption({ name: "stringWithDefault", default: "foo-str", type: "String" });
+component.addOption({ name: "objectWithDefault", default: { foo: "var" }, type: "Object" });
 component.addOption({ name: "numberDefaultZero", default: 0, type: "Number" });
 
 config

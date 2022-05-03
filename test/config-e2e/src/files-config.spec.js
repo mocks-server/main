@@ -74,6 +74,16 @@ describe("Config from files", () => {
       );
     });
 
+    it("should merge object when option is of type Object", async () => {
+      await run("json-config-option-types", "option-types");
+
+      expect(options).toEqual(
+        expect.arrayContaining([
+          'component.objectWithDefault:object:{"foo":"var","foo2":"var2","foo3":false,"foo4":5}',
+        ])
+      );
+    });
+
     it("should assign number type to Number vars", async () => {
       await run("json-config-option-types", "option-types");
 

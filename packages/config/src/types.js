@@ -2,6 +2,7 @@ const types = {
   NUMBER: "Number",
   STRING: "String",
   BOOLEAN: "Boolean",
+  OBJECT: "Object",
 };
 
 const FALSY_VALUES = ["false", "0", 0];
@@ -10,12 +11,19 @@ function doNothingParser(value) {
   return value;
 }
 
+function parseObject(value) {
+  return JSON.parse(value);
+}
+
 function getOptionParser(option) {
   if (option.parser) {
     return option.parser;
   }
   if (option.type === types.NUMBER) {
     return parseFloat;
+  }
+  if (option.type === types.OBJECT) {
+    return parseObject;
   }
   return doNothingParser;
 }
@@ -35,4 +43,5 @@ module.exports = {
   types,
   getOptionParser,
   getOptionParserIncludingBooleans,
+  parseObject,
 };

@@ -13,6 +13,7 @@ function getCommanderOptionProperties(commanderOptionName, option) {
   return {
     default: option.default,
     isBoolean,
+    isObject: option.type === types.OBJECT,
     Option: new commander.Option(
       `${optionPrefix}${commanderOptionName}${optionValueGetter}`
     ).argParser(argParser),

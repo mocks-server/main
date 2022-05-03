@@ -31,6 +31,33 @@ describe("Config from args", () => {
     });
   });
 
+  describe("when option is Object", () => {
+    it("option should merge the value from it", async () => {
+      await run("no-config", "option-types", {
+        args: ['--component.objectWithDefault={"foo2":"var2"}'],
+      });
+      expect(runner.exitCode).toEqual(0);
+      expect(options).toEqual(
+        expect.arrayContaining(['component.objectWithDefault:object:{"foo":"var","foo2":"var2"}'])
+      );
+    });
+
+    it("should merge value from env vars and files when option is of type Object", async () => {
+      await run("json-config-option-types", "option-types", {
+        args: ['--component.objectWithDefault={"foo2":"from-arg"}'],
+        env: {
+          MOCKS_COMPONENT_OBJECT_WITH_DEFAULT: '{"foo2":"from-env","foo3":true,"foo4":5}',
+        },
+      });
+
+      expect(options).toEqual(
+        expect.arrayContaining([
+          'component.objectWithDefault:object:{"foo":"var","foo2":"from-arg","foo3":true,"foo4":5}',
+        ])
+      );
+    });
+  });
+
   describe("when option is Boolean and default value is true", () => {
     it("option should be false if --no argument is provided", async () => {
       await run("no-config", "option-types", {

@@ -33,9 +33,10 @@ function fixtureRunner(name, indexName, options = {}) {
 function logConfig(config) {
   config._namespaces.forEach((namespace) => {
     namespace._options.forEach((option) => {
+      const valueType = typeof option.value;
       console.log(
-        `${LOG_OPTION_START}${namespace.name}.${option.name}:${typeof option.value}:${
-          option.value
+        `${LOG_OPTION_START}${namespace.name}.${option.name}:${valueType}:${
+          valueType === "object" ? JSON.stringify(option.value) : option.value
         }${LOG_OPTION_END}`
       );
     });

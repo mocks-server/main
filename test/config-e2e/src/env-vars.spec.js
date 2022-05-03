@@ -185,6 +185,22 @@ describe("Config from env vars", () => {
     });
   });
 
+  describe("when option is Object", () => {
+    it("option should merge the value from env var", async () => {
+      await run("no-config", "option-types", {
+        env: {
+          MOCKS_COMPONENT_OBJECT_WITH_DEFAULT: '{"foo2":"var2","foo3":false,"foo4":5}',
+        },
+      });
+      expect(runner.exitCode).toEqual(0);
+      expect(options).toEqual(
+        expect.arrayContaining([
+          'component.objectWithDefault:object:{"foo":"var","foo2":"var2","foo3":false,"foo4":5}',
+        ])
+      );
+    });
+  });
+
   describe("when programmatic config is provided", () => {
     it("env var should overwrite the value from it", async () => {
       await run("js-async-function-config", "two-namespaces", {

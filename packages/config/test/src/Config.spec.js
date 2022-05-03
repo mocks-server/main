@@ -63,11 +63,75 @@ describe("Config", () => {
       expect(option.value).toEqual("default-str");
     });
 
+    it("should return default value of options of type Object", async () => {
+      config = new Config({ moduleName: "testObjectDefault" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: { foo: "var" },
+        type: "Object",
+      });
+      await config.init();
+      expect(option.value).toEqual({ foo: "var" });
+    });
+
     it("option should return new value after setting it", async () => {
       await config.init();
       expect(option.value).toEqual("default-str");
       option.value = "new-str";
       expect(option.value).toEqual("new-str");
+    });
+
+    it("option should return new value after merging it when option is of type Object", async () => {
+      config = new Config({ moduleName: "testObjectSet" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: { foo: "var" },
+        type: "Object",
+      });
+      await config.init();
+      expect(option.value).toEqual({ foo: "var" });
+      option.merge({ foo2: "var2" });
+      expect(option.value).toEqual({ foo2: "var2", foo: "var" });
+    });
+
+    it("option should not merge value if it is undefined when option is of type Object", async () => {
+      config = new Config({ moduleName: "testObjectSet" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: { foo: "var" },
+        type: "Object",
+      });
+      await config.init();
+      expect(option.value).toEqual({ foo: "var" });
+      option.merge(undefined);
+      expect(option.value).toEqual({ foo: "var" });
+    });
+
+    it("option should be undefined if no default value is provided", async () => {
+      config = new Config({ moduleName: "testObjectSet" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        type: "Object",
+      });
+      await config.init();
+      expect(option.value).toEqual(undefined);
+    });
+
+    it("option return new value after merging it when it has not default value and option is of type object", async () => {
+      config = new Config({ moduleName: "testObjectSet" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        type: "Object",
+      });
+      await config.init();
+      expect(option.value).toEqual(undefined);
+      option.merge({ foo: "var" });
+      expect(option.value).toEqual({ foo: "var" });
     });
   });
 
@@ -104,6 +168,25 @@ describe("Config", () => {
       fooNamespace.fooOption.foo = "foo2";
       expect(option.value).not.toBe(fooNamespace.fooOption);
       expect(option.value).toEqual({ foo: "foo" });
+    });
+
+    it("should merge value from default if option is of type Object", async () => {
+      config = new Config({ moduleName: "testObjectInitExtend" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: { foo: 2, foo2: { var: true, var3: "foo" }, foo4: "test" },
+        type: "Object",
+      });
+      await config.init({
+        fooNamespace: { fooOption: { foo: 4, foo2: { var: false, var4: "y" }, foo3: "z" } },
+      });
+      expect(option.value).toEqual({
+        foo: 4,
+        foo2: { var: false, var3: "foo", var4: "y" },
+        foo3: "z",
+        foo4: "test",
+      });
     });
   });
 
@@ -172,6 +255,29 @@ describe("Config", () => {
       await config.init();
       expect(option.value).toEqual("default-str");
     });
+
+    it("should return Object when option is of type Object", async () => {
+      cosmiconfigStub.search.resolves({
+        config: {
+          fooNamespace: {
+            fooOption: { foo: 1, foo2: { var: false, var2: "x", var4: "y" }, foo3: "z" },
+          },
+        },
+      });
+      config = new Config({ moduleName: "testObjectFile" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: {},
+        type: "Object",
+      });
+      await config.init();
+      expect(option.value).toEqual({
+        foo: 1,
+        foo2: { var: false, var2: "x", var4: "y" },
+        foo3: "z",
+      });
+    });
   });
 
   describe("when file returns a function", () => {
@@ -220,6 +326,20 @@ describe("Config", () => {
       process.env["TEST_A_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init();
       expect(option.value).toEqual("foo-from-env");
+    });
+
+    it("should return object value if option is of type Object", async () => {
+      config = new Config({ moduleName: "testObjectEnv" });
+      namespace = config.addNamespace("fooNamespace");
+      process.env["TEST_OBJECT_ENV_FOO_NAMESPACE_FOO_OPTION"] =
+        '{"foo": 1, "foo2":{"var": false, "var2": "x"}}';
+      option = namespace.addOption({
+        name: "fooOption",
+        default: {},
+        type: "Object",
+      });
+      await config.init();
+      expect(option.value).toEqual({ foo: 1, foo2: { var: false, var2: "x" } });
     });
 
     it("should return boolean false if env var is false string", async () => {
@@ -316,6 +436,68 @@ describe("Config", () => {
       await config.init({ fooNamespace: { fooOption: "value-from-init" } });
       expect(option.value).toEqual("foo-from-env");
     });
+
+    it("should merge value from init if option is of type Object", async () => {
+      config = new Config({ moduleName: "testObjectEnvExtend" });
+      namespace = config.addNamespace("fooNamespace");
+      process.env["TEST_OBJECT_ENV_EXTEND_FOO_NAMESPACE_FOO_OPTION"] =
+        '{"foo": 1, "foo2":{"var": false, "var2": "x"}}';
+      option = namespace.addOption({
+        name: "fooOption",
+        default: {},
+        type: "Object",
+      });
+      await config.init({
+        fooNamespace: { fooOption: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" } },
+      });
+      expect(option.value).toEqual({
+        foo: 1,
+        foo2: { var: false, var2: "x", var4: "y" },
+        foo3: "z",
+      });
+    });
+
+    it("should merge value from default if option is of type Object", async () => {
+      config = new Config({ moduleName: "testObjectEnvExtendDefault" });
+      namespace = config.addNamespace("fooNamespace");
+      process.env["TEST_OBJECT_ENV_EXTEND_DEFAULT_FOO_NAMESPACE_FOO_OPTION"] =
+        '{"foo": 1, "foo2":{"var": false, "var2": "x"}}';
+      option = namespace.addOption({
+        name: "fooOption",
+        default: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" },
+        type: "Object",
+      });
+      await config.init();
+      expect(option.value).toEqual({
+        foo: 1,
+        foo2: { var: false, var2: "x", var4: "y" },
+        foo3: "z",
+      });
+    });
+
+    it("should merge value from init and file if option is of type Object", async () => {
+      config = new Config({ moduleName: "testObjectEnvExtend2" });
+      cosmiconfigStub.search.resolves({
+        config: { fooNamespace: { fooOption: { foo2: { var: true, var5: 5 }, foo4: "zy" } } },
+      });
+      namespace = config.addNamespace("fooNamespace");
+      process.env["TEST_OBJECT_ENV_EXTEND_2_FOO_NAMESPACE_FOO_OPTION"] =
+        '{"foo": 1, "foo2":{"var": false, "var2": "x"}}';
+      option = namespace.addOption({
+        name: "fooOption",
+        default: {},
+        type: "Object",
+      });
+      await config.init({
+        fooNamespace: { fooOption: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" } },
+      });
+      expect(option.value).toEqual({
+        foo: 1,
+        foo2: { var: false, var2: "x", var4: "y", var5: 5 },
+        foo3: "z",
+        foo4: "zy",
+      });
+    });
   });
 
   describe("when option is defined in argument", () => {
@@ -324,6 +506,24 @@ describe("Config", () => {
       ({ config, namespace, option } = createConfig({ moduleName: "testD" }));
       await config.init();
       expect(option.value).toEqual("foo-from-arg");
+    });
+
+    it("should return Object if option is of type Object", async () => {
+      commander.Command.prototype.opts.returns({
+        "fooNamespace.fooOption": { foo: 1, foo2: { var: true, var2: "x-from-arg", var6: "xyz" } },
+      });
+      config = new Config({ moduleName: "testArgObject" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: {},
+        type: "Object",
+      });
+      await config.init();
+      expect(option.value).toEqual({
+        foo: 1,
+        foo2: { var: true, var2: "x-from-arg", var6: "xyz" },
+      });
     });
 
     it("should not return value from it if it is undefined", async () => {
@@ -425,6 +625,34 @@ describe("Config", () => {
       });
       await config.init({ fooNamespace: { fooOption: false } });
       expect(option.value).toEqual(false);
+    });
+
+    it("should merge value from default, init, file and env var if option is of type Object", async () => {
+      config = new Config({ moduleName: "testObjectEnvExtend3" });
+      cosmiconfigStub.search.resolves({
+        config: { fooNamespace: { fooOption: { foo2: { var: true, var5: 5 }, foo4: "zy" } } },
+      });
+      commander.Command.prototype.opts.returns({
+        "fooNamespace.fooOption": { foo: 1, foo2: { var: true, var2: "x-from-arg", var6: "xyz" } },
+      });
+      namespace = config.addNamespace("fooNamespace");
+      process.env["TEST_OBJECT_ENV_EXTEND_3_FOO_NAMESPACE_FOO_OPTION"] =
+        '{"foo": 1, "foo2":{"var": false, "var2": "x"}}';
+      option = namespace.addOption({
+        name: "fooOption",
+        default: { foo5: "testing", foo2: { var7: 7 } },
+        type: "Object",
+      });
+      await config.init({
+        fooNamespace: { fooOption: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" } },
+      });
+      expect(option.value).toEqual({
+        foo: 1,
+        foo2: { var: true, var2: "x-from-arg", var4: "y", var5: 5, var6: "xyz", var7: 7 },
+        foo3: "z",
+        foo4: "zy",
+        foo5: "testing",
+      });
     });
   });
 });

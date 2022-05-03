@@ -1,4 +1,5 @@
 const Option = require("./Option");
+const { types } = require("./types");
 class Namespace {
   constructor(name) {
     this._name = name;
@@ -18,7 +19,11 @@ class Namespace {
   init(configuration) {
     if (configuration[this._name]) {
       this._options.forEach((option) => {
-        option.value = configuration[this._name][option.name];
+        if (option.type === types.OBJECT) {
+          option.merge(configuration[this._name][option.name]);
+        } else {
+          option.value = configuration[this._name][option.name];
+        }
       });
     }
   }

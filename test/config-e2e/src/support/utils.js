@@ -34,7 +34,9 @@ function logConfig(config) {
   config._namespaces.forEach((namespace) => {
     namespace._options.forEach((option) => {
       console.log(
-        `${LOG_OPTION_START}${namespace.name}.${option.name}:${option.value}${LOG_OPTION_END}`
+        `${LOG_OPTION_START}${namespace.name}.${option.name}:${typeof option.value}:${
+          option.value
+        }${LOG_OPTION_END}`
       );
     });
   });

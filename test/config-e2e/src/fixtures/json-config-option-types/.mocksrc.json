@@ -1,0 +1,8 @@
+{
+  "component": {
+    "booleanDefaultTrue": false,
+    "booleanDefaultFalse": true,
+    "stringWithDefault": "foo-from-file",
+    "numberDefaultZero": 6.51
+  }
+}

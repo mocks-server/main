@@ -13,7 +13,7 @@ describe("Config from files", () => {
     it("config.readFile option should be true", async () => {
       await run("no-config", "only-init");
       expect(runner.exitCode).toEqual(0);
-      expect(options).toEqual(expect.arrayContaining(["config.readFile:true"]));
+      expect(options).toEqual(expect.arrayContaining(["config.readFile:boolean:true"]));
     });
   });
 
@@ -21,8 +21,8 @@ describe("Config from files", () => {
     it("should assign value from it when defined", async () => {
       await run("no-config", "two-namespaces");
 
-      expect(options).toEqual(expect.arrayContaining(["component.alias:foo-alias"]));
-      expect(options).toEqual(expect.arrayContaining(["fooNamespace.fooOption:foo-value"]));
+      expect(options).toEqual(expect.arrayContaining(["component.alias:string:foo-alias"]));
+      expect(options).toEqual(expect.arrayContaining(["fooNamespace.fooOption:string:foo-value"]));
     });
   });
 
@@ -30,7 +30,9 @@ describe("Config from files", () => {
     it("should assign value from it", async () => {
       await run("package-config", "two-namespaces");
 
-      expect(options).toEqual(expect.arrayContaining(["component.alias:alias-from-package"]));
+      expect(options).toEqual(
+        expect.arrayContaining(["component.alias:string:alias-from-package"])
+      );
     });
   });
 
@@ -42,7 +44,7 @@ describe("Config from files", () => {
         },
       });
 
-      expect(options).toEqual(expect.arrayContaining(["component.alias:foo-alias"]));
+      expect(options).toEqual(expect.arrayContaining(["component.alias:string:foo-alias"]));
     });
   });
 
@@ -50,7 +52,32 @@ describe("Config from files", () => {
     it("should assign value from it", async () => {
       await run("json-config", "two-namespaces");
 
-      expect(options).toEqual(expect.arrayContaining(["component.alias:alias-from-json"]));
+      expect(options).toEqual(expect.arrayContaining(["component.alias:string:alias-from-json"]));
+    });
+
+    it("should assign boolean type to Boolean vars", async () => {
+      await run("json-config-option-types", "option-types");
+
+      expect(options).toEqual(
+        expect.arrayContaining(["component.booleanDefaultTrue:boolean:false"])
+      );
+      expect(options).toEqual(
+        expect.arrayContaining(["component.booleanDefaultFalse:boolean:true"])
+      );
+    });
+
+    it("should assign string type to String vars", async () => {
+      await run("json-config-option-types", "option-types");
+
+      expect(options).toEqual(
+        expect.arrayContaining(["component.stringWithDefault:string:foo-from-file"])
+      );
+    });
+
+    it("should assign number type to Number vars", async () => {
+      await run("json-config-option-types", "option-types");
+
+      expect(options).toEqual(expect.arrayContaining(["component.numberDefaultZero:number:6.51"]));
     });
   });
 
@@ -58,7 +85,7 @@ describe("Config from files", () => {
     it("should assign value from it", async () => {
       await run("yaml-config", "two-namespaces");
 
-      expect(options).toEqual(expect.arrayContaining(["component.alias:alias-from-yaml"]));
+      expect(options).toEqual(expect.arrayContaining(["component.alias:string:alias-from-yaml"]));
     });
   });
 
@@ -66,7 +93,7 @@ describe("Config from files", () => {
     it("should assign value from it", async () => {
       await run("js-config", "two-namespaces");
 
-      expect(options).toEqual(expect.arrayContaining(["component.alias:alias-from-js"]));
+      expect(options).toEqual(expect.arrayContaining(["component.alias:string:alias-from-js"]));
     });
   });
 
@@ -74,7 +101,9 @@ describe("Config from files", () => {
     it("should assign value from the result of executing the function", async () => {
       await run("js-function-config", "two-namespaces");
 
-      expect(options).toEqual(expect.arrayContaining(["component.alias:alias-from-js-function"]));
+      expect(options).toEqual(
+        expect.arrayContaining(["component.alias:string:alias-from-js-function"])
+      );
     });
   });
 
@@ -83,7 +112,7 @@ describe("Config from files", () => {
       await run("js-async-function-config", "two-namespaces");
 
       expect(options).toEqual(
-        expect.arrayContaining(["component.alias:alias-from-async-js-function"])
+        expect.arrayContaining(["component.alias:string:alias-from-async-js-function"])
       );
     });
   });
@@ -96,7 +125,9 @@ describe("Config from files", () => {
         },
       });
 
-      expect(options).toEqual(expect.arrayContaining(["component.alias:alias-from-env-var"]));
+      expect(options).toEqual(
+        expect.arrayContaining(["component.alias:string:alias-from-env-var"])
+      );
     });
   });
 });

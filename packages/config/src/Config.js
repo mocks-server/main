@@ -4,6 +4,7 @@ const Namespace = require("./Namespace");
 const CommandLineArguments = require("./CommandLineArguments");
 const Environment = require("./Environment");
 const Files = require("./Files");
+const { types } = require("./types");
 
 const CONFIG_NAMESPACE = "config";
 
@@ -11,7 +12,7 @@ const CONFIG_OPTIONS = [
   {
     name: "readFile",
     description: "Read configuration file or not",
-    type: "boolean",
+    type: types.BOOLEAN,
     default: true,
   },
 ];
@@ -45,7 +46,7 @@ class Config {
   }
 
   async _loadFromArgs() {
-    return this._args.read();
+    return this._args.read(this._namespaces);
   }
 
   _mergeConfig() {

@@ -1,5 +1,7 @@
 const { isUndefined, snakeCase } = require("lodash");
 
+const { getOptionParserIncludingBooleans } = require("./types");
+
 function varSegment(segment) {
   return snakeCase(segment).toUpperCase();
 }
@@ -19,13 +21,14 @@ class Environment {
   }
 
   read(namespaces) {
+    this._config = {};
     namespaces.forEach((namespace) => {
       namespace.options.forEach((option) => {
         const value = this.loadFromEnv(namespace.name, option.name);
         if (!isUndefined(value)) {
           this._config[namespace.name] = this._config[namespace.name] || {};
-          // TODO, convert boolean values
-          this._config[namespace.name][option.name] = value;
+          const parser = getOptionParserIncludingBooleans(option);
+          this._config[namespace.name][option.name] = parser(value);
         }
       });
     });

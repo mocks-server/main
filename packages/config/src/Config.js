@@ -1,4 +1,6 @@
 const deepMerge = require("deepmerge");
+const Ajv = require("ajv");
+const betterAjvErrors = require("better-ajv-errors").default;
 
 const Namespace = require("./Namespace");
 const CommandLineArguments = require("./CommandLineArguments");
@@ -50,7 +52,7 @@ class Config {
   }
 
   _mergeConfig() {
-    return deepMerge.all([
+    this._config = deepMerge.all([
       this._programmaticConfig,
       this._fileConfig,
       this._envConfig,
@@ -58,21 +60,47 @@ class Config {
     ]);
   }
 
+  _validate() {
+    // TODO, move to validations file
+    const ajv = new Ajv({ allErrors: true });
+    const schema = Array.from(this._namespaces).reduce(
+      (fullSchema, namespace) => {
+        fullSchema.properties[namespace.name] = namespace.schema;
+        return fullSchema;
+      },
+      {
+        type: "object",
+        properties: {},
+        additionalProperties: false,
+      }
+    );
+    const validateProperties = ajv.compile(schema);
+    const valid = validateProperties(this._config);
+    if (!valid) {
+      throw new Error(betterAjvErrors(schema, this._config, validateProperties.errors));
+    }
+  }
+
   _initNamespaces() {
-    const mergedConfig = this._mergeConfig();
     this._namespaces.forEach((namespace) => {
-      namespace.init(mergedConfig);
+      namespace.init(this._config[namespace.name]);
     });
+  }
+
+  _mergeValidateAndInitNamespaces() {
+    this._mergeConfig();
+    this._validate();
+    this._initNamespaces();
   }
 
   async _load() {
     this._argsConfig = await this._loadFromArgs();
     this._envConfig = await this._loadFromEnv();
     // The config namespace contains options needed before reading the config files
-    this._initNamespaces();
+    this._mergeValidateAndInitNamespaces();
     this._fileConfig = await this._loadFromFile();
     // Init again after reading the config files
-    this._initNamespaces();
+    this._mergeValidateAndInitNamespaces();
   }
 
   async init(programmaticConfig = {}) {

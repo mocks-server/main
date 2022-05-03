@@ -12,7 +12,11 @@ function doNothingParser(value) {
 }
 
 function parseObject(value) {
-  return JSON.parse(value);
+  try {
+    return JSON.parse(value);
+  } catch (error) {
+    return value;
+  }
 }
 
 function getOptionParser(option) {

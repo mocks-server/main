@@ -44,9 +44,8 @@ function logConfig(config) {
 }
 
 function optionsFromLogs(joinedLogs) {
-  return joinedLogs
-    .match(/\[\-\->(.*)<\-\-\]/gim)
-    .map((option) => option.replace(LOG_OPTION_START, "").replace(LOG_OPTION_END, ""));
+  const matches = joinedLogs.match(/\[\-\->(.*)<\-\-\]/gim) || [];
+  return matches.map((option) => option.replace(LOG_OPTION_START, "").replace(LOG_OPTION_END, ""));
 }
 
 module.exports = {

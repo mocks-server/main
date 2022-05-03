@@ -49,6 +49,47 @@ describe("Config", () => {
     });
   });
 
+  describe("when an option is created", () => {
+    it("should have name property", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "String" });
+      expect(option.name).toEqual("fooOption");
+    });
+
+    it("should throw when type is string and default does not match type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({ name: "fooOption", type: "String", default: 5 })
+      ).toThrowError("default");
+    });
+
+    it("should throw when type is number and default does not match type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({ name: "fooOption", type: "Number", default: "5" })
+      ).toThrowError("default");
+    });
+
+    it("should throw when type is object and default does not match type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({ name: "fooOption", type: "Object", default: "{}" })
+      ).toThrowError("default");
+    });
+
+    it("should throw when type is boolean and default does not match type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({ name: "fooOption", type: "Boolean", default: "foo" })
+      ).toThrowError("default");
+    });
+  });
+
   describe("when no config is provided", () => {
     beforeEach(() => {
       ({ config, namespace, option } = createConfig());
@@ -135,22 +176,17 @@ describe("Config", () => {
     });
   });
 
-  describe("when programmatic config is provided", () => {
-    beforeEach(() => {
-      ({ config, namespace, option } = createConfig());
-    });
-
-    it("option should return value from programmatic options", async () => {
-      await config.init({
-        fooNamespace: { fooOption: "foo-value" },
-      });
-      expect(option.value).toEqual("foo-value");
-    });
-  });
-
   describe("when programmatic config is provided in init method", () => {
     beforeEach(() => {
       ({ config, namespace, option } = createConfig());
+    });
+
+    it("should throw when config does not pass validation", async () => {
+      await expect(
+        config.init({
+          fooNamespace: { fooOption: false },
+        })
+      ).rejects.toThrowError("fooOption");
     });
 
     it("option should get value from it", async () => {
@@ -161,12 +197,19 @@ describe("Config", () => {
     });
 
     it("option should have cloned value", async () => {
-      const fooNamespace = { fooOption: { foo: "foo" } };
-      await config.init({
-        fooNamespace,
+      config = new Config({ moduleName: "testObjectClone" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: { foo: "var" },
+        type: "Object",
       });
-      fooNamespace.fooOption.foo = "foo2";
-      expect(option.value).not.toBe(fooNamespace.fooOption);
+      const value = { fooOption: { foo: "foo" } };
+      await config.init({
+        fooNamespace: value,
+      });
+      value.fooOption.foo = "foo2";
+      expect(option.value).not.toBe(value.fooOption);
       expect(option.value).toEqual({ foo: "foo" });
     });
 
@@ -196,9 +239,7 @@ describe("Config", () => {
     });
 
     it("option should return default value", async () => {
-      await config.init({
-        foo: {},
-      });
+      await config.init({});
       expect(option.value).toEqual("default-str");
     });
   });
@@ -210,7 +251,7 @@ describe("Config", () => {
 
     it("option should return default value", async () => {
       await config.init({
-        fooNamespace: { fooOtherOption: "foo-value" },
+        fooNamespace: {},
       });
       expect(option.value).toEqual("default-str");
     });
@@ -227,6 +268,13 @@ describe("Config", () => {
       });
       await config.init();
       expect(option.value).toEqual("value-from-file");
+    });
+
+    it("should throw when config does not pass validation", async () => {
+      cosmiconfigStub.search.resolves({
+        config: { fooNamespace: { fooOption: 5 } },
+      });
+      await expect(config.init()).rejects.toThrow("fooOption");
     });
 
     it("should overwrite value from init options", async () => {
@@ -326,6 +374,18 @@ describe("Config", () => {
       process.env["TEST_A_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init();
       expect(option.value).toEqual("foo-from-env");
+    });
+
+    it("should throw when config does not pass validation", async () => {
+      config = new Config({ moduleName: "testEnvWrong" });
+      namespace = config.addNamespace("fooNamespace");
+      process.env["TEST_ENV_WRONG_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
+      option = namespace.addOption({
+        name: "fooOption",
+        default: {},
+        type: "Object",
+      });
+      await expect(config.init()).rejects.toThrowError("fooOption");
     });
 
     it("should return object value if option is of type Object", async () => {

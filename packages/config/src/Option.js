@@ -7,7 +7,6 @@ class Option {
     this._name = properties.name;
     this._type = properties.type;
     this._default = properties.default;
-    this._parser = properties.parser;
     this._value = this._default;
   }
 
@@ -25,10 +24,6 @@ class Option {
 
   get value() {
     return this._value;
-  }
-
-  get parser() {
-    return this._parser;
   }
 
   merge(value) {

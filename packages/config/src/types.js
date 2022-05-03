@@ -16,9 +16,6 @@ function parseObject(value) {
 }
 
 function getOptionParser(option) {
-  if (option.parser) {
-    return option.parser;
-  }
   if (option.type === types.NUMBER) {
     return parseFloat;
   }

@@ -533,21 +533,6 @@ describe("Config", () => {
       expect(option.value).toEqual("default-str");
     });
 
-    it("commander should call to parser when it is provided", async () => {
-      const parser = sandbox.stub();
-      config = new Config({ moduleName: "testK" });
-      namespace = config.addNamespace("fooNamespace");
-      option = namespace.addOption({
-        name: "fooOption",
-        default: false,
-        type: "Boolean",
-        parser,
-      });
-      await config.init();
-      // first call is from readFile config option
-      expect(commander.Option.prototype.argParser.getCall(1).args[0]).toEqual(parser);
-    });
-
     it("commander should call to Number parser when option is a Number", async () => {
       config = new Config({ moduleName: "testL" });
       namespace = config.addNamespace("fooNamespace");

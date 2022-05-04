@@ -4,6 +4,14 @@ const sinon = require("sinon");
 
 const Config = require("../../src/Config");
 
+function wait(time = 1000) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  });
+}
+
 describe("Config", () => {
   let sandbox, cosmiconfigStub, createConfig, config, namespace, option;
 
@@ -207,6 +215,73 @@ describe("Config", () => {
       expect(option.value).toEqual({ foo: "var" });
     });
 
+    it("option should emit an event after setting new value", async () => {
+      expect.assertions(2);
+      let resolver;
+      await config.init();
+      await config.start();
+      expect(option.value).toEqual("default-str");
+      const promise = new Promise((resolve) => {
+        resolver = resolve;
+      });
+      option.onChange((newValue) => {
+        expect(newValue).toEqual("new-str");
+        resolver();
+      });
+      option.value = "new-str";
+      return promise;
+    });
+
+    it("option should not emit an event after setting same value", async () => {
+      expect.assertions(2);
+      const spy = sinon.spy();
+      await config.init();
+      await config.start();
+      expect(option.value).toEqual("default-str");
+      option.onChange(spy);
+      option.value = "default-str";
+      await wait();
+
+      expect(spy.callCount).toEqual(0);
+    });
+
+    it("option event should be removed if returned callback is executed", async () => {
+      expect.assertions(2);
+      const spy = sinon.spy();
+      await config.init();
+      await config.start();
+      expect(option.value).toEqual("default-str");
+      const removeCallback = option.onChange(spy);
+      removeCallback();
+      option.value = "foo-str";
+      await wait();
+
+      expect(spy.callCount).toEqual(0);
+    });
+
+    it("option should emit an event after merging new value when it is of type object", async () => {
+      expect.assertions(2);
+      let resolver;
+      config = new Config({ moduleName: "testObjectSet" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: { foo: "var" },
+        type: "object",
+      });
+      await config.init();
+      expect(option.value).toEqual({ foo: "var" });
+      const promise = new Promise((resolve) => {
+        resolver = resolve;
+      });
+      option.onChange((newValue) => {
+        expect(newValue).toEqual({ foo: "var", foo2: "foo" });
+        resolver();
+      });
+      option.merge({ foo2: "foo" });
+      return promise;
+    });
+
     it("option should be undefined if no default value is provided", async () => {
       config = new Config({ moduleName: "testObjectSet" });
       namespace = config.addNamespace("fooNamespace");
@@ -229,6 +304,158 @@ describe("Config", () => {
       expect(option.value).toEqual(undefined);
       option.merge({ foo: "var" });
       expect(option.value).toEqual({ foo: "var" });
+    });
+  });
+
+  describe("when using namespace set method", () => {
+    let option2, option3;
+
+    beforeEach(async () => {
+      config = new Config({ moduleName: "testNamespaceSet" });
+      namespace = config.addNamespace("fooNamespace");
+      [option, option2, option3] = namespace.addOptions([
+        {
+          name: "fooOption",
+          default: true,
+          type: "boolean",
+        },
+        {
+          name: "fooOption2",
+          default: "foo",
+          type: "string",
+        },
+        {
+          name: "fooOption3",
+          default: { foo: "foo" },
+          type: "object",
+        },
+      ]);
+      await config.init();
+      await config.start();
+    });
+
+    it("options should return new values after setting it", async () => {
+      expect(option.value).toEqual(true);
+      expect(option2.value).toEqual("foo");
+      namespace.set({
+        fooOption: false,
+        fooOption2: "foo-new",
+      });
+      expect(option.value).toEqual(false);
+      expect(option2.value).toEqual("foo-new");
+    });
+
+    it("should emit option with new value after setting it", async () => {
+      expect.assertions(4);
+      let resolver;
+      const promise = new Promise((resolve) => {
+        resolver = resolve;
+      });
+      namespace.onChange((options) => {
+        expect(option.value).toEqual(false);
+        expect(options[0]).toBe(option);
+        resolver();
+      });
+      expect(option.value).toEqual(true);
+      expect(option2.value).toEqual("foo");
+      namespace.set({
+        fooOption: false,
+      });
+      return promise;
+    });
+
+    it("should emit option with new value after merging it when it is of type object", async () => {
+      expect.assertions(3);
+      let resolver;
+      const promise = new Promise((resolve) => {
+        resolver = resolve;
+      });
+      namespace.onChange((options) => {
+        expect(option3.value).toEqual({ foo: "foo", foo2: "foo2" });
+        expect(options[0]).toBe(option3);
+        resolver();
+      });
+      expect(option3.value).toEqual({ foo: "foo" });
+      namespace.set({
+        fooOption3: { foo2: "foo2" },
+      });
+      return promise;
+    });
+
+    it("should not emit option with same value after merging it when it is of type object", async () => {
+      const spy = sinon.spy();
+      namespace.onChange(spy);
+      namespace.set({
+        fooOption3: { foo: "foo" },
+      });
+      await wait();
+      expect(spy.callCount).toEqual(0);
+    });
+
+    it("should emit options with new value after setting it", async () => {
+      expect.assertions(7);
+      let resolver;
+      const promise = new Promise((resolve) => {
+        resolver = resolve;
+      });
+      namespace.onChange((options) => {
+        expect(option.value).toEqual(false);
+        expect(option2.value).toEqual("foo-new");
+        expect(options[0]).toBe(option);
+        expect(options[1]).toBe(option2);
+        expect(options.length).toEqual(2);
+        resolver();
+      });
+      expect(option.value).toEqual(true);
+      expect(option2.value).toEqual("foo");
+      namespace.set({
+        fooOption: false,
+        fooOption2: "foo-new",
+      });
+      return promise;
+    });
+
+    it("should not emit options with same value after setting it", async () => {
+      expect.assertions(5);
+      let resolver;
+      const promise = new Promise((resolve) => {
+        resolver = resolve;
+      });
+      namespace.onChange((options) => {
+        expect(option.value).toEqual(false);
+        expect(options[0]).toBe(option);
+        expect(options.length).toEqual(1);
+        resolver();
+      });
+      expect(option.value).toEqual(true);
+      expect(option2.value).toEqual("foo");
+      namespace.set({
+        fooOption: false,
+        fooOption2: "foo",
+      });
+      return promise;
+    });
+
+    it("should not emit if all options have same value after setting it", async () => {
+      const spy = sinon.spy();
+      namespace.onChange(spy);
+      namespace.set({
+        fooOption: true,
+        fooOption2: "foo",
+      });
+      await wait();
+      expect(spy.callCount).toEqual(0);
+    });
+
+    it("should not emit if onChange returned funcion is executed", async () => {
+      const spy = sinon.spy();
+      const removeEvent = namespace.onChange(spy);
+      removeEvent();
+      namespace.set({
+        fooOption: false,
+      });
+      await wait();
+      expect(spy.callCount).toEqual(0);
     });
   });
 

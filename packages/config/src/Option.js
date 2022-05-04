@@ -11,9 +11,14 @@ class Option {
     this._eventEmitter = new EventEmitter();
     validateOption(properties);
     this._name = properties.name;
+    this._metaData = properties.metaData;
     this._type = properties.type;
     this._default = properties.default;
     this._value = this._default;
+  }
+
+  get metaData() {
+    return this._metaData;
   }
 
   get name() {

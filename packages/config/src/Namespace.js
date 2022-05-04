@@ -6,9 +6,8 @@ const { types } = require("./types");
 const { addEventListener, CHANGE } = require("./events");
 
 class Namespace {
-  constructor(name, options = {}) {
+  constructor(name) {
     this._eventEmitter = new EventEmitter();
-    this._schema = options.schema;
     this._name = name;
     this._options = new Set();
   }
@@ -52,6 +51,7 @@ class Namespace {
     }
   }
 
+  // TODO, should it emit also any change in options? Then, events would be duplicated when set method is used
   onChange(listener) {
     return addEventListener(listener, CHANGE, this._eventEmitter);
   }

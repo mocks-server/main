@@ -13,6 +13,10 @@ function enforceDefaultTypeSchema(type) {
       description: { type: types.STRING },
       type: { enum: [type] },
       default: { type },
+      metaData: {
+        type: types.OBJECT,
+        additionalProperties: true,
+      },
     },
     additionalProperties: false,
   };

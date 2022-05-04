@@ -65,6 +65,17 @@ describe("Config", () => {
       expect(option.name).toEqual("fooOption");
     });
 
+    it("should have metaData property", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({
+        name: "fooOption",
+        type: "string",
+        metaData: { restartServer: true },
+      });
+      expect(option.metaData).toEqual({ restartServer: true });
+    });
+
     it("should throw when type is string and default does not match type", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");

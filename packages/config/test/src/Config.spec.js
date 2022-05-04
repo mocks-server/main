@@ -326,6 +326,35 @@ describe("Config", () => {
       expect(option.value).toEqual("value-from-file");
     });
 
+    it("should not return value from file if readFile is disabled in init method", async () => {
+      cosmiconfigStub.search.resolves({
+        config: { fooNamespace: { fooOption: "value-from-file" } },
+      });
+      await config.init({
+        config: { readFile: false },
+      });
+      expect(option.value).toEqual("default-str");
+    });
+
+    it("should not return value from file if readFile is disabled in argument", async () => {
+      commander.Command.prototype.opts.returns({ "config.readFile": false });
+      cosmiconfigStub.search.resolves({
+        config: { fooNamespace: { fooOption: "value-from-file" } },
+      });
+      await config.init();
+      expect(option.value).toEqual("default-str");
+    });
+
+    it("should not return value from file if readFile is disabled in environment", async () => {
+      ({ config, namespace, option } = createConfig({ moduleName: "testLoadFileDisabled" }));
+      process.env["TEST_LOAD_FILE_DISABLED_CONFIG_READ_FILE"] = "0";
+      cosmiconfigStub.search.resolves({
+        config: { fooNamespace: { fooOption: "value-from-file" } },
+      });
+      await config.init();
+      expect(option.value).toEqual("default-str");
+    });
+
     it("should throw when config does not pass validation", async () => {
       cosmiconfigStub.search.resolves({
         config: { fooNamespace: { fooOption: 5 } },
@@ -447,6 +476,21 @@ describe("Config", () => {
       process.env["TEST_A_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init();
       expect(option.value).toEqual("foo-from-env");
+    });
+
+    it("should not return value from it when readEnvironment option is disabled using init argument", async () => {
+      ({ config, namespace, option } = createConfig({ moduleName: "testDisabled" }));
+      process.env["TEST_DISABLED_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
+      await config.init({ config: { readEnvironment: false } });
+      expect(option.value).toEqual("default-str");
+    });
+
+    it("should not return value from it when readEnvironment option is disabled using argument", async () => {
+      commander.Command.prototype.opts.returns({ "config.readEnvironment": false });
+      ({ config, namespace, option } = createConfig({ moduleName: "testDisabled" }));
+      process.env["TEST_DISABLED_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
+      await config.init();
+      expect(option.value).toEqual("default-str");
     });
 
     it("should throw when config does not pass validation", async () => {
@@ -641,6 +685,13 @@ describe("Config", () => {
       expect(option.value).toEqual("foo-from-arg");
     });
 
+    it("should not return value from it if readArguments option is disabled in init method", async () => {
+      commander.Command.prototype.opts.returns({ "fooNamespace.fooOption": "foo-from-arg" });
+      ({ config, namespace, option } = createConfig({ moduleName: "testD" }));
+      await config.init({ config: { readArguments: false } });
+      expect(option.value).toEqual("default-str");
+    });
+
     it("should return object if option is of type object", async () => {
       commander.Command.prototype.opts.returns({
         "fooNamespace.fooOption": { foo: 1, foo2: { var: true, var2: "x-from-arg", var6: "xyz" } },
@@ -675,8 +726,8 @@ describe("Config", () => {
         type: "number",
       });
       await config.init();
-      // first call is from readFile config option
-      expect(commander.Option.prototype.argParser.getCall(1).args[0]("1.5")).toEqual(1.5);
+      // first three calls are from config options
+      expect(commander.Option.prototype.argParser.getCall(3).args[0]("1.5")).toEqual(1.5);
     });
 
     it("commander should call to empty parser when option is a string", async () => {

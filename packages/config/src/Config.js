@@ -16,10 +16,24 @@ const CONFIG_OPTIONS = [
     type: types.BOOLEAN,
     default: true,
   },
+  {
+    name: "readArguments",
+    description: "Read command line arguments or not",
+    type: types.BOOLEAN,
+    default: true,
+  },
+  {
+    name: "readEnvironment",
+    description: "Read environment or not",
+    type: types.BOOLEAN,
+    default: true,
+  },
 ];
 
 class Config {
   constructor({ moduleName } = {}) {
+    this._initializated = false;
+
     this._programmaticConfig = {};
     this._fileConfig = {};
     this._envConfig = {};
@@ -33,7 +47,8 @@ class Config {
     this._rootGroup = this.addGroup();
 
     this._configNamespace = this.addNamespace(CONFIG_NAMESPACE);
-    [this._readFile] = this._configNamespace.addOptions(CONFIG_OPTIONS);
+    [this._readFile, this._readArguments, this._readEnvironment] =
+      this._configNamespace.addOptions(CONFIG_OPTIONS);
   }
 
   async _loadFromFile() {
@@ -44,10 +59,16 @@ class Config {
   }
 
   async _loadFromEnv() {
+    if (this._readEnvironment.value !== true) {
+      return {};
+    }
     return this._environment.read(this._groups);
   }
 
   async _loadFromArgs() {
+    if (this._readArguments.value !== true) {
+      return {};
+    }
     return this._args.read(this._groups);
   }
 
@@ -76,14 +97,19 @@ class Config {
     this._initGroups();
   }
 
-  async _load({ allowAdditionalNamespaces = false } = {}) {
+  async _load({ allowAdditionalNamespaces = false } = true) {
+    this._mergeValidateAndInitGroups({ allowAdditionalNamespaces });
     this._argsConfig = await this._loadFromArgs();
+    this._mergeValidateAndInitGroups({ allowAdditionalNamespaces });
     this._envConfig = await this._loadFromEnv();
-    // The config namespace contains options needed before reading the config files
     this._mergeValidateAndInitGroups({ allowAdditionalNamespaces });
-    this._fileConfig = await this._loadFromFile();
-    // Init again after reading the config files
-    this._mergeValidateAndInitGroups({ allowAdditionalNamespaces });
+
+    // File does not change, so we only load it the first time
+    if (!this._initializated) {
+      this._fileConfig = await this._loadFromFile();
+      this._mergeValidateAndInitGroups({ allowAdditionalNamespaces });
+      this._initializated = true;
+    }
   }
 
   async init(programmaticConfig = {}) {

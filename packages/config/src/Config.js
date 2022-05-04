@@ -60,34 +60,39 @@ class Config {
     ]);
   }
 
-  _validate() {
-    validateConfig(this._config, { groups: this._groups });
+  _validate({ allowAdditionalNamespaces }) {
+    validateConfig(this._config, { groups: this._groups, allowAdditionalNamespaces });
   }
 
-  _initNamespaces() {
+  _initGroups() {
     this._groups.forEach((group) => {
       group.init(this._config);
     });
   }
 
-  _mergeValidateAndInitNamespaces() {
+  _mergeValidateAndInitGroups({ allowAdditionalNamespaces }) {
     this._mergeConfig();
-    this._validate();
-    this._initNamespaces();
+    this._validate({ allowAdditionalNamespaces });
+    this._initGroups();
   }
 
-  async _load() {
+  async _load({ allowAdditionalNamespaces = false } = {}) {
     this._argsConfig = await this._loadFromArgs();
     this._envConfig = await this._loadFromEnv();
     // The config namespace contains options needed before reading the config files
-    this._mergeValidateAndInitNamespaces();
+    this._mergeValidateAndInitGroups({ allowAdditionalNamespaces });
     this._fileConfig = await this._loadFromFile();
     // Init again after reading the config files
-    this._mergeValidateAndInitNamespaces();
+    this._mergeValidateAndInitGroups({ allowAdditionalNamespaces });
   }
 
   async init(programmaticConfig = {}) {
     this._programmaticConfig = deepMerge(this._programmaticConfig, programmaticConfig);
+    await this._load({ allowAdditionalNamespaces: true });
+  }
+
+  async start() {
+    // TODO, enable events
     await this._load();
   }
 

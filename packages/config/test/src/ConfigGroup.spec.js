@@ -265,6 +265,17 @@ describe("Config group", () => {
       ).rejects.toThrowError("fooOption");
     });
 
+    it("should not throw when config includes unknwon namespaces", async () => {
+      await config.init({
+        fooGroup: {
+          fooNamespace: { fooOption: "value" },
+          anotherNamespace: { fooOption2: "foo", anotherOption: false },
+        },
+        fooNewNamespace: { fooOption: 5, anotherOption: { fooProperty: true } },
+      });
+      expect(option.value).toEqual("value");
+    });
+
     it("option should get value from it", async () => {
       await config.init({
         fooGroup: { fooNamespace: { fooOption: "foo-value-2" } },
@@ -310,6 +321,61 @@ describe("Config group", () => {
         foo3: "z",
         foo4: "test",
       });
+    });
+  });
+
+  describe("when started", () => {
+    beforeEach(() => {
+      ({ config, group, namespace, option } = createConfig());
+    });
+
+    it("should throw when config has unknown namespaces", async () => {
+      await config.init({
+        fooGroup: {
+          fooNamespace: { fooOption: "value" },
+          anotherNamespace: { fooOption2: "foo", anotherOption: false },
+        },
+        fooNewNamespace: { fooOption: 5, anotherOption: { fooProperty: true } },
+      });
+      expect(option.value).toEqual("value");
+      await expect(config.start()).rejects.toThrow("fooNewNamespace");
+    });
+
+    it("should not throw when unknown namespaces are added after calling the init method", async () => {
+      await config.init({
+        fooGroup: {
+          fooNamespace: { fooOption: "value" },
+          anotherNamespace: { fooOption2: "foo", anotherOption: false },
+        },
+        fooNewNamespace: { fooOption3: 5, anotherOption3: { fooProperty: true } },
+      });
+      expect(option.value).toEqual("value");
+
+      const anotherNamespace = group.addNamespace("anotherNamespace");
+      const fooOption2 = anotherNamespace.addOption({
+        name: "fooOption2",
+        type: "string",
+      });
+      const anotherOption = anotherNamespace.addOption({
+        name: "anotherOption",
+        type: "boolean",
+      });
+      const fooNewNamespace = config.addNamespace("fooNewNamespace");
+      const fooOption3 = fooNewNamespace.addOption({
+        name: "fooOption3",
+        type: "number",
+      });
+      const anotherOption3 = fooNewNamespace.addOption({
+        name: "anotherOption3",
+        type: "object",
+      });
+
+      await config.start();
+
+      expect(fooOption2.value).toEqual("foo");
+      expect(anotherOption.value).toEqual(false);
+      expect(fooOption3.value).toEqual(5);
+      expect(anotherOption3.value).toEqual({ fooProperty: true });
     });
   });
 

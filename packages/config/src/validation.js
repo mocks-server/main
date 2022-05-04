@@ -31,11 +31,11 @@ const optionSchema = {
 
 const optionValidator = ajv.compile(optionSchema);
 
-function emptySchema() {
+function emptySchema({ allowAdditionalProperties = false } = {}) {
   return {
     type: types.OBJECT,
     properties: {},
-    additionalProperties: false,
+    additionalProperties: allowAdditionalProperties,
   };
 }
 
@@ -83,18 +83,21 @@ function namespaceSchema(namespace) {
   }, emptySchema());
 }
 
-function addGroupToSchema(group, fullSchema) {
+function addGroupToSchema(group, fullSchema, { allowAdditionalNamespaces }) {
+  if (allowAdditionalNamespaces) {
+    fullSchema.additionalProperties = true;
+  }
   return Array.from(group.namespaces).reduce((schema, namespace) => {
     schema.properties[namespace.name] = namespaceSchema(namespace);
     return schema;
   }, fullSchema);
 }
 
-function groupSchema(group) {
+function groupSchema(group, { allowAdditionalNamespaces }) {
   return Array.from(group.namespaces).reduce((schema, namespace) => {
     schema.properties[namespace.name] = namespaceSchema(namespace);
     return schema;
-  }, emptySchema());
+  }, emptySchema({ allowAdditionalProperties: allowAdditionalNamespaces }));
 }
 
 function validate(config, schema, validator) {
@@ -105,12 +108,12 @@ function validate(config, schema, validator) {
   }
 }
 
-function validateConfig(config, { groups }) {
+function validateConfig(config, { groups, allowAdditionalNamespaces }) {
   const schema = Array.from(groups).reduce((fullSchema, group) => {
     if (group.name) {
-      fullSchema.properties[group.name] = groupSchema(group);
+      fullSchema.properties[group.name] = groupSchema(group, { allowAdditionalNamespaces });
     } else {
-      addGroupToSchema(group, fullSchema);
+      addGroupToSchema(group, fullSchema, { allowAdditionalNamespaces });
     }
     return fullSchema;
   }, emptySchema());

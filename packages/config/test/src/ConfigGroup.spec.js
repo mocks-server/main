@@ -49,6 +49,21 @@ describe("Config group", () => {
       group = config.addGroup("foo");
       expect(group.name).toEqual("foo");
     });
+
+    it("should create options in group root when namespace has no name", async () => {
+      config = new Config();
+      group = config.addGroup("fooGroup");
+      namespace = group.addNamespace();
+      option = namespace.addOption({
+        name: "fooOption",
+        type: "string",
+        default: "default-str",
+      });
+      expect(option.value).toEqual("default-str");
+      await config.init({ fooGroup: { fooOption: "foo-str" } });
+      await config.start();
+      expect(option.value).toEqual("foo-str");
+    });
   });
 
   describe("when an option is created", () => {

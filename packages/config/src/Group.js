@@ -4,6 +4,7 @@ class Group {
   constructor(name) {
     this._name = name;
     this._namespaces = new Set();
+    this._rootNamespace = this.addNamespace();
   }
 
   get name() {
@@ -23,11 +24,18 @@ class Group {
 
   init(config) {
     this._namespaces.forEach((namespace) => {
-      namespace.init(this._getGroupConfig(config)[namespace.name]);
+      if (namespace.name) {
+        namespace.init(this._getGroupConfig(config)[namespace.name]);
+      } else {
+        namespace.init(this._getGroupConfig(config));
+      }
     });
   }
 
   addNamespace(name) {
+    if (this._rootNamespace && !name) {
+      return this._rootNamespace;
+    }
     const namespace = new Namespace(name);
     this._namespaces.add(namespace);
     return namespace;

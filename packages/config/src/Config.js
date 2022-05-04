@@ -123,7 +123,9 @@ class Config {
   }
 
   addGroup(name) {
-    // TODO, return root if no name is provided
+    if (this._rootGroup && !name) {
+      return this._rootGroup;
+    }
     const group = new Group(name);
     this._groups.add(group);
     return group;

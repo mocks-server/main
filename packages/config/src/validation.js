@@ -78,30 +78,27 @@ const typeValidators = {
   [types.OBJECT]: validateObject,
 };
 
-function namespaceSchema(namespace) {
+function namespaceSchema(namespace, parentSchema) {
   return Array.from(namespace.options).reduce((schema, option) => {
     schema.properties[option.name] = {
       type: option.type,
     };
     return schema;
-  }, emptySchema());
+  }, parentSchema || emptySchema());
 }
 
-function addGroupToSchema(group, fullSchema, { allowAdditionalNamespaces }) {
-  if (allowAdditionalNamespaces) {
-    fullSchema.additionalProperties = true;
+function groupSchema(group, { allowAdditionalNamespaces, parentSchema }) {
+  if (parentSchema && allowAdditionalNamespaces) {
+    parentSchema.additionalProperties = true;
   }
   return Array.from(group.namespaces).reduce((schema, namespace) => {
-    schema.properties[namespace.name] = namespaceSchema(namespace);
+    if (namespace.name) {
+      schema.properties[namespace.name] = namespaceSchema(namespace);
+    } else {
+      namespaceSchema(namespace, schema);
+    }
     return schema;
-  }, fullSchema);
-}
-
-function groupSchema(group, { allowAdditionalNamespaces }) {
-  return Array.from(group.namespaces).reduce((schema, namespace) => {
-    schema.properties[namespace.name] = namespaceSchema(namespace);
-    return schema;
-  }, emptySchema({ allowAdditionalProperties: allowAdditionalNamespaces }));
+  }, parentSchema || emptySchema({ allowAdditionalProperties: allowAdditionalNamespaces }));
 }
 
 function validate(config, schema, validator) {
@@ -117,7 +114,7 @@ function validateConfig(config, { groups, allowAdditionalNamespaces }) {
     if (group.name) {
       fullSchema.properties[group.name] = groupSchema(group, { allowAdditionalNamespaces });
     } else {
-      addGroupToSchema(group, fullSchema, { allowAdditionalNamespaces });
+      groupSchema(group, { allowAdditionalNamespaces, parentSchema: fullSchema });
     }
     return fullSchema;
   }, emptySchema());

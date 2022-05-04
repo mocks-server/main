@@ -1,9 +1,9 @@
 const deepMerge = require("deepmerge");
 
-const Namespace = require("./Namespace");
 const CommandLineArguments = require("./CommandLineArguments");
 const Environment = require("./Environment");
 const Files = require("./Files");
+const Group = require("./Group");
 const { types } = require("./types");
 const { validateConfig } = require("./validation");
 
@@ -29,7 +29,8 @@ class Config {
     this._args = new CommandLineArguments();
     this._environment = new Environment(moduleName);
 
-    this._namespaces = new Set();
+    this._groups = new Set();
+    this._rootGroup = this.addGroup();
 
     this._configNamespace = this.addNamespace(CONFIG_NAMESPACE);
     [this._readFile] = this._configNamespace.addOptions(CONFIG_OPTIONS);
@@ -43,11 +44,11 @@ class Config {
   }
 
   async _loadFromEnv() {
-    return this._environment.read(this._namespaces);
+    return this._environment.read(this._groups);
   }
 
   async _loadFromArgs() {
-    return this._args.read(this._namespaces);
+    return this._args.read(this._groups);
   }
 
   _mergeConfig() {
@@ -60,12 +61,12 @@ class Config {
   }
 
   _validate() {
-    validateConfig(this._config, { namespaces: this._namespaces });
+    validateConfig(this._config, { groups: this._groups });
   }
 
   _initNamespaces() {
-    this._namespaces.forEach((namespace) => {
-      namespace.init(this._config[namespace.name]);
+    this._groups.forEach((group) => {
+      group.init(this._config);
     });
   }
 
@@ -90,10 +91,15 @@ class Config {
     await this._load();
   }
 
+  addGroup(name) {
+    // TODO, return root if no name is provided
+    const group = new Group(name);
+    this._groups.add(group);
+    return group;
+  }
+
   addNamespace(name) {
-    const namespace = new Namespace(name);
-    this._namespaces.add(namespace);
-    return namespace;
+    return this._rootGroup.addNamespace(name);
   }
 }
 

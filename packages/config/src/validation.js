@@ -83,6 +83,20 @@ function namespaceSchema(namespace) {
   }, emptySchema());
 }
 
+function addGroupToSchema(group, fullSchema) {
+  return Array.from(group.namespaces).reduce((schema, namespace) => {
+    schema.properties[namespace.name] = namespaceSchema(namespace);
+    return schema;
+  }, fullSchema);
+}
+
+function groupSchema(group) {
+  return Array.from(group.namespaces).reduce((schema, namespace) => {
+    schema.properties[namespace.name] = namespaceSchema(namespace);
+    return schema;
+  }, emptySchema());
+}
+
 function validate(config, schema, validator) {
   const validateProperties = validator || ajv.compile(schema);
   const valid = validateProperties(config);
@@ -91,9 +105,13 @@ function validate(config, schema, validator) {
   }
 }
 
-function validateConfig(config, { namespaces }) {
-  const schema = Array.from(namespaces).reduce((fullSchema, namespace) => {
-    fullSchema.properties[namespace.name] = namespaceSchema(namespace);
+function validateConfig(config, { groups }) {
+  const schema = Array.from(groups).reduce((fullSchema, group) => {
+    if (group.name) {
+      fullSchema.properties[group.name] = groupSchema(group);
+    } else {
+      addGroupToSchema(group, fullSchema);
+    }
     return fullSchema;
   }, emptySchema());
   validate(config, schema);

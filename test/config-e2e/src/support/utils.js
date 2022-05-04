@@ -1,3 +1,4 @@
+const { compact } = require("lodash");
 const fsExtra = require("fs-extra");
 const path = require("path");
 
@@ -30,15 +31,25 @@ function fixtureRunner(name, indexName, options = {}) {
   });
 }
 
+function logScope(scopes) {
+  return compact(scopes).join(".");
+}
+
 function logConfig(config) {
-  config._namespaces.forEach((namespace) => {
-    namespace._options.forEach((option) => {
-      const valueType = typeof option.value;
-      console.log(
-        `${LOG_OPTION_START}${namespace.name}.${option.name}:${valueType}:${
-          valueType === "object" ? JSON.stringify(option.value) : option.value
-        }${LOG_OPTION_END}`
-      );
+  config._groups.forEach((group) => {
+    group._namespaces.forEach((namespace) => {
+      namespace._options.forEach((option) => {
+        const valueType = typeof option.value;
+        console.log(
+          `${LOG_OPTION_START}${logScope([
+            group.name,
+            namespace.name,
+            option.name,
+          ])}:${valueType}:${
+            valueType === "object" ? JSON.stringify(option.value) : option.value
+          }${LOG_OPTION_END}`
+        );
+      });
     });
   });
 }

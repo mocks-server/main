@@ -19,6 +19,18 @@ describe("Config from args", () => {
     });
   });
 
+  describe("when argument is provided to group", () => {
+    it("option should get the value from it", async () => {
+      await run("no-config", "two-groups", {
+        args: ["--group.component.alias=alias-from-arg"],
+      });
+      expect(runner.exitCode).toEqual(0);
+      expect(options).toEqual(
+        expect.arrayContaining(["group.component.alias:string:alias-from-arg"])
+      );
+    });
+  });
+
   describe("when option is string", () => {
     it("option should get the value from it", async () => {
       await run("no-config", "option-types", {
@@ -161,7 +173,7 @@ describe("Config from args", () => {
   });
 
   describe("when file is provided", () => {
-    it("env var should overwrite the value from it", async () => {
+    it("argument should overwrite the value from it", async () => {
       await run("js-async-function-config", "two-namespaces", {
         args: ["--component.alias=alias-from-arg"],
         env: {
@@ -170,6 +182,28 @@ describe("Config from args", () => {
       });
 
       expect(options).toEqual(expect.arrayContaining(["component.alias:string:alias-from-arg"]));
+    });
+  });
+
+  describe("when file is provided with groups config", () => {
+    it("argument should overwrite the value from it", async () => {
+      await run("json-config-two-groups", "two-groups", {
+        args: [
+          "--group.component.alias=alias-from-arg",
+          "--fooGroup.fooNamespace.fooOption=option-from-arg",
+        ],
+        env: {
+          MOCKS_GROUP_COMPONENT_ALIAS: "alias-from-env-var",
+          MOCKS_FOO_GROUP_FOO_NAMESPACE_FOO_OPTION: "option-from-env-var",
+        },
+      });
+
+      expect(options).toEqual(
+        expect.arrayContaining(["group.component.alias:string:alias-from-arg"])
+      );
+      expect(options).toEqual(
+        expect.arrayContaining(["fooGroup.fooNamespace.fooOption:string:option-from-arg"])
+      );
     });
   });
 

@@ -21,6 +21,24 @@ describe("Config from env vars", () => {
     });
   });
 
+  describe("when env var is provided to group", () => {
+    it("option should get the value from env var", async () => {
+      await run("no-config", "two-groups", {
+        env: {
+          MOCKS_GROUP_COMPONENT_ALIAS: "alias-from-env",
+          MOCKS_FOO_GROUP_FOO_NAMESPACE_FOO_OPTION: "option-from-env",
+        },
+      });
+      expect(runner.exitCode).toEqual(0);
+      expect(options).toEqual(
+        expect.arrayContaining(["group.component.alias:string:alias-from-env"])
+      );
+      expect(options).toEqual(
+        expect.arrayContaining(["fooGroup.fooNamespace.fooOption:string:option-from-env"])
+      );
+    });
+  });
+
   describe("when option is string", () => {
     it("option should get the value from it", async () => {
       await run("no-config", "option-types", {

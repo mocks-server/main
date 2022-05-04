@@ -1,0 +1,12 @@
+{
+  "fooGroup": {
+    "fooNamespace": {
+      "fooOption": "option-from-file"
+    }
+  },
+  "group": {
+    "component": {
+      "alias": "alias-from-json"
+    }
+  }
+}

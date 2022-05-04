@@ -91,6 +91,19 @@ describe("Config from files", () => {
     });
   });
 
+  describe("when .mocksrc.json config is provided with groups", () => {
+    it("should assign values from it", async () => {
+      await run("json-config-two-groups", "two-groups");
+
+      expect(options).toEqual(
+        expect.arrayContaining(["group.component.alias:string:alias-from-json"])
+      );
+      expect(options).toEqual(
+        expect.arrayContaining(["fooGroup.fooNamespace.fooOption:string:option-from-file"])
+      );
+    });
+  });
+
   describe("when .mocksrc.yaml config is provided", () => {
     it("should assign value from it", async () => {
       await run("yaml-config", "two-namespaces");

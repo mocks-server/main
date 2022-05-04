@@ -39,7 +39,7 @@ class Config {
     if (this._readFile.value !== true) {
       return {};
     }
-    return this._files.read();
+    return this._files.read(this._programmaticConfig);
   }
 
   async _loadFromEnv() {

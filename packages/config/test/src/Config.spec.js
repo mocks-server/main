@@ -389,6 +389,23 @@ describe("Config", () => {
       ({ config, namespace, option } = createConfig());
     });
 
+    it("should receive previous config from init as argument", async () => {
+      const func = sinon.stub().returns({ fooNamespace: { fooOption: "value-from-file" } });
+      cosmiconfigStub.search.resolves({
+        config: func,
+      });
+      await config.init({
+        fooNamespace: {
+          fooOption: "foo-from-init",
+        },
+      });
+      expect(func.getCall(0).args[0]).toEqual({
+        fooNamespace: {
+          fooOption: "foo-from-init",
+        },
+      });
+    });
+
     it("should return value from result of sync function", async () => {
       cosmiconfigStub.search.resolves({
         config: () => ({ fooNamespace: { fooOption: "value-from-file" } }),

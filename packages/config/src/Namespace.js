@@ -18,23 +18,6 @@ class Namespace {
     return options.map((option) => this.addOption(option));
   }
 
-  _schemaBasedOnOptions() {
-    // TODO, move to validations file
-    return Array.from(this._options).reduce(
-      (schema, option) => {
-        schema.properties[option.name] = {
-          type: option.type.toLowerCase(),
-        };
-        return schema;
-      },
-      {
-        type: "object",
-        properties: {},
-        additionalProperties: false,
-      }
-    );
-  }
-
   init(configuration) {
     if (configuration) {
       this._options.forEach((option) => {
@@ -53,10 +36,6 @@ class Namespace {
 
   get options() {
     return this._options;
-  }
-
-  get schema() {
-    return this._schema || this._schemaBasedOnOptions();
   }
 }
 

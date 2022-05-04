@@ -65,12 +65,26 @@ describe("Config", () => {
       ).toThrowError("default");
     });
 
+    it("should throw when setting value if type is string and value does not match type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "String" });
+      expect(() => (option.value = 5)).toThrowError("5 is not of type String");
+    });
+
     it("should throw when type is number and default does not match type", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "Number", default: "5" })
       ).toThrowError("default");
+    });
+
+    it("should throw when setting value if type is number and value does not match type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "Number" });
+      expect(() => (option.value = "foo")).toThrowError("foo is not of type Number");
     });
 
     it("should throw when type is object and default does not match type", async () => {
@@ -81,12 +95,26 @@ describe("Config", () => {
       ).toThrowError("default");
     });
 
+    it("should throw when setting value if type is object and value does not match type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "Object" });
+      expect(() => (option.value = "foo")).toThrowError("foo is not of type Object");
+    });
+
     it("should throw when type is boolean and default does not match type", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "Boolean", default: "foo" })
       ).toThrowError("default");
+    });
+
+    it("should throw when setting value if type is boolean and value does not match type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "Boolean" });
+      expect(() => (option.value = 1)).toThrowError("1 is not of type Boolean");
     });
   });
 
@@ -121,6 +149,34 @@ describe("Config", () => {
       expect(option.value).toEqual("default-str");
       option.value = "new-str";
       expect(option.value).toEqual("new-str");
+    });
+
+    it("option should return new value after setting it when it is of type Number", async () => {
+      config = new Config({ moduleName: "testNumberSet" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: 5,
+        type: "Number",
+      });
+      await config.init();
+      expect(option.value).toEqual(5);
+      option.value = 10;
+      expect(option.value).toEqual(10);
+    });
+
+    it("option should return new value after setting it when it is of type Boolean", async () => {
+      config = new Config({ moduleName: "testBooleanSet" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: true,
+        type: "Boolean",
+      });
+      await config.init();
+      expect(option.value).toEqual(true);
+      option.value = false;
+      expect(option.value).toEqual(false);
     });
 
     it("option should return new value after merging it when option is of type Object", async () => {

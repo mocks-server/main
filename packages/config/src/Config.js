@@ -1,12 +1,11 @@
 const deepMerge = require("deepmerge");
-const Ajv = require("ajv");
-const betterAjvErrors = require("better-ajv-errors").default;
 
 const Namespace = require("./Namespace");
 const CommandLineArguments = require("./CommandLineArguments");
 const Environment = require("./Environment");
 const Files = require("./Files");
 const { types } = require("./types");
+const { validateConfig } = require("./validation");
 
 const CONFIG_NAMESPACE = "config";
 
@@ -61,24 +60,7 @@ class Config {
   }
 
   _validate() {
-    // TODO, move to validations file
-    const ajv = new Ajv({ allErrors: true });
-    const schema = Array.from(this._namespaces).reduce(
-      (fullSchema, namespace) => {
-        fullSchema.properties[namespace.name] = namespace.schema;
-        return fullSchema;
-      },
-      {
-        type: "object",
-        properties: {},
-        additionalProperties: false,
-      }
-    );
-    const validateProperties = ajv.compile(schema);
-    const valid = validateProperties(this._config);
-    if (!valid) {
-      throw new Error(betterAjvErrors(schema, this._config, validateProperties.errors));
-    }
+    validateConfig(this._config, { namespaces: this._namespaces });
   }
 
   _initNamespaces() {

@@ -17,6 +17,14 @@ describe("Config from args", () => {
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["config.readFile:boolean:false"]));
     });
+
+    it("option should not get the value from it when readArguments is disabled in init method", async () => {
+      await run("no-config", "disable-read-arguments", {
+        args: ["--no-config.readFile"],
+      });
+      expect(runner.exitCode).toEqual(0);
+      expect(options).toEqual(expect.arrayContaining(["config.readFile:boolean:true"]));
+    });
   });
 
   describe("when argument is provided to group", () => {

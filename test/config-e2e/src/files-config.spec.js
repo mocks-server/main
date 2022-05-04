@@ -48,6 +48,16 @@ describe("Config from files", () => {
     });
   });
 
+  describe("when readFiles is disabled using argument", () => {
+    it("should not assign value from it", async () => {
+      await run("package-config", "two-namespaces", {
+        args: ["--no-config.readFile"],
+      });
+
+      expect(options).toEqual(expect.arrayContaining(["component.alias:string:foo-alias"]));
+    });
+  });
+
   describe("when .mocksrc.json config is provided", () => {
     it("should assign value from it", async () => {
       await run("json-config", "two-namespaces");

@@ -21,6 +21,19 @@ describe("Config from env vars", () => {
     });
   });
 
+  describe("when env vars are disabled using argument", () => {
+    it("option should not get the value from env var", async () => {
+      await run("no-config", "only-init", {
+        args: ["--no-config.readEnvironment"],
+        env: {
+          MOCKS_CONFIG_READ_FILE: false,
+        },
+      });
+      expect(runner.exitCode).toEqual(0);
+      expect(options).toEqual(expect.arrayContaining(["config.readFile:boolean:true"]));
+    });
+  });
+
   describe("when env var is provided to group", () => {
     it("option should get the value from env var", async () => {
       await run("no-config", "two-groups", {

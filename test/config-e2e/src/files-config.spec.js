@@ -55,7 +55,7 @@ describe("Config from files", () => {
       expect(options).toEqual(expect.arrayContaining(["component.alias:string:alias-from-json"]));
     });
 
-    it("should assign boolean type to Boolean vars", async () => {
+    it("should assign boolean type to boolean vars", async () => {
       await run("json-config-option-types", "option-types");
 
       expect(options).toEqual(
@@ -66,7 +66,7 @@ describe("Config from files", () => {
       );
     });
 
-    it("should assign string type to String vars", async () => {
+    it("should assign string type to string vars", async () => {
       await run("json-config-option-types", "option-types");
 
       expect(options).toEqual(
@@ -74,7 +74,7 @@ describe("Config from files", () => {
       );
     });
 
-    it("should merge object when option is of type Object", async () => {
+    it("should merge object when option is of type object", async () => {
       await run("json-config-option-types", "option-types");
 
       expect(options).toEqual(
@@ -84,7 +84,7 @@ describe("Config from files", () => {
       );
     });
 
-    it("should assign number type to Number vars", async () => {
+    it("should assign number type to number vars", async () => {
       await run("json-config-option-types", "option-types");
 
       expect(options).toEqual(expect.arrayContaining(["component.numberDefaultZero:number:6.51"]));

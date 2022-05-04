@@ -21,7 +21,7 @@ describe("Config from env vars", () => {
     });
   });
 
-  describe("when option is String", () => {
+  describe("when option is string", () => {
     it("option should get the value from it", async () => {
       await run("no-config", "option-types", {
         env: {
@@ -35,7 +35,7 @@ describe("Config from env vars", () => {
     });
   });
 
-  describe("when option is Number", () => {
+  describe("when option is number", () => {
     it("option should get the value from it", async () => {
       await run("no-config", "option-types", {
         env: {
@@ -77,7 +77,7 @@ describe("Config from env vars", () => {
     });
   });
 
-  describe("when option is Boolean and default value is true", () => {
+  describe("when option is boolean and default value is true", () => {
     it("option should be true if no env var is provided", async () => {
       await run("no-config", "option-types");
       expect(runner.exitCode).toEqual(0);
@@ -135,7 +135,7 @@ describe("Config from env vars", () => {
     });
   });
 
-  describe("when option is Boolean and default value is false", () => {
+  describe("when option is boolean and default value is false", () => {
     it("option should be true if env var is provided", async () => {
       await run("no-config", "option-types", {
         env: {
@@ -185,7 +185,7 @@ describe("Config from env vars", () => {
     });
   });
 
-  describe("when option is Object", () => {
+  describe("when option is object", () => {
     it("option should merge the value from env var", async () => {
       await run("no-config", "option-types", {
         env: {

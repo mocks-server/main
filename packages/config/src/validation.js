@@ -6,46 +6,25 @@ const ajv = new Ajv({ allErrors: true });
 
 const { types } = require("./types");
 
-const optionCommonProps = {
-  name: { type: "string" },
-  description: { type: "string" },
-};
+function enforceDefaultTypeSchema(type) {
+  return {
+    properties: {
+      name: { type: types.STRING },
+      description: { type: types.STRING },
+      type: { enum: [type] },
+      default: { type },
+    },
+    additionalProperties: false,
+  };
+}
 
 const optionSchema = {
-  type: "object",
+  type: types.OBJECT,
   oneOf: [
-    {
-      properties: {
-        ...optionCommonProps,
-        type: { enum: [types.NUMBER] },
-        default: { type: "number" },
-      },
-      additionalProperties: false,
-    },
-    {
-      properties: {
-        ...optionCommonProps,
-        type: { enum: [types.STRING] },
-        default: { type: "string" },
-      },
-      additionalProperties: false,
-    },
-    {
-      properties: {
-        ...optionCommonProps,
-        type: { enum: [types.BOOLEAN] },
-        default: { type: "boolean" },
-      },
-      additionalProperties: false,
-    },
-    {
-      properties: {
-        ...optionCommonProps,
-        type: { enum: [types.OBJECT] },
-        default: { type: "object" },
-      },
-      additionalProperties: false,
-    },
+    enforceDefaultTypeSchema(types.NUMBER),
+    enforceDefaultTypeSchema(types.STRING),
+    enforceDefaultTypeSchema(types.BOOLEAN),
+    enforceDefaultTypeSchema(types.OBJECT),
   ],
   required: ["name", "type"],
 };
@@ -54,7 +33,7 @@ const optionValidator = ajv.compile(optionSchema);
 
 function emptySchema() {
   return {
-    type: "object",
+    type: types.OBJECT,
     properties: {},
     additionalProperties: false,
   };
@@ -98,7 +77,7 @@ const typeValidators = {
 function namespaceSchema(namespace) {
   return Array.from(namespace.options).reduce((schema, option) => {
     schema.properties[option.name] = {
-      type: option.type.toLowerCase(),
+      type: option.type,
     };
     return schema;
   }, emptySchema());

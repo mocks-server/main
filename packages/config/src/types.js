@@ -1,8 +1,8 @@
 const types = {
-  NUMBER: "Number",
-  STRING: "String",
-  BOOLEAN: "Boolean",
-  OBJECT: "Object",
+  NUMBER: "number",
+  STRING: "string",
+  BOOLEAN: "boolean",
+  OBJECT: "object",
 };
 
 const FALSY_VALUES = ["false", "0", 0];

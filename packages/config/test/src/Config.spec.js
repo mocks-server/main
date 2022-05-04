@@ -26,7 +26,7 @@ describe("Config", () => {
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
-        type: "String",
+        type: "string",
         default: "default-str",
       });
       return {
@@ -53,7 +53,7 @@ describe("Config", () => {
     it("should have name property", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
-      option = namespace.addOption({ name: "fooOption", type: "String" });
+      option = namespace.addOption({ name: "fooOption", type: "string" });
       expect(option.name).toEqual("fooOption");
     });
 
@@ -61,60 +61,60 @@ describe("Config", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       expect(() =>
-        namespace.addOption({ name: "fooOption", type: "String", default: 5 })
+        namespace.addOption({ name: "fooOption", type: "string", default: 5 })
       ).toThrowError("default");
     });
 
     it("should throw when setting value if type is string and value does not match type", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
-      option = namespace.addOption({ name: "fooOption", type: "String" });
-      expect(() => (option.value = 5)).toThrowError("5 is not of type String");
+      option = namespace.addOption({ name: "fooOption", type: "string" });
+      expect(() => (option.value = 5)).toThrowError("5 is not of type string");
     });
 
     it("should throw when type is number and default does not match type", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       expect(() =>
-        namespace.addOption({ name: "fooOption", type: "Number", default: "5" })
+        namespace.addOption({ name: "fooOption", type: "number", default: "5" })
       ).toThrowError("default");
     });
 
     it("should throw when setting value if type is number and value does not match type", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
-      option = namespace.addOption({ name: "fooOption", type: "Number" });
-      expect(() => (option.value = "foo")).toThrowError("foo is not of type Number");
+      option = namespace.addOption({ name: "fooOption", type: "number" });
+      expect(() => (option.value = "foo")).toThrowError("foo is not of type number");
     });
 
     it("should throw when type is object and default does not match type", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       expect(() =>
-        namespace.addOption({ name: "fooOption", type: "Object", default: "{}" })
+        namespace.addOption({ name: "fooOption", type: "object", default: "{}" })
       ).toThrowError("default");
     });
 
     it("should throw when setting value if type is object and value does not match type", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
-      option = namespace.addOption({ name: "fooOption", type: "Object" });
-      expect(() => (option.value = "foo")).toThrowError("foo is not of type Object");
+      option = namespace.addOption({ name: "fooOption", type: "object" });
+      expect(() => (option.value = "foo")).toThrowError("foo is not of type object");
     });
 
     it("should throw when type is boolean and default does not match type", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       expect(() =>
-        namespace.addOption({ name: "fooOption", type: "Boolean", default: "foo" })
+        namespace.addOption({ name: "fooOption", type: "boolean", default: "foo" })
       ).toThrowError("default");
     });
 
     it("should throw when setting value if type is boolean and value does not match type", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
-      option = namespace.addOption({ name: "fooOption", type: "Boolean" });
-      expect(() => (option.value = 1)).toThrowError("1 is not of type Boolean");
+      option = namespace.addOption({ name: "fooOption", type: "boolean" });
+      expect(() => (option.value = 1)).toThrowError("1 is not of type boolean");
     });
   });
 
@@ -132,13 +132,13 @@ describe("Config", () => {
       expect(option.value).toEqual("default-str");
     });
 
-    it("should return default value of options of type Object", async () => {
+    it("should return default value of options of type object", async () => {
       config = new Config({ moduleName: "testObjectDefault" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: { foo: "var" },
-        type: "Object",
+        type: "object",
       });
       await config.init();
       expect(option.value).toEqual({ foo: "var" });
@@ -151,13 +151,13 @@ describe("Config", () => {
       expect(option.value).toEqual("new-str");
     });
 
-    it("option should return new value after setting it when it is of type Number", async () => {
-      config = new Config({ moduleName: "testNumberSet" });
+    it("option should return new value after setting it when it is of type number", async () => {
+      config = new Config({ moduleName: "testnumberSet" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: 5,
-        type: "Number",
+        type: "number",
       });
       await config.init();
       expect(option.value).toEqual(5);
@@ -165,13 +165,13 @@ describe("Config", () => {
       expect(option.value).toEqual(10);
     });
 
-    it("option should return new value after setting it when it is of type Boolean", async () => {
-      config = new Config({ moduleName: "testBooleanSet" });
+    it("option should return new value after setting it when it is of type boolean", async () => {
+      config = new Config({ moduleName: "testbooleanSet" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: true,
-        type: "Boolean",
+        type: "boolean",
       });
       await config.init();
       expect(option.value).toEqual(true);
@@ -179,13 +179,13 @@ describe("Config", () => {
       expect(option.value).toEqual(false);
     });
 
-    it("option should return new value after merging it when option is of type Object", async () => {
+    it("option should return new value after merging it when option is of type object", async () => {
       config = new Config({ moduleName: "testObjectSet" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: { foo: "var" },
-        type: "Object",
+        type: "object",
       });
       await config.init();
       expect(option.value).toEqual({ foo: "var" });
@@ -193,13 +193,13 @@ describe("Config", () => {
       expect(option.value).toEqual({ foo2: "var2", foo: "var" });
     });
 
-    it("option should not merge value if it is undefined when option is of type Object", async () => {
+    it("option should not merge value if it is undefined when option is of type object", async () => {
       config = new Config({ moduleName: "testObjectSet" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: { foo: "var" },
-        type: "Object",
+        type: "object",
       });
       await config.init();
       expect(option.value).toEqual({ foo: "var" });
@@ -212,7 +212,7 @@ describe("Config", () => {
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
-        type: "Object",
+        type: "object",
       });
       await config.init();
       expect(option.value).toEqual(undefined);
@@ -223,7 +223,7 @@ describe("Config", () => {
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
-        type: "Object",
+        type: "object",
       });
       await config.init();
       expect(option.value).toEqual(undefined);
@@ -258,7 +258,7 @@ describe("Config", () => {
       option = namespace.addOption({
         name: "fooOption",
         default: { foo: "var" },
-        type: "Object",
+        type: "object",
       });
       const value = { fooOption: { foo: "foo" } };
       await config.init({
@@ -269,13 +269,13 @@ describe("Config", () => {
       expect(option.value).toEqual({ foo: "foo" });
     });
 
-    it("should merge value from default if option is of type Object", async () => {
+    it("should merge value from default if option is of type object", async () => {
       config = new Config({ moduleName: "testObjectInitExtend" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: { foo: 2, foo2: { var: true, var3: "foo" }, foo4: "test" },
-        type: "Object",
+        type: "object",
       });
       await config.init({
         fooNamespace: { fooOption: { foo: 4, foo2: { var: false, var4: "y" }, foo3: "z" } },
@@ -360,7 +360,7 @@ describe("Config", () => {
       expect(option.value).toEqual("default-str");
     });
 
-    it("should return Object when option is of type Object", async () => {
+    it("should return object when option is of type object", async () => {
       cosmiconfigStub.search.resolves({
         config: {
           fooNamespace: {
@@ -373,7 +373,7 @@ describe("Config", () => {
       option = namespace.addOption({
         name: "fooOption",
         default: {},
-        type: "Object",
+        type: "object",
       });
       await config.init();
       expect(option.value).toEqual({
@@ -439,12 +439,12 @@ describe("Config", () => {
       option = namespace.addOption({
         name: "fooOption",
         default: {},
-        type: "Object",
+        type: "object",
       });
       await expect(config.init()).rejects.toThrowError("fooOption");
     });
 
-    it("should return object value if option is of type Object", async () => {
+    it("should return object value if option is of type object", async () => {
       config = new Config({ moduleName: "testObjectEnv" });
       namespace = config.addNamespace("fooNamespace");
       process.env["TEST_OBJECT_ENV_FOO_NAMESPACE_FOO_OPTION"] =
@@ -452,7 +452,7 @@ describe("Config", () => {
       option = namespace.addOption({
         name: "fooOption",
         default: {},
-        type: "Object",
+        type: "object",
       });
       await config.init();
       expect(option.value).toEqual({ foo: 1, foo2: { var: false, var2: "x" } });
@@ -465,7 +465,7 @@ describe("Config", () => {
       option = namespace.addOption({
         name: "fooOption",
         default: true,
-        type: "Boolean",
+        type: "boolean",
       });
       await config.init();
       expect(option.value).toEqual(false);
@@ -478,7 +478,7 @@ describe("Config", () => {
       option = namespace.addOption({
         name: "fooOption",
         default: true,
-        type: "Boolean",
+        type: "boolean",
       });
       await config.init();
       expect(option.value).toEqual(false);
@@ -491,7 +491,7 @@ describe("Config", () => {
       option = namespace.addOption({
         name: "fooOption",
         default: true,
-        type: "Boolean",
+        type: "boolean",
       });
       await config.init();
       expect(option.value).toEqual(false);
@@ -504,7 +504,7 @@ describe("Config", () => {
       option = namespace.addOption({
         name: "fooOption",
         default: true,
-        type: "Boolean",
+        type: "boolean",
       });
       await config.init();
       expect(option.value).toEqual(false);
@@ -517,7 +517,7 @@ describe("Config", () => {
       option = namespace.addOption({
         name: "fooOption",
         default: true,
-        type: "Boolean",
+        type: "boolean",
       });
       await config.init();
       expect(option.value).toEqual(true);
@@ -530,7 +530,7 @@ describe("Config", () => {
       option = namespace.addOption({
         name: "fooOption",
         default: true,
-        type: "Boolean",
+        type: "boolean",
       });
       await config.init();
       expect(option.value).toEqual(true);
@@ -553,7 +553,7 @@ describe("Config", () => {
       expect(option.value).toEqual("foo-from-env");
     });
 
-    it("should merge value from init if option is of type Object", async () => {
+    it("should merge value from init if option is of type object", async () => {
       config = new Config({ moduleName: "testObjectEnvExtend" });
       namespace = config.addNamespace("fooNamespace");
       process.env["TEST_OBJECT_ENV_EXTEND_FOO_NAMESPACE_FOO_OPTION"] =
@@ -561,7 +561,7 @@ describe("Config", () => {
       option = namespace.addOption({
         name: "fooOption",
         default: {},
-        type: "Object",
+        type: "object",
       });
       await config.init({
         fooNamespace: { fooOption: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" } },
@@ -573,7 +573,7 @@ describe("Config", () => {
       });
     });
 
-    it("should merge value from default if option is of type Object", async () => {
+    it("should merge value from default if option is of type object", async () => {
       config = new Config({ moduleName: "testObjectEnvExtendDefault" });
       namespace = config.addNamespace("fooNamespace");
       process.env["TEST_OBJECT_ENV_EXTEND_DEFAULT_FOO_NAMESPACE_FOO_OPTION"] =
@@ -581,7 +581,7 @@ describe("Config", () => {
       option = namespace.addOption({
         name: "fooOption",
         default: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" },
-        type: "Object",
+        type: "object",
       });
       await config.init();
       expect(option.value).toEqual({
@@ -591,7 +591,7 @@ describe("Config", () => {
       });
     });
 
-    it("should merge value from init and file if option is of type Object", async () => {
+    it("should merge value from init and file if option is of type object", async () => {
       config = new Config({ moduleName: "testObjectEnvExtend2" });
       cosmiconfigStub.search.resolves({
         config: { fooNamespace: { fooOption: { foo2: { var: true, var5: 5 }, foo4: "zy" } } },
@@ -602,7 +602,7 @@ describe("Config", () => {
       option = namespace.addOption({
         name: "fooOption",
         default: {},
-        type: "Object",
+        type: "object",
       });
       await config.init({
         fooNamespace: { fooOption: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" } },
@@ -624,16 +624,16 @@ describe("Config", () => {
       expect(option.value).toEqual("foo-from-arg");
     });
 
-    it("should return Object if option is of type Object", async () => {
+    it("should return object if option is of type object", async () => {
       commander.Command.prototype.opts.returns({
         "fooNamespace.fooOption": { foo: 1, foo2: { var: true, var2: "x-from-arg", var6: "xyz" } },
       });
-      config = new Config({ moduleName: "testArgObject" });
+      config = new Config({ moduleName: "testArgobject" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: {},
-        type: "Object",
+        type: "object",
       });
       await config.init();
       expect(option.value).toEqual({
@@ -649,26 +649,26 @@ describe("Config", () => {
       expect(option.value).toEqual("default-str");
     });
 
-    it("commander should call to Number parser when option is a Number", async () => {
+    it("commander should call to number parser when option is a number", async () => {
       config = new Config({ moduleName: "testL" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: 2,
-        type: "Number",
+        type: "number",
       });
       await config.init();
       // first call is from readFile config option
       expect(commander.Option.prototype.argParser.getCall(1).args[0]("1.5")).toEqual(1.5);
     });
 
-    it("commander should call to empty parser when option is a String", async () => {
+    it("commander should call to empty parser when option is a string", async () => {
       config = new Config({ moduleName: "testM" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: "foo",
-        type: "String",
+        type: "string",
       });
       await config.init();
       // first call is from readFile config option
@@ -717,7 +717,7 @@ describe("Config", () => {
       option = namespace.addOption({
         name: "fooOption",
         default: true,
-        type: "Boolean",
+        type: "boolean",
       });
       commander.Command.prototype.opts.returns({ "fooNamespace.fooOption": true });
       process.env["TEST_J_FOO_NAMESPACE_FOO_OPTION"] = false;
@@ -728,7 +728,7 @@ describe("Config", () => {
       expect(option.value).toEqual(false);
     });
 
-    it("should merge value from default, init, file and env var if option is of type Object", async () => {
+    it("should merge value from default, init, file and env var if option is of type object", async () => {
       config = new Config({ moduleName: "testObjectEnvExtend3" });
       cosmiconfigStub.search.resolves({
         config: { fooNamespace: { fooOption: { foo2: { var: true, var5: 5 }, foo4: "zy" } } },
@@ -742,7 +742,7 @@ describe("Config", () => {
       option = namespace.addOption({
         name: "fooOption",
         default: { foo5: "testing", foo2: { var7: 7 } },
-        type: "Object",
+        type: "object",
       });
       await config.init({
         fooNamespace: { fooOption: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" } },

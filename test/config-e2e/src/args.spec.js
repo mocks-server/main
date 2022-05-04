@@ -19,7 +19,7 @@ describe("Config from args", () => {
     });
   });
 
-  describe("when option is String", () => {
+  describe("when option is string", () => {
     it("option should get the value from it", async () => {
       await run("no-config", "option-types", {
         args: ["--component.stringWithDefault=foo-from-args"],
@@ -31,7 +31,7 @@ describe("Config from args", () => {
     });
   });
 
-  describe("when option is Object", () => {
+  describe("when option is object", () => {
     it("option should merge the value from it", async () => {
       await run("no-config", "option-types", {
         args: ['--component.objectWithDefault={"foo2":"var2"}'],
@@ -42,7 +42,7 @@ describe("Config from args", () => {
       );
     });
 
-    it("should merge value from env vars and files when option is of type Object", async () => {
+    it("should merge value from env vars and files when option is of type object", async () => {
       await run("json-config-option-types", "option-types", {
         args: ['--component.objectWithDefault={"foo2":"from-arg"}'],
         env: {
@@ -58,7 +58,7 @@ describe("Config from args", () => {
     });
   });
 
-  describe("when option is Boolean and default value is true", () => {
+  describe("when option is boolean and default value is true", () => {
     it("option should be false if --no argument is provided", async () => {
       await run("no-config", "option-types", {
         args: ["--no-component.booleanDefaultTrue"],
@@ -70,7 +70,7 @@ describe("Config from args", () => {
     });
   });
 
-  describe("when option is Boolean and default value is true and env var is provided", () => {
+  describe("when option is boolean and default value is true and env var is provided", () => {
     it("option should be false if --no argument is provided", async () => {
       await run("no-config", "option-types", {
         args: ["--no-component.booleanDefaultTrue"],
@@ -85,7 +85,7 @@ describe("Config from args", () => {
     });
   });
 
-  describe("when option is Boolean and default value is false", () => {
+  describe("when option is boolean and default value is false", () => {
     it("option should be true if argument is provided", async () => {
       await run("no-config", "option-types", {
         args: ["--component.booleanDefaultFalse"],
@@ -97,7 +97,7 @@ describe("Config from args", () => {
     });
   });
 
-  describe("when option is Number", () => {
+  describe("when option is number", () => {
     it("option should be of type number", async () => {
       await run("no-config", "option-types", {
         args: ["--component.numberDefaultZero=5"],
@@ -115,7 +115,7 @@ describe("Config from args", () => {
     });
   });
 
-  describe("when option is Boolean and default value is false and env var is provided", () => {
+  describe("when option is boolean and default value is false and env var is provided", () => {
     it("option should be true if argument is provided", async () => {
       await run("no-config", "option-types", {
         args: ["--component.booleanDefaultFalse"],

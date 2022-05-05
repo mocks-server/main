@@ -1,14 +1,17 @@
-const { isEqual } = require("lodash");
+const { isEqual, isUndefined } = require("lodash");
 const EventEmitter = require("events");
 
 const Option = require("./Option");
 const { types } = require("./types");
 const { addEventListener, CHANGE } = require("./events");
+const { checkNamespaceName } = require("./namespaces");
 
 class Namespace {
-  constructor(name) {
+  constructor(name, { parents = [] } = {}) {
+    this._parents = parents;
     this._eventEmitter = new EventEmitter();
     this._name = name;
+    this._namespaces = new Set();
     this._options = new Set();
   }
 
@@ -26,14 +29,16 @@ class Namespace {
     const changedOptions = [];
     if (configuration) {
       this._options.forEach((option) => {
-        const previousValue = option.value;
-        if (option.type === types.OBJECT) {
-          option.merge(configuration[option.name]);
-        } else {
-          option.value = configuration[option.name];
-        }
-        if (!isEqual(previousValue, option.value)) {
-          changedOptions.push(option);
+        if (!isUndefined(configuration[option.name])) {
+          const previousValue = option.value;
+          if (option.type === types.OBJECT) {
+            option.merge(configuration[option.name]);
+          } else {
+            option.value = configuration[option.name];
+          }
+          if (!isEqual(previousValue, option.value)) {
+            changedOptions.push(option);
+          }
         }
       });
     }
@@ -41,7 +46,11 @@ class Namespace {
   }
 
   init(configuration) {
-    this._set(configuration);
+    const namespaceConfig = this._name ? configuration[this._name] : configuration;
+    this._set(namespaceConfig);
+    this._namespaces.forEach((namespace) => {
+      namespace.init(namespaceConfig || {});
+    });
   }
 
   set(configuration) {
@@ -56,8 +65,24 @@ class Namespace {
     return addEventListener(listener, CHANGE, this._eventEmitter);
   }
 
+  addNamespace(name) {
+    // TODO, avoid conflict with options
+    checkNamespaceName(name);
+    const namespace = new Namespace(name, { parents: [...this._parents, this] });
+    this._namespaces.add(namespace);
+    return namespace;
+  }
+
   get name() {
     return this._name;
+  }
+
+  get parents() {
+    return this._parents;
+  }
+
+  get namespaces() {
+    return this._namespaces;
   }
 
   get options() {

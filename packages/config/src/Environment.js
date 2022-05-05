@@ -1,13 +1,14 @@
-const { isUndefined, snakeCase, compact } = require("lodash");
+const { isUndefined, snakeCase } = require("lodash");
 
 const { getOptionParserIncludingBooleans } = require("./types");
+const { namespaceAndParentNames } = require("./namespaces");
 
 function varSegment(segment) {
   return snakeCase(segment).toUpperCase();
 }
 
-function envVarName(scopes) {
-  return compact(scopes).map(varSegment).join("_");
+function envVarName(moduleName, namespace, optionName) {
+  return [moduleName, ...namespaceAndParentNames(namespace), optionName].map(varSegment).join("_");
 }
 
 class Environment {
@@ -16,29 +17,36 @@ class Environment {
     this._config = {};
   }
 
-  loadFromEnv(groupName, namespaceName, optionName) {
-    return process.env[envVarName([this._moduleName, groupName, namespaceName, optionName])];
+  loadFromEnv(namespace, optionName) {
+    return process.env[envVarName(this._moduleName, namespace, optionName)];
   }
 
-  read(groups) {
-    this._config = {};
-    groups.forEach((group) => {
-      group.namespaces.forEach((namespace) => {
-        namespace.options.forEach((option) => {
-          const value = this.loadFromEnv(group.name, namespace.name, option.name);
-          if (!isUndefined(value)) {
-            let groupConfig = this._config;
-            if (group.name) {
-              this._config[group.name] = this._config[group.name] || {};
-              groupConfig = this._config[group.name];
-            }
-            groupConfig[namespace.name] = groupConfig[namespace.name] || {};
-            const parser = getOptionParserIncludingBooleans(option);
-            groupConfig[namespace.name][option.name] = parser(value);
-          }
-        });
-      });
+  _readNamespace(namespace, config) {
+    let namespaceConfig = config;
+    if (namespace.name) {
+      config[namespace.name] = config[namespace.name] || {};
+      namespaceConfig = config[namespace.name];
+    }
+    namespace.options.forEach((option) => {
+      const value = this.loadFromEnv(namespace, option.name);
+      if (!isUndefined(value)) {
+        const parser = getOptionParserIncludingBooleans(option);
+        namespaceConfig[option.name] = parser(value);
+      }
     });
+    this._readNamespaces(namespace.namespaces, namespaceConfig);
+  }
+
+  _readNamespaces(namespaces, config) {
+    namespaces.forEach((namespace) => {
+      this._readNamespace(namespace, config);
+    });
+  }
+
+  read(namespaces) {
+    const config = {};
+    this._readNamespaces(namespaces, config);
+    this._config = config;
     return this._config;
   }
 }

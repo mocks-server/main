@@ -34,20 +34,40 @@ describe("Config from env vars", () => {
     });
   });
 
-  describe("when env var is provided to group", () => {
+  describe("when env var is provided to namespace", () => {
     it("option should get the value from env var", async () => {
-      await run("no-config", "two-groups", {
+      await run("no-config", "several-namespaces", {
         env: {
-          MOCKS_GROUP_COMPONENT_ALIAS: "alias-from-env",
-          MOCKS_FOO_GROUP_FOO_NAMESPACE_FOO_OPTION: "option-from-env",
+          MOCKS_NAMESPACE_COMPONENT_ALIAS: "alias-from-env",
+          MOCKS_FIRST_NAMESPACE_SECOND_NAMESPACE_FOO_OPTION: "option-from-env",
         },
       });
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
-        expect.arrayContaining(["group.component.alias:string:alias-from-env"])
+        expect.arrayContaining(["namespace.component.alias:string:alias-from-env"])
       );
       expect(options).toEqual(
-        expect.arrayContaining(["fooGroup.fooNamespace.fooOption:string:option-from-env"])
+        expect.arrayContaining(["firstNamespace.secondNamespace.fooOption:string:option-from-env"])
+      );
+    });
+  });
+
+  describe("when env var is provided to nested namespace", () => {
+    it("option should get the value from env var", async () => {
+      await run("no-config", "nested-namespaces", {
+        env: {
+          MOCKS_NAMESPACE_COMPONENT_ALIAS: "alias-from-env",
+          MOCKS_FIRST_NAMESPACE_SECOND_NAMESPACE_THIRD_NAMESPACE_FOO_OPTION_3: "option-from-env",
+        },
+      });
+      expect(runner.exitCode).toEqual(0);
+      expect(options).toEqual(
+        expect.arrayContaining(["namespace.component.alias:string:alias-from-env"])
+      );
+      expect(options).toEqual(
+        expect.arrayContaining([
+          "firstNamespace.secondNamespace.thirdNamespace.fooOption3:string:option-from-env",
+        ])
       );
     });
   });
@@ -236,7 +256,7 @@ describe("Config from env vars", () => {
     it("env var should overwrite the value from it", async () => {
       await run("js-async-function-config", "two-namespaces", {
         env: {
-          MOCKS_FOO_NAMESPACE_FOO_OPTION: "option-from-env-var",
+          MOCKS_FIRST_NAMESPACE_FOO_OPTION: "option-from-env-var",
           MOCKS_COMPONENT_ALIAS: "alias-from-env-var",
         },
       });
@@ -245,7 +265,7 @@ describe("Config from env vars", () => {
         expect.arrayContaining(["component.alias:string:alias-from-env-var"])
       );
       expect(options).toEqual(
-        expect.arrayContaining(["fooNamespace.fooOption:string:option-from-env-var"])
+        expect.arrayContaining(["firstNamespace.fooOption:string:option-from-env-var"])
       );
     });
   });

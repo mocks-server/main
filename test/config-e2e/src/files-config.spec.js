@@ -22,7 +22,9 @@ describe("Config from files", () => {
       await run("no-config", "two-namespaces");
 
       expect(options).toEqual(expect.arrayContaining(["component.alias:string:foo-alias"]));
-      expect(options).toEqual(expect.arrayContaining(["fooNamespace.fooOption:string:foo-value"]));
+      expect(options).toEqual(
+        expect.arrayContaining(["firstNamespace.fooOption:string:foo-value"])
+      );
     });
   });
 
@@ -101,15 +103,42 @@ describe("Config from files", () => {
     });
   });
 
-  describe("when .mocksrc.json config is provided with groups", () => {
+  describe("when .mocksrc.json config is provided with namespaces", () => {
     it("should assign values from it", async () => {
-      await run("json-config-two-groups", "two-groups");
+      await run("json-config-two-namespaces", "several-namespaces");
 
       expect(options).toEqual(
-        expect.arrayContaining(["group.component.alias:string:alias-from-json"])
+        expect.arrayContaining(["namespace.component.alias:string:alias-from-json"])
       );
       expect(options).toEqual(
-        expect.arrayContaining(["fooGroup.fooNamespace.fooOption:string:option-from-file"])
+        expect.arrayContaining([
+          "firstNamespace.secondNamespace.fooOption:string:option-from-file",
+        ])
+      );
+    });
+  });
+
+  describe("when .mocksrc.json config is provided with nested namespaces", () => {
+    it("should assign values from it", async () => {
+      await run("json-config-nested-namespaces", "nested-namespaces");
+
+      expect(options).toEqual(
+        expect.arrayContaining(["namespace.component.alias:string:alias-from-json"])
+      );
+      expect(options).toEqual(
+        expect.arrayContaining([
+          "firstNamespace.secondNamespace.fooOption:string:option-from-file",
+        ])
+      );
+      expect(options).toEqual(
+        expect.arrayContaining([
+          "firstNamespace.secondNamespace.thirdNamespace.fooOption2:boolean:true",
+        ])
+      );
+      expect(options).toEqual(
+        expect.arrayContaining([
+          "firstNamespace.secondNamespace.thirdNamespace.fooOption3:string:3-from-file",
+        ])
       );
     });
   });

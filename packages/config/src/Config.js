@@ -3,9 +3,10 @@ const deepMerge = require("deepmerge");
 const CommandLineArguments = require("./CommandLineArguments");
 const Environment = require("./Environment");
 const Files = require("./Files");
-const Group = require("./Group");
+const Namespace = require("./Namespace");
 const { types } = require("./types");
 const { validateConfig } = require("./validation");
+const { checkNamespaceName } = require("./namespaces");
 
 const CONFIG_NAMESPACE = "config";
 
@@ -43,8 +44,11 @@ class Config {
     this._args = new CommandLineArguments();
     this._environment = new Environment(moduleName);
 
-    this._groups = new Set();
-    this._rootGroup = this.addGroup();
+    this._namespaces = new Set();
+    this._rootNamespace = this.addNamespace();
+    this.addOption = this._rootNamespace.addOption.bind(this._rootNamespace);
+    this.addOptions = this._rootNamespace.addOptions.bind(this._rootNamespace);
+    this.onChange = this._rootNamespace.onChange.bind(this._rootNamespace);
 
     this._configNamespace = this.addNamespace(CONFIG_NAMESPACE);
     [this._readFile, this._readArguments, this._readEnvironment] =
@@ -62,14 +66,14 @@ class Config {
     if (this._readEnvironment.value !== true) {
       return {};
     }
-    return this._environment.read(this._groups);
+    return this._environment.read(this._namespaces);
   }
 
   async _loadFromArgs() {
     if (this._readArguments.value !== true) {
       return {};
     }
-    return this._args.read(this._groups);
+    return this._args.read(this._namespaces);
   }
 
   _mergeConfig() {
@@ -82,32 +86,32 @@ class Config {
   }
 
   _validate({ allowAdditionalNamespaces }) {
-    validateConfig(this._config, { groups: this._groups, allowAdditionalNamespaces });
+    validateConfig(this._config, { namespaces: this._namespaces, allowAdditionalNamespaces });
   }
 
-  _initGroups() {
-    this._groups.forEach((group) => {
-      group.init(this._config);
+  _initNamespaces() {
+    this._namespaces.forEach((namespace) => {
+      namespace.init(this._config);
     });
   }
 
-  _mergeValidateAndInitGroups({ allowAdditionalNamespaces }) {
+  _mergeValidateAndInitNamespaces({ allowAdditionalNamespaces }) {
     this._mergeConfig();
     this._validate({ allowAdditionalNamespaces });
-    this._initGroups();
+    this._initNamespaces();
   }
 
-  async _load({ allowAdditionalNamespaces = false } = true) {
-    this._mergeValidateAndInitGroups({ allowAdditionalNamespaces });
+  async _load({ allowAdditionalNamespaces = false } = {}) {
+    this._mergeValidateAndInitNamespaces({ allowAdditionalNamespaces });
     this._argsConfig = await this._loadFromArgs();
-    this._mergeValidateAndInitGroups({ allowAdditionalNamespaces });
+    this._mergeValidateAndInitNamespaces({ allowAdditionalNamespaces });
     this._envConfig = await this._loadFromEnv();
-    this._mergeValidateAndInitGroups({ allowAdditionalNamespaces });
+    this._mergeValidateAndInitNamespaces({ allowAdditionalNamespaces });
 
     // File does not change, so we only load it the first time
     if (!this._initializated) {
       this._fileConfig = await this._loadFromFile();
-      this._mergeValidateAndInitGroups({ allowAdditionalNamespaces });
+      this._mergeValidateAndInitNamespaces({ allowAdditionalNamespaces });
       this._initializated = true;
     }
   }
@@ -122,17 +126,12 @@ class Config {
     await this._load();
   }
 
-  addGroup(name) {
-    if (this._rootGroup && !name) {
-      return this._rootGroup;
-    }
-    const group = new Group(name);
-    this._groups.add(group);
-    return group;
-  }
-
   addNamespace(name) {
-    return this._rootGroup.addNamespace(name);
+    // TODO, avoid conflict with options
+    checkNamespaceName(name, !this._rootNamespace);
+    const namespace = new Namespace(name);
+    this._namespaces.add(namespace);
+    return namespace;
   }
 }
 

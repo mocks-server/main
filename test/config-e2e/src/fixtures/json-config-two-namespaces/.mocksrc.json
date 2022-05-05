@@ -1,10 +1,10 @@
 {
-  "fooGroup": {
-    "fooNamespace": {
+  "firstNamespace": {
+    "secondNamespace": {
       "fooOption": "option-from-file"
     }
   },
-  "group": {
+  "namespace": {
     "component": {
       "alias": "alias-from-json"
     }

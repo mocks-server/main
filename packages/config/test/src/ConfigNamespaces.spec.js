@@ -4,8 +4,8 @@ const sinon = require("sinon");
 
 const Config = require("../../src/Config");
 
-describe("Config group", () => {
-  let sandbox, cosmiconfigStub, createConfig, config, namespace, group, option;
+describe("Config namespaces", () => {
+  let sandbox, cosmiconfigStub, createConfig, config, namespace, parentNamespace, option;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -23,8 +23,8 @@ describe("Config group", () => {
 
     createConfig = function (options) {
       config = new Config(options);
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         type: "string",
@@ -32,7 +32,7 @@ describe("Config group", () => {
       });
       return {
         config,
-        group,
+        parentNamespace,
         namespace,
         option,
       };
@@ -43,42 +43,67 @@ describe("Config group", () => {
     sandbox.restore();
   });
 
-  describe("when a group is created", () => {
-    it("should have name property", async () => {
+  describe("when option is created in root", () => {
+    it("should have default value", async () => {
       config = new Config();
-      group = config.addGroup("foo");
-      expect(group.name).toEqual("foo");
-    });
-
-    it("should create options in group root when namespace has no name", async () => {
-      config = new Config();
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace();
-      option = namespace.addOption({
+      option = config.addOption({
         name: "fooOption",
         type: "string",
         default: "default-str",
       });
       expect(option.value).toEqual("default-str");
-      await config.init({ fooGroup: { fooOption: "foo-str" } });
+      await config.init({ fooOption: "foo-str" });
       await config.start();
       expect(option.value).toEqual("foo-str");
+    });
+
+    it("should have default value when created using addOptions", async () => {
+      config = new Config();
+      [option] = config.addOptions([
+        {
+          name: "fooOption",
+          type: "string",
+          default: "default-str",
+        },
+      ]);
+      expect(option.value).toEqual("default-str");
+      await config.init({ fooOption: "foo-str" });
+      await config.start();
+      expect(option.value).toEqual("foo-str");
+    });
+  });
+
+  describe("when a namespace is created", () => {
+    it("should have name property", async () => {
+      config = new Config();
+      parentNamespace = config.addNamespace("foo");
+      expect(parentNamespace.name).toEqual("foo");
+    });
+
+    it("should throw if no name is provided", async () => {
+      createConfig();
+      expect(() => namespace.addNamespace()).toThrow("provide a name");
+    });
+
+    it("should throw if no name is provided when created in root", async () => {
+      createConfig();
+      expect(() => config.addNamespace()).toThrow("provide a name");
     });
   });
 
   describe("when an option is created", () => {
     it("should have name property", async () => {
       config = new Config();
-      group = config.addGroup("foo");
-      namespace = group.addNamespace("foo");
+      parentNamespace = config.addNamespace("foo");
+      namespace = parentNamespace.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "string" });
       expect(option.name).toEqual("fooOption");
     });
 
     it("should throw when type is string and default does not match type", async () => {
       config = new Config();
-      group = config.addGroup("foo");
-      namespace = group.addNamespace("foo");
+      parentNamespace = config.addNamespace("foo");
+      namespace = parentNamespace.addNamespace("foo");
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "string", default: 5 })
       ).toThrowError("default");
@@ -86,16 +111,16 @@ describe("Config group", () => {
 
     it("should throw when setting value if type is string and value does not match type", async () => {
       config = new Config();
-      group = config.addGroup("foo");
-      namespace = group.addNamespace("foo");
+      parentNamespace = config.addNamespace("foo");
+      namespace = parentNamespace.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "string" });
       expect(() => (option.value = 5)).toThrowError("5 is not of type string");
     });
 
     it("should throw when type is number and default does not match type", async () => {
       config = new Config();
-      group = config.addGroup("foo");
-      namespace = group.addNamespace("foo");
+      parentNamespace = config.addNamespace("foo");
+      namespace = parentNamespace.addNamespace("foo");
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "number", default: "5" })
       ).toThrowError("default");
@@ -103,16 +128,16 @@ describe("Config group", () => {
 
     it("should throw when setting value if type is number and value does not match type", async () => {
       config = new Config();
-      group = config.addGroup("foo");
-      namespace = group.addNamespace("foo");
+      parentNamespace = config.addNamespace("foo");
+      namespace = parentNamespace.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "number" });
       expect(() => (option.value = "foo")).toThrowError("foo is not of type number");
     });
 
     it("should throw when type is object and default does not match type", async () => {
       config = new Config();
-      group = config.addGroup("foo");
-      namespace = group.addNamespace("foo");
+      parentNamespace = config.addNamespace("foo");
+      namespace = parentNamespace.addNamespace("foo");
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "object", default: "{}" })
       ).toThrowError("default");
@@ -120,16 +145,16 @@ describe("Config group", () => {
 
     it("should throw when setting value if type is object and value does not match type", async () => {
       config = new Config();
-      group = config.addGroup("foo");
-      namespace = group.addNamespace("foo");
+      parentNamespace = config.addNamespace("foo");
+      namespace = parentNamespace.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "object" });
       expect(() => (option.value = "foo")).toThrowError("foo is not of type object");
     });
 
     it("should throw when type is boolean and default does not match type", async () => {
       config = new Config();
-      group = config.addGroup("foo");
-      namespace = group.addNamespace("foo");
+      parentNamespace = config.addNamespace("foo");
+      namespace = parentNamespace.addNamespace("foo");
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "boolean", default: "foo" })
       ).toThrowError("default");
@@ -137,8 +162,8 @@ describe("Config group", () => {
 
     it("should throw when setting value if type is boolean and value does not match type", async () => {
       config = new Config();
-      group = config.addGroup("foo");
-      namespace = group.addNamespace("foo");
+      parentNamespace = config.addNamespace("foo");
+      namespace = parentNamespace.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "boolean" });
       expect(() => (option.value = 1)).toThrowError("1 is not of type boolean");
     });
@@ -160,8 +185,8 @@ describe("Config group", () => {
 
     it("should return default value of options of type object", async () => {
       config = new Config({ moduleName: "testObjectDefault" });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: { foo: "var" },
@@ -179,9 +204,9 @@ describe("Config group", () => {
     });
 
     it("option should return new value after setting it when it is of type number", async () => {
-      config = new Config({ moduleName: "testnumberSet" });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
+      config = new Config({ moduleName: "testNumberSet" });
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: 5,
@@ -194,9 +219,9 @@ describe("Config group", () => {
     });
 
     it("option should return new value after setting it when it is of type boolean", async () => {
-      config = new Config({ moduleName: "testbooleanSet" });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
+      config = new Config({ moduleName: "testBooleanSet" });
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: true,
@@ -210,8 +235,8 @@ describe("Config group", () => {
 
     it("option should return new value after merging it when option is of type object", async () => {
       config = new Config({ moduleName: "testObjectSet" });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: { foo: "var" },
@@ -225,8 +250,8 @@ describe("Config group", () => {
 
     it("option should not merge value if it is undefined when option is of type object", async () => {
       config = new Config({ moduleName: "testObjectSet" });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: { foo: "var" },
@@ -240,8 +265,8 @@ describe("Config group", () => {
 
     it("option should be undefined if no default value is provided", async () => {
       config = new Config({ moduleName: "testObjectSet" });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         type: "object",
@@ -252,8 +277,8 @@ describe("Config group", () => {
 
     it("option return new value after merging it when it has not default value and option is of type object", async () => {
       config = new Config({ moduleName: "testObjectSet" });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         type: "object",
@@ -273,16 +298,31 @@ describe("Config group", () => {
     it("should throw when config does not pass validation", async () => {
       await expect(
         config.init({
-          fooGroup: {
+          parentNamespace: {
             fooNamespace: { fooOption: false },
           },
         })
       ).rejects.toThrowError("fooOption");
     });
 
+    it("should throw when config does not pass validation and namespaces have several levels", async () => {
+      namespace.addNamespace("secondNamespace").addOption({
+        name: "fooOption2",
+        type: "string",
+      });
+
+      await expect(
+        config.init({
+          parentNamespace: {
+            fooNamespace: { fooOption: "foo", secondNamespace: { fooOption2: 5 } },
+          },
+        })
+      ).rejects.toThrowError("fooOption2");
+    });
+
     it("should not throw when config includes unknwon namespaces", async () => {
       await config.init({
-        fooGroup: {
+        parentNamespace: {
           fooNamespace: { fooOption: "value" },
           anotherNamespace: { fooOption2: "foo", anotherOption: false },
         },
@@ -293,15 +333,15 @@ describe("Config group", () => {
 
     it("option should get value from it", async () => {
       await config.init({
-        fooGroup: { fooNamespace: { fooOption: "foo-value-2" } },
+        parentNamespace: { fooNamespace: { fooOption: "foo-value-2" } },
       });
       expect(option.value).toEqual("foo-value-2");
     });
 
     it("option should have cloned value", async () => {
       config = new Config({ moduleName: "testObjectClone" });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: { foo: "var" },
@@ -309,7 +349,7 @@ describe("Config group", () => {
       });
       const value = { fooOption: { foo: "foo" } };
       await config.init({
-        fooGroup: { fooNamespace: value },
+        parentNamespace: { fooNamespace: value },
       });
       value.fooOption.foo = "foo2";
       expect(option.value).not.toBe(value.fooOption);
@@ -318,15 +358,15 @@ describe("Config group", () => {
 
     it("should merge value from default if option is of type object", async () => {
       config = new Config({ moduleName: "testObjectInitExtend" });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: { foo: 2, foo2: { var: true, var3: "foo" }, foo4: "test" },
         type: "object",
       });
       await config.init({
-        fooGroup: {
+        parentNamespace: {
           fooNamespace: { fooOption: { foo: 4, foo2: { var: false, var4: "y" }, foo3: "z" } },
         },
       });
@@ -337,16 +377,60 @@ describe("Config group", () => {
         foo4: "test",
       });
     });
+
+    it("should merge value from default if option is of type object and namespaces have several levels", async () => {
+      let namespace2, option2, option3;
+      config = new Config({ moduleName: "testObjectInitExtend" });
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: { foo: 2, foo2: { var: true, var3: "foo" }, foo4: "test" },
+        type: "object",
+      });
+      namespace2 = namespace.addNamespace("secondNamespace");
+      option2 = namespace2.addOption({
+        name: "fooOption2",
+        default: { foo5: { foo6: "x" } },
+        type: "object",
+      });
+      option3 = namespace2.addOption({
+        name: "fooOption3",
+        default: false,
+        type: "boolean",
+      });
+      await config.init({
+        parentNamespace: {
+          fooNamespace: {
+            fooOption: { foo: 4, foo2: { var: false, var4: "y" }, foo3: "z" },
+            secondNamespace: {
+              fooOption2: {
+                foo5: { foo7: "y" },
+              },
+              fooOption3: true,
+            },
+          },
+        },
+      });
+      expect(option.value).toEqual({
+        foo: 4,
+        foo2: { var: false, var3: "foo", var4: "y" },
+        foo3: "z",
+        foo4: "test",
+      });
+      expect(option2.value).toEqual({ foo5: { foo6: "x", foo7: "y" } });
+      expect(option3.value).toEqual(true);
+    });
   });
 
   describe("when started", () => {
     beforeEach(() => {
-      ({ config, group, namespace, option } = createConfig());
+      ({ config, parentNamespace, namespace, option } = createConfig());
     });
 
     it("should throw when config has unknown namespaces", async () => {
       await config.init({
-        fooGroup: {
+        parentNamespace: {
           fooNamespace: { fooOption: "value" },
           anotherNamespace: { fooOption2: "foo", anotherOption: false },
         },
@@ -356,9 +440,26 @@ describe("Config group", () => {
       await expect(config.start()).rejects.toThrow("fooNewNamespace");
     });
 
+    it("should throw when config has unknown namespaces under nested namespaces", async () => {
+      namespace.addNamespace("secondNamespace").addOption({
+        name: "fooOption2",
+        type: "string",
+      });
+      await config.init({
+        parentNamespace: {
+          fooNamespace: {
+            fooOption: "value",
+            secondNamespace: { fooOption2: "foo", anotherNamespace: { foo: "5" } },
+          },
+        },
+      });
+      expect(option.value).toEqual("value");
+      await expect(config.start()).rejects.toThrow("anotherNamespace");
+    });
+
     it("should not throw when unknown namespaces are added after calling the init method", async () => {
       await config.init({
-        fooGroup: {
+        parentNamespace: {
           fooNamespace: { fooOption: "value" },
           anotherNamespace: { fooOption2: "foo", anotherOption: false },
         },
@@ -366,7 +467,7 @@ describe("Config group", () => {
       });
       expect(option.value).toEqual("value");
 
-      const anotherNamespace = group.addNamespace("anotherNamespace");
+      const anotherNamespace = parentNamespace.addNamespace("anotherNamespace");
       const fooOption2 = anotherNamespace.addOption({
         name: "fooOption2",
         type: "string",
@@ -394,7 +495,7 @@ describe("Config group", () => {
     });
   });
 
-  describe("when programmatic config is provided but group is undefined", () => {
+  describe("when programmatic config is provided but parentNamespace is undefined", () => {
     beforeEach(() => {
       ({ config, namespace, option } = createConfig());
     });
@@ -405,27 +506,27 @@ describe("Config group", () => {
     });
   });
 
-  describe("when programmatic config and group are provided but namespace is undefined", () => {
+  describe("when programmatic config and parentNamespace are provided but namespace is undefined", () => {
     beforeEach(() => {
       ({ config, namespace, option } = createConfig());
     });
 
     it("option should return default value", async () => {
       await config.init({
-        fooGroup: {},
+        parentNamespace: {},
       });
       expect(option.value).toEqual("default-str");
     });
   });
 
-  describe("when programmatic config, group and namespace are provided but option is undefined", () => {
+  describe("when programmatic config, parentNamespace and namespace are provided but option is undefined", () => {
     beforeEach(() => {
       ({ config, namespace, option } = createConfig());
     });
 
     it("option should return default value", async () => {
       await config.init({
-        fooGroup: { fooNamespace: {} },
+        parentNamespace: { fooNamespace: {} },
       });
       expect(option.value).toEqual("default-str");
     });
@@ -438,7 +539,7 @@ describe("Config group", () => {
 
     it("should return value from file", async () => {
       cosmiconfigStub.search.resolves({
-        config: { fooGroup: { fooNamespace: { fooOption: "value-from-file" } } },
+        config: { parentNamespace: { fooNamespace: { fooOption: "value-from-file" } } },
       });
       await config.init();
       expect(option.value).toEqual("value-from-file");
@@ -446,35 +547,35 @@ describe("Config group", () => {
 
     it("should throw when config does not pass validation", async () => {
       cosmiconfigStub.search.resolves({
-        config: { fooGroup: { fooNamespace: { fooOption: 5 } } },
+        config: { parentNamespace: { fooNamespace: { fooOption: 5 } } },
       });
       await expect(config.init()).rejects.toThrow("fooOption");
     });
 
     it("should overwrite value from init options", async () => {
       cosmiconfigStub.search.resolves({
-        config: { fooGroup: { fooNamespace: { fooOption: "value-from-file" } } },
+        config: { parentNamespace: { fooNamespace: { fooOption: "value-from-file" } } },
       });
       await config.init({
-        fooGroup: { fooNamespace: { fooOption: "value-from-init" } },
+        parentNamespace: { fooNamespace: { fooOption: "value-from-init" } },
       });
       expect(option.value).toEqual("value-from-file");
     });
 
     it("should not overwrite value from init options if readFile is disabled", async () => {
       cosmiconfigStub.search.resolves({
-        config: { fooGroup: { fooNamespace: { fooOption: "value-from-file" } } },
+        config: { parentNamespace: { fooNamespace: { fooOption: "value-from-file" } } },
       });
       await config.init({
         config: { readFile: false },
-        fooGroup: { fooNamespace: { fooOption: "value-from-init" } },
+        parentNamespace: { fooNamespace: { fooOption: "value-from-init" } },
       });
       expect(option.value).toEqual("value-from-init");
     });
 
     it("should ignore undefined values", async () => {
       cosmiconfigStub.search.resolves({
-        config: { fooGroup: { fooNamespace: { fooOption: undefined } } },
+        config: { parentNamespace: { fooNamespace: { fooOption: undefined } } },
       });
       await config.init();
       expect(option.value).toEqual("default-str");
@@ -483,7 +584,7 @@ describe("Config group", () => {
     it("should return object when option is of type object", async () => {
       cosmiconfigStub.search.resolves({
         config: {
-          fooGroup: {
+          parentNamespace: {
             fooNamespace: {
               fooOption: { foo: 1, foo2: { var: false, var2: "x", var4: "y" }, foo3: "z" },
             },
@@ -491,8 +592,8 @@ describe("Config group", () => {
         },
       });
       config = new Config({ moduleName: "testObjectFile" });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: {},
@@ -515,19 +616,19 @@ describe("Config group", () => {
     it("should receive previous config from init as argument", async () => {
       const func = sinon
         .stub()
-        .returns({ fooGroup: { fooNamespace: { fooOption: "value-from-file" } } });
+        .returns({ parentNamespace: { fooNamespace: { fooOption: "value-from-file" } } });
       cosmiconfigStub.search.resolves({
         config: func,
       });
       await config.init({
-        fooGroup: {
+        parentNamespace: {
           fooNamespace: {
             fooOption: "foo-from-init",
           },
         },
       });
       expect(func.getCall(0).args[0]).toEqual({
-        fooGroup: {
+        parentNamespace: {
           fooNamespace: {
             fooOption: "foo-from-init",
           },
@@ -537,7 +638,7 @@ describe("Config group", () => {
 
     it("should return value from result of sync function", async () => {
       cosmiconfigStub.search.resolves({
-        config: () => ({ fooGroup: { fooNamespace: { fooOption: "value-from-file" } } }),
+        config: () => ({ parentNamespace: { fooNamespace: { fooOption: "value-from-file" } } }),
       });
       await config.init();
       expect(option.value).toEqual("value-from-file");
@@ -546,7 +647,9 @@ describe("Config group", () => {
     it("should return value from result of async function", async () => {
       cosmiconfigStub.search.resolves({
         config: () => {
-          return Promise.resolve({ fooGroup: { fooNamespace: { fooOption: "value-from-file" } } });
+          return Promise.resolve({
+            parentNamespace: { fooNamespace: { fooOption: "value-from-file" } },
+          });
         },
       });
       await config.init();
@@ -561,7 +664,7 @@ describe("Config group", () => {
 
     it("should return default value", async () => {
       cosmiconfigStub.search.resolves({
-        config: { fooGroup: { fooNamespace: { fooOption: "value-from-file" } } },
+        config: { parentNamespace: { fooNamespace: { fooOption: "value-from-file" } } },
       });
       await config.init({
         config: { readFile: false },
@@ -572,17 +675,18 @@ describe("Config group", () => {
 
   describe("when option is defined in environment var", () => {
     it("should return value from it", async () => {
-      ({ config, namespace, option } = createConfig({ moduleName: "groupTestA" }));
-      process.env["GROUP_TEST_A_FOO_GROUP_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
+      ({ config, namespace, option } = createConfig({ moduleName: "namespaceTestA" }));
+      process.env["NAMESPACE_TEST_A_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init();
       expect(option.value).toEqual("foo-from-env");
     });
 
     it("should throw when config does not pass validation", async () => {
-      config = new Config({ moduleName: "groupTestEnvWrong" });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
-      process.env["GROUP_TEST_ENV_WRONG_FOO_GROUP_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
+      config = new Config({ moduleName: "namespaceTestEnvWrong" });
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
+      process.env["NAMESPACE_TEST_ENV_WRONG_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"] =
+        "foo-from-env";
       option = namespace.addOption({
         name: "fooOption",
         default: {},
@@ -592,10 +696,10 @@ describe("Config group", () => {
     });
 
     it("should return object value if option is of type object", async () => {
-      config = new Config({ moduleName: "groupTestObjectEnv" });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
-      process.env["GROUP_TEST_OBJECT_ENV_FOO_GROUP_FOO_NAMESPACE_FOO_OPTION"] =
+      config = new Config({ moduleName: "namespaceTestObjectEnv" });
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
+      process.env["NAMESPACE_TEST_OBJECT_ENV_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"] =
         '{"foo": 1, "foo2":{"var": false, "var2": "x"}}';
       option = namespace.addOption({
         name: "fooOption",
@@ -607,27 +711,27 @@ describe("Config group", () => {
     });
 
     it("should overwrite value from init", async () => {
-      ({ config, namespace, option } = createConfig({ moduleName: "groupTestB" }));
-      process.env["GROUP_TEST_B_FOO_GROUP_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
-      await config.init({ fooGroup: { fooNamespace: { fooOption: "value-from-init" } } });
+      ({ config, namespace, option } = createConfig({ moduleName: "namespaceTestB" }));
+      process.env["NAMESPACE_TEST_B_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
+      await config.init({ parentNamespace: { fooNamespace: { fooOption: "value-from-init" } } });
       expect(option.value).toEqual("foo-from-env");
     });
 
     it("should overwrite value from init and file", async () => {
-      ({ config, namespace, option } = createConfig({ moduleName: "groupTestC" }));
+      ({ config, namespace, option } = createConfig({ moduleName: "namespaceTestC" }));
       cosmiconfigStub.search.resolves({
-        config: { fooGroup: { fooNamespace: { fooOption: "value-from-file" } } },
+        config: { parentNamespace: { fooNamespace: { fooOption: "value-from-file" } } },
       });
-      process.env["GROUP_TEST_C_FOO_GROUP_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
-      await config.init({ fooGroup: { fooNamespace: { fooOption: "value-from-init" } } });
+      process.env["NAMESPACE_TEST_C_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
+      await config.init({ parentNamespace: { fooNamespace: { fooOption: "value-from-init" } } });
       expect(option.value).toEqual("foo-from-env");
     });
 
     it("should merge value from init if option is of type object", async () => {
-      config = new Config({ moduleName: "groupTestObjectEnvExtend" });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
-      process.env["GROUP_TEST_OBJECT_ENV_EXTEND_FOO_GROUP_FOO_NAMESPACE_FOO_OPTION"] =
+      config = new Config({ moduleName: "namespaceTestObjectEnvExtend" });
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
+      process.env["NAMESPACE_TEST_OBJECT_ENV_EXTEND_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"] =
         '{"foo": 1, "foo2":{"var": false, "var2": "x"}}';
       option = namespace.addOption({
         name: "fooOption",
@@ -635,7 +739,7 @@ describe("Config group", () => {
         type: "object",
       });
       await config.init({
-        fooGroup: {
+        parentNamespace: {
           fooNamespace: { fooOption: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" } },
         },
       });
@@ -647,11 +751,12 @@ describe("Config group", () => {
     });
 
     it("should merge value from default if option is of type object", async () => {
-      config = new Config({ moduleName: "groupTestObjectEnvExtendDefault" });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
-      process.env["GROUP_TEST_OBJECT_ENV_EXTEND_DEFAULT_FOO_GROUP_FOO_NAMESPACE_FOO_OPTION"] =
-        '{"foo": 1, "foo2":{"var": false, "var2": "x"}}';
+      config = new Config({ moduleName: "namespaceTestObjectEnvExtendDefault" });
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
+      process.env[
+        "NAMESPACE_TEST_OBJECT_ENV_EXTEND_DEFAULT_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"
+      ] = '{"foo": 1, "foo2":{"var": false, "var2": "x"}}';
       option = namespace.addOption({
         name: "fooOption",
         default: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" },
@@ -666,15 +771,17 @@ describe("Config group", () => {
     });
 
     it("should merge value from init and file if option is of type object", async () => {
-      config = new Config({ moduleName: "groupTestObjectEnvExtend2" });
+      config = new Config({ moduleName: "namespaceTestObjectEnvExtend2" });
       cosmiconfigStub.search.resolves({
         config: {
-          fooGroup: { fooNamespace: { fooOption: { foo2: { var: true, var5: 5 }, foo4: "zy" } } },
+          parentNamespace: {
+            fooNamespace: { fooOption: { foo2: { var: true, var5: 5 }, foo4: "zy" } },
+          },
         },
       });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
-      process.env["GROUP_TEST_OBJECT_ENV_EXTEND_2_FOO_GROUP_FOO_NAMESPACE_FOO_OPTION"] =
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
+      process.env["NAMESPACE_TEST_OBJECT_ENV_EXTEND_2_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"] =
         '{"foo": 1, "foo2":{"var": false, "var2": "x"}}';
       option = namespace.addOption({
         name: "fooOption",
@@ -682,7 +789,7 @@ describe("Config group", () => {
         type: "object",
       });
       await config.init({
-        fooGroup: {
+        parentNamespace: {
           fooNamespace: { fooOption: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" } },
         },
       });
@@ -693,12 +800,67 @@ describe("Config group", () => {
         foo4: "zy",
       });
     });
+
+    it("should merge value from init and file if option is of type object and namespaces have several levels", async () => {
+      let namespace2, option2, option3;
+      config = new Config({ moduleName: "namespaceTestObjectEnvExtend4" });
+      cosmiconfigStub.search.resolves({
+        config: {
+          parentNamespace: {
+            fooNamespace: {
+              secondNamespace: {
+                fooOption2: {
+                  foo5: { foo8: 8 },
+                },
+                fooOption3: true,
+              },
+            },
+          },
+        },
+      });
+      process.env[
+        "NAMESPACE_TEST_OBJECT_ENV_EXTEND_4_PARENT_NAMESPACE_FOO_NAMESPACE_SECOND_NAMESPACE_FOO_OPTION_2"
+      ] = '{"foo5": {"foo9": true}}';
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: { foo: 2, foo2: { var: true, var3: "foo" }, foo4: "test" },
+        type: "object",
+      });
+      namespace2 = namespace.addNamespace("secondNamespace");
+      option2 = namespace2.addOption({
+        name: "fooOption2",
+        default: { foo5: { foo6: "x" } },
+        type: "object",
+      });
+      option3 = namespace2.addOption({
+        name: "fooOption3",
+        default: false,
+        type: "boolean",
+      });
+      await config.init({
+        parentNamespace: {
+          fooNamespace: {
+            secondNamespace: {
+              fooOption2: {
+                foo5: { foo7: "y" },
+              },
+              fooOption3: true,
+            },
+          },
+        },
+      });
+      expect(option.value).toEqual({ foo: 2, foo2: { var: true, var3: "foo" }, foo4: "test" });
+      expect(option2.value).toEqual({ foo5: { foo6: "x", foo7: "y", foo8: 8, foo9: true } });
+      expect(option3.value).toEqual(true);
+    });
   });
 
   describe("when option is defined in argument", () => {
     it("should return value from it", async () => {
       commander.Command.prototype.opts.returns({
-        "fooGroup.fooNamespace.fooOption": "foo-from-arg",
+        "parentNamespace.fooNamespace.fooOption": "foo-from-arg",
       });
       ({ config, namespace, option } = createConfig({ moduleName: "testD" }));
       await config.init();
@@ -707,14 +869,14 @@ describe("Config group", () => {
 
     it("should return object if option is of type object", async () => {
       commander.Command.prototype.opts.returns({
-        "fooGroup.fooNamespace.fooOption": {
+        "parentNamespace.fooNamespace.fooOption": {
           foo: 1,
           foo2: { var: true, var2: "x-from-arg", var6: "xyz" },
         },
       });
       config = new Config({ moduleName: "testArgobject" });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: {},
@@ -727,8 +889,45 @@ describe("Config group", () => {
       });
     });
 
+    it("should return object if option is of type object and namespaces have several levels", async () => {
+      let secondNamespace, option2;
+      commander.Command.prototype.opts.returns({
+        "parentNamespace.fooNamespace.fooOption": {
+          foo: 1,
+          foo2: { var: true, var2: "x-from-arg", var6: "xyz" },
+        },
+        "parentNamespace.fooNamespace.secondNamespace.fooOption2": {
+          foo3: { var3: "y-from-arg" },
+        },
+      });
+      config = new Config({ moduleName: "testArgobject" });
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
+      secondNamespace = namespace.addNamespace("secondNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: {},
+        type: "object",
+      });
+      option2 = secondNamespace.addOption({
+        name: "fooOption2",
+        default: {},
+        type: "object",
+      });
+      await config.init();
+      expect(option.value).toEqual({
+        foo: 1,
+        foo2: { var: true, var2: "x-from-arg", var6: "xyz" },
+      });
+      expect(option2.value).toEqual({
+        foo3: { var3: "y-from-arg" },
+      });
+    });
+
     it("should not return value from it if it is undefined", async () => {
-      commander.Command.prototype.opts.returns({ "fooGroup.fooNamespace.fooOption": undefined });
+      commander.Command.prototype.opts.returns({
+        "parentNamespace.fooNamespace.fooOption": undefined,
+      });
       ({ config, namespace, option } = createConfig({ moduleName: "testE" }));
       await config.init();
       expect(option.value).toEqual("default-str");
@@ -736,30 +935,30 @@ describe("Config group", () => {
 
     it("should overwrite value from init", async () => {
       commander.Command.prototype.opts.returns({
-        "fooGroup.fooNamespace.fooOption": "foo-from-arg",
+        "parentNamespace.fooNamespace.fooOption": "foo-from-arg",
       });
       ({ config, namespace, option } = createConfig({ moduleName: "testF" }));
-      await config.init({ fooGroup: { fooNamespace: { fooOption: "value-from-init" } } });
+      await config.init({ parentNamespace: { fooNamespace: { fooOption: "value-from-init" } } });
       expect(option.value).toEqual("foo-from-arg");
     });
 
     it("should overwrite value from env var", async () => {
       commander.Command.prototype.opts.returns({
-        "fooGroup.fooNamespace.fooOption": "foo-from-arg",
+        "parentNamespace.fooNamespace.fooOption": "foo-from-arg",
       });
-      ({ config, namespace, option } = createConfig({ moduleName: "groupTestG" }));
-      process.env["GROUP_TEST_G_FOO_GROUP_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
+      ({ config, namespace, option } = createConfig({ moduleName: "namespaceTestG" }));
+      process.env["NAMESPACE_TEST_G_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init();
       expect(option.value).toEqual("foo-from-arg");
     });
 
     it("should overwrite value from file", async () => {
       commander.Command.prototype.opts.returns({
-        "fooGroup.fooNamespace.fooOption": "foo-from-arg",
+        "parentNamespace.fooNamespace.fooOption": "foo-from-arg",
       });
       ({ config, namespace, option } = createConfig({ moduleName: "testH" }));
       cosmiconfigStub.search.resolves({
-        config: { fooGroup: { fooNamespace: { fooOption: "value-from-file" } } },
+        config: { parentNamespace: { fooNamespace: { fooOption: "value-from-file" } } },
       });
       await config.init();
       expect(option.value).toEqual("foo-from-arg");
@@ -767,51 +966,53 @@ describe("Config group", () => {
 
     it("should overwrite value from init, env var and file", async () => {
       commander.Command.prototype.opts.returns({
-        "fooGroup.fooNamespace.fooOption": "foo-from-arg",
+        "parentNamespace.fooNamespace.fooOption": "foo-from-arg",
       });
-      ({ config, namespace, option } = createConfig({ moduleName: "groupTestI" }));
-      process.env["GROUP_TEST_I_FOO_GROUP_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
+      ({ config, namespace, option } = createConfig({ moduleName: "namespaceTestI" }));
+      process.env["NAMESPACE_TEST_I_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       cosmiconfigStub.search.resolves({
-        config: { fooGroup: { fooNamespace: { fooOption: "value-from-file" } } },
+        config: { parentNamespace: { fooNamespace: { fooOption: "value-from-file" } } },
       });
-      await config.init({ fooGroup: { fooNamespace: { fooOption: "value-from-init" } } });
+      await config.init({ parentNamespace: { fooNamespace: { fooOption: "value-from-init" } } });
       expect(option.value).toEqual("foo-from-arg");
     });
 
     it("should not overwrite value from init, env var and file if option is boolean, value is true and default value is true", async () => {
-      config = new Config({ moduleName: "groupTestJ" });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
+      config = new Config({ moduleName: "namespaceTestJ" });
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
         default: true,
         type: "boolean",
       });
-      commander.Command.prototype.opts.returns({ "fooGroup.fooNamespace.fooOption": true });
-      process.env["GROUP_TEST_J_FOO_GROUP_FOO_NAMESPACE_FOO_OPTION"] = false;
+      commander.Command.prototype.opts.returns({ "parentNamespace.fooNamespace.fooOption": true });
+      process.env["NAMESPACE_TEST_J_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"] = false;
       cosmiconfigStub.search.resolves({
-        config: { fooGroup: { fooNamespace: { fooOption: false } } },
+        config: { parentNamespace: { fooNamespace: { fooOption: false } } },
       });
-      await config.init({ fooGroup: { fooNamespace: { fooOption: false } } });
+      await config.init({ parentNamespace: { fooNamespace: { fooOption: false } } });
       expect(option.value).toEqual(false);
     });
 
     it("should merge value from default, init, file and env var if option is of type object", async () => {
-      config = new Config({ moduleName: "groupTestObjectEnvExtend3" });
+      config = new Config({ moduleName: "namespaceTestObjectEnvExtend3" });
       cosmiconfigStub.search.resolves({
         config: {
-          fooGroup: { fooNamespace: { fooOption: { foo2: { var: true, var5: 5 }, foo4: "zy" } } },
+          parentNamespace: {
+            fooNamespace: { fooOption: { foo2: { var: true, var5: 5 }, foo4: "zy" } },
+          },
         },
       });
       commander.Command.prototype.opts.returns({
-        "fooGroup.fooNamespace.fooOption": {
+        "parentNamespace.fooNamespace.fooOption": {
           foo: 1,
           foo2: { var: true, var2: "x-from-arg", var6: "xyz" },
         },
       });
-      group = config.addGroup("fooGroup");
-      namespace = group.addNamespace("fooNamespace");
-      process.env["GROUP_TEST_OBJECT_ENV_EXTEND_3_FOO_GROUP_FOO_NAMESPACE_FOO_OPTION"] =
+      parentNamespace = config.addNamespace("parentNamespace");
+      namespace = parentNamespace.addNamespace("fooNamespace");
+      process.env["NAMESPACE_TEST_OBJECT_ENV_EXTEND_3_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"] =
         '{"foo": 1, "foo2":{"var": false, "var2": "x"}}';
       option = namespace.addOption({
         name: "fooOption",
@@ -819,7 +1020,7 @@ describe("Config group", () => {
         type: "object",
       });
       await config.init({
-        fooGroup: {
+        parentNamespace: {
           fooNamespace: { fooOption: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" } },
         },
       });

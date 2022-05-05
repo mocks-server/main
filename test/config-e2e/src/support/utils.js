@@ -31,27 +31,30 @@ function fixtureRunner(name, indexName, options = {}) {
   });
 }
 
-function logScope(scopes) {
-  return compact(scopes).join(".");
+function logScope(namespace, optionName) {
+  const namespaceName = namespace.name;
+  const parentNamespaces = namespace.parents.map((parent) => parent.name);
+  return compact([...parentNamespaces, namespaceName, optionName]).join(".");
+}
+
+function logNamespace(namespace) {
+  namespace.options.forEach((option) => {
+    const valueType = typeof option.value;
+    console.log(
+      `${LOG_OPTION_START}${logScope(namespace, option.name)}:${valueType}:${
+        valueType === "object" ? JSON.stringify(option.value) : option.value
+      }${LOG_OPTION_END}`
+    );
+  });
+  logNamespaces(namespace.namespaces);
+}
+
+function logNamespaces(namespaces) {
+  namespaces.forEach(logNamespace);
 }
 
 function logConfig(config) {
-  config._groups.forEach((group) => {
-    group._namespaces.forEach((namespace) => {
-      namespace._options.forEach((option) => {
-        const valueType = typeof option.value;
-        console.log(
-          `${LOG_OPTION_START}${logScope([
-            group.name,
-            namespace.name,
-            option.name,
-          ])}:${valueType}:${
-            valueType === "object" ? JSON.stringify(option.value) : option.value
-          }${LOG_OPTION_END}`
-        );
-      });
-    });
-  });
+  logNamespaces(config._namespaces);
 }
 
 function optionsFromLogs(joinedLogs) {

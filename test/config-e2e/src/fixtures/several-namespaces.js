@@ -6,8 +6,11 @@ const config = new NewConfig({ moduleName: "mocks" });
 
 config
   .addNamespace("firstNamespace")
+  .addNamespace("secondNamespace")
   .addOption({ name: "fooOption", type: "string", default: "foo-value" });
+config
+  .addNamespace("namespace")
+  .addNamespace("component")
+  .addOption({ name: "alias", type: "string", default: "" });
 
-config.addNamespace("component").addOption({ name: "alias", type: "string", default: "" });
-
-config.init({ component: { alias: "foo-alias" } }).then(() => logConfig(config));
+config.init({ namespace: { component: { alias: "foo-alias" } } }).then(() => logConfig(config));

@@ -27,14 +27,14 @@ describe("Config from args", () => {
     });
   });
 
-  describe("when argument is provided to group", () => {
+  describe("when argument is provided to namespace", () => {
     it("option should get the value from it", async () => {
-      await run("no-config", "two-groups", {
-        args: ["--group.component.alias=alias-from-arg"],
+      await run("no-config", "several-namespaces", {
+        args: ["--namespace.component.alias=alias-from-arg"],
       });
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
-        expect.arrayContaining(["group.component.alias:string:alias-from-arg"])
+        expect.arrayContaining(["namespace.component.alias:string:alias-from-arg"])
       );
     });
   });
@@ -153,12 +153,12 @@ describe("Config from args", () => {
   describe("when programmatic config is provided", () => {
     it("argument should overwrite the value from it", async () => {
       await run("js-async-function-config", "two-namespaces", {
-        args: ["--component.alias=alias-from-arg", "--fooNamespace.fooOption=option-from-arg"],
+        args: ["--component.alias=alias-from-arg", "--firstNamespace.fooOption=option-from-arg"],
       });
 
       expect(options).toEqual(expect.arrayContaining(["component.alias:string:alias-from-arg"]));
       expect(options).toEqual(
-        expect.arrayContaining(["fooNamespace.fooOption:string:option-from-arg"])
+        expect.arrayContaining(["firstNamespace.fooOption:string:option-from-arg"])
       );
     });
   });
@@ -166,7 +166,7 @@ describe("Config from args", () => {
   describe("when env var is provided", () => {
     it("argument should overwrite the value from it", async () => {
       await run("no-config", "two-namespaces", {
-        args: ["--component.alias=alias-from-arg", "--fooNamespace.fooOption=option-from-arg"],
+        args: ["--component.alias=alias-from-arg", "--firstNamespace.fooOption=option-from-arg"],
         env: {
           MOCKS_FOO_NAMESPACE_FOO_OPTION: "option-from-env-var",
           MOCKS_COMPONENT_ALIAS: "alias-from-env-var",
@@ -175,7 +175,7 @@ describe("Config from args", () => {
 
       expect(options).toEqual(expect.arrayContaining(["component.alias:string:alias-from-arg"]));
       expect(options).toEqual(
-        expect.arrayContaining(["fooNamespace.fooOption:string:option-from-arg"])
+        expect.arrayContaining(["firstNamespace.fooOption:string:option-from-arg"])
       );
     });
   });
@@ -193,24 +193,50 @@ describe("Config from args", () => {
     });
   });
 
-  describe("when file is provided with groups config", () => {
+  describe("when file is provided with namespaces config", () => {
     it("argument should overwrite the value from it", async () => {
-      await run("json-config-two-groups", "two-groups", {
+      await run("json-config-two-namespaces", "several-namespaces", {
         args: [
-          "--group.component.alias=alias-from-arg",
-          "--fooGroup.fooNamespace.fooOption=option-from-arg",
+          "--namespace.component.alias=alias-from-arg",
+          "--firstNamespace.secondNamespace.fooOption=option-from-arg",
         ],
         env: {
-          MOCKS_GROUP_COMPONENT_ALIAS: "alias-from-env-var",
-          MOCKS_FOO_GROUP_FOO_NAMESPACE_FOO_OPTION: "option-from-env-var",
+          MOCKS_NAMESPACE_COMPONENT_ALIAS: "alias-from-env-var",
+          MOCKS_FIRST_NAMESPACE_SECOND_NAMESPACE_FOO_OPTION: "option-from-env-var",
         },
       });
 
       expect(options).toEqual(
-        expect.arrayContaining(["group.component.alias:string:alias-from-arg"])
+        expect.arrayContaining(["namespace.component.alias:string:alias-from-arg"])
       );
       expect(options).toEqual(
-        expect.arrayContaining(["fooGroup.fooNamespace.fooOption:string:option-from-arg"])
+        expect.arrayContaining(["firstNamespace.secondNamespace.fooOption:string:option-from-arg"])
+      );
+    });
+  });
+
+  describe("when file is provided with nested namespaces config", () => {
+    it("argument should overwrite the value from it", async () => {
+      await run("json-config-nested-namespaces", "nested-namespaces", {
+        args: ["--firstNamespace.secondNamespace.thirdNamespace.fooOption3=3-from-arg"],
+      });
+
+      expect(options).toEqual(
+        expect.arrayContaining([
+          "firstNamespace.secondNamespace.thirdNamespace.fooOption3:string:3-from-arg",
+        ])
+      );
+    });
+
+    it("argument should overwrite the value from it when it is boolean", async () => {
+      await run("json-config-nested-namespaces", "nested-namespaces", {
+        args: ["--no-firstNamespace.secondNamespace.thirdNamespace.fooOption2"],
+      });
+
+      expect(options).toEqual(
+        expect.arrayContaining([
+          "firstNamespace.secondNamespace.thirdNamespace.fooOption2:boolean:false",
+        ])
       );
     });
   });
@@ -218,7 +244,7 @@ describe("Config from args", () => {
   describe("when programmatic, file and env vars are provided", () => {
     it("argument should overwrite the value from all of them", async () => {
       await run("js-async-function-config", "two-namespaces", {
-        args: ["--component.alias=alias-from-arg", "--fooNamespace.fooOption=option-from-arg"],
+        args: ["--component.alias=alias-from-arg", "--firstNamespace.fooOption=option-from-arg"],
         env: {
           MOCKS_FOO_NAMESPACE_FOO_OPTION: "option-from-env-var",
           MOCKS_COMPONENT_ALIAS: "alias-from-env-var",
@@ -227,7 +253,7 @@ describe("Config from args", () => {
 
       expect(options).toEqual(expect.arrayContaining(["component.alias:string:alias-from-arg"]));
       expect(options).toEqual(
-        expect.arrayContaining(["fooNamespace.fooOption:string:option-from-arg"])
+        expect.arrayContaining(["firstNamespace.fooOption:string:option-from-arg"])
       );
     });
   });

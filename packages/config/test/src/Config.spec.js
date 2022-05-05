@@ -55,22 +55,6 @@ describe("Config", () => {
       namespace = config.addNamespace("foo");
       expect(namespace.name).toEqual("foo");
     });
-
-    it("should create options in root when namespace has no name", async () => {
-      let group;
-      config = new Config();
-      group = config.addGroup();
-      namespace = group.addNamespace();
-      option = namespace.addOption({
-        name: "fooOption",
-        type: "string",
-        default: "default-str",
-      });
-      expect(option.value).toEqual("default-str");
-      await config.init({ fooOption: "foo-str" });
-      await config.start();
-      expect(option.value).toEqual("foo-str");
-    });
   });
 
   describe("when an option is created", () => {
@@ -186,6 +170,13 @@ describe("Config", () => {
       expect(option.value).toEqual("new-str");
     });
 
+    it("option omit undefined when setting value", async () => {
+      await config.init();
+      expect(option.value).toEqual("default-str");
+      option.value = undefined;
+      expect(option.value).toEqual("default-str");
+    });
+
     it("option should return new value after setting it when it is of type number", async () => {
       config = new Config({ moduleName: "testnumberSet" });
       namespace = config.addNamespace("fooNamespace");
@@ -248,6 +239,50 @@ describe("Config", () => {
       await config.init();
       await config.start();
       expect(option.value).toEqual("default-str");
+      const promise = new Promise((resolve) => {
+        resolver = resolve;
+      });
+      option.onChange((newValue) => {
+        expect(newValue).toEqual("new-str");
+        resolver();
+      });
+      option.value = "new-str";
+      return promise;
+    });
+
+    it("option should emit an event after setting new value in option in root config", async () => {
+      expect.assertions(2);
+      let resolver;
+      option = config.addOption({
+        name: "rootOption",
+        type: "string",
+        default: "foo-root-value",
+      });
+      await config.init();
+      await config.start();
+      expect(option.value).toEqual("foo-root-value");
+      const promise = new Promise((resolve) => {
+        resolver = resolve;
+      });
+      option.onChange((newValue) => {
+        expect(newValue).toEqual("new-str");
+        resolver();
+      });
+      option.value = "new-str";
+      return promise;
+    });
+
+    it("option should emit an event after setting new value in option in nested namespace", async () => {
+      expect.assertions(2);
+      let resolver;
+      option = namespace.addNamespace("childNamespace").addNamespace("childNamespace").addOption({
+        name: "childOption",
+        type: "string",
+        default: "foo-child-value",
+      });
+      await config.init();
+      await config.start();
+      expect(option.value).toEqual("foo-child-value");
       const promise = new Promise((resolve) => {
         resolver = resolve;
       });

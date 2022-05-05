@@ -1,11 +1,15 @@
-const { isUndefined, compact } = require("lodash");
+const { isUndefined } = require("lodash");
 const commander = require("commander");
 
 const { types, getOptionParser } = require("./types");
+const { namespaceAndParentNames } = require("./namespaces");
+
+const NAMESPACE_SEPARATOR = ".";
 
 function getCommanderOptionProperties(commanderOptionName, option) {
   const isBoolean = option.type === types.BOOLEAN;
   const defaultIsTrue = option.default === true;
+  // TODO, option can only be set to false if default value is true or viceversa. So, users can't restore to default value using args when config in other places changes them
   const optionPrefix = isBoolean && defaultIsTrue ? "--no-" : "--";
   const optionValueGetter = isBoolean ? "" : ` <${commanderOptionName}>`;
   const argParser = getOptionParser(option);
@@ -20,8 +24,8 @@ function getCommanderOptionProperties(commanderOptionName, option) {
   };
 }
 
-function getCommanderOptionName(scopes) {
-  return compact(scopes).join(".");
+function getCommanderOptionName(namespace, optionName) {
+  return [...namespaceAndParentNames(namespace), optionName].join(NAMESPACE_SEPARATOR);
 }
 
 function commanderValueHasToBeIgnored(optionValue, commanderOptionProperties) {
@@ -39,56 +43,64 @@ class CommandLineArguments {
     this._config = {};
   }
 
-  read(groups) {
-    this._config = {};
-    const commanderOptionsMap = {};
+  _createNamespaceOptions(namespace, program, optionsData) {
+    namespace.options.forEach((option) => {
+      const commanderOptionName = getCommanderOptionName(namespace, option.name);
+      const commanderOptionProperties = getCommanderOptionProperties(commanderOptionName, option);
+      optionsData[commanderOptionName] = {
+        namespace,
+        option: option.name,
+        ...commanderOptionProperties,
+      };
+      program.addOption(commanderOptionProperties.Option);
+    });
+    this._createNamespacesOptions(namespace.namespaces, program, optionsData);
+  }
+
+  _createNamespacesOptions(namespaces, program, optionsData) {
+    namespaces.forEach((namespace) => {
+      this._createNamespaceOptions(namespace, program, optionsData);
+    });
+  }
+
+  _addLevelsToConfig(config, levels, index = 0) {
+    if (index === levels.length) {
+      return config;
+    }
+    config[levels[index]] = config[levels[index]] || {};
+    return this._addLevelsToConfig(config[levels[index]], levels, index + 1);
+  }
+
+  _commanderResultsToConfigObject(results, config, commanderOptionsData) {
+    Object.keys(results).forEach((optionName) => {
+      const optionValue = results[optionName];
+      if (!commanderValueHasToBeIgnored(optionValue, commanderOptionsData[optionName])) {
+        const objectLevels = optionName.split(NAMESPACE_SEPARATOR).slice(0, -1);
+
+        const configAtLevel = this._addLevelsToConfig(config, objectLevels);
+        const originalOptionName = commanderOptionsData[optionName].option;
+        configAtLevel[originalOptionName] = optionValue;
+      }
+    });
+    return config;
+  }
+
+  read(namespaces) {
+    const config = {};
 
     // Create commander options
+    const commanderOptionsData = {};
     const program = new commander.Command();
-    groups.forEach((group) => {
-      group.namespaces.forEach((namespace) => {
-        namespace.options.forEach((option) => {
-          const commanderOptionName = getCommanderOptionName([
-            group.name,
-            namespace.name,
-            option.name,
-          ]);
-          const commanderOptionProperties = getCommanderOptionProperties(
-            commanderOptionName,
-            option
-          );
-          commanderOptionsMap[commanderOptionName] = {
-            group: group.name,
-            namespace: namespace.name,
-            option: option.name,
-            ...commanderOptionProperties,
-          };
-          program.addOption(commanderOptionProperties.Option);
-        });
-      });
-    });
+    this._createNamespacesOptions(namespaces, program, commanderOptionsData);
 
     // Get commander results
     program.allowUnknownOption();
     program.parse();
     const results = program.opts();
 
-    // Convert commander results into object in original namespaces
-    Object.keys(results).forEach((optionName) => {
-      const optionValue = results[optionName];
-      if (!commanderValueHasToBeIgnored(optionValue, commanderOptionsMap[optionName])) {
-        const groupName = commanderOptionsMap[optionName].group;
-        const namespaceName = commanderOptionsMap[optionName].namespace;
-        const originalOptionName = commanderOptionsMap[optionName].option;
-        let groupConfig = this._config;
-        if (groupName) {
-          this._config[groupName] = this._config[groupName] || {};
-          groupConfig = this._config[groupName];
-        }
-        groupConfig[namespaceName] = groupConfig[namespaceName] || {};
-        groupConfig[namespaceName][originalOptionName] = optionValue;
-      }
-    });
+    // Convert commander results into object with namespaces levels
+    this._config = this._commanderResultsToConfigObject(results, config, commanderOptionsData);
+
     return this._config;
   }
 }

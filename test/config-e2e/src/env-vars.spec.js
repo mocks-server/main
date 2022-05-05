@@ -19,6 +19,16 @@ describe("Config from env vars", () => {
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["config.readFile:boolean:false"]));
     });
+
+    it("option should get the value from env var when option is in root", async () => {
+      await run("no-config", "root-options", {
+        env: {
+          MOCKS_NUMBER_DEFAULT_ZERO: 1,
+        },
+      });
+      expect(runner.exitCode).toEqual(0);
+      expect(options).toEqual(expect.arrayContaining(["numberDefaultZero:number:1"]));
+    });
   });
 
   describe("when env vars are disabled using argument", () => {

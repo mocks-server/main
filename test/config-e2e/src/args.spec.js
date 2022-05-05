@@ -25,6 +25,14 @@ describe("Config from args", () => {
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["config.readFile:boolean:true"]));
     });
+
+    it("option should get the value from it when option is in root", async () => {
+      await run("no-config", "root-options", {
+        args: ["--stringWithDefault=foo-from-arg"],
+      });
+      expect(runner.exitCode).toEqual(0);
+      expect(options).toEqual(expect.arrayContaining(["stringWithDefault:string:foo-from-arg"]));
+    });
   });
 
   describe("when argument is provided to namespace", () => {

@@ -67,6 +67,12 @@ describe("Config from files", () => {
       expect(options).toEqual(expect.arrayContaining(["component.alias:string:alias-from-json"]));
     });
 
+    it("should assign value from it when option is in root", async () => {
+      await run("json-config-root", "root-options");
+
+      expect(options).toEqual(expect.arrayContaining(["booleanDefaultTrue:boolean:false"]));
+    });
+
     it("should assign boolean type to boolean vars", async () => {
       await run("json-config-option-types", "option-types");
 

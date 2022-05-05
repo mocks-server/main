@@ -68,7 +68,7 @@ class Option {
   set value(value) {
     const previousValue = this._value;
     if (!isUndefined(value)) {
-      this.validate(value);
+      this._validate(value);
       this._value = value;
       this._emitChange(previousValue, this._value);
     }

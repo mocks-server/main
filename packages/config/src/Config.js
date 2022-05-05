@@ -127,7 +127,10 @@ class Config {
     await this._load({ allowAdditionalNamespaces: true });
   }
 
-  async start() {
+  async start(programmaticConfig) {
+    if (!this._initializated) {
+      await this.init(programmaticConfig);
+    }
     await this._load();
     this._startNamespaces();
   }

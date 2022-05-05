@@ -221,6 +221,11 @@ describe("Config", () => {
       expect(option.value).toEqual("default-str");
     });
 
+    it("option should be initializated when calling to start only", async () => {
+      await config.start();
+      expect(option.value).toEqual("default-str");
+    });
+
     it("should return default value of options of type object", async () => {
       config = new Config({ moduleName: "testObjectDefault" });
       namespace = config.addNamespace("fooNamespace");
@@ -306,7 +311,6 @@ describe("Config", () => {
     it("option should emit an event after setting new value", async () => {
       expect.assertions(2);
       let resolver;
-      await config.init();
       await config.start();
       expect(option.value).toEqual("default-str");
       const promise = new Promise((resolve) => {
@@ -328,7 +332,6 @@ describe("Config", () => {
         type: "string",
         default: "foo-root-value",
       });
-      await config.init();
       await config.start();
       expect(option.value).toEqual("foo-root-value");
       const promise = new Promise((resolve) => {
@@ -350,7 +353,6 @@ describe("Config", () => {
         type: "string",
         default: "foo-child-value",
       });
-      await config.init();
       await config.start();
       expect(option.value).toEqual("foo-child-value");
       const promise = new Promise((resolve) => {
@@ -367,7 +369,6 @@ describe("Config", () => {
     it("option should not emit an event after setting same value", async () => {
       expect.assertions(2);
       const spy = sinon.spy();
-      await config.init();
       await config.start();
       expect(option.value).toEqual("default-str");
       option.onChange(spy);
@@ -392,7 +393,6 @@ describe("Config", () => {
     it("option event should be removed if returned callback is executed", async () => {
       expect.assertions(2);
       const spy = sinon.spy();
-      await config.init();
       await config.start();
       expect(option.value).toEqual("default-str");
       const removeCallback = option.onChange(spy);
@@ -413,7 +413,6 @@ describe("Config", () => {
         default: { foo: "var" },
         type: "object",
       });
-      await config.init();
       await config.start();
       expect(option.value).toEqual({ foo: "var" });
       const promise = new Promise((resolve) => {
@@ -633,8 +632,23 @@ describe("Config", () => {
       ).rejects.toThrowError("fooOption");
     });
 
+    it("should throw when config does not pass validation when calling to start", async () => {
+      await expect(
+        config.start({
+          fooNamespace: { fooOption: false },
+        })
+      ).rejects.toThrowError("fooOption");
+    });
+
     it("option should get value from it", async () => {
       await config.init({
+        fooNamespace: { fooOption: "foo-value-2" },
+      });
+      expect(option.value).toEqual("foo-value-2");
+    });
+
+    it("option should get value from it when calling to start", async () => {
+      await config.start({
         fooNamespace: { fooOption: "foo-value-2" },
       });
       expect(option.value).toEqual("foo-value-2");
@@ -749,7 +763,7 @@ describe("Config", () => {
       cosmiconfigStub.search.resolves({
         config: { fooNamespace: { fooOption: "value-from-file" } },
       });
-      await config.init();
+      await config.start();
       expect(option.value).toEqual("default-str");
     });
 
@@ -774,7 +788,7 @@ describe("Config", () => {
       cosmiconfigStub.search.resolves({
         config: { fooNamespace: { fooOption: "value-from-file" } },
       });
-      await config.init({
+      await config.start({
         fooNamespace: { fooOption: "value-from-init" },
       });
       expect(option.value).toEqual("value-from-file");

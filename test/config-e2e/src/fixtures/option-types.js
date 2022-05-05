@@ -12,5 +12,5 @@ component.addOption({ name: "objectWithDefault", default: { foo: "var" }, type: 
 component.addOption({ name: "numberDefaultZero", default: 0, type: "number" });
 
 config
-  .init({ component: { stringWithDefault: "foo-str-from-init" } })
+  .start({ component: { stringWithDefault: "foo-str-from-init" } })
   .then(() => logConfig(config));

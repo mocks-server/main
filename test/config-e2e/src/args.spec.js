@@ -37,6 +37,16 @@ describe("Config from args", () => {
         expect.arrayContaining(["namespace.component.alias:string:alias-from-arg"])
       );
     });
+
+    it("option should get the value from it when namespaces are added after init method", async () => {
+      await run("no-config", "several-namespaces-after-init", {
+        args: ["--namespace.component.alias=alias-from-arg"],
+      });
+      expect(runner.exitCode).toEqual(0);
+      expect(options).toEqual(
+        expect.arrayContaining(["namespace.component.alias:string:alias-from-arg"])
+      );
+    });
   });
 
   describe("when option is string", () => {
@@ -196,6 +206,26 @@ describe("Config from args", () => {
   describe("when file is provided with namespaces config", () => {
     it("argument should overwrite the value from it", async () => {
       await run("json-config-two-namespaces", "several-namespaces", {
+        args: [
+          "--namespace.component.alias=alias-from-arg",
+          "--firstNamespace.secondNamespace.fooOption=option-from-arg",
+        ],
+        env: {
+          MOCKS_NAMESPACE_COMPONENT_ALIAS: "alias-from-env-var",
+          MOCKS_FIRST_NAMESPACE_SECOND_NAMESPACE_FOO_OPTION: "option-from-env-var",
+        },
+      });
+
+      expect(options).toEqual(
+        expect.arrayContaining(["namespace.component.alias:string:alias-from-arg"])
+      );
+      expect(options).toEqual(
+        expect.arrayContaining(["firstNamespace.secondNamespace.fooOption:string:option-from-arg"])
+      );
+    });
+
+    it("argument should overwrite the value from it when namespaces are added after init method", async () => {
+      await run("json-config-two-namespaces", "several-namespaces-after-init", {
         args: [
           "--namespace.component.alias=alias-from-arg",
           "--firstNamespace.secondNamespace.fooOption=option-from-arg",

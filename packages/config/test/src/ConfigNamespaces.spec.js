@@ -52,8 +52,7 @@ describe("Config namespaces", () => {
         default: "default-str",
       });
       expect(option.value).toEqual("default-str");
-      await config.init({ fooOption: "foo-str" });
-      await config.start();
+      await config.start({ fooOption: "foo-str" });
       expect(option.value).toEqual("foo-str");
     });
 
@@ -67,8 +66,7 @@ describe("Config namespaces", () => {
         },
       ]);
       expect(option.value).toEqual("default-str");
-      await config.init({ fooOption: "foo-str" });
-      await config.start();
+      await config.start({ fooOption: "foo-str" });
       expect(option.value).toEqual("foo-str");
     });
   });
@@ -313,6 +311,21 @@ describe("Config namespaces", () => {
 
       await expect(
         config.init({
+          parentNamespace: {
+            fooNamespace: { fooOption: "foo", secondNamespace: { fooOption2: 5 } },
+          },
+        })
+      ).rejects.toThrowError("fooOption2");
+    });
+
+    it("should throw when config does not pass validation and namespaces have several levels when calling to start", async () => {
+      namespace.addNamespace("secondNamespace").addOption({
+        name: "fooOption2",
+        type: "string",
+      });
+
+      await expect(
+        config.start({
           parentNamespace: {
             fooNamespace: { fooOption: "foo", secondNamespace: { fooOption2: 5 } },
           },

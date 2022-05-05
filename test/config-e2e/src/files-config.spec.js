@@ -116,6 +116,19 @@ describe("Config from files", () => {
         ])
       );
     });
+
+    it("should assign values from it when namespaces are added after init method", async () => {
+      await run("json-config-two-namespaces", "several-namespaces-after-init");
+
+      expect(options).toEqual(
+        expect.arrayContaining(["namespace.component.alias:string:alias-from-json"])
+      );
+      expect(options).toEqual(
+        expect.arrayContaining([
+          "firstNamespace.secondNamespace.fooOption:string:option-from-file",
+        ])
+      );
+    });
   });
 
   describe("when .mocksrc.json config is provided with nested namespaces", () => {

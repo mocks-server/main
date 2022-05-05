@@ -50,6 +50,22 @@ describe("Config from env vars", () => {
         expect.arrayContaining(["firstNamespace.secondNamespace.fooOption:string:option-from-env"])
       );
     });
+
+    it("option should get the value from env var when namespaces are added after init method", async () => {
+      await run("no-config", "several-namespaces-after-init", {
+        env: {
+          MOCKS_NAMESPACE_COMPONENT_ALIAS: "alias-from-env",
+          MOCKS_FIRST_NAMESPACE_SECOND_NAMESPACE_FOO_OPTION: "option-from-env",
+        },
+      });
+      expect(runner.exitCode).toEqual(0);
+      expect(options).toEqual(
+        expect.arrayContaining(["namespace.component.alias:string:alias-from-env"])
+      );
+      expect(options).toEqual(
+        expect.arrayContaining(["firstNamespace.secondNamespace.fooOption:string:option-from-env"])
+      );
+    });
   });
 
   describe("when env var is provided to nested namespace", () => {

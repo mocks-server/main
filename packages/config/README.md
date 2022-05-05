@@ -37,7 +37,7 @@ This module provides configuration to [Mocks Server](website-url) components and
 A brief example:
 
 ```js
-const { Config } = require("@mocks-server/config");
+const Config = require("@mocks-server/config");
 
 const config = new Config({ moduleName: "mocks" });
 const namespace = config.addNamespace("fooComponent");

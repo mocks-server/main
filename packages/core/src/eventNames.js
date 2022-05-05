@@ -9,12 +9,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 module.exports = {
-  INIT: "init",
-  START: "start",
-  STOP: "stop",
-  LOAD_MOCKS: "load:mocks",
-  LOAD_ROUTES: "load:routes",
   CHANGE_MOCKS: "change:mocks",
-  CHANGE_SETTINGS: "change:settings",
   CHANGE_ALERTS: "change:alerts",
 };

@@ -9,8 +9,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-"use strict";
-
 const http = require("http");
 
 const express = require("express");
@@ -18,20 +16,44 @@ const cors = require("cors");
 const tracer = require("../tracer");
 const middlewares = require("./middlewares");
 
+const ALL_HOSTS = "0.0.0.0";
+const LOCALHOST = "localhost";
+
+const OPTIONS = [
+  {
+    name: "port",
+    type: "number",
+    default: 3100,
+  },
+  {
+    name: "host",
+    type: "string",
+    default: ALL_HOSTS,
+  },
+  {
+    name: "cors",
+    type: "boolean",
+    default: true,
+  },
+  {
+    name: "corsPreFlight",
+    type: "boolean",
+    default: true,
+  },
+];
+
 class Server {
-  constructor({
-    addAlert,
-    getHostOption,
-    getCorsOption,
-    getPortOption,
-    getCorsPreFlightOption,
-    removeAlerts,
-    mocksRouter,
-  }) {
-    this._getHostOption = getHostOption;
-    this._getPortOption = getPortOption;
-    this._getCorsOption = getCorsOption;
-    this._getCorsPreFlightOption = getCorsPreFlightOption;
+  constructor({ config, addAlert, removeAlerts, mocksRouter }) {
+    this._config = config;
+
+    [this._hostOption, this._portOption, this._corsOption, this._corsPreflightOption] =
+      this._config.addOptions(OPTIONS);
+
+    this._hostOption.onChange(this._restart.bind(this));
+    this._portOption.onChange(this._restart.bind(this));
+    this._corsOption.onChange(this._restart.bind(this));
+    this._corsPreflightOption.onChange(this._restart.bind(this));
+
     this._mocksRouter = mocksRouter;
     this._customRouters = [];
     this._error = null;
@@ -60,10 +82,10 @@ class Server {
 
     // Add middlewares
     this._express.use(middlewares.addRequestId);
-    if (this._getCorsOption()) {
+    if (this._corsOption.value) {
       this._express.use(
         cors({
-          preflightContinue: !this._getCorsPreFlightOption(),
+          preflightContinue: !this._corsPreFlightOption.value,
         })
       );
     }
@@ -102,9 +124,9 @@ class Server {
   }
 
   _startServer(resolve, reject) {
-    const host = this._getHostOption();
-    const port = this._getPortOption();
-    const hostName = host === "0.0.0.0" ? "localhost" : host;
+    const host = this._hostOption.value;
+    const port = this._portOption.value;
+    const hostName = host === ALL_HOSTS ? LOCALHOST : host;
 
     try {
       this._server.listen(

@@ -10,18 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const EventEmitter = require("events");
 
-const { Config, Settings } = require("@mocks-server/config");
+const Config = require("@mocks-server/config");
 
-const {
-  INIT,
-  START,
-  STOP,
-  CHANGE_MOCKS,
-  CHANGE_SETTINGS,
-  CHANGE_ALERTS,
-  LOAD_MOCKS,
-  LOAD_ROUTES,
-} = require("./eventNames");
+const { CHANGE_MOCKS, CHANGE_ALERTS } = require("./eventNames");
 const tracer = require("./tracer");
 const Loaders = require("./Loaders");
 const Alerts = require("./Alerts");
@@ -32,8 +23,20 @@ const Server = require("./server/Server");
 
 const { scopedAlertsMethods, addEventListener } = require("./support/helpers");
 
+const CONFIG_PLUGINS_NAMESPACE = "plugins";
+const CONFIG_MOCKS_NAMESPACE = "mocks";
+const CONFIG_SERVER_NAMESPACE = "server";
+
+const ROOT_OPTIONS = [
+  {
+    name: "routesHandlers",
+    type: "object",
+    default: [],
+  },
+];
+
 class Core {
-  constructor(programmaticConfig) {
+  constructor() {
     this._eventEmitter = new EventEmitter();
     this._loadedMocks = false;
     this._loadedRoutes = false;
@@ -46,7 +49,6 @@ class Core {
 
     this._mocksLoaders = new Loaders({
       onLoad: () => {
-        this._eventEmitter.emit(LOAD_MOCKS);
         this._loadedMocks = true;
         if (this._loadedRoutes) {
           this._mocks.load();
@@ -56,7 +58,6 @@ class Core {
 
     this._routesLoaders = new Loaders({
       onLoad: () => {
-        this._eventEmitter.emit(LOAD_ROUTES);
         this._loadedRoutes = true;
         if (this._loadedMocks) {
           this._mocks.load();
@@ -64,13 +65,14 @@ class Core {
       },
     });
 
-    this._config = new Config({
-      programmaticConfig,
-      ...scopedAlertsMethods("config", this._alerts.add, this._alerts.remove),
-      tracer,
-    });
+    this._config = new Config();
+    this._configPlugins = this._config.addNamespace(CONFIG_PLUGINS_NAMESPACE);
+    this._configMocks = this._config.addNamespace(CONFIG_MOCKS_NAMESPACE);
+    this._configServer = this._config.addNamespace(CONFIG_SERVER_NAMESPACE);
 
-    this._settings = new Settings({
+    [this._routesHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
+
+    /* this._settings = new Settings({
       onChange: (changeDetails) => {
         this._eventEmitter.emit(CHANGE_SETTINGS, changeDetails);
         // TODO, define in options whether they should produce a server restart or not
@@ -88,10 +90,11 @@ class Core {
       },
       config: this._config,
       tracer,
-    });
+    }); */
 
     this._plugins = new Plugins(
       {
+        config: this._configPlugins,
         createMocksLoader: () => {
           return this._mocksLoaders.new();
         },
@@ -112,10 +115,9 @@ class Core {
 
     this._mocks = new Mocks(
       {
+        config: this._configMocks,
         getLoadedMocks: () => this._mocksLoaders.contents,
         getLoadedRoutes: () => this._routesLoaders.contents,
-        getCurrentMock: () => this._settings.get("mock"),
-        getDelay: () => this._settings.get("delay"),
         onChange: () => this._eventEmitter.emit(CHANGE_MOCKS),
         ...scopedAlertsMethods(
           "mocks",
@@ -128,10 +130,7 @@ class Core {
     );
 
     this._server = new Server({
-      getHostOption: () => this._settings.get("host"),
-      getPortOption: () => this._settings.get("port"),
-      getCorsOption: () => this._settings.get("cors"),
-      getCorsPreFlightOption: () => this._settings.get("corsPreFlight"),
+      config: this._configServer,
       mocksRouter: this._mocks.router,
       ...scopedAlertsMethods("server", this._alerts.add, this._alerts.remove),
     });
@@ -161,46 +160,40 @@ class Core {
 
   // Public methods
 
-  async init(options) {
+  async init(programmaticConfig) {
     if (this._inited) {
       // in case it has been initializated manually before
       return Promise.resolve();
     }
-    await this._config.init(options);
+    await this._config.init(programmaticConfig);
+
     this._inited = true;
     // Register plugins, let them add their custom settings
-    await this._plugins.register(this._config.coreOptions.plugins);
+    await this._plugins.register();
     // Register routes handlers
-    await this._routesHandlers.register(this._config.coreOptions.routesHandlers);
-    // Init settings, read command line arguments, etc.
-    await this._settings.init(this._config.options);
-    // Settings are ready, init all
+    await this._routesHandlers.register(this._routesHandlersOption.value);
+
+    // Start config
+    await this._config.start();
+
+    // Config is ready, init all
     this._mocks.init(this._routesHandlers.handlers);
     await this._server.init();
-    return this._plugins.init().then(() => {
-      this._eventEmitter.emit(INIT, this);
-    });
+    return this._plugins.init();
   }
 
   async start() {
     await this.init();
     await this._server.start();
-    return this._startPlugins().then(() => {
-      this._eventEmitter.emit(START, this);
-    });
+    return this._startPlugins();
   }
 
   async stop() {
     await this._server.stop();
-    return this._stopPlugins().then(() => {
-      this._eventEmitter.emit(STOP, this);
-    });
+    return this._stopPlugins();
   }
 
-  addSetting(option) {
-    return this._settings.addCustom(option);
-  }
-
+  // TODO, is this used? It seems that they have to be registered
   addRoutesHandler(RoutesHandler) {
     this._routesHandlers.add(RoutesHandler);
   }
@@ -211,9 +204,9 @@ class Core {
     return addEventListener(listener, CHANGE_MOCKS, this._eventEmitter);
   }
 
-  onChangeSettings(listener) {
+  /* onChangeSettings(listener) {
     return addEventListener(listener, CHANGE_SETTINGS, this._eventEmitter);
-  }
+  } */
 
   onChangeAlerts(listener) {
     return addEventListener(listener, CHANGE_ALERTS, this._eventEmitter);
@@ -237,14 +230,6 @@ class Core {
 
   get alerts() {
     return this._alerts.values;
-  }
-
-  get settings() {
-    return this._settings;
-  }
-
-  get lowLevelConfig() {
-    return { ...this._config.coreOptions };
   }
 
   get mocks() {

@@ -18,11 +18,23 @@ const FilesLoader = require("./files-loader/FilesLoader");
 
 const { scopedAlertsMethods } = require("../support/helpers");
 
+const OPTIONS = [
+  {
+    name: "register",
+    type: "object",
+    default: [],
+  },
+];
+
 class Plugins {
   constructor(
-    { addAlert, removeAlerts, renameAlerts, createMocksLoader, createRoutesLoader },
+    { config, addAlert, removeAlerts, renameAlerts, createMocksLoader, createRoutesLoader },
     core
   ) {
+    this._config = config;
+
+    [this._pluginsToRegister] = this._config.addOptions(OPTIONS);
+
     this._addAlert = addAlert;
     this._removeAlerts = removeAlerts;
     this._renameAlerts = renameAlerts;
@@ -37,8 +49,8 @@ class Plugins {
     this._pluginsStopped = 0;
   }
 
-  register(plugins = []) {
-    this._plugins = plugins;
+  register() {
+    this._plugins = this._pluginsToRegister.value;
     this._plugins.unshift(FilesLoader);
     return this._registerPlugins().then(() => {
       tracer.verbose(`Registered ${this._pluginsRegistered} plugins without errors`);

@@ -1,9 +1,3 @@
-const Config = require("./legacy/Config");
-const Settings = require("./legacy/Settings");
-const NewConfig = require("./src/Config");
+const Config = require("./src/Config");
 
-module.exports = {
-  Config,
-  Settings,
-  NewConfig,
-};
+module.exports = Config;

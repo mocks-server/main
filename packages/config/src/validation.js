@@ -11,6 +11,8 @@ function enforceDefaultTypeSchema(type) {
     properties: {
       name: { type: types.STRING },
       description: { type: types.STRING },
+      deprecated: { type: types.BOOLEAN },
+      deprecatedBy: { type: types.OBJECT },
       type: { enum: [type] },
       default: { type },
       metaData: {

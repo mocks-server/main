@@ -207,6 +207,51 @@ describe("Config", () => {
     });
   });
 
+  describe("when an option is deprecated", () => {
+    let option2;
+
+    beforeEach(() => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "string" });
+      option2 = namespace.addOption({
+        name: "fooDeprecatedOption",
+        deprecatedBy: option,
+        type: "string",
+      });
+    });
+
+    it("should set the value of the new option also", async () => {
+      await config.start();
+      expect(option.value).toEqual(undefined);
+      expect(option2.value).toEqual(undefined);
+      option2.value = "foo-value";
+      expect(option.value).toEqual("foo-value");
+      expect(option2.value).toEqual("foo-value");
+    });
+
+    it("should merge the value of the new option also", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "object" });
+      option2 = namespace.addOption({
+        name: "fooDeprecatedOption",
+        deprecatedBy: option,
+        type: "object",
+      });
+      await config.start();
+      option2.merge({ foo: "foo" });
+      expect(option.value).toEqual({ foo: "foo" });
+      expect(option2.value).toEqual({ foo: "foo" });
+    });
+
+    it("should set the value of the new option also from init config", async () => {
+      await config.start({ foo: { fooDeprecatedOption: "foo-from-init" } });
+      expect(option.value).toEqual("foo-from-init");
+      expect(option2.value).toEqual("foo-from-init");
+    });
+  });
+
   describe("when no config is provided", () => {
     beforeEach(() => {
       ({ config, namespace, option } = createConfig());

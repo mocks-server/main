@@ -12,6 +12,8 @@ class Option {
     validateOption(properties);
     this._name = properties.name;
     this._metaData = properties.metaData;
+    this._deprecated = properties.deprecated;
+    this._deprecatedBy = properties.deprecatedBy;
     this._type = properties.type;
     this._default = properties.default;
     this._value = this._default;
@@ -58,6 +60,9 @@ class Option {
     this.validate(valueToSet);
     this._value = deepMerge(this._value || {}, valueToSet);
     this._emitChange(previousValue, this._value);
+    if (this._deprecatedBy) {
+      this._deprecatedBy.merge(value);
+    }
   }
 
   set value(value) {
@@ -66,6 +71,9 @@ class Option {
       this.validate(value);
       this._value = value;
       this._emitChange(previousValue, this._value);
+    }
+    if (this._deprecatedBy) {
+      this._deprecatedBy.value = value;
     }
   }
 

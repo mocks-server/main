@@ -55,6 +55,44 @@ describe("Config", () => {
       namespace = config.addNamespace("foo");
       expect(namespace.name).toEqual("foo");
     });
+
+    it("should return same namespace if name already exists", async () => {
+      let namespace2;
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      namespace2 = config.addNamespace("foo");
+      option = namespace.addOption({ name: "foo", default: "foo-value", type: "string" });
+      expect(option.value).toEqual("foo-value");
+      expect(namespace2.options.size).toEqual(1);
+      expect(namespace.options.size).toEqual(1);
+      expect(namespace).toBe(namespace2);
+    });
+
+    it("should return same nested namespace if name already exists", async () => {
+      let namespace2, namespace3;
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      namespace2 = namespace.addNamespace("foo");
+      namespace3 = namespace.addNamespace("foo");
+      option = namespace3.addOption({ name: "foo", default: "foo-value", type: "string" });
+      expect(option.value).toEqual("foo-value");
+      expect(namespace3.options.size).toEqual(1);
+      expect(namespace2.options.size).toEqual(1);
+      expect(namespace2).toBe(namespace3);
+    });
+
+    it("should throw if option with same name already exists", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", default: "foo-value", type: "string" });
+      expect(() => namespace.addNamespace("fooOption")).toThrow("already exists");
+    });
+
+    it("should throw if option with same name already exists in root level", async () => {
+      config = new Config();
+      option = config.addOption({ name: "fooOption", default: "foo-value", type: "string" });
+      expect(() => config.addNamespace("fooOption")).toThrow("already exists");
+    });
   });
 
   describe("when an option is created", () => {
@@ -63,6 +101,38 @@ describe("Config", () => {
       namespace = config.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "string" });
       expect(option.name).toEqual("fooOption");
+    });
+
+    it("should throw if option with same name already exist", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "string" });
+      expect(() => namespace.addOption({ name: "fooOption", type: "string" })).toThrow(
+        "already exists"
+      );
+    });
+
+    it("should throw if option with same name already exist in root", async () => {
+      config = new Config();
+      option = config.addOption({ name: "fooOption", type: "string" });
+      expect(() => config.addOption({ name: "fooOption", type: "string" })).toThrow(
+        "already exists"
+      );
+    });
+
+    it("should throw if namespace with same name already exist", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      namespace.addNamespace("fooOption");
+      expect(() => namespace.addOption({ name: "fooOption", type: "string" })).toThrow(
+        "already exists"
+      );
+    });
+
+    it("should throw if namespace with same name already exist in root", async () => {
+      config = new Config();
+      config.addNamespace("foo");
+      expect(() => config.addOption({ name: "foo", type: "string" })).toThrow("already exists");
     });
 
     it("should have metaData property", async () => {
@@ -307,6 +377,18 @@ describe("Config", () => {
       expect(spy.callCount).toEqual(0);
     });
 
+    it("option should not emit an event before calling to start", async () => {
+      expect.assertions(2);
+      const spy = sinon.spy();
+      await config.init();
+      expect(option.value).toEqual("default-str");
+      option.onChange(spy);
+      option.value = "foo-str";
+      await wait();
+
+      expect(spy.callCount).toEqual(0);
+    });
+
     it("option event should be removed if returned callback is executed", async () => {
       expect.assertions(2);
       const spy = sinon.spy();
@@ -332,6 +414,7 @@ describe("Config", () => {
         type: "object",
       });
       await config.init();
+      await config.start();
       expect(option.value).toEqual({ foo: "var" });
       const promise = new Promise((resolve) => {
         resolver = resolve;
@@ -393,7 +476,6 @@ describe("Config", () => {
         },
       ]);
       await config.init();
-      await config.start();
     });
 
     it("options should return new values after setting it", async () => {
@@ -408,6 +490,7 @@ describe("Config", () => {
     });
 
     it("should emit option with new value after setting it", async () => {
+      await config.start();
       expect.assertions(4);
       let resolver;
       const promise = new Promise((resolve) => {
@@ -427,6 +510,7 @@ describe("Config", () => {
     });
 
     it("should emit option with new value after merging it when it is of type object", async () => {
+      await config.start();
       expect.assertions(3);
       let resolver;
       const promise = new Promise((resolve) => {
@@ -445,6 +529,7 @@ describe("Config", () => {
     });
 
     it("should not emit option with same value after merging it when it is of type object", async () => {
+      await config.start();
       const spy = sinon.spy();
       namespace.onChange(spy);
       namespace.set({
@@ -454,7 +539,18 @@ describe("Config", () => {
       expect(spy.callCount).toEqual(0);
     });
 
+    it("should not emit before calling to start", async () => {
+      const spy = sinon.spy();
+      namespace.onChange(spy);
+      namespace.set({
+        fooOption2: "new-value",
+      });
+      await wait();
+      expect(spy.callCount).toEqual(0);
+    });
+
     it("should emit options with new value after setting it", async () => {
+      await config.start();
       expect.assertions(7);
       let resolver;
       const promise = new Promise((resolve) => {
@@ -478,6 +574,7 @@ describe("Config", () => {
     });
 
     it("should not emit options with same value after setting it", async () => {
+      await config.start();
       expect.assertions(5);
       let resolver;
       const promise = new Promise((resolve) => {
@@ -499,6 +596,7 @@ describe("Config", () => {
     });
 
     it("should not emit if all options have same value after setting it", async () => {
+      await config.start();
       const spy = sinon.spy();
       namespace.onChange(spy);
       namespace.set({
@@ -509,7 +607,8 @@ describe("Config", () => {
       expect(spy.callCount).toEqual(0);
     });
 
-    it("should not emit if onChange returned funcion is executed", async () => {
+    it("should not emit if onChange returned function is executed", async () => {
+      await config.start();
       const spy = sinon.spy();
       const removeEvent = namespace.onChange(spy);
       removeEvent();
@@ -569,6 +668,26 @@ describe("Config", () => {
       await config.init({
         fooNamespace: { fooOption: { foo: 4, foo2: { var: false, var4: "y" }, foo3: "z" } },
       });
+      expect(option.value).toEqual({
+        foo: 4,
+        foo2: { var: false, var3: "foo", var4: "y" },
+        foo3: "z",
+        foo4: "test",
+      });
+    });
+
+    it("should merge value from default if option is of type object when added after init method", async () => {
+      config = new Config({ moduleName: "testObjectInitExtend" });
+      namespace = config.addNamespace("fooNamespace");
+      await config.init({
+        fooNamespace: { fooOption: { foo: 4, foo2: { var: false, var4: "y" }, foo3: "z" } },
+      });
+      option = namespace.addOption({
+        name: "fooOption",
+        default: { foo: 2, foo2: { var: true, var3: "foo" }, foo4: "test" },
+        type: "object",
+      });
+      await config.start();
       expect(option.value).toEqual({
         foo: 4,
         foo2: { var: false, var3: "foo", var4: "y" },
@@ -700,6 +819,30 @@ describe("Config", () => {
         foo3: "z",
       });
     });
+
+    it("should return object when option is of type object and it is added after init method", async () => {
+      cosmiconfigStub.search.resolves({
+        config: {
+          fooNamespace: {
+            fooOption: { foo: 1, foo2: { var: false, var2: "x", var4: "y" }, foo3: "z" },
+          },
+        },
+      });
+      config = new Config({ moduleName: "testObjectFile" });
+      namespace = config.addNamespace("fooNamespace");
+      await config.init();
+      option = namespace.addOption({
+        name: "fooOption",
+        default: {},
+        type: "object",
+      });
+      await config.start();
+      expect(option.value).toEqual({
+        foo: 1,
+        foo2: { var: false, var2: "x", var4: "y" },
+        foo3: "z",
+      });
+    });
   });
 
   describe("when file returns a function", () => {
@@ -805,6 +948,21 @@ describe("Config", () => {
         type: "object",
       });
       await config.init();
+      expect(option.value).toEqual({ foo: 1, foo2: { var: false, var2: "x" } });
+    });
+
+    it("should return object value if option is of type object when added after init method", async () => {
+      config = new Config({ moduleName: "testObjectEnv" });
+      namespace = config.addNamespace("fooNamespace");
+      process.env["TEST_OBJECT_ENV_FOO_NAMESPACE_FOO_OPTION"] =
+        '{"foo": 1, "foo2":{"var": false, "var2": "x"}}';
+      await config.init();
+      option = namespace.addOption({
+        name: "fooOption",
+        default: {},
+        type: "object",
+      });
+      await config.start();
       expect(option.value).toEqual({ foo: 1, foo2: { var: false, var2: "x" } });
     });
 
@@ -993,6 +1151,25 @@ describe("Config", () => {
         type: "object",
       });
       await config.init();
+      expect(option.value).toEqual({
+        foo: 1,
+        foo2: { var: true, var2: "x-from-arg", var6: "xyz" },
+      });
+    });
+
+    it("should return object if option is of type object when added after init method", async () => {
+      commander.Command.prototype.opts.returns({
+        "fooNamespace.fooOption": { foo: 1, foo2: { var: true, var2: "x-from-arg", var6: "xyz" } },
+      });
+      config = new Config({ moduleName: "testArgobject" });
+      namespace = config.addNamespace("fooNamespace");
+      await config.init();
+      option = namespace.addOption({
+        name: "fooOption",
+        default: {},
+        type: "object",
+      });
+      await config.start();
       expect(option.value).toEqual({
         foo: 1,
         foo2: { var: true, var2: "x-from-arg", var6: "xyz" },

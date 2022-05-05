@@ -4,18 +4,24 @@ const EventEmitter = require("events");
 const Option = require("./Option");
 const { types } = require("./types");
 const { addEventListener, CHANGE } = require("./events");
-const { checkNamespaceName } = require("./namespaces");
+const { checkNamespaceName, checkOptionName } = require("./namespaces");
 
 class Namespace {
-  constructor(name, { parents = [] } = {}) {
+  constructor(name, { parents = [], brothers }) {
+    this._brothers = brothers;
     this._parents = parents;
     this._eventEmitter = new EventEmitter();
     this._name = name;
     this._namespaces = new Set();
     this._options = new Set();
+    this._started = false;
   }
 
   addOption(optionProperties) {
+    checkOptionName(optionProperties.name, {
+      options: this._options,
+      namespaces: this._name ? this._namespaces : this._brothers,
+    });
     const option = new Option(optionProperties);
     this._options.add(option);
     return option;
@@ -53,9 +59,15 @@ class Namespace {
     });
   }
 
+  start() {
+    this._options.forEach((option) => option.start());
+    this._namespaces.forEach((namespace) => namespace.start());
+    this._started = true;
+  }
+
   set(configuration) {
     const changedOptions = this._set(configuration);
-    if (changedOptions.length) {
+    if (changedOptions.length && this._started) {
       this._eventEmitter.emit(CHANGE, changedOptions);
     }
   }
@@ -66,9 +78,9 @@ class Namespace {
   }
 
   addNamespace(name) {
-    // TODO, avoid conflict with options
-    checkNamespaceName(name);
-    const namespace = new Namespace(name, { parents: [...this._parents, this] });
+    const namespace =
+      checkNamespaceName(name, { namespaces: this._namespaces, options: this._options }) ||
+      new Namespace(name, { parents: [...this._parents, this] });
     this._namespaces.add(namespace);
     return namespace;
   }

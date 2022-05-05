@@ -95,6 +95,12 @@ class Config {
     });
   }
 
+  _startNamespaces() {
+    this._namespaces.forEach((namespace) => {
+      namespace.start();
+    });
+  }
+
   _mergeValidateAndInitNamespaces({ allowAdditionalNamespaces }) {
     this._mergeConfig();
     this._validate({ allowAdditionalNamespaces });
@@ -122,14 +128,17 @@ class Config {
   }
 
   async start() {
-    // TODO, enable events
     await this._load();
+    this._startNamespaces();
   }
 
   addNamespace(name) {
-    // TODO, avoid conflict with options
-    checkNamespaceName(name, !this._rootNamespace);
-    const namespace = new Namespace(name);
+    const namespace =
+      checkNamespaceName(name, {
+        namespaces: this._namespaces,
+        options: this._rootNamespace && this._rootNamespace.options,
+        allowNoName: !this._rootNamespace,
+      }) || new Namespace(name, { brothers: this._namespaces });
     this._namespaces.add(namespace);
     return namespace;
   }

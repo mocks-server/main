@@ -30,6 +30,7 @@ function getCommanderOptionName(namespace, optionName) {
 
 function commanderValueHasToBeIgnored(optionValue, commanderOptionProperties) {
   return (
+    !commanderOptionProperties ||
     isUndefined(optionValue) ||
     // Commander assign default true value to boolean options. We can't assign default values, because arguments would overwrite variables defined using other methods, such as env vars.
     (optionValue === true &&

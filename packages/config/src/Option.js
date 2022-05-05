@@ -15,6 +15,7 @@ class Option {
     this._type = properties.type;
     this._default = properties.default;
     this._value = this._default;
+    this._started = false;
   }
 
   get metaData() {
@@ -42,7 +43,7 @@ class Option {
   }
 
   _emitChange(previousValue, value) {
-    if (!isEqual(previousValue, value)) {
+    if (this._started && !isEqual(previousValue, value)) {
       this._eventEmitter.emit(CHANGE, value);
     }
   }
@@ -66,6 +67,10 @@ class Option {
       this._value = value;
       this._emitChange(previousValue, this._value);
     }
+  }
+
+  start() {
+    this._started = true;
   }
 }
 

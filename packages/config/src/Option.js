@@ -40,7 +40,7 @@ class Option {
     return this._value;
   }
 
-  validate(value) {
+  _validate(value) {
     validateValueType(value, this._type);
   }
 
@@ -57,7 +57,7 @@ class Option {
   merge(value) {
     const previousValue = this._value;
     const valueToSet = isUndefined(value) ? {} : value;
-    this.validate(valueToSet);
+    this._validate(valueToSet);
     this._value = deepMerge(this._value || {}, valueToSet);
     this._emitChange(previousValue, this._value);
     if (this._deprecatedBy) {

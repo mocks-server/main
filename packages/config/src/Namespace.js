@@ -67,12 +67,13 @@ class Namespace {
 
   set(configuration) {
     const changedOptions = this._set(configuration);
+    // TODO, remove?
     if (changedOptions.length && this._started) {
       this._eventEmitter.emit(CHANGE, changedOptions);
     }
   }
 
-  // TODO, should it emit also any change in options? Then, events would be duplicated when set method is used
+  // TODO, remove?
   onChange(listener) {
     return addEventListener(listener, CHANGE, this._eventEmitter);
   }

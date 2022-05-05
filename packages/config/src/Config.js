@@ -48,6 +48,7 @@ class Config {
     this._rootNamespace = this.addNamespace();
     this.addOption = this._rootNamespace.addOption.bind(this._rootNamespace);
     this.addOptions = this._rootNamespace.addOptions.bind(this._rootNamespace);
+    // TODO, remove?
     this.onChange = this._rootNamespace.onChange.bind(this._rootNamespace);
 
     this._configNamespace = this.addNamespace(CONFIG_NAMESPACE);

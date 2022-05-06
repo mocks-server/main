@@ -1,3 +1,5 @@
+const { isUndefined } = require("lodash");
+
 const types = {
   NUMBER: "number",
   STRING: "string",
@@ -37,7 +39,9 @@ function getOptionParser(option) {
 function ParseArrayContents(option) {
   const parseArrayContents = getOptionParser(option);
   return function (array) {
-    return array.map((item) => parseArrayContents(item));
+    if (!isUndefined(array)) {
+      return array.map((item) => parseArrayContents(item));
+    }
   };
 }
 

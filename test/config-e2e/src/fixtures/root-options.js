@@ -1,8 +1,8 @@
-const { NewConfig } = require("@mocks-server/config");
+const Config = require("@mocks-server/config");
 
 const { logConfig } = require("../../support/utils");
 
-const config = new NewConfig({ moduleName: "mocks" });
+const config = new Config({ moduleName: "mocks" });
 
 config.addOption({ name: "booleanDefaultTrue", default: true, type: "boolean" });
 config.addOption({ name: "booleanDefaultFalse", default: false, type: "boolean" });

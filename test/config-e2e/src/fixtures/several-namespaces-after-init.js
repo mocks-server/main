@@ -1,8 +1,8 @@
-const { NewConfig } = require("@mocks-server/config");
+const Config = require("@mocks-server/config");
 
 const { logConfig } = require("../../support/utils");
 
-const config = new NewConfig({ moduleName: "mocks" });
+const config = new Config({ moduleName: "mocks" });
 
 config.init({ namespace: { component: { alias: "foo-alias" } } }).then(async () => {
   config

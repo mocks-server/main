@@ -1,15 +1,15 @@
 const path = require("path");
 
 module.exports = {
-  // options
-  options: {
-    // mock to use on start
-    mock: "user-real",
-    log: "silly",
-    path: path.resolve(__dirname, "..", "temp"),
-    watch: true,
+  log: "silly",
+  mocks: {
+    selected: "user-real",
   },
-
-  // low level config
-  babelRegister: true,
+  plugins: {
+    filesLoader: {
+      babelRegister: true,
+      path: path.resolve(__dirname, "..", "temp"),
+      watch: true,
+    }
+  },
 };

@@ -15,8 +15,14 @@ class Files {
     return config;
   }
 
-  async read(initConfig) {
-    const explorer = cosmiconfig.cosmiconfig(this._moduleName, { stopDir: process.cwd() });
+  async read(initConfig, { searchPlaces }) {
+    const options = {
+      stopDir: process.cwd(),
+    };
+    if (searchPlaces) {
+      options.searchPlaces = searchPlaces;
+    }
+    const explorer = cosmiconfig.cosmiconfig(this._moduleName, options);
     const result = await explorer.search();
 
     if (!result) {

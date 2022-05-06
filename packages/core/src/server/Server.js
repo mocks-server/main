@@ -46,13 +46,13 @@ class Server {
   constructor({ config, addAlert, removeAlerts, mocksRouter }) {
     this._config = config;
 
-    [this._hostOption, this._portOption, this._corsOption, this._corsPreflightOption] =
+    [this._portOption, this._hostOption, this._corsOption, this._corsPreFlightOption] =
       this._config.addOptions(OPTIONS);
 
-    this._hostOption.onChange(this._restart.bind(this));
-    this._portOption.onChange(this._restart.bind(this));
-    this._corsOption.onChange(this._restart.bind(this));
-    this._corsPreflightOption.onChange(this._restart.bind(this));
+    this._hostOption.onChange(this.restart.bind(this));
+    this._portOption.onChange(this.restart.bind(this));
+    this._corsOption.onChange(this.restart.bind(this));
+    this._corsPreFlightOption.onChange(this.restart.bind(this));
 
     this._mocksRouter = mocksRouter;
     this._customRouters = [];

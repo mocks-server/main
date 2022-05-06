@@ -17,9 +17,12 @@ const {
 } = require("./support/helpers");
 
 describe("path setting", () => {
-  let core;
+  let core, changePath;
 
   beforeAll(async () => {
+    changePath = (name) => {
+      core.config.namespace("plugins").namespace("filesLoader").option("path").value = name;
+    };
     core = await startCore();
     await waitForServer();
   });
@@ -40,7 +43,7 @@ describe("path setting", () => {
 
   describe("When path setting is changed", () => {
     it("should have loaded new mocks", async () => {
-      core.settings.set("path", fixturesFolder("web-tutorial-modified"));
+      changePath(fixturesFolder("web-tutorial-modified"));
       await waitForServerUrl("/api/new-users");
 
       const users = await fetch("/api/new-users");

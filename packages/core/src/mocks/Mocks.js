@@ -14,7 +14,7 @@ const tracer = require("../tracer");
 
 const OPTIONS = [
   {
-    name: "mock",
+    name: "selected",
     type: "string",
   },
   {

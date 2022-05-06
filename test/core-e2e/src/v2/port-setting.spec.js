@@ -34,7 +34,7 @@ describe("port setting", () => {
 
   describe("When port setting is changed", () => {
     it("should be listening on new port", async () => {
-      core.settings.set("port", 3005);
+      core.config.namespace("server").option("port").value = 3005;
       await waitForServer(3005);
       const users = await fetch("/api/users", {
         port: 3005,

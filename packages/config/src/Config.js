@@ -6,7 +6,7 @@ const Files = require("./Files");
 const Namespace = require("./Namespace");
 const { types } = require("./types");
 const { validateConfig } = require("./validation");
-const { checkNamespaceName } = require("./namespaces");
+const { checkNamespaceName, findObjectWithName } = require("./namespaces");
 
 const CONFIG_NAMESPACE = "config";
 
@@ -28,6 +28,12 @@ const CONFIG_OPTIONS = [
     description: "Read environment or not",
     type: types.BOOLEAN,
     default: true,
+  },
+  {
+    name: "filesSearchPlaces",
+    description: "An array of places to search configuration files",
+    type: types.ARRAY,
+    itemsType: types.STRING,
   },
 ];
 
@@ -52,7 +58,7 @@ class Config {
     this.onChange = this._rootNamespace.onChange.bind(this._rootNamespace);
 
     this._configNamespace = this.addNamespace(CONFIG_NAMESPACE);
-    [this._readFile, this._readArguments, this._readEnvironment] =
+    [this._readFile, this._readArguments, this._readEnvironment, this._filesSearchPlaces] =
       this._configNamespace.addOptions(CONFIG_OPTIONS);
   }
 
@@ -60,7 +66,9 @@ class Config {
     if (this._readFile.value !== true) {
       return {};
     }
-    return this._files.read(this._programmaticConfig);
+    return this._files.read(this._programmaticConfig, {
+      searchPlaces: this._filesSearchPlaces.value,
+    });
   }
 
   async _loadFromEnv() {
@@ -70,11 +78,11 @@ class Config {
     return this._environment.read(this._namespaces);
   }
 
-  async _loadFromArgs() {
+  async _loadFromArgs({ allowUnknownOption }) {
     if (this._readArguments.value !== true) {
       return {};
     }
-    return this._args.read(this._namespaces);
+    return this._args.read(this._namespaces, { allowUnknownOption });
   }
 
   _mergeConfig() {
@@ -110,7 +118,9 @@ class Config {
 
   async _load({ allowAdditionalNamespaces = false } = {}) {
     this._mergeValidateAndInitNamespaces({ allowAdditionalNamespaces });
-    this._argsConfig = await this._loadFromArgs();
+    // TODO, rename allowAdditionalNamespaces into allowUnknown
+    // TODO, expose option for customizing this
+    this._argsConfig = await this._loadFromArgs({ allowUnknownOption: allowAdditionalNamespaces });
     this._mergeValidateAndInitNamespaces({ allowAdditionalNamespaces });
     this._envConfig = await this._loadFromEnv();
     this._mergeValidateAndInitNamespaces({ allowAdditionalNamespaces });
@@ -145,6 +155,14 @@ class Config {
       }) || new Namespace(name, { brothers: this._namespaces });
     this._namespaces.add(namespace);
     return namespace;
+  }
+
+  namespace(name) {
+    return findObjectWithName(this._namespaces, name);
+  }
+
+  option(name) {
+    return findObjectWithName(this._rootNamespace.options, name);
   }
 }
 

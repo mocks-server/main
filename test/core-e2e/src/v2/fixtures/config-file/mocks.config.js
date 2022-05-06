@@ -1,10 +1,14 @@
 const path = require("path");
 
 module.exports = {
-  options: {
-    log: "silly",
-    mock: "user-2",
-    path: path.resolve(__dirname, "..", "temp"),
-    watch: false,
+  log: "silly",
+  mocks: {
+    selected: "user-2",
   },
+  plugins: {
+    filesLoader: {
+      path: path.resolve(__dirname, "..", "temp"),
+      watch: false,
+    },
+  }
 };

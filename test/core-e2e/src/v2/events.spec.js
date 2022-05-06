@@ -31,7 +31,7 @@ describe("events", () => {
       onChangeSettings: sandbox.spy(),
       onChangeAlerts: sandbox.spy(),
     };
-    core = await startCore("web-tutorial", { mock: "base" });
+    core = await startCore("web-tutorial", { mocks: { selected: "base" } });
     await waitForServer();
   });
 
@@ -51,56 +51,57 @@ describe("events", () => {
   });
 
   describe("When setting is changed", () => {
-    let removeSpy;
+    let option, removeSpy;
 
     it("should have emitted event", async () => {
-      removeSpy = core.onChangeSettings(spies.onChangeSettings);
-      core.settings.set("log", "silly");
+      option = core.config.option("log");
+      removeSpy = option.onChange(spies.onChangeSettings);
+      option.value = "silly";
       await wait(500);
-      expect(spies.onChangeSettings.getCall(0).args[0]).toEqual({
-        log: "silly",
-      });
+      expect(spies.onChangeSettings.getCall(0).args[0]).toEqual("silly");
     });
 
     it("should not execute callback when event listener is removed", async () => {
       removeSpy();
-      core.settings.set("log", "debug");
+      option.value = "debug";
       await wait(500);
       expect(spies.onChangeSettings.callCount).toEqual(1);
     });
   });
 
   describe("When mock is changed", () => {
-    let removeSpy;
+    let option, removeSpy;
 
     it("should have emitted event", async () => {
+      option = core.config.namespace("plugins").namespace("filesLoader").option("path");
       removeSpy = core.onChangeMocks(spies.onChangeMocks);
-      core.settings.set("path", fixturesFolder("web-tutorial-modified"));
+      option.value = fixturesFolder("web-tutorial-modified");
       await waitForServerUrl("/api/new-users");
       expect(spies.onChangeMocks.callCount).toEqual(2);
     });
 
     it("should not execute callback when event listener is removed", async () => {
       removeSpy();
-      core.settings.set("path", fixturesFolder("web-tutorial"));
+      option.value = fixturesFolder("web-tutorial");
       await wait(5000);
       expect(spies.onChangeMocks.callCount).toEqual(2);
     });
   });
 
   describe("When alerts are added", () => {
-    let removeSpy;
+    let option, removeSpy;
 
     it("should have emitted event", async () => {
+      option = core.config.namespace("mocks").option("selected");
       removeSpy = core.onChangeAlerts(spies.onChangeAlerts);
-      core.settings.set("mock", "unexistant");
+      option.value = "unexistant";
       await wait(500);
       expect(spies.onChangeAlerts.callCount).toEqual(1);
     });
 
     it("should not execute callback when event listener is removed", async () => {
       removeSpy();
-      core.settings.set("mock", "unexistant2");
+      option.value = "unexistant2";
       await wait(500);
       expect(spies.onChangeAlerts.callCount).toEqual(1);
     });

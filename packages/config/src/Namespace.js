@@ -4,7 +4,7 @@ const EventEmitter = require("events");
 const Option = require("./Option");
 const { types } = require("./types");
 const { addEventListener, CHANGE } = require("./events");
-const { checkNamespaceName, checkOptionName } = require("./namespaces");
+const { checkNamespaceName, checkOptionName, findObjectWithName } = require("./namespaces");
 
 class Namespace {
   constructor(name, { parents = [], brothers }) {
@@ -38,6 +38,7 @@ class Namespace {
         if (!isUndefined(configuration[option.name])) {
           const previousValue = option.value;
           if (option.type === types.OBJECT) {
+            // TODO, add propery to option defining whether object should be merged or not
             option.merge(configuration[option.name]);
           } else {
             option.value = configuration[option.name];
@@ -100,6 +101,14 @@ class Namespace {
 
   get options() {
     return this._options;
+  }
+
+  namespace(name) {
+    return findObjectWithName(this._namespaces, name);
+  }
+
+  option(name) {
+    return findObjectWithName(this._options, name);
   }
 }
 

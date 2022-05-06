@@ -14,7 +14,7 @@ describe("port command line argument", () => {
   let cli;
 
   beforeAll(async () => {
-    cli = mocksRunner(["--path=web-tutorial", "--port=3005"]);
+    cli = mocksRunner(["--plugins.filesLoader.path=web-tutorial", "--server.port=3005"]);
     await waitForServer(3005);
   });
 

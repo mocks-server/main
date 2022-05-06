@@ -8,6 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
+const deepMerge = require("deepmerge");
 const EventEmitter = require("events");
 
 const Config = require("@mocks-server/config");
@@ -21,8 +22,9 @@ const Mocks = require("./mocks/Mocks");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
 
-const { scopedAlertsMethods, addEventListener } = require("./support/helpers");
+const { scopedAlertsMethods, addEventListener, arrayMerge } = require("./support/helpers");
 
+const MODULE_NAME = "mocks";
 const CONFIG_PLUGINS_NAMESPACE = "plugins";
 const CONFIG_MOCKS_NAMESPACE = "mocks";
 const CONFIG_SERVER_NAMESPACE = "server";
@@ -30,16 +32,31 @@ const CONFIG_SERVER_NAMESPACE = "server";
 const ROOT_OPTIONS = [
   {
     name: "routesHandlers",
-    type: "object",
+    type: "array",
+    itemsType: "object",
     default: [],
+  },
+  {
+    name: "log",
+    type: "string",
+    default: "info",
   },
 ];
 
 class Core {
-  constructor() {
+  constructor(programmaticConfig = {}) {
+    this._programmaticConfig = programmaticConfig;
+
     this._eventEmitter = new EventEmitter();
     this._loadedMocks = false;
     this._loadedRoutes = false;
+
+    this._config = new Config({ moduleName: MODULE_NAME });
+    this._configPlugins = this._config.addNamespace(CONFIG_PLUGINS_NAMESPACE);
+    this._configMocks = this._config.addNamespace(CONFIG_MOCKS_NAMESPACE);
+    this._configServer = this._config.addNamespace(CONFIG_SERVER_NAMESPACE);
+
+    [this._routesHandlersOption, this._logOption] = this._config.addOptions(ROOT_OPTIONS);
 
     this._alerts = new Alerts({
       onChange: (alerts) => {
@@ -64,33 +81,6 @@ class Core {
         }
       },
     });
-
-    this._config = new Config();
-    this._configPlugins = this._config.addNamespace(CONFIG_PLUGINS_NAMESPACE);
-    this._configMocks = this._config.addNamespace(CONFIG_MOCKS_NAMESPACE);
-    this._configServer = this._config.addNamespace(CONFIG_SERVER_NAMESPACE);
-
-    [this._routesHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
-
-    /* this._settings = new Settings({
-      onChange: (changeDetails) => {
-        this._eventEmitter.emit(CHANGE_SETTINGS, changeDetails);
-        // TODO, define in options whether they should produce a server restart or not
-        if (
-          changeDetails.hasOwnProperty("port") ||
-          changeDetails.hasOwnProperty("host") ||
-          changeDetails.hasOwnProperty("cors") ||
-          changeDetails.hasOwnProperty("corsPreFlight")
-        ) {
-          this._server.restart();
-        }
-        if (changeDetails.hasOwnProperty("mock")) {
-          this._mocks.current = changeDetails.mock;
-        }
-      },
-      config: this._config,
-      tracer,
-    }); */
 
     this._plugins = new Plugins(
       {
@@ -161,15 +151,24 @@ class Core {
   // Public methods
 
   async init(programmaticConfig) {
+    if (programmaticConfig) {
+      this._programmaticConfig = deepMerge(this._programmaticConfig, programmaticConfig, {
+        arrayMerge,
+      });
+    }
     if (this._inited) {
       // in case it has been initializated manually before
       return Promise.resolve();
     }
-    await this._config.init(programmaticConfig);
-
     this._inited = true;
-    // Register plugins, let them add their custom settings
+
+    // Init config
+    await this._config.init(this._programmaticConfig);
+    tracer.set(this._logOption.value);
+
+    // Register plugins, let them add their custom config
     await this._plugins.register();
+
     // Register routes handlers
     await this._routesHandlers.register(this._routesHandlersOption.value);
 
@@ -193,7 +192,6 @@ class Core {
     return this._stopPlugins();
   }
 
-  // TODO, is this used? It seems that they have to be registered
   addRoutesHandler(RoutesHandler) {
     this._routesHandlers.add(RoutesHandler);
   }
@@ -203,10 +201,6 @@ class Core {
   onChangeMocks(listener) {
     return addEventListener(listener, CHANGE_MOCKS, this._eventEmitter);
   }
-
-  /* onChangeSettings(listener) {
-    return addEventListener(listener, CHANGE_SETTINGS, this._eventEmitter);
-  } */
 
   onChangeAlerts(listener) {
     return addEventListener(listener, CHANGE_ALERTS, this._eventEmitter);
@@ -238,6 +232,10 @@ class Core {
 
   get tracer() {
     return tracer;
+  }
+
+  get config() {
+    return this._config;
   }
 }
 

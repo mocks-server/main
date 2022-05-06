@@ -7,9 +7,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
-
 const path = require("path");
 
+const deepMerge = require("deepmerge");
 const crossFetch = require("cross-fetch");
 const waitOn = require("wait-on");
 
@@ -20,9 +20,15 @@ const SERVER_PORT = 3100;
 const DEFAULT_BINARY_PATH = "./starter";
 
 const defaultOptions = {
-  port: SERVER_PORT,
   log: "silent",
-  watch: false,
+  server: {
+    port: SERVER_PORT,
+  },
+  plugins: {
+    filesLoader: {
+      watch: false,
+    },
+  },
 };
 
 const defaultRequestOptions = {
@@ -37,20 +43,37 @@ const fixturesFolder = (folderName) => {
 };
 
 const createCore = (options = {}) => {
-  return new Core({
-    onlyProgrammaticOptions: true,
-    plugins: options.plugins,
-  });
+  return new Core(
+    deepMerge.all([
+      {
+        config: {
+          readFile: false,
+          readArguments: false,
+          readEnvironment: false,
+        },
+      },
+      options,
+    ])
+  );
 };
 
 const startExistingCore = (core, mocksPath, options = {}) => {
   const mocks = mocksPath || "web-tutorial";
   return core
-    .init({
-      ...defaultOptions,
-      path: fixturesFolder(mocks),
-      ...options,
-    })
+    .init(
+      deepMerge.all([
+        defaultOptions,
+        {
+          plugins: {
+            filesLoader: {
+              ...defaultOptions.plugins.filesLoader,
+              path: fixturesFolder(mocks),
+            },
+          },
+        },
+        options,
+      ])
+    )
     .then(() => {
       return core.start().then(() => {
         return Promise.resolve(core);

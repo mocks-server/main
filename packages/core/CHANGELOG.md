@@ -21,15 +21,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: BREAKING CHANGE. Export Core as default export, not as a property
 - feat: BREAKING CHANGE. The `Core` object now is export as `default`.
 - feat: BREAKING CHANGE. The `Behavior` object has been removed and it is not exported any more.
-- feat: BREAKING CHANGE. The `addFixturesHandler` and `onChangeLegacyMocks` have been removed from the `Core` API.
-- feat: BREAKING CHANGE. The `behaviors` and `fixtures` getters have been removed from the `Core` API.
+- feat: BREAKING CHANGE. The `addFixturesHandler`, `onChangeLegacyMocks`, `addSetting` and `onChangeSettings` methods have been removed from the `Core` API.
+- feat: BREAKING CHANGE. The `settings`, `behaviors` and `fixtures` getters have been removed from the `Core` API.
 - feat: BREAKING CHANGE. The `pathLegacy`, `behavior` and `watchLegacy` options are not supported any more.
 - feat: BREAKING CHANGE. The `--behavior` command line argument has been removed.
 - feat: BREAKING CHANGE. The `load:mocks:legacy` and `change:mocks:legacy` events are not emitted any more.
 
 ### Changed
+- feat: BREAKING CHANGE. Plugins are required to have an static property name.
+- feat: BREAKING CHANGE. Configuration format changed.
 - refactor: Use callbacks internally instead of events. Remove Orchestrator
 - refactor: Move Settings and Config to a separated package
+
+### Added
+- feat: Plugins now receive a third argument with a config object for adding their options.
+- feat: Add config getter to core.
 
 ## [2.5.3] - 2022-03-28
 

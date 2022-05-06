@@ -33,7 +33,7 @@ describe("delay setting", () => {
 
   describe("When delay setting is changed", () => {
     it("should respond after defined delay", async () => {
-      core.settings.set("delay", 1000);
+      core.config.namespace("mocks").option("delay").value = 1000;
       const timeCounter = new TimeCounter();
       await fetch("/api/users");
       timeCounter.stop();
@@ -51,7 +51,7 @@ describe("delay setting", () => {
     });
 
     it("should respond with same delay after setting delay to zero", async () => {
-      core.settings.set("delay", 0);
+      core.config.namespace("mocks").option("delay").value = 0;
       const timeCounter = new TimeCounter();
       await fetch("/api/users");
       timeCounter.stop();
@@ -59,7 +59,7 @@ describe("delay setting", () => {
     });
 
     it("should respond with same delay after setting delay to 4000", async () => {
-      core.settings.set("delay", 4000);
+      core.config.namespace("mocks").option("delay").value = 4000;
       const timeCounter = new TimeCounter();
       await fetch("/api/users");
       timeCounter.stop();
@@ -76,7 +76,7 @@ describe("delay setting", () => {
     });
 
     it("should respond with same delay after setting delay to zero", async () => {
-      core.settings.set("delay", 0);
+      core.config.namespace("mocks").option("delay").value = 0;
       const timeCounter = new TimeCounter();
       await fetch("/api/users/1");
       timeCounter.stop();
@@ -86,7 +86,7 @@ describe("delay setting", () => {
 
   describe("When route has delay and also route variant", () => {
     it("should respond after route variant defined delay", async () => {
-      core.settings.set("mock", "user-2");
+      core.config.namespace("mocks").option("selected").value = "user-2";
       const timeCounter = new TimeCounter();
       await fetch("/api/users/1");
       timeCounter.stop();
@@ -130,7 +130,7 @@ describe("delay setting", () => {
     });
 
     it("should respond with global server delay", async () => {
-      core.settings.set("delay", 3000);
+      core.config.namespace("mocks").option("delay").value = 3000;
       core.mocks.useRouteVariant("get-user:null-delay");
       const timeCounter = new TimeCounter();
       await fetch("/api/users/1");

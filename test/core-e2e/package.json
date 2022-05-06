@@ -4,6 +4,7 @@
     "test:e2e": "jest --runInBand --detectOpenHandles"
   },
   "devDependencies": {
-    "@mocks-server/core": "workspace:*"
+    "@mocks-server/core": "workspace:*",
+    "express": "4.17.3"
   }
 }

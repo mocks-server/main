@@ -1,18 +1,20 @@
 const { isUndefined } = require("lodash");
 const commander = require("commander");
 
-const { types, getOptionParser } = require("./types");
+const { types, getOptionParserWithArrayContents } = require("./types");
 const { namespaceAndParentNames } = require("./namespaces");
 
 const NAMESPACE_SEPARATOR = ".";
 
 function getCommanderOptionProperties(commanderOptionName, option) {
   const isBoolean = option.type === types.BOOLEAN;
+  const isArray = option.type === types.ARRAY;
   const defaultIsTrue = option.default === true;
   // TODO, option can only be set to false if default value is true or viceversa. So, users can't restore to default value using args when config in other places changes them
   const optionPrefix = isBoolean && defaultIsTrue ? "--no-" : "--";
-  const optionValueGetter = isBoolean ? "" : ` <${commanderOptionName}>`;
-  const argParser = getOptionParser(option);
+  const arraySuffix = isArray ? "..." : "";
+  const optionValueGetter = isBoolean ? "" : ` <${commanderOptionName}${arraySuffix}>`;
+  const argParser = getOptionParserWithArrayContents(option);
 
   return {
     default: option.default,
@@ -86,7 +88,7 @@ class CommandLineArguments {
     return config;
   }
 
-  read(namespaces) {
+  read(namespaces, { allowUnknownOption }) {
     const config = {};
 
     // Create commander options
@@ -95,7 +97,10 @@ class CommandLineArguments {
     this._createNamespacesOptions(namespaces, program, commanderOptionsData);
 
     // Get commander results
-    program.allowUnknownOption();
+    if (allowUnknownOption) {
+      program.allowUnknownOption();
+    }
+
     program.parse();
     const results = program.opts();
 

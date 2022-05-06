@@ -11,11 +11,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const { startCore, fetch, waitForServer, findAlert } = require("./support/helpers");
 
 describe("json files", () => {
-  let core;
+  let core, changeMock;
 
   beforeAll(async () => {
     core = await startCore("json-files");
     await waitForServer();
+    changeMock = (name) => {
+      core.config.namespace("mocks").option("selected").value = name;
+    };
   });
 
   afterAll(async () => {
@@ -52,8 +55,8 @@ describe("json files", () => {
   });
 
   describe('when changing mock to "user-2"', () => {
-    beforeEach(() => {
-      core.settings.set("mock", "user-2");
+    beforeAll(() => {
+      changeMock("user-2");
     });
 
     it("should have removed alert", () => {
@@ -83,8 +86,8 @@ describe("json files", () => {
   });
 
   describe('when changing mock to "foo"', () => {
-    beforeEach(() => {
-      core.settings.set("mock", "foo");
+    beforeAll(() => {
+      changeMock("foo");
     });
 
     it("should have added an alert", () => {

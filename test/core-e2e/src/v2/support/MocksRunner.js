@@ -46,7 +46,6 @@ module.exports = class MocksRunner {
   logData(data) {
     const cleanData = stripAnsi(data.replace(/\x1Bc/, ""));
     if (cleanData.length) {
-      console.log(cleanData);
       this._logs.push(cleanData);
     }
   }

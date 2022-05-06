@@ -1,6 +1,6 @@
 const { isUndefined, snakeCase } = require("lodash");
 
-const { getOptionParserIncludingBooleans } = require("./types");
+const { getOptionParserWithBooleansAndArrays } = require("./types");
 const { namespaceAndParentNames } = require("./namespaces");
 
 function varSegment(segment) {
@@ -30,7 +30,7 @@ class Environment {
     namespace.options.forEach((option) => {
       const value = this.loadFromEnv(namespace, option.name);
       if (!isUndefined(value)) {
-        const parser = getOptionParserIncludingBooleans(option);
+        const parser = getOptionParserWithBooleansAndArrays(option);
         namespaceConfig[option.name] = parser(value);
       }
     });

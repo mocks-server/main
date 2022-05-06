@@ -13,11 +13,12 @@ const express = require("express");
 
 const filterPluginAlerts = (alerts) =>
   alerts.filter(
-    (alert) =>
-      alert.context.indexOf("plugins") === 0 && !alert.context.includes("@mocks-server/core")
+    (alert) => alert.context.indexOf("plugins") === 0 && !alert.context.includes("filesLoader")
   );
 
 const { startCore, fetch, fixturesFolder, wait, TimeCounter } = require("./support/helpers");
+
+// TODO, test config object received
 
 describe("plugins", () => {
   const FOO_CUSTOM_RESPONSE = {
@@ -26,7 +27,6 @@ describe("plugins", () => {
   let core;
   let customRouter;
   let sandbox;
-  let changeSettingsSpy;
   let changeAlertsSpy;
   let mocksLoadedSpy;
   let initSpy;
@@ -35,7 +35,6 @@ describe("plugins", () => {
 
   beforeAll(async () => {
     sandbox = sinon.createSandbox();
-    changeSettingsSpy = sandbox.spy();
     mocksLoadedSpy = sandbox.spy();
     changeAlertsSpy = sandbox.spy();
     initSpy = sandbox.spy();
@@ -56,7 +55,9 @@ describe("plugins", () => {
     describe(description, () => {
       beforeAll(async () => {
         core = await startCore("web-tutorial", {
-          plugins: [pluginConstructor],
+          plugins: {
+            register: [pluginConstructor],
+          },
         });
       });
 
@@ -74,20 +75,19 @@ describe("plugins", () => {
           ]);
         });
 
-        it("should have executed register method passing core", async () => {
+        it("should have executed register method", async () => {
           expect(registerSpy.callCount).toEqual(1);
         });
 
-        it("should have passed core to register method", async () => {
-          expect(initSpy.getCall(0).args[0]).toEqual(core);
-        });
-
-        it("should have executed init method when settings are available", async () => {
+        it("should have executed init method", async () => {
           expect(initSpy.callCount).toEqual(1);
         });
 
-        it("should have settings available when init is called", async () => {
-          expect.assertions(3);
+        it("should have passed core to init method", async () => {
+          expect(initSpy.getCall(0).args[0]).toEqual(core);
+        });
+
+        it("should have config available when init is called", async () => {
           expect(initSpy.getCall(0).args[1]).toEqual(fixturesFolder("web-tutorial"));
           expect(initSpy.getCall(0).args[2]).toEqual(3100);
           expect(initSpy.getCall(0).args[3]).toEqual(0);
@@ -130,14 +130,9 @@ describe("plugins", () => {
 
       describe("when emit events", () => {
         beforeAll(async () => {
-          core.settings.set("path", fixturesFolder("web-tutorial-modified"));
+          core.config.namespace("plugins").namespace("filesLoader").option("path").value =
+            fixturesFolder("web-tutorial-modified");
           await wait(5000);
-        });
-
-        it("should inform plugin when settings are changed", async () => {
-          expect(changeSettingsSpy.getCall(0).args[0]).toEqual({
-            path: fixturesFolder("web-tutorial-modified"),
-          });
         });
 
         it("should inform plugin when mocks are loaded", async () => {
@@ -168,7 +163,7 @@ describe("plugins", () => {
         it("should start server when all initialization is finished", async () => {
           const timeCounter = new TimeCounter();
           core = await startCore("web-tutorial", {
-            plugins: [pluginConstructor],
+            plugins: { register: [pluginConstructor] },
           });
           const users = await fetch("/api/users");
           expect(users.body).toEqual([
@@ -200,6 +195,7 @@ describe("plugins", () => {
   };
 
   testPlugin("created as an object", {
+    name: "test-plugin",
     displayName: "test-plugin",
     register: (coreInstance, { addAlert }) => {
       coreInstance.addRouter("/foo-path", customRouter);
@@ -209,12 +205,11 @@ describe("plugins", () => {
     init: (coreInstance) => {
       initSpy(
         coreInstance,
-        coreInstance.settings.get("path"),
-        coreInstance.settings.get("port"),
-        coreInstance.settings.get("delay")
+        coreInstance.config.namespace("plugins").namespace("filesLoader").option("path").value,
+        coreInstance.config.namespace("server").option("port").value,
+        coreInstance.config.namespace("mocks").option("delay").value
       );
-      coreInstance.settings.set("log", "silly");
-      coreInstance.onChangeSettings(changeSettingsSpy);
+      coreInstance.config.option("log").value = "silly";
       coreInstance.onChangeAlerts(changeAlertsSpy);
       coreInstance.onChangeMocks(mocksLoadedSpy);
     },
@@ -222,13 +217,14 @@ describe("plugins", () => {
       startSpy(coreInstance);
       addAlert("test-start", "Warning starting plugin");
     },
-    stop: (coreInstance, { removeAlerts }) => {
+    stop: (_coreInstance, { removeAlerts }) => {
       removeAlerts();
     },
   });
 
   testAsyncPlugin("created as an object", {
     // TODO, allow async register
+    name: "test-plugin",
     displayName: "test-plugin",
     register: (coreInstance, { addAlert }) => {
       addAlert("test-register", "Warning registering plugin");
@@ -245,6 +241,10 @@ describe("plugins", () => {
   testPlugin(
     "created as a Class",
     class Plugin {
+      static get name() {
+        return "test-plugin";
+      }
+
       constructor(coreInstance, { addAlert }) {
         coreInstance.addRouter("/foo-path", customRouter);
         addAlert("test-register", "Warning registering plugin");
@@ -253,12 +253,11 @@ describe("plugins", () => {
       init(coreInstance) {
         initSpy(
           coreInstance,
-          coreInstance.settings.get("path"),
-          coreInstance.settings.get("port"),
-          coreInstance.settings.get("delay")
+          coreInstance.config.namespace("plugins").namespace("filesLoader").option("path").value,
+          coreInstance.config.namespace("server").option("port").value,
+          coreInstance.config.namespace("mocks").option("delay").value
         );
-        coreInstance.settings.set("log", "silly");
-        coreInstance.onChangeSettings(changeSettingsSpy);
+        coreInstance.config.option("log").value = "silly";
         coreInstance.onChangeAlerts(changeAlertsSpy);
         coreInstance.onChangeMocks(mocksLoadedSpy);
       }
@@ -278,6 +277,10 @@ describe("plugins", () => {
   testPlugin(
     "created as a Class with register method",
     class Plugin {
+      static get name() {
+        return "test-plugin";
+      }
+
       register(coreInstance, { addAlert }) {
         coreInstance.addRouter("/foo-path", customRouter);
         addAlert("test-register", "Warning registering plugin");
@@ -286,12 +289,11 @@ describe("plugins", () => {
       init(coreInstance) {
         initSpy(
           coreInstance,
-          coreInstance.settings.get("path"),
-          coreInstance.settings.get("port"),
-          coreInstance.settings.get("delay")
+          coreInstance.config.namespace("plugins").namespace("filesLoader").option("path").value,
+          coreInstance.config.namespace("server").option("port").value,
+          coreInstance.config.namespace("mocks").option("delay").value
         );
-        coreInstance.settings.set("log", "silly");
-        coreInstance.onChangeSettings(changeSettingsSpy);
+        coreInstance.config.option("log").value = "silly";
         coreInstance.onChangeAlerts(changeAlertsSpy);
         coreInstance.onChangeMocks(mocksLoadedSpy);
       }
@@ -311,6 +313,10 @@ describe("plugins", () => {
   testAsyncPlugin(
     "created as a Class",
     class Plugin {
+      static get name() {
+        return "test-plugin";
+      }
+
       register(coreInstance, { addAlert }) {
         coreInstance.addRouter("/foo-path", customRouter);
         addAlert("test-register", "Warning registering plugin");
@@ -334,16 +340,16 @@ describe("plugins", () => {
     addAlert("test-register", "Warning registering plugin");
     registerSpy(coreInstance);
     return {
+      name: "test-plugin",
       init: (coreIns) => {
         initSpy(
           coreIns,
-          coreIns.settings.get("path"),
-          coreIns.settings.get("port"),
-          coreIns.settings.get("delay")
+          coreIns.config.namespace("plugins").namespace("filesLoader").option("path").value,
+          coreIns.config.namespace("server").option("port").value,
+          coreIns.config.namespace("mocks").option("delay").value
         );
-        coreIns.settings.set("log", "silly");
-        coreIns.onChangeSettings(changeSettingsSpy);
-        coreInstance.onChangeAlerts(changeAlertsSpy);
+        coreIns.config.option("log").value = "silly";
+        coreIns.onChangeAlerts(changeAlertsSpy);
         coreIns.onChangeMocks(mocksLoadedSpy);
       },
       start: (coreIns, methods) => {
@@ -362,6 +368,7 @@ describe("plugins", () => {
     addAlert("test-register", "Warning registering plugin");
     registerSpy(coreInstance);
     return {
+      name: "test-plugin",
       displayName: "test-plugin",
       init: async () => {
         await wait(2000);
@@ -375,6 +382,7 @@ describe("plugins", () => {
 
   testPlugin("created as a function returning register property", () => {
     return {
+      name: "test-plugin",
       displayName: "test-plugin",
       register: (coreInstance, { addAlert }) => {
         coreInstance.addRouter("/foo-path", customRouter);
@@ -384,12 +392,11 @@ describe("plugins", () => {
       init: (coreInstance) => {
         initSpy(
           coreInstance,
-          coreInstance.settings.get("path"),
-          coreInstance.settings.get("port"),
-          coreInstance.settings.get("delay")
+          coreInstance.config.namespace("plugins").namespace("filesLoader").option("path").value,
+          coreInstance.config.namespace("server").option("port").value,
+          coreInstance.config.namespace("mocks").option("delay").value
         );
-        coreInstance.settings.set("log", "silly");
-        coreInstance.onChangeSettings(changeSettingsSpy);
+        coreInstance.config.option("log").value = "silly";
         coreInstance.onChangeAlerts(changeAlertsSpy);
         coreInstance.onChangeMocks(mocksLoadedSpy);
       },

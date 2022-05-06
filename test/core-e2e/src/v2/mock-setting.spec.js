@@ -11,11 +11,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const { startCore, fetch, waitForServer, findAlert } = require("./support/helpers");
 
 describe("mock setting", () => {
-  let core;
+  let core, changeMock;
 
   beforeAll(async () => {
     core = await startCore("web-tutorial");
     await waitForServer();
+    changeMock = (name) => {
+      core.config.namespace("mocks").option("selected").value = name;
+    };
   });
 
   afterAll(async () => {
@@ -52,8 +55,8 @@ describe("mock setting", () => {
   });
 
   describe('when changing mock to "user-2"', () => {
-    beforeEach(() => {
-      core.settings.set("mock", "user-2");
+    beforeAll(() => {
+      changeMock("user-2");
     });
 
     it("should have removed alert", () => {
@@ -83,8 +86,8 @@ describe("mock setting", () => {
   });
 
   describe('when changing mock to "user-real"', () => {
-    beforeEach(() => {
-      core.settings.set("mock", "user-real");
+    beforeAll(() => {
+      changeMock("user-real");
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -115,8 +118,8 @@ describe("mock setting", () => {
   });
 
   describe('when changing mock to "foo"', () => {
-    beforeEach(() => {
-      core.settings.set("mock", "foo");
+    beforeAll(() => {
+      changeMock("foo");
     });
 
     it("should have added an alert", () => {
@@ -149,8 +152,8 @@ describe("mock setting", () => {
   });
 
   describe('when changing mock again to "user-real"', () => {
-    beforeEach(() => {
-      core.settings.set("mock", "user-real");
+    beforeAll(() => {
+      changeMock("user-real");
     });
 
     it("should have removed alert", () => {

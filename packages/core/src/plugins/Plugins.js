@@ -21,7 +21,8 @@ const { scopedAlertsMethods } = require("../support/helpers");
 const OPTIONS = [
   {
     name: "register",
-    type: "object",
+    type: "array",
+    itemsType: "object",
     default: [],
   },
 ];
@@ -50,7 +51,7 @@ class Plugins {
   }
 
   register() {
-    this._plugins = this._pluginsToRegister.value;
+    this._plugins = [...this._pluginsToRegister.value];
     this._plugins.unshift(FilesLoader);
     return this._registerPlugins().then(() => {
       tracer.verbose(`Registered ${this._pluginsRegistered} plugins without errors`);
@@ -97,13 +98,17 @@ class Plugins {
   }
 
   _registerPlugin(Plugin, pluginMethods, pluginIndex) {
-    let pluginInstance;
+    let pluginInstance, pluginConfig;
     if (isObject(Plugin) && !isFunction(Plugin)) {
       pluginInstance = Plugin;
       this._pluginsRegistered++;
     } else {
       try {
-        pluginInstance = new Plugin(this._core, pluginMethods);
+        // TODO, remove all other methods for creating plugins. Demand Class. This will make simpler alerts and other details, as the plugin names must always be defined in static property
+        if (Plugin.name) {
+          pluginConfig = this._config.addNamespace(Plugin.name);
+        }
+        pluginInstance = new Plugin(this._core, pluginMethods, pluginConfig);
         this._pluginsRegistered++;
       } catch (error) {
         if (error.message.includes("is not a constructor")) {
@@ -121,7 +126,10 @@ class Plugins {
     }
     if (typeof pluginInstance.register === "function") {
       try {
-        pluginInstance.register(this._core, pluginMethods);
+        if (!pluginConfig && pluginInstance.name) {
+          pluginConfig = this._config.addNamespace(pluginInstance.name);
+        }
+        pluginInstance.register(this._core, pluginMethods, pluginConfig);
       } catch (error) {
         this._catchRegisterError(error, pluginIndex);
         this._pluginsRegistered = this._pluginsRegistered - 1;

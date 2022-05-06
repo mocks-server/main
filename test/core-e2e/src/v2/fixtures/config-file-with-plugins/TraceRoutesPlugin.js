@@ -1,15 +1,19 @@
 class Plugin {
-  constructor(core) {
-    core.addSetting({
+  static get name() {
+    return "trace-routes";
+  }
+
+  constructor(core, _methods, config) {
+    this._traceRoutes = config.addOption({
       name: "traceRoutes",
       type: "boolean",
       description: "Trace routes count",
       default: true,
     });
+    this._traceRoutes.onChange(this._onChangeTraceRoutes.bind(this));
 
     this._core = core;
     this._onChangeMocks = this._onChangeMocks.bind(this);
-    this._onChangeSettings = this._onChangeSettings.bind(this);
   }
 
   get displayName() {
@@ -17,10 +21,9 @@ class Plugin {
   }
 
   init(core) {
-    this._enabled = core.settings.get("traceRoutes");
+    this._enabled = this._traceRoutes.value;
     this._removeChangeMocksListener = core.onChangeMocks(this._onChangeMocks);
-    this._removeChangeSettingsListener = core.onChangeSettings(this._onChangeSettings);
-    core.tracer.debug(`traceRoutes initial value is ${core.settings.get("traceRoutes")}`);
+    core.tracer.debug(`traceRoutes initial value is ${this._traceRoutes.value}`);
   }
 
   traceRoutes() {
@@ -40,10 +43,8 @@ class Plugin {
     core.tracer.debug("traceRoutes plugin stopped");
   }
 
-  _onChangeSettings(settings) {
-    if (settings.hasOwnProperty("traceRoutes")) {
-      this._enabled = settings.traceRoutes;
-    }
+  _onChangeTraceRoutes() {
+    this._enabled = this._traceRoutes.value;
   }
 
   _onChangeMocks() {

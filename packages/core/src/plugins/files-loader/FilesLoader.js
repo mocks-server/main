@@ -23,44 +23,64 @@ const {
 } = require("./helpers");
 const { createMocksFolder } = require("../../support/scaffold");
 
-const PLUGIN_NAME = "@mocks-server/core/plugin-files-loader";
-const BABEL_REGISTER_OPTION = "babelRegister";
-const BABEL_REGISTER_OPTIONS_OPTION = "babelRegisterOptions";
-const PATH_OPTION = "path";
-const WATCH_OPTION = "watch";
-const DEFAULT_PATH = "mocks";
+const PLUGIN_NAME = "filesLoader";
 const ROUTES_FOLDER = "routes";
 
+const OPTIONS = [
+  {
+    name: "path",
+    description: "Define folder from where to load mocks",
+    type: "string",
+    default: "mocks",
+  },
+  {
+    name: "watch",
+    description: "Enable/disable files watcher",
+    type: "boolean",
+    default: true,
+  },
+  {
+    name: "babelRegister",
+    description: "Load @babel/register",
+    type: "boolean",
+    default: false,
+  },
+  {
+    name: "babelRegisterOptions",
+    description: "Options for @babel/register",
+    type: "object",
+    default: {},
+  },
+];
+
 class FilesLoaderBase {
-  constructor(core, methods, extraOptions = {}) {
+  static get name() {
+    return PLUGIN_NAME;
+  }
+
+  constructor(core, methods, config, extraOptions = {}) {
     this._core = core;
     this._loadMocks = methods.loadMocks;
     this._loadRoutes = methods.loadRoutes;
     this._addAlert = methods.addAlert;
     this._removeAlerts = methods.removeAlerts;
     this._tracer = core.tracer;
-    this._settings = this._core.settings;
     this._customRequireCache = extraOptions.requireCache;
     this._require = extraOptions.require || require;
 
-    core.addSetting({
-      name: "path",
-      type: "string",
-      description: "Define folder from where to load mocks",
-      default: DEFAULT_PATH,
-    });
-    core.addSetting({
-      name: WATCH_OPTION,
-      type: "boolean",
-      description: "Enable/disable files watcher",
-      default: true,
-    });
+    this._config = config;
 
-    this._onChangeSettings = this._onChangeSettings.bind(this);
+    [
+      this._pathOption,
+      this._watchOption,
+      this._babelRegisterOption,
+      this._babelRegisterOptionsOption,
+    ] = this._config.addOptions(OPTIONS);
+    this._pathOption.onChange(this._onChangePathOption.bind(this));
+    this._watchOption.onChange(this._onChangeWatchOption.bind(this));
   }
 
   init() {
-    this._core.onChangeSettings(this._onChangeSettings);
     try {
       this._loadFiles();
       return Promise.resolve();
@@ -104,11 +124,12 @@ class FilesLoaderBase {
     }
   }
 
+  // TODO, remove
   _demandPathName() {
     this._tracer.error(
-      `Please provide a path to the folder containing mocks using the "${PATH_OPTION}" option`
+      `Please provide a path to the folder containing mocks using the path option`
     );
-    throw new Error(`Invalid option "${PATH_OPTION}"`);
+    throw new Error(`Invalid option "path"`);
   }
 
   _resolveFolder(folder) {
@@ -127,19 +148,17 @@ class FilesLoaderBase {
   }
 
   _loadFiles() {
-    const pathName = this._settings.get(PATH_OPTION);
+    const pathName = this._pathOption.value;
+    // TODO, remove
     if (!pathName) {
       this._demandPathName();
     }
     const resolvedFolder = this._resolveFolder(pathName);
     this._path = this._ensureFolder(resolvedFolder);
     this._tracer.info(`Loading files from folder ${this._path}`);
-    if (!!this._core.lowLevelConfig[BABEL_REGISTER_OPTION]) {
+    if (!!this._babelRegisterOption.value) {
       this._require("@babel/register")(
-        babelRegisterDefaultOptions(
-          resolvedFolder,
-          this._core.lowLevelConfig[BABEL_REGISTER_OPTIONS_OPTION]
-        )
+        babelRegisterDefaultOptions(resolvedFolder, this._babelRegisterOptionsOption.value)
       );
     }
     this._cleanRequireCacheFolder();
@@ -152,8 +171,8 @@ class FilesLoaderBase {
     try {
       const routeFiles = globule.find({
         src: getFilesGlobule(
-          this._core.lowLevelConfig[BABEL_REGISTER_OPTION],
-          this._core.lowLevelConfig[BABEL_REGISTER_OPTIONS_OPTION]
+          this._babelRegisterOption.value,
+          this._babelRegisterOptionsOption.value
         ),
         srcBase: routesPath,
         prefixBase: true,
@@ -187,8 +206,8 @@ class FilesLoaderBase {
   _loadMocksFile() {
     let mocksFile = mocksFileToUse(
       this._path,
-      this._core.lowLevelConfig[BABEL_REGISTER_OPTION],
-      this._core.lowLevelConfig[BABEL_REGISTER_OPTIONS_OPTION]
+      this._babelRegisterOption.value,
+      this._babelRegisterOptionsOption.value
     );
     if (mocksFile) {
       try {
@@ -212,7 +231,7 @@ class FilesLoaderBase {
   }
 
   _switchWatch() {
-    const enabled = this._settings.get(WATCH_OPTION);
+    const enabled = this._watchOption.value;
     this.stop();
     if (enabled) {
       this._tracer.debug("Starting files watcher");
@@ -228,21 +247,17 @@ class FilesLoaderBase {
     }
   }
 
-  _onChangeSettings(changeDetails) {
-    if (changeDetails.hasOwnProperty(PATH_OPTION)) {
-      this._loadFiles();
-      this._switchWatch();
-    } else if (changeDetails.hasOwnProperty(WATCH_OPTION)) {
-      this._switchWatch();
-    }
+  _onChangePathOption() {
+    this._loadFiles();
+    this._switchWatch();
+  }
+
+  _onChangeWatchOption() {
+    this._switchWatch();
   }
 
   _cache() {
     return this._customRequireCache || require.cache;
-  }
-
-  get displayName() {
-    return PLUGIN_NAME;
   }
 }
 

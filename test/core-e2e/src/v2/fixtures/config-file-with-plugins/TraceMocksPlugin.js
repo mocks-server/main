@@ -1,15 +1,19 @@
 class Plugin {
-  constructor(core) {
-    core.addSetting({
+  static get name() {
+    return "trace-mocks";
+  }
+
+  constructor(core, _methods, config) {
+    this._traceMocks = config.addOption({
       name: "traceMocks",
       type: "boolean",
       description: "Trace mocks count",
       default: true,
     });
+    this._traceMocks.onChange(this._onChangeTraceMocks.bind(this));
 
     this._core = core;
     this._onChangeMocks = this._onChangeMocks.bind(this);
-    this._onChangeSettings = this._onChangeSettings.bind(this);
   }
 
   get displayName() {
@@ -17,10 +21,9 @@ class Plugin {
   }
 
   init(core) {
-    this._enabled = core.settings.get("traceMocks");
+    this._enabled = this._traceMocks.value;
     this._removeChangeMocksListener = core.onChangeMocks(this._onChangeMocks);
-    this._removeChangeSettingsListener = core.onChangeSettings(this._onChangeSettings);
-    core.tracer.debug(`traceMocks initial value is ${core.settings.get("traceMocks")}`);
+    core.tracer.debug(`traceMocks initial value is ${this._traceMocks.value}`);
   }
 
   traceMocks() {
@@ -40,10 +43,8 @@ class Plugin {
     core.tracer.debug("traceMocks plugin stopped");
   }
 
-  _onChangeSettings(settings) {
-    if (settings.hasOwnProperty("traceMocks")) {
-      this._enabled = settings.traceMocks;
-    }
+  _onChangeTraceMocks() {
+    this._enabled = this._traceMocks.value;
   }
 
   _onChangeMocks() {

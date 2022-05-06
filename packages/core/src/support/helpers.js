@@ -90,7 +90,12 @@ function addEventListener(listener, eventName, eventEmitter) {
   return removeCallback;
 }
 
+function arrayMerge(_destinationArray, sourceArray) {
+  return sourceArray;
+}
+
 module.exports = {
   scopedAlertsMethods,
   addEventListener,
+  arrayMerge,
 };

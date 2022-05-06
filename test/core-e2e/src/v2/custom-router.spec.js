@@ -25,14 +25,21 @@ describe("when using custom router", () => {
 
   describe("and registering it before initializating the server", () => {
     beforeAll(async () => {
-      core = new Core({
-        onlyProgrammaticOptions: true,
-      });
+      core = new Core();
       core.addRouter("/api/custom", customRouter);
       await core.init({
+        config: {
+          readFile: false,
+          readArguments: false,
+          readEnvironment: false,
+        },
         log: "silent",
-        path: fixturesFolder("web-tutorial"),
-        watch: false,
+        plugins: {
+          filesLoader: {
+            path: fixturesFolder("web-tutorial"),
+            watch: false,
+          },
+        },
       });
       await core.start();
       await waitForServer();
@@ -64,13 +71,20 @@ describe("when using custom router", () => {
 
   describe("and registering it after server is started", () => {
     beforeAll(async () => {
-      core = new Core({
-        onlyProgrammaticOptions: true,
-      });
+      core = new Core();
       await core.init({
+        config: {
+          readFile: false,
+          readArguments: false,
+          readEnvironment: false,
+        },
         log: "silent",
-        path: fixturesFolder("web-tutorial"),
-        watch: false,
+        plugins: {
+          filesLoader: {
+            path: fixturesFolder("web-tutorial"),
+            watch: false,
+          },
+        },
       });
       await core.start();
       await waitForServer();

@@ -17,7 +17,7 @@ describe("when files watch is disabled", () => {
   beforeAll(async () => {
     await fsExtra.remove(fixturesFolder("temp"));
     await fsExtra.copy(fixturesFolder("web-tutorial"), fixturesFolder("temp"));
-    mocks = mocksRunner(["--path=temp", "--no-watch"]);
+    mocks = mocksRunner(["--plugins.filesLoader.path=temp", "--no-plugins.filesLoader.watch"]);
     await waitForServer();
   });
 

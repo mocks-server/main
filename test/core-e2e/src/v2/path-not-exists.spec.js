@@ -20,11 +20,14 @@ const {
 
 describe("when path not exists", () => {
   const FOLDER = "unexistant";
-  let core;
+  let core, changeMock;
 
   beforeAll(async () => {
     await fsExtra.remove(fixturesFolder(FOLDER));
     core = await startCore(FOLDER);
+    changeMock = (name) => {
+      core.config.namespace("mocks").option("selected").value = name;
+    };
     await waitForServer();
   });
 
@@ -90,7 +93,7 @@ describe("when path not exists", () => {
 
   describe("no-headers mock", () => {
     it("should not add headers to /api/users", async () => {
-      core.settings.set("mock", "no-headers");
+      changeMock("no-headers");
       const users = await fetch("/api/users");
       expect(users.status).toEqual(200);
       expect(users.headers.get("x-mocks-server-example")).toEqual(null);
@@ -117,7 +120,7 @@ describe("when path not exists", () => {
 
   describe("user-real mock", () => {
     it("should serve users under the /api/users path", async () => {
-      core.settings.set("mock", "user-real");
+      changeMock("user-real");
       const users = await fetch("/api/users");
       expect(users.status).toEqual(200);
       expect(users.headers.get("x-mocks-server-example")).toEqual(null);

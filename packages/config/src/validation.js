@@ -6,15 +6,17 @@ const ajv = new Ajv({ allErrors: true });
 
 const { types } = require("./types");
 
-function enforceDefaultTypeSchema(type) {
-  return {
+function enforceDefaultTypeSchema(type, itemsType) {
+  const schema = {
     properties: {
       name: { type: types.STRING },
+      type: { enum: [type] },
       description: { type: types.STRING },
       deprecated: { type: types.BOOLEAN },
       deprecatedBy: { type: types.OBJECT },
-      type: { enum: [type] },
-      default: { type },
+      default: {
+        type,
+      },
       metaData: {
         type: types.OBJECT,
         additionalProperties: true,
@@ -22,6 +24,15 @@ function enforceDefaultTypeSchema(type) {
     },
     additionalProperties: false,
   };
+
+  if (type === types.ARRAY) {
+    schema.properties.itemsType = { enum: [itemsType] };
+    schema.properties.default.items = {
+      type: itemsType,
+    };
+  }
+
+  return schema;
 }
 
 const optionSchema = {
@@ -31,7 +42,12 @@ const optionSchema = {
     enforceDefaultTypeSchema(types.STRING),
     enforceDefaultTypeSchema(types.BOOLEAN),
     enforceDefaultTypeSchema(types.OBJECT),
+    enforceDefaultTypeSchema(types.ARRAY, types.NUMBER),
+    enforceDefaultTypeSchema(types.ARRAY, types.STRING),
+    enforceDefaultTypeSchema(types.ARRAY, types.BOOLEAN),
+    enforceDefaultTypeSchema(types.ARRAY, types.OBJECT),
   ],
+  // TODO, require also itemsType if type is array?
   required: ["name", "type"],
 };
 
@@ -73,11 +89,19 @@ function validateObject(value) {
   }
 }
 
+function validateArray(value) {
+  if (!Array.isArray(value)) {
+    // TODO, validate also array contents
+    throwValueTypeError(value, types.ARRAY);
+  }
+}
+
 const typeValidators = {
   [types.STRING]: validateString,
   [types.BOOLEAN]: validateBoolean,
   [types.NUMBER]: validateNumber,
   [types.OBJECT]: validateObject,
+  [types.ARRAY]: validateArray,
 };
 
 function validateSchema(config, schema, validator) {

@@ -34,6 +34,37 @@ describe("programmatic", () => {
       ).rejects.toThrowError("fooOption");
     });
 
+    it("should throw when option of type array does not pass validation when calling to start", async () => {
+      config = new Config({ moduleName: "testObjectInitExtend" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: ["foo", "foo2"],
+        type: "array",
+      });
+      await expect(
+        config.start({
+          fooNamespace: { fooOption: "foo" },
+        })
+      ).rejects.toThrowError("fooOption");
+    });
+
+    it("should throw when contents of option of type array do not pass validation when calling to start", async () => {
+      config = new Config({ moduleName: "testObjectInitExtend" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: [1, 2],
+        type: "array",
+        itemsType: "number",
+      });
+      await expect(
+        config.start({
+          fooNamespace: { fooOption: [1, 2, "3", 5] },
+        })
+      ).rejects.toThrowError("fooOption");
+    });
+
     it("option should get value from it", async () => {
       await config.init({
         fooNamespace: { fooOption: "foo-value-2" },
@@ -82,6 +113,20 @@ describe("programmatic", () => {
         foo3: "z",
         foo4: "test",
       });
+    });
+
+    it("should overwrite value from default if option is of type array", async () => {
+      config = new Config({ moduleName: "testObjectInitExtend" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: ["foo", "foo2"],
+        type: "array",
+      });
+      await config.init({
+        fooNamespace: { fooOption: ["foo3", "foo4"] },
+      });
+      expect(option.value).toEqual(["foo3", "foo4"]);
     });
 
     it("should merge value from default if option is of type object when added after init method", async () => {

@@ -26,18 +26,22 @@ function parseBoolean(value) {
   return !FALSY_VALUES.includes(value);
 }
 
-function getOptionParser(option) {
-  if (option.type === types.NUMBER) {
+function getTypeParser(type) {
+  if (type === types.NUMBER) {
     return parseFloat;
   }
-  if (option.type === types.OBJECT) {
+  if (type === types.OBJECT) {
     return parseObject;
   }
   return doNothingParser;
 }
 
+function getOptionParser(option) {
+  return getTypeParser(option.type);
+}
+
 function ParseArrayContents(option) {
-  const parseArrayContents = getOptionParser(option);
+  const parseArrayContents = getTypeParser(option.itemsType);
   return function (array) {
     if (!isUndefined(array)) {
       return array.map((item) => parseArrayContents(item));

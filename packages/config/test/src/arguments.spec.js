@@ -88,6 +88,53 @@ describe("arguments", () => {
       expect(commander.Option.prototype.argParser.getCall(4).args[0]("1.5")).toEqual(1.5);
     });
 
+    it("should convert items types when option is an array with itemsType number", async () => {
+      config = new Config({ moduleName: "testL" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: [2],
+        type: "array",
+        itemsType: "number",
+      });
+      await config.init();
+      // first three calls are from config options
+      expect(commander.Option.prototype.argParser.getCall(4).args[0](["1.5", "2"])).toEqual([
+        1.5, 2,
+      ]);
+    });
+
+    it("should return undefined when parsing array contents if value is not defined", async () => {
+      config = new Config({ moduleName: "testL" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: [2],
+        type: "array",
+      });
+      await config.init();
+      // first three calls are from config options
+      expect(commander.Option.prototype.argParser.getCall(4).args[0]()).toBe(undefined);
+    });
+
+    it("should convert items types when option is an array with itemsType object", async () => {
+      config = new Config({ moduleName: "testL" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: [{ foo: "foo" }],
+        type: "array",
+        itemsType: "object",
+      });
+      await config.init();
+      // first three calls are from config options
+      expect(
+        commander.Option.prototype.argParser
+          .getCall(4)
+          .args[0](['{ "foo2": "foo2" }', '{ "foo3": "foo3" }'])
+      ).toEqual([{ foo2: "foo2" }, { foo3: "foo3" }]);
+    });
+
     it("commander should call to empty parser when option is a string", async () => {
       config = new Config({ moduleName: "testM" });
       namespace = config.addNamespace("fooNamespace");

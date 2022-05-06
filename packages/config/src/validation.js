@@ -23,13 +23,15 @@ function enforceDefaultTypeSchema(type, itemsType) {
       },
     },
     additionalProperties: false,
+    required: ["name", "type"],
   };
 
-  if (type === types.ARRAY) {
+  if (itemsType) {
     schema.properties.itemsType = { enum: [itemsType] };
     schema.properties.default.items = {
       type: itemsType,
     };
+    schema.required = ["name", "type", "itemsType"];
   }
 
   return schema;
@@ -42,13 +44,12 @@ const optionSchema = {
     enforceDefaultTypeSchema(types.STRING),
     enforceDefaultTypeSchema(types.BOOLEAN),
     enforceDefaultTypeSchema(types.OBJECT),
+    enforceDefaultTypeSchema(types.ARRAY),
     enforceDefaultTypeSchema(types.ARRAY, types.NUMBER),
     enforceDefaultTypeSchema(types.ARRAY, types.STRING),
     enforceDefaultTypeSchema(types.ARRAY, types.BOOLEAN),
     enforceDefaultTypeSchema(types.ARRAY, types.OBJECT),
   ],
-  // TODO, require also itemsType if type is array?
-  required: ["name", "type"],
 };
 
 const optionValidator = ajv.compile(optionSchema);
@@ -89,10 +90,14 @@ function validateObject(value) {
   }
 }
 
-function validateArray(value) {
-  if (!Array.isArray(value)) {
-    // TODO, validate also array contents
-    throwValueTypeError(value, types.ARRAY);
+function validateArray(array, itemsType) {
+  if (!Array.isArray(array)) {
+    throwValueTypeError(array, types.ARRAY);
+  }
+  if (itemsType) {
+    array.forEach((item) => {
+      validateValueType(item, itemsType);
+    });
   }
 }
 
@@ -107,6 +112,7 @@ const typeValidators = {
 function validateSchema(config, schema, validator) {
   const validateProperties = validator || ajv.compile(schema);
   const valid = validateProperties(config);
+  // console.log(JSON.stringify(schema, null, 2));
   if (!valid) {
     throw new Error(betterAjvErrors(schema, config, validateProperties.errors));
   }
@@ -118,6 +124,11 @@ function addNamespaceSchema(namespace, { rootSchema, allowAdditionalProperties }
     currentSchema.properties[option.name] = {
       type: option.type,
     };
+    if (option.itemsType) {
+      currentSchema.properties[option.name].items = {
+        type: option.itemsType,
+      };
+    }
     return currentSchema;
   }, initialSchema);
   addNamespacesSchema(namespace.namespaces, {
@@ -153,8 +164,8 @@ function validateOption(properties) {
   validateSchema(properties, optionSchema, optionValidator);
 }
 
-function validateValueType(value, type) {
-  typeValidators[type](value);
+function validateValueType(value, type, itemsType) {
+  typeValidators[type](value, itemsType);
 }
 
 module.exports = {

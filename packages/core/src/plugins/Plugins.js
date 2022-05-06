@@ -22,7 +22,6 @@ const OPTIONS = [
   {
     name: "register",
     type: "array",
-    itemsType: "object",
     default: [],
   },
 ];

@@ -102,12 +102,109 @@ describe("options", () => {
       ).toThrowError("default");
     });
 
+    it("should throw when type is not array and itemsType property is added", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({
+          name: "fooOption",
+          type: "string",
+          itemsType: "number",
+          default: "foo",
+        })
+      ).toThrowError("itemsType");
+    });
+
     it("should throw when type is array and default does not match type", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "array", default: "foo" })
       ).toThrowError("default");
+    });
+
+    it("should throw when type is array and contents does not match itemsType", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({
+          name: "fooOption",
+          type: "array",
+          itemsType: "number",
+          default: [1, "foo", 3],
+        })
+      ).toThrowError("default");
+    });
+
+    it("should throw when setting value if type is array and value does not match type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "array" });
+      expect(() => (option.value = 5)).toThrowError("5 is not of type array");
+    });
+
+    it("should throw when setting value if type is array and contents don't match string type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "array", itemsType: "string" });
+      expect(() => (option.value = ["5", "4", 5, "2"])).toThrowError("5 is not of type string");
+    });
+
+    it("should set value if type is array and contents match string type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "array", itemsType: "string" });
+      option.value = ["5", "4", "5", "2"];
+      expect(option.value).toEqual(["5", "4", "5", "2"]);
+    });
+
+    it("should throw when setting value if type is array and contents don't match number type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "array", itemsType: "number" });
+      expect(() => (option.value = [5, 4, "5", 1])).toThrowError("5 is not of type number");
+    });
+
+    it("should set value if type is array and contents match number type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "array", itemsType: "number" });
+      option.value = [5, 4, 5, 1];
+      expect(option.value).toEqual([5, 4, 5, 1]);
+    });
+
+    it("should throw when setting value if type is array and contents don't match boolean type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "array", itemsType: "boolean" });
+      expect(() => (option.value = [false, true, 5, false])).toThrowError(
+        "5 is not of type boolean"
+      );
+    });
+
+    it("should set value if type is array and contents match boolean type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "array", itemsType: "boolean" });
+      option.value = [false, true, false];
+      expect(option.value).toEqual([false, true, false]);
+    });
+
+    it("should throw when setting value if type is array and contents don't match object type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "array", itemsType: "object" });
+      expect(() => (option.value = [{ foo: "foo" }, "foo"])).toThrowError(
+        "foo is not of type object"
+      );
+    });
+
+    it("should set value if type is array and contents match object type", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "array", itemsType: "object" });
+      option.value = [{ foo: "foo" }, { foo2: "foo2" }];
+      expect(option.value).toEqual([{ foo: "foo" }, { foo2: "foo2" }]);
     });
 
     it("should throw when setting value if type is string and value does not match type", async () => {
@@ -239,6 +336,19 @@ describe("options", () => {
       expect(option.value).toEqual({ foo: "var" });
     });
 
+    it("should return default value of options of type array", async () => {
+      config = new Config({ moduleName: "testObjectDefault" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: ["foo", "foo2"],
+        type: "array",
+        itemsType: "string",
+      });
+      await config.init();
+      expect(option.value).toEqual(["foo", "foo2"]);
+    });
+
     it("option should return new value after setting it", async () => {
       await config.init();
       expect(option.value).toEqual("default-str");
@@ -293,6 +403,20 @@ describe("options", () => {
       expect(option.value).toEqual({ foo: "var" });
       option.merge({ foo2: "var2" });
       expect(option.value).toEqual({ foo2: "var2", foo: "var" });
+    });
+
+    it("option should return new value after merging it when option is of type array", async () => {
+      config = new Config({ moduleName: "testObjectSet" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: ["foo", "foo2"],
+        type: "array",
+      });
+      await config.init();
+      expect(option.value).toEqual(["foo", "foo2"]);
+      option.value = ["foo3", "foo4"];
+      expect(option.value).toEqual(["foo3", "foo4"]);
     });
 
     it("option should not merge value if it is undefined when option is of type object", async () => {
@@ -374,6 +498,26 @@ describe("options", () => {
       expect(option.value).toEqual("default-str");
       option.onChange(spy);
       option.value = "default-str";
+      await wait();
+
+      expect(spy.callCount).toEqual(0);
+    });
+
+    it("option should not emit an event after setting same value if option is of type array", async () => {
+      config = new Config({ moduleName: "testObjectSet" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: ["foo", "foo2"],
+        type: "array",
+      });
+
+      expect.assertions(2);
+      const spy = sinon.spy();
+      await config.start();
+      expect(option.value).toEqual(["foo", "foo2"]);
+      option.onChange(spy);
+      option.value = ["foo", "foo2"];
       await wait();
 
       expect(spy.callCount).toEqual(0);

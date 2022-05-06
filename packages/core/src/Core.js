@@ -33,7 +33,6 @@ const ROOT_OPTIONS = [
   {
     name: "routesHandlers",
     type: "array",
-    itemsType: "object",
     default: [],
   },
   {

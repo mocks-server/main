@@ -15,8 +15,9 @@ class Option {
     this._deprecated = properties.deprecated;
     this._deprecatedBy = properties.deprecatedBy;
     this._type = properties.type;
+    this._itemsType = properties.itemsType;
     this._default = properties.default;
-    this._value = this._default;
+    this._value = this._default; // TODO, clone?
     this._started = false;
   }
 
@@ -32,16 +33,21 @@ class Option {
     return this._type;
   }
 
+  get itemsType() {
+    return this._itemsType;
+  }
+
   get default() {
     return this._default;
   }
 
   get value() {
+    // TODO, clone?
     return this._value;
   }
 
   _validate(value) {
-    validateValueType(value, this._type);
+    validateValueType(value, this._type, this._itemsType);
   }
 
   _emitChange(previousValue, value) {

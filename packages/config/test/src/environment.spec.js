@@ -65,6 +65,32 @@ describe("environment", () => {
       expect(option.value).toEqual({ foo: 1, foo2: { var: false, var2: "x" } });
     });
 
+    it("should return array value if option is of type array", async () => {
+      config = new Config({ moduleName: "testArray1" });
+      namespace = config.addNamespace("fooNamespace");
+      process.env["TEST_ARRAY_1_FOO_NAMESPACE_FOO_OPTION"] = '["foo", 2]';
+      option = namespace.addOption({
+        name: "fooOption",
+        default: [],
+        type: "array",
+      });
+      await config.init();
+      expect(option.value).toEqual(["foo", 2]);
+    });
+
+    it("should throw when config does not pass validation of array content", async () => {
+      config = new Config({ moduleName: "testArray2" });
+      namespace = config.addNamespace("fooNamespace");
+      process.env["TEST_ARRAY_2_FOO_NAMESPACE_FOO_OPTION"] = '[1,2,"3",4]';
+      option = namespace.addOption({
+        name: "fooOption",
+        default: [],
+        type: "array",
+        itemsType: "number",
+      });
+      await expect(config.init()).rejects.toThrowError("fooOption");
+    });
+
     it("should return object value if option is of type object when added after init method", async () => {
       config = new Config({ moduleName: "testObjectEnv" });
       namespace = config.addNamespace("fooNamespace");

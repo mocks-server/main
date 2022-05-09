@@ -23,6 +23,14 @@ describe("options nested", () => {
       expect(option.name).toEqual("fooOption");
     });
 
+    it("should be available using namespace option method", async () => {
+      config = new Config();
+      parentNamespace = config.addNamespace("foo");
+      namespace = parentNamespace.addNamespace("foo");
+      option = namespace.addOption({ name: "fooOption", type: "string" });
+      expect(config.namespace("foo").namespace("foo").option("fooOption")).toBe(option);
+    });
+
     it("should throw when type is string and default does not match type", async () => {
       config = new Config();
       parentNamespace = config.addNamespace("foo");

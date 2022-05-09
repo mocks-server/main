@@ -41,6 +41,18 @@ describe("options", () => {
       await config.start({ fooOption: "foo-str" });
       expect(option.value).toEqual("foo-str");
     });
+
+    it("should be available using option method", async () => {
+      config = new Config();
+      [option] = config.addOptions([
+        {
+          name: "fooOption",
+          type: "string",
+          default: "default-str",
+        },
+      ]);
+      expect(config.option("fooOption")).toBe(option);
+    });
   });
 
   describe("when an option is created", () => {

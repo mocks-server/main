@@ -9,6 +9,8 @@ const INDEX_JS = `index${JS_EXTENSION}`;
 const LOG_OPTION_START = "[-->";
 const LOG_OPTION_END = "<--]";
 const FIXTURES_PATH = path.resolve(__dirname, "..", "fixtures");
+const TYPE_ARRAY = "array";
+const TYPE_OBJECT = "object";
 
 function jsFile(name) {
   return `${name}${JS_EXTENSION}`;
@@ -37,13 +39,28 @@ function logScope(namespace, optionName) {
   return compact([...parentNamespaces, namespaceName, optionName]).join(".");
 }
 
+function getValueType(option) {
+  if (option.type === TYPE_ARRAY) {
+    return TYPE_ARRAY;
+  }
+  return typeof option.value;
+}
+
+function parseValue(valueType, value) {
+  if (valueType === TYPE_OBJECT || valueType === TYPE_ARRAY) {
+    return JSON.stringify(value);
+  }
+  return value;
+}
+
 function logNamespace(namespace) {
   namespace.options.forEach((option) => {
-    const valueType = typeof option.value;
+    const valueType = getValueType(option);
     console.log(
-      `${LOG_OPTION_START}${logScope(namespace, option.name)}:${valueType}:${
-        valueType === "object" ? JSON.stringify(option.value) : option.value
-      }${LOG_OPTION_END}`
+      `${LOG_OPTION_START}${logScope(namespace, option.name)}:${option.type}:${parseValue(
+        valueType,
+        option.value
+      )}${LOG_OPTION_END}`
     );
   });
   logNamespaces(namespace.namespaces);

@@ -30,7 +30,7 @@ const CONFIG_OPTIONS = [
     default: true,
   },
   {
-    name: "filesSearchPlaces",
+    name: "fileSearchPlaces",
     description: "An array of places to search configuration files",
     type: types.ARRAY,
     itemsType: types.STRING,
@@ -58,7 +58,7 @@ class Config {
     this.onChange = this._rootNamespace.onChange.bind(this._rootNamespace);
 
     this._configNamespace = this.addNamespace(CONFIG_NAMESPACE);
-    [this._readFile, this._readArguments, this._readEnvironment, this._filesSearchPlaces] =
+    [this._readFile, this._readArguments, this._readEnvironment, this._fileSearchPlaces] =
       this._configNamespace.addOptions(CONFIG_OPTIONS);
   }
 
@@ -67,7 +67,7 @@ class Config {
       return {};
     }
     return this._files.read(this._programmaticConfig, {
-      searchPlaces: this._filesSearchPlaces.value,
+      searchPlaces: this._fileSearchPlaces.value,
     });
   }
 

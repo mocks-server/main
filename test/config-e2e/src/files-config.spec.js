@@ -109,6 +109,16 @@ describe("Config from files", () => {
     });
   });
 
+  describe("when fileSearchPlaces option is provided", () => {
+    it("should search for custom files and assign value from it", async () => {
+      await run("json-config-custom-name", "two-namespaces", {
+        args: ["--config.fileSearchPlaces", "custom.json"],
+      });
+
+      expect(options).toEqual(expect.arrayContaining(["component.alias:string:alias-from-json"]));
+    });
+  });
+
   describe("when .mocksrc.json config is provided with namespaces", () => {
     it("should assign values from it", async () => {
       await run("json-config-two-namespaces", "several-namespaces");

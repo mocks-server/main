@@ -1,5 +1,3 @@
-const { isUndefined } = require("lodash");
-
 const types = {
   NUMBER: "number",
   STRING: "string",
@@ -36,16 +34,21 @@ function getTypeParser(type) {
   return doNothingParser;
 }
 
+function getTypeParserWithBooleans(type) {
+  if (type === types.BOOLEAN) {
+    return parseBoolean;
+  }
+  return getTypeParser(type);
+}
+
 function getOptionParser(option) {
   return getTypeParser(option.type);
 }
 
 function ParseArrayContents(option) {
-  const parseArrayContents = getTypeParser(option.itemsType);
+  const parseArrayContents = getTypeParserWithBooleans(option.itemsType);
   return function (array) {
-    if (!isUndefined(array)) {
-      return array.map((item) => parseArrayContents(item));
-    }
+    return array.map((item) => parseArrayContents(item));
   };
 }
 

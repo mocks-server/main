@@ -75,7 +75,8 @@ describe("arguments", () => {
       expect(option.value).toEqual("default-str");
     });
 
-    it("commander should call to number parser when option is a number", async () => {
+    it("should parse value when option is a number", async () => {
+      commander.Command.prototype.opts.returns({ "fooNamespace.fooOption": "2" });
       config = new Config({ moduleName: "testL" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
@@ -84,11 +85,11 @@ describe("arguments", () => {
         type: "number",
       });
       await config.init();
-      // first three calls are from config options
-      expect(commander.Option.prototype.argParser.getCall(4).args[0]("1.5")).toEqual(1.5);
+      expect(option.value).toEqual(2);
     });
 
     it("should convert items types when option is an array with itemsType number", async () => {
+      commander.Command.prototype.opts.returns({ "fooNamespace.fooOption": ["1.5", "2"] });
       config = new Config({ moduleName: "testL" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
@@ -98,10 +99,7 @@ describe("arguments", () => {
         itemsType: "number",
       });
       await config.init();
-      // first three calls are from config options
-      expect(commander.Option.prototype.argParser.getCall(4).args[0](["1.5", "2"])).toEqual([
-        1.5, 2,
-      ]);
+      expect(option.value).toEqual([1.5, 2]);
     });
 
     it("should return undefined when parsing array contents if value is not defined", async () => {
@@ -109,15 +107,16 @@ describe("arguments", () => {
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
-        default: [2],
         type: "array",
       });
       await config.init();
-      // first three calls are from config options
-      expect(commander.Option.prototype.argParser.getCall(4).args[0]()).toBe(undefined);
+      expect(option.value).toEqual(undefined);
     });
 
     it("should convert items types when option is an array with itemsType object", async () => {
+      commander.Command.prototype.opts.returns({
+        "fooNamespace.fooOption": ['{ "foo2": "foo2" }', '{ "foo3": "foo3" }'],
+      });
       config = new Config({ moduleName: "testL" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
@@ -127,25 +126,37 @@ describe("arguments", () => {
         itemsType: "object",
       });
       await config.init();
-      // first three calls are from config options
-      expect(
-        commander.Option.prototype.argParser
-          .getCall(4)
-          .args[0](['{ "foo2": "foo2" }', '{ "foo3": "foo3" }'])
-      ).toEqual([{ foo2: "foo2" }, { foo3: "foo3" }]);
+      expect(option.value).toEqual([{ foo2: "foo2" }, { foo3: "foo3" }]);
     });
 
-    it("commander should call to empty parser when option is a string", async () => {
+    it("should convert items types when option is an array with itemsType boolean", async () => {
+      commander.Command.prototype.opts.returns({
+        "fooNamespace.fooOption": ["1", "false", "0", "true"],
+      });
+      config = new Config({ moduleName: "testL" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        type: "array",
+        itemsType: "boolean",
+      });
+      await config.init();
+      expect(option.value).toEqual([true, false, false, true]);
+    });
+
+    it("should not convert array items when itemType is string", async () => {
+      commander.Command.prototype.opts.returns({
+        "fooNamespace.fooOption": ["2", "1"],
+      });
       config = new Config({ moduleName: "testM" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
         name: "fooOption",
-        default: "foo",
-        type: "string",
+        type: "array",
+        itemsType: "string",
       });
       await config.init();
-      // first call is from readFile config option
-      expect(commander.Option.prototype.argParser.getCall(1).args[0]("foo")).toEqual("foo");
+      expect(option.value).toEqual(["2", "1"]);
     });
 
     it("should overwrite value from init", async () => {

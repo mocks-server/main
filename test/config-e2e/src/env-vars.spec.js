@@ -278,6 +278,56 @@ describe("Config from env vars", () => {
     });
   });
 
+  describe.only("when option is array", () => {
+    it("option should get the value from env var", async () => {
+      await run("no-config", "option-types", {
+        env: {
+          MOCKS_COMPONENT_ARRAY_WITH_DEFAULT: '["foo-from-env-1","foo-from-env-2"]',
+        },
+      });
+      expect(runner.exitCode).toEqual(0);
+      expect(options).toEqual(
+        expect.arrayContaining([
+          'component.arrayWithDefault:array:["foo-from-env-1","foo-from-env-2"]',
+        ])
+      );
+    });
+
+    it("option should get the value when itemsType is number", async () => {
+      await run("no-config", "option-types", {
+        env: {
+          MOCKS_COMPONENT_ARRAY_NUMBER: "[1,2,3.5]",
+        },
+      });
+      expect(runner.exitCode).toEqual(0);
+      expect(options).toEqual(expect.arrayContaining(["component.arrayNumber:array:[1,2,3.5]"]));
+    });
+
+    it("option should get the value when itemsType is object", async () => {
+      await run("no-config", "option-types", {
+        env: {
+          MOCKS_COMPONENT_ARRAY_OBJECT: '[{"foo":"foo1"},{"foo2":"foo2"}]',
+        },
+      });
+      expect(runner.exitCode).toEqual(0);
+      expect(options).toEqual(
+        expect.arrayContaining(['component.arrayObject:array:[{"foo":"foo1"},{"foo2":"foo2"}]'])
+      );
+    });
+
+    it("option should get the value when itemsType is boolean", async () => {
+      await run("no-config", "option-types", {
+        env: {
+          MOCKS_COMPONENT_ARRAY_BOOLEAN: "[false,true,false,true]",
+        },
+      });
+      expect(runner.exitCode).toEqual(0);
+      expect(options).toEqual(
+        expect.arrayContaining(["component.arrayBoolean:array:[false,true,false,true]"])
+      );
+    });
+  });
+
   describe("when programmatic config is provided", () => {
     it("env var should overwrite the value from it", async () => {
       await run("js-async-function-config", "two-namespaces", {

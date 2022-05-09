@@ -6,23 +6,40 @@ const { namespaceAndParentNames } = require("./namespaces");
 
 const NAMESPACE_SEPARATOR = ".";
 
+function getOptionPrefix({ isBoolean, defaultIsTrue }) {
+  return isBoolean && defaultIsTrue ? "--no-" : "--";
+}
+
+function getOptionGetter({ isBoolean, isArray }) {
+  if (isBoolean) {
+    return "";
+  }
+  if (isArray) {
+    return ` <value...>`;
+  }
+  return ` <value>`;
+}
+
 function getCommanderOptionProperties(commanderOptionName, option) {
   const isBoolean = option.type === types.BOOLEAN;
   const isArray = option.type === types.ARRAY;
   const defaultIsTrue = option.default === true;
   // TODO, option can only be set to false if default value is true or viceversa. So, users can't restore to default value using args when config in other places changes them
-  const optionPrefix = isBoolean && defaultIsTrue ? "--no-" : "--";
-  const arraySuffix = isArray ? "..." : "";
-  const optionValueGetter = isBoolean ? "" : ` <${commanderOptionName}${arraySuffix}>`;
-  const argParser = getOptionParserWithArrayContents(option);
+  const optionPrefix = getOptionPrefix({ isBoolean, defaultIsTrue });
+  const optionValueGetter = getOptionGetter({ isBoolean, isArray });
+  // const argParser = getOptionParser(option);
+
+  const Option = new commander.Option(`${optionPrefix}${commanderOptionName}${optionValueGetter}`);
+  /* if (!isArray) {
+    // Parsing arrays produce Commander to get only last value
+    Option.argParser(argParser);
+  } */
 
   return {
     default: option.default,
     isBoolean,
     isObject: option.type === types.OBJECT,
-    Option: new commander.Option(
-      `${optionPrefix}${commanderOptionName}${optionValueGetter}`
-    ).argParser(argParser),
+    Option: Option,
   };
 }
 
@@ -52,7 +69,7 @@ class CommandLineArguments {
       const commanderOptionProperties = getCommanderOptionProperties(commanderOptionName, option);
       optionsData[commanderOptionName] = {
         namespace,
-        option: option.name,
+        option,
         ...commanderOptionProperties,
       };
       program.addOption(commanderOptionProperties.Option);
@@ -79,10 +96,11 @@ class CommandLineArguments {
       const optionValue = results[optionName];
       if (!commanderValueHasToBeIgnored(optionValue, commanderOptionsData[optionName])) {
         const objectLevels = optionName.split(NAMESPACE_SEPARATOR).slice(0, -1);
-
+        const option = commanderOptionsData[optionName].option;
         const configAtLevel = this._addLevelsToConfig(config, objectLevels);
-        const originalOptionName = commanderOptionsData[optionName].option;
-        configAtLevel[originalOptionName] = optionValue;
+        const originalOptionName = option.name;
+        const parser = getOptionParserWithArrayContents(option);
+        configAtLevel[originalOptionName] = parser(optionValue);
       }
     });
     return config;

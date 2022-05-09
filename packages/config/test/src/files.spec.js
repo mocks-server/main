@@ -1,4 +1,5 @@
 const commander = require("commander");
+const cosmiconfig = require("cosmiconfig");
 const sinon = require("sinon");
 
 const { createConfigBeforeElements } = require("../support/helpers");
@@ -28,6 +29,18 @@ describe("files", () => {
       });
       await config.init();
       expect(option.value).toEqual("value-from-file");
+    });
+
+    it("should pass option to cosmiconfig when config.fileSearchPlaces is defined", async () => {
+      cosmiconfigStub.search.resolves({
+        config: { fooNamespace: { fooOption: "value-from-file" } },
+      });
+      await config.init({
+        config: {
+          fileSearchPlaces: ["foo", "foo2"],
+        },
+      });
+      expect(cosmiconfig.cosmiconfig.getCall(0).args[1].searchPlaces).toEqual(["foo", "foo2"]);
     });
 
     it("should not return value from file if readFile is disabled in init method", async () => {

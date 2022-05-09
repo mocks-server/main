@@ -46,7 +46,7 @@ describe("namespaces nested", () => {
         fooNewNamespace: { fooOption: 5, anotherOption: { fooProperty: true } },
       });
       expect(option.value).toEqual("value");
-      await expect(config.start()).rejects.toThrow("fooNewNamespace");
+      await expect(config.load()).rejects.toThrow("fooNewNamespace");
     });
 
     it("should throw when config has unknown namespaces under nested namespaces", async () => {
@@ -63,7 +63,7 @@ describe("namespaces nested", () => {
         },
       });
       expect(option.value).toEqual("value");
-      await expect(config.start()).rejects.toThrow("anotherNamespace");
+      await expect(config.load()).rejects.toThrow("anotherNamespace");
     });
 
     it("should not throw when unknown namespaces are added after calling the init method", async () => {
@@ -95,7 +95,7 @@ describe("namespaces nested", () => {
         type: "object",
       });
 
-      await config.start();
+      await config.load();
 
       expect(fooOption2.value).toEqual("foo");
       expect(anotherOption.value).toEqual(false);

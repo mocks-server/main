@@ -3,7 +3,6 @@ const EventEmitter = require("events");
 
 const Option = require("./Option");
 const { types } = require("./types");
-const { addEventListener, CHANGE } = require("./events");
 const { checkNamespaceName, checkOptionName, findObjectWithName } = require("./namespaces");
 
 class Namespace {
@@ -12,8 +11,8 @@ class Namespace {
     this._parents = parents;
     this._eventEmitter = new EventEmitter();
     this._name = name;
-    this._namespaces = new Set();
-    this._options = new Set();
+    this._namespaces = [];
+    this._options = [];
     this._started = false;
   }
 
@@ -23,7 +22,7 @@ class Namespace {
       namespaces: this._name ? this._namespaces : this._brothers,
     });
     const option = new Option(optionProperties);
-    this._options.add(option);
+    this._options.push(option);
     return option;
   }
 
@@ -52,38 +51,25 @@ class Namespace {
     return changedOptions;
   }
 
-  init(configuration) {
+  set(configuration) {
     const namespaceConfig = this._name ? configuration[this._name] : configuration;
     this._set(namespaceConfig);
     this._namespaces.forEach((namespace) => {
-      namespace.init(namespaceConfig || {});
+      namespace.set(namespaceConfig || {});
     });
   }
 
-  start() {
-    this._options.forEach((option) => option.start());
-    this._namespaces.forEach((namespace) => namespace.start());
+  startEvents() {
+    this._options.forEach((option) => option.startEvents());
+    this._namespaces.forEach((namespace) => namespace.startEvents());
     this._started = true;
-  }
-
-  set(configuration) {
-    const changedOptions = this._set(configuration);
-    // TODO, remove?
-    if (changedOptions.length && this._started) {
-      this._eventEmitter.emit(CHANGE, changedOptions);
-    }
-  }
-
-  // TODO, remove?
-  onChange(listener) {
-    return addEventListener(listener, CHANGE, this._eventEmitter);
   }
 
   addNamespace(name) {
     const namespace =
       checkNamespaceName(name, { namespaces: this._namespaces, options: this._options }) ||
       new Namespace(name, { parents: [...this._parents, this] });
-    this._namespaces.add(namespace);
+    this._namespaces.push(namespace);
     return namespace;
   }
 
@@ -92,15 +78,15 @@ class Namespace {
   }
 
   get parents() {
-    return this._parents;
+    return [...this._parents];
   }
 
   get namespaces() {
-    return this._namespaces;
+    return [...this._namespaces];
   }
 
   get options() {
-    return this._options;
+    return [...this._options];
   }
 
   namespace(name) {

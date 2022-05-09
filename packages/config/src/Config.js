@@ -50,12 +50,10 @@ class Config {
     this._args = new CommandLineArguments();
     this._environment = new Environment(moduleName);
 
-    this._namespaces = new Set();
+    this._namespaces = [];
     this._rootNamespace = this.addNamespace();
     this.addOption = this._rootNamespace.addOption.bind(this._rootNamespace);
     this.addOptions = this._rootNamespace.addOptions.bind(this._rootNamespace);
-    // TODO, remove?
-    this.onChange = this._rootNamespace.onChange.bind(this._rootNamespace);
 
     this._configNamespace = this.addNamespace(CONFIG_NAMESPACE);
     [this._readFile, this._readArguments, this._readEnvironment, this._fileSearchPlaces] =
@@ -94,56 +92,55 @@ class Config {
     ]);
   }
 
-  _validate({ allowAdditionalNamespaces }) {
-    validateConfig(this._config, { namespaces: this._namespaces, allowAdditionalNamespaces });
+  _validate({ allowUnknown }) {
+    validateConfig(this._config, { namespaces: this._namespaces, allowUnknown });
   }
 
-  _initNamespaces() {
+  _setNamespaces() {
     this._namespaces.forEach((namespace) => {
-      namespace.init(this._config);
+      namespace.set(this._config);
     });
   }
 
-  _startNamespaces() {
+  _startNamespacesEvents() {
     this._namespaces.forEach((namespace) => {
-      namespace.start();
+      namespace.startEvents();
     });
   }
 
-  _mergeValidateAndInitNamespaces({ allowAdditionalNamespaces }) {
+  _mergeValidateAndSetNamespaces({ allowUnknown }) {
     this._mergeConfig();
-    this._validate({ allowAdditionalNamespaces });
-    this._initNamespaces();
+    this._validate({ allowUnknown });
+    this._setNamespaces();
   }
 
-  async _load({ allowAdditionalNamespaces = false } = {}) {
-    this._mergeValidateAndInitNamespaces({ allowAdditionalNamespaces });
-    // TODO, rename allowAdditionalNamespaces into allowUnknown
-    // TODO, expose option for customizing this
-    this._argsConfig = await this._loadFromArgs({ allowUnknownOption: allowAdditionalNamespaces });
-    this._mergeValidateAndInitNamespaces({ allowAdditionalNamespaces });
+  async _load({ allowUnknown = false } = {}) {
+    this._mergeValidateAndSetNamespaces({ allowUnknown });
+    this._argsConfig = await this._loadFromArgs({ allowUnknownOption: allowUnknown });
+    this._mergeValidateAndSetNamespaces({ allowUnknown });
     this._envConfig = await this._loadFromEnv();
-    this._mergeValidateAndInitNamespaces({ allowAdditionalNamespaces });
+    this._mergeValidateAndSetNamespaces({ allowUnknown });
 
     // File does not change, so we only load it the first time
     if (!this._initializated) {
       this._fileConfig = await this._loadFromFile();
-      this._mergeValidateAndInitNamespaces({ allowAdditionalNamespaces });
+      // TODO, expose option for customizing this
+      this._mergeValidateAndSetNamespaces({ allowUnknown });
       this._initializated = true;
     }
   }
 
   async init(programmaticConfig = {}) {
     this._programmaticConfig = deepMerge(this._programmaticConfig, programmaticConfig);
-    await this._load({ allowAdditionalNamespaces: true });
+    await this._load({ allowUnknown: true });
   }
 
-  async start(programmaticConfig) {
+  async load(programmaticConfig) {
     if (!this._initializated) {
       await this.init(programmaticConfig);
     }
     await this._load();
-    this._startNamespaces();
+    this._startNamespacesEvents();
   }
 
   addNamespace(name) {
@@ -153,7 +150,7 @@ class Config {
         options: this._rootNamespace && this._rootNamespace.options,
         allowNoName: !this._rootNamespace,
       }) || new Namespace(name, { brothers: this._namespaces });
-    this._namespaces.add(namespace);
+    this._namespaces.push(namespace);
     return namespace;
   }
 

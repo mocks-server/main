@@ -102,7 +102,7 @@ describe("environment", () => {
         default: {},
         type: "object",
       });
-      await config.start();
+      await config.load();
       expect(option.value).toEqual({ foo: 1, foo2: { var: false, var2: "x" } });
     });
 

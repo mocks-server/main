@@ -58,7 +58,7 @@ describe("files", () => {
       cosmiconfigStub.search.resolves({
         config: { fooNamespace: { fooOption: "value-from-file" } },
       });
-      await config.start();
+      await config.load();
       expect(option.value).toEqual("default-str");
     });
 
@@ -83,7 +83,7 @@ describe("files", () => {
       cosmiconfigStub.search.resolves({
         config: { fooNamespace: { fooOption: "value-from-file" } },
       });
-      await config.start({
+      await config.load({
         fooNamespace: { fooOption: "value-from-init" },
       });
       expect(option.value).toEqual("value-from-file");
@@ -145,7 +145,7 @@ describe("files", () => {
         default: {},
         type: "object",
       });
-      await config.start();
+      await config.load();
       expect(option.value).toEqual({
         foo: 1,
         foo2: { var: false, var2: "x", var4: "y" },

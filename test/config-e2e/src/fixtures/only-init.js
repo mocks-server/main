@@ -5,6 +5,6 @@ const { logConfig } = require("../../support/utils");
 const config = new Config({ moduleName: "mocks" });
 
 config.init().then(async () => {
-  await config.start();
+  await config.load();
   logConfig(config);
 });

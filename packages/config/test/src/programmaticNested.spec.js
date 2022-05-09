@@ -51,7 +51,7 @@ describe("programmatic nested", () => {
       });
 
       await expect(
-        config.start({
+        config.load({
           parentNamespace: {
             fooNamespace: { fooOption: "foo", secondNamespace: { fooOption2: 5 } },
           },

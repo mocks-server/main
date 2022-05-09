@@ -10,4 +10,4 @@ config.addOption({ name: "stringWithDefault", default: "foo-str", type: "string"
 config.addOption({ name: "objectWithDefault", default: { foo: "var" }, type: "object" });
 config.addOption({ name: "numberDefaultZero", default: 0, type: "number" });
 
-config.start({ stringWithDefault: "foo-str-from-init" }).then(() => logConfig(config));
+config.load({ stringWithDefault: "foo-str-from-init" }).then(() => logConfig(config));

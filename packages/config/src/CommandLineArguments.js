@@ -5,6 +5,8 @@ const { types, getOptionParserWithArrayContents } = require("./types");
 const { namespaceAndParentNames } = require("./namespaces");
 
 const NAMESPACE_SEPARATOR = ".";
+const COMMANDER_VALUE_GETTER = ` <value>`;
+const COMMANDER_ARRAY_VALUE_GETTER = ` <value...>`;
 
 function getOptionPrefix({ isBoolean, defaultIsTrue }) {
   return isBoolean && defaultIsTrue ? "--no-" : "--";
@@ -15,25 +17,20 @@ function getOptionGetter({ isBoolean, isArray }) {
     return "";
   }
   if (isArray) {
-    return ` <value...>`;
+    return COMMANDER_ARRAY_VALUE_GETTER;
   }
-  return ` <value>`;
+  return COMMANDER_VALUE_GETTER;
 }
 
 function getCommanderOptionProperties(commanderOptionName, option) {
   const isBoolean = option.type === types.BOOLEAN;
   const isArray = option.type === types.ARRAY;
   const defaultIsTrue = option.default === true;
-  // TODO, option can only be set to false if default value is true or viceversa. So, users can't restore to default value using args when config in other places changes them
+  // Option can only be set to false if default value is true or viceversa. So, users can't restore to default value using args when config in other places change it
   const optionPrefix = getOptionPrefix({ isBoolean, defaultIsTrue });
   const optionValueGetter = getOptionGetter({ isBoolean, isArray });
-  // const argParser = getOptionParser(option);
 
   const Option = new commander.Option(`${optionPrefix}${commanderOptionName}${optionValueGetter}`);
-  /* if (!isArray) {
-    // Parsing arrays produce Commander to get only last value
-    Option.argParser(argParser);
-  } */
 
   return {
     default: option.default,

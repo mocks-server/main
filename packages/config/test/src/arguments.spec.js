@@ -61,7 +61,7 @@ describe("arguments", () => {
         default: {},
         type: "object",
       });
-      await config.start();
+      await config.load();
       expect(option.value).toEqual({
         foo: 1,
         foo2: { var: true, var2: "x-from-arg", var6: "xyz" },

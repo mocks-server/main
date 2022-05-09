@@ -18,4 +18,4 @@ config
   .addNamespace("component")
   .addOption({ name: "alias", type: "string", default: "" });
 
-config.start({ namespace: { component: { alias: "foo-alias" } } }).then(() => logConfig(config));
+config.load({ namespace: { component: { alias: "foo-alias" } } }).then(() => logConfig(config));

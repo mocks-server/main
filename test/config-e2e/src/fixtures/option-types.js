@@ -16,5 +16,5 @@ component.addOption({ name: "arrayObject", type: "array", itemsType: "object" })
 component.addOption({ name: "arrayBoolean", type: "array", itemsType: "boolean" });
 
 config
-  .start({ component: { stringWithDefault: "foo-str-from-init" } })
+  .load({ component: { stringWithDefault: "foo-str-from-init" } })
   .then(() => logConfig(config));

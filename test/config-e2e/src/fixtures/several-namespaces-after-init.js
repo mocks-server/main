@@ -13,6 +13,6 @@ config.init({ namespace: { component: { alias: "foo-alias" } } }).then(async () 
     .addNamespace("namespace")
     .addNamespace("component")
     .addOption({ name: "alias", type: "string", default: "" });
-  await config.start();
+  await config.load();
   logConfig(config);
 });

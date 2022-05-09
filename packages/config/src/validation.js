@@ -12,8 +12,6 @@ function enforceDefaultTypeSchema(type, itemsType) {
       name: { type: types.STRING },
       type: { enum: [type] },
       description: { type: types.STRING },
-      deprecated: { type: types.BOOLEAN },
-      deprecatedBy: { type: types.OBJECT },
       default: {
         type,
       },
@@ -120,7 +118,7 @@ function validateSchema(config, schema, validator) {
 
 function addNamespaceSchema(namespace, { rootSchema, allowAdditionalProperties }) {
   const initialSchema = rootSchema || emptySchema({ allowAdditionalProperties });
-  const schema = Array.from(namespace.options).reduce((currentSchema, option) => {
+  const schema = namespace.options.reduce((currentSchema, option) => {
     currentSchema.properties[option.name] = {
       type: option.type,
     };
@@ -139,7 +137,7 @@ function addNamespaceSchema(namespace, { rootSchema, allowAdditionalProperties }
 }
 
 function addNamespacesSchema(namespaces, { rootSchema, allowAdditionalProperties }) {
-  const schema = Array.from(namespaces).reduce((currentSchema, namespace) => {
+  const schema = namespaces.reduce((currentSchema, namespace) => {
     if (namespace.name) {
       currentSchema.properties[namespace.name] = addNamespaceSchema(namespace, {
         allowAdditionalProperties,
@@ -152,10 +150,10 @@ function addNamespacesSchema(namespaces, { rootSchema, allowAdditionalProperties
   return schema;
 }
 
-function validateConfig(config, { namespaces, allowAdditionalNamespaces }) {
+function validateConfig(config, { namespaces, allowUnknown }) {
   const schema = addNamespacesSchema(namespaces, {
-    rootSchema: emptySchema({ allowAdditionalProperties: allowAdditionalNamespaces }),
-    allowAdditionalProperties: allowAdditionalNamespaces,
+    rootSchema: emptySchema({ allowAdditionalProperties: allowUnknown }),
+    allowAdditionalProperties: allowUnknown,
   });
   validateSchema(config, schema);
 }

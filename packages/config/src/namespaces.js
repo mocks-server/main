@@ -7,7 +7,7 @@ function namespaceAndParentNames(namespace) {
 }
 
 function findObjectWithName(objects, name) {
-  return Array.from(objects.values()).find((object) => object.name === name);
+  return objects.find((object) => object.name === name);
 }
 
 function throwItemAlreadyExists(item, name) {

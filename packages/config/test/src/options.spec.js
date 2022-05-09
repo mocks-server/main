@@ -24,7 +24,7 @@ describe("options", () => {
         default: "default-str",
       });
       expect(option.value).toEqual("default-str");
-      await config.start({ fooOption: "foo-str" });
+      await config.load({ fooOption: "foo-str" });
       expect(option.value).toEqual("foo-str");
     });
 
@@ -38,7 +38,7 @@ describe("options", () => {
         },
       ]);
       expect(option.value).toEqual("default-str");
-      await config.start({ fooOption: "foo-str" });
+      await config.load({ fooOption: "foo-str" });
       expect(option.value).toEqual("foo-str");
     });
 
@@ -272,51 +272,6 @@ describe("options", () => {
     });
   });
 
-  describe("when an option is deprecated", () => {
-    let option2;
-
-    beforeEach(() => {
-      config = new Config();
-      namespace = config.addNamespace("foo");
-      option = namespace.addOption({ name: "fooOption", type: "string" });
-      option2 = namespace.addOption({
-        name: "fooDeprecatedOption",
-        deprecatedBy: option,
-        type: "string",
-      });
-    });
-
-    it("should set the value of the new option also", async () => {
-      await config.start();
-      expect(option.value).toEqual(undefined);
-      expect(option2.value).toEqual(undefined);
-      option2.value = "foo-value";
-      expect(option.value).toEqual("foo-value");
-      expect(option2.value).toEqual("foo-value");
-    });
-
-    it("should merge the value of the new option also", async () => {
-      config = new Config();
-      namespace = config.addNamespace("foo");
-      option = namespace.addOption({ name: "fooOption", type: "object" });
-      option2 = namespace.addOption({
-        name: "fooDeprecatedOption",
-        deprecatedBy: option,
-        type: "object",
-      });
-      await config.start();
-      option2.merge({ foo: "foo" });
-      expect(option.value).toEqual({ foo: "foo" });
-      expect(option2.value).toEqual({ foo: "foo" });
-    });
-
-    it("should set the value of the new option also from init config", async () => {
-      await config.start({ foo: { fooDeprecatedOption: "foo-from-init" } });
-      expect(option.value).toEqual("foo-from-init");
-      expect(option2.value).toEqual("foo-from-init");
-    });
-  });
-
   describe("created options", () => {
     beforeEach(() => {
       ({ config, namespace, option } = createConfig());
@@ -332,7 +287,7 @@ describe("options", () => {
     });
 
     it("option should be initializated when calling to start only", async () => {
-      await config.start();
+      await config.load();
       expect(option.value).toEqual("default-str");
     });
 
@@ -448,7 +403,7 @@ describe("options", () => {
     it("option should emit an event after setting new value", async () => {
       expect.assertions(2);
       let resolver;
-      await config.start();
+      await config.load();
       expect(option.value).toEqual("default-str");
       const promise = new Promise((resolve) => {
         resolver = resolve;
@@ -469,7 +424,7 @@ describe("options", () => {
         type: "string",
         default: "foo-root-value",
       });
-      await config.start();
+      await config.load();
       expect(option.value).toEqual("foo-root-value");
       const promise = new Promise((resolve) => {
         resolver = resolve;
@@ -490,7 +445,7 @@ describe("options", () => {
         type: "string",
         default: "foo-child-value",
       });
-      await config.start();
+      await config.load();
       expect(option.value).toEqual("foo-child-value");
       const promise = new Promise((resolve) => {
         resolver = resolve;
@@ -506,7 +461,7 @@ describe("options", () => {
     it("option should not emit an event after setting same value", async () => {
       expect.assertions(2);
       const spy = sinon.spy();
-      await config.start();
+      await config.load();
       expect(option.value).toEqual("default-str");
       option.onChange(spy);
       option.value = "default-str";
@@ -526,7 +481,7 @@ describe("options", () => {
 
       expect.assertions(2);
       const spy = sinon.spy();
-      await config.start();
+      await config.load();
       expect(option.value).toEqual(["foo", "foo2"]);
       option.onChange(spy);
       option.value = ["foo", "foo2"];
@@ -550,7 +505,7 @@ describe("options", () => {
     it("option event should be removed if returned callback is executed", async () => {
       expect.assertions(2);
       const spy = sinon.spy();
-      await config.start();
+      await config.load();
       expect(option.value).toEqual("default-str");
       const removeCallback = option.onChange(spy);
       removeCallback();
@@ -570,7 +525,7 @@ describe("options", () => {
         default: { foo: "var" },
         type: "object",
       });
-      await config.start();
+      await config.load();
       expect(option.value).toEqual({ foo: "var" });
       const promise = new Promise((resolve) => {
         resolver = resolve;

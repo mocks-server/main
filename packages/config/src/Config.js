@@ -31,9 +31,15 @@ const CONFIG_OPTIONS = [
   },
   {
     name: "fileSearchPlaces",
-    description: "An array of places to search configuration files",
+    description: "An array of places to search for the configuration file",
     type: types.ARRAY,
     itemsType: types.STRING,
+  },
+  {
+    name: "allowUnknownArguments",
+    description: "Allow unknown arguments",
+    type: types.BOOLEAN,
+    default: false,
   },
 ];
 
@@ -56,8 +62,13 @@ class Config {
     this.addOptions = this._rootNamespace.addOptions.bind(this._rootNamespace);
 
     this._configNamespace = this.addNamespace(CONFIG_NAMESPACE);
-    [this._readFile, this._readArguments, this._readEnvironment, this._fileSearchPlaces] =
-      this._configNamespace.addOptions(CONFIG_OPTIONS);
+    [
+      this._readFile,
+      this._readArguments,
+      this._readEnvironment,
+      this._fileSearchPlaces,
+      this._allowUnknownArguments,
+    ] = this._configNamespace.addOptions(CONFIG_OPTIONS);
   }
 
   async _loadFromFile() {
@@ -76,11 +87,13 @@ class Config {
     return this._environment.read(this._namespaces);
   }
 
-  async _loadFromArgs({ allowUnknownOption }) {
+  async _loadFromArgs({ allowUnknown }) {
     if (this._readArguments.value !== true) {
       return {};
     }
-    return this._args.read(this._namespaces, { allowUnknownOption });
+    return this._args.read(this._namespaces, {
+      allowUnknownOption: this._allowUnknownArguments.value || allowUnknown,
+    });
   }
 
   _mergeConfig() {
@@ -116,7 +129,7 @@ class Config {
 
   async _load({ allowUnknown = false } = {}) {
     this._mergeValidateAndSetNamespaces({ allowUnknown });
-    this._argsConfig = await this._loadFromArgs({ allowUnknownOption: allowUnknown });
+    this._argsConfig = await this._loadFromArgs({ allowUnknown });
     this._mergeValidateAndSetNamespaces({ allowUnknown });
     this._envConfig = await this._loadFromEnv();
     this._mergeValidateAndSetNamespaces({ allowUnknown });
@@ -124,7 +137,6 @@ class Config {
     // File does not change, so we only load it the first time
     if (!this._initializated) {
       this._fileConfig = await this._loadFromFile();
-      // TODO, expose option for customizing this
       this._mergeValidateAndSetNamespaces({ allowUnknown });
       this._initializated = true;
     }

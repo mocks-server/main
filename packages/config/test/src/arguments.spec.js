@@ -31,6 +31,20 @@ describe("arguments", () => {
       expect(option.value).toEqual("default-str");
     });
 
+    it("should not allow unknown arguments if allowUnknownArguments is not set in init method", async () => {
+      commander.Command.prototype.opts.returns({ "fooNamespace.fooOption": "foo-from-arg" });
+      ({ config, namespace, option } = createConfig({ moduleName: "testD" }));
+      await config.load();
+      expect(commander.Command.prototype.allowUnknownOption.callCount).toEqual(1);
+    });
+
+    it("should allow unknown arguments if allowUnknownArguments is set in init method", async () => {
+      commander.Command.prototype.opts.returns({ "fooNamespace.fooOption": "foo-from-arg" });
+      ({ config, namespace, option } = createConfig({ moduleName: "testD" }));
+      await config.load({ config: { allowUnknownArguments: true } });
+      expect(commander.Command.prototype.allowUnknownOption.callCount).toEqual(2);
+    });
+
     it("should return object if option is of type object", async () => {
       commander.Command.prototype.opts.returns({
         "fooNamespace.fooOption": { foo: 1, foo2: { var: true, var2: "x-from-arg", var6: "xyz" } },

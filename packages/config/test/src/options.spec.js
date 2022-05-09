@@ -303,6 +303,21 @@ describe("options", () => {
       expect(option.value).toEqual({ foo: "var" });
     });
 
+    it("should clone default value of options of type object", async () => {
+      const defaultValue = { foo: "var" };
+      config = new Config({ moduleName: "testObjectDefault" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: defaultValue,
+        type: "object",
+      });
+      await config.init();
+      defaultValue.foo2 = "foo2";
+      expect(option.value).toEqual({ foo: "var" });
+      expect(option.value).not.toBe(defaultValue);
+    });
+
     it("should return default value of options of type array", async () => {
       config = new Config({ moduleName: "testObjectDefault" });
       namespace = config.addNamespace("fooNamespace");
@@ -316,11 +331,56 @@ describe("options", () => {
       expect(option.value).toEqual(["foo", "foo2"]);
     });
 
+    it("should clone default value of options of type array", async () => {
+      const defaultValue = ["foo", "foo2"];
+      config = new Config({ moduleName: "testObjectDefault" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: defaultValue,
+        type: "array",
+        itemsType: "string",
+      });
+      await config.init();
+      defaultValue.push("foo3");
+      expect(option.value).toEqual(["foo", "foo2"]);
+      expect(option.value).not.toBe(defaultValue);
+    });
+
     it("option should return new value after setting it", async () => {
       await config.init();
       expect(option.value).toEqual("default-str");
       option.value = "new-str";
       expect(option.value).toEqual("new-str");
+    });
+
+    it("should not modify value when it is modified after getting it when it is of type array", async () => {
+      config = new Config({ moduleName: "testObjectDefault" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: ["foo", "foo2"],
+        type: "array",
+        itemsType: "string",
+      });
+      await config.init();
+      expect(option.value).toEqual(["foo", "foo2"]);
+      option.value.push("foo3");
+      expect(option.value).toEqual(["foo", "foo2"]);
+    });
+
+    it("should not modify value when it is modified after getting it when it is of type object", async () => {
+      config = new Config({ moduleName: "testObjectDefault" });
+      namespace = config.addNamespace("fooNamespace");
+      option = namespace.addOption({
+        name: "fooOption",
+        default: { foo: "var" },
+        type: "object",
+      });
+      await config.init();
+      expect(option.value).toEqual({ foo: "var" });
+      option.value.foo2 = "foo2";
+      expect(option.value).toEqual({ foo: "var" });
     });
 
     it("option omit undefined when setting value", async () => {

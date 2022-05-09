@@ -5,6 +5,7 @@ const { isUndefined, isEqual } = require("lodash");
 
 const { validateOption, validateValueType } = require("./validation");
 const { addEventListener, CHANGE } = require("./events");
+const { types } = require("./types");
 
 class Option {
   constructor(properties) {
@@ -14,9 +15,9 @@ class Option {
     this._metaData = properties.metaData;
     this._type = properties.type;
     this._itemsType = properties.itemsType;
-    this._default = properties.default;
-    this._value = this._default; // TODO, clone?
-    this._started = false;
+    this._default = this._clone(properties.default);
+    this._value = this._default;
+    this._eventsStarted = false;
   }
 
   get metaData() {
@@ -36,12 +37,24 @@ class Option {
   }
 
   get default() {
-    return this._default;
+    return this._clone(this._default);
   }
 
   get value() {
-    // TODO, clone?
-    return this._value;
+    return this._clone(this._value);
+  }
+
+  _clone(value) {
+    if (isUndefined(value)) {
+      return value;
+    }
+    if (this._type === types.ARRAY) {
+      return [...value];
+    }
+    if (this._type === types.OBJECT) {
+      return { ...value };
+    }
+    return value;
   }
 
   _validate(value) {
@@ -49,8 +62,8 @@ class Option {
   }
 
   _emitChange(previousValue, value) {
-    if (this._started && !isEqual(previousValue, value)) {
-      this._eventEmitter.emit(CHANGE, value);
+    if (this._eventsStarted && !isEqual(previousValue, value)) {
+      this._eventEmitter.emit(CHANGE, this._clone(value));
     }
   }
 
@@ -70,13 +83,13 @@ class Option {
     const previousValue = this._value;
     if (!isUndefined(value)) {
       this._validate(value);
-      this._value = value;
+      this._value = this._clone(value);
       this._emitChange(previousValue, this._value);
     }
   }
 
   startEvents() {
-    this._started = true;
+    this._eventsStarted = true;
   }
 }
 

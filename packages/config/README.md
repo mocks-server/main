@@ -13,7 +13,7 @@
 
 # Mocks Server Config
 
-Modular configuration provider. __Reads__ and __validates__ config from:
+Modular configuration provider. __Reads__ and __validates__ configuration from:
 
 * Default option values
 * Configuration received programmatically

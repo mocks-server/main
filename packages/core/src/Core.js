@@ -171,8 +171,8 @@ class Core {
     // Register routes handlers
     await this._routesHandlers.register(this._routesHandlersOption.value);
 
-    // Start config
-    await this._config.start();
+    // load config
+    await this._config.load();
 
     // Config is ready, init all
     this._mocks.init(this._routesHandlers.handlers);

@@ -16,7 +16,7 @@ const start = () => {
         register: [TraceMocksPlugin]
       },
       config: {
-        filesSearchPlaces: ["mocks-server-with-plugins.config.js"],
+        fileSearchPlaces: ["mocks-server-with-plugins.config.js"],
       }
     });
 

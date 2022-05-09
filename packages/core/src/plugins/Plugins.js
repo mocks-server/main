@@ -50,7 +50,7 @@ class Plugins {
   }
 
   register() {
-    this._plugins = [...this._pluginsToRegister.value];
+    this._plugins = this._pluginsToRegister.value;
     this._plugins.unshift(FilesLoader);
     return this._registerPlugins().then(() => {
       tracer.verbose(`Registered ${this._pluginsRegistered} plugins without errors`);

@@ -37,7 +37,6 @@ class Namespace {
         if (!isUndefined(configuration[option.name])) {
           const previousValue = option.value;
           if (option.type === types.OBJECT) {
-            // TODO, add propery to option defining whether object should be merged or not
             option.merge(configuration[option.name]);
           } else {
             option.value = configuration[option.name];

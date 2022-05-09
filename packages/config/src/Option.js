@@ -5,7 +5,7 @@ const { isUndefined, isEqual } = require("lodash");
 
 const { validateOption, validateValueType } = require("./validation");
 const { addEventListener, CHANGE } = require("./events");
-const { types } = require("./types");
+const { types, avoidArraysMerge } = require("./types");
 
 class Option {
   constructor(properties) {
@@ -75,7 +75,7 @@ class Option {
     const previousValue = this._value;
     const valueToSet = isUndefined(value) ? {} : value;
     this._validate(valueToSet);
-    this._value = deepMerge(this._value || {}, valueToSet);
+    this._value = deepMerge(this._value || {}, valueToSet, { arrayMerge: avoidArraysMerge });
     this._emitChange(previousValue, this._value);
   }
 

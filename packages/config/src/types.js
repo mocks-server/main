@@ -69,10 +69,15 @@ function getOptionParserWithArrayContents(option) {
   return getOptionParser(option);
 }
 
+function avoidArraysMerge(_destinationArray, sourceArray) {
+  return sourceArray;
+}
+
 module.exports = {
   types,
   getOptionParser,
   getOptionParserWithBooleansAndArrays,
   getOptionParserWithArrayContents,
   parseObject,
+  avoidArraysMerge,
 };

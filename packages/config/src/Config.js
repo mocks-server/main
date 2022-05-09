@@ -4,7 +4,7 @@ const CommandLineArguments = require("./CommandLineArguments");
 const Environment = require("./Environment");
 const Files = require("./Files");
 const Namespace = require("./Namespace");
-const { types } = require("./types");
+const { types, avoidArraysMerge } = require("./types");
 const { validateConfig } = require("./validation");
 const { checkNamespaceName, findObjectWithName } = require("./namespaces");
 
@@ -44,9 +44,14 @@ const CONFIG_OPTIONS = [
 ];
 
 class Config {
-  constructor({ moduleName } = {}) {
+  constructor({ moduleName, mergeArrays = true } = {}) {
     this._initializated = false;
 
+    this._deepMergeOptions = !mergeArrays
+      ? {
+          arrayMerge: avoidArraysMerge,
+        }
+      : {};
     this._programmaticConfig = {};
     this._fileConfig = {};
     this._envConfig = {};
@@ -97,12 +102,10 @@ class Config {
   }
 
   _mergeConfig() {
-    this._config = deepMerge.all([
-      this._programmaticConfig,
-      this._fileConfig,
-      this._envConfig,
-      this._argsConfig,
-    ]);
+    this._config = deepMerge.all(
+      [this._programmaticConfig, this._fileConfig, this._envConfig, this._argsConfig],
+      this._deepMergeOptions
+    );
   }
 
   _validate({ allowUnknown }) {
@@ -121,10 +124,10 @@ class Config {
     });
   }
 
-  _mergeValidateAndSetNamespaces({ allowUnknown }) {
+  _mergeValidateAndSetNamespaces({ allowUnknown, mergeArraysInSet = false }) {
     this._mergeConfig();
     this._validate({ allowUnknown });
-    this._setNamespaces();
+    this._setNamespaces(mergeArraysInSet);
   }
 
   async _load({ allowUnknown = false } = {}) {
@@ -143,7 +146,7 @@ class Config {
   }
 
   async init(programmaticConfig = {}) {
-    this._programmaticConfig = deepMerge(this._programmaticConfig, programmaticConfig);
+    this._programmaticConfig = programmaticConfig;
     await this._load({ allowUnknown: true });
   }
 

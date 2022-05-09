@@ -253,5 +253,98 @@ describe("arguments", () => {
         foo5: "testing",
       });
     });
+
+    it("should merge arrays from init, file and env var if option is of type object", async () => {
+      config = new Config({ moduleName: "testObjectEnvExtend4" });
+      cosmiconfigStub.search.resolves({
+        config: { fooNamespace: { fooOption: { arr: ["file-1"] } } },
+      });
+      commander.Command.prototype.opts.returns({
+        "fooNamespace.fooOption": { arr: ["arg-1"] },
+      });
+      namespace = config.addNamespace("fooNamespace");
+      process.env["TEST_OBJECT_ENV_EXTEND_4_FOO_NAMESPACE_FOO_OPTION"] = '{"arr": ["env-1"]}';
+      option = namespace.addOption({
+        name: "fooOption",
+        default: { arr: ["default-1"] },
+        type: "object",
+      });
+      await config.init({
+        fooNamespace: { fooOption: { arr: ["init-1"] } },
+      });
+      expect(option.value).toEqual({ arr: ["init-1", "file-1", "env-1", "arg-1"] });
+    });
+
+    it("should not merge arrays from default, init, file and env var if option is of type object and mergeArrays option is false", async () => {
+      config = new Config({ moduleName: "testObjectEnvExtend5", mergeArrays: false });
+      cosmiconfigStub.search.resolves({
+        config: { fooNamespace: { fooOption: { arr: ["file-1"] } } },
+      });
+      commander.Command.prototype.opts.returns({
+        "fooNamespace.fooOption": { arr: ["arg-1"] },
+      });
+      namespace = config.addNamespace("fooNamespace");
+      process.env["TEST_OBJECT_ENV_EXTEND_5_FOO_NAMESPACE_FOO_OPTION"] = '{"arr": ["env-1"]}';
+      option = namespace.addOption({
+        name: "fooOption",
+        default: { arr: ["default-1"] },
+        type: "object",
+      });
+      await config.init({
+        fooNamespace: { fooOption: { arr: ["init-1"] } },
+      });
+      expect(option.value).toEqual({ arr: ["arg-1"] });
+    });
+
+    it("should merge array values from init, file and env var if option is of type array", async () => {
+      config = new Config({ moduleName: "testArrayExtend1" });
+      cosmiconfigStub.search.resolves({
+        config: { fooNamespace: { fooOption: ["file-1", "file-2"] } },
+      });
+      commander.Command.prototype.opts.returns({
+        "fooNamespace.fooOption": ["arg-1", "arg-2"],
+      });
+      namespace = config.addNamespace("fooNamespace");
+      process.env["TEST_ARRAY_EXTEND_1_FOO_NAMESPACE_FOO_OPTION"] = '["env-1","env-2"]';
+      option = namespace.addOption({
+        name: "fooOption",
+        default: ["default-1", "default-2"],
+        type: "array",
+      });
+      await config.init({
+        fooNamespace: { fooOption: ["init-1", "init-2"] },
+      });
+      expect(option.value).toEqual([
+        "init-1",
+        "init-2",
+        "file-1",
+        "file-2",
+        "env-1",
+        "env-2",
+        "arg-1",
+        "arg-2",
+      ]);
+    });
+
+    it("should not merge array values from init, file and env var if mergeArrays option is false", async () => {
+      config = new Config({ moduleName: "testArrayExtend2", mergeArrays: false });
+      cosmiconfigStub.search.resolves({
+        config: { fooNamespace: { fooOption: ["file-1", "file-2"] } },
+      });
+      commander.Command.prototype.opts.returns({
+        "fooNamespace.fooOption": ["arg-1", "arg-2"],
+      });
+      namespace = config.addNamespace("fooNamespace");
+      process.env["TEST_ARRAY_EXTEND_2_FOO_NAMESPACE_FOO_OPTION"] = '["env-1","env-2"]';
+      option = namespace.addOption({
+        name: "fooOption",
+        type: "array",
+        default: ["default-1", "default-2"],
+      });
+      await config.init({
+        fooNamespace: { fooOption: ["init-1", "init-2"] },
+      });
+      expect(option.value).toEqual(["arg-1", "arg-2"]);
+    });
   });
 });

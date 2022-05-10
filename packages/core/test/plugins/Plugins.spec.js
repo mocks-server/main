@@ -401,10 +401,10 @@ describe("Plugins", () => {
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
     });
 
-    it("should trace the plugin displayName", async () => {
+    it("should trace the plugin id", async () => {
       const fooPlugin = {
         init: sinon.spy(),
-        displayName: "foo-plugin",
+        id: "foo-plugin",
       };
       pluginsOption.value = [fooPlugin];
       await plugins.register();
@@ -424,7 +424,7 @@ describe("Plugins", () => {
       pluginsOption.value = [FooPlugin];
       await plugins.register();
       await plugins.init();
-      expect(plugins.pluginDisplayName(1)).toEqual("foo-plugin");
+      expect(plugins._pluginId(1)).toEqual("foo-plugin");
       expect(tracer.debug.calledWith('Initializing plugin "foo-plugin"')).toEqual(true);
     });
 
@@ -524,17 +524,6 @@ describe("Plugins", () => {
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
     });
 
-    it("should trace the plugin displayName", async () => {
-      const fooPlugin = {
-        start: sinon.spy(),
-        displayName: "foo-plugin",
-      };
-      pluginsOption.value = [fooPlugin];
-      await plugins.register();
-      await plugins.start();
-      expect(tracer.debug.calledWith('Starting plugin "foo-plugin"')).toEqual(true);
-    });
-
     it("should trace the plugin id", async () => {
       const fooPlugin = {
         start: sinon.spy(),
@@ -546,11 +535,10 @@ describe("Plugins", () => {
       expect(tracer.debug.calledWith('Starting plugin "foo-plugin"')).toEqual(true);
     });
 
-    it("should trace the plugin id with priority over displayName", async () => {
+    it("should trace the plugin id", async () => {
       const fooPlugin = {
         start: sinon.spy(),
         id: "foo-plugin",
-        displayName: "foo-plugin-2",
       };
       pluginsOption.value = [fooPlugin];
       await plugins.register();
@@ -654,10 +642,10 @@ describe("Plugins", () => {
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
     });
 
-    it("should trace the plugin displayName", async () => {
+    it("should trace the plugin id", async () => {
       const fooPlugin = {
         stop: sinon.spy(),
-        displayName: "foo-plugin",
+        id: "foo-plugin",
       };
       pluginsOption.value = [fooPlugin];
       await plugins.register();
@@ -750,7 +738,7 @@ describe("Plugins", () => {
         start: (_core, { addAlert }) => {
           addAlert("test-start", "Testing start alert");
         },
-        displayName: "foo-name",
+        id: "foo-name",
       };
     });
 

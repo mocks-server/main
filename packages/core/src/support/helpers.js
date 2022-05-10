@@ -15,7 +15,7 @@ function alertContext(contextScope, context) {
 }
 
 /*
-When registering plugins, their displayName is not still available, so its index is used as context.
+When registering plugins, their id is not still available, so its index is used as context.
 Afterwards it may change, so old alerts have to be renamed
 */
 function mutableScopedAlertsMethods(

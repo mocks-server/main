@@ -1,5 +1,5 @@
 class Plugin {
-  static get name() {
+  static get id() {
     return "trace-mocks";
   }
 

@@ -82,27 +82,20 @@ class Plugins {
     });
   }
 
-  pluginDisplayName(index) {
+  _pluginId(index) {
     const plugin = this._pluginsInstances[index];
     if (!plugin) {
       return index;
     }
-    if (plugin.id) {
-      return plugin.id;
+    if (plugin.constructor.id) {
+      return plugin.constructor.id;
     }
-    if (plugin.displayName) {
-      return plugin.displayName;
-    }
-    return plugin.constructor.id || index;
+    return plugin.id || index;
   }
 
   _catchRegisterError(error, index) {
-    const pluginDisplayName = this.pluginDisplayName(index);
-    this._addAlert(
-      `register:${pluginDisplayName}`,
-      `Error registering plugin "${pluginDisplayName}"`,
-      error
-    );
+    const pluginId = this._pluginId(index);
+    this._addAlert(`register:${pluginId}`, `Error registering plugin "${pluginId}"`, error);
     return {};
   }
 
@@ -113,7 +106,6 @@ class Plugins {
       this._pluginsRegistered++;
     } else {
       try {
-        // TODO, remove all other methods for creating plugins. Demand Class. This will make simpler alerts and other details, as the plugin names must always be defined in static property
         if (Plugin.id) {
           pluginConfig = this._config.addNamespace(Plugin.id);
         }
@@ -157,7 +149,7 @@ class Plugins {
       loadMocks,
       loadRoutes,
       ...scopedAlertsMethods(
-        () => this.pluginDisplayName(pluginIndex),
+        () => this._pluginId(pluginIndex),
         this._addAlert,
         this._removeAlerts,
         this._renameAlerts
@@ -171,12 +163,8 @@ class Plugins {
 
   _catchInitError(error, index) {
     this._pluginsInitialized = this._pluginsInitialized - 1;
-    const pluginDisplayName = this.pluginDisplayName(index);
-    this._addAlert(
-      `init:${pluginDisplayName}`,
-      `Error initializating plugin "${pluginDisplayName}"`,
-      error
-    );
+    const pluginId = this._pluginId(index);
+    this._addAlert(`init:${pluginId}`, `Error initializating plugin "${pluginId}"`, error);
     tracer.debug(error.toString());
     return Promise.resolve();
   }
@@ -189,16 +177,13 @@ class Plugins {
     const initNextPlugin = () => {
       return this._initPlugins(pluginIndex + 1);
     };
-    const pluginDisplayName = this.pluginDisplayName(pluginIndex);
+    const pluginId = this._pluginId(pluginIndex);
     if (!this._pluginsInstances[pluginIndex].init) {
       this._pluginsInitialized = this._pluginsInitialized - 1;
-      this._addAlert(
-        `init:${pluginDisplayName}`,
-        `Plugin "${pluginDisplayName}" has not init method`
-      );
+      this._addAlert(`init:${pluginId}`, `Plugin "${pluginId}" has not init method`);
       return initNextPlugin();
     }
-    tracer.debug(`Initializing plugin "${pluginDisplayName}"`);
+    tracer.debug(`Initializing plugin "${pluginId}"`);
     let pluginInit;
     try {
       pluginInit = this._pluginsInstances[pluginIndex].init(
@@ -221,12 +206,8 @@ class Plugins {
 
   _catchStartError(error, index) {
     this._pluginsStarted = this._pluginsStarted - 1;
-    const pluginDisplayName = this.pluginDisplayName(index);
-    this._addAlert(
-      `start:${pluginDisplayName}`,
-      `Error starting plugin "${pluginDisplayName}"`,
-      error
-    );
+    const pluginId = this._pluginId(index);
+    this._addAlert(`start:${pluginId}`, `Error starting plugin "${pluginId}"`, error);
     tracer.debug(error.toString());
     return Promise.resolve();
   }
@@ -239,16 +220,13 @@ class Plugins {
     const startNextPlugin = () => {
       return this._startPlugins(pluginIndex + 1);
     };
-    const pluginDisplayName = this.pluginDisplayName(pluginIndex);
+    const pluginId = this._pluginId(pluginIndex);
     if (!this._pluginsInstances[pluginIndex].start) {
       this._pluginsStarted = this._pluginsStarted - 1;
-      this._addAlert(
-        `start:${pluginDisplayName}`,
-        `Plugin "${pluginDisplayName}" has not start method`
-      );
+      this._addAlert(`start:${pluginId}`, `Plugin "${pluginId}" has not start method`);
       return startNextPlugin();
     }
-    tracer.debug(`Starting plugin "${pluginDisplayName}"`);
+    tracer.debug(`Starting plugin "${pluginId}"`);
     let pluginStart;
     try {
       pluginStart = this._pluginsInstances[pluginIndex].start(
@@ -271,12 +249,8 @@ class Plugins {
 
   _catchStopError(error, index) {
     this._pluginsStopped = this._pluginsStopped - 1;
-    const pluginDisplayName = this.pluginDisplayName(index);
-    this._addAlert(
-      `stop:${pluginDisplayName}`,
-      `Error stopping plugin "${pluginDisplayName}"`,
-      error
-    );
+    const pluginId = this._pluginId(index);
+    this._addAlert(`stop:${pluginId}`, `Error stopping plugin "${pluginId}"`, error);
     tracer.debug(error.toString());
     return Promise.resolve();
   }
@@ -290,16 +264,13 @@ class Plugins {
       return this._stopPlugins(pluginIndex + 1);
     };
 
-    const pluginDisplayName = this.pluginDisplayName(pluginIndex);
+    const pluginId = this._pluginId(pluginIndex);
     if (!this._pluginsInstances[pluginIndex].stop) {
       this._pluginsStopped = this._pluginsStopped - 1;
-      this._addAlert(
-        `stop:${pluginDisplayName}`,
-        `Plugin "${pluginDisplayName}" has not stop method`
-      );
+      this._addAlert(`stop:${pluginId}`, `Plugin "${pluginId}" has not stop method`);
       return stopNextPlugin();
     }
-    tracer.debug(`Stopping plugin "${pluginDisplayName}"`);
+    tracer.debug(`Stopping plugin "${pluginId}"`);
     let pluginStop;
     try {
       pluginStop = this._pluginsInstances[pluginIndex].stop(

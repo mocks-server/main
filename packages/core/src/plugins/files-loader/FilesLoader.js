@@ -124,14 +124,6 @@ class FilesLoaderBase {
     }
   }
 
-  // TODO, remove
-  _demandPathName() {
-    this._tracer.error(
-      `Please provide a path to the folder containing mocks using the path option`
-    );
-    throw new Error(`Invalid option "path"`);
-  }
-
   _resolveFolder(folder) {
     if (path.isAbsolute(folder)) {
       return folder;
@@ -149,10 +141,6 @@ class FilesLoaderBase {
 
   _loadFiles() {
     const pathName = this._pathOption.value;
-    // TODO, remove
-    if (!pathName) {
-      this._demandPathName();
-    }
     const resolvedFolder = this._resolveFolder(pathName);
     this._path = this._ensureFolder(resolvedFolder);
     this._tracer.info(`Loading files from folder ${this._path}`);

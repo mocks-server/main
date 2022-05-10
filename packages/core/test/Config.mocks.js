@@ -10,18 +10,52 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("@mocks-server/config/legacy/Config");
+jest.mock("@mocks-server/config");
 
-const Config = require("@mocks-server/config/legacy/Config");
+const Config = require("@mocks-server/config");
 
 class ConfigMock {
   constructor() {
     this._sandbox = sinon.createSandbox();
 
+    this._option = {
+      onChange: this._sandbox.stub(),
+    };
+
+    this._namespace = {
+      addNamespace: this._sandbox.stub().returns(this._namespace),
+      addOptions: this._sandbox
+        .stub()
+        .returns([
+          this._option,
+          this._option,
+          this._option,
+          this._option,
+          this._option,
+          this._option,
+          this._option,
+        ]),
+      option: this._sandbox.stub(),
+    };
+
     this._stubs = {
       init: this._sandbox.stub().resolves(),
-      coreOptions: {},
-      options: {},
+      load: this._sandbox.stub().resolves(),
+      addOptions: this._sandbox
+        .stub()
+        .returns([
+          this._option,
+          this._option,
+          this._option,
+          this._option,
+          this._option,
+          this._option,
+          this._option,
+        ]),
+      addOption: this._sandbox.stub().returns(this._option),
+      addNamespace: this._sandbox.stub().returns(this._namespace),
+      namespace: this._sandbox.stub(),
+      option: this._sandbox.stub(),
     };
 
     Config.mockImplementation(() => this._stubs);
@@ -31,6 +65,8 @@ class ConfigMock {
     return {
       Constructor: Config,
       instance: this._stubs,
+      namespace: this._namespace,
+      option: this._option,
     };
   }
 

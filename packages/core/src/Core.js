@@ -150,16 +150,17 @@ class Core {
   // Public methods
 
   async init(programmaticConfig) {
-    if (programmaticConfig) {
-      this._programmaticConfig = deepMerge(this._programmaticConfig, programmaticConfig, {
-        arrayMerge,
-      });
-    }
     if (this._inited) {
       // in case it has been initializated manually before
       return Promise.resolve();
     }
     this._inited = true;
+
+    if (programmaticConfig) {
+      this._programmaticConfig = deepMerge(this._programmaticConfig, programmaticConfig, {
+        arrayMerge,
+      });
+    }
 
     // Init config
     await this._config.init(this._programmaticConfig);

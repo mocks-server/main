@@ -63,10 +63,10 @@ class Mocks {
     this._customVariantsMock = null;
 
     this.router = this.router.bind(this);
-    this._getDelay = this._getDelay.bind(this);
+    this.getDelay = this.getDelay.bind(this);
   }
 
-  _getDelay() {
+  getDelay() {
     return this._currentDelayOption.value;
   }
 
@@ -89,7 +89,7 @@ class Mocks {
       addAlert: this._addAlert,
       removeAlerts: this._removeAlerts,
       routeVariants: this._routesVariants,
-      getGlobalDelay: this._getDelay,
+      getGlobalDelay: this.getDelay,
     });
   }
 
@@ -194,7 +194,7 @@ class Mocks {
       mockIndex: "custom",
       mocksDefinitions: this._mocksDefinitions,
       routeVariants: this._routesVariants,
-      getGlobalDelay: this._getDelay,
+      getGlobalDelay: this.getDelay,
       addAlert: this._addAlert,
       removeAlerts: this._removeAlerts,
     });

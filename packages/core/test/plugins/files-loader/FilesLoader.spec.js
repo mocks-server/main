@@ -13,8 +13,9 @@ const path = require("path");
 const sinon = require("sinon");
 const { cloneDeep } = require("lodash");
 
-const LibsMocks = require("../../Libs.mocks.js");
-const CoreMocks = require("../../Core.mocks.js");
+const LibsMocks = require("../../Libs.mocks");
+const CoreMocks = require("../../Core.mocks");
+const ConfigMock = require("../../Config.mocks");
 
 const FilesLoader = require("../../../src/plugins/files-loader/FilesLoader");
 
@@ -57,6 +58,7 @@ describe("FilesLoader", () => {
     },
   };
 
+  let configMock;
   let sandbox;
   let coreMocks;
   let coreInstance;
@@ -64,10 +66,16 @@ describe("FilesLoader", () => {
   let filesLoader;
   let libsMocks;
   let pluginMethods;
+  let pathOption;
+  let watchOption;
+  let babelRegisterOption;
+  let babelRegisterOptionsOption;
 
   beforeEach(async () => {
     requireCache = cloneDeep(fooRequireCache);
     sandbox = sinon.createSandbox();
+    configMock = new ConfigMock();
+    configMock.stubs.option.value = "foo-path";
     coreMocks = new CoreMocks();
     libsMocks = new LibsMocks();
     pluginMethods = {
@@ -77,14 +85,22 @@ describe("FilesLoader", () => {
       removeAlerts: sandbox.stub(),
     };
     coreInstance = coreMocks.stubs.instance;
-    filesLoader = new FilesLoader(coreInstance, pluginMethods, {
+    filesLoader = new FilesLoader(coreInstance, pluginMethods, configMock.stubs.namespace, {
       requireCache,
     });
     sandbox.stub(path, "isAbsolute").returns(true);
     sandbox.stub(console, "log");
-    coreInstance.settings.get.withArgs("path").returns("foo-path");
     libsMocks.stubs.fsExtra.existsSync.returns(true);
     libsMocks.stubs.globule.find.returns([]);
+    pathOption = { value: "foo-path" };
+    watchOption = { value: true };
+    babelRegisterOption = { value: false };
+    babelRegisterOptionsOption = { value: {} };
+
+    filesLoader._pathOption = pathOption;
+    filesLoader._watchOption = watchOption;
+    filesLoader._babelRegisterOption = babelRegisterOption;
+    filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
   });
 
   afterEach(async () => {
@@ -95,8 +111,8 @@ describe("FilesLoader", () => {
   });
 
   describe("when initialized", () => {
-    it("should have displayName defined", async () => {
-      expect(filesLoader.displayName).toEqual("@mocks-server/core/plugin-files-loader");
+    it("should have name defined", async () => {
+      expect(FilesLoader.name).toEqual("filesLoader");
     });
 
     it("should require all files from mocks folders calculating it from cwd if path is not absolute", async () => {
@@ -116,20 +132,28 @@ describe("FilesLoader", () => {
 
     it("should add an alert when a routes file content does not pass validation", async () => {
       libsMocks.stubs.globule.find.returns(["foo"]);
-      filesLoader = new FilesLoader(coreInstance, pluginMethods, {
+      filesLoader = new FilesLoader(coreInstance, pluginMethods, configMock.stubs.namespace, {
         requireCache,
         require: () => ({}),
       });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await filesLoader.init();
       expect(pluginMethods.addAlert.calledWith("load:routes:file:foo")).toEqual(true);
     });
 
     it("should not add an alert when a routes file content pass validation", async () => {
       libsMocks.stubs.globule.find.returns(["foo"]);
-      filesLoader = new FilesLoader(coreInstance, pluginMethods, {
+      filesLoader = new FilesLoader(coreInstance, pluginMethods, configMock.stubs.namespace, {
         requireCache,
         require: () => [],
       });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await filesLoader.init();
       expect(pluginMethods.addAlert.calledWith("load:routes:file:foo")).toEqual(false);
     });
@@ -140,28 +164,40 @@ describe("FilesLoader", () => {
     });
 
     it("should remove alerts when mocks file loads successfully", async () => {
-      filesLoader = new FilesLoader(coreInstance, pluginMethods, {
+      filesLoader = new FilesLoader(coreInstance, pluginMethods, configMock.stubs.namespace, {
         requireCache,
         require: () => [],
       });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await filesLoader.init();
       expect(pluginMethods.removeAlerts.calledWith("load:mocks")).toEqual(true);
     });
 
     it("should call to loadMocks method when mocks file is loaded", async () => {
-      filesLoader = new FilesLoader(coreInstance, pluginMethods, {
+      filesLoader = new FilesLoader(coreInstance, pluginMethods, configMock.stubs.namespace, {
         requireCache,
         require: () => [],
       });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await filesLoader.init();
       expect(pluginMethods.loadMocks.callCount).toEqual(1);
     });
 
     it("should try to load mocks.json when mock.js file does not exists", async () => {
-      filesLoader = new FilesLoader(coreInstance, pluginMethods, {
+      filesLoader = new FilesLoader(coreInstance, pluginMethods, configMock.stubs.namespace, {
         requireCache,
         require: sandbox.spy,
       });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       libsMocks.stubs.fsExtra.existsSync.onCall(0).returns(true);
       libsMocks.stubs.fsExtra.existsSync.onCall(1).returns(false);
       libsMocks.stubs.fsExtra.existsSync.onCall(2).returns(true);
@@ -173,6 +209,11 @@ describe("FilesLoader", () => {
       coreInstance.tracer.silly.throws(new Error());
       await filesLoader.init();
       expect(pluginMethods.addAlert.calledWith("load:routes")).toEqual(true);
+    });
+
+    it("should return a rejected promise if there is an error initializing", async () => {
+      coreInstance.tracer.info.throws(new Error("foo error"));
+      await expect(() => filesLoader.init()).rejects.toThrow("foo error");
     });
 
     it("should create scaffold folder when folder does not exist", async () => {
@@ -187,25 +228,19 @@ describe("FilesLoader", () => {
       expect(libsMocks.stubs.fsExtra.ensureDirSync.callCount).toEqual(0);
     });
 
-    it("should throw an error if mocks folder is not defined", async () => {
-      expect.assertions(1);
-      try {
-        coreInstance.settings.get.withArgs("path").returns(undefined);
-        await filesLoader.init();
-      } catch (error) {
-        expect(error.message).toEqual(`Invalid option "path"`);
-      }
-    });
-
     it("should require babel/register if babelRegister config is enabled", async () => {
       const requireSpy = sandbox.stub().returns(() => {
         //do nothing
       });
       coreInstance.lowLevelConfig = { babelRegister: true, babelRegisterOptions: {} };
-      filesLoader = new FilesLoader(coreInstance, pluginMethods, {
+      filesLoader = new FilesLoader(coreInstance, pluginMethods, configMock.stubs.namespace, {
         requireCache,
         require: requireSpy,
       });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = { value: true };
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await filesLoader.init();
       expect(requireSpy.getCall(0).args[0]).toEqual("@babel/register");
     });
@@ -219,7 +254,11 @@ describe("FilesLoader", () => {
     });
 
     it("should require cache in order to found the mocks folder", async () => {
-      filesLoader = new FilesLoader(coreInstance, pluginMethods);
+      filesLoader = new FilesLoader(coreInstance, pluginMethods, configMock.stubs.namespace);
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       sandbox.spy(filesLoader, "_cleanRequireCache");
       await filesLoader.init();
       // it seems like require cache is empty in jest environment
@@ -246,14 +285,14 @@ describe("FilesLoader", () => {
   describe("start method", () => {
     describe("when starting files watch", () => {
       it("should do nothing if watch was not enabled", async () => {
-        coreInstance.settings.get.withArgs("watch").returns(false);
+        filesLoader._watchOption.value = false;
         await filesLoader.init();
         await filesLoader.start();
         expect(libsMocks.stubs.watch.callCount).toEqual(0);
       });
 
       it("should call to close watcher if watch was enabled previously", async () => {
-        coreInstance.settings.get.withArgs("watch").returns(true);
+        filesLoader._watchOption.value = true;
         await filesLoader.init();
         await filesLoader.start();
         await filesLoader.start();
@@ -265,7 +304,7 @@ describe("FilesLoader", () => {
   describe("when a file is changed", () => {
     it("should load files again", async () => {
       sandbox.stub(filesLoader, "_loadFiles");
-      coreInstance.settings.get.withArgs("watch").returns(true);
+      filesLoader._watchOption.value = true;
       await filesLoader.init();
       await filesLoader.start();
       libsMocks.stubs.watch.getCall(0).args[2]();
@@ -276,38 +315,22 @@ describe("FilesLoader", () => {
 
   describe("when core settings change", () => {
     it("should enable watch again if path setting is changed", async () => {
-      coreInstance.settings.get.withArgs("watch").returns(true);
+      filesLoader._watchOption.value = true;
       await filesLoader.init();
       await filesLoader.start();
-      coreInstance.onChangeSettings.getCall(0).args[0]({
-        path: "foo-path",
-      });
+      configMock.stubs.option.onChange.getCall(0).args[0]("foo-path-2");
       await wait();
       expect(libsMocks.stubs.watch.callCount).toEqual(2);
     });
 
     it("should disable watch if watch is changed", async () => {
-      coreInstance.settings.get.withArgs("watch").returns(true);
+      filesLoader._watchOption.value = true;
       await filesLoader.init();
       await filesLoader.start();
-      coreInstance.settings.get.withArgs("watch").returns(false);
-      coreInstance.onChangeSettings.getCall(0).args[0]({
-        watch: false,
-      });
+      filesLoader._watchOption.value = false;
+      configMock.stubs.option.onChange.getCall(1).args[0](false);
       await wait();
       expect(libsMocks.stubs.watchClose.callCount).toEqual(1);
-    });
-
-    it("should do nothing when no path nor watch are modified", async () => {
-      sandbox.stub(filesLoader, "_loadFiles");
-      await filesLoader.init();
-      await filesLoader.start();
-      coreInstance.onChangeSettings.getCall(0).args[0]({
-        foo: "foo",
-      });
-      await wait();
-      expect(filesLoader._loadFiles.callCount).toEqual(1);
-      expect(libsMocks.stubs.watch.callCount).toEqual(0);
     });
   });
 });

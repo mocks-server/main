@@ -83,7 +83,11 @@ class Plugins {
   }
 
   pluginDisplayName(index) {
-    return (this._pluginsInstances[index] && this._pluginsInstances[index].displayName) || index;
+    return (
+      (this._pluginsInstances[index] &&
+        (this._pluginsInstances[index].name || this._pluginsInstances[index].displayName)) ||
+      index
+    );
   }
 
   _catchRegisterError(error, index) {

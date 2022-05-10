@@ -10,7 +10,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-const SettingsMocks = require("./Settings.mocks.js");
 const MocksMock = require("./mocks/Mocks.mock.js");
 const ServerMocks = require("./server/Server.mocks.js");
 const PluginsMocks = require("./plugins/Plugins.mocks.js");
@@ -23,8 +22,6 @@ const tracer = require("../src/tracer");
 
 describe("Core", () => {
   let sandbox;
-  let settingsMocks;
-  let settingsInstance;
   let mocksMock;
   let mocksInstance;
   let serverMocks;
@@ -39,8 +36,6 @@ describe("Core", () => {
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
-    settingsMocks = new SettingsMocks();
-    settingsInstance = settingsMocks.stubs.instance;
     mocksMock = new MocksMock();
     mocksInstance = mocksMock.stubs.instance;
     serverMocks = new ServerMocks();
@@ -58,7 +53,6 @@ describe("Core", () => {
 
   afterEach(() => {
     sandbox.restore();
-    settingsMocks.restore();
     mocksMock.restore();
     serverMocks.restore();
     configMocks.restore();
@@ -68,10 +62,11 @@ describe("Core", () => {
   });
 
   describe("when created", () => {
-    it("should create Config with received config", () => {
+    it("should init Config with received config", async () => {
       const fooConfig = { foo: "foo" };
       core = new Core(fooConfig);
-      expect(configMocks.stubs.Constructor.mock.calls[1][0].programmaticConfig).toEqual(fooConfig);
+      await core.init();
+      expect(configMocks.stubs.instance.init.getCall(1).args[0]).toEqual(fooConfig);
     });
   });
 
@@ -97,54 +92,6 @@ describe("Core", () => {
     });
   });
 
-  describe("Settings callbacks", () => {
-    describe("onChange", () => {
-      it("should emit a change:mocks event", () => {
-        const spy = sandbox.spy();
-        core.onChangeSettings(spy);
-        settingsMocks.stubs.Constructor.mock.calls[0][0].onChange({});
-        expect(spy.callCount).toEqual(1);
-      });
-
-      it("should not set current mock if mock property didn't change", () => {
-        expect(mocksMock.stubs.instance.current).toEqual("foo");
-        settingsMocks.stubs.Constructor.mock.calls[0][0].onChange({});
-        expect(mocksMock.stubs.instance.current).toEqual("foo");
-      });
-
-      it("should set current mock if mock property changed", () => {
-        expect(mocksMock.stubs.instance.current).toEqual("foo");
-        settingsMocks.stubs.Constructor.mock.calls[0][0].onChange({ mock: "foo-another-mock" });
-        expect(mocksMock.stubs.instance.current).toEqual("foo-another-mock");
-      });
-
-      it("should restart server if port option changed", () => {
-        settingsMocks.stubs.Constructor.mock.calls[0][0].onChange({ port: "foo" });
-        expect(serverMocks.stubs.instance.restart.callCount).toEqual(1);
-      });
-
-      it("should restart server if host option changed", () => {
-        settingsMocks.stubs.Constructor.mock.calls[0][0].onChange({ host: "foo" });
-        expect(serverMocks.stubs.instance.restart.callCount).toEqual(1);
-      });
-
-      it("should restart server if cors option changed", () => {
-        settingsMocks.stubs.Constructor.mock.calls[0][0].onChange({ cors: false });
-        expect(serverMocks.stubs.instance.restart.callCount).toEqual(1);
-      });
-
-      it("should restart server if corsPreFlight option changed", () => {
-        settingsMocks.stubs.Constructor.mock.calls[0][0].onChange({ corsPreFlight: true });
-        expect(serverMocks.stubs.instance.restart.callCount).toEqual(1);
-      });
-
-      it("should not restart server if the option is not one of port,host,cors or corsPreFlight", () => {
-        settingsMocks.stubs.Constructor.mock.calls[0][0].onChange({ foo: true });
-        expect(serverMocks.stubs.instance.restart.callCount).toEqual(0);
-      });
-    });
-  });
-
   describe("Mocks callbacks", () => {
     describe("getLoadedMocks", () => {
       it("should return mocksLoaders contents", () => {
@@ -162,60 +109,12 @@ describe("Core", () => {
       });
     });
 
-    describe("getCurrentMock", () => {
-      it("should return current mock from core settings", () => {
-        expect(mocksMock.stubs.Constructor.mock.calls[0][0].getCurrentMock()).toEqual(
-          core._settings.get("mock")
-        );
-      });
-    });
-
-    describe("getCurrentDelay", () => {
-      it("should return current delay from core settings", () => {
-        expect(mocksMock.stubs.Constructor.mock.calls[0][0].getDelay()).toEqual(
-          core._settings.get("delay")
-        );
-      });
-    });
-
     describe("onChange", () => {
       it("should emit a change:mocks event", () => {
         const spy = sandbox.spy();
         core.onChangeMocks(spy);
         mocksMock.stubs.Constructor.mock.calls[0][0].onChange();
         expect(spy.callCount).toEqual(1);
-      });
-    });
-  });
-
-  describe("Server callbacks", () => {
-    describe("getHostOption", () => {
-      it("should return host option from settings", () => {
-        settingsMocks.stubs.instance.get.returns("foo-host");
-        expect(serverMocks.stubs.Constructor.mock.calls[0][0].getHostOption()).toEqual("foo-host");
-      });
-    });
-
-    describe("getPortOption", () => {
-      it("should return port option from settings", () => {
-        settingsMocks.stubs.instance.get.returns("foo-port");
-        expect(serverMocks.stubs.Constructor.mock.calls[0][0].getPortOption()).toEqual("foo-port");
-      });
-    });
-
-    describe("getCorsOption", () => {
-      it("should return cors option from settings", () => {
-        settingsMocks.stubs.instance.get.returns("foo-cors");
-        expect(serverMocks.stubs.Constructor.mock.calls[0][0].getCorsOption()).toEqual("foo-cors");
-      });
-    });
-
-    describe("getCorsPreFlightOption", () => {
-      it("should return getCorsPreFlightOption option from settings", () => {
-        settingsMocks.stubs.instance.get.returns("foo-corsPreFlight");
-        expect(serverMocks.stubs.Constructor.mock.calls[0][0].getCorsPreFlightOption()).toEqual(
-          "foo-corsPreFlight"
-        );
       });
     });
   });
@@ -227,14 +126,25 @@ describe("Core", () => {
       expect(pluginsInstance.register.callCount).toEqual(1);
     });
 
-    it("should register plugins", () => {
-      expect(pluginsInstance.register.callCount).toEqual(1);
+    it("should extend config from constructor with config from init", async () => {
+      core = new Core({ foo: "foo" });
+      await core.init({ foo2: "foo2" });
+      expect(configMocks.stubs.instance.init.getCall(1).args[0]).toEqual({
+        foo: "foo",
+        foo2: "foo2",
+      });
     });
 
-    it("should init settings with config options", async () => {
-      core = new Core();
-      await core.init();
-      expect(settingsInstance.init.calledWith(configMocks.stubs.instance.options)).toEqual(true);
+    it("should not extend arrays in config", async () => {
+      core = new Core({ foo: ["foo", "foo2"] });
+      await core.init({ foo: ["foo3", "foo4"] });
+      expect(configMocks.stubs.instance.init.getCall(1).args[0]).toEqual({
+        foo: ["foo3", "foo4"],
+      });
+    });
+
+    it("should register plugins", () => {
+      expect(pluginsInstance.register.callCount).toEqual(1);
     });
 
     it("should init server", () => {
@@ -301,13 +211,6 @@ describe("Core", () => {
     });
   });
 
-  describe("addSetting method", () => {
-    it("should add setting to settings", () => {
-      core.addSetting();
-      expect(settingsInstance.addCustom.callCount).toEqual(1);
-    });
-  });
-
   describe("addRoutesHandler method", () => {
     it("should add Route Handler", () => {
       core.addRoutesHandler("foo");
@@ -337,26 +240,6 @@ describe("Core", () => {
     });
   });
 
-  describe("onChangeSettings method", () => {
-    it("should add listener to eventEmitter", () => {
-      const spy = sandbox.spy();
-      core.onChangeSettings(spy);
-      core._eventEmitter.emit("change:settings");
-      expect(spy.callCount).toEqual(1);
-    });
-
-    it("should return a function to remove listener", () => {
-      expect.assertions(2);
-      const spy = sandbox.spy();
-      const removeCallback = core.onChangeSettings(spy);
-      core._eventEmitter.emit("change:settings");
-      expect(spy.callCount).toEqual(1);
-      removeCallback();
-      core._eventEmitter.emit("change:settings");
-      expect(spy.callCount).toEqual(1);
-    });
-  });
-
   describe("onChangeAlerts method", () => {
     it("should execute callback when alerts execute onChange callback", () => {
       const FOO_ALERTS = ["foo", "foo2"];
@@ -379,15 +262,6 @@ describe("Core", () => {
   });
 
   describe("when mocksLoaders load", () => {
-    it("should emit an event", (done) => {
-      expect.assertions(1);
-      core._eventEmitter.on("load:mocks", () => {
-        expect(true).toEqual(true);
-        done();
-      });
-      loadersMocks.stubs.Constructor.mock.calls[0][0].onLoad();
-    });
-
     it("should not load mocks if routes are not loaded", () => {
       expect.assertions(1);
       loadersMocks.stubs.Constructor.mock.calls[0][0].onLoad();
@@ -403,15 +277,6 @@ describe("Core", () => {
   });
 
   describe("when routesLoaders load", () => {
-    it("should emit an event", (done) => {
-      expect.assertions(1);
-      core._eventEmitter.on("load:routes", () => {
-        expect(true).toEqual(true);
-        done();
-      });
-      loadersMocks.stubs.Constructor.mock.calls[1][0].onLoad();
-    });
-
     it("should not load mocks if mocks are not loaded", () => {
       expect.assertions(1);
       loadersMocks.stubs.Constructor.mock.calls[1][0].onLoad();
@@ -474,15 +339,9 @@ describe("Core", () => {
     });
   });
 
-  describe("settings getter", () => {
-    it("should return settings", () => {
-      expect(core.settings).toEqual(settingsInstance);
-    });
-  });
-
-  describe("lowLevelConfig getter", () => {
-    it("should return low level configuration", () => {
-      expect(core.lowLevelConfig).toEqual(configMocks.stubs.instance.coreOptions);
+  describe("config getter", () => {
+    it("should return config instance", () => {
+      expect(core.config).toEqual(configMocks.stubs.instance);
     });
   });
 

@@ -14,10 +14,12 @@ const express = require("express");
 const MockMock = require("./Mock.mock.js");
 
 const Mocks = require("../../src/mocks/Mocks");
+const ConfigMock = require("../Config.mocks");
 const { undoInitValidator, restoreValidator } = require("../../src/mocks/validations");
 const DefaultRoutesHandler = require("../../src/routes-handlers/default/DefaultRoutesHandler");
 
 describe("Mocks", () => {
+  let configMock;
   let sandbox;
   let mockMock;
   let mocks;
@@ -27,16 +29,17 @@ describe("Mocks", () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    configMock = new ConfigMock();
     mockMock = new MockMock();
     routerMock = sandbox.stub();
     sandbox.stub(express, "Router").returns(routerMock);
 
     core = {};
     methods = {
+      config: configMock.stubs.namespace,
       getLoadedMocks: sandbox.stub().returns([]),
       getLoadedRoutes: sandbox.stub().returns([]),
       getCurrentMock: sandbox.stub().returns(null),
-      getDelay: sandbox.stub(),
       onChange: sandbox.stub(),
       addAlert: sandbox.stub(),
       removeAlerts: sandbox.stub(),
@@ -60,6 +63,13 @@ describe("Mocks", () => {
       undoInitValidator();
       mocks.init([DefaultRoutesHandler]);
       expect(methods.addAlert.getCall(0).args[0]).toEqual("validation:init");
+    });
+  });
+
+  describe("getDelay method", () => {
+    it("should return delay option value", () => {
+      mocks._currentDelayOption.value = "foo-delay";
+      expect(mocks.getDelay()).toEqual("foo-delay");
     });
   });
 

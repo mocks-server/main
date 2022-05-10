@@ -3,7 +3,7 @@
   "scripts": {
     "mocks": "mocks-server",
     "mocks:ci": "mocks-server --no-cli",
-    "mocks:ci:custom-config": "mocks-server --no-cli --port=3200 --adminApiPath=/foo",
+    "mocks:ci:custom-config": "mocks-server --no-cli --server.port=3200 --plugins.adminApi.path=/foo",
     "build:app": "pnpm -w run nx build cypress-commands-e2e-vanilla-app -- --port=3100",
     "build:app:custom-config": "pnpm -w run nx build cypress-commands-e2e-vanilla-app -- --port=3200",
     "cypress:install": "cypress install",

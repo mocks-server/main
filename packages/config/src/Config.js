@@ -5,8 +5,8 @@ const Environment = require("./Environment");
 const Files = require("./Files");
 const Namespace = require("./Namespace");
 const { types, avoidArraysMerge } = require("./types");
-const { validateConfig } = require("./validation");
-const { checkNamespaceName, findObjectWithName } = require("./namespaces");
+const { validateConfigAndThrow, validateConfig } = require("./validation");
+const { checkNamespaceName, findObjectWithName, getNamespacesValues } = require("./namespaces");
 
 const CONFIG_NAMESPACE = "config";
 
@@ -108,13 +108,19 @@ class Config {
     );
   }
 
-  _validate({ allowUnknown }) {
-    validateConfig(this._config, { namespaces: this._namespaces, allowUnknown });
+  // TODO, add set methods
+
+  validate(config, { allowAdditionalProperties = false } = {}) {
+    return validateConfig(config, {
+      namespaces: this._namespaces,
+      allowAdditionalProperties,
+    });
   }
 
-  _setNamespaces() {
-    this._namespaces.forEach((namespace) => {
-      namespace.set(this._config);
+  _validateAndThrow({ allowAdditionalProperties }) {
+    validateConfigAndThrow(this._config, {
+      namespaces: this._namespaces,
+      allowAdditionalProperties,
     });
   }
 
@@ -124,10 +130,10 @@ class Config {
     });
   }
 
-  _mergeValidateAndSetNamespaces({ allowUnknown, mergeArraysInSet = false }) {
+  _mergeValidateAndSetNamespaces({ allowUnknown }) {
     this._mergeConfig();
-    this._validate({ allowUnknown });
-    this._setNamespaces(mergeArraysInSet);
+    this._validateAndThrow({ allowAdditionalProperties: allowUnknown });
+    this.set(this._config);
   }
 
   async _load({ allowUnknown = false } = {}) {
@@ -175,6 +181,20 @@ class Config {
 
   option(name) {
     return findObjectWithName(this._rootNamespace.options, name);
+  }
+
+  get value() {
+    return getNamespacesValues(this._namespaces);
+  }
+
+  set(configuration) {
+    this._namespaces.forEach((namespace) => {
+      if (namespace.name) {
+        namespace.set(configuration[namespace.name] || {});
+      } else {
+        namespace.set(configuration);
+      }
+    });
   }
 }
 

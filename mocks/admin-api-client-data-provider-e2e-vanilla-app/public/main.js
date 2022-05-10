@@ -129,12 +129,12 @@ $.when($.ready).then(function () {
 
   $setMockBaseButton.click(function () {
     adminApiClient.settings.update({
-      mock: "base",
+      mocks: { selected: "base" },
     });
   });
   $setMockUser2Button.click(function () {
     adminApiClient.settings.update({
-      mock: "user2",
+      mocks: { selected: "user2" },
     });
   });
 

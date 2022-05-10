@@ -41,9 +41,33 @@ function checkOptionName(name, { options, namespaces }) {
   }
 }
 
+function getOptionsValues(options) {
+  return options.reduce((values, option) => {
+    values[option.name] = option.value;
+    return values;
+  }, {});
+}
+
+function getNamespacesValues(namespaces) {
+  return namespaces.reduce((values, namespace) => {
+    const namespaceValues = namespace.value;
+    if (namespace.name) {
+      values[namespace.name] = namespaceValues;
+    } else {
+      values = {
+        ...values,
+        ...namespaceValues,
+      };
+    }
+    return values;
+  }, {});
+}
+
 module.exports = {
   namespaceAndParentNames,
   checkNamespaceName,
   checkOptionName,
   findObjectWithName,
+  getNamespacesValues,
+  getOptionsValues,
 };

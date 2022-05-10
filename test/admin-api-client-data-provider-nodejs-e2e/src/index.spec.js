@@ -92,7 +92,7 @@ describe("react-admin-client methods used through node", () => {
   describe("when updating settings", () => {
     it("should update current mock", async () => {
       await updateSettings({
-        mock: "user2",
+        mocks: { selected: "user2" },
       });
       const settings = await readSettings();
       expect(settings.mock).toEqual("user2");
@@ -100,7 +100,9 @@ describe("react-admin-client methods used through node", () => {
 
     it("should update current delay", async () => {
       await updateSettings({
-        delay: 1000,
+        mocks: {
+          delay: 1000,
+        },
       });
       const settings = await readSettings();
       expect(settings.delay).toEqual(1000);
@@ -108,7 +110,7 @@ describe("react-admin-client methods used through node", () => {
 
     it("should update current mock again", async () => {
       await updateSettings({
-        mock: "base",
+        mocks: { selected: "base" },
       });
       const settings = await readSettings();
       expect(settings.mock).toEqual("base");

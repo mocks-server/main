@@ -24,7 +24,7 @@ describe("when stopping plugin", () => {
   describe("when started", () => {
     it("should return current settings", async () => {
       const response = await fetch("/admin/settings");
-      expect(response.body.path).toEqual(fixturesFolder("web-tutorial"));
+      expect(response.body.plugins.filesLoader.path).toEqual(fixturesFolder("web-tutorial"));
     });
   });
 
@@ -54,7 +54,11 @@ describe("when stopping plugin", () => {
 
   describe("when mock is changed", () => {
     it("should respond with new mock", async () => {
-      server.settings.set("mock", "user-2");
+      server.config.set({
+        mocks: {
+          selected: "user-2",
+        },
+      });
       await wait(1000);
       const response = await fetch("/api/users/2");
       expect(response.body).toEqual({
@@ -84,7 +88,7 @@ describe("when stopping plugin", () => {
 
     it("should have started the plugin", async () => {
       const response = await fetch("/admin/settings");
-      expect(response.body.path).toEqual(fixturesFolder("web-tutorial"));
+      expect(response.body.plugins.filesLoader.path).toEqual(fixturesFolder("web-tutorial"));
     });
   });
 });

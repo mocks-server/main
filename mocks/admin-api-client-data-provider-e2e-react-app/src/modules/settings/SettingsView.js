@@ -12,7 +12,7 @@ const SettingsView = ({ settings }) => {
         {Object.keys(settings).map((key) => {
           return (
             <li key={key}>
-              <b>{key}</b>: <span data-testid={`settings-${key}`}>{format(settings[key])}</span>
+              <b>{key}</b>: <span data-testid={`settings-${key}`}>{format(settings[key])}</span>
             </li>
           );
         })}

@@ -20,34 +20,23 @@ class SettingsApi {
   constructor(core) {
     this._core = core;
     this._tracer = core.tracer;
-    this._settings = this._core.settings;
+    this._config = this._core.config;
     this._router = express.Router();
     this._router.patch("/", this.patch.bind(this));
     this._router.get("/", this.get.bind(this));
   }
 
-  _validateNewSettings(newSettings) {
-    const errors = [];
-    Object.keys(newSettings).forEach((newSettingKey) => {
-      if (!this._settings.getValidOptionName(newSettingKey)) {
-        errors.push(`Invalid option name "${newSettingKey}"`);
-      }
-    });
-    return errors;
+  _validateNewConfig(newConfig) {
+    return this._config.validate(newConfig);
   }
 
   patch(req, res, next) {
-    const newSettings = req.body;
-    const errors = this._validateNewSettings(newSettings);
-    if (errors.length) {
-      next(Boom.badRequest(errors.join(". ")));
+    const newConfig = req.body;
+    const { valid, errors } = this._validateNewConfig(newConfig);
+    if (!valid && errors.length) {
+      next(Boom.badRequest(JSON.stringify(errors)));
     } else {
-      Object.keys(newSettings).forEach((newSettingKey) => {
-        this._tracer.verbose(
-          `${PLUGIN_NAME}: Changing setting "${newSettingKey}" to "${newSettings[newSettingKey]}" | ${req.id}`
-        );
-        this._settings.set(newSettingKey, newSettings[newSettingKey]);
-      });
+      this._config.set(newConfig);
       res.status(204);
       res.send();
     }
@@ -56,7 +45,7 @@ class SettingsApi {
   get(req, res) {
     this._tracer.verbose(`${PLUGIN_NAME}: Sending settings | ${req.id}`);
     res.status(200);
-    res.send(this._settings.all);
+    res.send(this._config.value);
   }
 
   get router() {

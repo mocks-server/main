@@ -21,7 +21,7 @@ function commands(Cypress) {
       return doNothing();
     }
     return apiClient.updateSettings({
-      mock: id,
+      mocks: { selected: id },
     });
   };
 
@@ -30,7 +30,7 @@ function commands(Cypress) {
       return doNothing();
     }
     return apiClient.updateSettings({
-      delay,
+      mocks: { delay },
     });
   };
 

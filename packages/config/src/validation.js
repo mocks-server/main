@@ -64,55 +64,62 @@ function throwValueTypeError(value, type) {
   throw new Error(`${value} is not of type ${type}`);
 }
 
-function validateString(value) {
+function validateStringAndThrow(value) {
   if (!isString(value)) {
     throwValueTypeError(value, types.STRING);
   }
 }
 
-function validateBoolean(value) {
+function validateBooleanAndThrow(value) {
   if (!isBoolean(value)) {
     throwValueTypeError(value, types.BOOLEAN);
   }
 }
 
-function validateNumber(value) {
+function validateNumberAndThrow(value) {
   if (!isNumber(value)) {
     throwValueTypeError(value, types.NUMBER);
   }
 }
 
-function validateObject(value) {
+function validateObjectAndThrow(value) {
   if (!isObject(value)) {
     throwValueTypeError(value, types.OBJECT);
   }
 }
 
-function validateArray(array, itemsType) {
+function validateArrayAndThrow(array, itemsType) {
   if (!Array.isArray(array)) {
     throwValueTypeError(array, types.ARRAY);
   }
   if (itemsType) {
     array.forEach((item) => {
-      validateValueType(item, itemsType);
+      validateValueTypeAndThrow(item, itemsType);
     });
   }
 }
 
-const typeValidators = {
-  [types.STRING]: validateString,
-  [types.BOOLEAN]: validateBoolean,
-  [types.NUMBER]: validateNumber,
-  [types.OBJECT]: validateObject,
-  [types.ARRAY]: validateArray,
+const typeAndThrowValidators = {
+  [types.STRING]: validateStringAndThrow,
+  [types.BOOLEAN]: validateBooleanAndThrow,
+  [types.NUMBER]: validateNumberAndThrow,
+  [types.OBJECT]: validateObjectAndThrow,
+  [types.ARRAY]: validateArrayAndThrow,
 };
 
 function validateSchema(config, schema, validator) {
   const validateProperties = validator || ajv.compile(schema);
   const valid = validateProperties(config);
-  // console.log(JSON.stringify(schema, null, 2));
+  return {
+    valid,
+    errors: validateProperties.errors,
+  };
+}
+
+function validateSchemaAndThrow(config, schema, validator) {
+  const { valid, errors } = validateSchema(config, schema, validator);
   if (!valid) {
-    throw new Error(betterAjvErrors(schema, config, validateProperties.errors));
+    throw new Error(betterAjvErrors(schema, config, errors));
   }
 }
 
@@ -150,24 +157,43 @@ function addNamespacesSchema(namespaces, { rootSchema, allowAdditionalProperties
   return schema;
 }
 
-function validateConfig(config, { namespaces, allowUnknown }) {
-  const schema = addNamespacesSchema(namespaces, {
-    rootSchema: emptySchema({ allowAdditionalProperties: allowUnknown }),
-    allowAdditionalProperties: allowUnknown,
+function getConfigValidationSchema({ namespaces, allowAdditionalProperties }) {
+  return addNamespacesSchema(namespaces, {
+    rootSchema: emptySchema({ allowAdditionalProperties }),
+    allowAdditionalProperties,
   });
-  validateSchema(config, schema);
+}
+
+function validateConfigAndThrow(config, { namespaces, allowAdditionalProperties }) {
+  validateSchemaAndThrow(
+    config,
+    getConfigValidationSchema({ namespaces, allowAdditionalProperties })
+  );
+}
+
+function validateConfig(config, { namespaces, allowAdditionalProperties }) {
+  return validateSchema(
+    config,
+    getConfigValidationSchema({ namespaces, allowAdditionalProperties })
+  );
 }
 
 function validateOption(properties) {
   validateSchema(properties, optionSchema, optionValidator);
 }
 
-function validateValueType(value, type, itemsType) {
-  typeValidators[type](value, itemsType);
+function validateOptionAndThrow(properties) {
+  validateSchemaAndThrow(properties, optionSchema, optionValidator);
+}
+
+function validateValueTypeAndThrow(value, type, itemsType) {
+  typeAndThrowValidators[type](value, itemsType);
 }
 
 module.exports = {
   validateConfig,
   validateOption,
-  validateValueType,
+  validateConfigAndThrow,
+  validateOptionAndThrow,
+  validateValueTypeAndThrow,
 };

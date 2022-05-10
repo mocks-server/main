@@ -3,14 +3,14 @@ const EventEmitter = require("events");
 const deepMerge = require("deepmerge");
 const { isUndefined, isEqual } = require("lodash");
 
-const { validateOption, validateValueType } = require("./validation");
+const { validateOptionAndThrow, validateValueTypeAndThrow } = require("./validation");
 const { addEventListener, CHANGE } = require("./events");
 const { types, avoidArraysMerge } = require("./types");
 
 class Option {
   constructor(properties) {
     this._eventEmitter = new EventEmitter();
-    validateOption(properties);
+    validateOptionAndThrow(properties);
     this._name = properties.name;
     this._metaData = properties.metaData;
     this._type = properties.type;
@@ -57,8 +57,8 @@ class Option {
     return value;
   }
 
-  _validate(value) {
-    validateValueType(value, this._type, this._itemsType);
+  _validateAndThrow(value) {
+    validateValueTypeAndThrow(value, this._type, this._itemsType);
   }
 
   _emitChange(previousValue, value) {
@@ -74,7 +74,7 @@ class Option {
   merge(value) {
     const previousValue = this._value;
     const valueToSet = isUndefined(value) ? {} : value;
-    this._validate(valueToSet);
+    this._validateAndThrow(valueToSet);
     this._value = deepMerge(this._value || {}, valueToSet, { arrayMerge: avoidArraysMerge });
     this._emitChange(previousValue, this._value);
   }
@@ -82,7 +82,7 @@ class Option {
   set value(value) {
     const previousValue = this._value;
     if (!isUndefined(value)) {
-      this._validate(value);
+      this._validateAndThrow(value);
       this._value = this._clone(value);
       this._emitChange(previousValue, this._value);
     }

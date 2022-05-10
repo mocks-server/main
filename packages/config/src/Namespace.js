@@ -3,7 +3,13 @@ const EventEmitter = require("events");
 
 const Option = require("./Option");
 const { types } = require("./types");
-const { checkNamespaceName, checkOptionName, findObjectWithName } = require("./namespaces");
+const {
+  checkNamespaceName,
+  checkOptionName,
+  findObjectWithName,
+  getNamespacesValues,
+  getOptionsValues,
+} = require("./namespaces");
 
 class Namespace {
   constructor(name, { parents = [], brothers }) {
@@ -30,7 +36,7 @@ class Namespace {
     return options.map((option) => this.addOption(option));
   }
 
-  _set(configuration) {
+  _setOptions(configuration) {
     const changedOptions = [];
     if (configuration) {
       this._options.forEach((option) => {
@@ -51,10 +57,9 @@ class Namespace {
   }
 
   set(configuration) {
-    const namespaceConfig = this._name ? configuration[this._name] : configuration;
-    this._set(namespaceConfig);
+    this._setOptions(configuration);
     this._namespaces.forEach((namespace) => {
-      namespace.set(namespaceConfig || {});
+      namespace.set(configuration[namespace.name] || {});
     });
   }
 
@@ -86,6 +91,13 @@ class Namespace {
 
   get options() {
     return [...this._options];
+  }
+
+  get value() {
+    return {
+      ...getNamespacesValues(this._namespaces),
+      ...getOptionsValues(this._options),
+    };
   }
 
   namespace(name) {

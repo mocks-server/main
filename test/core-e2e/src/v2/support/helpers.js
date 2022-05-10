@@ -14,10 +14,11 @@ const crossFetch = require("cross-fetch");
 const waitOn = require("wait-on");
 
 const Core = require("@mocks-server/core");
-const MocksRunner = require("./MocksRunner");
+const CliRunner = require("@mocks-server/cli-runner");
 
 const SERVER_PORT = 3100;
 const DEFAULT_BINARY_PATH = "./starter";
+const FIXTURES_PATH = path.resolve(__dirname, "..", "fixtures");
 
 const defaultOptions = {
   log: "silent",
@@ -143,7 +144,10 @@ const waitForServerUrl = (url) => {
 const mocksRunner = (args = [], options = {}) => {
   const argsToSend = [...args];
   argsToSend.unshift(DEFAULT_BINARY_PATH);
-  return new MocksRunner(argsToSend, options);
+  return new CliRunner(argsToSend, {
+    cwd: FIXTURES_PATH,
+    ...options,
+  });
 };
 
 const filterAlerts = (alertContextFragment, alerts) => {
@@ -164,7 +168,6 @@ module.exports = {
   startCore,
   fetch,
   TimeCounter,
-  MocksRunner,
   mocksRunner,
   wait,
   waitForServer,

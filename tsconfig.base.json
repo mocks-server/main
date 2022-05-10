@@ -12,6 +12,9 @@
       "@mocks-server/admin-api-paths/*": [
         "packages/admin-api-paths/*"
       ],
+      "@mocks-server/cli-runner": [
+        "packages/cli-runner/index.js"
+      ],
       "@mocks-server/config": [
         "packages/config/index.js"
       ],

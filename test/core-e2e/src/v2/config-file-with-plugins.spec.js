@@ -31,17 +31,17 @@ describe("when adding plugins in config file", () => {
     });
 
     it("should have log level silly", async () => {
-      expect(mocks.logs).toEqual(expect.stringContaining("[Mocks silly]"));
+      expect(mocks.logs.joined).toEqual(expect.stringContaining("[Mocks silly]"));
     });
 
     it("should have loaded TraceMocksPlugin", async () => {
-      expect(mocks.logs).toEqual(expect.stringContaining("traceMocks plugin started"));
-      expect(mocks.logs).toEqual(expect.stringContaining("There are 3 mocks available"));
+      expect(mocks.logs.joined).toEqual(expect.stringContaining("traceMocks plugin started"));
+      expect(mocks.logs.joined).toEqual(expect.stringContaining("There are 3 mocks available"));
     });
 
     it("should have loaded TraceRoutesPlugin", async () => {
-      expect(mocks.logs).toEqual(expect.stringContaining("traceRoutes plugin started"));
-      expect(mocks.logs).toEqual(expect.stringContaining("There are 2 routes available"));
+      expect(mocks.logs.joined).toEqual(expect.stringContaining("traceRoutes plugin started"));
+      expect(mocks.logs.joined).toEqual(expect.stringContaining("There are 2 routes available"));
     });
 
     it("should serve users in /api/users path", async () => {
@@ -73,11 +73,11 @@ describe("when adding plugins in config file", () => {
     });
 
     it("should have traced new mocks amount", async () => {
-      expect(mocks.logs).toEqual(expect.stringContaining("There are 4 mocks available"));
+      expect(mocks.logs.joined).toEqual(expect.stringContaining("There are 4 mocks available"));
     });
 
     it("should have traced new routes amount", async () => {
-      expect(mocks.logs).toEqual(expect.stringContaining("There are 3 routes available"));
+      expect(mocks.logs.joined).toEqual(expect.stringContaining("There are 3 routes available"));
     });
   });
 });

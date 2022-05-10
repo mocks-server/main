@@ -2,7 +2,7 @@ const { compact } = require("lodash");
 const fsExtra = require("fs-extra");
 const path = require("path");
 
-const CliRunner = require("./CliRunner");
+const CliRunner = require("@mocks-server/cli-runner");
 
 const JS_EXTENSION = ".js";
 const INDEX_JS = `index${JS_EXTENSION}`;

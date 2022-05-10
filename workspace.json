@@ -12,6 +12,7 @@
     "admin-api-client-data-provider-vanilla-app-e2e": "test/admin-api-client-data-provider-vanilla-app-e2e",
     "admin-api-client-unit-mocks": "mocks/admin-api-client-unit-mocks",
     "admin-api-paths": "packages/admin-api-paths",
+    "cli-runner": "packages/cli-runner",
     "config": "packages/config",
     "config-e2e": "test/config-e2e",
     "core": "packages/core",

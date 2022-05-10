@@ -28,7 +28,7 @@ describe("when babelRegister is enabled and typescript files are used", () => {
       });
 
       it("should have log level silly", async () => {
-        expect(mocks.logs).toEqual(expect.stringContaining("[Mocks silly]"));
+        expect(mocks.logs.joined).toEqual(expect.stringContaining("[Mocks silly]"));
       });
 
       it("should serve users in /api/users path", async () => {
@@ -50,7 +50,7 @@ describe("when babelRegister is enabled and typescript files are used", () => {
       it("middleware should trace request and add headers", async () => {
         const users = await fetch("/api/users");
         expect(users.headers.get("x-mocks-server-example")).toEqual("custom-header-typescript");
-        expect(mocks.logs).toEqual(
+        expect(mocks.logs.joined).toEqual(
           expect.stringContaining(
             "Custom header added by add-headers:enabled route variant middleware using TypeScript"
           )

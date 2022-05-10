@@ -1,7 +1,7 @@
 {
   "name": "@mocks-server/config",
   "version": "1.0.0",
-  "description": "Configuration handler for @mocks-server/core",
+  "description": "Modular configuration handler",
   "keywords": [
     "config",
     "settings",
@@ -21,6 +21,7 @@
   },
   "files": [
     "scaffold",
+    "src",
     "index.js"
   ],
   "main": "index.js",

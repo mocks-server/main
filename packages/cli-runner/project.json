@@ -1,0 +1,5 @@
+{
+  "root": "packages/cli-runner/",
+  "projectType": "library",
+  "tags": ["type:lib"]
+}

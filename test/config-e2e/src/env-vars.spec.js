@@ -6,7 +6,7 @@ describe("Config from env vars", () => {
   const run = async function (folder, file, runnerOptions) {
     runner = fixtureRunner(folder, file, runnerOptions);
     await runner.hasExited();
-    options = optionsFromLogs(runner.logs.join);
+    options = optionsFromLogs(runner.logs.joined);
   };
 
   describe("when env var is provided", () => {

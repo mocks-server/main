@@ -4,6 +4,7 @@
     "test:e2e": "jest --runInBand --detectOpenHandles"
   },
   "dependencies": {
-    "@mocks-server/config": "workspace:*"
+    "@mocks-server/config": "workspace:*",
+    "@mocks-server/cli-runner": "workspace:*"
   }
 }

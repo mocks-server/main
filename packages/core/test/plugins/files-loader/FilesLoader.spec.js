@@ -111,8 +111,8 @@ describe("FilesLoader", () => {
   });
 
   describe("when initialized", () => {
-    it("should have name defined", async () => {
-      expect(FilesLoader.name).toEqual("filesLoader");
+    it("should have id defined", async () => {
+      expect(FilesLoader.id).toEqual("filesLoader");
     });
 
     it("should require all files from mocks folders calculating it from cwd if path is not absolute", async () => {

@@ -83,11 +83,17 @@ class Plugins {
   }
 
   pluginDisplayName(index) {
-    return (
-      (this._pluginsInstances[index] &&
-        (this._pluginsInstances[index].name || this._pluginsInstances[index].displayName)) ||
-      index
-    );
+    const plugin = this._pluginsInstances[index];
+    if (!plugin) {
+      return index;
+    }
+    if (plugin.id) {
+      return plugin.id;
+    }
+    if (plugin.displayName) {
+      return plugin.displayName;
+    }
+    return plugin.constructor.id || index;
   }
 
   _catchRegisterError(error, index) {
@@ -108,8 +114,8 @@ class Plugins {
     } else {
       try {
         // TODO, remove all other methods for creating plugins. Demand Class. This will make simpler alerts and other details, as the plugin names must always be defined in static property
-        if (Plugin.name) {
-          pluginConfig = this._config.addNamespace(Plugin.name);
+        if (Plugin.id) {
+          pluginConfig = this._config.addNamespace(Plugin.id);
         }
         pluginInstance = new Plugin(this._core, pluginMethods, pluginConfig);
         this._pluginsRegistered++;
@@ -129,8 +135,8 @@ class Plugins {
     }
     if (typeof pluginInstance.register === "function") {
       try {
-        if (!pluginConfig && pluginInstance.name) {
-          pluginConfig = this._config.addNamespace(pluginInstance.name);
+        if (!pluginConfig && pluginInstance.id) {
+          pluginConfig = this._config.addNamespace(pluginInstance.id);
         }
         pluginInstance.register(this._core, pluginMethods, pluginConfig);
       } catch (error) {

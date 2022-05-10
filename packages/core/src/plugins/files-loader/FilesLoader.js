@@ -54,7 +54,7 @@ const OPTIONS = [
 ];
 
 class FilesLoaderBase {
-  static get name() {
+  static get id() {
     return PLUGIN_NAME;
   }
 

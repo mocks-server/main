@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: BREAKING CHANGE. The `load:mocks:legacy` and `change:mocks:legacy` events are not emitted any more.
 
 ### Changed
-- feat: BREAKING CHANGE. Plugins are required to have an static property name.
+- feat: BREAKING CHANGE. Plugins are required to have an static property id.
 - feat: BREAKING CHANGE. Configuration format changed.
 - refactor: Use callbacks internally instead of events. Remove Orchestrator
 - refactor: Move Settings and Config to a separated package

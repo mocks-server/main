@@ -212,22 +212,23 @@ describe("Plugins", () => {
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
     });
 
-    it("should register function plugins with the function name property", async () => {
+    it("should register function plugins with the function id property", async () => {
       const spy = sinon.spy();
       const fooPlugin = () => ({
         register: spy,
       });
+      fooPlugin.id = "fooPlugin";
       pluginsOption.value = [fooPlugin];
       await plugins.register();
       expect(configMocks.stubs.instance.addNamespace.calledWith("fooPlugin")).toEqual(true);
     });
 
-    it("should register function plugins with the returned name when function is anonymous", async () => {
+    it("should register function plugins with the returned id", async () => {
       const spy = sinon.spy();
       pluginsOption.value = [
         () => ({
           register: spy,
-          name: "foo-plugin",
+          id: "foo-plugin",
         }),
       ];
       await plugins.register();
@@ -411,6 +412,22 @@ describe("Plugins", () => {
       expect(tracer.debug.calledWith('Initializing plugin "foo-plugin"')).toEqual(true);
     });
 
+    it("should trace the plugin id when it is a static property in the class", async () => {
+      class FooPlugin {
+        static get id() {
+          return "foo-plugin";
+        }
+        init() {
+          sinon.spy();
+        }
+      }
+      pluginsOption.value = [FooPlugin];
+      await plugins.register();
+      await plugins.init();
+      expect(plugins.pluginDisplayName(1)).toEqual("foo-plugin");
+      expect(tracer.debug.calledWith('Initializing plugin "foo-plugin"')).toEqual(true);
+    });
+
     it("should accept init methods non returning a Promise", async () => {
       expect.assertions(1);
       const fooPlugin = {
@@ -518,10 +535,10 @@ describe("Plugins", () => {
       expect(tracer.debug.calledWith('Starting plugin "foo-plugin"')).toEqual(true);
     });
 
-    it("should trace the plugin name", async () => {
+    it("should trace the plugin id", async () => {
       const fooPlugin = {
         start: sinon.spy(),
-        name: "foo-plugin",
+        id: "foo-plugin",
       };
       pluginsOption.value = [fooPlugin];
       await plugins.register();
@@ -529,10 +546,10 @@ describe("Plugins", () => {
       expect(tracer.debug.calledWith('Starting plugin "foo-plugin"')).toEqual(true);
     });
 
-    it("should trace the plugin name with priority over displayName", async () => {
+    it("should trace the plugin id with priority over displayName", async () => {
       const fooPlugin = {
         start: sinon.spy(),
-        name: "foo-plugin",
+        id: "foo-plugin",
         displayName: "foo-plugin-2",
       };
       pluginsOption.value = [fooPlugin];

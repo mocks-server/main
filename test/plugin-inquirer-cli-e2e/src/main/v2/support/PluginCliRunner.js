@@ -8,13 +8,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { wait } = require("./utils");
-const CliRunner = require("./CliRunner");
+const CliRunner = require("@mocks-server/cli-runner");
 
 const LOG = "[CLI]: ";
 
 module.exports = class InteractiveCliRunner {
-  constructor(cliArguments, cliOptions) {
+  constructor(cliArguments, cliOptions, wait) {
+    this._wait = wait;
     this._cli = new CliRunner(cliArguments, cliOptions);
   }
 
@@ -23,8 +23,8 @@ module.exports = class InteractiveCliRunner {
   }
 
   async getCurrentScreen() {
-    await wait(500);
-    return this._cli.currentScreen;
+    await this._wait(500);
+    return this._cli.logs.currentScreen;
   }
 
   async logCurrentScreen() {
@@ -48,15 +48,15 @@ module.exports = class InteractiveCliRunner {
   }
 
   flush() {
-    this._cli.flush();
+    this._cli.logs.flushCurrent();
   }
 
   get logs() {
-    return this._cli.logs;
+    return this._cli.logs.current;
   }
 
   get currentScreen() {
-    return this._cli.currentScreen;
+    return this._cli.logs.currentScreen;
   }
 
   async cursorDown(number) {
@@ -70,7 +70,9 @@ module.exports = class InteractiveCliRunner {
 
   async pressEnter() {
     this._log("Pressing Enter");
-    const newScreen = await this._cli.newScreenAfter(this._cli.pressEnter);
+    const newScreen = await this._cli.executeAndWaitUntilNewScreenRendered(
+      this._cli.pressEnter.bind(this._cli)
+    );
     await this.logCurrentSelection();
     return newScreen;
   }

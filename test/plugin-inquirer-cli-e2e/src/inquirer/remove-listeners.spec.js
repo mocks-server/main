@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 
-const CliRunner = require("./support/CliRunner");
+const CliRunner = require("@mocks-server/cli-runner");
 
 const END_SCREEN = "Exit";
 
@@ -21,7 +21,7 @@ describe("when removeListeners is executed", () => {
 
   beforeEach(() => {
     expect.assertions(1);
-    cliRunner = new CliRunner(cliFile);
+    cliRunner = new CliRunner(["node", cliFile]);
   });
 
   afterEach(async () => {
@@ -29,25 +29,27 @@ describe("when removeListeners is executed", () => {
   });
 
   it('should print a menu with "Option 1"', async () => {
-    await cliRunner.hasPrinted(END_SCREEN);
-    expect(cliRunner.logs).toEqual(expect.stringContaining("Option 1"));
+    await cliRunner.waitUntilHasLogged(END_SCREEN);
+    expect(cliRunner.logs.current).toEqual(expect.stringContaining("Option 1"));
   });
 
   it('should print a menu with "Exit" option', async () => {
-    await cliRunner.hasPrinted(END_SCREEN);
-    expect(cliRunner.logs).toEqual(expect.stringContaining("Exit"));
+    await cliRunner.waitUntilHasLogged(END_SCREEN);
+    expect(cliRunner.logs.current).toEqual(expect.stringContaining("Exit"));
   });
 
   it('should print selected option as "none" in header when inited', async () => {
-    await cliRunner.hasPrinted(END_SCREEN);
-    expect(cliRunner.logs).toEqual(expect.stringContaining("Selected option: None"));
+    await cliRunner.waitUntilHasLogged(END_SCREEN);
+    expect(cliRunner.logs.current).toEqual(expect.stringContaining("Selected option: None"));
   });
 
   it("should do nothing after removing Listeners even when user tries to select an option", (done) => {
-    cliRunner.hasPrinted(END_SCREEN).then(() => {
+    cliRunner.waitUntilHasLogged(END_SCREEN).then(() => {
       setTimeout(async () => {
         try {
-          await cliRunner.newScreenAfter(cliRunner.pressEnter);
+          await cliRunner.executeAndWaitUntilNewScreenRendered(
+            cliRunner.pressEnter.bind(cliRunner)
+          );
         } catch (error) {
           expect(error.message).toEqual(expect.stringContaining("No new screen was rendered"));
           done();

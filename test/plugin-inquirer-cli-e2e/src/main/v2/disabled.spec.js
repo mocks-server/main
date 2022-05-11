@@ -19,7 +19,10 @@ describe("command line arguments with cli disabled", () => {
 
   describe("interactive cli", () => {
     it("should not be started", async () => {
-      mocks = mocksRunner(["--path=web-tutorial", "--no-cli"]);
+      mocks = mocksRunner([
+        "--plugins.filesLoader.path=web-tutorial",
+        "--no-plugins.inquirerCli.enabled",
+      ]);
       await waitForServer();
       expect(mocks.logs).toEqual(expect.not.stringContaining("Select action"));
     });
@@ -27,7 +30,10 @@ describe("command line arguments with cli disabled", () => {
 
   describe("path option", () => {
     it("should set mocks folder", async () => {
-      mocks = mocksRunner(["--path=web-tutorial", "--no-cli"]);
+      mocks = mocksRunner([
+        "--plugins.filesLoader.path=web-tutorial",
+        "--no-plugins.inquirerCli.enabled",
+      ]);
       await waitForServer();
       const users = await fetch("/api/users");
       expect(users.body).toEqual([
@@ -40,7 +46,10 @@ describe("command line arguments with cli disabled", () => {
   describe("behavior option", () => {
     describe("when not provided", () => {
       it("should set as current behavior the first one found", async () => {
-        mocks = mocksRunner(["--path=web-tutorial", "--no-cli"]);
+        mocks = mocksRunner([
+          "--plugins.filesLoader.path=web-tutorial",
+          "--no-plugins.inquirerCli.enabled",
+        ]);
         await waitForServer();
         const users = await fetch("/api/users/2");
         expect(users.body).toEqual({ id: 1, name: "John Doe" });
@@ -49,7 +58,11 @@ describe("command line arguments with cli disabled", () => {
 
     describe("when provided and exists", () => {
       it("should set current behavior", async () => {
-        mocks = mocksRunner(["--path=web-tutorial", "--no-cli", "--mock=user-2"]);
+        mocks = mocksRunner([
+          "--plugins.filesLoader.path=web-tutorial",
+          "--no-plugins.inquirerCli.enabled",
+          "--mocks.selected=user-2",
+        ]);
         await waitForServer();
         const users = await fetch("/api/users/2");
         expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
@@ -60,7 +73,11 @@ describe("command line arguments with cli disabled", () => {
   describe("delay option", () => {
     it("should set delay", async () => {
       expect.assertions(2);
-      mocks = mocksRunner(["--path=web-tutorial", "--no-cli", "--delay=2000"]);
+      mocks = mocksRunner([
+        "--plugins.filesLoader.path=web-tutorial",
+        "--no-plugins.inquirerCli.enabled",
+        "--mocks.delay=2000",
+      ]);
       await waitForServer();
       const timeCounter = new TimeCounter();
       const users = await fetch("/api/users");

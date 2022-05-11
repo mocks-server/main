@@ -15,7 +15,7 @@ describe("web tutorial", () => {
   let mocks;
 
   beforeAll(async () => {
-    mocks = mocksRunner(["--path=web-tutorial"]);
+    mocks = mocksRunner(["--plugins.filesLoader.path=web-tutorial"]);
     await waitForServerAndCli();
   });
 

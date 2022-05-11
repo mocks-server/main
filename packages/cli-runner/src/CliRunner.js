@@ -4,10 +4,11 @@ const treeKill = require("tree-kill");
 const Logs = require("./Logs");
 
 const ENCODING_TYPE = "utf8";
+const CTRL_C = "\u0003";
 
 module.exports = class CliRunner {
   constructor(commandAndArguments, options = {}) {
-    this._command = this.getCommandToExecute(commandAndArguments);
+    this._command = this._getCommandToExecute(commandAndArguments);
     this._cwd = options.cwd;
     this._logger = new Logs(options.logs);
     this._env = options.env;
@@ -16,10 +17,13 @@ module.exports = class CliRunner {
       this._resolveExitPromise = resolve;
     });
 
+    this.waitUntilHasLogged = this._logger.waitUntilHasLogged.bind(this._logger);
+    this.waitUntilNewScreenRendered = this._logger.waitUntilNewScreenRendered.bind(this._logger);
+
     this.run();
   }
 
-  getCommandToExecute(commandAndArguments) {
+  _getCommandToExecute(commandAndArguments) {
     return {
       name: commandAndArguments[0],
       params: commandAndArguments.splice(1, commandAndArguments.length - 1),
@@ -59,7 +63,46 @@ module.exports = class CliRunner {
     }
   }
 
+  async executeAndWaitUntilHasLogged(action, data, options) {
+    const promise = this._logger.waitUntilHasLogged(data, options);
+    await action();
+    return promise;
+  }
+
+  async executeAndWaitUntilNewScreenRendered(action, options) {
+    const promise = this._logger.waitUntilNewScreenRendered(options);
+    await action();
+    return promise;
+  }
+
+  write(data) {
+    this._cliProcess.stdin.write(`${data}`);
+  }
+
+  pressEnter() {
+    this.write("\n");
+  }
+
+  cursorUp(times = 0) {
+    this.write("\u001b[A");
+    if (times > 1) {
+      this.cursorUp(times - 1);
+    }
+  }
+
+  cursorDown(times = 0) {
+    this.write("\u001b[B");
+    if (times > 1) {
+      this.cursorDown(times - 1);
+    }
+  }
+
+  pressCtrlC() {
+    this.write(CTRL_C);
+  }
+
   async kill() {
+    this._logger.stopWaits();
     if (this._cliProcess.pid) {
       treeKill(this._cliProcess.pid);
     }

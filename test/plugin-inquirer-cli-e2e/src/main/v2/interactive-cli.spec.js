@@ -21,7 +21,7 @@ describe("interactive CLI", () => {
   let mocks;
 
   beforeAll(async () => {
-    mocks = mocksRunner(["--path=web-tutorial", "--mock=foo"]);
+    mocks = mocksRunner(["--plugins.filesLoader.path=web-tutorial", "--mocks.selected=foo"]);
     await waitForServerAndCli();
   });
 
@@ -113,6 +113,7 @@ describe("interactive CLI", () => {
       expect.assertions(2);
       await mocks.cursorDown(7);
       await mocks.pressEnter();
+      await wait(500);
       await fetch("/api/users");
       await wait(1000);
       expect(mocks.currentScreen).toEqual(expect.stringContaining("Displaying logs"));

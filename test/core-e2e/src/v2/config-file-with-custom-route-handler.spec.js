@@ -26,7 +26,7 @@ describe("when adding route handlers in config file", () => {
     });
 
     it("should have log level silly", async () => {
-      expect(mocks.logs.joined).toEqual(expect.stringContaining("[Mocks silly]"));
+      expect(mocks.logs.current).toEqual(expect.stringContaining("[Mocks silly]"));
     });
 
     it("should serve users in /api/users path", async () => {
@@ -38,12 +38,12 @@ describe("when adding route handlers in config file", () => {
     });
 
     it("custom handler should have traced", async () => {
-      expect(mocks.logs.joined).toEqual(
+      expect(mocks.logs.current).toEqual(
         expect.stringContaining(
           'Responding with custom route handler to route variant "get-users:custom-success"'
         )
       );
-      expect(mocks.logs.joined).toEqual(expect.stringContaining("Custom request GET =>"));
+      expect(mocks.logs.current).toEqual(expect.stringContaining("Custom request GET =>"));
     });
   });
 });

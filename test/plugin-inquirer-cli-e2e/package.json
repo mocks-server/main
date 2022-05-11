@@ -5,6 +5,7 @@
   },
   "devDependencies": {
     "@mocks-server/core": "workspace:*",
-    "@mocks-server/plugin-inquirer-cli": "workspace:*"
+    "@mocks-server/plugin-inquirer-cli": "workspace:*",
+    "@mocks-server/cli-runner": "workspace:*"
   }
 }

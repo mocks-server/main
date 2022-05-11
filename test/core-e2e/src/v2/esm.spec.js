@@ -31,7 +31,7 @@ describe("when babelRegister is enabled and esm files are used", () => {
     });
 
     it("should have log level silly", async () => {
-      expect(mocks.logs.joined).toEqual(expect.stringContaining("[Mocks silly]"));
+      expect(mocks.logs.current).toEqual(expect.stringContaining("[Mocks silly]"));
     });
 
     it("should serve users in /api/users path", async () => {
@@ -45,7 +45,7 @@ describe("when babelRegister is enabled and esm files are used", () => {
     it("middleware should trace request and add headers", async () => {
       const users = await fetch("/api/users");
       expect(users.headers.get("x-mocks-server-example")).toEqual("custom-header");
-      expect(mocks.logs.joined).toEqual(
+      expect(mocks.logs.current).toEqual(
         expect.stringContaining(
           "Custom header added by add-headers:enabled route variant middleware"
         )

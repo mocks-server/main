@@ -12,7 +12,7 @@ const handleError = (error) => {
 const start = () => {
   try {
     const mocksServer = new Core({
-      plugins: [InquirerCli],
+      plugins: { register: [InquirerCli] },
     });
 
     return mocksServer.start().catch(handleError);

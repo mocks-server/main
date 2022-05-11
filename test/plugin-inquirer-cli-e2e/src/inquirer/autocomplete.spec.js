@@ -11,12 +11,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 
-const CliRunner = require("./support/CliRunner");
+const CliRunner = require("@mocks-server/cli-runner");
 
 const END_SCREEN = "Exit";
 
 const RENDER_TIME_OUT = 10000;
-const INSERT_TAGS = "Insert tags";
 
 describe("when autocomplete fixture is executed", () => {
   jest.setTimeout(15000);
@@ -25,7 +24,7 @@ describe("when autocomplete fixture is executed", () => {
 
   beforeEach(() => {
     expect.assertions(1);
-    cliRunner = new CliRunner(cliFile);
+    cliRunner = new CliRunner(["node", cliFile]);
   });
 
   afterEach(async () => {
@@ -33,24 +32,29 @@ describe("when autocomplete fixture is executed", () => {
   });
 
   it('should print a menu with "Select tags"', async () => {
-    await cliRunner.hasPrinted(END_SCREEN, RENDER_TIME_OUT);
-    expect(cliRunner.logs).toEqual(expect.stringContaining("Select tags"));
+    await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
+    expect(cliRunner.logs.current).toEqual(expect.stringContaining("Select tags"));
   });
 
   it('should print a menu with "Exit" option', async () => {
-    await cliRunner.hasPrinted(END_SCREEN, RENDER_TIME_OUT);
-    expect(cliRunner.logs).toEqual(expect.stringContaining("Exit"));
+    await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
+    expect(cliRunner.logs.current).toEqual(expect.stringContaining("Exit"));
   });
 
   it('should print selected option as "none" in header when inited', async () => {
-    await cliRunner.hasPrinted(END_SCREEN, RENDER_TIME_OUT);
-    expect(cliRunner.logs).toEqual(expect.stringContaining("Selected option: None"));
+    await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
+    expect(cliRunner.logs.current).toEqual(expect.stringContaining("Selected option: None"));
   });
 
   it('should allow to choose all available tags when "Select tags" is selected', async () => {
     expect.assertions(3);
-    await cliRunner.hasPrinted(END_SCREEN, RENDER_TIME_OUT);
-    const newScreen = await cliRunner.newScreenAfter(cliRunner.pressEnter, RENDER_TIME_OUT);
+    await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
+    const newScreen = await cliRunner.executeAndWaitUntilNewScreenRendered(
+      cliRunner.pressEnter.bind(cliRunner),
+      {
+        timeout: RENDER_TIME_OUT,
+      }
+    );
     expect(newScreen).toEqual(expect.stringContaining("a-tag"));
     expect(newScreen).toEqual(expect.stringContaining("b-tag"));
     expect(newScreen).toEqual(expect.stringContaining("c-tag"));
@@ -58,115 +62,85 @@ describe("when autocomplete fixture is executed", () => {
 
   it('should allow to choose only "a-tag" tag when "Select tags" is selected, and "a" is pressed', async () => {
     expect.assertions(3);
-    await cliRunner.hasPrinted(END_SCREEN, RENDER_TIME_OUT);
-    await cliRunner.newScreenAfter(cliRunner.pressEnter, RENDER_TIME_OUT);
-    await cliRunner.hasPrinted(
-      INSERT_TAGS,
+    await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
+    await cliRunner.executeAndWaitUntilNewScreenRendered(cliRunner.pressEnter.bind(cliRunner), {
+      timeout: RENDER_TIME_OUT,
+    });
+    await cliRunner.executeAndWaitUntilHasLogged(
       () => {
         cliRunner.write("a");
       },
-      RENDER_TIME_OUT
+      "a-tag",
+      { timeout: RENDER_TIME_OUT }
     );
-    await cliRunner.hasPrinted(INSERT_TAGS, RENDER_TIME_OUT);
-    cliRunner.flush();
-    await cliRunner.hasPrinted(INSERT_TAGS, RENDER_TIME_OUT);
+    cliRunner.logs.flushCurrent();
+    await cliRunner.executeAndWaitUntilHasLogged(
+      () => {
+        cliRunner.write("-");
+      },
+      "a-tag",
+      { timeout: RENDER_TIME_OUT }
+    );
 
-    expect(cliRunner.logs).toEqual(expect.stringContaining("a-tag"));
-    expect(cliRunner.logs).not.toEqual(expect.stringContaining("b-tag"));
-    expect(cliRunner.logs).not.toEqual(expect.stringContaining("c-tag"));
+    expect(cliRunner.logs.current).toEqual(expect.stringContaining("a-tag"));
+    expect(cliRunner.logs.current).not.toEqual(expect.stringContaining("b-tag"));
+    expect(cliRunner.logs.current).not.toEqual(expect.stringContaining("c-tag"));
   });
 
   it('should print selected option as "a-tag" when a-tag is selected in autocomplete', async () => {
-    await cliRunner.hasPrinted(END_SCREEN, RENDER_TIME_OUT);
-    await cliRunner.newScreenAfter(cliRunner.pressEnter, RENDER_TIME_OUT);
-    await cliRunner.hasPrinted(
-      INSERT_TAGS,
+    await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
+    await cliRunner.executeAndWaitUntilNewScreenRendered(cliRunner.pressEnter.bind(cliRunner), {
+      timeout: RENDER_TIME_OUT,
+    });
+    await cliRunner.executeAndWaitUntilHasLogged(
       () => {
         cliRunner.write("a");
       },
-      RENDER_TIME_OUT
+      "a-tag",
+      { timeout: RENDER_TIME_OUT }
     );
-    await cliRunner.hasPrinted(INSERT_TAGS, RENDER_TIME_OUT);
-    await cliRunner.hasPrinted(INSERT_TAGS, RENDER_TIME_OUT);
-    const newScreen = await cliRunner.newScreenAfter(cliRunner.pressEnter, RENDER_TIME_OUT);
+    await cliRunner.executeAndWaitUntilHasLogged(
+      () => {
+        cliRunner.write("-");
+      },
+      "a-tag",
+      { timeout: RENDER_TIME_OUT }
+    );
+    const newScreen = await cliRunner.executeAndWaitUntilNewScreenRendered(
+      cliRunner.pressEnter.bind(cliRunner),
+      {
+        timeout: RENDER_TIME_OUT,
+      }
+    );
 
     expect(newScreen).toEqual(expect.stringContaining("Selected option: a-tag"));
   });
 
-  it.skip('should allow to choose only "b-tag" tag when "Select tags" is selected, and "b" is pressed', async () => {
-    expect.assertions(4);
-    await cliRunner.hasPrinted(END_SCREEN, RENDER_TIME_OUT);
-    await cliRunner.newScreenAfter(cliRunner.pressEnter, RENDER_TIME_OUT);
-    await cliRunner.hasPrinted(
-      INSERT_TAGS,
-      () => {
-        cliRunner.write("b");
-      },
-      RENDER_TIME_OUT
-    );
-    cliRunner.flush();
-    await cliRunner.hasPrinted(INSERT_TAGS, RENDER_TIME_OUT);
-    expect(cliRunner.logs).toEqual(expect.stringContaining("Searching..."));
-    cliRunner.flush();
-    await cliRunner.hasPrinted(INSERT_TAGS, RENDER_TIME_OUT);
-
-    expect(cliRunner.logs).toEqual(expect.stringContaining("b-tag"));
-    expect(cliRunner.logs).not.toEqual(expect.stringContaining("a-tag"));
-    expect(cliRunner.logs).not.toEqual(expect.stringContaining("c-tag"));
-  });
-
-  it.skip('should print selected option as "b-tag" when b-tag is selected in autocomplete', async () => {
-    await cliRunner.hasPrinted(END_SCREEN, RENDER_TIME_OUT);
-    await cliRunner.newScreenAfter(cliRunner.pressEnter, RENDER_TIME_OUT);
-    await cliRunner.hasPrinted(
-      INSERT_TAGS,
-      () => {
-        cliRunner.write("b");
-      },
-      RENDER_TIME_OUT
-    );
-    await cliRunner.hasPrinted(INSERT_TAGS, RENDER_TIME_OUT);
-    await cliRunner.hasPrinted(INSERT_TAGS, RENDER_TIME_OUT);
-    const newScreen = await cliRunner.newScreenAfter(cliRunner.pressEnter, RENDER_TIME_OUT);
-
-    expect(newScreen).toEqual(expect.stringContaining("Selected option: b-tag"));
-  });
-
-  it.skip('should allow to choose only "c-tag" tag when "Select tags" is selected, and "c" is pressed', async () => {
-    expect.assertions(4);
-    await cliRunner.hasPrinted(END_SCREEN, RENDER_TIME_OUT);
-    await cliRunner.newScreenAfter(cliRunner.pressEnter, RENDER_TIME_OUT);
-    await cliRunner.hasPrinted(
-      INSERT_TAGS,
-      () => {
-        cliRunner.write("c");
-      },
-      RENDER_TIME_OUT
-    );
-    cliRunner.flush();
-    await cliRunner.hasPrinted(INSERT_TAGS, RENDER_TIME_OUT);
-    expect(cliRunner.logs).toEqual(expect.stringContaining("Searching..."));
-    cliRunner.flush();
-    await cliRunner.hasPrinted(INSERT_TAGS, RENDER_TIME_OUT);
-
-    expect(cliRunner.logs).toEqual(expect.stringContaining("c-tag"));
-    expect(cliRunner.logs).not.toEqual(expect.stringContaining("a-tag"));
-    expect(cliRunner.logs).not.toEqual(expect.stringContaining("b-tag"));
-  });
-
   it('should print selected option as "c-tag" when c-tag is selected in autocomplete', async () => {
-    await cliRunner.hasPrinted(END_SCREEN, RENDER_TIME_OUT);
-    await cliRunner.newScreenAfter(cliRunner.pressEnter, RENDER_TIME_OUT);
-    await cliRunner.hasPrinted(
-      INSERT_TAGS,
+    await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
+    await cliRunner.executeAndWaitUntilNewScreenRendered(cliRunner.pressEnter.bind(cliRunner), {
+      timeout: RENDER_TIME_OUT,
+    });
+    await cliRunner.executeAndWaitUntilHasLogged(
       () => {
         cliRunner.write("c");
       },
-      RENDER_TIME_OUT
+      "c-tag",
+      { timeout: RENDER_TIME_OUT }
     );
-    await cliRunner.hasPrinted(INSERT_TAGS, RENDER_TIME_OUT);
-    await cliRunner.hasPrinted(INSERT_TAGS, RENDER_TIME_OUT);
-    const newScreen = await cliRunner.newScreenAfter(cliRunner.pressEnter, RENDER_TIME_OUT);
+    await cliRunner.executeAndWaitUntilHasLogged(
+      () => {
+        cliRunner.write("-");
+      },
+      "c-tag",
+      { timeout: RENDER_TIME_OUT }
+    );
+    const newScreen = await cliRunner.executeAndWaitUntilNewScreenRendered(
+      cliRunner.pressEnter.bind(cliRunner),
+      {
+        timeout: RENDER_TIME_OUT,
+      }
+    );
 
     expect(newScreen).toEqual(expect.stringContaining("Selected option: c-tag"));
   });

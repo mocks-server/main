@@ -13,7 +13,7 @@ const path = require("path");
 const crossFetch = require("cross-fetch");
 const waitOn = require("wait-on");
 
-const InteractiveCliRunner = require("../../../inquirer/support/InteractiveCliRunner");
+const PluginCliRunner = require("./PluginCliRunner");
 
 const DEFAULT_BINARY_PATH = "./starter";
 
@@ -96,10 +96,14 @@ const waitForServerAndCli = async (port) => {
 const mocksRunner = (args = [], options = {}) => {
   const argsToSend = [...args];
   argsToSend.unshift(DEFAULT_BINARY_PATH);
-  return new InteractiveCliRunner(argsToSend, {
-    ...defaultMocksRunnerOptions,
-    ...options,
-  });
+  return new PluginCliRunner(
+    argsToSend,
+    {
+      ...defaultMocksRunnerOptions,
+      ...options,
+    },
+    wait
+  );
 };
 
 function pathJoin(...args) {

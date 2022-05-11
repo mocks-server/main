@@ -352,9 +352,11 @@ importers:
 
   test/plugin-inquirer-cli-e2e:
     specifiers:
+      '@mocks-server/cli-runner': workspace:*
       '@mocks-server/core': workspace:*
       '@mocks-server/plugin-inquirer-cli': workspace:*
     devDependencies:
+      '@mocks-server/cli-runner': link:../../packages/cli-runner
       '@mocks-server/core': link:../../packages/core
       '@mocks-server/plugin-inquirer-cli': link:../../packages/plugin-inquirer-cli
 

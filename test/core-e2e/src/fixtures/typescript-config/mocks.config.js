@@ -9,6 +9,6 @@ module.exports = {
       path: path.resolve(__dirname, "..", "typescript"),
       watch: true,
       babelRegister: true,
-    }
-  }
+    },
+  },
 };

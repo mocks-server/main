@@ -87,7 +87,7 @@ module.exports = [
     variants: [
       {
         id: "success",
-      }
-    ]
+      },
+    ],
   },
 ];

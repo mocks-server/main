@@ -19,15 +19,17 @@ module.exports = [
       {
         id: "enabled",
         response: (req, res, next, core) => {
-          core.tracer.info(`Middleware in request ${req.query.req} => ${req.method} => ${req.url}`);
+          core.tracer.info(
+            `Middleware in request ${req.query.req} => ${req.method} => ${req.url}`
+          );
           next();
-        }
+        },
       },
       {
         id: "disabled",
         response: (req, res, next, core) => {
           next();
-        }
+        },
       },
     ],
   },

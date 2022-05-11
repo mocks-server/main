@@ -7,7 +7,7 @@ module.exports = {
     register: [TraceRoutesPlugin],
     filesLoader: {
       path: path.resolve(__dirname, "..", "temp"),
-    }
+    },
   },
   mocks: {
     selected: "user-2",

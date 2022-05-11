@@ -8,9 +8,9 @@ module.exports = [
         id: "success",
         response: {
           status: 200,
-          body: {}
-        }
-      }
-    ]
-  }
+          body: {},
+        },
+      },
+    ],
+  },
 ];

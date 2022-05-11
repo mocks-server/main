@@ -7,12 +7,9 @@
 /node_modules
 
 # tests
-/src/v1/fixtures/files-watch
-/src/v2/fixtures/temp
-/src/v2/fixtures/mocks
-/src/v2/fixtures/unexistant
-/src/v1/fixtures/mocks.config.js
-/src/v2/fixtures/mocks.config.js
+/src/fixtures/unexistant
+/src/fixtures/mocks.config.js
+/src/fixtures/mocks.config.js
 
 # misc
 .DS_Store

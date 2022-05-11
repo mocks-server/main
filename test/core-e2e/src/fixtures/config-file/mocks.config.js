@@ -10,5 +10,5 @@ module.exports = {
       path: path.resolve(__dirname, "..", "temp"),
       watch: false,
     },
-  }
+  },
 };

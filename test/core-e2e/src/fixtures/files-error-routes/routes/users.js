@@ -10,4 +10,4 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { USERS } = require("../db/users");
 
-module.foo
+module.foo;

@@ -10,6 +10,6 @@ module.exports = {
   plugins: {
     filesLoader: {
       path: path.resolve(__dirname, "..", "custom-routes-handler"),
-    }
-  }
+    },
+  },
 };

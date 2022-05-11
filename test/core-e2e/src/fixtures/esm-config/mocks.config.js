@@ -10,6 +10,6 @@ module.exports = {
       babelRegister: true,
       path: path.resolve(__dirname, "..", "temp"),
       watch: true,
-    }
+    },
   },
 };

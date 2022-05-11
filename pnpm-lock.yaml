@@ -252,6 +252,12 @@ importers:
     dependencies:
       '@mocks-server/admin-api-client': link:../admin-api-client
 
+  packages/inquirer-cli-runner:
+    specifiers:
+      '@mocks-server/cli-runner': workspace:*
+    dependencies:
+      '@mocks-server/cli-runner': link:../cli-runner
+
   packages/main:
     specifiers:
       '@babel/core': 7.17.9
@@ -346,18 +352,22 @@ importers:
 
   test/main-e2e:
     specifiers:
+      '@mocks-server/inquirer-cli-runner': workspace:*
       '@mocks-server/main': workspace:*
     dependencies:
+      '@mocks-server/inquirer-cli-runner': link:../../packages/inquirer-cli-runner
       '@mocks-server/main': link:../../packages/main
 
   test/plugin-inquirer-cli-e2e:
     specifiers:
       '@mocks-server/cli-runner': workspace:*
       '@mocks-server/core': workspace:*
+      '@mocks-server/inquirer-cli-runner': workspace:*
       '@mocks-server/plugin-inquirer-cli': workspace:*
     devDependencies:
       '@mocks-server/cli-runner': link:../../packages/cli-runner
       '@mocks-server/core': link:../../packages/core
+      '@mocks-server/inquirer-cli-runner': link:../../packages/inquirer-cli-runner
       '@mocks-server/plugin-inquirer-cli': link:../../packages/plugin-inquirer-cli
 
 packages:

@@ -1,7 +1,13 @@
 import PropTypes from "prop-types";
 
 const format = (value) => {
-  return typeof value === "boolean" ? value.toString() : value;
+  if (typeof value === "boolean") {
+    return value.toString();
+  }
+  if (typeof value === "object") {
+    return JSON.stringify(value);
+  }
+  return value;
 };
 
 const SettingsView = ({ settings }) => {

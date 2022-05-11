@@ -85,7 +85,7 @@ describe("react-admin-client methods used through node", () => {
   describe("when reading settings", () => {
     it("should return current mock", async () => {
       const settings = await readSettings();
-      expect(settings.mock).toEqual(null);
+      expect(settings.mocks.selected).toEqual(undefined);
     });
   });
 
@@ -95,7 +95,7 @@ describe("react-admin-client methods used through node", () => {
         mocks: { selected: "user2" },
       });
       const settings = await readSettings();
-      expect(settings.mock).toEqual("user2");
+      expect(settings.mocks.selected).toEqual("user2");
     });
 
     it("should update current delay", async () => {
@@ -105,7 +105,7 @@ describe("react-admin-client methods used through node", () => {
         },
       });
       const settings = await readSettings();
-      expect(settings.delay).toEqual(1000);
+      expect(settings.mocks.delay).toEqual(1000);
     });
 
     it("should update current mock again", async () => {
@@ -113,7 +113,7 @@ describe("react-admin-client methods used through node", () => {
         mocks: { selected: "base" },
       });
       const settings = await readSettings();
-      expect(settings.mock).toEqual("base");
+      expect(settings.mocks.selected).toEqual("base");
     });
   });
 });

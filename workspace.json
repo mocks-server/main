@@ -20,6 +20,7 @@
     "cypress-commands": "packages/cypress-commands",
     "cypress-commands-e2e": "test/cypress-commands-e2e",
     "cypress-commands-e2e-vanilla-app": "mocks/cypress-commands-e2e-vanilla-app",
+    "inquirer-cli-runner": "packages/inquirer-cli-runner",
     "main": "packages/main",
     "main-e2e": "test/main-e2e",
     "plugin-admin-api": "packages/plugin-admin-api",

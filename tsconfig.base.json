@@ -24,6 +24,9 @@
       "@mocks-server/cypress-commands/*": [
         "packages/cypress-commands/*"
       ],
+      "@mocks-server/inquirer-cli-runner": [
+        "packages/inquirer-cli-runner/index.js"
+      ],
       "@mocks-server/main": [
         "packages/main/index.js"
       ],

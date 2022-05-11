@@ -18,7 +18,7 @@ describe("with no behaviors", () => {
   });
 
   it("should display alerts", async () => {
-    mocks = mocksRunner(["--plugins.filesLoader.path=no-mocks", "mock=foo"]);
+    mocks = mocksRunner(["--plugins.filesLoader.path=no-mocks", "--mocks.selected=foo"]);
     await waitForServerAndCli();
     expect(mocks.currentScreen).toEqual(expect.stringContaining("ALERTS"));
     expect(mocks.currentScreen).toEqual(expect.stringContaining("Warning: No mocks found"));

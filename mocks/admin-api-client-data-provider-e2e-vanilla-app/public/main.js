@@ -18,7 +18,7 @@ var currentMock = new dataProvider.Selector(
   adminApiClient.settings,
   adminApiClient.mocks,
   function (_query, settingsResults, mocksResults) {
-    return adminApiClient.mocksModel.queries.byId(settingsResults.mock || mocksResults[0].id);
+    return adminApiClient.mocksModel.queries.byId(settingsResults.mocks.selected || mocksResults[0].id);
   },
   {
     initialState: {
@@ -50,12 +50,22 @@ var loadAbout = function () {
   });
 };
 
+var formatSettings = function(settings) {
+  if(typeof settings === "boolean") {
+    return settings.toString();
+  }
+  if(typeof settings === "object") {
+    return JSON.stringify(settings);
+  }
+  return settings;
+}
+
 var loadSettings = function () {
   return adminApiClient.settings.read().then(function (settings) {
     $settingsContainer.empty();
     Object.keys(settings).forEach(function (key) {
       $settingsContainer.append(
-        `<li><b>${key}</b>:&nbsp;<span data-testid="settings-${key}">${settings[key]}</span></li>`
+        `<li><b>${key}</b>:&nbsp;<span data-testid="settings-${key}">${formatSettings(settings[key])}</span></li>`
       );
     });
   });

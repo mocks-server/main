@@ -180,7 +180,6 @@ class Plugins {
     const pluginId = this._pluginId(pluginIndex);
     if (!this._pluginsInstances[pluginIndex].init) {
       this._pluginsInitialized = this._pluginsInitialized - 1;
-      this._addAlert(`init:${pluginId}`, `Plugin "${pluginId}" has not init method`);
       return initNextPlugin();
     }
     tracer.debug(`Initializing plugin "${pluginId}"`);
@@ -223,7 +222,6 @@ class Plugins {
     const pluginId = this._pluginId(pluginIndex);
     if (!this._pluginsInstances[pluginIndex].start) {
       this._pluginsStarted = this._pluginsStarted - 1;
-      this._addAlert(`start:${pluginId}`, `Plugin "${pluginId}" has not start method`);
       return startNextPlugin();
     }
     tracer.debug(`Starting plugin "${pluginId}"`);
@@ -267,7 +265,6 @@ class Plugins {
     const pluginId = this._pluginId(pluginIndex);
     if (!this._pluginsInstances[pluginIndex].stop) {
       this._pluginsStopped = this._pluginsStopped - 1;
-      this._addAlert(`stop:${pluginId}`, `Plugin "${pluginId}" has not stop method`);
       return stopNextPlugin();
     }
     tracer.debug(`Stopping plugin "${pluginId}"`);

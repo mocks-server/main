@@ -53,7 +53,9 @@ describe("commands", () => {
       setMock("foo");
       expect(
         apiClient.updateSettings.calledWith({
-          mock: "foo",
+          mocks: {
+            selected: "foo",
+          },
         })
       ).toBe(true);
     });
@@ -70,7 +72,9 @@ describe("commands", () => {
       setDelay(3000);
       expect(
         apiClient.updateSettings.calledWith({
-          delay: 3000,
+          mocks: {
+            delay: 3000,
+          },
         })
       ).toBe(true);
     });

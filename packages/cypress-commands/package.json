@@ -17,7 +17,11 @@
   ],
   "author": "Javier Brea",
   "license": "MIT",
-  "repository": "https://github.com/mocks-server/main",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mocks-server/main.git",
+    "directory": "packages/cypress-commands"
+  },
   "homepage": "https://www.mocks-server.org",
   "publishConfig": {
     "access": "public"

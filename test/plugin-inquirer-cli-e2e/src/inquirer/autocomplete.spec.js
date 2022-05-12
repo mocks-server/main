@@ -54,7 +54,7 @@ describe("when autocomplete fixture is executed", () => {
     const newScreen = await cliRunner.executeAndWaitUntilNewScreenRendered(
       cliRunner.pressEnter.bind(cliRunner),
       {
-        timeout: RENDER_TIME_OUT,
+        newScreenTimeout: RENDER_TIME_OUT,
       }
     );
     expect(newScreen).toEqual(expect.stringContaining("a-tag"));
@@ -67,7 +67,7 @@ describe("when autocomplete fixture is executed", () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
     await wait(1000);
     await cliRunner.executeAndWaitUntilNewScreenRendered(cliRunner.pressEnter.bind(cliRunner), {
-      timeout: RENDER_TIME_OUT,
+      newScreenTimeout: RENDER_TIME_OUT,
     });
     await cliRunner.executeAndWaitUntilHasLogged(
       () => {
@@ -94,7 +94,7 @@ describe("when autocomplete fixture is executed", () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
     await wait(1000);
     await cliRunner.executeAndWaitUntilNewScreenRendered(cliRunner.pressEnter.bind(cliRunner), {
-      timeout: RENDER_TIME_OUT,
+      newScreenTimeout: RENDER_TIME_OUT,
     });
     await cliRunner.executeAndWaitUntilHasLogged(
       () => {
@@ -114,7 +114,7 @@ describe("when autocomplete fixture is executed", () => {
     const newScreen = await cliRunner.executeAndWaitUntilNewScreenRendered(
       cliRunner.pressEnter.bind(cliRunner),
       {
-        timeout: RENDER_TIME_OUT,
+        newScreenTimeout: RENDER_TIME_OUT,
       }
     );
 
@@ -125,7 +125,7 @@ describe("when autocomplete fixture is executed", () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
     await wait(1000);
     await cliRunner.executeAndWaitUntilNewScreenRendered(cliRunner.pressEnter.bind(cliRunner), {
-      timeout: RENDER_TIME_OUT,
+      newScreenTimeout: RENDER_TIME_OUT,
     });
     await cliRunner.executeAndWaitUntilHasLogged(
       () => {
@@ -145,7 +145,7 @@ describe("when autocomplete fixture is executed", () => {
     const newScreen = await cliRunner.executeAndWaitUntilNewScreenRendered(
       cliRunner.pressEnter.bind(cliRunner),
       {
-        timeout: RENDER_TIME_OUT,
+        newScreenTimeout: RENDER_TIME_OUT,
       }
     );
 

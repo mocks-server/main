@@ -289,14 +289,14 @@ importers:
     specifiers:
       '@mocks-server/core': workspace:*
       chalk: 4.1.1
-      inquirer: 8.2.2
+      inquirer: 8.2.4
       inquirer-autocomplete-prompt: 1.4.0
       lodash: 4.17.21
       node-emoji: 1.11.0
     dependencies:
       chalk: 4.1.1
-      inquirer: 8.2.2
-      inquirer-autocomplete-prompt: 1.4.0_inquirer@8.2.2
+      inquirer: 8.2.4
+      inquirer-autocomplete-prompt: 1.4.0_inquirer@8.2.4
       lodash: 4.17.21
       node-emoji: 1.11.0
     devDependencies:
@@ -9050,7 +9050,7 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /inquirer-autocomplete-prompt/1.4.0_inquirer@8.2.2:
+  /inquirer-autocomplete-prompt/1.4.0_inquirer@8.2.4:
     resolution: {integrity: sha512-qHgHyJmbULt4hI+kCmwX92MnSxDs/Yhdt4wPA30qnoa01OF6uTXV8yvH4hKXgdaTNmkZ9D01MHjqKYEuJN+ONw==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -9059,13 +9059,13 @@ packages:
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       figures: 3.2.0
-      inquirer: 8.2.2
+      inquirer: 8.2.4
       run-async: 2.4.1
       rxjs: 6.6.7
     dev: false
 
-  /inquirer/8.2.2:
-    resolution: {integrity: sha512-pG7I/si6K/0X7p1qU+rfWnpTE1UIkTONN1wxtzh0d+dHXtT/JG6qBgLxoyHVsQa8cFABxAPh0pD6uUUHiAoaow==}
+  /inquirer/8.2.4:
+    resolution: {integrity: sha512-nn4F01dxU8VeKfq192IjLsxu0/OmMZ4Lg3xKAns148rCaXP6ntAoEkVYZThWjwON8AlzdZZi6oqnhNbxUG9hVg==}
     engines: {node: '>=12.0.0'}
     dependencies:
       ansi-escapes: 4.3.2
@@ -9082,6 +9082,7 @@ packages:
       string-width: 4.2.3
       strip-ansi: 6.0.1
       through: 2.3.8
+      wrap-ansi: 7.0.0
     dev: false
 
   /internal-ip/4.3.0:
@@ -16292,7 +16293,6 @@ packages:
       ansi-styles: 4.3.0
       string-width: 4.2.3
       strip-ansi: 6.0.1
-    dev: true
 
   /wrappy/1.0.2:
     resolution: {integrity: sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=}

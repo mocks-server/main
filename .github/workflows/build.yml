@@ -6,7 +6,7 @@ on:
     branches:
       - master
       - release
-      - feat-config
+      - feat-config-integration
   pull_request:
 jobs:
   get-affected:

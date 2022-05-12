@@ -16,6 +16,7 @@ const CliRunner = require("@mocks-server/cli-runner");
 const END_SCREEN = "Exit";
 
 const RENDER_TIME_OUT = 10000;
+const { wait } = require("../main/support/helpers");
 
 describe("when autocomplete fixture is executed", () => {
   jest.setTimeout(15000);
@@ -49,6 +50,7 @@ describe("when autocomplete fixture is executed", () => {
   it('should allow to choose all available tags when "Select tags" is selected', async () => {
     expect.assertions(3);
     await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
+    await wait(1000);
     const newScreen = await cliRunner.executeAndWaitUntilNewScreenRendered(
       cliRunner.pressEnter.bind(cliRunner),
       {
@@ -63,6 +65,7 @@ describe("when autocomplete fixture is executed", () => {
   it('should allow to choose only "a-tag" tag when "Select tags" is selected, and "a" is pressed', async () => {
     expect.assertions(3);
     await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
+    await wait(1000);
     await cliRunner.executeAndWaitUntilNewScreenRendered(cliRunner.pressEnter.bind(cliRunner), {
       timeout: RENDER_TIME_OUT,
     });
@@ -89,6 +92,7 @@ describe("when autocomplete fixture is executed", () => {
 
   it('should print selected option as "a-tag" when a-tag is selected in autocomplete', async () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
+    await wait(1000);
     await cliRunner.executeAndWaitUntilNewScreenRendered(cliRunner.pressEnter.bind(cliRunner), {
       timeout: RENDER_TIME_OUT,
     });
@@ -118,6 +122,7 @@ describe("when autocomplete fixture is executed", () => {
 
   it('should print selected option as "c-tag" when c-tag is selected in autocomplete', async () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
+    await wait(1000);
     await cliRunner.executeAndWaitUntilNewScreenRendered(cliRunner.pressEnter.bind(cliRunner), {
       timeout: RENDER_TIME_OUT,
     });

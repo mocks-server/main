@@ -25,7 +25,7 @@ describe("files watcher", () => {
   beforeAll(async () => {
     fsExtra.removeSync(fixturesFolder("temp"));
     fsExtra.copySync(fixturesFolder("web-tutorial"), fixturesFolder("temp"));
-    mocks = mocksRunner(["--plugins.filesLoader.path=temp"]);
+    mocks = mocksRunner(["--files.path=temp"]);
     await waitForServerAndCli();
   });
 

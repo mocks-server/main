@@ -13,11 +13,12 @@ const path = require("path");
 const sinon = require("sinon");
 const { cloneDeep } = require("lodash");
 
-const LibsMocks = require("../../Libs.mocks");
-const CoreMocks = require("../../Core.mocks");
-const ConfigMock = require("../../Config.mocks");
+const LibsMocks = require("../Libs.mocks");
+const CoreMocks = require("../Core.mocks");
+const ConfigMock = require("../Config.mocks");
 
-const FilesLoader = require("../../../src/plugins/files-loader/FilesLoader");
+const FilesLoader = require("../../src/files-loader/FilesLoader");
+const tracer = require("../../src/tracer");
 
 const wait = () => {
   return new Promise((resolve) => {
@@ -78,14 +79,22 @@ describe("FilesLoader", () => {
     configMock.stubs.option.value = "foo-path";
     coreMocks = new CoreMocks();
     libsMocks = new LibsMocks();
+    coreInstance = coreMocks.stubs.instance;
+    sandbox.stub(tracer, "verbose");
+    sandbox.stub(tracer, "debug");
+    sandbox.stub(tracer, "error");
+    sandbox.stub(tracer, "info");
+    sandbox.stub(tracer, "silly");
     pluginMethods = {
+      core: coreInstance,
       loadRoutes: sandbox.stub(),
       loadMocks: sandbox.stub(),
       addAlert: sandbox.stub(),
       removeAlerts: sandbox.stub(),
+      config: configMock.stubs.namespace,
     };
-    coreInstance = coreMocks.stubs.instance;
-    filesLoader = new FilesLoader(coreInstance, pluginMethods, configMock.stubs.namespace, {
+
+    filesLoader = new FilesLoader(pluginMethods, {
       requireCache,
     });
     sandbox.stub(path, "isAbsolute").returns(true);
@@ -111,10 +120,6 @@ describe("FilesLoader", () => {
   });
 
   describe("when initialized", () => {
-    it("should have id defined", async () => {
-      expect(FilesLoader.id).toEqual("filesLoader");
-    });
-
     it("should require all files from mocks folders calculating it from cwd if path is not absolute", async () => {
       path.isAbsolute.returns(false);
       libsMocks.stubs.fsExtra.existsSync.returns(false);
@@ -132,7 +137,7 @@ describe("FilesLoader", () => {
 
     it("should add an alert when a routes file content does not pass validation", async () => {
       libsMocks.stubs.globule.find.returns(["foo"]);
-      filesLoader = new FilesLoader(coreInstance, pluginMethods, configMock.stubs.namespace, {
+      filesLoader = new FilesLoader(pluginMethods, {
         requireCache,
         require: () => ({}),
       });
@@ -146,7 +151,7 @@ describe("FilesLoader", () => {
 
     it("should not add an alert when a routes file content pass validation", async () => {
       libsMocks.stubs.globule.find.returns(["foo"]);
-      filesLoader = new FilesLoader(coreInstance, pluginMethods, configMock.stubs.namespace, {
+      filesLoader = new FilesLoader(pluginMethods, {
         requireCache,
         require: () => [],
       });
@@ -164,7 +169,7 @@ describe("FilesLoader", () => {
     });
 
     it("should remove alerts when mocks file loads successfully", async () => {
-      filesLoader = new FilesLoader(coreInstance, pluginMethods, configMock.stubs.namespace, {
+      filesLoader = new FilesLoader(pluginMethods, {
         requireCache,
         require: () => [],
       });
@@ -177,7 +182,7 @@ describe("FilesLoader", () => {
     });
 
     it("should call to loadMocks method when mocks file is loaded", async () => {
-      filesLoader = new FilesLoader(coreInstance, pluginMethods, configMock.stubs.namespace, {
+      filesLoader = new FilesLoader(pluginMethods, {
         requireCache,
         require: () => [],
       });
@@ -190,7 +195,7 @@ describe("FilesLoader", () => {
     });
 
     it("should try to load mocks.json when mock.js file does not exists", async () => {
-      filesLoader = new FilesLoader(coreInstance, pluginMethods, configMock.stubs.namespace, {
+      filesLoader = new FilesLoader(pluginMethods, {
         requireCache,
         require: sandbox.spy,
       });
@@ -206,13 +211,13 @@ describe("FilesLoader", () => {
     });
 
     it("should not throw and add an alert if there is an error in loadRoutesfiles method", async () => {
-      coreInstance.tracer.silly.throws(new Error());
+      tracer.silly.throws(new Error());
       await filesLoader.init();
       expect(pluginMethods.addAlert.calledWith("load:routes")).toEqual(true);
     });
 
     it("should return a rejected promise if there is an error initializing", async () => {
-      coreInstance.tracer.info.throws(new Error("foo error"));
+      tracer.info.throws(new Error("foo error"));
       await expect(() => filesLoader.init()).rejects.toThrow("foo error");
     });
 
@@ -233,7 +238,7 @@ describe("FilesLoader", () => {
         //do nothing
       });
       coreInstance.lowLevelConfig = { babelRegister: true, babelRegisterOptions: {} };
-      filesLoader = new FilesLoader(coreInstance, pluginMethods, configMock.stubs.namespace, {
+      filesLoader = new FilesLoader(pluginMethods, {
         requireCache,
         require: requireSpy,
       });
@@ -254,7 +259,7 @@ describe("FilesLoader", () => {
     });
 
     it("should require cache in order to found the mocks folder", async () => {
-      filesLoader = new FilesLoader(coreInstance, pluginMethods, configMock.stubs.namespace);
+      filesLoader = new FilesLoader(pluginMethods);
       filesLoader._pathOption = pathOption;
       filesLoader._watchOption = watchOption;
       filesLoader._babelRegisterOption = babelRegisterOption;

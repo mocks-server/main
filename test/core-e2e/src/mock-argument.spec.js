@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const { mocksRunner, fetch, waitForServer } = require("./support/helpers");
 
 describe("mock argument", () => {
-  const PATH_OPTION = "--plugins.filesLoader.path=web-tutorial";
+  const PATH_OPTION = "--files.path=web-tutorial";
   let mocks;
 
   afterEach(async () => {

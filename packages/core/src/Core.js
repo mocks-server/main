@@ -21,6 +21,7 @@ const RoutesHandlers = require("./routes-handlers/RoutesHandlers");
 const Mocks = require("./mocks/Mocks");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
+const FilesLoader = require("./files-loader/FilesLoader");
 
 const { scopedAlertsMethods, addEventListener, arrayMerge } = require("./support/helpers");
 
@@ -28,6 +29,7 @@ const MODULE_NAME = "mocks";
 const CONFIG_PLUGINS_NAMESPACE = "plugins";
 const CONFIG_MOCKS_NAMESPACE = "mocks";
 const CONFIG_SERVER_NAMESPACE = "server";
+const CONFIG_FILES_LOADER = "files";
 
 const ROOT_OPTIONS = [
   {
@@ -54,6 +56,7 @@ class Core {
     this._configPlugins = this._config.addNamespace(CONFIG_PLUGINS_NAMESPACE);
     this._configMocks = this._config.addNamespace(CONFIG_MOCKS_NAMESPACE);
     this._configServer = this._config.addNamespace(CONFIG_SERVER_NAMESPACE);
+    this._configFilesLoader = this._config.addNamespace(CONFIG_FILES_LOADER);
 
     [this._routesHandlersOption, this._logOption] = this._config.addOptions(ROOT_OPTIONS);
 
@@ -126,6 +129,13 @@ class Core {
       ...scopedAlertsMethods("server", this._alerts.add, this._alerts.remove),
     });
 
+    this._filesLoader = new FilesLoader({
+      config: this._configFilesLoader,
+      loadMocks: this._mocksLoaders.new(),
+      loadRoutes: this._routesLoaders.new(),
+      ...scopedAlertsMethods("files", this._alerts.add, this._alerts.remove),
+    });
+
     this._inited = false;
     this._stopPluginsPromise = null;
     this._startPluginsPromise = null;
@@ -180,17 +190,20 @@ class Core {
     // Config is ready, init all
     this._mocks.init(this._routesHandlers.handlers);
     await this._server.init();
+    await this._filesLoader.init();
     return this._plugins.init();
   }
 
   async start() {
     await this.init();
     await this._server.start();
+    await this._filesLoader.start();
     return this._startPlugins();
   }
 
   async stop() {
     await this._server.stop();
+    await this._filesLoader.stop();
     return this._stopPlugins();
   }
 

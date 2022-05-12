@@ -21,7 +21,7 @@ describe("path setting", () => {
 
   beforeAll(async () => {
     changePath = (name) => {
-      core.config.namespace("plugins").namespace("filesLoader").option("path").value = name;
+      core.config.namespace("files").option("path").value = name;
     };
     core = await startCore();
     await waitForServer();

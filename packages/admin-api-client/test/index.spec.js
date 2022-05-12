@@ -44,9 +44,7 @@ describe("react-admin-client methods used with node", () => {
       it("should return alerts array", async () => {
         expect.assertions(1);
         await updateSettings({
-          plugins: {
-            filesLoader: { path: "mocks-with-error" },
-          },
+          files: { path: "mocks-with-error" },
         });
         await wait(2000);
         const alerts = await readAlerts();
@@ -65,9 +63,7 @@ describe("react-admin-client methods used with node", () => {
     describe("when alerts are removed", () => {
       it("should return no alerts", async () => {
         await updateSettings({
-          plugins: {
-            filesLoader: { path: "mocks" },
-          },
+          files: { path: "mocks" },
           mocks: {
             selected: "base",
           },

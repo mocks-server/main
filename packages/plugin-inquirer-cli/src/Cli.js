@@ -138,10 +138,7 @@ class Cli {
     this._optionDelay = this._core.config.namespace("mocks").option("delay");
     this._optionPort = this._core.config.namespace("server").option("port");
     this._optionHost = this._core.config.namespace("server").option("host");
-    this._optionWatch = this._core.config
-      .namespace("plugins")
-      .namespace("filesLoader")
-      .option("watch");
+    this._optionWatch = this._core.config.namespace("files").option("watch");
   }
 
   init() {

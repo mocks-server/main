@@ -5,11 +5,9 @@ module.exports = {
   mocks: {
     selected: "user-real",
   },
-  plugins: {
-    filesLoader: {
-      babelRegister: true,
-      path: path.resolve(__dirname, "..", "temp"),
-      watch: true,
-    },
+  files: {
+    babelRegister: true,
+    path: path.resolve(__dirname, "..", "temp"),
+    watch: true,
   },
 };

@@ -73,7 +73,7 @@ describe("events", () => {
     let option, removeSpy;
 
     it("should have emitted event", async () => {
-      option = core.config.namespace("plugins").namespace("filesLoader").option("path");
+      option = core.config.namespace("files").option("path");
       removeSpy = core.onChangeMocks(spies.onChangeMocks);
       option.value = fixturesFolder("web-tutorial-modified");
       await waitForServerUrl("/api/new-users");

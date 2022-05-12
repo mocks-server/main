@@ -24,7 +24,7 @@ describe("when stopping plugin", () => {
   describe("when started", () => {
     it("should return current settings", async () => {
       const response = await fetch("/admin/settings");
-      expect(response.body.plugins.filesLoader.path).toEqual(fixturesFolder("web-tutorial"));
+      expect(response.body.files.path).toEqual(fixturesFolder("web-tutorial"));
     });
   });
 
@@ -88,7 +88,7 @@ describe("when stopping plugin", () => {
 
     it("should have started the plugin", async () => {
       const response = await fetch("/admin/settings");
-      expect(response.body.plugins.filesLoader.path).toEqual(fixturesFolder("web-tutorial"));
+      expect(response.body.files.path).toEqual(fixturesFolder("web-tutorial"));
     });
   });
 });

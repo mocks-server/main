@@ -15,10 +15,9 @@ const ConfigMocks = require("../Config.mocks.js");
 const LibsMocks = require("../Libs.mocks.js");
 
 const Plugins = require("../../src/plugins/Plugins");
-const FilesLoader = require("../../src/plugins/files-loader/FilesLoader");
 const tracer = require("../../src/tracer");
 
-const NATIVE_PLUGINS_QUANTITY = 1;
+const NATIVE_PLUGINS_QUANTITY = 0;
 
 const pluginsTrace = (method, quantity) => {
   return `${method}ed ${quantity} plugins without errors`;
@@ -53,7 +52,6 @@ describe("Plugins", () => {
     sandbox.stub(tracer, "debug");
     sandbox.stub(tracer, "error");
     sandbox.spy(console, "log");
-    sandbox.stub(FilesLoader.prototype, "init").resolves();
     coreMocks = new CoreMocks();
     configMocks = new ConfigMocks();
     libsMocks = new LibsMocks();
@@ -129,8 +127,8 @@ describe("Plugins", () => {
       await plugins.register();
       expect(loadMocks.callCount).toEqual(1);
       expect(loadRoutes.callCount).toEqual(1);
-      expect(callbacks.addAlert.calledWith("1:foo", "Foo message")).toEqual(true);
-      expect(callbacks.removeAlerts.calledWith("1:")).toEqual(true);
+      expect(callbacks.addAlert.calledWith("0:foo", "Foo message")).toEqual(true);
+      expect(callbacks.removeAlerts.calledWith("0:")).toEqual(true);
     });
 
     it("should not register object plugins with register method throwing an error", async () => {
@@ -424,7 +422,7 @@ describe("Plugins", () => {
       pluginsOption.value = [FooPlugin];
       await plugins.register();
       await plugins.init();
-      expect(plugins._pluginId(1)).toEqual("foo-plugin");
+      expect(plugins._pluginId(0)).toEqual("foo-plugin");
       expect(tracer.debug.calledWith('Initializing plugin "foo-plugin"')).toEqual(true);
     });
 
@@ -742,20 +740,29 @@ describe("Plugins", () => {
       };
     });
 
-    it("should have as scope the plugin index during the register method", async () => {
+    it("should have as scope the plugin id during the register method", async () => {
       pluginsOption.value = [fooPlugin];
       await plugins.register();
-      expect(callbacks.addAlert.calledWith("1:test-register", "Testing register alert")).toEqual(
-        true
-      );
+      expect(
+        callbacks.addAlert.calledWith("foo-name:test-register", "Testing register alert")
+      ).toEqual(true);
     });
 
-    it("should rename the scope if an alert is added during the start method", async () => {
+    it("should rename the scope if the id is added afterwards", async () => {
       expect.assertions(2);
+      fooPlugin = {
+        register: (_core, { addAlert }) => {
+          addAlert("test-register", "Testing register alert");
+        },
+        start: (_core, { addAlert }) => {
+          addAlert("test-start", "Testing start alert");
+        },
+      };
       pluginsOption.value = [fooPlugin];
       await plugins.register();
+      fooPlugin.id = "foo-name";
       await plugins.start();
-      expect(callbacks.renameAlerts.calledWith("1:", "foo-name:")).toEqual(true);
+      expect(callbacks.renameAlerts.calledWith("0:", "foo-name:")).toEqual(true);
       expect(callbacks.addAlert.calledWith("foo-name:test-start", "Testing start alert")).toEqual(
         true
       );

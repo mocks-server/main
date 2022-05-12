@@ -16,6 +16,7 @@ const PluginsMocks = require("./plugins/Plugins.mocks.js");
 const ConfigMocks = require("./Config.mocks.js");
 const AlertsMocks = require("./Alerts.mocks.js");
 const LoadersMocks = require("./Loaders.mocks.js");
+const FilesLoaderMocks = require("./files-loader/FilesLoader.mocks.js");
 
 const Core = require("../src/Core");
 const tracer = require("../src/tracer");
@@ -32,6 +33,7 @@ describe("Core", () => {
   let alertsMocks;
   let alertsInstance;
   let loadersMocks;
+  let filesLoaderMocks;
   let core;
 
   beforeEach(async () => {
@@ -46,6 +48,7 @@ describe("Core", () => {
     alertsInstance = alertsMocks.stubs.instance;
     loadersMocks = new LoadersMocks();
     configMocks = new ConfigMocks();
+    filesLoaderMocks = new FilesLoaderMocks();
 
     core = new Core();
     await core.init();
@@ -59,6 +62,7 @@ describe("Core", () => {
     pluginsMocks.restore();
     alertsMocks.restore();
     loadersMocks.restore();
+    filesLoaderMocks.restore();
   });
 
   describe("when created", () => {

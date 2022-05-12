@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: BREAKING CHANGE. Configuration format changed.
 - refactor: Use callbacks internally instead of events. Remove Orchestrator
 - refactor: Move Settings and Config to a separated package
+- refactor: FilesLoader is not loaded as a plugin any more in the core.
 
 ### Added
 - feat: Plugins now receive a third argument with a config object for adding their options.

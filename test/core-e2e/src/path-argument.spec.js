@@ -44,7 +44,7 @@ describe("path argument", () => {
 
   describe("when defined", () => {
     beforeAll(async () => {
-      mocks = mocksRunner(["--plugins.filesLoader.path=web-tutorial"]);
+      mocks = mocksRunner(["--files.path=web-tutorial"]);
       await waitForServer();
     });
 

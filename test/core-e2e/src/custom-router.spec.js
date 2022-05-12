@@ -34,11 +34,9 @@ describe("when using custom router", () => {
           readEnvironment: false,
         },
         log: "silent",
-        plugins: {
-          filesLoader: {
-            path: fixturesFolder("web-tutorial"),
-            watch: false,
-          },
+        files: {
+          path: fixturesFolder("web-tutorial"),
+          watch: false,
         },
       });
       await core.start();
@@ -79,11 +77,9 @@ describe("when using custom router", () => {
           readEnvironment: false,
         },
         log: "silent",
-        plugins: {
-          filesLoader: {
-            path: fixturesFolder("web-tutorial"),
-            watch: false,
-          },
+        files: {
+          path: fixturesFolder("web-tutorial"),
+          watch: false,
         },
       });
       await core.start();

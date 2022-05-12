@@ -74,10 +74,8 @@ describe("alerts api", () => {
       await fetch("/admin/settings", {
         method: "PATCH",
         body: {
-          plugins: {
-            filesLoader: {
-              path: fixturesFolder("files-error-routes"),
-            },
+          files: {
+            path: fixturesFolder("files-error-routes"),
           },
         },
       });

@@ -12,9 +12,7 @@ const sinon = require("sinon");
 const express = require("express");
 
 const filterPluginAlerts = (alerts) =>
-  alerts.filter(
-    (alert) => alert.context.indexOf("plugins") === 0 && !alert.context.includes("filesLoader")
-  );
+  alerts.filter((alert) => alert.context.indexOf("plugins") === 0);
 
 const { startCore, fetch, fixturesFolder, wait, TimeCounter } = require("./support/helpers");
 
@@ -138,7 +136,7 @@ describe("plugins", () => {
 
       describe("when emit events", () => {
         beforeAll(async () => {
-          core.config.namespace("plugins").namespace("filesLoader").option("path").value =
+          core.config.namespace("files").option("path").value =
             fixturesFolder("web-tutorial-modified");
           await wait(5000);
         });
@@ -219,7 +217,7 @@ describe("plugins", () => {
     init: (coreInstance) => {
       initSpy(
         coreInstance,
-        coreInstance.config.namespace("plugins").namespace("filesLoader").option("path").value,
+        coreInstance.config.namespace("files").option("path").value,
         coreInstance.config.namespace("server").option("port").value,
         coreInstance.config.namespace("mocks").option("delay").value
       );
@@ -268,7 +266,7 @@ describe("plugins", () => {
       init(coreInstance) {
         initSpy(
           coreInstance,
-          coreInstance.config.namespace("plugins").namespace("filesLoader").option("path").value,
+          coreInstance.config.namespace("files").option("path").value,
           coreInstance.config.namespace("server").option("port").value,
           coreInstance.config.namespace("mocks").option("delay").value
         );
@@ -302,7 +300,7 @@ describe("plugins", () => {
       init(coreInstance) {
         initSpy(
           coreInstance,
-          coreInstance.config.namespace("plugins").namespace("filesLoader").option("path").value,
+          coreInstance.config.namespace("files").option("path").value,
           coreInstance.config.namespace("server").option("port").value,
           coreInstance.config.namespace("mocks").option("delay").value
         );
@@ -332,7 +330,7 @@ describe("plugins", () => {
       init(coreInstance) {
         initSpy(
           coreInstance,
-          coreInstance.config.namespace("plugins").namespace("filesLoader").option("path").value,
+          coreInstance.config.namespace("files").option("path").value,
           coreInstance.config.namespace("server").option("port").value,
           coreInstance.config.namespace("mocks").option("delay").value
         );
@@ -388,7 +386,7 @@ describe("plugins", () => {
       init: (coreIns) => {
         initSpy(
           coreIns,
-          coreIns.config.namespace("plugins").namespace("filesLoader").option("path").value,
+          coreIns.config.namespace("files").option("path").value,
           coreIns.config.namespace("server").option("port").value,
           coreIns.config.namespace("mocks").option("delay").value
         );
@@ -438,7 +436,7 @@ describe("plugins", () => {
       init: (coreInstance) => {
         initSpy(
           coreInstance,
-          coreInstance.config.namespace("plugins").namespace("filesLoader").option("path").value,
+          coreInstance.config.namespace("files").option("path").value,
           coreInstance.config.namespace("server").option("port").value,
           coreInstance.config.namespace("mocks").option("delay").value
         );

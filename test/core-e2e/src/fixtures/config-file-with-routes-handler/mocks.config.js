@@ -7,9 +7,7 @@ module.exports = {
   mocks: {
     selected: "custom-users",
   },
-  plugins: {
-    filesLoader: {
-      path: path.resolve(__dirname, "..", "custom-routes-handler"),
-    },
-  },
+  files: {
+    path: path.resolve(__dirname, "..", "custom-routes-handler"),
+  }
 };

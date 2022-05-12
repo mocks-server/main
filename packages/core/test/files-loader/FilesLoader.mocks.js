@@ -10,55 +10,18 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../../src/plugins/files-loader/FilesLoader");
+jest.mock("../../src/files-loader/FilesLoader");
 
-const FilesLoader = require("../../../src/plugins/files-loader/FilesLoader");
-
-let INITIAL_FILES = {
-  file1: {
-    _mocksServer_isFile: true,
-  },
-  file2: {
-    _mocksServer_isFile: true,
-  },
-  folder: {
-    folder2: {
-      file: {
-        _mocksServer_isFile: true,
-        fooProperty: "",
-      },
-    },
-  },
-};
-
-INITIAL_FILES.file1.behavior1._mocksServer_lastPath = "behavior1";
-INITIAL_FILES.file2.behavior2._mocksServer_lastPath = "behavior2";
-
-let INITIAL_CONTENTS = [INITIAL_FILES.file1.behavior1, INITIAL_FILES.file2.behavior2, {}];
+const FilesLoader = require("../../src/files-loader/FilesLoader");
 
 class Mock {
-  static get files() {
-    return INITIAL_FILES;
-  }
-
-  static set contents(newContents) {
-    INITIAL_CONTENTS = newContents;
-  }
-
-  static get contents() {
-    return INITIAL_CONTENTS;
-  }
-
   constructor() {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      files: INITIAL_FILES,
-      contents: INITIAL_CONTENTS,
       init: this._sandbox.stub().resolves(),
       start: this._sandbox.stub().resolves(),
       stop: this._sandbox.stub(),
-      cleanContentsCustomProperties: this._sandbox.stub(),
     };
 
     FilesLoader.mockImplementation(() => this._stubs);
@@ -72,8 +35,6 @@ class Mock {
   }
 
   restore() {
-    this._stubs.files = INITIAL_FILES;
-    this._stubs.contents = INITIAL_CONTENTS;
     this._sandbox.restore();
   }
 }

@@ -21,9 +21,9 @@ const {
   getFilesGlobule,
   validateFileContent,
 } = require("./helpers");
-const { createMocksFolder } = require("../../support/scaffold");
+const { createMocksFolder } = require("../support/scaffold");
+const tracer = require("../tracer");
 
-const PLUGIN_NAME = "filesLoader";
 const ROUTES_FOLDER = "routes";
 
 const OPTIONS = [
@@ -54,20 +54,13 @@ const OPTIONS = [
 ];
 
 class FilesLoaderBase {
-  static get id() {
-    return PLUGIN_NAME;
-  }
-
-  constructor(core, methods, config, extraOptions = {}) {
-    this._core = core;
-    this._loadMocks = methods.loadMocks;
-    this._loadRoutes = methods.loadRoutes;
-    this._addAlert = methods.addAlert;
-    this._removeAlerts = methods.removeAlerts;
-    this._tracer = core.tracer;
+  constructor({ config, loadMocks, loadRoutes, addAlert, removeAlerts }, extraOptions = {}) {
+    this._loadMocks = loadMocks;
+    this._loadRoutes = loadRoutes;
+    this._addAlert = addAlert;
+    this._removeAlerts = removeAlerts;
     this._customRequireCache = extraOptions.requireCache;
     this._require = extraOptions.require || require;
-
     this._config = config;
 
     [
@@ -95,7 +88,7 @@ class FilesLoaderBase {
 
   stop() {
     if (this._watcher) {
-      this._tracer.debug("Stopping files watch");
+      tracer.debug("Stopping files watch");
       this._watcher.close();
     }
   }
@@ -143,7 +136,7 @@ class FilesLoaderBase {
     const pathName = this._pathOption.value;
     const resolvedFolder = this._resolveFolder(pathName);
     this._path = this._ensureFolder(resolvedFolder);
-    this._tracer.info(`Loading files from folder ${this._path}`);
+    tracer.info(`Loading files from folder ${this._path}`);
     if (!!this._babelRegisterOption.value) {
       this._require("@babel/register")(
         babelRegisterDefaultOptions(resolvedFolder, this._babelRegisterOptionsOption.value)
@@ -184,7 +177,7 @@ class FilesLoaderBase {
           .filter((fileContent) => !!fileContent)
       );
       this._loadRoutes(routes);
-      this._tracer.silly(`Loaded routes from folder ${routesPath}`);
+      tracer.silly(`Loaded routes from folder ${routesPath}`);
     } catch (error) {
       this._loadRoutes([]);
       this._addAlert("load:routes", `Error loading routes from folder ${routesPath}`, error);
@@ -205,7 +198,7 @@ class FilesLoaderBase {
           throw new Error(fileErrors);
         }
         this._loadMocks(mocks);
-        this._tracer.silly(`Loaded mocks from file ${mocksFile}`);
+        tracer.silly(`Loaded mocks from file ${mocksFile}`);
         this._removeAlerts("load:mocks");
       } catch (error) {
         this._loadMocks([]);
@@ -213,8 +206,7 @@ class FilesLoaderBase {
       }
     } else {
       this._loadMocks([]);
-      // TODO, add supported extensions to trace
-      this._addAlert("load:mocks", `No mocks.(js|json) file was found in ${this._path}`);
+      this._addAlert("load:mocks", `No mocks file was found in ${this._path}`);
     }
   }
 
@@ -222,12 +214,12 @@ class FilesLoaderBase {
     const enabled = this._watchOption.value;
     this.stop();
     if (enabled) {
-      this._tracer.debug("Starting files watcher");
+      tracer.debug("Starting files watcher");
       this._watcher = watch(
         this._path,
         { recursive: true },
         debounce(() => {
-          this._tracer.info("File change detected");
+          tracer.info("File change detected");
           this._loadFiles();
         }),
         1000

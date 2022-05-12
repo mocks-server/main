@@ -2,6 +2,7 @@ describe("Settings section", () => {
   const SELECTORS = {
     CONFIG: "settings-config",
     PLUGINS: "settings-plugins",
+    FILES: "settings-files",
     SERVER: "settings-server",
     MOCKS: "settings-mocks",
   };
@@ -11,7 +12,7 @@ describe("Settings section", () => {
   });
 
   it("should display current path", () => {
-    cy.findByTestId(SELECTORS.PLUGINS).should("contain.text", '"path":"mocks"');
+    cy.findByTestId(SELECTORS.FILES).should("contain.text", '"path":"mocks"');
   });
 
   it("should display current delay", () => {

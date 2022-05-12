@@ -13,9 +13,6 @@ const { isObject, isFunction } = require("lodash");
 
 const tracer = require("../tracer");
 
-// FilesLoader built-in plugin
-const FilesLoader = require("./files-loader/FilesLoader");
-
 const { scopedAlertsMethods } = require("../support/helpers");
 
 const OPTIONS = [
@@ -51,7 +48,6 @@ class Plugins {
 
   register() {
     this._plugins = this._pluginsToRegister.value;
-    this._plugins.unshift(FilesLoader);
     return this._registerPlugins().then(() => {
       tracer.verbose(`Registered ${this._pluginsRegistered} plugins without errors`);
       return Promise.resolve();
@@ -103,6 +99,7 @@ class Plugins {
     let pluginInstance, pluginConfig;
     if (isObject(Plugin) && !isFunction(Plugin)) {
       pluginInstance = Plugin;
+      this._pluginsInstances.push(pluginInstance);
       this._pluginsRegistered++;
     } else {
       try {
@@ -110,12 +107,14 @@ class Plugins {
           pluginConfig = this._config.addNamespace(Plugin.id);
         }
         pluginInstance = new Plugin(this._core, pluginMethods, pluginConfig);
+        this._pluginsInstances.push(pluginInstance);
         this._pluginsRegistered++;
       } catch (error) {
         if (error.message.includes("is not a constructor")) {
           try {
             const pluginFunc = Plugin;
             pluginInstance = pluginFunc(this._core, pluginMethods) || {};
+            this._pluginsInstances.push(pluginInstance);
             this._pluginsRegistered++;
           } catch (err) {
             return this._catchRegisterError(err, pluginIndex);
@@ -149,15 +148,16 @@ class Plugins {
       loadMocks,
       loadRoutes,
       ...scopedAlertsMethods(
-        () => this._pluginId(pluginIndex),
+        () => {
+          return this._pluginId(pluginIndex);
+        },
         this._addAlert,
         this._removeAlerts,
         this._renameAlerts
       ),
     };
     this._pluginsMethods.push(pluginMethods);
-    const plugin = this._registerPlugin(this._plugins[pluginIndex], pluginMethods, pluginIndex);
-    this._pluginsInstances.push(plugin);
+    this._registerPlugin(this._plugins[pluginIndex], pluginMethods, pluginIndex);
     return this._registerPlugins(pluginIndex + 1);
   }
 

@@ -15,10 +15,8 @@ const defaultOptions = {
   server: {
     port: SERVER_PORT,
   },
-  plugins: {
-    filesLoader: {
-      watch: false,
-    },
+  files: {
+    watch: false,
   },
   log: "silly",
 };
@@ -52,10 +50,8 @@ const startExistingCore = (core, mocksPath, options = {}) => {
       deepMerge.all([
         defaultOptions,
         {
-          plugins: {
-            filesLoader: {
-              path: fixturesFolder(mocks),
-            },
+          files: {
+            path: fixturesFolder(mocks),
           },
         },
         options,

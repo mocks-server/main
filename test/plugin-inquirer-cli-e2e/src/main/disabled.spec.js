@@ -19,10 +19,7 @@ describe("command line arguments with cli disabled", () => {
 
   describe("interactive cli", () => {
     it("should not be started", async () => {
-      mocks = mocksRunner([
-        "--plugins.filesLoader.path=web-tutorial",
-        "--no-plugins.inquirerCli.enabled",
-      ]);
+      mocks = mocksRunner(["--files.path=web-tutorial", "--no-plugins.inquirerCli.enabled"]);
       await waitForServer();
       expect(mocks.logs).toEqual(expect.not.stringContaining("Select action"));
     });
@@ -30,10 +27,7 @@ describe("command line arguments with cli disabled", () => {
 
   describe("path option", () => {
     it("should set mocks folder", async () => {
-      mocks = mocksRunner([
-        "--plugins.filesLoader.path=web-tutorial",
-        "--no-plugins.inquirerCli.enabled",
-      ]);
+      mocks = mocksRunner(["--files.path=web-tutorial", "--no-plugins.inquirerCli.enabled"]);
       await waitForServer();
       const users = await fetch("/api/users");
       expect(users.body).toEqual([
@@ -46,10 +40,7 @@ describe("command line arguments with cli disabled", () => {
   describe("behavior option", () => {
     describe("when not provided", () => {
       it("should set as current behavior the first one found", async () => {
-        mocks = mocksRunner([
-          "--plugins.filesLoader.path=web-tutorial",
-          "--no-plugins.inquirerCli.enabled",
-        ]);
+        mocks = mocksRunner(["--files.path=web-tutorial", "--no-plugins.inquirerCli.enabled"]);
         await waitForServer();
         const users = await fetch("/api/users/2");
         expect(users.body).toEqual({ id: 1, name: "John Doe" });
@@ -59,7 +50,7 @@ describe("command line arguments with cli disabled", () => {
     describe("when provided and exists", () => {
       it("should set current behavior", async () => {
         mocks = mocksRunner([
-          "--plugins.filesLoader.path=web-tutorial",
+          "--files.path=web-tutorial",
           "--no-plugins.inquirerCli.enabled",
           "--mocks.selected=user-2",
         ]);
@@ -74,7 +65,7 @@ describe("command line arguments with cli disabled", () => {
     it("should set delay", async () => {
       expect.assertions(2);
       mocks = mocksRunner([
-        "--plugins.filesLoader.path=web-tutorial",
+        "--files.path=web-tutorial",
         "--no-plugins.inquirerCli.enabled",
         "--mocks.delay=2000",
       ]);

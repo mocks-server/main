@@ -21,7 +21,7 @@ describe("interactive CLI", () => {
   let mocks;
 
   beforeAll(async () => {
-    mocks = mocksRunner(["--plugins.filesLoader.path=web-tutorial", "--mocks.selected=foo"]);
+    mocks = mocksRunner(["--files.path=web-tutorial", "--mocks.selected=foo"]);
     await waitForServerAndCli();
   });
 

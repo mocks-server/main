@@ -14,7 +14,7 @@ describe("delay argument", () => {
   let mocks;
 
   beforeAll(async () => {
-    mocks = mocksRunner(["--plugins.filesLoader.path=web-tutorial", "--mocks.delay=1000"]);
+    mocks = mocksRunner(["--files.path=web-tutorial", "--mocks.delay=1000"]);
     await waitForServer();
   });
 

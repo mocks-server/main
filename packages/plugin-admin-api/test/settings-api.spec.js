@@ -41,14 +41,14 @@ describe("settings api", () => {
         mocks: {
           delay: 0,
         },
+        files: {
+          babelRegister: false,
+          babelRegisterOptions: {},
+          path: fixturesFolder("web-tutorial"),
+          watch: false,
+        },
         plugins: {
           register: [null],
-          filesLoader: {
-            babelRegister: false,
-            babelRegisterOptions: {},
-            path: fixturesFolder("web-tutorial"),
-            watch: false,
-          },
           adminApi: {
             path: "/admin",
           },
@@ -187,10 +187,8 @@ describe("settings api", () => {
         await fetch("/admin/settings", {
           method: "PATCH",
           body: {
-            plugins: {
-              filesLoader: {
-                path: fixturesFolder("web-tutorial-modified"),
-              },
+            files: {
+              path: fixturesFolder("web-tutorial-modified"),
             },
           },
         });
@@ -201,10 +199,8 @@ describe("settings api", () => {
         await fetch("/admin/settings", {
           method: "PATCH",
           body: {
-            plugins: {
-              filesLoader: {
-                path: fixturesFolder("web-tutorial"),
-              },
+            files: {
+              path: fixturesFolder("web-tutorial"),
             },
           },
         });
@@ -213,9 +209,7 @@ describe("settings api", () => {
 
       it("should return new path option when getting settings", async () => {
         const settingsResponse = await fetch("/admin/settings");
-        expect(settingsResponse.body.plugins.filesLoader.path).toEqual(
-          fixturesFolder("web-tutorial-modified")
-        );
+        expect(settingsResponse.body.files.path).toEqual(fixturesFolder("web-tutorial-modified"));
       });
 
       it("should serve users collection mock under the /api/users path", async () => {

@@ -3,11 +3,11 @@ const TraceRoutesPlugin = require("./TraceRoutesPlugin");
 
 module.exports = {
   log: "silly",
+  files: {
+    path: path.resolve(__dirname, "..", "temp"),
+  },
   plugins: {
     register: [TraceRoutesPlugin],
-    filesLoader: {
-      path: path.resolve(__dirname, "..", "temp"),
-    },
   },
   mocks: {
     selected: "user-2",

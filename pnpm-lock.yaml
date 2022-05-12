@@ -16,7 +16,7 @@ importers:
       '@nrwl/workspace': 13.8.3
       '@rollup/plugin-babel': 5.3.1
       '@rollup/plugin-commonjs': 21.1.0
-      '@rollup/plugin-node-resolve': 13.2.1
+      '@rollup/plugin-node-resolve': 13.3.0
       '@testing-library/cypress': 8.0.2
       '@typescript-eslint/parser': 5.20.0
       babel-jest: 27.5.1
@@ -70,7 +70,7 @@ importers:
       '@nrwl/workspace': 13.8.3_4bdc34f7373d8ada49a3a5d44e7bb989
       '@rollup/plugin-babel': 5.3.1_ff29f0d4dd334dfc8308d7cb7e631785
       '@rollup/plugin-commonjs': 21.1.0_rollup@2.68.0
-      '@rollup/plugin-node-resolve': 13.2.1_rollup@2.68.0
+      '@rollup/plugin-node-resolve': 13.3.0_rollup@2.68.0
       '@testing-library/cypress': 8.0.2_cypress@9.3.1
       '@typescript-eslint/parser': 5.20.0_eslint@8.11.0+typescript@4.6.4
       babel-jest: 27.5.1_@babel+core@7.17.10
@@ -2891,16 +2891,16 @@ packages:
       rollup: 2.68.0
     dev: true
 
-  /@rollup/plugin-node-resolve/13.2.1_rollup@2.68.0:
-    resolution: {integrity: sha512-btX7kzGvp1JwShQI9V6IM841YKNPYjKCvUbNrQ2EcVYbULtUd/GH6wZ/qdqH13j9pOHBER+EZXNN2L8RSJhVRA==}
+  /@rollup/plugin-node-resolve/13.3.0_rollup@2.68.0:
+    resolution: {integrity: sha512-Lus8rbUo1eEcnS4yTFKLZrVumLPY+YayBdWXgFSHYhTT2iJbMhoaaBL3xl5NCdeRytErGr8tZ0L71BMRmnlwSw==}
     engines: {node: '>= 10.0.0'}
     peerDependencies:
       rollup: ^2.42.0
     dependencies:
       '@rollup/pluginutils': 3.1.0_rollup@2.68.0
       '@types/resolve': 1.17.1
-      builtin-modules: 3.2.0
       deepmerge: 4.2.2
+      is-builtin-module: 3.1.0
       is-module: 1.0.0
       resolve: 1.22.0
       rollup: 2.68.0
@@ -9183,6 +9183,13 @@ packages:
 
   /is-buffer/1.1.6:
     resolution: {integrity: sha512-NcdALwpXkTm5Zvvbk7owOUSvVvBKDgKP5/ewfXEznmQFfs4ZRmanOeKBTjRVjka3QFoN6XJ+9F3USqfHqTaU5w==}
+    dev: true
+
+  /is-builtin-module/3.1.0:
+    resolution: {integrity: sha512-OV7JjAgOTfAFJmHZLvpSTb4qi0nIILDV1gWPYDnDJUTNFM5aGlRAhk4QcT8i7TuAleeEV5Fdkqn3t4mS+Q11fg==}
+    engines: {node: '>=6'}
+    dependencies:
+      builtin-modules: 3.2.0
     dev: true
 
   /is-callable/1.2.4:

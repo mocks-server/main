@@ -15,7 +15,7 @@ const CliRunner = require("@mocks-server/cli-runner");
 
 const END_SCREEN = "Exit";
 
-const RENDER_TIME_OUT = 10000;
+const RENDER_TIME_OUT = 5000;
 const { wait } = require("../main/support/helpers");
 
 describe("when autocomplete fixture is executed", () => {

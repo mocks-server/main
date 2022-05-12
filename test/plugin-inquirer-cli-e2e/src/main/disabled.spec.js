@@ -11,6 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const { mocksRunner, fetch, waitForServer, TimeCounter } = require("./support/helpers");
 
 describe("command line arguments with cli disabled", () => {
+  jest.setTimeout(15000);
   let mocks;
 
   afterEach(async () => {

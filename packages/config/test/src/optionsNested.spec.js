@@ -164,7 +164,7 @@ describe("options nested", () => {
       expect(option.value).toEqual(false);
     });
 
-    it("option should return new value after merging it when option is of type object", async () => {
+    it("option should return new value after setting it when option is of type object and merge is true", async () => {
       config = new Config({ moduleName: "testObjectSet" });
       parentNamespace = config.addNamespace("parentNamespace");
       namespace = parentNamespace.addNamespace("fooNamespace");
@@ -175,11 +175,11 @@ describe("options nested", () => {
       });
       await config.init();
       expect(option.value).toEqual({ foo: "var" });
-      option.merge({ foo2: "var2" });
+      option.set({ foo2: "var2" }, { merge: true });
       expect(option.value).toEqual({ foo2: "var2", foo: "var" });
     });
 
-    it("option should not merge value if it is undefined when option is of type object", async () => {
+    it("option should not set value if it is undefined when option is of type object", async () => {
       config = new Config({ moduleName: "testObjectSet" });
       parentNamespace = config.addNamespace("parentNamespace");
       namespace = parentNamespace.addNamespace("fooNamespace");
@@ -190,7 +190,7 @@ describe("options nested", () => {
       });
       await config.init();
       expect(option.value).toEqual({ foo: "var" });
-      option.merge(undefined);
+      option.set(undefined);
       expect(option.value).toEqual({ foo: "var" });
     });
 
@@ -206,7 +206,7 @@ describe("options nested", () => {
       expect(option.value).toEqual(undefined);
     });
 
-    it("option return new value after merging it when it has not default value and option is of type object", async () => {
+    it("option return new value after setting it when it has not default value and option is of type object and merge option is true", async () => {
       config = new Config({ moduleName: "testObjectSet" });
       parentNamespace = config.addNamespace("parentNamespace");
       namespace = parentNamespace.addNamespace("fooNamespace");
@@ -216,7 +216,7 @@ describe("options nested", () => {
       });
       await config.init();
       expect(option.value).toEqual(undefined);
-      option.merge({ foo: "var" });
+      option.set({ foo: "var" }, { merge: true });
       expect(option.value).toEqual({ foo: "var" });
     });
   });

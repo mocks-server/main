@@ -55,6 +55,104 @@ describe("options", () => {
     });
   });
 
+  describe("config value getter", () => {
+    it("should return namespaces and options values", async () => {
+      config = new Config();
+      config.addOptions([
+        {
+          name: "fooOption",
+          type: "string",
+          default: "default-str",
+        },
+        {
+          name: "fooOption2",
+          type: "number",
+          default: 2,
+        },
+      ]);
+      namespace = config.addNamespace("fooNamespace");
+      namespace.addOption({
+        name: "foo",
+        type: "boolean",
+        default: false,
+      });
+      namespace.addNamespace("foo2").addOption({
+        name: "foo3",
+        type: "array",
+        default: [1, 2, 3],
+      });
+      await config.init();
+      expect(config.value).toEqual({
+        config: {
+          allowUnknownArguments: false,
+          fileSearchPlaces: undefined,
+          readArguments: true,
+          readEnvironment: true,
+          readFile: true,
+        },
+        fooOption: "default-str",
+        fooOption2: 2,
+        fooNamespace: {
+          foo: false,
+          foo2: {
+            foo3: [1, 2, 3],
+          },
+        },
+      });
+    });
+
+    it("should return new namespaces and options values after changing them", async () => {
+      config = new Config();
+      config.addOptions([
+        {
+          name: "fooOption",
+          type: "string",
+          default: "default-str",
+        },
+        {
+          name: "fooOption2",
+          type: "number",
+          default: 2,
+        },
+      ]);
+      namespace = config.addNamespace("fooNamespace");
+      namespace.addOption({
+        name: "foo",
+        type: "boolean",
+        default: false,
+      });
+      namespace.addNamespace("foo2").addOption({
+        name: "foo3",
+        type: "array",
+        default: [1, 2, 3],
+      });
+      await config.init();
+
+      config.option("fooOption").value = "foo";
+      config.option("fooOption2").value = 5;
+      namespace.option("foo").value = true;
+      namespace.namespace("foo2").option("foo3").value = [3, 2, 1];
+
+      expect(config.value).toEqual({
+        config: {
+          allowUnknownArguments: false,
+          fileSearchPlaces: undefined,
+          readArguments: true,
+          readEnvironment: true,
+          readFile: true,
+        },
+        fooOption: "foo",
+        fooOption2: 5,
+        fooNamespace: {
+          foo: true,
+          foo2: {
+            foo3: [3, 2, 1],
+          },
+        },
+      });
+    });
+  });
+
   describe("when an option is created", () => {
     it("should have name property", async () => {
       config = new Config();
@@ -418,7 +516,7 @@ describe("options", () => {
       expect(option.value).toEqual(false);
     });
 
-    it("option should return new value after merging it when option is of type object", async () => {
+    it("option should return new value after setting it when option is of type object and merge option is true", async () => {
       config = new Config({ moduleName: "testObjectSet" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
@@ -428,11 +526,11 @@ describe("options", () => {
       });
       await config.init();
       expect(option.value).toEqual({ foo: "var" });
-      option.merge({ foo2: "var2" });
+      option.set({ foo2: "var2" }, { merge: true });
       expect(option.value).toEqual({ foo2: "var2", foo: "var" });
     });
 
-    it("option should return new value after merging it when option is of type array", async () => {
+    it("option should return new value after setting it when option is of type array", async () => {
       config = new Config({ moduleName: "testObjectSet" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
@@ -446,7 +544,7 @@ describe("options", () => {
       expect(option.value).toEqual(["foo3", "foo4"]);
     });
 
-    it("option should not merge value if it is undefined when option is of type object", async () => {
+    it("option should not merge value if it is undefined when option is of type object and merge option is true", async () => {
       config = new Config({ moduleName: "testObjectSet" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
@@ -456,7 +554,7 @@ describe("options", () => {
       });
       await config.init();
       expect(option.value).toEqual({ foo: "var" });
-      option.merge(undefined);
+      option.set(undefined, { merge: true });
       expect(option.value).toEqual({ foo: "var" });
     });
 
@@ -575,7 +673,7 @@ describe("options", () => {
       expect(spy.callCount).toEqual(0);
     });
 
-    it("option should emit an event after merging new value when it is of type object", async () => {
+    it("option should emit an event with merged value after setting new value when it is of type object and merge option is true", async () => {
       expect.assertions(2);
       let resolver;
       config = new Config({ moduleName: "testObjectSet" });
@@ -594,7 +692,7 @@ describe("options", () => {
         expect(newValue).toEqual({ foo: "var", foo2: "foo" });
         resolver();
       });
-      option.merge({ foo2: "foo" });
+      option.set({ foo2: "foo" }, { merge: true });
       return promise;
     });
 
@@ -609,7 +707,7 @@ describe("options", () => {
       expect(option.value).toEqual(undefined);
     });
 
-    it("option return new value after merging it when it has not default value and option is of type object", async () => {
+    it("option return new value after setting it when it has not default value and option is of type object and merge option is true", async () => {
       config = new Config({ moduleName: "testObjectSet" });
       namespace = config.addNamespace("fooNamespace");
       option = namespace.addOption({
@@ -618,7 +716,7 @@ describe("options", () => {
       });
       await config.init();
       expect(option.value).toEqual(undefined);
-      option.merge({ foo: "var" });
+      option.set({ foo: "var" }, { merge: true });
       expect(option.value).toEqual({ foo: "var" });
     });
   });

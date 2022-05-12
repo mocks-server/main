@@ -57,7 +57,7 @@ class Core {
 
     [this._routesHandlersOption, this._logOption] = this._config.addOptions(ROOT_OPTIONS);
 
-    this._logOption.onChange(this._changeLogLevel.bind(this));
+    this._logOption.onChange(tracer.set);
 
     this._alerts = new Alerts({
       onChange: (alerts) => {
@@ -129,10 +129,6 @@ class Core {
     this._inited = false;
     this._stopPluginsPromise = null;
     this._startPluginsPromise = null;
-  }
-
-  _changeLogLevel(value) {
-    tracer.set(value);
   }
 
   async _startPlugins() {

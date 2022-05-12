@@ -68,6 +68,11 @@ describe("Core", () => {
       await core.init();
       expect(configMocks.stubs.instance.init.getCall(1).args[0]).toEqual(fooConfig);
     });
+
+    it("should listen to change trace level when log option changes", async () => {
+      core = new Core();
+      expect(configMocks.stubs.option.onChange.getCall(0).args[0]).toEqual(tracer.set);
+    });
   });
 
   describe("Plugins callbacks", () => {

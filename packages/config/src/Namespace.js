@@ -1,8 +1,6 @@
-const { isEqual, isUndefined } = require("lodash");
 const EventEmitter = require("events");
 
 const Option = require("./Option");
-const { types } = require("./types");
 const {
   checkNamespaceName,
   checkOptionName,
@@ -36,30 +34,16 @@ class Namespace {
     return options.map((option) => this.addOption(option));
   }
 
-  _setOptions(configuration) {
-    const changedOptions = [];
-    if (configuration) {
-      this._options.forEach((option) => {
-        if (!isUndefined(configuration[option.name])) {
-          const previousValue = option.value;
-          if (option.type === types.OBJECT) {
-            option.merge(configuration[option.name]);
-          } else {
-            option.value = configuration[option.name];
-          }
-          if (!isEqual(previousValue, option.value)) {
-            changedOptions.push(option);
-          }
-        }
-      });
-    }
-    return changedOptions;
+  _setOptions(configuration, options) {
+    this._options.forEach((option) => {
+      option.set(configuration[option.name], options);
+    });
   }
 
-  set(configuration) {
-    this._setOptions(configuration);
+  set(configuration = {}, options) {
+    this._setOptions(configuration, options);
     this._namespaces.forEach((namespace) => {
-      namespace.set(configuration[namespace.name] || {});
+      namespace.set(configuration[namespace.name] || {}, options);
     });
   }
 
@@ -98,6 +82,10 @@ class Namespace {
       ...getNamespacesValues(this._namespaces),
       ...getOptionsValues(this._options),
     };
+  }
+
+  set value(configuration) {
+    return this.set(configuration);
   }
 
   namespace(name) {

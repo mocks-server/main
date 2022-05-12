@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@mocks-server/cli-runner",
   "version": "1.0.0",
   "description": "CLI runner for testing command line interfaces and commands",

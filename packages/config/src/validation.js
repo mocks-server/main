@@ -178,10 +178,6 @@ function validateConfig(config, { namespaces, allowAdditionalProperties }) {
   );
 }
 
-function validateOption(properties) {
-  validateSchema(properties, optionSchema, optionValidator);
-}
-
 function validateOptionAndThrow(properties) {
   validateSchemaAndThrow(properties, optionSchema, optionValidator);
 }
@@ -192,7 +188,6 @@ function validateValueTypeAndThrow(value, type, itemsType) {
 
 module.exports = {
   validateConfig,
-  validateOption,
   validateConfigAndThrow,
   validateOptionAndThrow,
   validateValueTypeAndThrow,

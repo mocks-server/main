@@ -244,7 +244,7 @@ Examples about how to define options of type `number` from sources:
 
 ### __Object__
 
-Options of type `object` are parsed from JSON strings when they are defined in environment variables or command line arguments. __It is important to mention that objects are merged when they are defined in different sources.__
+Options of type `object` are parsed from JSON strings when they are defined in environment variables or command line arguments. __It is important to mention that objects are merged when they are defined in different sources when loading the configuration.__
 
 ```js
 const option = config.addOption({
@@ -262,7 +262,7 @@ Examples about how to define options of type `object` from sources:
 
 ### __Array__
 
-Options of type `array` are parsed from JSON strings when they are defined in environment variables. For defining them in command line arguments, multiple arguments should be provided. As in the case of objects, arrays are merged when they are defined in multiple sources. The result of defining it environment variables and in arguments would be both arrays concated, for example. This behavior can be disabled using the `mergeArrays` option of the [`Config` class](#config).
+Options of type `array` are parsed from JSON strings when they are defined in environment variables. For defining them in command line arguments, multiple arguments should be provided. __As in the case of objects, arrays are merged when they are defined in multiple sources when loading the configuration__. The result of defining it environment variables and in arguments would be both arrays concated, for example. This behavior can be disabled using the `mergeArrays` option of the [`Config` class](#config).
 
 ```js
 const option = config.addOption({
@@ -327,6 +327,13 @@ const config = new Config({ moduleName: "mocks", mergeArrays: false });
   * `optionsProperties` _(Array)_: Array of `optionProperties`.
 * __`namespace(name)`__: Returns the [namespace instance](#namespace-instance) in the root config with name equal to `name`.
 * __`option(optionName)`__: Returns the [option instances](#option-instance) in the root config with name equal to `optionName`.
+* __`set(configuration)`__: Set configuration properties to each correspondent namespace and options.
+  * `configuration` _(Object)_: Object with programmatic configuration. Levels in the object correspond to namespaces names, and last level keys correspond to option names.
+* __`validate(configuration, options)`__: Allows to prevalidate a configuration before setting it, for example. It returns an object with `valid` and `errors` properties. See [AJV docs for further info](https://ajv.js.org/guide/getting-started.html#basic-data-validation).
+  * `configuration` _(Object)_: Object with configuration. Levels in the object correspond to namespaces names, and last level keys correspond to option names.
+  * `options` _(Object)_: Object with extra options for validation:
+    * `allowAdditionalProperties` _(Boolean)_: _Default `false`_. If true, additional properties in the configuration would not produce validation errors.
+* __`value`__: Getter returning the current values from all namespaces and options as an object. Levels in the object correspond to namespaces names, and last level keys correspond to option names. It can be also used as setter as an alias of the `set` method, with default options.
 
 ### Namespace instance
 
@@ -350,6 +357,9 @@ const namespace = config.addNamespace("name");
 * __`name`__: Getter returning the namespace name.
 * __`namespaces`__: Getter returning an array with children namespaces.
 * __`options`__: Getter returning an array object with children options.
+* __`set(configuration)`__: Set configuration properties to each correspondent child namespace and options.
+  * `configuration` _(Object)_: Object with configuration. Levels in the object correspond to child namespaces names, and last level keys correspond to option names.
+* __`value`__: Getter returning the current values from all child namespaces and options as an object. Levels in the object correspond to namespaces names, and last level keys correspond to option names. It can be also used as setter as an alias of the `set` method, with default options.
 
 ### Option instance
 
@@ -358,11 +368,10 @@ const option = namespace.addOption("name");
 const rootOption = config.addOption("name2");
 ``` 
 
-* __`value`__: Getter/setter of current value.
+* __`value`__: Getter of the current value. It can be also used as setter as an alias of the `set` method, with default options..
+* __`set(value)`__: Set value.
 * __`onChange(callback)`__: Allows to add a listener that will be executed whenever the value changes. It only emit events after calling to the `config.start` method. __It returns a function that removes the listener once executed__.
   * `callback(value)` _(Function)_: Callback to be executed whenever the option value changes. It receives the new value as first argument.
-* __`merge(objectToMerge)`__ _(Function)_: Only valid for options of type `object`. It merges the current object value with the received one.
-  * `objectToMerge` _(Object)_: Object to be merged with current value.
 * __`name`__: Getter returning the option name.
 * __`type`__: Getter returning the option type.
 * __`default`__: Getter returning the option default value.

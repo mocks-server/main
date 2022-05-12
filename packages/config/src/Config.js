@@ -108,8 +108,6 @@ class Config {
     );
   }
 
-  // TODO, add set methods
-
   validate(config, { allowAdditionalProperties = false } = {}) {
     return validateConfig(config, {
       namespaces: this._namespaces,
@@ -133,17 +131,22 @@ class Config {
   _mergeValidateAndSetNamespaces({ allowUnknown }) {
     this._mergeConfig();
     this._validateAndThrow({ allowAdditionalProperties: allowUnknown });
-    this.set(this._config);
+    this.set(this._config, { merge: true });
   }
 
   async _load({ allowUnknown = false } = {}) {
-    this._mergeValidateAndSetNamespaces({ allowUnknown });
+    // Programmatic does not change, so we only load it in init method
+    if (!this._initializated) {
+      this._mergeValidateAndSetNamespaces({ allowUnknown });
+    }
+
+    // Args and environment vars load only defined options, so they must be loaded in init and load
     this._argsConfig = await this._loadFromArgs({ allowUnknown });
     this._mergeValidateAndSetNamespaces({ allowUnknown });
     this._envConfig = await this._loadFromEnv();
     this._mergeValidateAndSetNamespaces({ allowUnknown });
 
-    // File does not change, so we only load it the first time
+    // File does not change, so we only load it in init method
     if (!this._initializated) {
       this._fileConfig = await this._loadFromFile();
       this._mergeValidateAndSetNamespaces({ allowUnknown });
@@ -187,12 +190,16 @@ class Config {
     return getNamespacesValues(this._namespaces);
   }
 
-  set(configuration) {
+  set value(configuration) {
+    return this.set(configuration);
+  }
+
+  set(configuration = {}, options) {
     this._namespaces.forEach((namespace) => {
       if (namespace.name) {
-        namespace.set(configuration[namespace.name] || {});
+        namespace.set(configuration[namespace.name] || {}, options);
       } else {
-        namespace.set(configuration);
+        namespace.set(configuration, options);
       }
     });
   }

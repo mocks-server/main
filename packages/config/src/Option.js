@@ -71,20 +71,27 @@ class Option {
     return addEventListener(listener, CHANGE, this._eventEmitter);
   }
 
-  merge(value) {
+  _merge(value) {
     const previousValue = this._value;
-    const valueToSet = isUndefined(value) ? {} : value;
-    this._validateAndThrow(valueToSet);
-    this._value = deepMerge(this._value || {}, valueToSet, { arrayMerge: avoidArraysMerge });
+    this._validateAndThrow(value);
+    this._value = deepMerge(this._value || {}, value, { arrayMerge: avoidArraysMerge });
     this._emitChange(previousValue, this._value);
   }
 
   set value(value) {
-    const previousValue = this._value;
+    this.set(value);
+  }
+
+  set(value, { merge = false } = {}) {
     if (!isUndefined(value)) {
-      this._validateAndThrow(value);
-      this._value = this._clone(value);
-      this._emitChange(previousValue, this._value);
+      if (merge && this.type === types.OBJECT) {
+        this._merge(value);
+      } else {
+        const previousValue = this._value;
+        this._validateAndThrow(value);
+        this._value = this._clone(value);
+        this._emitChange(previousValue, this._value);
+      }
     }
   }
 

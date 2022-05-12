@@ -41,7 +41,7 @@
     "build": "cross-env node scripts/commands/build.mjs"
   },
   "dependencies": {
-    "@babel/core": "7.17.9",
+    "@babel/core": "7.17.10",
     "@mocks-server/core": "workspace:*",
     "@mocks-server/plugin-admin-api": "workspace:*",
     "@mocks-server/plugin-inquirer-cli": "workspace:*",

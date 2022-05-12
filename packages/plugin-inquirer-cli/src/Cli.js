@@ -169,10 +169,6 @@ class Cli {
       return Promise.resolve();
     }
     this._started = true;
-    if (this._stopListeningChangeMocks && this._stopListeningChangeAlerts) {
-      this._stopListeningChangeMocks();
-      this._stopListeningChangeAlerts();
-    }
     this._stopListeningChangeAlerts = this._core.onChangeAlerts(this._refreshMenuIfStarted);
     this._stopListeningChangeMocks = this._core.onChangeMocks(this._refreshMenuIfStarted);
     this._logLevel = this._optionLog.value;

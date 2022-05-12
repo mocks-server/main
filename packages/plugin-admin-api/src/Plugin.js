@@ -21,21 +21,32 @@ const {
   ALERTS,
 } = require("@mocks-server/admin-api-paths");
 
-const packageInfo = require("../package.json");
-
 const About = require("./About");
 const Settings = require("./Settings");
 const Alerts = require("./Alerts");
 const CustomRoutesVariants = require("./CustomRoutesVariants");
 
-const { ADMIN_API_PATH_OPTION, PLUGIN_NAME } = require("./support/constants");
+const { PLUGIN_NAME } = require("./support/constants");
 const { readCollectionAndModelRouter } = require("./support/routers");
 
+const OPTION = {
+  name: "path",
+  description: `Root path for admin routes`,
+  type: "string",
+  default: DEFAULT_BASE_PATH,
+};
+
 class Plugin {
-  constructor(core) {
+  static get id() {
+    return PLUGIN_NAME;
+  }
+
+  constructor(core, _methods, config) {
     this._core = core;
     this._tracer = core.tracer;
-    this._settings = this._core.settings;
+    this._config = config;
+
+    this._adminApiPathOption = this._config.addOption(OPTION);
 
     this._settingsApi = new Settings(this._core);
     this._alertsApi = new Alerts(this._core);
@@ -63,18 +74,7 @@ class Plugin {
       tracer: core.tracer,
     });
 
-    core.addSetting({
-      name: ADMIN_API_PATH_OPTION,
-      type: "string",
-      description: `Api path for ${PLUGIN_NAME}`,
-      default: DEFAULT_BASE_PATH,
-    });
-
-    this._onChangeSettings = this._onChangeSettings.bind(this);
-  }
-
-  get displayName() {
-    return packageInfo.name;
+    this._onChangeAdminApiPath = this._onChangeAdminApiPath.bind(this);
   }
 
   init() {
@@ -82,19 +82,21 @@ class Plugin {
   }
 
   start() {
-    this._stopListeningOnChangeSettings = this._core.onChangeSettings(this._onChangeSettings);
+    this._stopListeningOnChangeAdminApiPath = this._adminApiPathOption.onChange(
+      this._onChangeAdminApiPath
+    );
     this._addRouter();
   }
 
   stop() {
-    this._stopListeningOnChangeSettings();
+    this._stopListeningOnChangeAdminApiPath();
     this._removeRouter();
   }
 
   _initRouter() {
     this._router = express.Router();
     this._router.use(ABOUT, this._aboutApi.router);
-    this._router.use(SETTINGS, this._settingsApi.router);
+    this._router.use(SETTINGS, this._settingsApi.router); // TODO, add config route. deprecate settings
     this._router.use(ALERTS, this._alertsApi.router);
 
     this._router.use(MOCKS, this._mocksApi);
@@ -105,7 +107,7 @@ class Plugin {
 
   _addRouter() {
     this._removeRouter();
-    this._routersPath = this._settings.get(ADMIN_API_PATH_OPTION);
+    this._routersPath = this._adminApiPathOption.value;
     this._core.addRouter(this._routersPath, this._router);
   }
 
@@ -116,10 +118,8 @@ class Plugin {
     }
   }
 
-  _onChangeSettings(newSettings) {
-    if (newSettings.hasOwnProperty(ADMIN_API_PATH_OPTION)) {
-      this._addRouter();
-    }
+  _onChangeAdminApiPath() {
+    this._addRouter();
   }
 }
 

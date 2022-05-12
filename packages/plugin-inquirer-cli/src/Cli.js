@@ -106,33 +106,54 @@ const SCREENS = {
   LOGS: "logs",
 };
 
+const OPTIONS = [
+  {
+    name: "enabled",
+    description: "Start interactive CLI plugin or not",
+    type: "boolean",
+    default: true,
+  },
+];
+
 class Cli {
-  constructor(core) {
+  static get id() {
+    return "inquirerCli";
+  }
+
+  constructor(core, _methods, config) {
+    this._config = config;
     this._core = core;
     this._tracer = core.tracer;
-    this._settings = core.settings;
     this._inited = false;
     this._started = false;
     this._currentScreen = null;
 
-    this._onChangeMocks = this._onChangeMocks.bind(this);
-    this._onChangeSettings = this._onChangeSettings.bind(this);
-    this._onChangeAlerts = this._onChangeAlerts.bind(this);
+    this._onChangeOptionCli = this._onChangeOptionCli.bind(this);
+    this._onChangeOptionLog = this._onChangeOptionLog.bind(this);
+    this._refreshMenuIfStarted = this._refreshMenuIfStarted.bind(this);
 
-    this._core.addSetting({
-      name: "cli",
-      type: "boolean",
-      description: "Start interactive CLI plugin",
-      default: true,
-    });
+    this._optionCli = this._config.addOption(OPTIONS[0]);
+    this._optionLog = this._core.config.option("log");
+    this._optionMock = this._core.config.namespace("mocks").option("selected");
+    this._optionDelay = this._core.config.namespace("mocks").option("delay");
+    this._optionPort = this._core.config.namespace("server").option("port");
+    this._optionHost = this._core.config.namespace("server").option("host");
+    this._optionWatch = this._core.config.namespace("files").option("watch");
   }
 
   init() {
-    if (!this._settings.get("cli")) {
+    if (!this._optionCli.value) {
       return Promise.resolve();
     }
     this._cli = new inquirer.Inquirer(this._header.bind(this), this._alertsHeader.bind(this));
-    this._stopListeningChangeSettings = this._core.onChangeSettings(this._onChangeSettings);
+
+    this._optionCli.onChange(this._onChangeOptionCli);
+    this._optionLog.onChange(this._onChangeOptionLog);
+    this._optionMock.onChange(this._refreshMenuIfStarted);
+    this._optionDelay.onChange(this._refreshMenuIfStarted);
+    this._optionHost.onChange(this._refreshMenuIfStarted);
+    this._optionWatch.onChange(this._refreshMenuIfStarted);
+
     this._inited = true;
     return Promise.resolve();
   }
@@ -141,17 +162,13 @@ class Cli {
     if (!this._inited) {
       await this.init();
     }
-    if (!this._settings.get("cli") || this._started) {
+    if (!this._optionCli.value || this._started) {
       return Promise.resolve();
     }
     this._started = true;
-    if (this._stopListeningChangeMocks) {
-      this._stopListeningChangeMocks();
-      this._stopListeningChangeAlerts();
-    }
-    this._stopListeningChangeAlerts = this._core.onChangeAlerts(this._onChangeAlerts);
-    this._stopListeningChangeMocks = this._core.onChangeMocks(this._onChangeMocks);
-    this._logLevel = this._settings.get("log");
+    this._stopListeningChangeAlerts = this._core.onChangeAlerts(this._refreshMenuIfStarted);
+    this._stopListeningChangeMocks = this._core.onChangeMocks(this._refreshMenuIfStarted);
+    this._logLevel = this._optionLog.value;
     this._silentTraces();
     this._displayMainMenu();
     return Promise.resolve();
@@ -164,7 +181,10 @@ class Cli {
     this._started = false;
     this._stopListeningChangeMocks();
     this._stopListeningChangeAlerts();
-    this._settings.set("log", this._logLevel);
+    this._stopListeningChangeMocks = null;
+    this._stopListeningChangeAlerts = null;
+
+    this._optionLog.value = this._logLevel;
     this._cli.logsMode();
     this._cli.clearScreen({
       header: false,
@@ -179,52 +199,43 @@ class Cli {
     return Promise.resolve();
   }
 
-  _onChangeMocks() {
-    return this._refreshMainMenu();
-  }
-
-  _onChangeSettings(newSettings) {
-    if (this._started) {
-      if (newSettings.hasOwnProperty("cli") && newSettings.cli === false) {
-        return this.stop();
-      }
-      if (newSettings.hasOwnProperty("log")) {
-        if (!this._isOverwritingLogLevel) {
-          this._logLevel = newSettings.log;
-          if (this._currentScreen !== SCREENS.LOGS) {
-            this._silentTraces();
-          }
-        } else {
-          this._isOverwritingLogLevel = false;
-        }
-      }
-      if (
-        newSettings.hasOwnProperty("mock") ||
-        newSettings.hasOwnProperty("delay") ||
-        newSettings.hasOwnProperty("host") ||
-        newSettings.hasOwnProperty("log") ||
-        newSettings.hasOwnProperty("watch")
-      ) {
-        return this._refreshMainMenu();
-      }
-    } else if (newSettings.hasOwnProperty("cli") && newSettings.cli === true) {
+  _onChangeOptionCli(enabled) {
+    if (this._started && !enabled) {
+      return this.stop();
+    } else if (!this._started && !!enabled) {
       return this.start();
     }
   }
 
-  _onChangeAlerts() {
-    return this._refreshMainMenu();
+  _onChangeOptionLog(log) {
+    if (this._started) {
+      if (!this._isOverwritingLogLevel) {
+        this._logLevel = log;
+        if (this._currentScreen !== SCREENS.LOGS) {
+          this._silentTraces();
+        }
+      } else {
+        this._isOverwritingLogLevel = false;
+      }
+      return this._refreshMainMenu();
+    }
+  }
+
+  _refreshMenuIfStarted() {
+    if (this._started) {
+      return this._refreshMainMenu();
+    }
   }
 
   get _serverUrl() {
-    const hostSetting = this._settings.get("host");
+    const hostSetting = this._optionHost.value;
     const host = hostSetting === "0.0.0.0" ? "localhost" : hostSetting;
-    return `http://${host}:${this._settings.get("port")}`;
+    return `http://${host}:${this._optionPort.value}`;
   }
 
   _header() {
-    const delay = this._settings.get("delay");
-    const watchEnabled = this._settings.get("watch");
+    const delay = this._optionDelay.value;
+    const watchEnabled = this._optionWatch.value;
 
     const currentMock = this._core.mocks.current || "-";
     const availableMocks = this._core.mocks.plainMocks.length;
@@ -300,7 +311,7 @@ class Cli {
         return Promise.resolve(mocksIds.filter((currentMock) => currentMock.includes(input)));
       },
     });
-    this._settings.set("mock", mockId);
+    this._optionMock.value = mockId;
     return this._displayMainMenu();
   }
 
@@ -332,7 +343,7 @@ class Cli {
     this._currentScreen = SCREENS.DELAY;
     this._cli.clearScreen();
     const delay = await this._cli.inquire("delay");
-    this._settings.set("delay", delay);
+    this._optionDelay.value = delay;
     return this._displayMainMenu();
   }
 
@@ -344,7 +355,7 @@ class Cli {
   }
 
   async _switchWatch() {
-    this._settings.set("watch", !this._settings.get("watch"));
+    this._optionWatch.value = !this._optionWatch.value;
     return this._displayMainMenu();
   }
 
@@ -359,7 +370,7 @@ class Cli {
     this._currentScreen = SCREENS.LOGS;
     this._cli.clearScreen();
     await this._cli.logsMode(() => {
-      this._settings.set("log", this._logLevel);
+      this._optionLog.value = this._logLevel;
     });
     this._silentTraces();
     return this._displayMainMenu();
@@ -367,11 +378,7 @@ class Cli {
 
   _silentTraces() {
     this._isOverwritingLogLevel = true;
-    this._settings.set("log", "silent");
-  }
-
-  get displayName() {
-    return "@mocks-server/plugin-inquirer-cli";
+    this._optionLog.value = "silent";
   }
 }
 

@@ -49,6 +49,7 @@
     "cross-spawn": "7.0.3",
     "cypress": "9.3.1",
     "cypress-fail-fast": "3.3.0",
+    "deepmerge": "4.2.2",
     "eslint": "8.11.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.0.0",

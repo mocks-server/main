@@ -1,0 +1,6 @@
+{
+  "root": "test/config-e2e/",
+  "projectType": "application",
+  "implicitDependencies": [],
+  "tags": ["type:test"]
+}

@@ -1,0 +1,12 @@
+{
+  "firstNamespace": {
+    "secondNamespace": {
+      "fooOption": "option-from-file"
+    }
+  },
+  "namespace": {
+    "component": {
+      "alias": "alias-from-json"
+    }
+  }
+}

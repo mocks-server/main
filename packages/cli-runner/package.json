@@ -1,0 +1,38 @@
+{
+  "private": true,
+  "name": "@mocks-server/cli-runner",
+  "version": "1.0.0",
+  "description": "CLI runner for testing command line interfaces and commands",
+  "keywords": [
+    "cli",
+    "runner",
+    "testing",
+    "run",
+    "command line interface",
+    "process"
+  ],
+  "author": "Javier Brea",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mocks-server/main.git",
+    "directory": "packages/cli-runner"
+  },
+  "homepage": "https://www.mocks-server.org",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src",
+    "index.js"
+  ],
+  "main": "index.js",
+  "dependencies": {
+    "cross-spawn": "7.0.3",
+    "tree-kill": "1.2.2",
+    "strip-ansi": "6.0.0"
+  },
+  "engines": {
+    "node": ">=12.x"
+  }
+}

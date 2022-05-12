@@ -14,7 +14,9 @@ describe("alerts api", () => {
   let server;
   beforeAll(async () => {
     server = await startServer("web-tutorial", {
-      mock: "foo",
+      mocks: {
+        selected: "foo",
+      },
     });
     await waitForServer();
   });
@@ -53,7 +55,9 @@ describe("alerts api", () => {
       await fetch("/admin/settings", {
         method: "PATCH",
         body: {
-          mock: "base",
+          mocks: {
+            selected: "base",
+          },
         },
       });
       await wait();
@@ -70,7 +74,9 @@ describe("alerts api", () => {
       await fetch("/admin/settings", {
         method: "PATCH",
         body: {
-          path: fixturesFolder("files-error-routes"),
+          files: {
+            path: fixturesFolder("files-error-routes"),
+          },
         },
       });
       await wait();

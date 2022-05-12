@@ -1,0 +1,13 @@
+{
+  "component": {
+    "booleanDefaultTrue": false,
+    "booleanDefaultFalse": true,
+    "stringWithDefault": "foo-from-file",
+    "numberDefaultZero": 6.51,
+    "objectWithDefault": {
+      "foo2":"var2",
+      "foo3":false,
+      "foo4":5
+    }
+  }
+}

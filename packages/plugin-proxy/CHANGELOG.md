@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+### Changed
+- feat: BREAKING CHANGE. Adapt to core v3
+
+### Fixed
+- chore: Fix repository property in package.json
+
 ## [1.0.5] - 2022-03-28
 
 ### Changed

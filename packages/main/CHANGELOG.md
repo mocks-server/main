@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - feat: BREAKING CHANGE. Export Core as default export. Stop exporting v1 legacy Behavior object
 
+### Fixed
+- chore: Fix repository property in package.json
+
 ## [2.6.3] - 2022-03-28
 
 ### Changed

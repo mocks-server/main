@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 
-const CliRunner = require("./support/CliRunner");
+const CliRunner = require("@mocks-server/cli-runner");
 
 const END_SCREEN = "Exit";
 
@@ -21,7 +21,7 @@ describe("when logs-mode fixture is executed", () => {
 
   beforeEach(() => {
     expect.assertions(1);
-    cliRunner = new CliRunner(cliFile);
+    cliRunner = new CliRunner(["node", cliFile]);
   });
 
   afterEach(async () => {
@@ -29,49 +29,56 @@ describe("when logs-mode fixture is executed", () => {
   });
 
   it('should print a menu with "Option 1"', async () => {
-    await cliRunner.hasPrinted(END_SCREEN);
-    expect(cliRunner.logs).toEqual(expect.stringContaining("Option 1"));
+    await cliRunner.waitUntilHasLogged(END_SCREEN);
+    expect(cliRunner.logs.current).toEqual(expect.stringContaining("Option 1"));
   });
 
   it('should print a menu with "Exit" option', async () => {
-    await cliRunner.hasPrinted(END_SCREEN);
-    expect(cliRunner.logs).toEqual(expect.stringContaining("Exit"));
+    await cliRunner.waitUntilHasLogged(END_SCREEN);
+    expect(cliRunner.logs.current).toEqual(expect.stringContaining("Exit"));
   });
 
   it('should print selected option as "none" in header when inited', async () => {
-    await cliRunner.hasPrinted(END_SCREEN);
-    expect(cliRunner.logs).toEqual(expect.stringContaining("Selected option: None"));
+    await cliRunner.waitUntilHasLogged(END_SCREEN);
+    expect(cliRunner.logs.current).toEqual(expect.stringContaining("Selected option: None"));
   });
 
   it('should print selected option as "option1" when user selects "Option 1"', async () => {
-    await cliRunner.hasPrinted(END_SCREEN);
-    const newScreen = await cliRunner.newScreenAfter(cliRunner.pressEnter);
+    await cliRunner.waitUntilHasLogged(END_SCREEN);
+    const newScreen = await cliRunner.executeAndWaitUntilNewScreenRendered(
+      cliRunner.pressEnter.bind(cliRunner)
+    );
     expect(newScreen).toEqual(expect.stringContaining("Selected option: option1"));
   });
 
   it('should enter in logs mode when user select "Display logs"', async () => {
-    await cliRunner.hasPrinted(END_SCREEN);
+    await cliRunner.waitUntilHasLogged(END_SCREEN);
     cliRunner.cursorDown();
-    const newScreen = await cliRunner.newScreenAfter(cliRunner.pressEnter);
+    const newScreen = await cliRunner.executeAndWaitUntilNewScreenRendered(
+      cliRunner.pressEnter.bind(cliRunner)
+    );
 
     expect(newScreen).toEqual(expect.stringContaining("Displaying logs"));
   });
 
   it("should exit logs mode when user press a key", async () => {
-    await cliRunner.hasPrinted(END_SCREEN);
+    await cliRunner.waitUntilHasLogged(END_SCREEN);
     cliRunner.cursorDown();
-    await cliRunner.newScreenAfter(cliRunner.pressEnter);
-    const newScreen = await cliRunner.newScreenAfter(cliRunner.pressEnter);
+    await cliRunner.executeAndWaitUntilNewScreenRendered(cliRunner.pressEnter.bind(cliRunner));
+    const newScreen = await cliRunner.executeAndWaitUntilNewScreenRendered(
+      cliRunner.pressEnter.bind(cliRunner)
+    );
 
     expect(newScreen).toEqual(expect.stringContaining("Selected option: logs"));
   });
 
   it("should exit process when displaying logs if user press CTRL+C", async () => {
-    await cliRunner.hasPrinted(END_SCREEN);
+    await cliRunner.waitUntilHasLogged(END_SCREEN);
     cliRunner.cursorDown();
-    await cliRunner.newScreenAfter(cliRunner.pressEnter);
+    await cliRunner.executeAndWaitUntilNewScreenRendered(cliRunner.pressEnter.bind(cliRunner));
     cliRunner.pressCtrlC();
+    await cliRunner.hasExited();
 
-    expect(await cliRunner.hasExit()).toEqual(true);
+    expect(true).toEqual(true);
   });
 });

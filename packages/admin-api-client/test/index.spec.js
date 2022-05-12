@@ -44,7 +44,7 @@ describe("react-admin-client methods used with node", () => {
       it("should return alerts array", async () => {
         expect.assertions(1);
         await updateSettings({
-          path: "mocks-with-error",
+          files: { path: "mocks-with-error" },
         });
         await wait(2000);
         const alerts = await readAlerts();
@@ -63,8 +63,10 @@ describe("react-admin-client methods used with node", () => {
     describe("when alerts are removed", () => {
       it("should return no alerts", async () => {
         await updateSettings({
-          path: "mocks",
-          mock: "base",
+          files: { path: "mocks" },
+          mocks: {
+            selected: "base",
+          },
         });
         await wait(2000);
         const alerts = await readAlerts();
@@ -76,10 +78,12 @@ describe("react-admin-client methods used with node", () => {
   describe("when updating settings", () => {
     it("should update current delay", async () => {
       await updateSettings({
-        delay: 1000,
+        mocks: {
+          delay: 1000,
+        },
       });
       const settings = await readSettings();
-      expect(settings.delay).toEqual(1000);
+      expect(settings.mocks.delay).toEqual(1000);
     });
   });
 

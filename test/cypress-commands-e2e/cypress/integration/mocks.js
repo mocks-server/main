@@ -65,8 +65,10 @@ describe("Mocks server responses", () => {
   describe("when settings are changed", () => {
     before(() => {
       cy.mocksSetSettings({
-        mock: "standard",
-        delay: 0,
+        mocks: {
+          selected: "standard",
+          delay: 0,
+        },
       });
       cy.visit("/");
     });

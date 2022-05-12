@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - docs: Fix docs examples
+- chore: Fix repository property in package.json
 
 ## [4.0.1] - 2022-03-28
 

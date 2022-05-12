@@ -13,7 +13,7 @@ const currentMock = new Selector(
   settings,
   mocks,
   (_query, settingsResults, mocksResults) => {
-    return mocksModel.queries.byId(settingsResults.mock || mocksResults[0].id);
+    return mocksModel.queries.byId(settingsResults.mocks.selected || mocksResults[0].id);
   },
   {
     initialState: {

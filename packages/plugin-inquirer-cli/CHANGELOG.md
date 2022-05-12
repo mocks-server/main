@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 - feat: BREAKING CHANGE. Remove support for v1 legacy mode
 
+### Fixed
+- chore: Fix repository property in package.json
+
 ## [2.2.1] - 2022-03-28
 
 ### Changed

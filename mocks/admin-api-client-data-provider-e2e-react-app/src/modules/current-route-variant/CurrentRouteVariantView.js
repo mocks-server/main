@@ -4,13 +4,17 @@ import { settings } from "@mocks-server/admin-api-client-data-provider";
 const CurrentRouteVariantView = ({ mock, routeVariant }) => {
   const setBehaviorBase = () => {
     settings.update({
-      mock: "base",
+      mocks: {
+        selected: "base",
+      },
     });
   };
 
   const setBehaviorUser2 = () => {
     settings.update({
-      mock: "user2",
+      mocks: {
+        selected: "user2",
+      },
     });
   };
 

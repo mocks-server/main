@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+"use strict";
+
+const Core = require("@mocks-server/core");
+const InquirerCli = require("@mocks-server/plugin-inquirer-cli");
+
+const handleError = (error) => {
+  console.error(`Error: ${error.message}`);
+  process.exitCode = 1;
+};
+
+const start = () => {
+  try {
+    const mocksServer = new Core({
+      plugins: { register: [InquirerCli] },
+    });
+
+    return mocksServer.start().catch(handleError);
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+start();

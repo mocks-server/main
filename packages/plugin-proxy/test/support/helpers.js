@@ -1,5 +1,6 @@
 const path = require("path");
 
+const deepMerge = require("deepmerge");
 const crossFetch = require("cross-fetch");
 const waitOn = require("wait-on");
 
@@ -11,9 +12,13 @@ const HOST_PORT = 3200;
 const HOST_PORT_2 = 3300;
 
 const defaultOptions = {
-  port: SERVER_PORT,
+  server: {
+    port: SERVER_PORT,
+  },
+  files: {
+    watch: false,
+  },
   log: "silly",
-  watch: false,
 };
 
 const defaultRequestOptions = {
@@ -29,19 +34,29 @@ const fixturesFolder = (folderName) => {
 
 const createCore = ({ loadPlugin = true } = {}) => {
   return new Core({
-    onlyProgrammaticOptions: true,
-    plugins: loadPlugin ? [Plugin] : [],
+    config: {
+      readArguments: false,
+      readFile: false,
+      readEnvironment: false,
+    },
+    plugins: { register: loadPlugin ? [Plugin] : [] },
   });
 };
 
 const startExistingCore = (core, mocksPath, options = {}) => {
   const mocks = mocksPath || "docs-example";
   return core
-    .init({
-      ...defaultOptions,
-      path: fixturesFolder(mocks),
-      ...options,
-    })
+    .init(
+      deepMerge.all([
+        defaultOptions,
+        {
+          files: {
+            path: fixturesFolder(mocks),
+          },
+        },
+        options,
+      ])
+    )
     .then(() => {
       return core.start().then(() => {
         return Promise.resolve(core);
@@ -51,13 +66,13 @@ const startExistingCore = (core, mocksPath, options = {}) => {
 
 const startHost = () => {
   return startExistingCore(createCore({ loadPlugin: false }), "host", {
-    port: HOST_PORT,
+    server: { port: HOST_PORT },
   });
 };
 
 const startHost2 = () => {
   return startExistingCore(createCore({ loadPlugin: false }), "host-2", {
-    port: HOST_PORT_2,
+    server: { port: HOST_PORT_2 },
   });
 };
 

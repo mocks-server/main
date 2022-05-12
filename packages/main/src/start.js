@@ -23,7 +23,9 @@ const handleError = (error) => {
 const start = () => {
   try {
     const mocksServer = new Core({
-      plugins: [PluginProxy, AdminApi, InquirerCli],
+      plugins: {
+        register: [PluginProxy, AdminApi, InquirerCli],
+      },
     });
     return mocksServer.start().catch(handleError);
   } catch (error) {

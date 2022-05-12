@@ -12,6 +12,18 @@ const express = require("express");
 
 const tracer = require("../tracer");
 
+const OPTIONS = [
+  {
+    name: "selected",
+    type: "string",
+  },
+  {
+    name: "delay",
+    type: "number",
+    default: 0,
+  },
+];
+
 const {
   getPlainMocks,
   getPlainRoutes,
@@ -25,21 +37,15 @@ const { getIds, compileRouteValidator, catchInitValidatorError } = require("./va
 
 class Mocks {
   constructor(
-    {
-      getLoadedMocks,
-      getLoadedRoutes,
-      getCurrentMock,
-      getDelay,
-      onChange,
-      addAlert,
-      removeAlerts,
-    },
+    { config, getLoadedMocks, getLoadedRoutes, onChange, addAlert, removeAlerts },
     core
   ) {
+    this._config = config;
+    [this._currentMockOption, this._currentDelayOption] = this._config.addOptions(OPTIONS);
+    this._currentMockOption.onChange(this._setCurrent.bind(this));
+
     this._getLoadedMocks = getLoadedMocks;
     this._getLoadedRoutes = getLoadedRoutes;
-    this._getCurrentMock = getCurrentMock;
-    this._getDelay = getDelay;
     this._onChange = onChange;
     this._addAlert = addAlert;
     this._removeAlerts = removeAlerts;
@@ -57,6 +63,11 @@ class Mocks {
     this._customVariantsMock = null;
 
     this.router = this.router.bind(this);
+    this.getDelay = this.getDelay.bind(this);
+  }
+
+  getDelay() {
+    return this._currentDelayOption.value;
   }
 
   _reloadRouter() {
@@ -78,7 +89,7 @@ class Mocks {
       addAlert: this._addAlert,
       removeAlerts: this._removeAlerts,
       routeVariants: this._routesVariants,
-      getGlobalDelay: this._getDelay,
+      getGlobalDelay: this.getDelay,
     });
   }
 
@@ -104,7 +115,7 @@ class Mocks {
     this._plainRoutes = getPlainRoutes(this._routesDefinitions, this._routesVariants);
     this._plainRoutesVariants = getPlainRoutesVariants(this._routesVariants);
     this._plainMocks = getPlainMocks(this._mocks, this._mocksDefinitions);
-    this.current = this._getCurrentMock();
+    this.current = this._currentMockOption.value;
   }
 
   init(routesHandlers) {
@@ -124,7 +135,7 @@ class Mocks {
     this._router(req, res, next);
   }
 
-  set current(id) {
+  _setCurrent(id) {
     tracer.verbose(`Trying to set current mock as "${id}"`);
     let current;
     this._removeAlerts("current:settings");
@@ -163,6 +174,10 @@ class Mocks {
     this._reloadRouter();
   }
 
+  set current(id) {
+    this._setCurrent(id);
+  }
+
   _stopUsingVariants() {
     this._customVariants = [];
     this._customVariantsMock = null;
@@ -179,7 +194,7 @@ class Mocks {
       mockIndex: "custom",
       mocksDefinitions: this._mocksDefinitions,
       routeVariants: this._routesVariants,
-      getGlobalDelay: this._getDelay,
+      getGlobalDelay: this.getDelay,
       addAlert: this._addAlert,
       removeAlerts: this._removeAlerts,
     });

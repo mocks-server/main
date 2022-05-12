@@ -4,8 +4,12 @@
 
 module.exports = {
   // options
-  options: {
+  server: {
     port: 3100,
-    cli: false,
+  },
+  plugins: {
+    inquirerCli: {
+      enabled: false,
+    },
   },
 };

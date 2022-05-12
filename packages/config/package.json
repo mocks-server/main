@@ -1,7 +1,7 @@
 {
   "name": "@mocks-server/config",
   "version": "1.0.0",
-  "description": "Configuration handler for @mocks-server/core",
+  "description": "Modular configuration handler",
   "keywords": [
     "config",
     "settings",
@@ -14,14 +14,18 @@
   ],
   "author": "Javier Brea",
   "license": "MIT",
-  "repository": "https://github.com/mocks-server/main",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mocks-server/main.git",
+    "directory": "packages/config"
+  },
   "homepage": "https://www.mocks-server.org",
   "publishConfig": {
     "access": "public"
   },
   "files": [
     "scaffold",
-    "legacy",
+    "src",
     "index.js"
   ],
   "main": "index.js",
@@ -29,7 +33,11 @@
     "test:unit": "jest"
   },
   "dependencies": {
+    "ajv": "8.9.0",
+    "better-ajv-errors": "1.2.0",
     "commander": "8.3.0",
+    "cosmiconfig": "7.0.1",
+    "deepmerge": "4.2.2",
     "fs-extra": "10.0.0",
     "is-promise": "4.0.0",
     "lodash": "4.17.21"

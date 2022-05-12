@@ -13,6 +13,7 @@ const sinon = require("sinon");
 const http = require("http");
 
 const LibsMocks = require("../Libs.mocks.js");
+const ConfigMock = require("../Config.mocks");
 const CoreMocks = require("../Core.mocks.js");
 
 const Server = require("../../src/server/Server");
@@ -27,6 +28,7 @@ const wait = (time = 1000) => {
 };
 
 describe("Server", () => {
+  let configMock;
   let sandbox;
   let callbacks;
   let libsMocks;
@@ -37,12 +39,12 @@ describe("Server", () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    configMock = new ConfigMock();
     callbacks = {
+      config: configMock.stubs.namespace,
       addAlert: sandbox.stub(),
       removeAlerts: sandbox.stub(),
-      getHostOption: sandbox.stub(),
       getCorsOption: sandbox.stub(),
-      getPortOption: sandbox.stub(),
       getCorsPreFlightOption: sandbox.stub(),
     };
     processOnStub = sandbox.stub(process, "on");
@@ -229,7 +231,7 @@ describe("Server", () => {
 
     it("should add cors middleware if cors option is enabled", async () => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
-      callbacks.getCorsOption.returns(true);
+      configMock.stubs.option.value = true;
       await server.init();
       await server.start();
       expect(libsMocks.stubs.express.use.callCount).toEqual(8);
@@ -312,21 +314,19 @@ describe("Server", () => {
 
     it("should log the server host and port", async () => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
-      callbacks.getHostOption.returns("0.0.0.0");
-      callbacks.getPortOption.returns(3000);
+      configMock.stubs.option.value = "0.0.0.0";
       await server.start();
       expect(
-        tracer.info.calledWith("Server started and listening at http://localhost:3000")
+        tracer.info.calledWith("Server started and listening at http://localhost:0.0.0.0")
       ).toEqual(true);
     });
 
     it("should log the server host and port when host is custom", async () => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
-      callbacks.getHostOption.returns("foo-host");
-      callbacks.getPortOption.returns(5000);
+      configMock.stubs.option.value = "foo-host";
       await server.start();
       expect(
-        tracer.info.calledWith("Server started and listening at http://foo-host:5000")
+        tracer.info.calledWith("Server started and listening at http://foo-host:foo-host")
       ).toEqual(true);
     });
 

@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "mocks": "mocks-server",
-    "start": "mocks-server --no-cli"
+    "start": "mocks-server --no-plugins.inquirerCli.enabled"
   },
   "devDependencies": {
     "@mocks-server/main": "workspace:*"

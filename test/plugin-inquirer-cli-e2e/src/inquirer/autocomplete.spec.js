@@ -110,6 +110,7 @@ describe("when autocomplete fixture is executed", () => {
       "a-tag",
       { timeout: RENDER_TIME_OUT }
     );
+    await wait(1000);
     const newScreen = await cliRunner.executeAndWaitUntilNewScreenRendered(
       cliRunner.pressEnter.bind(cliRunner),
       {
@@ -140,6 +141,7 @@ describe("when autocomplete fixture is executed", () => {
       "c-tag",
       { timeout: RENDER_TIME_OUT }
     );
+    await wait(1000);
     const newScreen = await cliRunner.executeAndWaitUntilNewScreenRendered(
       cliRunner.pressEnter.bind(cliRunner),
       {

@@ -38,6 +38,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Plugins now receive a third argument with a config object for adding their options.
 - feat: Add config getter to core.
 
+### Fixed
+- chore: Fix repository property in package.json
+
 ## [2.5.3] - 2022-03-28
 
 ### Changed

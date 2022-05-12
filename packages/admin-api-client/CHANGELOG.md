@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 - feat: BREAKING CHANGE. Remove legacy methods readBehaviors, readBehavior, readFixtures and readFixture.
 
+### Fixed
+- chore: Fix repository property in package.json
+
 ## [4.0.1] - 2022-03-28
 
 ### Changed

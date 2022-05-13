@@ -41,7 +41,7 @@ class Plugin {
     return PLUGIN_NAME;
   }
 
-  constructor(core, _methods, config) {
+  constructor({ core, config }) {
     this._core = core;
     this._tracer = core.tracer;
     this._config = config;

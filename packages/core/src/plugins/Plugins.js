@@ -40,6 +40,7 @@ class Plugins {
     this._core = core;
     this._pluginsInstances = [];
     this._pluginsMethods = [];
+    this._pluginsOptions = [];
     this._pluginsRegistered = 0;
     this._pluginsInitialized = 0;
     this._pluginsStarted = 0;
@@ -97,6 +98,7 @@ class Plugins {
 
   _registerPlugin(Plugin, pluginMethods, pluginIndex) {
     let pluginInstance, pluginConfig;
+    const pluginOptions = { core: this._core, ...pluginMethods };
     if (isObject(Plugin) && !isFunction(Plugin)) {
       pluginInstance = Plugin;
       this._pluginsInstances.push(pluginInstance);
@@ -106,14 +108,16 @@ class Plugins {
         if (Plugin.id) {
           pluginConfig = this._config.addNamespace(Plugin.id);
         }
-        pluginInstance = new Plugin(this._core, pluginMethods, pluginConfig);
+        const pluginFinalOptions = { ...pluginOptions, config: pluginConfig };
+        pluginInstance = new Plugin(pluginFinalOptions);
+        this._pluginsOptions.push(pluginFinalOptions);
         this._pluginsInstances.push(pluginInstance);
         this._pluginsRegistered++;
       } catch (error) {
         if (error.message.includes("is not a constructor")) {
           try {
             const pluginFunc = Plugin;
-            pluginInstance = pluginFunc(this._core, pluginMethods) || {};
+            pluginInstance = pluginFunc(pluginOptions) || {};
             this._pluginsInstances.push(pluginInstance);
             this._pluginsRegistered++;
           } catch (err) {
@@ -124,15 +128,23 @@ class Plugins {
         }
       }
     }
-    if (typeof pluginInstance.register === "function") {
-      try {
-        if (!pluginConfig && pluginInstance.id) {
-          pluginConfig = this._config.addNamespace(pluginInstance.id);
+    if (
+      isFunction(pluginInstance.register) ||
+      isFunction(pluginInstance.init) ||
+      isFunction(pluginInstance.start)
+    ) {
+      if (!pluginConfig && pluginInstance.id) {
+        pluginConfig = this._config.addNamespace(pluginInstance.id);
+      }
+      const pluginFinalOptions = { ...pluginOptions, config: pluginConfig };
+      this._pluginsOptions.push(pluginFinalOptions);
+      if (isFunction(pluginInstance.register)) {
+        try {
+          pluginInstance.register(pluginFinalOptions);
+        } catch (error) {
+          this._catchRegisterError(error, pluginIndex);
+          this._pluginsRegistered = this._pluginsRegistered - 1;
         }
-        pluginInstance.register(this._core, pluginMethods, pluginConfig);
-      } catch (error) {
-        this._catchRegisterError(error, pluginIndex);
-        this._pluginsRegistered = this._pluginsRegistered - 1;
       }
     }
     return pluginInstance;
@@ -185,10 +197,7 @@ class Plugins {
     tracer.debug(`Initializing plugin "${pluginId}"`);
     let pluginInit;
     try {
-      pluginInit = this._pluginsInstances[pluginIndex].init(
-        this._core,
-        this._pluginsMethods[pluginIndex]
-      );
+      pluginInit = this._pluginsInstances[pluginIndex].init(this._pluginsOptions[pluginIndex]);
     } catch (error) {
       return this._catchInitError(error, pluginIndex).then(initNextPlugin);
     }
@@ -227,10 +236,7 @@ class Plugins {
     tracer.debug(`Starting plugin "${pluginId}"`);
     let pluginStart;
     try {
-      pluginStart = this._pluginsInstances[pluginIndex].start(
-        this._core,
-        this._pluginsMethods[pluginIndex]
-      );
+      pluginStart = this._pluginsInstances[pluginIndex].start(this._pluginsOptions[pluginIndex]);
     } catch (error) {
       return this._catchStartError(error, pluginIndex).then(startNextPlugin);
     }
@@ -270,10 +276,7 @@ class Plugins {
     tracer.debug(`Stopping plugin "${pluginId}"`);
     let pluginStop;
     try {
-      pluginStop = this._pluginsInstances[pluginIndex].stop(
-        this._core,
-        this._pluginsMethods[pluginIndex]
-      );
+      pluginStop = this._pluginsInstances[pluginIndex].stop(this._pluginsOptions[pluginIndex]);
     } catch (error) {
       return this._catchStopError(error, pluginIndex).then(stopNextPlugin);
     }

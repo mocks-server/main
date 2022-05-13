@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - feat: BREAKING CHANGE. Renamed plugins `displayName` into `id`. Plugins as classes are required to have an static property id. Otherwise config is received only in register method
 - feat: BREAKING CHANGE. Configuration format changed.
+- feat: BREAKING CHANGE. Change arguments passed to the plugins. Now there is only one argument with an object containing everything. Pass namespaced config if plugin has defined id.
 - refactor: Use callbacks internally instead of events. Remove Orchestrator
 - refactor: Move Settings and Config to a separated package
 - refactor: FilesLoader is not loaded as a plugin any more in the core.

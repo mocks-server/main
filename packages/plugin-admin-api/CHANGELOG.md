@@ -15,8 +15,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 
 ### Removed
- - feat: BREAKING CHANGE. Remove legacy APIs under /legacy path
- - feat: BREAKING CHANGE. Remove `adminApiDeprecatedPaths` option.
+- feat: BREAKING CHANGE. Remove legacy APIs under /legacy path
+- feat: BREAKING CHANGE. Remove `adminApiDeprecatedPaths` option.
+
+### Changed
+- feat: BREAKING CHANGE. Change received arguments to make the plugin compatible with core v3
 
  ### Fixed
 - chore: Fix repository property in package.json

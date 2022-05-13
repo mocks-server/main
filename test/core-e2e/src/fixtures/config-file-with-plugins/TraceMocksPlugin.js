@@ -3,7 +3,7 @@ class Plugin {
     return "trace-mocks";
   }
 
-  constructor(core, _methods, config) {
+  constructor({ core, config }) {
     this._traceMocks = config.addOption({
       name: "traceMocks",
       type: "boolean",
@@ -20,7 +20,7 @@ class Plugin {
     return "trace-mocks";
   }
 
-  init(core) {
+  init({ core }) {
     this._enabled = this._traceMocks.value;
     this._removeChangeMocksListener = core.onChangeMocks(this._onChangeMocks);
     core.tracer.debug(`traceMocks initial value is ${this._traceMocks.value}`);
@@ -32,13 +32,13 @@ class Plugin {
     }
   }
 
-  start(core) {
+  start({ core }) {
     this._started = true;
     core.tracer.debug("traceMocks plugin started");
     this.traceMocks();
   }
 
-  stop(core) {
+  stop({ core }) {
     this._started = false;
     core.tracer.debug("traceMocks plugin stopped");
   }

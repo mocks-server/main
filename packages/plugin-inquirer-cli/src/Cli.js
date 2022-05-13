@@ -120,7 +120,7 @@ class Cli {
     return "inquirerCli";
   }
 
-  constructor(core, _methods, config) {
+  constructor({ core, config }) {
     this._config = config;
     this._core = core;
     this._tracer = core.tracer;

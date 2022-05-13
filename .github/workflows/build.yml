@@ -6,7 +6,6 @@ on:
     branches:
       - master
       - release
-      - plugin-arguments
   pull_request:
 jobs:
   get-affected:

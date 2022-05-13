@@ -110,13 +110,13 @@ describe("Plugins", () => {
       };
       pluginsOption.value = [fooPlugin];
       await plugins.register();
-      expect(fooPlugin.register.calledWith(coreInstance)).toEqual(true);
+      expect(fooPlugin.register.getCall(0).args[0].core).toEqual(coreInstance);
     });
 
     it("should register object plugins with register method passing to them custom methods", async () => {
       expect.assertions(4);
       const fooPlugin = {
-        register: (_coreIns, methods) => {
+        register: (methods) => {
           methods.loadRoutes();
           methods.loadMocks();
           methods.addAlert("foo", "Foo message");
@@ -169,18 +169,20 @@ describe("Plugins", () => {
     });
 
     it("should register function plugins executing them passing the core", async () => {
-      expect.assertions(3);
-      const fooPlugin = sinon.spy();
+      expect.assertions(2);
+      let receivedCore;
+      const fooPlugin = ({ core }) => {
+        receivedCore = core;
+      };
       pluginsOption.value = [fooPlugin];
       await plugins.register();
-      expect(fooPlugin.calledWith(coreInstance)).toEqual(true);
-      expect(fooPlugin.callCount).toEqual(1);
+      expect(receivedCore).toEqual(coreInstance);
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
     });
 
     it("should register function plugins executing them passing custom methods", async () => {
       expect.assertions(4);
-      const fooPlugin = (_coreIns, methods) => {
+      const fooPlugin = (methods) => {
         methods.loadMocks();
         methods.loadRoutes();
         methods.addAlert("foo", "Foo message");
@@ -205,7 +207,7 @@ describe("Plugins", () => {
       });
       pluginsOption.value = [fooPlugin];
       await plugins.register();
-      expect(spy.calledWith(coreInstance)).toEqual(true);
+      expect(spy.getCall(0).args[0].core).toEqual(coreInstance);
       expect(spy.callCount).toEqual(1);
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
     });
@@ -249,7 +251,7 @@ describe("Plugins", () => {
       let instantiated = false;
       let receivedCore;
       class FooPlugin {
-        constructor(core) {
+        constructor({ core }) {
           console.log("Created class");
           receivedCore = core;
           instantiated = true;
@@ -265,7 +267,7 @@ describe("Plugins", () => {
     it("should register class plugins, instantiating them passing custom methods", async () => {
       expect.assertions(4);
       class FooPlugin {
-        constructor(_core, methods) {
+        constructor(methods) {
           methods.loadMocks();
           methods.loadRoutes();
           methods.addAlert("foo", "Foo message");
@@ -309,7 +311,7 @@ describe("Plugins", () => {
         constructor() {
           console.log("Created class");
         }
-        register(core) {
+        register({ core }) {
           receivedCore = core;
           instantiated = true;
         }
@@ -499,6 +501,56 @@ describe("Plugins", () => {
       await plugins.init();
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
+
+    it("should init plugins passing the core, config and custom methods", async () => {
+      let receivedCore;
+      let receivedConfig;
+      const fooPlugin = () => {
+        return {
+          id: "foo-plugin",
+          init: ({
+            core,
+            loadMocks: loadMocksOption,
+            loadRoutes: loadRoutesOption,
+            addAlert: addAlertOption,
+            removeAlerts: removeAlertsOption,
+            config,
+          }) => {
+            receivedCore = core;
+            receivedConfig = config;
+            loadMocksOption();
+            loadRoutesOption();
+            addAlertOption("foo", "Foo message");
+            removeAlertsOption();
+          },
+        };
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      await plugins.init();
+      expect(receivedCore).toEqual(coreInstance);
+      expect(receivedConfig).toEqual(configMocks.stubs.namespace);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
+      expect(loadMocks.callCount).toEqual(1);
+      expect(loadRoutes.callCount).toEqual(1);
+      expect(callbacks.addAlert.calledWith(`foo-plugin:foo`, "Foo message")).toEqual(true);
+      expect(callbacks.removeAlerts.calledWith(`foo-plugin:`)).toEqual(true);
+    });
+
+    it("should not pass the config object if plugin has not id", async () => {
+      let receivedConfig;
+      const fooPlugin = () => {
+        return {
+          init: ({ config }) => {
+            receivedConfig = config;
+          },
+        };
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      await plugins.init();
+      expect(receivedConfig).toEqual(undefined);
+    });
   });
 
   describe("start method", () => {
@@ -617,6 +669,41 @@ describe("Plugins", () => {
       await plugins.start();
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
+
+    it("should start plugins passing the core, config and custom methods", async () => {
+      let receivedCore;
+      let receivedConfig;
+      const fooPlugin = () => {
+        return {
+          id: "foo-plugin",
+          start: ({
+            core,
+            loadMocks: loadMocksOption,
+            loadRoutes: loadRoutesOption,
+            addAlert: addAlertOption,
+            removeAlerts: removeAlertsOption,
+            config,
+          }) => {
+            receivedCore = core;
+            receivedConfig = config;
+            loadMocksOption();
+            loadRoutesOption();
+            addAlertOption("foo", "Foo message");
+            removeAlertsOption();
+          },
+        };
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      await plugins.start();
+      expect(receivedCore).toEqual(coreInstance);
+      expect(receivedConfig).toEqual(configMocks.stubs.namespace);
+      expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
+      expect(loadMocks.callCount).toEqual(1);
+      expect(loadRoutes.callCount).toEqual(1);
+      expect(callbacks.addAlert.calledWith(`foo-plugin:foo`, "Foo message")).toEqual(true);
+      expect(callbacks.removeAlerts.calledWith(`foo-plugin:`)).toEqual(true);
+    });
   });
 
   describe("stop method", () => {
@@ -730,10 +817,10 @@ describe("Plugins", () => {
     let fooPlugin;
     beforeEach(() => {
       fooPlugin = {
-        register: (_core, { addAlert }) => {
+        register: ({ addAlert }) => {
           addAlert("test-register", "Testing register alert");
         },
-        start: (_core, { addAlert }) => {
+        start: ({ addAlert }) => {
           addAlert("test-start", "Testing start alert");
         },
         id: "foo-name",
@@ -751,10 +838,10 @@ describe("Plugins", () => {
     it("should rename the scope if the id is added afterwards", async () => {
       expect.assertions(2);
       fooPlugin = {
-        register: (_core, { addAlert }) => {
+        register: ({ addAlert }) => {
           addAlert("test-register", "Testing register alert");
         },
-        start: (_core, { addAlert }) => {
+        start: ({ addAlert }) => {
           addAlert("test-start", "Testing start alert");
         },
       };

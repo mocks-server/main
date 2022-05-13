@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 - feat: BREAKING CHANGE. Remove support for v1 legacy mode
 
+### Changed
+- feat: BREAKING CHANGE. Change received arguments to make the plugin compatible with core v3
+
 ### Fixed
 - chore: Fix repository property in package.json
 

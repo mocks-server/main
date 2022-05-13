@@ -39,7 +39,7 @@ describe("Cli", () => {
     coreMocks = new CoreMocks();
     configMock = new ConfigMocks();
     coreInstance = coreMocks.stubs.instance;
-    cli = new Cli(coreInstance, {}, configMock.stubs.namespace);
+    cli = new Cli({ core: coreInstance, config: configMock.stubs.namespace });
     expect.assertions(1);
     mockOptions = () => {
       optionCli = { ...cli._optionCli, value: true };
@@ -78,7 +78,7 @@ describe("Cli", () => {
 
     it("not be initializated if cli setting is disabled", async () => {
       inquirerMocks.reset();
-      cli = new Cli(coreInstance, {}, configMock.stubs.namespace);
+      cli = new Cli({ core: coreInstance, config: configMock.stubs.namespace });
       mockOptions();
       optionCli.value = false;
       await cli.init();
@@ -226,7 +226,7 @@ describe("Cli", () => {
 
     it("should init if it has not been inited before", async () => {
       inquirerMocks.reset();
-      cli = new Cli(coreInstance, {}, configMock.stubs.namespace);
+      cli = new Cli({ core: coreInstance, config: configMock.stubs.namespace });
       mockOptions();
       optionCli.value = true;
       await cli.start();
@@ -235,7 +235,7 @@ describe("Cli", () => {
 
     it("should do nothing if cli is disabled", async () => {
       inquirerMocks.reset();
-      cli = new Cli(coreInstance, {}, configMock.stubs.namespace);
+      cli = new Cli({ core: coreInstance, config: configMock.stubs.namespace });
       mockOptions();
       optionCli.value = false;
       await cli.init();
@@ -545,7 +545,7 @@ describe("Cli", () => {
       expect.assertions(2);
       const fooLogLevel = "foo-log-level";
       coreMocks.reset();
-      cli = new Cli(coreInstance, {}, configMock.stubs.namespace);
+      cli = new Cli({ core: coreInstance, config: configMock.stubs.namespace });
       mockOptions();
       optionCli.value = true;
       optionLog.value = fooLogLevel;

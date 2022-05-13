@@ -3,7 +3,7 @@ class Plugin {
     return "trace-routes";
   }
 
-  constructor(core, _methods, config) {
+  constructor({ core, config }) {
     this._traceRoutes = config.addOption({
       name: "traceRoutes",
       type: "boolean",
@@ -20,7 +20,7 @@ class Plugin {
     return "trace-routes";
   }
 
-  init(core) {
+  init({ core }) {
     this._enabled = this._traceRoutes.value;
     this._removeChangeMocksListener = core.onChangeMocks(this._onChangeMocks);
     core.tracer.debug(`traceRoutes initial value is ${this._traceRoutes.value}`);
@@ -32,13 +32,13 @@ class Plugin {
     }
   }
 
-  start(core) {
+  start({ core }) {
     this._started = true;
     core.tracer.debug("traceRoutes plugin started");
     this.traceRoutes();
   }
 
-  stop(core) {
+  stop({ core }) {
     this._started = false;
     core.tracer.debug("traceRoutes plugin stopped");
   }

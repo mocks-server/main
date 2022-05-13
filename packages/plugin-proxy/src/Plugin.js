@@ -5,7 +5,7 @@ class Plugin {
     return "proxyRoutesHandler";
   }
 
-  constructor(core) {
+  constructor({ core }) {
     core.addRoutesHandler(ProxyRoutesHandler);
   }
 }

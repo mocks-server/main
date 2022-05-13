@@ -47,7 +47,7 @@
     "cross-env": "7.0.3",
     "cross-fetch": "3.1.5",
     "cross-spawn": "7.0.3",
-    "cypress": "9.3.1",
+    "cypress": "9.6.1",
     "cypress-fail-fast": "3.3.0",
     "deepmerge": "4.2.2",
     "eslint": "8.11.0",

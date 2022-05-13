@@ -334,6 +334,7 @@ const config = new Config({ moduleName: "mocks", mergeArrays: false });
   * `options` _(Object)_: Object with extra options for validation:
     * `allowAdditionalProperties` _(Boolean)_: _Default `false`_. If true, additional properties in the configuration would not produce validation errors.
 * __`value`__: Getter returning the current values from all namespaces and options as an object. Levels in the object correspond to namespaces names, and last level keys correspond to option names. It can be also used as setter as an alias of the `set` method, with default options.
+* __`loadedFile`__: Getter returning the file path of the loaded configuration file. It returns `null` if no configuration file was loaded.
 
 ### Namespace instance
 

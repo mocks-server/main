@@ -184,6 +184,14 @@ class Core {
     // Register routes handlers
     await this._routesHandlers.register(this._routesHandlersOption.value);
 
+    // SCAFFOLD. If mocks folder doesn't exist (from filesLoader), and config file doesn't exist (from Config), create scaffold.
+
+    // Get Scaffold config
+
+    // Set Config options from scaffold.
+    // Call to a config method to create scaffold
+    // Call to a filesLoader method to create mocks from scaffold
+
     // load config
     await this._config.load();
 

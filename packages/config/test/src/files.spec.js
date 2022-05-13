@@ -18,6 +18,40 @@ describe("files", () => {
     sandbox.restore();
   });
 
+  describe("when file is loaded", () => {
+    beforeEach(() => {
+      ({ config, namespace, option } = createConfig());
+    });
+
+    it("filesLoader should return the path of the loaded file", async () => {
+      cosmiconfigStub.search.resolves({
+        config: { fooNamespace: { fooOption: "value-from-file" } },
+        filepath: "foo-file-path",
+      });
+      await config.init();
+      expect(config.loadedFile).toEqual("foo-file-path");
+    });
+  });
+
+  describe("when file is not loaded", () => {
+    beforeEach(() => {
+      ({ config, namespace, option } = createConfig());
+    });
+
+    it("filesLoader should return null", async () => {
+      cosmiconfigStub.search.resolves({
+        config: { fooNamespace: { fooOption: "value-from-file" } },
+        filepath: "foo-file-path",
+      });
+      await config.init({
+        config: {
+          readFile: false,
+        },
+      });
+      expect(config.loadedFile).toEqual(null);
+    });
+  });
+
   describe("when option has a value in files", () => {
     beforeEach(() => {
       ({ config, namespace, option } = createConfig());

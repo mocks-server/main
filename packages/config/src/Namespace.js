@@ -85,7 +85,7 @@ class Namespace {
   }
 
   set value(configuration) {
-    return this.set(configuration);
+    this.set(configuration);
   }
 
   namespace(name) {

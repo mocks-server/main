@@ -24,6 +24,7 @@ const Server = require("./server/Server");
 const FilesLoader = require("./files-loader/FilesLoader");
 
 const { scopedAlertsMethods, addEventListener, arrayMerge } = require("./support/helpers");
+const Scaffold = require("./Scaffold");
 
 const MODULE_NAME = "mocks";
 const CONFIG_PLUGINS_NAMESPACE = "plugins";
@@ -136,6 +137,10 @@ class Core {
       ...scopedAlertsMethods("files", this._alerts.add, this._alerts.remove),
     });
 
+    this._scaffold = new Scaffold({
+      config: this._config, // It needs the whole configuration to get option properties and create scaffold
+    });
+
     this._inited = false;
     this._stopPluginsPromise = null;
     this._startPluginsPromise = null;
@@ -184,13 +189,9 @@ class Core {
     // Register routes handlers
     await this._routesHandlers.register(this._routesHandlersOption.value);
 
-    // SCAFFOLD. If mocks folder doesn't exist (from filesLoader), and config file doesn't exist (from Config), create scaffold.
-
-    // Get Scaffold config
-
-    // Set Config options from scaffold.
-    // Call to a config method to create scaffold
-    // Call to a filesLoader method to create mocks from scaffold
+    await this._scaffold.init({
+      filesLoaderPath: this._filesLoader.path,
+    });
 
     // load config
     await this._config.load();

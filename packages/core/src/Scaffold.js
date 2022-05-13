@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -9,17 +9,26 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-
 const fsExtra = require("fs-extra");
 
-function scaffoldPath(filePath) {
-  return path.resolve(__dirname, "..", "..", "scaffold", filePath);
+const MOCKS_SCAFFOLD_PATH = path.resolve(__dirname, "..", "scaffold", "mocks");
+
+class Scaffold {
+  constructor({ config }) {
+    this._config = config;
+  }
+
+  _createScaffold(destPath) {
+    fsExtra.copySync(MOCKS_SCAFFOLD_PATH, destPath);
+  }
+
+  init({ filesLoaderPath }) {
+    const configFileLoaded = !!this._config.loadedFile;
+
+    if (!configFileLoaded && !fsExtra.existsSync(filesLoaderPath)) {
+      return this._createScaffold(filesLoaderPath);
+    }
+  }
 }
 
-function createMocksFolder(destPath) {
-  fsExtra.copySync(scaffoldPath("mocks"), destPath);
-}
-
-module.exports = {
-  createMocksFolder,
-};
+module.exports = Scaffold;

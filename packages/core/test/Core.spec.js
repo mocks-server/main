@@ -17,6 +17,7 @@ const ConfigMocks = require("./Config.mocks.js");
 const AlertsMocks = require("./Alerts.mocks.js");
 const LoadersMocks = require("./Loaders.mocks.js");
 const FilesLoaderMocks = require("./files-loader/FilesLoader.mocks.js");
+const ScaffoldMocks = require("./Scaffold.mocks.js");
 
 const Core = require("../src/Core");
 const tracer = require("../src/tracer");
@@ -34,6 +35,7 @@ describe("Core", () => {
   let alertsInstance;
   let loadersMocks;
   let filesLoaderMocks;
+  let scaffoldMocks;
   let core;
 
   beforeEach(async () => {
@@ -49,6 +51,7 @@ describe("Core", () => {
     loadersMocks = new LoadersMocks();
     configMocks = new ConfigMocks();
     filesLoaderMocks = new FilesLoaderMocks();
+    scaffoldMocks = new ScaffoldMocks();
 
     core = new Core();
     await core.init();
@@ -63,6 +66,7 @@ describe("Core", () => {
     alertsMocks.restore();
     loadersMocks.restore();
     filesLoaderMocks.restore();
+    scaffoldMocks.restore();
   });
 
   describe("when created", () => {
@@ -158,6 +162,10 @@ describe("Core", () => {
 
     it("should init server", () => {
       expect(serverInstance.init.callCount).toEqual(1);
+    });
+
+    it("should init scaffold", () => {
+      expect(scaffoldMocks.stubs.instance.init.callCount).toEqual(1);
     });
 
     it("should init plugins", () => {

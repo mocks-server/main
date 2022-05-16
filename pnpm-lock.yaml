@@ -28,7 +28,7 @@ importers:
       cross-fetch: 3.1.5
       cross-spawn: 7.0.3
       cypress: 9.6.1
-      cypress-fail-fast: 3.3.0
+      cypress-fail-fast: 3.4.1
       deepmerge: 4.2.2
       eslint: 8.11.0
       eslint-config-prettier: 8.5.0
@@ -82,7 +82,7 @@ importers:
       cross-fetch: 3.1.5
       cross-spawn: 7.0.3
       cypress: 9.6.1
-      cypress-fail-fast: 3.3.0_cypress@9.6.1
+      cypress-fail-fast: 3.4.1_cypress@9.6.1
       deepmerge: 4.2.2
       eslint: 8.11.0
       eslint-config-prettier: 8.5.0_eslint@8.11.0
@@ -6363,8 +6363,8 @@ packages:
     resolution: {integrity: sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=}
     dev: true
 
-  /cypress-fail-fast/3.3.0_cypress@9.6.1:
-    resolution: {integrity: sha512-4CDKgIJ2JxCfihi9237+xljliHZ69TfXZ0vx9vJ2zpEic0rEBOihp/Ui0knYGtHK59N4xx5uWCON23KS7FsncA==}
+  /cypress-fail-fast/3.4.1_cypress@9.6.1:
+    resolution: {integrity: sha512-74UoLLRSNL9hbNqW4JVTEh7S1BKigrZmLmcxdntDmIDZrZFezb1A7BiSKSEXV8naLJ5xt8zK8YrEctpf0NZn3Q==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       cypress: '>=5.0.0'

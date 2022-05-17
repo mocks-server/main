@@ -10,6 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const Ajv = require("ajv");
 const { compact } = require("lodash");
+const betterAjvErrors = require("better-ajv-errors").default;
 
 const ajv = new Ajv({ allErrors: true });
 
@@ -40,11 +41,9 @@ const mocksSchema = {
   properties: {
     id: {
       type: "string",
-      errorMessage: 'Property "id" should be string',
     },
     from: {
       type: "string",
-      errorMessage: 'Property "from" should be string',
     },
     routesVariants: {
       type: "array",
@@ -52,21 +51,10 @@ const mocksSchema = {
       items: {
         type: "string",
       },
-      errorMessage: 'Property "routesVariants" should be an array of strings with unique items',
     },
   },
   required: ["id", "routesVariants"],
-  additionalProperties: {
-    not: true,
-    errorMessage: "Extra property ${0#} is not allowed",
-  },
-  errorMessage: {
-    type: "Should be an object",
-    required: {
-      id: 'Should have a string property "id"',
-      routesVariants: 'Should have a property "routesVariants"',
-    },
-  },
+  additionalProperties: false,
 };
 
 const routesSchema = {
@@ -74,7 +62,6 @@ const routesSchema = {
   properties: {
     id: {
       type: "string",
-      errorMessage: 'Property "id" should be string',
     },
     url: {
       oneOf: [
@@ -85,7 +72,6 @@ const routesSchema = {
           instanceof: "RegExp",
         },
       ],
-      errorMessage: 'Property "url" should be a string or a RegExp',
     },
     method: {
       oneOf: [
@@ -102,14 +88,10 @@ const routesSchema = {
           },
         },
       ],
-      errorMessage: `Property "method" should be a string or an array with unique items. Allowed values for "method" are "${validHttpMethods.join(
-        ","
-      )}"`,
     },
     delay: {
       type: "integer",
       minimum: 0,
-      errorMessage: `Property "delay" should be a positive integer`,
     },
     variants: {
       type: "array",
@@ -118,12 +100,10 @@ const routesSchema = {
         properties: {
           id: {
             type: "string",
-            errorMessage: 'Property "id" should be string in variant ${1#}',
           },
           handler: {
             type: "string",
             enum: [], // this enum is defined when validator is compiled
-            errorMessage: "", // this error message is defined when validator is compiled
           },
           delay: {
             oneOf: [
@@ -135,97 +115,30 @@ const routesSchema = {
                 minimum: 0,
               },
             ],
-            errorMessage:
-              'Property "delay" should be a positive integer or "null" in variant ${1#}',
           },
         },
         required: ["id"],
-        errorMessage: {
-          type: "Variant ${0#} should be an object",
-          required: {
-            id: 'Should have a string property "id" in variant ${0#}',
-          },
-        },
       },
-      errorMessage: `Property "variants" should be an array`,
     },
   },
   required: ["id", "url", "method", "variants"],
-  additionalProperties: {
-    not: true,
-    errorMessage: "Extra property ${0#} is not allowed",
-  },
-  errorMessage: {
-    type: "Should be an object",
-    required: {
-      id: 'Should have a string property "id"',
-      url: 'Should have a property "url"',
-      method: 'Should have a property "method"',
-      variants: 'Should have a property "variants"',
-    },
-  },
+  additionalProperties: false,
 };
 
-let validatorInited, mockValidator, routeValidator, originalMockValidator, originalRouteValidator;
+const mockValidator = ajv.compile(mocksSchema);
 
-function undoInitValidator() {
-  if (validatorInited) {
-    validatorInited = false;
-    originalMockValidator = mockValidator;
-    mockValidator = null;
-    originalRouteValidator = routeValidator;
-    routeValidator = null;
-  }
-}
-
-function restoreValidator() {
-  if (!validatorInited) {
-    validatorInited = true;
-    mockValidator = originalMockValidator;
-    routeValidator = originalRouteValidator;
-  }
-}
-
-function fooValidator() {
-  return true;
-}
-
-function initValidator() {
-  const initAjvErrors = require("ajv-errors");
-  initAjvErrors(ajv, { singleError: true, keepErrors: false });
-  mockValidator = ajv.compile(mocksSchema);
-  validatorInited = true;
-}
-
-function catchInitValidatorError() {
-  let error = null;
-  if (!validatorInited) {
-    try {
-      initValidator();
-    } catch (err) {
-      error = err;
-      mockValidator = fooValidator;
-    }
-  }
-  return error;
-}
+let routeValidator, routeSchema;
 
 function getIds(objs) {
   return objs.map((obj) => obj.id);
 }
 
 function compileRouteValidator(routesHandlers) {
-  if (validatorInited) {
-    const supportedRouteHandlersIds = getIds(routesHandlers);
-    const schema = { ...routesSchema };
-    schema.properties.variants.items.properties.handler.enum = supportedRouteHandlersIds;
-    schema.properties.variants.items.properties.handler.errorMessage = `Property "handler" should be one of "${supportedRouteHandlersIds.join(
-      ","
-    )}" in variant \${1#}`;
-    routeValidator = ajv.compile(schema);
-  } else {
-    routeValidator = fooValidator;
-  }
+  const supportedRouteHandlersIds = getIds(routesHandlers);
+  const schema = { ...routesSchema };
+  schema.properties.variants.items.properties.handler.enum = supportedRouteHandlersIds;
+  routeSchema = { ...schema };
+  routeValidator = ajv.compile(schema);
 }
 
 function toLowerCase(str) {
@@ -244,7 +157,7 @@ function arrayLowerAndUpper(array) {
   return array.concat(arrayToLowerCase(array));
 }
 
-function validationSingleMessage(errors) {
+function customValidationSingleMessage(errors) {
   return errors
     .reduce((messages, error) => {
       if (error.message.length) {
@@ -255,19 +168,40 @@ function validationSingleMessage(errors) {
     .join(". ");
 }
 
+function validationSingleMessage(schema, data, errors) {
+  const formattedJson = betterAjvErrors(schema, data, errors, {
+    format: "js",
+  });
+  return formattedJson.map((result) => result.error).join(". ");
+}
+
+function routeValidationMessage(data, errors) {
+  return validationSingleMessage(routeSchema, data, errors);
+}
+
+function mockValidationMessage(data, errors) {
+  return validationSingleMessage(mocksSchema, data, errors);
+}
+
 function findRouteVariantByVariantId(routesVariants, variantId) {
   return routesVariants.find((routeVariant) => routeVariant.variantId === variantId);
 }
 
+function traceId(id) {
+  return `with id '${id}'`;
+}
+
 function notFoundRouteVariantMessage(variantId) {
   return {
-    message: `routeVariant with id "${variantId}" was not found, use a valid "routeId:variantId" identifier`,
+    message: `routeVariant ${traceId(
+      variantId
+    )} was not found, use a valid 'routeId:variantId' identifier`,
   };
 }
 
 function duplicatedRouteMessage(routeId) {
   return {
-    message: `route with id "${routeId}" is used more than once in the same mock`,
+    message: `route ${traceId(routeId)} is used more than once in the same mock`,
   };
 }
 
@@ -296,16 +230,18 @@ function mockInvalidRouteVariants(mock, routeVariants) {
   };
 }
 
-function mockErrorsMessage(mock, errors) {
-  const idTrace = mock && mock.id ? `with id "${mock.id}" ` : "";
-  return `Mock ${idTrace}is invalid: ${validationSingleMessage(errors)}`;
+function mockErrorsMessagePrefix(mock) {
+  const idTrace = mock && mock.id ? `${traceId(mock.id)} ` : "";
+  return `Mock ${idTrace}is invalid:`;
 }
 
 function mockRouteVariantsValidationErrors(mock, routeVariants) {
   const invalidRouteVariants = mockInvalidRouteVariants(mock, routeVariants);
   if (invalidRouteVariants.errors.length) {
     return {
-      message: mockErrorsMessage(mock, invalidRouteVariants.errors),
+      message: `${mockErrorsMessagePrefix(mock)} ${customValidationSingleMessage(
+        invalidRouteVariants.errors
+      )}`,
       errors: invalidRouteVariants.errors,
     };
   }
@@ -316,7 +252,10 @@ function mockValidationErrors(mock) {
   const isValid = mockValidator(mock);
   if (!isValid) {
     return {
-      message: mockErrorsMessage(mock, mockValidator.errors),
+      message: `${mockErrorsMessagePrefix(mock)} ${mockValidationMessage(
+        mock,
+        mockValidator.errors
+      )}`,
       errors: mockValidator.errors,
     };
   }
@@ -326,9 +265,12 @@ function mockValidationErrors(mock) {
 function routeValidationErrors(route) {
   const isValid = routeValidator(route);
   if (!isValid) {
-    const idTrace = route && route.id ? `with id "${route.id}" ` : "";
+    const idTrace = route && route.id ? `${traceId(route.id)} ` : "";
     return {
-      message: `Route ${idTrace}is invalid: ${validationSingleMessage(routeValidator.errors)}`,
+      message: `Route ${idTrace}is invalid: ${routeValidationMessage(
+        route,
+        routeValidator.errors
+      )}`,
       errors: routeValidator.errors,
     };
   }
@@ -336,17 +278,21 @@ function routeValidationErrors(route) {
 }
 
 function variantValidationErrors(route, variant, Handler) {
-  if (!Handler.validationSchema || !validatorInited) {
+  if (!Handler.validationSchema) {
     return null;
   }
   const variantValidator = ajv.compile(Handler.validationSchema);
   const isValid = variantValidator(variant);
   if (!isValid) {
-    const idTrace = variant && variant.id ? `with id "${variant.id}" ` : "";
+    const idTrace = variant && variant.id ? `${traceId(variant.id)} ` : "";
     return {
-      message: `Variant ${idTrace}in route with id "${
+      message: `Variant ${idTrace}in route ${traceId(
         route.id
-      }" is invalid: ${validationSingleMessage(variantValidator.errors)}`,
+      )} is invalid: ${validationSingleMessage(
+        Handler.validationSchema,
+        variant,
+        variantValidator.errors
+      )}`,
       errors: variantValidator.errors,
     };
   }
@@ -363,9 +309,5 @@ module.exports = {
   validationSingleMessage,
   findRouteVariantByVariantId,
   mockRouteVariantsValidationErrors,
-  catchInitValidatorError,
-  initValidator,
-  // use only for testing
-  undoInitValidator,
-  restoreValidator,
+  customValidationSingleMessage,
 };

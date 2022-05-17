@@ -43,7 +43,7 @@
     "@hapi/boom": "9.1.4",
     "@mocks-server/config": "workspace:*",
     "ajv": "8.9.0",
-    "ajv-errors": "3.0.0",
+    "better-ajv-errors": "1.2.0",
     "body-parser": "1.19.2",
     "cors": "2.8.5",
     "deepmerge": "4.2.2",

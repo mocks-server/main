@@ -144,7 +144,7 @@ describe("when nor config file nor mocks folder exists", () => {
     });
 
     it("should have tried to load provided mocks", async () => {
-      expect(mocks.logs.all).toEqual(expect.stringContaining('Mock with id "user-2" is invalid'));
+      expect(mocks.logs.all).toEqual(expect.stringContaining("Mock with id 'user-2' is invalid"));
     });
   });
 

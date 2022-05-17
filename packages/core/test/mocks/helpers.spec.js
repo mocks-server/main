@@ -24,7 +24,7 @@ const {
   getRouteVariants,
   getMock,
 } = require("../../src/mocks/helpers");
-const { compileRouteValidator, catchInitValidatorError } = require("../../src/mocks/validations");
+const { compileRouteValidator } = require("../../src/mocks/validations");
 const DefaultRoutesHandler = require("../../src/routes-handlers/default/DefaultRoutesHandler");
 
 describe("mocks helpers", () => {
@@ -61,7 +61,6 @@ describe("mocks helpers", () => {
   let sandbox, addAlert, removeAlerts;
 
   beforeAll(() => {
-    catchInitValidatorError();
     compileRouteValidator([{ id: "foo-handler" }]);
   });
 
@@ -570,7 +569,7 @@ describe("mocks helpers", () => {
       expect(variantHandler).toEqual(null);
       expect(addAlert.getCall(0).args[0]).toEqual("foo:0");
       expect(addAlert.getCall(0).args[1]).toEqual(
-        'Variant in route with id "undefined" is invalid: Should have a property "response"'
+        "Variant in route with id 'undefined' is invalid:  must have required property 'response'"
       );
     });
 
@@ -648,7 +647,7 @@ describe("mocks helpers", () => {
       expect(routeVariants).toEqual([]);
       expect(addAlert.getCall(0).args[0]).toEqual("validation:route:0");
       expect(addAlert.getCall(0).args[1]).toEqual(
-        'Route with id "foo-route" is invalid: Should have a property "url". Should have a property "method". Should have a property "variants"'
+        "Route with id 'foo-route' is invalid:  must have required property 'variants'"
       );
     });
 
@@ -669,7 +668,7 @@ describe("mocks helpers", () => {
       expect(routeVariants).toEqual([]);
       expect(addAlert.getCall(0).args[0]).toEqual("validation:route:0");
       expect(addAlert.getCall(0).args[1]).toEqual(
-        'Route with id "foo-route" is invalid: Should have a string property "id" in variant 0'
+        "Route with id 'foo-route' is invalid: /variants/0 must have required property 'id'"
       );
     });
 
@@ -807,7 +806,7 @@ describe("mocks helpers", () => {
       expect(mock.id).toEqual("foo-id");
       expect(addAlert.getCall(0).args[0]).toEqual("validation:mock:foo-index:variants");
       expect(addAlert.getCall(0).args[1]).toEqual(
-        'Mock with id "foo-id" is invalid: routeVariant with id "foo-route:foo-id" was not found, use a valid "routeId:variantId" identifier'
+        "Mock with id 'foo-id' is invalid: routeVariant with id 'foo-route:foo-id' was not found, use a valid 'routeId:variantId' identifier"
       );
     });
 

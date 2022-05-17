@@ -35,8 +35,10 @@ class ConfigMock {
           this._option,
           this._option,
         ]),
-      option: this._sandbox.stub(),
+      option: this._sandbox.stub().returns(this._option),
     };
+
+    this._namespace.namespace = this._sandbox.stub().returns(this._namespace);
 
     this._stubs = {
       init: this._sandbox.stub().resolves(),
@@ -54,8 +56,8 @@ class ConfigMock {
         ]),
       addOption: this._sandbox.stub().returns(this._option),
       addNamespace: this._sandbox.stub().returns(this._namespace),
-      namespace: this._sandbox.stub(),
-      option: this._sandbox.stub(),
+      namespace: this._sandbox.stub().returns(this._namespace),
+      option: this._sandbox.stub().returns(this._option),
     };
 
     Config.mockImplementation(() => this._stubs);

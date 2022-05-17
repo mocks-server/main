@@ -198,6 +198,14 @@ class Config {
     this.set(configuration);
   }
 
+  get namespaces() {
+    return this._namespaces;
+  }
+
+  get options() {
+    return this._rootNamespace.options;
+  }
+
   set(configuration = {}, options) {
     this._namespaces.forEach((namespace) => {
       if (namespace.name) {

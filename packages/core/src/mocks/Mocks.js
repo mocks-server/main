@@ -14,10 +14,17 @@ const tracer = require("../tracer");
 
 const OPTIONS = [
   {
+    description: "Selected mock",
     name: "selected",
     type: "string",
+    extraData: {
+      scaffold: {
+        commented: false,
+      },
+    },
   },
   {
+    description: "Global delay to apply to routes",
     name: "delay",
     type: "number",
     default: 0,

@@ -24,7 +24,7 @@ const Server = require("./server/Server");
 const FilesLoader = require("./files-loader/FilesLoader");
 
 const { scopedAlertsMethods, addEventListener, arrayMerge } = require("./support/helpers");
-const Scaffold = require("./Scaffold");
+const Scaffold = require("./scaffold/Scaffold");
 
 const MODULE_NAME = "mocks";
 const CONFIG_PLUGINS_NAMESPACE = "plugins";
@@ -34,14 +34,16 @@ const CONFIG_FILES_LOADER = "files";
 
 const ROOT_OPTIONS = [
   {
-    name: "routesHandlers",
-    type: "array",
-    default: [],
-  },
-  {
+    description: "Log level. Can be one of silly, debug, verbose, info, warn or error",
     name: "log",
     type: "string",
     default: "info",
+  },
+  {
+    description: "Array of RouteHandlers to be added",
+    name: "routesHandlers",
+    type: "array",
+    default: [],
   },
 ];
 
@@ -59,7 +61,7 @@ class Core {
     this._configServer = this._config.addNamespace(CONFIG_SERVER_NAMESPACE);
     this._configFilesLoader = this._config.addNamespace(CONFIG_FILES_LOADER);
 
-    [this._routesHandlersOption, this._logOption] = this._config.addOptions(ROOT_OPTIONS);
+    [this._logOption, this._routesHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
 
     this._logOption.onChange(tracer.set);
 
@@ -139,6 +141,12 @@ class Core {
 
     this._scaffold = new Scaffold({
       config: this._config, // It needs the whole configuration to get option properties and create scaffold
+      ...scopedAlertsMethods(
+        "scaffold",
+        this._alerts.add,
+        this._alerts.remove,
+        this._alerts.rename
+      ),
     });
 
     this._inited = false;

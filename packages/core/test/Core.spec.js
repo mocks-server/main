@@ -17,7 +17,7 @@ const ConfigMocks = require("./Config.mocks.js");
 const AlertsMocks = require("./Alerts.mocks.js");
 const LoadersMocks = require("./Loaders.mocks.js");
 const FilesLoaderMocks = require("./files-loader/FilesLoader.mocks.js");
-const ScaffoldMocks = require("./Scaffold.mocks.js");
+const ScaffoldMocks = require("./scaffold/Scaffold.mocks.js");
 
 const Core = require("../src/Core");
 const tracer = require("../src/tracer");

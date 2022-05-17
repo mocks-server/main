@@ -12,20 +12,25 @@ class Option {
     this._eventEmitter = new EventEmitter();
     validateOptionAndThrow(properties);
     this._name = properties.name;
-    this._metaData = properties.metaData;
+    this._extraData = properties.extraData;
     this._type = properties.type;
+    this._description = properties.description;
     this._itemsType = properties.itemsType;
     this._default = this._clone(properties.default);
     this._value = this._default;
     this._eventsStarted = false;
   }
 
-  get metaData() {
-    return this._metaData;
+  get extraData() {
+    return this._extraData;
   }
 
   get name() {
     return this._name;
+  }
+
+  get description() {
+    return this._description;
   }
 
   get type() {

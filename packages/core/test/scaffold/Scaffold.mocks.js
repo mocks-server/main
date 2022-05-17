@@ -8,27 +8,33 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const path = require("path");
-const fsExtra = require("fs-extra");
+const sinon = require("sinon");
 
-const MOCKS_SCAFFOLD_PATH = path.resolve(__dirname, "..", "scaffold", "mocks");
+jest.mock("../../src/scaffold/Scaffold");
 
-class Scaffold {
-  constructor({ config }) {
-    this._config = config;
+const Scaffold = require("../../src/scaffold/Scaffold");
+
+class Mock {
+  constructor() {
+    this._sandbox = sinon.createSandbox();
+
+    this._stubs = {
+      init: this._sandbox.stub(),
+    };
+
+    Scaffold.mockImplementation(() => this._stubs);
   }
 
-  _createScaffold(destPath) {
-    fsExtra.copySync(MOCKS_SCAFFOLD_PATH, destPath);
+  get stubs() {
+    return {
+      Constructor: Scaffold,
+      instance: this._stubs,
+    };
   }
 
-  init({ filesLoaderPath }) {
-    const configFileLoaded = !!this._config.loadedFile;
-
-    if (!configFileLoaded && !fsExtra.existsSync(filesLoaderPath)) {
-      return this._createScaffold(filesLoaderPath);
-    }
+  restore() {
+    this._sandbox.restore();
   }
 }
 
-module.exports = Scaffold;
+module.exports = Mock;

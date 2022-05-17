@@ -15,7 +15,7 @@ function enforceDefaultTypeSchema(type, itemsType) {
       default: {
         type,
       },
-      metaData: {
+      extraData: {
         type: types.OBJECT,
         additionalProperties: true,
       },
@@ -116,10 +116,17 @@ function validateSchema(config, schema, validator) {
   };
 }
 
+function formatErrors(schema, data, errors) {
+  const formattedJson = betterAjvErrors(schema, data, errors, {
+    format: "js",
+  });
+  return formattedJson.map((result) => result.error).join(". ");
+}
+
 function validateSchemaAndThrow(config, schema, validator) {
   const { valid, errors } = validateSchema(config, schema, validator);
   if (!valid) {
-    throw new Error(betterAjvErrors(schema, config, errors));
+    throw new Error(formatErrors(schema, config, errors));
   }
 }
 

@@ -29,7 +29,7 @@ describe("path argument", () => {
     });
 
     it("should print a warning about creating folder", async () => {
-      expect(mocks.logs.current).toEqual(expect.stringContaining("Created folder"));
+      expect(mocks.logs.current).toEqual(expect.stringContaining("Mocks folder was not found"));
     });
 
     it("should have created a mocks folder", async () => {

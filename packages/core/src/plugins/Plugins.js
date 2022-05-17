@@ -17,6 +17,7 @@ const { scopedAlertsMethods } = require("../support/helpers");
 
 const OPTIONS = [
   {
+    description: "Plugins to be registered",
     name: "register",
     type: "array",
     default: [],

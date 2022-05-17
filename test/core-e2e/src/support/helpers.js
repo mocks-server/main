@@ -139,7 +139,11 @@ const waitForServerUrl = (url) => {
 
 const mocksRunner = (args = [], options = {}) => {
   const argsToSend = [...args];
-  argsToSend.unshift(DEFAULT_BINARY_PATH);
+  if (!options.customBinary) {
+    argsToSend.unshift(DEFAULT_BINARY_PATH);
+  } else {
+    argsToSend.unshift(options.customBinary);
+  }
   return new CliRunner(argsToSend, {
     cwd: FIXTURES_PATH,
     ...options,

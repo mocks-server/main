@@ -52,6 +52,7 @@ class Logs {
       }
       this._currentScreenLogs.push(cleanLog);
       this._lines.push(cleanLog);
+      this._allLogs.push(cleanLog);
       this._eventEmitter.emit(LOG_EVENT_NAME, cleanLog);
     }
   }

@@ -21,21 +21,25 @@ const LOCALHOST = "localhost";
 
 const OPTIONS = [
   {
+    description: "Port number for the server to be listening at",
     name: "port",
     type: "number",
     default: 3100,
   },
   {
+    description: "Host for the server",
     name: "host",
     type: "string",
     default: ALL_HOSTS,
   },
   {
+    description: "Load built-in CORS middleware or not",
     name: "cors",
     type: "boolean",
     default: true,
   },
   {
+    description: "Load built-in pre-flight CORS middleware or not",
     name: "corsPreFlight",
     type: "boolean",
     default: true,

@@ -20,6 +20,12 @@ describe("namespaces", () => {
       expect(namespace.name).toEqual("foo");
     });
 
+    it("should be available using namespaces getter", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(config.namespaces.includes(namespace)).toBe(true);
+    });
+
     it("should return same namespace if name already exists", async () => {
       let namespace2;
       config = new Config();

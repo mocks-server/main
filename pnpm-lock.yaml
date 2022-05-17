@@ -129,10 +129,10 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2
       react-redux: 7.2.8
-      redux: 4.1.2
+      redux: 4.2.0
     dependencies:
       '@data-provider/axios': 4.1.0_@data-provider+core@3.1.0
-      '@data-provider/core': 3.1.0_redux@4.1.2
+      '@data-provider/core': 3.1.0_redux@4.2.0
       '@data-provider/react': 1.6.0_f1bca3deeca712f082491ec5ebab3f7d
       '@mocks-server/admin-api-client-data-provider': link:../../packages/admin-api-client-data-provider
       '@mocks-server/admin-api-paths': link:../../packages/admin-api-paths
@@ -140,7 +140,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-redux: 7.2.8_react-dom@17.0.2+react@17.0.2
-      redux: 4.1.2
+      redux: 4.2.0
 
   mocks/admin-api-client-data-provider-e2e-vanilla-app:
     specifiers: {}
@@ -167,13 +167,13 @@ importers:
       '@data-provider/axios': 4.1.0
       '@data-provider/core': 3.1.0
       '@mocks-server/admin-api-paths': workspace:*
-      redux: 4.1.2
+      redux: 4.2.0
     dependencies:
       '@mocks-server/admin-api-paths': link:../admin-api-paths
     devDependencies:
       '@data-provider/axios': 4.1.0_@data-provider+core@3.1.0
-      '@data-provider/core': 3.1.0_redux@4.1.2
-      redux: 4.1.2
+      '@data-provider/core': 3.1.0_redux@4.2.0
+      redux: 4.2.0
 
   packages/admin-api-paths:
     specifiers: {}
@@ -1988,7 +1988,7 @@ packages:
     peerDependencies:
       '@data-provider/core': 3.x
     dependencies:
-      '@data-provider/core': 3.1.0_redux@4.1.2
+      '@data-provider/core': 3.1.0_redux@4.2.0
       axios: 0.24.0
       axios-retry: 3.2.4
       path-to-regexp: 6.2.0
@@ -1996,7 +1996,7 @@ packages:
     transitivePeerDependencies:
       - debug
 
-  /@data-provider/core/3.1.0_redux@4.1.2:
+  /@data-provider/core/3.1.0_redux@4.2.0:
     resolution: {integrity: sha512-Ppj9aebdpTtz5nQGvQ7RgtAoF+ddGv59XX7OA6qhxi9wGLx3q9horS4k/vLH6a+31yCkWHxV2rMXq3XJgZ4lgQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -2004,7 +2004,7 @@ packages:
     dependencies:
       is-promise: 4.0.0
       lodash.isplainobject: 4.0.6
-      redux: 4.1.2
+      redux: 4.2.0
 
   /@data-provider/react/1.6.0_f1bca3deeca712f082491ec5ebab3f7d:
     resolution: {integrity: sha512-isp+5miboMt4NmZS48he249NWD30vKYQ9DFi54KK6E0s3yJ9PPUqBpykun+Zjf1Jg1xrNutEK50pQemuTgkH0g==}
@@ -2014,7 +2014,7 @@ packages:
       react: '>=16.8.0'
       react-redux: '>=7.1.0'
     dependencies:
-      '@data-provider/core': 3.1.0_redux@4.1.2
+      '@data-provider/core': 3.1.0_redux@4.2.0
       hoist-non-react-statics: 3.3.2
       react: 17.0.2
       react-redux: 7.2.8_react-dom@17.0.2+react@17.0.2
@@ -3475,7 +3475,7 @@ packages:
       '@types/hoist-non-react-statics': 3.3.1
       '@types/react': 17.0.43
       hoist-non-react-statics: 3.3.2
-      redux: 4.1.2
+      redux: 4.2.0
     dev: false
 
   /@types/react/17.0.43:
@@ -13583,8 +13583,8 @@ packages:
       minimatch: 3.0.4
     dev: true
 
-  /redux/4.1.2:
-    resolution: {integrity: sha512-SH8PglcebESbd/shgf6mii6EIoRM0zrQyjcuQ+ojmfxjTtE0z9Y8pa62iA/OJ58qjP6j27uyW4kUF4jl/jd6sw==}
+  /redux/4.2.0:
+    resolution: {integrity: sha512-oSBmcKKIuIR4ME29/AeNUnl5L+hvBq7OaJWzaptTQJAntaPvxIJqfnjbaEiCzzaIz+XmVILfqAM3Ob0aXLPfjA==}
     dependencies:
       '@babel/runtime': 7.17.8
 

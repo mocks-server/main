@@ -114,14 +114,14 @@ describe("scaffold", () => {
           id: "add-headers:enabled",
           routeId: "add-headers",
           handler: "default",
-          response: "function",
+          response: null,
           delay: null,
         },
         {
           id: "add-headers:disabled",
           routeId: "add-headers",
           handler: "default",
-          response: "function",
+          response: null,
           delay: null,
         },
         {
@@ -155,7 +155,7 @@ describe("scaffold", () => {
           id: "get-user:real",
           routeId: "get-user",
           handler: "default",
-          response: "function",
+          response: null,
           delay: null,
         },
       ]);

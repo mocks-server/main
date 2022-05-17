@@ -44,7 +44,7 @@ describe("routes variants api", () => {
           id: "get-user:real",
           routeId: "get-user",
           handler: "default",
-          response: "function",
+          response: null,
           delay: null,
         },
         {

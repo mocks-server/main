@@ -63,7 +63,7 @@
     "lodash": "4.17.21",
     "prettier": "2.6.2",
     "react": "17.0.2",
-    "react-app-rewired": "2.1.11",
+    "react-app-rewired": "2.2.1",
     "react-scripts": "4.0.3",
     "request": "2.88.2",
     "request-promise": "4.2.6",

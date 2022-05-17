@@ -12,6 +12,7 @@ const path = require("path");
 const deepMerge = require("deepmerge");
 const crossFetch = require("cross-fetch");
 const waitOn = require("wait-on");
+const fsExtra = require("fs-extra");
 
 const Core = require("@mocks-server/core");
 const CliRunner = require("@mocks-server/cli-runner");
@@ -19,6 +20,7 @@ const CliRunner = require("@mocks-server/cli-runner");
 const SERVER_PORT = 3100;
 const DEFAULT_BINARY_PATH = "./starter";
 const FIXTURES_PATH = path.resolve(__dirname, "..", "fixtures");
+const CONFIG_FILE = path.resolve(FIXTURES_PATH, "mocks.config.js");
 
 const defaultOptions = {
   log: "silent",
@@ -162,6 +164,12 @@ const findTrace = (traceFragment, traces) => {
   return traces.find((trace) => trace.includes(traceFragment));
 };
 
+const removeConfigFile = () => {
+  if (fsExtra.existsSync(CONFIG_FILE)) {
+    fsExtra.removeSync(CONFIG_FILE);
+  }
+};
+
 module.exports = {
   createCore,
   startExistingCore,
@@ -176,4 +184,5 @@ module.exports = {
   filterAlerts,
   findAlert,
   findTrace,
+  removeConfigFile,
 };

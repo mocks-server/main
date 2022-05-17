@@ -14,6 +14,7 @@ const {
   fetch,
   fixturesFolder,
   findTrace,
+  removeConfigFile,
 } = require("./support/helpers");
 
 const RouteHandler = require("./fixtures/config-file-with-routes-handler/CustomRoutesHandler");
@@ -32,6 +33,7 @@ describe("when adding route handlers", () => {
     });
 
     afterAll(async () => {
+      removeConfigFile();
       await core.stop();
     });
 

@@ -17,6 +17,7 @@ const {
   wait,
   fixturesFolder,
   waitForServerUrl,
+  removeConfigFile,
 } = require("./support/helpers");
 
 describe("events", () => {
@@ -36,6 +37,7 @@ describe("events", () => {
   });
 
   afterAll(async () => {
+    removeConfigFile();
     sandbox.restore();
     await core.stop();
   });

@@ -7,8 +7,8 @@
 /node_modules
 
 # tests
+/src/fixtures/temp
 /src/fixtures/unexistant
-/src/fixtures/mocks.config.js
 /src/fixtures/mocks.config.js
 
 # misc

@@ -16,6 +16,7 @@ const {
   fixturesFolder,
   waitForServer,
   findAlert,
+  removeConfigFile,
 } = require("./support/helpers");
 
 describe("when path not exists", () => {
@@ -32,6 +33,7 @@ describe("when path not exists", () => {
   });
 
   afterAll(async () => {
+    removeConfigFile();
     await fsExtra.remove(fixturesFolder(FOLDER));
     await core.stop();
   });

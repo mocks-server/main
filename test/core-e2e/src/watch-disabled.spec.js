@@ -9,7 +9,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const fsExtra = require("fs-extra");
-const { mocksRunner, fetch, fixturesFolder, waitForServer, wait } = require("./support/helpers");
+const {
+  mocksRunner,
+  fetch,
+  fixturesFolder,
+  waitForServer,
+  wait,
+  removeConfigFile,
+} = require("./support/helpers");
 
 describe("when files watch is disabled", () => {
   let mocks;
@@ -22,6 +29,7 @@ describe("when files watch is disabled", () => {
   });
 
   afterAll(async () => {
+    removeConfigFile();
     await fsExtra.remove(fixturesFolder("temp"));
     await mocks.kill();
   });

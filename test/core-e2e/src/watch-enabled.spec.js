@@ -16,6 +16,7 @@ const {
   waitForServer,
   waitForServerUrl,
   wait,
+  removeConfigFile,
 } = require("./support/helpers");
 
 describe("when files watch is enabled", () => {
@@ -29,6 +30,7 @@ describe("when files watch is enabled", () => {
   });
 
   afterAll(async () => {
+    removeConfigFile();
     await fsExtra.remove(fixturesFolder("temp"));
     await mocks.kill();
   });

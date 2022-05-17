@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startCore, waitForServer } = require("./support/helpers");
+const { startCore, waitForServer, removeConfigFile } = require("./support/helpers");
 
 describe("mocks and routes", () => {
   let core;
@@ -19,6 +19,7 @@ describe("mocks and routes", () => {
   });
 
   afterAll(async () => {
+    removeConfigFile();
     await core.stop();
   });
 

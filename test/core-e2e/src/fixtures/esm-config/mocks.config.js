@@ -6,7 +6,9 @@ module.exports = {
     selected: "user-real",
   },
   files: {
-    babelRegister: true,
+    babelRegister: {
+      enabled: true,
+    },
     path: path.resolve(__dirname, "..", "temp"),
     watch: true,
   },

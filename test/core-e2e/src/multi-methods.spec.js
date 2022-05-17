@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startCore, waitForServer, fetch } = require("./support/helpers");
+const { startCore, waitForServer, fetch, removeConfigFile } = require("./support/helpers");
 
 describe("when method is defined as array", () => {
   let requestNumber = 1;
@@ -21,6 +21,7 @@ describe("when method is defined as array", () => {
   });
 
   afterAll(async () => {
+    removeConfigFile();
     await core.stop();
   });
 

@@ -42,8 +42,10 @@ describe("settings api", () => {
           delay: 0,
         },
         files: {
-          babelRegister: false,
-          babelRegisterOptions: {},
+          babelRegister: {
+            enabled: false,
+            options: {},
+          },
           path: fixturesFolder("web-tutorial"),
           watch: false,
         },

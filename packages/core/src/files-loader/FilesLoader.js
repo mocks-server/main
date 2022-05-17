@@ -38,14 +38,19 @@ const OPTIONS = [
     type: "boolean",
     default: true,
   },
+];
+
+const BABEL_REGISTER_NAMESPACE = "babelRegister";
+
+const BABEL_REGISTER_OPTIONS = [
   {
-    name: "babelRegister",
+    name: "enabled",
     description: "Load @babel/register",
     type: "boolean",
     default: false,
   },
   {
-    name: "babelRegisterOptions",
+    name: "options",
     description: "Options for @babel/register",
     type: "object",
     default: {},
@@ -62,12 +67,10 @@ class FilesLoaderBase {
     this._require = extraOptions.require || require;
     this._config = config;
 
-    [
-      this._pathOption,
-      this._watchOption,
-      this._babelRegisterOption,
-      this._babelRegisterOptionsOption,
-    ] = this._config.addOptions(OPTIONS);
+    [this._pathOption, this._watchOption] = this._config.addOptions(OPTIONS);
+    [this._babelRegisterOption, this._babelRegisterOptionsOption] = this._config
+      .addNamespace(BABEL_REGISTER_NAMESPACE)
+      .addOptions(BABEL_REGISTER_OPTIONS);
     this._pathOption.onChange(this._onChangePathOption.bind(this));
     this._watchOption.onChange(this._onChangeWatchOption.bind(this));
   }

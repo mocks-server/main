@@ -10,7 +10,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 const fsExtra = require("fs-extra");
-const { mocksRunner, fetch, waitForServer, fixturesFolder } = require("./support/helpers");
+const {
+  mocksRunner,
+  fetch,
+  waitForServer,
+  fixturesFolder,
+  removeConfigFile,
+} = require("./support/helpers");
 
 const configFile = path.resolve(fixturesFolder("temp"), "mocks.config.js");
 const customStarter = path.resolve(fixturesFolder("temp"), "starter");
@@ -31,6 +37,7 @@ describe("when nor config file nor mocks folder exists", () => {
     });
 
     afterAll(async () => {
+      removeConfigFile();
       await mocks.kill();
       await fsExtra.remove(fixturesFolder("temp"));
     });

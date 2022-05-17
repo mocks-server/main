@@ -76,7 +76,7 @@
     "tree-kill": "1.2.2",
     "typescript": "4.6.4",
     "wait-on": "6.0.1",
-    "webpack": "5.64.4"
+    "webpack": "5.72.1"
   },
   "lint-staged": {
     "packages/**/*.js": "eslint",

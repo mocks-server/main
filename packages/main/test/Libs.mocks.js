@@ -24,7 +24,7 @@ class CallBackRunner {
     this.runner = this.runner.bind(this);
   }
 
-  runner(eventName, cb) {
+  runner(_eventName, cb) {
     if (this._returns !== undefined) {
       cb(this._returns);
     }
@@ -43,7 +43,7 @@ class WatchRunner {
     this._change = false;
   }
 
-  runner(eventName, options, cb) {
+  runner(_eventName, _options, cb) {
     if (this._change) {
       return cb();
     }

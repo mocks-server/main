@@ -214,7 +214,7 @@ importers:
       '@hapi/boom': 9.1.4
       '@mocks-server/config': workspace:*
       ajv: 8.9.0
-      ajv-errors: 3.0.0
+      better-ajv-errors: 1.2.0
       body-parser: 1.19.2
       cors: 2.8.5
       deepmerge: 4.2.2
@@ -233,7 +233,7 @@ importers:
       '@hapi/boom': 9.1.4
       '@mocks-server/config': link:../config
       ajv: 8.9.0
-      ajv-errors: 3.0.0_ajv@8.9.0
+      better-ajv-errors: 1.2.0_ajv@8.9.0
       body-parser: 1.19.2
       cors: 2.8.5
       deepmerge: 4.2.2
@@ -4216,14 +4216,6 @@ packages:
     dependencies:
       ajv: 6.12.6
     dev: true
-
-  /ajv-errors/3.0.0_ajv@8.9.0:
-    resolution: {integrity: sha512-V3wD15YHfHz6y0KdhYFjyy9vWtEVALT9UrxfN3zqlI6dMioHnJrqOYfyPKol3oqrnCM9uwkcdCwkJ0WUcbLMTQ==}
-    peerDependencies:
-      ajv: ^8.0.1
-    dependencies:
-      ajv: 8.9.0
-    dev: false
 
   /ajv-keywords/3.5.2_ajv@6.12.6:
     resolution: {integrity: sha512-5p6WTN0DdTGVQk6VjcEju19IgaHudalcfabD7yhDGeA6bcQnmL+CpveLJq/3hvfwd1aof6L386Ougkx6RfyMIQ==}

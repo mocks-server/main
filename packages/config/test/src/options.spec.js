@@ -53,6 +53,18 @@ describe("options", () => {
       ]);
       expect(config.option("fooOption")).toBe(option);
     });
+
+    it("should be available using options getter", async () => {
+      config = new Config();
+      [option] = config.addOptions([
+        {
+          name: "fooOption",
+          type: "string",
+          default: "default-str",
+        },
+      ]);
+      expect(config.options.includes(option)).toBe(true);
+    });
   });
 
   describe("config value getter", () => {
@@ -161,6 +173,17 @@ describe("options", () => {
       expect(option.name).toEqual("fooOption");
     });
 
+    it("should have description property", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      option = namespace.addOption({
+        name: "fooOption",
+        description: "foo description",
+        type: "string",
+      });
+      expect(option.description).toEqual("foo description");
+    });
+
     it("should throw if option with same name already exist", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
@@ -199,9 +222,9 @@ describe("options", () => {
       option = namespace.addOption({
         name: "fooOption",
         type: "string",
-        metaData: { restartServer: true },
+        extraData: { fooMetadata: true },
       });
-      expect(option.metaData).toEqual({ restartServer: true });
+      expect(option.extraData).toEqual({ fooMetadata: true });
     });
 
     it("should throw when type is string and default does not match type", async () => {

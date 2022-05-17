@@ -334,6 +334,9 @@ const config = new Config({ moduleName: "mocks", mergeArrays: false });
   * `options` _(Object)_: Object with extra options for validation:
     * `allowAdditionalProperties` _(Boolean)_: _Default `false`_. If true, additional properties in the configuration would not produce validation errors.
 * __`value`__: Getter returning the current values from all namespaces and options as an object. Levels in the object correspond to namespaces names, and last level keys correspond to option names. It can be also used as setter as an alias of the `set` method, with default options.
+* __`loadedFile`__: Getter returning the file path of the loaded configuration file. It returns `null` if no configuration file was loaded.
+* __`namespaces`__: Getter returning array with all root namespaces.
+* __`options`__: Getter returning array with all root options.
 
 ### Namespace instance
 
@@ -350,6 +353,7 @@ const namespace = config.addNamespace("name");
     * __`type`__  _(String)_. One of _`string`_, _`boolean`_, _`number`_, _`array`_ or _`object`_. Used to apply type validation when loading configuration and in `option.value` setter.
     * __`itemsType`__ _(String)_. Can be defined only when `type` is `array`. It must be one of _`string`_, _`boolean`_, _`number`_ or _`object`_.
     * __`default`__ - _Optional_. Default value. Its type depends on the `type` option.
+    * __`extraData`__ - _(Object)_. _Optional_. Useful to store any extra data you want in the option. For example, Mocks Server uses it to define wheter an option must be written when creating the configuration scaffold or not.
 * __`addOptions(optionsProperties)`__: Add many options. Returns an array of [option instances](#option-instance).
   * `optionsProperties` _(Array)_: Array of `optionProperties`.
 * __`namespace(name)`__: Returns the [namespace instance](#namespace-instance) in this namespace with name equal to `name`.
@@ -374,6 +378,8 @@ const rootOption = config.addOption("name2");
   * `callback(value)` _(Function)_: Callback to be executed whenever the option value changes. It receives the new value as first argument.
 * __`name`__: Getter returning the option name.
 * __`type`__: Getter returning the option type.
+* __`description`__: Getter returning the option description.
+* __`extraData`__: Getter returning the option extra data.
 * __`default`__: Getter returning the option default value.
 
 [website-url]: https://www.mocks-server.org

@@ -21,7 +21,6 @@ const {
   getFilesGlobule,
   validateFileContent,
 } = require("./helpers");
-const { createMocksFolder } = require("../support/scaffold");
 const tracer = require("../tracer");
 
 const ROUTES_FOLDER = "routes";
@@ -39,14 +38,19 @@ const OPTIONS = [
     type: "boolean",
     default: true,
   },
+];
+
+const BABEL_REGISTER_NAMESPACE = "babelRegister";
+
+const BABEL_REGISTER_OPTIONS = [
   {
-    name: "babelRegister",
+    name: "enabled",
     description: "Load @babel/register",
     type: "boolean",
     default: false,
   },
   {
-    name: "babelRegisterOptions",
+    name: "options",
     description: "Options for @babel/register",
     type: "object",
     default: {},
@@ -63,12 +67,10 @@ class FilesLoaderBase {
     this._require = extraOptions.require || require;
     this._config = config;
 
-    [
-      this._pathOption,
-      this._watchOption,
-      this._babelRegisterOption,
-      this._babelRegisterOptionsOption,
-    ] = this._config.addOptions(OPTIONS);
+    [this._pathOption, this._watchOption] = this._config.addOptions(OPTIONS);
+    [this._babelRegisterOption, this._babelRegisterOptionsOption] = this._config
+      .addNamespace(BABEL_REGISTER_NAMESPACE)
+      .addOptions(BABEL_REGISTER_OPTIONS);
     this._pathOption.onChange(this._onChangePathOption.bind(this));
     this._watchOption.onChange(this._onChangeWatchOption.bind(this));
   }
@@ -124,22 +126,29 @@ class FilesLoaderBase {
     return path.resolve(process.cwd(), folder);
   }
 
-  _ensureFolder(folder) {
-    if (!fsExtra.existsSync(folder)) {
-      this._addAlert("load:folder", `Created folder "${folder}"`);
-      createMocksFolder(folder);
+  _getPath() {
+    const pathName = this._pathOption.value;
+    return this._resolveFolder(pathName);
+  }
+
+  get path() {
+    return this._getPath();
+  }
+
+  _ensurePath() {
+    if (!fsExtra.existsSync(this._path)) {
+      this._addAlert("load:folder", `Created folder "${this._path}"`);
+      fsExtra.ensureDirSync(this._path);
     }
-    return folder;
   }
 
   _loadFiles() {
-    const pathName = this._pathOption.value;
-    const resolvedFolder = this._resolveFolder(pathName);
-    this._path = this._ensureFolder(resolvedFolder);
+    this._path = this._getPath();
+    this._ensurePath();
     tracer.info(`Loading files from folder ${this._path}`);
     if (!!this._babelRegisterOption.value) {
       this._require("@babel/register")(
-        babelRegisterDefaultOptions(resolvedFolder, this._babelRegisterOptionsOption.value)
+        babelRegisterDefaultOptions(this._path, this._babelRegisterOptionsOption.value)
       );
     }
     this._cleanRequireCacheFolder();

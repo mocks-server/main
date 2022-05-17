@@ -190,8 +190,20 @@ class Config {
     return getNamespacesValues(this._namespaces);
   }
 
+  get loadedFile() {
+    return this._files.loadedFile;
+  }
+
   set value(configuration) {
-    return this.set(configuration);
+    this.set(configuration);
+  }
+
+  get namespaces() {
+    return this._namespaces;
+  }
+
+  get options() {
+    return this._rootNamespace.options;
   }
 
   set(configuration = {}, options) {

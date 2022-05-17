@@ -7,6 +7,8 @@ module.exports = {
   files: {
     path: path.resolve(__dirname, "..", "typescript"),
     watch: true,
-    babelRegister: true,
+    babelRegister: {
+      enabled: true,
+    },
   },
 };

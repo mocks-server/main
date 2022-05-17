@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const express = require("express");
 
 const Core = require("@mocks-server/core");
-const { fetch, fixturesFolder, waitForServer } = require("./support/helpers");
+const { fetch, fixturesFolder, waitForServer, removeConfigFile } = require("./support/helpers");
 
 describe("when using custom router", () => {
   const customRouter = express.Router();
@@ -44,6 +44,7 @@ describe("when using custom router", () => {
     });
 
     afterAll(async () => {
+      removeConfigFile();
       await core.stop();
     });
 

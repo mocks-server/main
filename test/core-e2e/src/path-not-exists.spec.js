@@ -16,6 +16,7 @@ const {
   fixturesFolder,
   waitForServer,
   findAlert,
+  removeConfigFile,
 } = require("./support/helpers");
 
 describe("when path not exists", () => {
@@ -32,6 +33,7 @@ describe("when path not exists", () => {
   });
 
   afterAll(async () => {
+    removeConfigFile();
     await fsExtra.remove(fixturesFolder(FOLDER));
     await core.stop();
   });
@@ -46,9 +48,9 @@ describe("when path not exists", () => {
       expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "mocks.json"))).toEqual(true);
     });
 
-    it("should have added an alert about path not found", async () => {
-      expect(findAlert("load:folder", core.alerts).message).toEqual(
-        expect.stringContaining("Created folder")
+    it("should have added an alert about folder not found", async () => {
+      expect(findAlert("create:mocks", core.alerts).message).toEqual(
+        expect.stringContaining("Mocks folder was not found")
       );
     });
 

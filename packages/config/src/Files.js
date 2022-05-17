@@ -34,6 +34,10 @@ class Files {
     this._config = await this._transformConfig(result.config, initConfig);
     return { ...this._config };
   }
+
+  get loadedFile() {
+    return this._loadedFrom;
+  }
 }
 
 module.exports = Files;

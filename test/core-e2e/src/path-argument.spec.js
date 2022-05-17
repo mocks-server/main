@@ -10,7 +10,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 const fsExtra = require("fs-extra");
-const { mocksRunner, fetch, fixturesFolder, waitForServer } = require("./support/helpers");
+const {
+  mocksRunner,
+  fetch,
+  fixturesFolder,
+  waitForServer,
+  removeConfigFile,
+} = require("./support/helpers");
 
 describe("path argument", () => {
   const FOLDER = "mocks";
@@ -24,12 +30,13 @@ describe("path argument", () => {
     });
 
     afterAll(async () => {
+      removeConfigFile();
       await fsExtra.remove(fixturesFolder(FOLDER));
       await mocks.kill();
     });
 
     it("should print a warning about creating folder", async () => {
-      expect(mocks.logs.current).toEqual(expect.stringContaining("Created folder"));
+      expect(mocks.logs.current).toEqual(expect.stringContaining("Mocks folder was not found"));
     });
 
     it("should have created a mocks folder", async () => {

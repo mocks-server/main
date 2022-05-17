@@ -1,4 +1,6 @@
-const { fixtureRunner, optionsFromLogs } = require("./support/utils");
+const path = require("path");
+
+const { fixtureRunner, optionsFromLogs, fixtureFolder } = require("./support/utils");
 
 describe("Config from files", () => {
   let runner, options;
@@ -34,6 +36,28 @@ describe("Config from files", () => {
 
       expect(options).toEqual(
         expect.arrayContaining(["component.alias:string:alias-from-package"])
+      );
+    });
+  });
+
+  describe("loadedFile property", () => {
+    it("should have loadedFile property as null when readFile is disabled", async () => {
+      await run("js-config", "only-init", {
+        env: {
+          MOCKS_CONFIG_READ_FILE: false,
+        },
+      });
+
+      expect(runner.logs.current).toEqual(expect.stringContaining("loadedFile:null"));
+    });
+
+    it("should have loadedFile property when file is read", async () => {
+      await run("js-config-empty", "only-init");
+
+      expect(runner.logs.current).toEqual(
+        expect.stringContaining(
+          `loadedFile:${path.resolve(fixtureFolder("js-config-empty"), "mocks.config.js")}`
+        )
       );
     });
   });

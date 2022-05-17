@@ -14,6 +14,7 @@ const {
   waitForServer,
   waitForServerUrl,
   fixturesFolder,
+  removeConfigFile,
 } = require("./support/helpers");
 
 describe("path setting", () => {
@@ -28,6 +29,7 @@ describe("path setting", () => {
   });
 
   afterAll(async () => {
+    removeConfigFile();
     await core.stop();
   });
 

@@ -119,12 +119,19 @@ describe("FilesLoader", () => {
     coreMocks.restore();
   });
 
+  describe("path getter", () => {
+    it("should return the resolved value of the path option", async () => {
+      path.isAbsolute.returns(false);
+      expect(filesLoader.path).toEqual(path.resolve(process.cwd(), "foo-path"));
+    });
+  });
+
   describe("when initialized", () => {
     it("should require all files from mocks folders calculating it from cwd if path is not absolute", async () => {
       path.isAbsolute.returns(false);
       libsMocks.stubs.fsExtra.existsSync.returns(false);
       await filesLoader.init();
-      expect(libsMocks.stubs.fsExtra.copySync.getCall(0).args[1]).toEqual(
+      expect(libsMocks.stubs.fsExtra.ensureDirSync.getCall(0).args[0]).toEqual(
         path.resolve(process.cwd(), "foo-path")
       );
     });
@@ -219,12 +226,6 @@ describe("FilesLoader", () => {
     it("should return a rejected promise if there is an error initializing", async () => {
       tracer.info.throws(new Error("foo error"));
       await expect(() => filesLoader.init()).rejects.toThrow("foo error");
-    });
-
-    it("should create scaffold folder when folder does not exist", async () => {
-      libsMocks.stubs.fsExtra.existsSync.returns(false);
-      await filesLoader.init();
-      expect(libsMocks.stubs.fsExtra.copySync.getCall(0).args[1]).toEqual("foo-path");
     });
 
     it("should do nothing if folder exists", async () => {

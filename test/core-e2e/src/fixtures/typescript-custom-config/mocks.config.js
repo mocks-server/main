@@ -8,17 +8,19 @@ module.exports = {
   files: {
     path: path.resolve(__dirname, "..", "typescript-imports"),
     watch: true,
-    babelRegister: true,
-    babelRegisterOptions: {
-      only: [
-        (filePath) => {
-          return (
-            filePath.includes(`fixtures${path.sep}typescript${path.sep}`) ||
-            filePath.includes(`fixtures${path.sep}typescript-imports${path.sep}`)
-          );
-        },
-      ],
-      extensions: [".ts", ".js"],
+    babelRegister: {
+      enabled: true,
+      options: {
+        only: [
+          (filePath) => {
+            return (
+              filePath.includes(`fixtures${path.sep}typescript${path.sep}`) ||
+              filePath.includes(`fixtures${path.sep}typescript-imports${path.sep}`)
+            );
+          },
+        ],
+        extensions: [".ts", ".js"],
+      }
     },
   },
 };

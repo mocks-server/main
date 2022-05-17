@@ -14,9 +14,14 @@ const express = require("express");
 const filterPluginAlerts = (alerts) =>
   alerts.filter((alert) => alert.context.indexOf("plugins") === 0);
 
-const { startCore, fetch, fixturesFolder, wait, TimeCounter } = require("./support/helpers");
-
-// TODO, test config object received
+const {
+  startCore,
+  fetch,
+  fixturesFolder,
+  wait,
+  TimeCounter,
+  removeConfigFile,
+} = require("./support/helpers");
 
 describe("plugins", () => {
   const FOO_CUSTOM_RESPONSE = {
@@ -41,13 +46,14 @@ describe("plugins", () => {
     configSpy = sandbox.spy();
     startSpy = sandbox.spy();
     customRouter = express.Router();
-    customRouter.get("/", (req, res) => {
+    customRouter.get("/", (_req, res) => {
       res.status(200);
       res.send(FOO_CUSTOM_RESPONSE);
     });
   });
 
   afterAll(() => {
+    removeConfigFile();
     sandbox.restore();
   });
 

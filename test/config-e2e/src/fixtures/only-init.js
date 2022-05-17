@@ -6,5 +6,6 @@ const config = new Config({ moduleName: "mocks" });
 
 config.init().then(async () => {
   await config.load();
+  console.log(`loadedFile:${config.loadedFile}`);
   logConfig(config);
 });

@@ -1,0 +1,5 @@
+{
+  "root": "test/admin-api-client-nodejs-e2e/",
+  "projectType": "application",
+  "tags": ["type:test"]
+}

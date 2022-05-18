@@ -328,6 +328,12 @@ importers:
   test/admin-api-client-data-provider-vanilla-app-e2e:
     specifiers: {}
 
+  test/admin-api-client-nodejs-e2e:
+    specifiers:
+      '@mocks-server/admin-api-client': workspace:*
+    devDependencies:
+      '@mocks-server/admin-api-client': link:../../packages/admin-api-client
+
   test/config-e2e:
     specifiers:
       '@mocks-server/cli-runner': workspace:*

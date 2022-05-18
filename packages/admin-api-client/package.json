@@ -25,7 +25,7 @@
   "files": [
     "dist"
   ],
-  "main": "dist/index.umd.js",
+  "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "scripts": {
     "build": "rollup --config",

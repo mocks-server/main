@@ -23,7 +23,7 @@ Requests to the Mocks Server API are made using [`cross-fetch`](https://www.npmj
 npm install --save @mocks-server/admin-api-client
 ```
 
-The UMD build is also available on unpkg:
+The UMD build is also available on unpkg. When UMD package is loaded, it creates a `mocksServerAdminApiClient` global object containing all of the methods.
 
 ```html
 <script src="https://unpkg.com/@mocks-server/admin-api-paths/dist/index.umd.js"></script>

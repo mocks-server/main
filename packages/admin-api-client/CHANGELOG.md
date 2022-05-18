@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 
+### Changed
+- feat: BREAKING CHANGE. Change main property in package.json. Now it points to `index.cjs.js` file
+
 ### Removed
 - feat: BREAKING CHANGE. Remove legacy methods readBehaviors, readBehavior, readFixtures and readFixture.
 

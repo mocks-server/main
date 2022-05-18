@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - refactor: Use callbacks internally instead of events. Remove Orchestrator
 - refactor: Move Settings and Config to a separated package
 - refactor: FilesLoader is not loaded as a plugin any more in the core.
+- feat: BREAKING CHANGE. response preview in route variants now is null when the response is defined as a function 
 
 ### Added
 - feat: Plugins now receive a third argument with a config object for adding their options.

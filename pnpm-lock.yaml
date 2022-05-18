@@ -279,10 +279,12 @@ importers:
       '@hapi/boom': 9.1.4
       '@mocks-server/admin-api-paths': workspace:*
       '@mocks-server/core': workspace:*
+      cors: 2.8.5
       express: 4.17.3
     dependencies:
       '@hapi/boom': 9.1.4
       '@mocks-server/admin-api-paths': link:../admin-api-paths
+      cors: 2.8.5
       express: 4.17.3
     devDependencies:
       '@mocks-server/core': link:../core

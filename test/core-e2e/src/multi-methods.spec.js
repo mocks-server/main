@@ -16,7 +16,10 @@ describe("when method is defined as array", () => {
 
   beforeAll(async () => {
     // disable cors to test custom options method
-    core = await startCore("multi-methods", { server: { corsPreFlight: false }, log: "debug" });
+    core = await startCore("multi-methods", {
+      server: { cors: { options: { preflightContinue: true } } },
+      log: "debug",
+    });
     await waitForServer();
   });
 

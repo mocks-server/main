@@ -60,8 +60,22 @@ describe("settings api", () => {
         server: {
           host: "0.0.0.0",
           port: 3100,
-          cors: true,
-          corsPreFlight: true,
+          cors: {
+            enabled: true,
+            options: {
+              preflightContinue: false,
+            },
+          },
+          jsonBodyParser: {
+            enabled: true,
+            options: {},
+          },
+          urlEncodedBodyParser: {
+            enabled: true,
+            options: {
+              extended: true,
+            },
+          },
         },
       });
     });

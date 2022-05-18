@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 
+### Added
+- feat(#249): always add cors middleware to admin-api plugin. Even when it is disabled in server
+
 ### Removed
 - feat: BREAKING CHANGE. Remove legacy APIs under /legacy path
 - feat: BREAKING CHANGE. Remove `adminApiDeprecatedPaths` option.

@@ -32,31 +32,94 @@ const OPTIONS = [
     type: "string",
     default: ALL_HOSTS,
   },
+];
+
+const CORS_NAMESPACE = "cors";
+
+const CORS_OPTIONS = [
   {
-    description: "Load built-in CORS middleware or not",
-    name: "cors",
+    description: "Use CORS middleware or not",
+    name: "enabled",
     type: "boolean",
     default: true,
   },
   {
-    description: "Load built-in pre-flight CORS middleware or not",
-    name: "corsPreFlight",
+    description:
+      "Options for the CORS middleware. Further information at https://github.com/expressjs/cors#configuration-options",
+    name: "options",
+    type: "object",
+    default: {
+      preflightContinue: false,
+    },
+  },
+];
+
+const JSON_BODY_PARSER_NAMESPACE = "jsonBodyParser";
+
+const JSON_BODY_PARSER_OPTIONS = [
+  {
+    description: "Use json body-parser middleware or not",
+    name: "enabled",
     type: "boolean",
     default: true,
+  },
+  {
+    description:
+      "Options for the json body-parser middleware. Further information at https://github.com/expressjs/body-parser",
+    name: "options",
+    type: "object",
+    default: {},
+  },
+];
+
+const URL_ENCODED_BODY_PARSER_NAMESPACE = "urlEncodedBodyParser";
+
+const URL_ENCODED_BODY_PARSER_OPTIONS = [
+  {
+    description: "Use urlencoded body-parser middleware or not",
+    name: "enabled",
+    type: "boolean",
+    default: true,
+  },
+  {
+    description:
+      "Options for the urlencoded body-parser middleware. Further information at https://github.com/expressjs/body-parser",
+    name: "options",
+    type: "object",
+    default: { extended: true },
   },
 ];
 
 class Server {
   constructor({ config, addAlert, removeAlerts, mocksRouter }) {
     this._config = config;
+    const corsConfigNamespace = this._config.addNamespace(CORS_NAMESPACE);
+    const jsonBodyParserConfigNamespace = this._config.addNamespace(JSON_BODY_PARSER_NAMESPACE);
+    const formBodyParserConfigNamespace = this._config.addNamespace(
+      URL_ENCODED_BODY_PARSER_NAMESPACE
+    );
 
-    [this._portOption, this._hostOption, this._corsOption, this._corsPreFlightOption] =
-      this._config.addOptions(OPTIONS);
+    [this._portOption, this._hostOption] = this._config.addOptions(OPTIONS);
 
-    this._hostOption.onChange(this.restart.bind(this));
-    this._portOption.onChange(this.restart.bind(this));
-    this._corsOption.onChange(this.restart.bind(this));
-    this._corsPreFlightOption.onChange(this.restart.bind(this));
+    [this._corsEnabledOption, this._corsOptionsOption] =
+      corsConfigNamespace.addOptions(CORS_OPTIONS);
+
+    [this._jsonBodyParserEnabledOption, this._jsonBodyParserOptionsOption] =
+      jsonBodyParserConfigNamespace.addOptions(JSON_BODY_PARSER_OPTIONS);
+
+    [this._urlEncodedBodyParserEnabledOption, this._urlEncodedBodyParserOptionsOption] =
+      formBodyParserConfigNamespace.addOptions(URL_ENCODED_BODY_PARSER_OPTIONS);
+
+    this.restart = this.restart.bind(this);
+
+    this._hostOption.onChange(this.restart);
+    this._portOption.onChange(this.restart);
+    this._corsEnabledOption.onChange(this.restart);
+    this._corsOptionsOption.onChange(this.restart);
+    this._jsonBodyParserEnabledOption.onChange(this.restart);
+    this._jsonBodyParserOptionsOption.onChange(this.restart);
+    this._urlEncodedBodyParserEnabledOption.onChange(this.restart);
+    this._urlEncodedBodyParserOptionsOption.onChange(this.restart);
 
     this._mocksRouter = mocksRouter;
     this._customRouters = [];
@@ -86,19 +149,30 @@ class Server {
 
     // Add middlewares
     this._express.use(middlewares.addRequestId);
-    if (this._corsOption.value) {
+
+    // TODO, move to variants router. Add options to routes to configure it
+    if (this._corsEnabledOption.value) {
+      this._express.use(cors(this._corsOptionsOption.value));
+    }
+
+    // TODO, move to middleware variant handler. Add options to variant to configure it
+    if (this._jsonBodyParserEnabledOption.value) {
+      this._express.use(middlewares.jsonBodyParser(this._jsonBodyParserOptionsOption.value));
+    }
+    if (this._urlEncodedBodyParserEnabledOption.value) {
       this._express.use(
-        cors({
-          preflightContinue: !this._corsPreFlightOption.value,
-        })
+        middlewares.urlEncodedBodyParser(this._urlEncodedBodyParserOptionsOption.value)
       );
     }
-    this._express.use(middlewares.jsonBodyParser);
-    this._express.use(middlewares.formBodyParser);
+
+    // TODO, move to variants router. Add options to routes to configure it
     this._express.use(middlewares.traceRequest);
     this._registerCustomRouters();
     this._express.use(this._mocksRouter);
+
+    // TODO, Add options to allow to disable or configure it
     this._express.use(middlewares.notFound);
+
     this._express.use(middlewares.errorHandler);
 
     // Create server

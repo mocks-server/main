@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: BREAKING CHANGE. The `pathLegacy`, `behavior` and `watchLegacy` options are not supported any more.
 - feat: BREAKING CHANGE. The `--behavior` command line argument has been removed.
 - feat: BREAKING CHANGE. The `load:mocks:legacy` and `change:mocks:legacy` events are not emitted any more.
+- feat: BREAKING CHANGE. Drop support for Node.js 12.x
 
 ### Changed
 - feat: BREAKING CHANGE. Renamed plugins `displayName` into `id`. Plugins as classes are required to have an static property id. Otherwise config is received only in register method

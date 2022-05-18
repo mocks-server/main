@@ -1,6 +1,6 @@
 name: build
 env:
-  NODE_CURRENT_VERSION: "16.1.0"
+  NODE_CURRENT_VERSION: "16.15.0"
 on:
   push:
     branches:
@@ -93,7 +93,7 @@ jobs:
     strategy:
       max-parallel: 2
       matrix:
-        node: ["16.1.0"]
+        node: ["16.15.0"]
         projectName: ${{fromJson(needs.get-affected.outputs.test-unit)}}
     env:
       NODE: ${{ matrix.node }}
@@ -206,7 +206,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        node: ["12.22.1","14.17.0","16.1.0","17.2.0"]
+        node: ["14.19.3","16.15.0","17.9.0", "18.2.0"]
         projectName: ${{fromJson(needs.get-affected.outputs.test-e2e)}}
     steps:
       - name: Checkout
@@ -236,18 +236,18 @@ jobs:
       - name: Set env vars
         run: |
           echo "NODE_OPTIONS=--openssl-legacy-provider" >> $GITHUB_ENV
-        if: ${{ matrix.node == '17.2.0' }}
+        if: ${{ matrix.node == '17.9.0' }}
       - name: Test E2E
         run: pnpm run nx run-many -- --target test:e2e --projects ${{ matrix.projectName }}
       - name: Unset env vars
-        if: always() && ${{ matrix.node == '17.2.0' }}
+        if: always() && ${{ matrix.node == '17.9.0' }}
         run: |
           echo "NODE_OPTIONS=" >> $GITHUB_ENV
   install-windows:
     runs-on: windows-2019
     strategy:
       matrix:
-        node: ["16.1.0"]
+        node: ["16.15.0"]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -292,7 +292,7 @@ jobs:
     strategy:
       max-parallel: 2
       matrix:
-        node: ["16.1.0"]
+        node: ["16.15.0"]
         projectName: ${{fromJson(needs.get-affected.outputs.test-e2e)}}
     steps:
       - name: Checkout

@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 - feat: BREAKING CHANGE. Remove legacy methods readBehaviors, readBehavior, readFixtures and readFixture.
+- feat: BREAKING CHANGE. Drop support for Node.js 12.x
 
 ### Fixed
 - chore: Fix repository property in package.json

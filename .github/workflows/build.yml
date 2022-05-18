@@ -271,20 +271,10 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-      - name: Cypress cache
-        uses: actions/cache@v2
-        id: cache-windows
-        with:
-          path: |
-            ~\AppData\Local\Cypress\Cache
-          key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-cypress-
       - name: Install dependencies
         run: pnpm install
         env:
           HUSKY_SKIP_INSTALL: 1
-          CYPRESS_CACHE_FOLDER: ~\AppData\Local\Cypress\Cache
   test-e2e-windows:
     runs-on: windows-2019
     needs: [get-affected,install-windows]
@@ -317,20 +307,10 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-      - name: Cypress cache
-        uses: actions/cache@v2
-        id: cache-windows
-        with:
-          path: |
-            ~\AppData\Local\Cypress\Cache
-          key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-cypress-
       - name: Install dependencies
         run: pnpm install
         env:
           HUSKY_SKIP_INSTALL: 1
-          CYPRESS_CACHE_FOLDER: ~\AppData\Local\Cypress\Cache
       - name: Test E2E
         run: pnpm run nx run-many -- --target test:e2e --projects ${{ matrix.projectName }}
   build-finished:

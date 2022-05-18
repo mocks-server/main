@@ -218,7 +218,7 @@ describe("Inquirer", () => {
         this.handler = this.handler.bind(this);
       }
 
-      handler(eventName, callBack) {
+      handler(_eventName, callBack) {
         this._callBack = callBack;
         setTimeout(() => {
           callBack(this._key);

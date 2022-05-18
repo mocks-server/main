@@ -23,10 +23,6 @@ class CoreMock {
       start: this._sandbox.stub().resolves(),
       stop: this._sandbox.stub().resolves(),
       restart: this._sandbox.stub().resolves(),
-      settings: {
-        get: this._sandbox.stub(),
-        set: this._sandbox.stub(),
-      },
       tracer: {
         silly: this._sandbox.stub(),
         debug: this._sandbox.stub(),
@@ -35,17 +31,14 @@ class CoreMock {
         warn: this._sandbox.stub(),
         error: this._sandbox.stub(),
       },
-      onChangeSettings: this._sandbox.stub(),
       addRouter: this._sandbox.stub(),
       removeRouter: this._sandbox.stub(),
-      addSetting: this._sandbox.stub(),
       serverError: null,
       _eventEmitter: {
         on: this._sandbox.stub(),
         removeListener: this._sandbox.stub(),
         emit: this._sandbox.stub(),
       },
-      lowLevelConfig: {},
       loadMocks: this._sandbox.stub(),
     };
 

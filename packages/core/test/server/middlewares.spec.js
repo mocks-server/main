@@ -12,6 +12,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const Boom = require("@hapi/boom");
 
+jest.mock("body-parser");
+
+const bodyParser = require("body-parser");
+
 const tracer = require("../../src/tracer");
 const middlewares = require("../../src/server/middlewares");
 
@@ -34,6 +38,8 @@ describe("middlewares", () => {
       send: sendSpy,
     };
     nextSpy = sandbox.spy();
+    bodyParser.json = sandbox.stub();
+    bodyParser.urlencoded = sandbox.stub();
   });
 
   afterEach(() => {
@@ -167,6 +173,21 @@ describe("middlewares", () => {
       Boom.isBoom.returns(true);
       middlewares.errorHandler(fooError, fooRequest, resMock, nextSpy);
       expect(Boom.badImplementation.callCount).toEqual(0);
+    });
+  });
+
+  describe("jsonBodyParser", () => {
+    it("should call to json body parser passing options to it", () => {
+      middlewares.jsonBodyParser({ foo: "foo" });
+      console.log(bodyParser.json.callCount);
+      expect(bodyParser.json.getCall(0).args[0]).toEqual({ foo: "foo" });
+    });
+  });
+
+  describe("urlEncodedBodyParser", () => {
+    it("should call to urlencoded body parser passing options to it", () => {
+      middlewares.urlEncodedBodyParser({ foo: "foo" });
+      expect(bodyParser.urlencoded.getCall(0).args[0]).toEqual({ foo: "foo" });
     });
   });
 });

@@ -14,10 +14,10 @@ const http = require("http");
 
 const LibsMocks = require("../Libs.mocks.js");
 const ConfigMock = require("../Config.mocks");
-const CoreMocks = require("../Core.mocks.js");
 
 const Server = require("../../src/server/Server");
 const tracer = require("../../src/tracer");
+const middlewares = require("../../src/server/middlewares");
 
 const wait = (time = 1000) => {
   return new Promise((resolve) => {
@@ -32,10 +32,17 @@ describe("Server", () => {
   let sandbox;
   let callbacks;
   let libsMocks;
-  let coreMocks;
-  let coreInstance;
   let processOnStub;
   let server;
+  let mockOptions;
+  let optionHost,
+    optionPort,
+    optionCorsEnabled,
+    optionCorsOptions,
+    optionJsonBodyParserEnabled,
+    optionJsonBodyParserOptions,
+    optionUrlEncodedBodyParserEnabled,
+    optionUrlEncodedBodyParserOptions;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -44,18 +51,38 @@ describe("Server", () => {
       config: configMock.stubs.namespace,
       addAlert: sandbox.stub(),
       removeAlerts: sandbox.stub(),
-      getCorsOption: sandbox.stub(),
-      getCorsPreFlightOption: sandbox.stub(),
     };
+
     processOnStub = sandbox.stub(process, "on");
     sandbox.stub(process, "exit");
     sandbox.stub(tracer, "error");
     sandbox.stub(tracer, "info");
     sandbox.stub(tracer, "debug");
+    sandbox.stub(middlewares, "jsonBodyParser");
+    sandbox.stub(middlewares, "urlEncodedBodyParser");
+
     libsMocks = new LibsMocks();
-    coreMocks = new CoreMocks();
-    coreInstance = coreMocks.stubs.instance;
     server = new Server(callbacks);
+    mockOptions = () => {
+      optionHost = { ...server._optionCli, value: true };
+      optionPort = { ...server._optionEmojis, value: true };
+      optionCorsEnabled = { ...server._optionLog, value: true };
+      optionCorsOptions = { ...server._optionDelay, value: { preflightContinue: false } };
+      optionJsonBodyParserEnabled = { ...server._optionHost, value: true };
+      optionJsonBodyParserOptions = { ...server._optionWatch, value: { extended: true } };
+      optionUrlEncodedBodyParserEnabled = { ...server._optionMock, value: true };
+      optionUrlEncodedBodyParserOptions = { ...server._optionMock, value: {} };
+
+      server._hostOption = optionHost;
+      server._portOption = optionPort;
+      server._corsEnabledOption = optionCorsEnabled;
+      server._corsOptionsOption = optionCorsOptions;
+      server._jsonBodyParserEnabledOption = optionJsonBodyParserEnabled;
+      server._jsonBodyParserOptionsOption = optionJsonBodyParserOptions;
+      server._urlEncodedBodyParserEnabledOption = optionUrlEncodedBodyParserEnabled;
+      server._urlEncodedBodyParserOptionsOption = optionUrlEncodedBodyParserOptions;
+    };
+    mockOptions();
     expect.assertions(1);
     libsMocks.stubs.http.createServer.onListen.delay(200);
   });
@@ -63,7 +90,6 @@ describe("Server", () => {
   afterEach(() => {
     libsMocks.restore();
     sandbox.restore();
-    coreMocks.restore();
   });
 
   describe("when initialized", () => {
@@ -231,7 +257,7 @@ describe("Server", () => {
 
     it("should add cors middleware if cors option is enabled", async () => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
-      configMock.stubs.option.value = true;
+      optionCorsEnabled.value = true;
       await server.init();
       await server.start();
       expect(libsMocks.stubs.express.use.callCount).toEqual(8);
@@ -239,10 +265,42 @@ describe("Server", () => {
 
     it("should not add cors middleware if cors option is disabled", async () => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
-      coreInstance.settings.get.withArgs("cors").returns(false);
+      optionCorsEnabled.value = false;
       await server.init();
       await server.start();
       expect(libsMocks.stubs.express.use.callCount).toEqual(7);
+    });
+
+    it("should add jsonBodyParser middleware if jsonBodyParser option is enabled", async () => {
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      optionJsonBodyParserEnabled.value = true;
+      await server.init();
+      await server.start();
+      expect(middlewares.jsonBodyParser.callCount).toEqual(1);
+    });
+
+    it("should not add jsonBodyParser middleware if jsonBodyParser option is disabled", async () => {
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      optionJsonBodyParserEnabled.value = false;
+      await server.init();
+      await server.start();
+      expect(middlewares.jsonBodyParser.callCount).toEqual(0);
+    });
+
+    it("should add urlEncodedBodyParser middleware if urlEncodedBodyParser option is enabled", async () => {
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      optionUrlEncodedBodyParserEnabled.value = true;
+      await server.init();
+      await server.start();
+      expect(middlewares.urlEncodedBodyParser.callCount).toEqual(1);
+    });
+
+    it("should not add urlEncodedBodyParser middleware if urlEncodedBodyParser option is disabled", async () => {
+      libsMocks.stubs.http.createServer.onListen.returns(null);
+      optionUrlEncodedBodyParserEnabled.value = false;
+      await server.init();
+      await server.start();
+      expect(middlewares.urlEncodedBodyParser.callCount).toEqual(0);
     });
 
     it("should reject the promise if an error occurs when calling to server listen method", async () => {
@@ -314,19 +372,21 @@ describe("Server", () => {
 
     it("should log the server host and port", async () => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
-      configMock.stubs.option.value = "0.0.0.0";
+      optionPort.value = "500";
+      optionHost.value = "0.0.0.0";
       await server.start();
       expect(
-        tracer.info.calledWith("Server started and listening at http://localhost:0.0.0.0")
+        tracer.info.calledWith("Server started and listening at http://localhost:500")
       ).toEqual(true);
     });
 
     it("should log the server host and port when host is custom", async () => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
-      configMock.stubs.option.value = "foo-host";
+      optionPort.value = "600";
+      optionHost.value = "foo-host";
       await server.start();
       expect(
-        tracer.info.calledWith("Server started and listening at http://foo-host:foo-host")
+        tracer.info.calledWith("Server started and listening at http://foo-host:600")
       ).toEqual(true);
     });
 

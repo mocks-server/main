@@ -52,7 +52,7 @@ describe("cors command line argument", () => {
 
   describe("when cors is disabled", () => {
     beforeAll(async () => {
-      cli = mocksRunner(["--files.path=multi-methods", "--no-server.cors"]);
+      cli = mocksRunner(["--files.path=multi-methods", "--no-server.cors.enabled"]);
       await waitForServer();
     });
 
@@ -84,7 +84,10 @@ describe("cors command line argument", () => {
 
   describe("when cors is enabled but corsPreflight disabled", () => {
     beforeEach(async () => {
-      cli = mocksRunner(["--files.path=multi-methods", "--no-server.corsPreFlight"]);
+      cli = mocksRunner([
+        "--files.path=multi-methods",
+        '--server.cors.options={"preflightContinue":true}',
+      ]);
       await waitForServer();
     });
 

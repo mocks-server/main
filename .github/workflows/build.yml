@@ -236,11 +236,11 @@ jobs:
       - name: Set env vars
         run: |
           echo "NODE_OPTIONS=--openssl-legacy-provider" >> $GITHUB_ENV
-        if: ${{ matrix.node == '17.9.0' }}
+        if: ${{ matrix.node == '18.2.0' }} || ${{ matrix.node == '17.9.0' }}
       - name: Test E2E
         run: pnpm run nx run-many -- --target test:e2e --projects ${{ matrix.projectName }}
       - name: Unset env vars
-        if: always() && ${{ matrix.node == '17.9.0' }}
+        if: always() && (${{ matrix.node == '18.2.0' }} || ${{ matrix.node == '17.9.0' }})
         run: |
           echo "NODE_OPTIONS=" >> $GITHUB_ENV
   install-windows:

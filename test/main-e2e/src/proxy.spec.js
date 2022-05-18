@@ -113,7 +113,7 @@ describe("scaffold", () => {
           id: "proxy-all:disabled",
           routeId: "proxy-all",
           handler: "default",
-          response: "function",
+          response: null,
           delay: null,
         },
       ]);

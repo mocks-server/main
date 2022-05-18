@@ -214,13 +214,13 @@ class Core {
   async start() {
     await this.init();
     await this._server.start();
-    await this._filesLoader.start();
+    this._filesLoader.start();
     return this._startPlugins();
   }
 
   async stop() {
     await this._server.stop();
-    await this._filesLoader.stop();
+    this._filesLoader.stop();
     return this._stopPlugins();
   }
 

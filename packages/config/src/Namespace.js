@@ -40,7 +40,7 @@ class Namespace {
     });
   }
 
-  set(configuration = {}, options) {
+  set(configuration = {}, options = {}) {
     this._setOptions(configuration, options);
     this._namespaces.forEach((namespace) => {
       namespace.set(configuration[namespace.name] || {}, options);

@@ -206,7 +206,7 @@ class Config {
     return this._rootNamespace.options;
   }
 
-  set(configuration = {}, options) {
+  set(configuration = {}, options = {}) {
     this._namespaces.forEach((namespace) => {
       if (namespace.name) {
         namespace.set(configuration[namespace.name] || {}, options);

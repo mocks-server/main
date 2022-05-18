@@ -76,7 +76,7 @@ describe("DefaultRoutesHandler", () => {
         },
         coreInstance
       );
-      expect(defaultRoutesHandler.plainResponsePreview).toEqual("function");
+      expect(defaultRoutesHandler.plainResponsePreview).toEqual(null);
     });
   });
 
@@ -120,7 +120,7 @@ describe("DefaultRoutesHandler", () => {
         },
         coreInstance
       );
-      expect(defaultRoutesHandler.plainResponsePreview).toEqual("function");
+      expect(defaultRoutesHandler.plainResponsePreview).toEqual(null);
     });
   });
 });

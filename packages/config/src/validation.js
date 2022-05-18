@@ -151,7 +151,7 @@ function addNamespaceSchema(namespace, { rootSchema, allowAdditionalProperties }
 }
 
 function addNamespacesSchema(namespaces, { rootSchema, allowAdditionalProperties }) {
-  const schema = namespaces.reduce((currentSchema, namespace) => {
+  return namespaces.reduce((currentSchema, namespace) => {
     if (namespace.name) {
       currentSchema.properties[namespace.name] = addNamespaceSchema(namespace, {
         allowAdditionalProperties,
@@ -161,7 +161,6 @@ function addNamespacesSchema(namespaces, { rootSchema, allowAdditionalProperties
     }
     return currentSchema;
   }, rootSchema);
-  return schema;
 }
 
 function getConfigValidationSchema({ namespaces, allowAdditionalProperties }) {

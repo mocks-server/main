@@ -26,7 +26,7 @@ function readTemplate(fileName) {
 }
 
 function ensureQuotes(varName) {
-  if (!varName.match(/^\w*/gi) || varName.match(/[^\w|\d]/gi)) {
+  if (!varName.match(/^\w*/gi) || varName.match(/[^\w]/gi)) {
     return `"${varName}"`;
   }
   return varName;

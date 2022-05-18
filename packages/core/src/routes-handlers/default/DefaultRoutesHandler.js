@@ -12,8 +12,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { isFunction } = require("lodash");
 
-const FUNCTION = "function";
-
 class DefaultRoutesHandler {
   static get id() {
     return "default";
@@ -85,7 +83,7 @@ class DefaultRoutesHandler {
 
   get plainResponsePreview() {
     return isFunction(this._response)
-      ? FUNCTION
+      ? null
       : {
           body: this._response.body,
           status: this._response.status,

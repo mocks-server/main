@@ -42,7 +42,7 @@
     "@babel/register": "7.17.7",
     "@hapi/boom": "9.1.4",
     "@mocks-server/config": "workspace:*",
-    "ajv": "8.9.0",
+    "ajv": "8.11.0",
     "better-ajv-errors": "1.2.0",
     "body-parser": "1.19.2",
     "cors": "2.8.5",

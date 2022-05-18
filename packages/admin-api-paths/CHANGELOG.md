@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 - feat: BREAKING CHANGE. Remove LEGACY, BEHAVIORS and FIXTURES path
+- feat: BREAKING CHANGE. Drop support for Node.js 12.x
 
 ### Fixed
 - chore: Fix repository property in package.json

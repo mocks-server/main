@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 - feat: BREAKING CHANGE. Remove legacy APIs under /legacy path
 - feat: BREAKING CHANGE. Remove `adminApiDeprecatedPaths` option.
+- feat: BREAKING CHANGE. Drop support for Node.js 12.x
 
 ### Changed
 - feat: BREAKING CHANGE. Change received arguments to make the plugin compatible with core v3

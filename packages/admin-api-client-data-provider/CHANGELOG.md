@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 - feat: BREAKING CHANGE: Remove v1 legacy methods related to behaviors and fixtures.
+- feat: BREAKING CHANGE. Drop support for Node.js 12.x
 
 ### Fixed
 - docs: Fix docs examples

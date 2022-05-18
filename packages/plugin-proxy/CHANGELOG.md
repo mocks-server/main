@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - feat: BREAKING CHANGE. Adapt to core v3
+- feat: BREAKING CHANGE. Drop support for Node.js 12.x
 
 ### Fixed
 - chore: Fix repository property in package.json

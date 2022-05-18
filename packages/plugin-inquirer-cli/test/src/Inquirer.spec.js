@@ -95,6 +95,49 @@ describe("Inquirer", () => {
       expect(console.log.getCall(3).args[0]).toEqual(expect.stringContaining(fooAlert));
     });
 
+    it("should print alerts header when there are alerts", () => {
+      const fooAlert = "foo header";
+      sandbox.stub(process.stdout, "write");
+      const cli = new Inquirer(
+        () => [],
+        () => [fooAlert]
+      );
+      cli.clearScreen();
+      // Get console call 1 (0 and 2 are headers separators)
+      expect(console.log.getCall(1).args[0]).toEqual("ALERTS");
+    });
+
+    it("should print alerts header with emoji when emojis are enabled", () => {
+      const fooAlert = "foo header";
+      sandbox.stub(process.stdout, "write");
+      const cli = new Inquirer(
+        () => [],
+        () => [fooAlert],
+        {
+          emojis: true,
+        }
+      );
+      cli.clearScreen();
+      // Get console call 1 (0 and 2 are headers separators)
+      expect(console.log.getCall(1).args[0]).toEqual("⚠️  ALERTS");
+    });
+
+    it("should not print alerts header with emoji when emojis are disabled", () => {
+      const fooAlert = "foo header";
+      sandbox.stub(process.stdout, "write");
+      const cli = new Inquirer(
+        () => [],
+        () => [fooAlert],
+        {
+          emojis: true,
+        }
+      );
+      cli.emojis = false;
+      cli.clearScreen();
+      // Get console call 1 (0 and 2 are headers separators)
+      expect(console.log.getCall(1).args[0]).toEqual("ALERTS");
+    });
+
     it("should not print header if header option is set to false", () => {
       const fooHeader = "foo header";
       sandbox.stub(process.stdout, "write");

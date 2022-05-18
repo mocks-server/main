@@ -26,12 +26,14 @@ describe("Cli", () => {
   let coreInstance;
   let cli;
   let optionCli;
+  let optionEmojis;
   let optionLog;
   let optionDelay;
   let optionHost;
   let optionWatch;
   let optionMock;
   let mockOptions;
+  let onChangeEmojis;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
@@ -40,14 +42,17 @@ describe("Cli", () => {
     configMock = new ConfigMocks();
     coreInstance = coreMocks.stubs.instance;
     cli = new Cli({ core: coreInstance, config: configMock.stubs.namespace });
+    onChangeEmojis = sandbox.stub();
     expect.assertions(1);
     mockOptions = () => {
       optionCli = { ...cli._optionCli, value: true };
+      optionEmojis = { ...cli._optionEmojis, onChange: onChangeEmojis, value: true };
       optionLog = { ...cli._optionLog, value: "info" };
       optionDelay = { ...cli._optionDelay, value: 0 };
       optionHost = { ...cli._optionHost, value: "0.0.0.0" };
       optionWatch = { ...cli._optionWatch, value: true };
       optionMock = { ...cli._optionMock, value: "base" };
+      cli._optionEmojis = optionEmojis;
       cli._optionDelay = optionDelay;
       cli._optionCli = optionCli;
       cli._optionLog = optionLog;
@@ -199,6 +204,27 @@ describe("Cli", () => {
       optionLog.value = "silent";
       optionLog.onChange.getCall(0).args[0]("silent");
       expect(cli._isOverwritingLogLevel).toEqual(false);
+    });
+
+    it("should change inquirer emojis setting when emojis option changes", async () => {
+      expect.assertions(2);
+      onChangeEmojis.getCall(0).args[0](false);
+      expect(inquirerMocks.stubs.inquirer.emojis).toEqual(false);
+      onChangeEmojis.getCall(0).args[0](true);
+      expect(inquirerMocks.stubs.inquirer.emojis).toEqual(true);
+    });
+
+    it("should refresh main menu when emojis option is changed and current screen is main menu", async () => {
+      expect.assertions(2);
+      onChangeEmojis.getCall(0).args[0](false);
+      expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
+    });
+
+    it("should not display main menu when emojis is changed and current screen is not main menu", async () => {
+      cli._currentScreen = "FOO";
+      onChangeEmojis.getCall(0).args[0](false);
+      expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
     });
   });
 

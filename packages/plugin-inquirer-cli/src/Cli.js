@@ -113,6 +113,12 @@ const OPTIONS = [
     type: "boolean",
     default: true,
   },
+  {
+    name: "emojis",
+    description: "Render emojis or not",
+    type: "boolean",
+    default: true,
+  },
 ];
 
 class Cli {
@@ -128,11 +134,14 @@ class Cli {
     this._started = false;
     this._currentScreen = null;
 
+    this._onChangeOptionEmojis = this._onChangeOptionEmojis.bind(this);
     this._onChangeOptionCli = this._onChangeOptionCli.bind(this);
     this._onChangeOptionLog = this._onChangeOptionLog.bind(this);
     this._refreshMenuIfStarted = this._refreshMenuIfStarted.bind(this);
 
     this._optionCli = this._config.addOption(OPTIONS[0]);
+    this._optionEmojis = this._config.addOption(OPTIONS[1]);
+
     this._optionLog = this._core.config.option("log");
     this._optionMock = this._core.config.namespace("mocks").option("selected");
     this._optionDelay = this._core.config.namespace("mocks").option("delay");
@@ -145,7 +154,9 @@ class Cli {
     if (!this._optionCli.value) {
       return Promise.resolve();
     }
-    this._cli = new inquirer.Inquirer(this._header.bind(this), this._alertsHeader.bind(this));
+    this._cli = new inquirer.Inquirer(this._header.bind(this), this._alertsHeader.bind(this), {
+      emojis: this._optionEmojis.value,
+    });
 
     this._optionCli.onChange(this._onChangeOptionCli);
     this._optionLog.onChange(this._onChangeOptionLog);
@@ -153,6 +164,7 @@ class Cli {
     this._optionDelay.onChange(this._refreshMenuIfStarted);
     this._optionHost.onChange(this._refreshMenuIfStarted);
     this._optionWatch.onChange(this._refreshMenuIfStarted);
+    this._optionEmojis.onChange(this._onChangeOptionEmojis);
 
     this._inited = true;
     return Promise.resolve();
@@ -205,6 +217,11 @@ class Cli {
     } else if (!this._started && !!enabled) {
       return this.start();
     }
+  }
+
+  _onChangeOptionEmojis(enabled) {
+    this._cli.emojis = enabled;
+    this._refreshMenuIfStarted();
   }
 
   _onChangeOptionLog(log) {

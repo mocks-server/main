@@ -98,4 +98,18 @@ describe("command line arguments", () => {
       expect(mocks.currentScreen).toEqual(expect.stringContaining("Log level: debug"));
     });
   });
+
+  describe("emojis option", () => {
+    it("should print emojis by default", async () => {
+      mocks = mocksRunner(["--files.path=web-tutorial"]);
+      await waitForServerAndCli();
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("↕️"));
+    });
+
+    it("should disable emojis when --no-plugins.inquirerCli.emojis argument is received", async () => {
+      mocks = mocksRunner(["--files.path=web-tutorial", "--no-plugins.inquirerCli.emojis"]);
+      await waitForServerAndCli();
+      expect(mocks.currentScreen).toEqual(expect.not.stringContaining("↕️"));
+    });
+  });
 });

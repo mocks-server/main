@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed
 
-## [Unreleased]
+## [1.0.0] - 2022-05-23
 
 ### Added
-- feat: Migrate Settings and Config from core package to legacy folder
+- feat: First release

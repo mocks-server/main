@@ -5,6 +5,28 @@ class ProxyRoutesHandler {
     return "proxy";
   }
 
+  static get validationSchema() {
+    return {
+      type: "object",
+      properties: {
+        host: {
+          oneOf: [
+            {
+              type: "string",
+            },
+            {
+              instanceof: "Function",
+            },
+          ],
+        },
+        options: {
+          type: "object",
+        },
+      },
+      required: ["host"],
+    };
+  }
+
   constructor(route, mocksServer) {
     this._response = route.response;
     this._variantId = route.variantId;

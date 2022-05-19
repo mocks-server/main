@@ -12,11 +12,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [unreleased]
+## [2.0.0] - 2022-05-23
 
 ### Changed
-- feat: BREAKING CHANGE. Adapt to core v3
+- feat: BREAKING CHANGE. Change received arguments to make the plugin compatible with core v3.
 - feat: BREAKING CHANGE. Drop support for Node.js 12.x
+
+### Added
+- feat: BREAKING CHANGE. Add validation schema
 
 ### Fixed
 - chore: Fix repository property in package.json

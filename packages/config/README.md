@@ -28,7 +28,7 @@ As a summary it also provides:
 * Objects to get/set options
 * Events when any value changes
 
-Different namespaces can be created to each different element in the architecture. So, each different component is the unique who knows about its own options, but the user can define options for all components at a time, and using the same methods.
+Different namespaces can be created for each different element in the architecture. So, each different component is the unique who knows about its own options, but the user can define options for all components at a time, and using the same methods.
 
 This module provides configuration to [Mocks Server](website-url) components and plugins, but it may be used anywhere else because it is fully configurable.
 
@@ -62,7 +62,7 @@ config.load().then(() => {
 
 // Listen to onChange events
 option.onChange((newValue) => {
-  console.log(`Option has new value: ${newValue}`);
+  console.log(`Option has a new value: ${newValue}`);
 });
 ```
 

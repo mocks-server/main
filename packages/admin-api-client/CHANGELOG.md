@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
-## [unreleased]
+## [5.0.0] - 2022-05-23
 
 ### Changed
 - feat: BREAKING CHANGE. Change main property in package.json. Now it points to `index.cjs.js` file

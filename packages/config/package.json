@@ -1,16 +1,19 @@
 {
   "name": "@mocks-server/config",
   "version": "1.0.0",
-  "description": "Modular configuration handler",
+  "description": "Modular configuration provider. Read it from file, environment and arguments",
   "keywords": [
+    "configuration",
     "config",
     "settings",
     "options",
     "handler",
     "loader",
     "environment",
+    "arguments",
     "file",
-    "cli"
+    "cli",
+    "modular"
   ],
   "author": "Javier Brea",
   "license": "MIT",

@@ -62,7 +62,6 @@ Mocks server common properties to all route handlers are in _cursive_. Specific 
 
 > Tip: Note that the `delay` option is still valid for routes handled by this plugin, so you can use it to simulate that host responses are slow.
 
-
 [website-url]: https://www.mocks-server.org
 [main-distribution-url]: https://www.npmjs.com/package/@mocks-server/main
 [options-url]: https://www.mocks-server.org/docs/configuration-options

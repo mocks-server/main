@@ -30,7 +30,10 @@ This plugin is preinstalled in the [main distribution of the Mocks Server projec
 
 ## Options
 
-* `cli`: `<String>` Start interactive CLI or not. Default is `true`. Use `false` to disable it _(`--no-cli`) when using command line arguments)_
+* `enabled`: `<boolean>` Start the interactive CLI or not. Default is `true`. Use `false` to disable it _(`--no-plugins.inquirerCli.enabled`) when using command line arguments)_
+* `emojis`: `<boolean>` Render emojis or not. Default is `true`.
+
+Read more about [how to set options in Mocks Server here](https://www.mocks-server.org/docs/configuration-options).
 
 ## Support
 

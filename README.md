@@ -15,7 +15,7 @@
 
 ## Introduction
 
-This project provides a mock server that can store and simulate multiple API behaviors. It can be added as a dependency of your project, and started simply running an NPM command.
+This project provides a mock server that can simulate multiple responses for the same API routes. It can be added as a dependency of your project, and started simply running an NPM command.
 
 It is easy to use both for development and testing because the responses of the mocked API and other configuration options can be changed while the server is running using:
 

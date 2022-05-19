@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/core",
-  "version": "2.5.3",
+  "version": "3.0.0",
   "description": "Pluggable mock server supporting multiple route variants and mocks",
   "keywords": [
     "mocks",

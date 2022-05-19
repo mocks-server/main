@@ -13,9 +13,9 @@
 
 # Mocks-server administration api client built with @data-provider
 
-This package contains methods for administrating [`mocks-server`](https://mocks-server.org) _(through the [`@mocks-server/plugin-admin-api`](https://github.com/mocks-server/plugin-admin-api) REST API)_.
+This package provides an API client for administrating Mocks Server _(it performs requests to the [Admin API plugin][plugin-admin-api-url] under the hood)_.
 
-Built using [`data-provider`](https://github.com/data-provider), it can be used in Node.js, browsers, and it is also compatible with other `data-provider` packages, such as [`@data-provider/react`](https://github.com/data-provider/react), so can be easily integrated with frameworks.
+Built using [`data-provider`](https://github.com/data-provider), it can be used in Node.js, browsers, and it is also compatible with other `data-provider` packages, such as [`@data-provider/react`](https://github.com/data-provider/react), so it can be easily integrated with frameworks.
 
 ## Installation
 

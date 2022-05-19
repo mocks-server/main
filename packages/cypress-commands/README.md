@@ -39,11 +39,11 @@ You can now use all next commands:
 
 ##### `cy.mocksSetMock("users-error")`
 
-Sets current mock.
+Set current mock.
 
 ##### `cy.mocksUseRouteVariant("users:success")`
 
-Sets a specific route variant to be used by current mock.
+Set a specific route variant to be used by current mock.
 
 ##### `cy.mocksRestoreRoutesVariants()`
 
@@ -51,11 +51,11 @@ Restore routes variants to those defined in current mock.
 
 ##### `cy.mocksSetDelay(2000)`
 
-Sets delay time.
+Set routes delay.
 
-##### `cy.mocksSetSettings({ watch: false, delay: 0 })`
+##### `cy.mocksSetSettings({ files: { watch: false}, mocks: { delay: 0 }})`
 
-Sets any [Mocks Server setting][mocks-server-options-url].
+Set any [Mocks Server setting][mocks-server-options-url].
 
 ##### `cy.mocksConfig({ adminApiPath: "/foo", baseUrl: "http://localhost:3000" })`
 

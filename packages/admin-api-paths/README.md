@@ -13,14 +13,14 @@
 
 # Api paths of the Mocks-Server Plugin Admin Api
 
-Constants defining API paths of the [Mocks Server plugin-admin-api][plugin-admin-api-url]. Use them to build plugin clients.
+Constants defining API paths of the [Mocks Server plugin-admin-api][plugin-admin-api-url]. They can also be used to build plugin API clients.
 
 ## Usage
 
 ```js
 import { SETTINGS } from "@mocks-server/admin-api-paths";
 
-console.log(SETTINGS); // /settings
+console.log(SETTINGS); // "/settings"
 ```
 
 ## Contributing

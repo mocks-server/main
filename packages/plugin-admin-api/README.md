@@ -13,7 +13,7 @@
 
 # Mocks Server Plugin Admin Api
 
-Plugin for [Mocks Server][website-url] that provides an API REST that allows to change the current behavior, change delay time, and another [Mocks Server options][options-url].
+Plugin for [Mocks Server][website-url] that provides an API REST that allows to change the current mock, change delay time, and another [Mocks Server options][options-url].
 
 This is __very useful when running acceptance tests, as you can change the current mock__ simply with a HTTP request in the `before` method of your tests, for example.
 

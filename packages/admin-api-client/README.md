@@ -13,9 +13,9 @@
 
 # Mocks-server administration api client
 
-This package contains methods for administrating Mocks Server _(using the [Admin API plugin](https://github.com/mocks-server/plugin-admin-api) under the hood)_.
+This package provides an API client for administrating Mocks Server _(it performs requests to the [Admin API plugin][plugin-admin-api-url] under the hood)_.
 
-Requests to the Mocks Server API are made using [`cross-fetch`](https://www.npmjs.com/package/cross-fetch), which makes this package compatible with browsers and nodejs environments, but, if you are going to build a browser application, you'll probably prefer to use the [`@mocks-server/admin-api-client-data-provider` package](https://www.npmjs.com/package/@mocks-server/admin-api-client-data-provider), which uses [Data Provider](https://www.data-provider.org), and works well with Redux, React, etc.
+Requests to the Mocks Server administration API are made using [`cross-fetch`](https://www.npmjs.com/package/cross-fetch), which makes this package compatible with browsers and Node.js environments, but, if you are going to build a browser application, you'll probably prefer to use the [`@mocks-server/admin-api-client-data-provider` package](https://www.npmjs.com/package/@mocks-server/admin-api-client-data-provider), which uses [Data Provider](https://www.data-provider.org), and works well with Redux, React, etc.
 
 ## Install
 

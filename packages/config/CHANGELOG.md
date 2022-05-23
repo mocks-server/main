@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed
 
+## [1.0.1] - 2022-05-23
+
+### Changed
+- docs: Remove Mocks Server logo and title in order to make clearer that this module is not coupled to Mocks Server and it can be used in any other project
+
 ## [1.0.0] - 2022-05-23
 
 ### Added

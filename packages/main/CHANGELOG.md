@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [3.0.1] - 2022-05-23
+
+### Changed
+- feat: Update core dependency to 3.0.1
+
 ## [3.0.0] - 2022-05-23
 
 ### Changed

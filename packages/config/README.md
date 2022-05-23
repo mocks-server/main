@@ -287,9 +287,9 @@ The library registers some options that can be used to determine the behavior of
 
 All of the built-in options are defined in the `config` namespace:
 
-* __`config.readFile`__ _(Boolean)_: _Default: `true`_. Determines wheter the configuration file should be read or not. Obviously, it would be ignored if it is defined in the configuration file.
-* __`config.readArguments`__ _(Boolean)_: _Default: `true`_. Determines wheter the arguments are read or not. It can be defined only using programmatic configuration.
-* __`config.readEnvironment`__ _(Boolean)_: _Default: `true`_. Determines wheter the environment variables are read or not. It can be defined using programmatic configuration or command line arguments.
+* __`config.readFile`__ _(Boolean)_: _Default: `true`_. Determines whether the configuration file should be read or not. Obviously, it would be ignored if it is defined in the configuration file.
+* __`config.readArguments`__ _(Boolean)_: _Default: `true`_. Determines whether the arguments are read or not. It can be defined only using programmatic configuration.
+* __`config.readEnvironment`__ _(Boolean)_: _Default: `true`_. Determines whether the environment variables are read or not. It can be defined using programmatic configuration or command line arguments.
 * __`config.fileSearchPlaces`__ _(Array)_: _Default from cosmiconfig_. An array of places to search for the configuration file. It can be defined in any source, except configuration files.
 * __`config.allowUnknownArguments`__ _(Boolean)_: _Default `false`_. An array of places to search for the configuration file. It can be defined in any source, except configuration files.
 
@@ -311,7 +311,7 @@ const config = new Config({ moduleName: "mocks", mergeArrays: false });
   
   * __`options`__ _(Object)_: Containing any of next properties:
     * __`moduleName`__: Used as prefix for environment variables names and config file names.
-    * __`mergeArrays`__: _Default `true`_. When an option is of type `array` or `object`, this option defines wheter arrays with different values coming from different sources are concated or not. If not, the value defined in the source with higher priority would be used.
+    * __`mergeArrays`__: _Default `true`_. When an option is of type `array` or `object`, this option defines whether arrays with different values coming from different sources are concated or not. If not, the value defined in the source with higher priority would be used.
 
 ### Config instance
 
@@ -353,7 +353,7 @@ const namespace = config.addNamespace("name");
     * __`type`__  _(String)_. One of _`string`_, _`boolean`_, _`number`_, _`array`_ or _`object`_. Used to apply type validation when loading configuration and in `option.value` setter.
     * __`itemsType`__ _(String)_. Can be defined only when `type` is `array`. It must be one of _`string`_, _`boolean`_, _`number`_ or _`object`_.
     * __`default`__ - _Optional_. Default value. Its type depends on the `type` option.
-    * __`extraData`__ - _(Object)_. _Optional_. Useful to store any extra data you want in the option. For example, Mocks Server uses it to define wheter an option must be written when creating the configuration scaffold or not.
+    * __`extraData`__ - _(Object)_. _Optional_. Useful to store any extra data you want in the option. For example, Mocks Server uses it to define whether an option must be written when creating the configuration scaffold or not.
 * __`addOptions(optionsProperties)`__: Add many options. Returns an array of [option instances](#option-instance).
   * `optionsProperties` _(Array)_: Array of `optionProperties`.
 * __`namespace(name)`__: Returns the [namespace instance](#namespace-instance) in this namespace with name equal to `name`.

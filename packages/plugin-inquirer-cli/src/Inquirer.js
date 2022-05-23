@@ -44,7 +44,8 @@ const exitProcess = () => process.exit();
 require("events").EventEmitter.defaultMaxListeners = 100;
 
 const Inquirer = class Inquirer {
-  constructor(header, alerts) {
+  constructor(header, alerts, options = {}) {
+    this._emojisEnabled = options.emojis;
     this._alertsHeader = alerts;
     this._header = header;
 
@@ -135,6 +136,10 @@ const Inquirer = class Inquirer {
     exitProcess();
   }
 
+  _emojiKey(key) {
+    return this._emojisEnabled && key;
+  }
+
   clearScreen(opts) {
     const options = opts || {};
     clearScreen();
@@ -142,14 +147,14 @@ const Inquirer = class Inquirer {
       const headers = (this._header && this._header()) || [];
       const alerts = (this._alertsHeader && this._alertsHeader()) || [];
       if (alerts.length) {
-        renderSectionHeader(":warning:  ALERTS");
+        renderSectionHeader("ALERTS", this._emojiKey(":warning:"));
         alerts.forEach((alert) => console.log(alert));
         renderSectionFooter();
       }
-      renderSectionHeader(":information_source:  CURRENT SETTINGS");
+      renderSectionHeader("CURRENT SETTINGS", this._emojiKey(":information_source:"));
       headers.forEach((header) => console.log(header));
       renderSectionFooter();
-      renderSectionHeader(":arrow_up_down:  ACTIONS");
+      renderSectionHeader("ACTIONS", this._emojiKey(":arrow_up_down:"));
     }
   }
 
@@ -158,6 +163,10 @@ const Inquirer = class Inquirer {
     listeners.forEach((listener) => {
       process.stdin.removeListener(EVENT_LISTENER, listener);
     });
+  }
+
+  set emojis(enabled) {
+    this._emojisEnabled = enabled;
   }
 };
 

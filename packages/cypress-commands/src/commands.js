@@ -16,21 +16,12 @@ function commands(Cypress) {
     return Promise.resolve();
   };
 
-  const setBehavior = (behavior) => {
-    if (isDisabled()) {
-      return doNothing();
-    }
-    return apiClient.updateSettings({
-      behavior,
-    });
-  };
-
   const setMock = (id) => {
     if (isDisabled()) {
       return doNothing();
     }
     return apiClient.updateSettings({
-      mock: id,
+      mocks: { selected: id },
     });
   };
 
@@ -39,7 +30,7 @@ function commands(Cypress) {
       return doNothing();
     }
     return apiClient.updateSettings({
-      delay,
+      mocks: { delay },
     });
   };
 
@@ -76,7 +67,6 @@ function commands(Cypress) {
   }
 
   return {
-    setBehavior,
     setMock,
     setDelay,
     setSettings,

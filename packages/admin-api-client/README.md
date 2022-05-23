@@ -13,9 +13,9 @@
 
 # Mocks-server administration api client
 
-This package contains methods for administrating Mocks Server _(using the [Admin API plugin](https://github.com/mocks-server/plugin-admin-api) under the hood)_.
+This package provides an API client for administrating Mocks Server _(it performs requests to the [Admin API plugin][plugin-admin-api-url] under the hood)_.
 
-Requests to the Mocks Server API are made using [`cross-fetch`](https://www.npmjs.com/package/cross-fetch), which makes this package compatible with browsers and nodejs environments, but, if you are going to build a browser application, you'll probably prefer to use the [`@mocks-server/admin-api-client-data-provider` package](https://www.npmjs.com/package/@mocks-server/admin-api-client-data-provider), which uses [Data Provider](https://www.data-provider.org), and works well with Redux, React, etc.
+Requests to the Mocks Server administration API are made using [`cross-fetch`](https://www.npmjs.com/package/cross-fetch), which makes this package compatible with browsers and Node.js environments, but, if you are going to build a browser application, you'll probably prefer to use the [`@mocks-server/admin-api-client-data-provider` package](https://www.npmjs.com/package/@mocks-server/admin-api-client-data-provider), which uses [Data Provider](https://www.data-provider.org), and works well with Redux, React, etc.
 
 ## Install
 
@@ -23,7 +23,7 @@ Requests to the Mocks Server API are made using [`cross-fetch`](https://www.npmj
 npm install --save @mocks-server/admin-api-client
 ```
 
-The UMD build is also available on unpkg:
+The UMD build is also available on unpkg. When UMD package is loaded, it creates a `mocksServerAdminApiClient` global object containing all of the methods.
 
 ```html
 <script src="https://unpkg.com/@mocks-server/admin-api-paths/dist/index.umd.js"></script>
@@ -72,13 +72,6 @@ example();
 * `readCustomRoutesVariants()` - Returns current routes variants manually added to current mock.
 * `useRouteVariant(id)` - Sets a specific route variant to be used by current mock.
 * `restoreRoutesVariants()` - Restore routes variants to those defined in current mock.
-
-##### Legacy methods
-
-* `readBehaviors()` - Returns collection of available behaviors.
-* `readBehavior(behaviorName)` - Returns an specific behavior.
-* `readFixtures()` - Returns collection of available fixtures.
-* `readFixture(fixtureId)` - Returns an specific fixture.
 
 ## Configuration
 

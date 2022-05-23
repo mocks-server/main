@@ -14,6 +14,40 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGES
 
+## [3.0.0] - 2022-05-23
+
+### Removed
+
+- feat: BREAKING CHANGE. The `Core` object now is export as `default`, not as a property
+- feat: BREAKING CHANGE. The `Behavior` object has been removed and it is not exported any more.
+- feat: BREAKING CHANGE. The `addFixturesHandler`, `onChangeLegacyMocks`, `addSetting` and `onChangeSettings` methods have been removed from the `Core` API.
+- feat: BREAKING CHANGE. The `settings`, `behaviors` and `fixtures` getters have been removed from the `Core` API.
+- feat: BREAKING CHANGE. The `pathLegacy`, `behavior` and `watchLegacy` options are not supported any more.
+- feat: BREAKING CHANGE. The `--behavior` command line argument has been removed.
+- feat: BREAKING CHANGE. The `load:mocks:legacy` and `change:mocks:legacy` events are not emitted any more.
+- feat: BREAKING CHANGE. Drop support for Node.js 12.x
+
+### Changed
+- feat: BREAKING CHANGE. Renamed plugins `displayName` property into `id`. Plugins as classes now are required to have an static property id. Otherwise config is received only in register method.
+- feat: BREAKING CHANGE. Configuration format changed. __All options have been renamed or moved into namespaces__. Please check the docs in the website for further info.
+- feat: BREAKING CHANGE. Change arguments passed to the plugins. Now there is only one argument with an object containing everything.
+- feat: BREAKING CHANGE. Response preview in route variants now is null when the response is defined as a function
+- feat: BREAKING CHANGE. Change `cors` and `corsPreflight` options. Create a namespace cors. Allow passing any option to the cors middleware.
+- feat: BREAKING CHANGE. `ajv-errors` is not used any more. Now, `better-ajv-errors` is used to provide better feedback about validations. So `ajv-errors` properties for json schemas are not supported any more.
+- refactor: Use callbacks internally instead of events. Remove Orchestrator
+- refactor: Move Settings and Config to a separated package
+- refactor: FilesLoader is not loaded as a plugin any more in the core, now it is a core internal element.
+
+### Added
+- feat: A namespaced configuration object is passed to plugins if they have an `id` property.
+- feat: Configuration can now be defined also in environment variables.
+- feat: Configuration can now be defined in different file formats, using `cosmiconf`.
+- feat: Add `config` getter to core.
+- feat: Add options to configure body parser middlewares.
+
+### Fixed
+- chore: Fix repository property in package.json
+
 ## [2.5.3] - 2022-03-28
 
 ### Changed

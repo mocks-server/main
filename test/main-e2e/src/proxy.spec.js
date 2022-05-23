@@ -21,8 +21,8 @@ describe("scaffold", () => {
   let mocks, host;
 
   beforeAll(async () => {
-    host = mocksRunner(["--port=3200"]);
-    mocks = mocksRunner(["--port=3100"], { cwd: fixturesFolder("proxy") });
+    host = mocksRunner(["--server.port=3200"]);
+    mocks = mocksRunner(["--server.port=3100"], { cwd: fixturesFolder("proxy") });
     await waitForServerAndCli();
     await waitForServerAndCli(3200);
   });
@@ -113,7 +113,7 @@ describe("scaffold", () => {
           id: "proxy-all:disabled",
           routeId: "proxy-all",
           handler: "default",
-          response: "function",
+          response: null,
           delay: null,
         },
       ]);
@@ -195,7 +195,9 @@ describe("scaffold", () => {
       await fetch("/admin/settings", {
         method: "PATCH",
         body: {
-          mock: "base",
+          mocks: {
+            selected: "base",
+          },
         },
       });
     });

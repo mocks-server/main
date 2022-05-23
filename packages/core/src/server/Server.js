@@ -9,26 +9,120 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-"use strict";
-
 const http = require("http");
 
 const express = require("express");
-const { delay } = require("lodash");
 const cors = require("cors");
 const tracer = require("../tracer");
 const middlewares = require("./middlewares");
 
+const ALL_HOSTS = "0.0.0.0";
+const LOCALHOST = "localhost";
+
+const OPTIONS = [
+  {
+    description: "Port number for the server to be listening at",
+    name: "port",
+    type: "number",
+    default: 3100,
+  },
+  {
+    description: "Host for the server",
+    name: "host",
+    type: "string",
+    default: ALL_HOSTS,
+  },
+];
+
+const CORS_NAMESPACE = "cors";
+
+const CORS_OPTIONS = [
+  {
+    description: "Use CORS middleware or not",
+    name: "enabled",
+    type: "boolean",
+    default: true,
+  },
+  {
+    description:
+      "Options for the CORS middleware. Further information at https://github.com/expressjs/cors#configuration-options",
+    name: "options",
+    type: "object",
+    default: {
+      preflightContinue: false,
+    },
+  },
+];
+
+const JSON_BODY_PARSER_NAMESPACE = "jsonBodyParser";
+
+const JSON_BODY_PARSER_OPTIONS = [
+  {
+    description: "Use json body-parser middleware or not",
+    name: "enabled",
+    type: "boolean",
+    default: true,
+  },
+  {
+    description:
+      "Options for the json body-parser middleware. Further information at https://github.com/expressjs/body-parser",
+    name: "options",
+    type: "object",
+    default: {},
+  },
+];
+
+const URL_ENCODED_BODY_PARSER_NAMESPACE = "urlEncodedBodyParser";
+
+const URL_ENCODED_BODY_PARSER_OPTIONS = [
+  {
+    description: "Use urlencoded body-parser middleware or not",
+    name: "enabled",
+    type: "boolean",
+    default: true,
+  },
+  {
+    description:
+      "Options for the urlencoded body-parser middleware. Further information at https://github.com/expressjs/body-parser",
+    name: "options",
+    type: "object",
+    default: { extended: true },
+  },
+];
+
 class Server {
-  constructor(eventEmitter, settings, legacyMocks, core, { addAlert, removeAlerts, mocksRouter }) {
-    // TODO, deprecate, the core is being passed only to maintain temporarily backward compatibility with API plugin. This is not published in documentation.
-    this._core = core; // Use this reference only to provide it to external functions for customization purposes
-    this._legacyMocks = legacyMocks;
+  constructor({ config, addAlert, removeAlerts, mocksRouter }) {
+    this._config = config;
+    const corsConfigNamespace = this._config.addNamespace(CORS_NAMESPACE);
+    const jsonBodyParserConfigNamespace = this._config.addNamespace(JSON_BODY_PARSER_NAMESPACE);
+    const formBodyParserConfigNamespace = this._config.addNamespace(
+      URL_ENCODED_BODY_PARSER_NAMESPACE
+    );
+
+    [this._portOption, this._hostOption] = this._config.addOptions(OPTIONS);
+
+    [this._corsEnabledOption, this._corsOptionsOption] =
+      corsConfigNamespace.addOptions(CORS_OPTIONS);
+
+    [this._jsonBodyParserEnabledOption, this._jsonBodyParserOptionsOption] =
+      jsonBodyParserConfigNamespace.addOptions(JSON_BODY_PARSER_OPTIONS);
+
+    [this._urlEncodedBodyParserEnabledOption, this._urlEncodedBodyParserOptionsOption] =
+      formBodyParserConfigNamespace.addOptions(URL_ENCODED_BODY_PARSER_OPTIONS);
+
+    this.restart = this.restart.bind(this);
+
+    this._hostOption.onChange(this.restart);
+    this._portOption.onChange(this.restart);
+    this._corsEnabledOption.onChange(this.restart);
+    this._corsOptionsOption.onChange(this.restart);
+    this._jsonBodyParserEnabledOption.onChange(this.restart);
+    this._jsonBodyParserOptionsOption.onChange(this.restart);
+    this._urlEncodedBodyParserEnabledOption.onChange(this.restart);
+    this._urlEncodedBodyParserOptionsOption.onChange(this.restart);
 
     this._mocksRouter = mocksRouter;
-    this._eventEmitter = eventEmitter;
     this._customRouters = [];
-    this._settings = settings;
     this._error = null;
     this._addAlert = addAlert;
     this._removeAlerts = removeAlerts;
@@ -55,21 +149,30 @@ class Server {
 
     // Add middlewares
     this._express.use(middlewares.addRequestId);
-    if (this._settings.get("cors")) {
+
+    // TODO, move to variants router. Add options to routes to configure it
+    if (this._corsEnabledOption.value) {
+      this._express.use(cors(this._corsOptionsOption.value));
+    }
+
+    // TODO, move to middleware variant handler. Add options to variant to configure it
+    if (this._jsonBodyParserEnabledOption.value) {
+      this._express.use(middlewares.jsonBodyParser(this._jsonBodyParserOptionsOption.value));
+    }
+    if (this._urlEncodedBodyParserEnabledOption.value) {
       this._express.use(
-        cors({
-          preflightContinue: !this._settings.get("corsPreFlight"),
-        })
+        middlewares.urlEncodedBodyParser(this._urlEncodedBodyParserOptionsOption.value)
       );
     }
-    this._express.use(middlewares.jsonBodyParser);
-    this._express.use(middlewares.formBodyParser);
+
+    // TODO, move to variants router. Add options to routes to configure it
     this._express.use(middlewares.traceRequest);
     this._registerCustomRouters();
     this._express.use(this._mocksRouter);
-    // TODO, remove v1 legacy code
-    this._express.use(this._fixturesMiddleware.bind(this));
+
+    // TODO, Add options to allow to disable or configure it
     this._express.use(middlewares.notFound);
+
     this._express.use(middlewares.errorHandler);
 
     // Create server
@@ -99,9 +202,9 @@ class Server {
   }
 
   _startServer(resolve, reject) {
-    const host = this._settings.get("host");
-    const port = this._settings.get("port");
-    const hostName = host === "0.0.0.0" ? "localhost" : host;
+    const host = this._hostOption.value;
+    const port = this._portOption.value;
+    const hostName = host === ALL_HOSTS ? LOCALHOST : host;
 
     try {
       this._server.listen(
@@ -138,19 +241,6 @@ class Server {
       tracer.silly(`Registering custom router with path ${customRouter.path}`);
       this._express.use(customRouter.path, customRouter.router);
     });
-  }
-
-  // TODO, remove v1 legacy code
-  _fixturesMiddleware(req, res, next) {
-    const fixture = this._legacyMocks.behaviors.current.getRequestMatchingFixture(req);
-    if (fixture) {
-      delay(() => {
-        // TODO, deprecate passing the core to handlers. Fixtures handlers already have a reference that is passed to the constructor.
-        fixture.handleRequest(req, res, next, this._core);
-      }, this._settings.get("delay"));
-    } else {
-      next();
-    }
   }
 
   stop() {

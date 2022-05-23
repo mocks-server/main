@@ -32,19 +32,51 @@ describe("settings api", () => {
     it("should return current settings", async () => {
       const settingsResponse = await fetch("/admin/settings");
       expect(settingsResponse.body).toEqual({
-        behavior: null,
-        mock: null,
-        path: fixturesFolder("web-tutorial"),
-        delay: 0,
-        host: "0.0.0.0",
-        port: 3100,
-        watch: false,
+        config: {
+          allowUnknownArguments: true,
+          readArguments: false,
+          readEnvironment: false,
+          readFile: false,
+        },
+        mocks: {
+          delay: 0,
+        },
+        files: {
+          babelRegister: {
+            enabled: false,
+            options: {},
+          },
+          path: fixturesFolder("web-tutorial"),
+          watch: false,
+        },
+        plugins: {
+          register: [null],
+          adminApi: {
+            path: "/admin",
+          },
+        },
         log: "silent",
-        adminApiPath: "/admin",
-        watchLegacy: true,
-        pathLegacy: null,
-        cors: true,
-        corsPreFlight: true,
+        routesHandlers: [],
+        server: {
+          host: "0.0.0.0",
+          port: 3100,
+          cors: {
+            enabled: true,
+            options: {
+              preflightContinue: false,
+            },
+          },
+          jsonBodyParser: {
+            enabled: true,
+            options: {},
+          },
+          urlEncodedBodyParser: {
+            enabled: true,
+            options: {
+              extended: true,
+            },
+          },
+        },
       });
     });
   });
@@ -52,7 +84,7 @@ describe("settings api", () => {
   describe("patch", () => {
     describe("when changing an unexistant option", () => {
       it("should response with a bad request containing errors", async () => {
-        expect.assertions(2);
+        expect.assertions(4);
         const settingsResponse = await fetch("/admin/settings", {
           method: "PATCH",
           body: {
@@ -64,9 +96,9 @@ describe("settings api", () => {
           },
         });
         expect(settingsResponse.status).toEqual(400);
-        expect(settingsResponse.body.message).toEqual(
-          'Invalid option name "foo". Invalid option name "anotherFoo". Invalid option name "third"'
-        );
+        expect(settingsResponse.body.message).toEqual(expect.stringContaining("foo"));
+        expect(settingsResponse.body.message).toEqual(expect.stringContaining("anotherFoo"));
+        expect(settingsResponse.body.message).toEqual(expect.stringContaining("third"));
       });
 
       it("should not apply any change if request contains any error", async () => {
@@ -80,8 +112,8 @@ describe("settings api", () => {
         });
         const settingsResponse = await fetch("/admin/settings");
         expect(settingsUpdateResponse.status).toEqual(400);
-        expect(settingsUpdateResponse.body.message).toEqual('Invalid option name "foo"');
-        expect(settingsResponse.body.delay).toEqual(0);
+        expect(settingsUpdateResponse.body.message).toEqual(expect.stringContaining("foo"));
+        expect(settingsResponse.body.mocks.delay).toEqual(0);
       });
     });
 
@@ -98,7 +130,9 @@ describe("settings api", () => {
         await fetch("/admin/settings", {
           method: "PATCH",
           body: {
-            delay: 2000,
+            mocks: {
+              delay: 2000,
+            },
           },
         });
         await fetch("/api/users");
@@ -111,7 +145,9 @@ describe("settings api", () => {
         await fetch("/admin/settings", {
           method: "PATCH",
           body: {
-            delay: 0,
+            mocks: {
+              delay: 0,
+            },
           },
         });
         await fetch("/api/users");
@@ -138,14 +174,16 @@ describe("settings api", () => {
           await fetch("/admin/settings", {
             method: "PATCH",
             body: {
-              mock: "user-2",
+              mocks: {
+                selected: "user-2",
+              },
             },
           });
         });
 
         it("should return new mock when getting settings", async () => {
           const settingsResponse = await fetch("/admin/settings");
-          expect(settingsResponse.body.mock).toEqual("user-2");
+          expect(settingsResponse.body.mocks.selected).toEqual("user-2");
         });
 
         it("should serve user 2 under the /api/users/1 path", async () => {
@@ -165,7 +203,9 @@ describe("settings api", () => {
         await fetch("/admin/settings", {
           method: "PATCH",
           body: {
-            path: fixturesFolder("web-tutorial-modified"),
+            files: {
+              path: fixturesFolder("web-tutorial-modified"),
+            },
           },
         });
         await wait(1000);
@@ -175,7 +215,9 @@ describe("settings api", () => {
         await fetch("/admin/settings", {
           method: "PATCH",
           body: {
-            path: fixturesFolder("web-tutorial"),
+            files: {
+              path: fixturesFolder("web-tutorial"),
+            },
           },
         });
         await wait(1000);
@@ -183,7 +225,7 @@ describe("settings api", () => {
 
       it("should return new path option when getting settings", async () => {
         const settingsResponse = await fetch("/admin/settings");
-        expect(settingsResponse.body.path).toEqual(fixturesFolder("web-tutorial-modified"));
+        expect(settingsResponse.body.files.path).toEqual(fixturesFolder("web-tutorial-modified"));
       });
 
       it("should serve users collection mock under the /api/users path", async () => {
@@ -200,7 +242,9 @@ describe("settings api", () => {
         await fetch("/admin/settings", {
           method: "PATCH",
           body: {
-            port: 3101,
+            server: {
+              port: 3101,
+            },
           },
         });
         await wait(1000);
@@ -211,7 +255,9 @@ describe("settings api", () => {
           port: 3101,
           method: "PATCH",
           body: {
-            port: 3100,
+            server: {
+              port: 3100,
+            },
           },
         });
         await wait(1000);
@@ -221,7 +267,7 @@ describe("settings api", () => {
         const settingsResponse = await fetch("/admin/settings", {
           port: 3101,
         });
-        expect(settingsResponse.body.port).toEqual(3101);
+        expect(settingsResponse.body.server.port).toEqual(3101);
       });
 
       it("should serve user 2 under the /api/users/1 path using new port", async () => {
@@ -237,7 +283,11 @@ describe("settings api", () => {
         await fetch("/admin/settings", {
           method: "PATCH",
           body: {
-            adminApiPath: "/administration",
+            plugins: {
+              adminApi: {
+                path: "/administration",
+              },
+            },
           },
         });
         await wait(1000);
@@ -247,7 +297,11 @@ describe("settings api", () => {
         await fetch("/administration/settings", {
           method: "PATCH",
           body: {
-            adminApiPath: "/admin",
+            plugins: {
+              adminApi: {
+                path: "/admin",
+              },
+            },
           },
         });
         await wait(1000);
@@ -255,7 +309,7 @@ describe("settings api", () => {
 
       it("should return new port adminApiPath when getting settings, using new admin api path", async () => {
         const settingsResponse = await fetch("/administration/settings");
-        expect(settingsResponse.body.adminApiPath).toEqual("/administration");
+        expect(settingsResponse.body.plugins.adminApi.path).toEqual("/administration");
       });
 
       it("should return not found adminApiPath when getting settings in old admin api path", async () => {

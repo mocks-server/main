@@ -13,7 +13,7 @@
 
 # Mocks Server Plugin Admin Api
 
-Plugin for [Mocks Server][website-url] that provides an API REST that allows to change the current behavior, change delay time, and another [Mocks Server options][options-url].
+Plugin for [Mocks Server][website-url] that provides an API REST that allows to change the current mock, change delay time, and another [Mocks Server options][options-url].
 
 This is __very useful when running acceptance tests, as you can change the current mock__ simply with a HTTP request in the `before` method of your tests, for example.
 
@@ -51,8 +51,6 @@ Available api resources are:
   * Request body example: `{ "delay": 3000 }`
 * `GET` `/admin/alerts` Returns current alerts.
 * `GET` `/admin/alerts/:id` Returns a specific alert. The alert `id` is equivalent to the alert `context` _(read the [developing plugins chapter](plugins-developing-plugins.md) for further info about alerts)_.
-
-> v1.x deprecated api resources are also still available under the `/legacy` path.
 
 ## Contributing
 

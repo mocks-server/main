@@ -10,18 +10,23 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 
+const deepMerge = require("deepmerge");
 const crossFetch = require("cross-fetch");
 const waitOn = require("wait-on");
 
-const { Core } = require("@mocks-server/core");
+const Core = require("@mocks-server/core");
 const AdminApiPlugin = require("../../index");
 
 const SERVER_PORT = 3100;
 
 const defaultOptions = {
-  port: SERVER_PORT,
+  server: {
+    port: SERVER_PORT,
+  },
   log: "silent",
-  watch: false,
+  files: {
+    watch: false,
+  },
 };
 
 const defaultRequestOptions = {
@@ -37,19 +42,32 @@ const fixturesFolder = (folderName) => {
 
 const createCore = () => {
   return new Core({
-    onlyProgrammaticOptions: true,
-    plugins: [AdminApiPlugin],
+    config: {
+      allowUnknownArguments: true,
+      readFile: false,
+      readArguments: false,
+      readEnvironment: false,
+    },
+    plugins: {
+      register: [AdminApiPlugin],
+    },
   });
 };
 
 const startExistingCore = (core, mocksPath, options = {}) => {
   const mocks = mocksPath || "web-tutorial";
   return core
-    .init({
-      ...defaultOptions,
-      path: fixturesFolder(mocks),
-      ...options,
-    })
+    .init(
+      deepMerge.all([
+        defaultOptions,
+        {
+          files: {
+            path: fixturesFolder(mocks),
+          },
+        },
+        options,
+      ])
+    )
     .then(() => {
       return core.start().then(() => {
         return Promise.resolve(core);

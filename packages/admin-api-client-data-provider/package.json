@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/admin-api-client-data-provider",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "description": "Client of @mocks-server/plugin-admin-api built with @data-provider",
   "keywords": [
     "administration",
@@ -11,7 +11,11 @@
   ],
   "author": "Javier Brea",
   "license": "MIT",
-  "repository": "https://github.com/mocks-server/main",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mocks-server/main.git",
+    "directory": "packages/admin-api-client-data-provider"
+  },
   "homepage": "https://www.mocks-server.org",
   "publishConfig": {
     "access": "public"
@@ -34,9 +38,9 @@
   "devDependencies": {
     "@data-provider/axios": "4.1.0",
     "@data-provider/core": "3.1.0",
-    "redux": "4.1.2"
+    "redux": "4.2.0"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=14.0.0"
   }
 }

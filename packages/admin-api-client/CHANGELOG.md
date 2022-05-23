@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [5.0.0] - 2022-05-23
+
+### Changed
+- feat: BREAKING CHANGE. Change main property in package.json. Now it points to `index.cjs.js` file
+
+### Removed
+- feat: BREAKING CHANGE. Remove legacy methods readBehaviors, readBehavior, readFixtures and readFixture.
+- feat: BREAKING CHANGE. Drop support for Node.js 12.x
+
+### Fixed
+- chore: Fix repository property in package.json
+
 ## [4.0.1] - 2022-03-28
 
 ### Changed

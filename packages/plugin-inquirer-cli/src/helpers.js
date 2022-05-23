@@ -28,10 +28,18 @@ const formatError = (error) => {
   )}...`;
 };
 
-function renderSectionHeader(sectionName) {
+function renderSectionSep() {
   console.log(chalk.grey(SECTION_SEP));
-  console.log(emoji.emojify(sectionName));
-  console.log(chalk.grey(SECTION_SEP));
+}
+
+function renderSectionHeader(sectionName, sectionEmoji) {
+  renderSectionSep();
+  if (sectionEmoji) {
+    console.log(emoji.emojify(`${sectionEmoji}  ${sectionName}`));
+  } else {
+    console.log(sectionName);
+  }
+  renderSectionSep();
 }
 
 function renderSectionFooter() {

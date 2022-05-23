@@ -70,6 +70,7 @@ const deprecationWarn = (deprecatedMethod, newMethod) => {
 };
 
 module.exports = {
+  _logger: logger, // exposed for testing purposes
   store,
   silly: logger.silly,
   debug: logger.debug,

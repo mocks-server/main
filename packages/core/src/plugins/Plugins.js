@@ -13,43 +13,43 @@ const { isObject, isFunction } = require("lodash");
 
 const tracer = require("../tracer");
 
-// FilesLoader built-in plugin
-const FilesLoaderLegacy = require("./files-loader-legacy/FilesLoaderLegacy");
-const FilesLoader = require("./files-loader/FilesLoader");
-
 const { scopedAlertsMethods } = require("../support/helpers");
+
+const OPTIONS = [
+  {
+    description: "Plugins to be registered",
+    name: "register",
+    type: "array",
+    default: [],
+  },
+];
 
 class Plugins {
   constructor(
-    {
-      addAlert,
-      removeAlerts,
-      renameAlerts,
-      createLegacyMocksLoader,
-      createMocksLoader,
-      createRoutesLoader,
-    },
+    { config, addAlert, removeAlerts, renameAlerts, createMocksLoader, createRoutesLoader },
     core
   ) {
+    this._config = config;
+
+    [this._pluginsToRegister] = this._config.addOptions(OPTIONS);
+
     this._addAlert = addAlert;
     this._removeAlerts = removeAlerts;
     this._renameAlerts = renameAlerts;
     this._createMocksLoader = createMocksLoader;
     this._createRoutesLoader = createRoutesLoader;
-    this._createLegacyMocksLoader = createLegacyMocksLoader;
     this._core = core;
     this._pluginsInstances = [];
     this._pluginsMethods = [];
+    this._pluginsOptions = [];
     this._pluginsRegistered = 0;
     this._pluginsInitialized = 0;
     this._pluginsStarted = 0;
     this._pluginsStopped = 0;
   }
 
-  register(plugins = []) {
-    this._plugins = plugins;
-    this._plugins.unshift(FilesLoader);
-    this._plugins.unshift(FilesLoaderLegacy);
+  register() {
+    this._plugins = this._pluginsToRegister.value;
     return this._registerPlugins().then(() => {
       tracer.verbose(`Registered ${this._pluginsRegistered} plugins without errors`);
       return Promise.resolve();
@@ -80,34 +80,46 @@ class Plugins {
     });
   }
 
-  pluginDisplayName(index) {
-    return (this._pluginsInstances[index] && this._pluginsInstances[index].displayName) || index;
+  _pluginId(index) {
+    const plugin = this._pluginsInstances[index];
+    if (!plugin) {
+      return index;
+    }
+    if (plugin.constructor.id) {
+      return plugin.constructor.id;
+    }
+    return plugin.id || index;
   }
 
   _catchRegisterError(error, index) {
-    const pluginDisplayName = this.pluginDisplayName(index);
-    this._addAlert(
-      `register:${pluginDisplayName}`,
-      `Error registering plugin "${pluginDisplayName}"`,
-      error
-    );
+    const pluginId = this._pluginId(index);
+    this._addAlert(`register:${pluginId}`, `Error registering plugin "${pluginId}"`, error);
     return {};
   }
 
   _registerPlugin(Plugin, pluginMethods, pluginIndex) {
-    let pluginInstance;
+    let pluginInstance, pluginConfig;
+    const pluginOptions = { core: this._core, ...pluginMethods };
     if (isObject(Plugin) && !isFunction(Plugin)) {
       pluginInstance = Plugin;
+      this._pluginsInstances.push(pluginInstance);
       this._pluginsRegistered++;
     } else {
       try {
-        pluginInstance = new Plugin(this._core, pluginMethods);
+        if (Plugin.id) {
+          pluginConfig = this._config.addNamespace(Plugin.id);
+        }
+        const pluginFinalOptions = { ...pluginOptions, config: pluginConfig };
+        pluginInstance = new Plugin(pluginFinalOptions);
+        this._pluginsOptions.push(pluginFinalOptions);
+        this._pluginsInstances.push(pluginInstance);
         this._pluginsRegistered++;
       } catch (error) {
         if (error.message.includes("is not a constructor")) {
           try {
             const pluginFunc = Plugin;
-            pluginInstance = pluginFunc(this._core, pluginMethods) || {};
+            pluginInstance = pluginFunc(pluginOptions) || {};
+            this._pluginsInstances.push(pluginInstance);
             this._pluginsRegistered++;
           } catch (err) {
             return this._catchRegisterError(err, pluginIndex);
@@ -117,12 +129,23 @@ class Plugins {
         }
       }
     }
-    if (typeof pluginInstance.register === "function") {
-      try {
-        pluginInstance.register(this._core, pluginMethods);
-      } catch (error) {
-        this._catchRegisterError(error, pluginIndex);
-        this._pluginsRegistered = this._pluginsRegistered - 1;
+    if (
+      isFunction(pluginInstance.register) ||
+      isFunction(pluginInstance.init) ||
+      isFunction(pluginInstance.start)
+    ) {
+      if (!pluginConfig && pluginInstance.id) {
+        pluginConfig = this._config.addNamespace(pluginInstance.id);
+      }
+      const pluginFinalOptions = { ...pluginOptions, config: pluginConfig };
+      this._pluginsOptions.push(pluginFinalOptions);
+      if (isFunction(pluginInstance.register)) {
+        try {
+          pluginInstance.register(pluginFinalOptions);
+        } catch (error) {
+          this._catchRegisterError(error, pluginIndex);
+          this._pluginsRegistered = this._pluginsRegistered - 1;
+        }
       }
     }
     return pluginInstance;
@@ -132,34 +155,29 @@ class Plugins {
     if (pluginIndex === this._plugins.length) {
       return Promise.resolve();
     }
-    const loadLegacyMocks = this._createLegacyMocksLoader();
     const loadMocks = this._createMocksLoader();
     const loadRoutes = this._createRoutesLoader();
     const pluginMethods = {
-      loadLegacyMocks,
       loadMocks,
       loadRoutes,
       ...scopedAlertsMethods(
-        () => this.pluginDisplayName(pluginIndex),
+        () => {
+          return this._pluginId(pluginIndex);
+        },
         this._addAlert,
         this._removeAlerts,
         this._renameAlerts
       ),
     };
     this._pluginsMethods.push(pluginMethods);
-    const plugin = this._registerPlugin(this._plugins[pluginIndex], pluginMethods, pluginIndex);
-    this._pluginsInstances.push(plugin);
+    this._registerPlugin(this._plugins[pluginIndex], pluginMethods, pluginIndex);
     return this._registerPlugins(pluginIndex + 1);
   }
 
   _catchInitError(error, index) {
     this._pluginsInitialized = this._pluginsInitialized - 1;
-    const pluginDisplayName = this.pluginDisplayName(index);
-    this._addAlert(
-      `init:${pluginDisplayName}`,
-      `Error initializating plugin "${pluginDisplayName}"`,
-      error
-    );
+    const pluginId = this._pluginId(index);
+    this._addAlert(`init:${pluginId}`, `Error initializating plugin "${pluginId}"`, error);
     tracer.debug(error.toString());
     return Promise.resolve();
   }
@@ -172,22 +190,15 @@ class Plugins {
     const initNextPlugin = () => {
       return this._initPlugins(pluginIndex + 1);
     };
-    const pluginDisplayName = this.pluginDisplayName(pluginIndex);
+    const pluginId = this._pluginId(pluginIndex);
     if (!this._pluginsInstances[pluginIndex].init) {
       this._pluginsInitialized = this._pluginsInitialized - 1;
-      this._addAlert(
-        `init:${pluginDisplayName}`,
-        `Plugin "${pluginDisplayName}" has not init method`
-      );
       return initNextPlugin();
     }
-    tracer.debug(`Initializing plugin "${pluginDisplayName}"`);
+    tracer.debug(`Initializing plugin "${pluginId}"`);
     let pluginInit;
     try {
-      pluginInit = this._pluginsInstances[pluginIndex].init(
-        this._core,
-        this._pluginsMethods[pluginIndex]
-      );
+      pluginInit = this._pluginsInstances[pluginIndex].init(this._pluginsOptions[pluginIndex]);
     } catch (error) {
       return this._catchInitError(error, pluginIndex).then(initNextPlugin);
     }
@@ -204,12 +215,8 @@ class Plugins {
 
   _catchStartError(error, index) {
     this._pluginsStarted = this._pluginsStarted - 1;
-    const pluginDisplayName = this.pluginDisplayName(index);
-    this._addAlert(
-      `start:${pluginDisplayName}`,
-      `Error starting plugin "${pluginDisplayName}"`,
-      error
-    );
+    const pluginId = this._pluginId(index);
+    this._addAlert(`start:${pluginId}`, `Error starting plugin "${pluginId}"`, error);
     tracer.debug(error.toString());
     return Promise.resolve();
   }
@@ -222,22 +229,15 @@ class Plugins {
     const startNextPlugin = () => {
       return this._startPlugins(pluginIndex + 1);
     };
-    const pluginDisplayName = this.pluginDisplayName(pluginIndex);
+    const pluginId = this._pluginId(pluginIndex);
     if (!this._pluginsInstances[pluginIndex].start) {
       this._pluginsStarted = this._pluginsStarted - 1;
-      this._addAlert(
-        `start:${pluginDisplayName}`,
-        `Plugin "${pluginDisplayName}" has not start method`
-      );
       return startNextPlugin();
     }
-    tracer.debug(`Starting plugin "${pluginDisplayName}"`);
+    tracer.debug(`Starting plugin "${pluginId}"`);
     let pluginStart;
     try {
-      pluginStart = this._pluginsInstances[pluginIndex].start(
-        this._core,
-        this._pluginsMethods[pluginIndex]
-      );
+      pluginStart = this._pluginsInstances[pluginIndex].start(this._pluginsOptions[pluginIndex]);
     } catch (error) {
       return this._catchStartError(error, pluginIndex).then(startNextPlugin);
     }
@@ -254,12 +254,8 @@ class Plugins {
 
   _catchStopError(error, index) {
     this._pluginsStopped = this._pluginsStopped - 1;
-    const pluginDisplayName = this.pluginDisplayName(index);
-    this._addAlert(
-      `stop:${pluginDisplayName}`,
-      `Error stopping plugin "${pluginDisplayName}"`,
-      error
-    );
+    const pluginId = this._pluginId(index);
+    this._addAlert(`stop:${pluginId}`, `Error stopping plugin "${pluginId}"`, error);
     tracer.debug(error.toString());
     return Promise.resolve();
   }
@@ -273,22 +269,15 @@ class Plugins {
       return this._stopPlugins(pluginIndex + 1);
     };
 
-    const pluginDisplayName = this.pluginDisplayName(pluginIndex);
+    const pluginId = this._pluginId(pluginIndex);
     if (!this._pluginsInstances[pluginIndex].stop) {
       this._pluginsStopped = this._pluginsStopped - 1;
-      this._addAlert(
-        `stop:${pluginDisplayName}`,
-        `Plugin "${pluginDisplayName}" has not stop method`
-      );
       return stopNextPlugin();
     }
-    tracer.debug(`Stopping plugin "${pluginDisplayName}"`);
+    tracer.debug(`Stopping plugin "${pluginId}"`);
     let pluginStop;
     try {
-      pluginStop = this._pluginsInstances[pluginIndex].stop(
-        this._core,
-        this._pluginsMethods[pluginIndex]
-      );
+      pluginStop = this._pluginsInstances[pluginIndex].stop(this._pluginsOptions[pluginIndex]);
     } catch (error) {
       return this._catchStopError(error, pluginIndex).then(stopNextPlugin);
     }

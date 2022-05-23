@@ -6,8 +6,7 @@ module.exports = {
   clearMocks: true,
 
   testMatch: ["<rootDir>/src/*.spec.js"],
-  // testMatch: ["<rootDir>/test/e2e/proxy.spec.js"],
-  // testMatch: ["<rootDir>/test/e2e/cli-disabled-runtime.spec.js"],
+  // testMatch: ["<rootDir>/src/scaffold.spec.js"],
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: false,

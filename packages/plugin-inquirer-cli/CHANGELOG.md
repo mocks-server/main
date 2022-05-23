@@ -11,6 +11,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGE
 
+## [3.0.0] - 2022-05-23
+
+### Added
+- feat: Add emojis option allowing to disable emojis.
+
+### Removed
+- feat: BREAKING CHANGE. Remove support for v1 legacy mode
+- feat: BREAKING CHANGE. Drop support for Node.js 12.x
+
+### Changed
+- feat: BREAKING CHANGE. Change received arguments to make the plugin compatible with core v3
+- feat: BREAKING CHANGE. Use new configuration method. Now plugin options have to be defined in the `plugins.inquirerCli` namespace.
+
+### Fixed
+- chore: Fix repository property in package.json
+
 ## [2.2.1] - 2022-03-28
 
 ### Changed

@@ -14,6 +14,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [3.0.0] - 2022-05-23
+
+### Changed
+- feat: BREAKING CHANGE. Export Core as default export. Stop exporting v1 legacy Behavior object
+- feat: BREAKING CHANGE. Update core version to v3.0.0. Update plugins to latest versions also. Please check their own docs for further info.
+- feat: BREAKING CHANGE. Drop support for Node.js 12.x
+
+### Fixed
+- chore: Fix repository property in package.json
+
 ## [2.6.3] - 2022-03-28
 
 ### Changed

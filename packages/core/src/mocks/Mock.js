@@ -30,7 +30,7 @@ class Mock {
         : [routeVariant.method];
       methods.forEach((method) => {
         const httpMethod = HTTP_METHODS[method.toUpperCase()];
-        this._router[httpMethod](routeVariant.url, (req, res, next) => {
+        this._router[httpMethod](routeVariant.url, (_req, _res, next) => {
           const delay = routeVariant.delay !== null ? routeVariant.delay : this._getDelay();
           if (delay > 0) {
             tracer.verbose(`Applying delay of ${delay}ms to route variant "${this._id}"`);

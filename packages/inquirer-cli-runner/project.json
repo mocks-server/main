@@ -1,0 +1,5 @@
+{
+  "root": "packages/inquirer-cli-runner/",
+  "projectType": "library",
+  "tags": ["type:library"]
+}

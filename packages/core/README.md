@@ -15,7 +15,7 @@
 
 This package provides the plugabble core of the [Mocks Server][website-url] project.
 
-Use it if you want to start Mocks Server programmatically by your own, or even create your own Mocks Server distribution with your desired plugins. If not, you would probably prefer using the [main distribution of the Mocks Server project][main-url].
+Use it if you want to start Mocks Server programmatically by your own, or even create your own Mocks Server distribution with the plugins of your choice. If this is not the case, you would probably prefer using the [main distribution of the Mocks Server project][main-url].
 
 ## Documentation
 

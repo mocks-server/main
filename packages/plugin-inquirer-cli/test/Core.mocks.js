@@ -12,7 +12,9 @@ const sinon = require("sinon");
 
 jest.mock("@mocks-server/core");
 
-const { Core } = require("@mocks-server/core");
+const Core = require("@mocks-server/core");
+
+const ConfigMock = require("./Config.mocks");
 
 const doNothing = () => {
   // do nothing
@@ -27,10 +29,6 @@ class CoreMock {
       start: this._sandbox.stub().resolves(),
       stop: this._sandbox.stub().resolves(),
       restartServer: this._sandbox.stub().resolves(),
-      settings: {
-        get: this._sandbox.stub(),
-        set: this._sandbox.stub(),
-      },
       tracer: {
         silly: this._sandbox.stub(),
         debug: this._sandbox.stub(),
@@ -39,10 +37,8 @@ class CoreMock {
         warn: this._sandbox.stub(),
         error: this._sandbox.stub(),
       },
-      onChangeSettings: this._sandbox.stub().returns(doNothing),
       onChangeAlerts: this._sandbox.stub().returns(doNothing),
       onChangeMocks: this._sandbox.stub().returns(doNothing),
-      onChangeLegacyMocks: this._sandbox.stub().returns(doNothing),
       addRouter: this._sandbox.stub(),
       addSetting: this._sandbox.stub(),
       mocks: {
@@ -55,20 +51,9 @@ class CoreMock {
         useRouteVariant: this._sandbox.stub(),
         restoreRoutesVariants: this._sandbox.stub(),
       },
-      behaviors: {
-        count: 0,
-        currentId: "foo-current",
-      },
+      config: new ConfigMock().stubs.instance,
       alerts: [],
-      fixtures: {
-        count: 0,
-      },
       serverError: null,
-      _eventEmitter: {
-        on: this._sandbox.stub(),
-        removeListener: this._sandbox.stub(),
-        emit: this._sandbox.stub(),
-      },
     };
 
     Core.mockImplementation(() => this._stubs);

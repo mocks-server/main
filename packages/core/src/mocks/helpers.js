@@ -75,7 +75,7 @@ function getMockRoutesVariants(
     // TODO, throw an error in strict validation mode
     addAlert(
       `${alertScope}:from`,
-      `Mock with invalid "from" property detected, "${mock.from}" was not found`
+      `Mock with invalid 'from' property detected, '${mock.from}' was not found`
     );
   }
   return addMockRoutesVariants(mockRoutesVariants, routesVariantsToAdd);
@@ -157,7 +157,7 @@ function addCustomVariant(variantId, customVariants) {
   const newCustomVariants = [...customVariants];
   let inserted = false;
   newCustomVariants.forEach((customVariantId, index) => {
-    // TODO, use better method, store base id and variant id in an object to avoid conflicts with possible routes ids containing :
+    // TODO, use better method, store base id and variant id in an object to avoid conflicts with possible routes ids containing ":"
     if (!inserted && customVariantId.split(":")[0] === variantId.split(":")[0]) {
       newCustomVariants.splice(index, 1, variantId);
       inserted = true;
@@ -253,7 +253,7 @@ function getRouteVariants({ routesDefinitions, addAlert, removeAlerts, routeHand
         if (routeIds.includes(route.id)) {
           addAlert(
             `${alertScope}:duplicated`,
-            `Route with duplicated id "${route.id}" detected. It has been ignored`
+            `Route with duplicated id '${route.id}' detected. It has been ignored`
           );
           return null;
         }
@@ -275,7 +275,7 @@ function getRouteVariants({ routesDefinitions, addAlert, removeAlerts, routeHand
             if (routeVariantsIds.includes(variantHandler.id)) {
               addAlert(
                 `${alertScope}:variant:${variantIndex}:duplicated`,
-                `Route variant with duplicated id "${variantHandler.id}" detected in route "${route.id}". It has been ignored`
+                `Route variant with duplicated id '${variantHandler.id}' detected in route '${route.id}'. It has been ignored`
               );
               return null;
             }
@@ -362,7 +362,7 @@ function getMocks({ mocksDefinitions, addAlert, removeAlerts, routeVariants, get
       if (ids.includes(mock.id)) {
         addAlert(
           `process:mocks:${index}:duplicated`,
-          `Mock with duplicated id "${mock.id}" detected. It has been ignored`
+          `Mock with duplicated id '${mock.id}' detected. It has been ignored`
         );
         return null;
       }

@@ -114,14 +114,14 @@ describe("scaffold", () => {
           id: "add-headers:enabled",
           routeId: "add-headers",
           handler: "default",
-          response: "function",
+          response: null,
           delay: null,
         },
         {
           id: "add-headers:disabled",
           routeId: "add-headers",
           handler: "default",
-          response: "function",
+          response: null,
           delay: null,
         },
         {
@@ -155,7 +155,7 @@ describe("scaffold", () => {
           id: "get-user:real",
           routeId: "get-user",
           handler: "default",
-          response: "function",
+          response: null,
           delay: null,
         },
       ]);
@@ -265,14 +265,16 @@ describe("scaffold", () => {
       await fetch("/admin/settings", {
         method: "PATCH",
         body: {
-          mock: "base",
+          mocks: {
+            selected: "base",
+          },
         },
       });
     });
 
     it("should return new mock when getting settings", async () => {
       const settingsResponse = await fetch("/admin/settings");
-      expect(settingsResponse.body.mock).toEqual("base");
+      expect(settingsResponse.body.mocks.selected).toEqual("base");
     });
 
     it("should serve user 1 under the /api/users/2 path", async () => {

@@ -10,7 +10,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
-const Behavior = require("../src/mocks-legacy/Behavior");
 
 jest.mock("../src/Loaders");
 
@@ -19,33 +18,9 @@ const Loaders = require("../src/Loaders");
 const INITIAL_FILES = {
   file1: {
     _mocksServer_isFile: true,
-    behavior1: new Behavior([
-      {
-        url: "/api/foo/foo-uri",
-        method: "GET",
-        response: {
-          status: 200,
-          body: {
-            fooProperty: "foo",
-          },
-        },
-      },
-    ]),
   },
   file2: {
     _mocksServer_isFile: true,
-    behavior2: new Behavior([
-      {
-        url: "/api/foo/foo-uri-2",
-        method: "POST",
-        response: {
-          status: 422,
-          body: {
-            fooProperty2: "foo2",
-          },
-        },
-      },
-    ]),
   },
   folder: {
     folder2: {
@@ -57,18 +32,9 @@ const INITIAL_FILES = {
   },
 };
 
-INITIAL_FILES.file1.behavior1._mocksServer_lastPath = "behavior1";
-INITIAL_FILES.file2.behavior2._mocksServer_lastPath = "behavior2";
-
-const INITIAL_CONTENTS = [INITIAL_FILES.file1.behavior1, INITIAL_FILES.file2.behavior2, {}];
-
 class Mock {
   static get files() {
     return INITIAL_FILES;
-  }
-
-  static get contents() {
-    return INITIAL_CONTENTS;
   }
 
   constructor() {
@@ -76,7 +42,6 @@ class Mock {
 
     this._stubs = {
       new: this._sandbox.stub(),
-      contents: INITIAL_CONTENTS,
     };
 
     Loaders.mockImplementation(() => this._stubs);
@@ -90,7 +55,6 @@ class Mock {
   }
 
   restore() {
-    this._stubs.contents = INITIAL_CONTENTS;
     this._sandbox.restore();
   }
 }

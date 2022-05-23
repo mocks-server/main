@@ -1,0 +1,7 @@
+{
+  "mocks": {
+    "component": {
+      "alias": "alias-from-package"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/cypress-commands",
-  "version": "3.0.2",
+  "version": "4.0.0",
   "description": "Extends Cypress' cy commands with methods for administrating Mocks Server",
   "keywords": [
     "cypress",
@@ -17,7 +17,11 @@
   ],
   "author": "Javier Brea",
   "license": "MIT",
-  "repository": "https://github.com/mocks-server/main",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mocks-server/main.git",
+    "directory": "packages/cypress-commands"
+  },
   "homepage": "https://www.mocks-server.org",
   "publishConfig": {
     "access": "public"
@@ -37,6 +41,6 @@
     "cypress": ">=2.0.0"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=14.0.0"
   }
 }

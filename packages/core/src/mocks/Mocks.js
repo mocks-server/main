@@ -9,7 +9,27 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const express = require("express");
+
 const tracer = require("../tracer");
+
+const OPTIONS = [
+  {
+    description: "Selected mock",
+    name: "selected",
+    type: "string",
+    extraData: {
+      scaffold: {
+        commented: false,
+      },
+    },
+  },
+  {
+    description: "Global delay to apply to routes",
+    name: "delay",
+    type: "number",
+    default: 0,
+  },
+];
 
 const {
   getPlainMocks,
@@ -20,25 +40,19 @@ const {
   getMocks,
   getMock,
 } = require("./helpers");
-const { getIds, compileRouteValidator, catchInitValidatorError } = require("./validations");
+const { getIds, compileRouteValidator } = require("./validations");
 
 class Mocks {
   constructor(
-    {
-      getLoadedMocks,
-      getLoadedRoutes,
-      getCurrentMock,
-      getDelay,
-      onChange,
-      addAlert,
-      removeAlerts,
-    },
+    { config, getLoadedMocks, getLoadedRoutes, onChange, addAlert, removeAlerts },
     core
   ) {
+    this._config = config;
+    [this._currentMockOption, this._currentDelayOption] = this._config.addOptions(OPTIONS);
+    this._currentMockOption.onChange(this._setCurrent.bind(this));
+
     this._getLoadedMocks = getLoadedMocks;
     this._getLoadedRoutes = getLoadedRoutes;
-    this._getCurrentMock = getCurrentMock;
-    this._getDelay = getDelay;
     this._onChange = onChange;
     this._addAlert = addAlert;
     this._removeAlerts = removeAlerts;
@@ -56,6 +70,11 @@ class Mocks {
     this._customVariantsMock = null;
 
     this.router = this.router.bind(this);
+    this.getDelay = this.getDelay.bind(this);
+  }
+
+  getDelay() {
+    return this._currentDelayOption.value;
   }
 
   _reloadRouter() {
@@ -77,7 +96,7 @@ class Mocks {
       addAlert: this._addAlert,
       removeAlerts: this._removeAlerts,
       routeVariants: this._routesVariants,
-      getGlobalDelay: this._getDelay,
+      getGlobalDelay: this.getDelay,
     });
   }
 
@@ -103,18 +122,10 @@ class Mocks {
     this._plainRoutes = getPlainRoutes(this._routesDefinitions, this._routesVariants);
     this._plainRoutesVariants = getPlainRoutesVariants(this._routesVariants);
     this._plainMocks = getPlainMocks(this._mocks, this._mocksDefinitions);
-    this.current = this._getCurrentMock();
+    this.current = this._currentMockOption.value;
   }
 
   init(routesHandlers) {
-    const initValidationError = catchInitValidatorError();
-    if (initValidationError) {
-      this._addAlert(
-        "validation:init",
-        "Error loading ajv-errors dependency, validations won't be executed. Visit https://mocks-server.org/docs/how-to-fix-ajv-errors-installation for further info.",
-        initValidationError
-      );
-    }
     compileRouteValidator(routesHandlers);
     this._routesVariantsHandlers = routesHandlers;
   }
@@ -123,7 +134,7 @@ class Mocks {
     this._router(req, res, next);
   }
 
-  set current(id) {
+  _setCurrent(id) {
     tracer.verbose(`Trying to set current mock as "${id}"`);
     let current;
     this._removeAlerts("current:settings");
@@ -162,6 +173,10 @@ class Mocks {
     this._reloadRouter();
   }
 
+  set current(id) {
+    this._setCurrent(id);
+  }
+
   _stopUsingVariants() {
     this._customVariants = [];
     this._customVariantsMock = null;
@@ -178,7 +193,7 @@ class Mocks {
       mockIndex: "custom",
       mocksDefinitions: this._mocksDefinitions,
       routeVariants: this._routesVariants,
-      getGlobalDelay: this._getDelay,
+      getGlobalDelay: this.getDelay,
       addAlert: this._addAlert,
       removeAlerts: this._removeAlerts,
     });

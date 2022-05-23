@@ -8,14 +8,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { isFunction } = require("lodash");
+const { isFunction, isUndefined } = require("lodash");
 
 function alertContext(contextScope, context) {
   return `${contextScope}:${context || ""}`;
 }
 
 /*
-When registering plugins, their displayName is not still available, so its index is used as context.
+When registering plugins, their id is not still available, so its index is used as context.
 Afterwards it may change, so old alerts have to be renamed
 */
 function mutableScopedAlertsMethods(
@@ -26,7 +26,7 @@ function mutableScopedAlertsMethods(
 ) {
   let previousContext;
   const replacePreviousContextAlerts = (contextScope) => {
-    if (!previousContext) {
+    if (isUndefined(previousContext)) {
       previousContext = contextScope;
       return;
     }
@@ -90,7 +90,12 @@ function addEventListener(listener, eventName, eventEmitter) {
   return removeCallback;
 }
 
+function arrayMerge(_destinationArray, sourceArray) {
+  return sourceArray;
+}
+
 module.exports = {
   scopedAlertsMethods,
   addEventListener,
+  arrayMerge,
 };

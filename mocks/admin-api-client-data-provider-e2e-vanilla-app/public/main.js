@@ -2,25 +2,23 @@ var $ = window.$;
 var adminApiClient = window.mocksServerAdminApiClientDataProvider;
 var dataProvider = window.dataProvider;
 
-var $behaviorsContainer;
-var $fixturesContainer;
+var $mocksContainer;
+var $routesContainer;
 var $aboutContainer;
 var $settingsContainer;
-var $currentBehaviorNameContainer;
-var $currentBehaviorContainer;
-var $currentFixtureIdContainer;
-var $currentFixtureContainer;
-var $setBehaviorBaseButton;
-var $setBehaviorUser2Button;
+var $currentMockNameContainer;
+var $currentMockContainer;
+var $currentRouteVariantIdContainer;
+var $currentRouteVariantContainer;
+var $setMockBaseButton;
+var $setMockUser2Button;
 var $alertsContainer;
 
-var currentBehavior = new dataProvider.Selector(
+var currentMock = new dataProvider.Selector(
   adminApiClient.settings,
-  function (query, settingsResults) {
-    return adminApiClient.behaviorsModel.queries.byName(settingsResults.behavior);
-  },
-  function (query, settingsResults, behaviorResult) {
-    return behaviorResult;
+  adminApiClient.mocks,
+  function (_query, settingsResults, mocksResults) {
+    return adminApiClient.mocksModel.queries.byId(settingsResults.mocks.selected || mocksResults[0].id);
   },
   {
     initialState: {
@@ -29,15 +27,10 @@ var currentBehavior = new dataProvider.Selector(
   }
 );
 
-var currentFixture = new dataProvider.Selector(
-  currentBehavior,
-  function (query, behaviorResults) {
-    return adminApiClient.fixturesModel.queries.byId(
-      behaviorResults.fixtures[behaviorResults.fixtures.length - 1]
-    );
-  },
-  function (query, currentBehaviorResult, fixtureResult) {
-    return fixtureResult;
+var currentRouteVariant = new dataProvider.Selector(
+  currentMock,
+  function (_query, mockResults) {
+    return adminApiClient.routesVariantsModel.queries.byId(mockResults.routesVariants[0]);
   },
   {
     initialState: {
@@ -57,37 +50,47 @@ var loadAbout = function () {
   });
 };
 
+var formatSettings = function(settings) {
+  if(typeof settings === "boolean") {
+    return settings.toString();
+  }
+  if(typeof settings === "object") {
+    return JSON.stringify(settings);
+  }
+  return settings;
+}
+
 var loadSettings = function () {
   return adminApiClient.settings.read().then(function (settings) {
     $settingsContainer.empty();
     Object.keys(settings).forEach(function (key) {
       $settingsContainer.append(
-        `<li><b>${key}</b>:&nbsp;<span data-testid="settings-${key}">${settings[key]}</span></li>`
+        `<li><b>${key}</b>:&nbsp;<span data-testid="settings-${key}">${formatSettings(settings[key])}</span></li>`
       );
     });
   });
 };
 
-var loadBehaviors = function () {
-  return adminApiClient.behaviors.read().then(function (behaviorsCollection) {
-    $behaviorsContainer.empty();
-    behaviorsCollection.forEach(function (behavior) {
-      $behaviorsContainer.append(
-        `<li data-testid="behavior-${
-          behavior.name
-        }" class="behaviors-collection-item">${JSON.stringify(behavior)}</li>`
+var loadMocks = function () {
+  return adminApiClient.mocks.read().then(function (mocksCollection) {
+    $mocksContainer.empty();
+    mocksCollection.forEach(function (mock) {
+      $mocksContainer.append(
+        `<li data-testid="mock-${mock.id}" class="mocks-collection-item">${JSON.stringify(
+          mock
+        )}</li>`
       );
     });
   });
 };
 
-var loadFixtures = function () {
-  return adminApiClient.fixtures.read().then(function (fixturesCollection) {
-    $fixturesContainer.empty();
-    fixturesCollection.forEach(function (fixture) {
-      $fixturesContainer.append(
-        `<li data-testid="fixture-${fixture.id}" class="fixtures-collection-item">${JSON.stringify(
-          fixture
+var loadRoutes = function () {
+  return adminApiClient.routes.read().then(function (routesCollection) {
+    $routesContainer.empty();
+    routesCollection.forEach(function (route) {
+      $routesContainer.append(
+        `<li data-testid="route-${route.id}" class="routes-collection-item">${JSON.stringify(
+          route
         )}</li>`
       );
     });
@@ -107,41 +110,41 @@ var loadAlerts = function () {
   });
 };
 
-var loadCurrentBehavior = function () {
-  return currentBehavior.read().then(function (currentBehaviorResult) {
-    $currentBehaviorNameContainer.text(currentBehaviorResult.name);
-    $currentBehaviorContainer.text(JSON.stringify(currentBehaviorResult));
+var loadCurrentMock = function () {
+  return currentMock.read().then(function (currentMockResult) {
+    $currentMockNameContainer.text(currentMockResult.id);
+    $currentMockContainer.text(JSON.stringify(currentMockResult));
   });
 };
 
-var loadCurrentFixture = function () {
-  return currentFixture.read().then(function (currentFixtureResult) {
-    $currentFixtureIdContainer.text(currentFixtureResult.id);
-    $currentFixtureContainer.text(JSON.stringify(currentFixtureResult));
+var loadCurrentRouteVariant = function () {
+  return currentRouteVariant.read().then(function (currentRouteVariantResult) {
+    $currentRouteVariantIdContainer.text(currentRouteVariantResult.id);
+    $currentRouteVariantContainer.text(JSON.stringify(currentRouteVariantResult));
   });
 };
 
 $.when($.ready).then(function () {
-  $behaviorsContainer = $("#behaviors-container");
-  $fixturesContainer = $("#fixtures-container");
+  $mocksContainer = $("#mocks-container");
+  $routesContainer = $("#routes-container");
   $alertsContainer = $("#alerts-container");
   $aboutContainer = $("#about-container");
   $settingsContainer = $("#settings-container");
-  $currentBehaviorNameContainer = $("#current-behavior-name");
-  $currentBehaviorContainer = $("#current-behavior");
-  $currentFixtureIdContainer = $("#current-fixture-id");
-  $currentFixtureContainer = $("#current-fixture");
-  $setBehaviorBaseButton = $("#set-behavior-base");
-  $setBehaviorUser2Button = $("#set-behavior-user2");
+  $currentMockNameContainer = $("#current-mock-id");
+  $currentMockContainer = $("#current-mock");
+  $currentRouteVariantIdContainer = $("#current-route-variant-id");
+  $currentRouteVariantContainer = $("#current-route-variant");
+  $setMockBaseButton = $("#set-mock-base");
+  $setMockUser2Button = $("#set-mock-user2");
 
-  $setBehaviorBaseButton.click(function () {
+  $setMockBaseButton.click(function () {
     adminApiClient.settings.update({
-      behavior: "base",
+      mocks: { selected: "base" },
     });
   });
-  $setBehaviorUser2Button.click(function () {
+  $setMockUser2Button.click(function () {
     adminApiClient.settings.update({
-      behavior: "user2",
+      mocks: { selected: "user2" },
     });
   });
 
@@ -149,21 +152,21 @@ $.when($.ready).then(function () {
     loadSettings();
   });
 
-  currentBehavior.on("cleanCache", function () {
-    loadCurrentBehavior();
+  currentMock.on("cleanCache", function () {
+    loadCurrentMock();
   });
 
-  currentFixture.on("cleanCache", function () {
-    loadCurrentFixture();
+  currentRouteVariant.on("cleanCache", function () {
+    loadCurrentRouteVariant();
   });
 
   Promise.all([
-    loadBehaviors(),
-    loadFixtures(),
+    loadMocks(),
+    loadRoutes(),
     loadAbout(),
     loadSettings(),
-    loadCurrentBehavior(),
-    loadCurrentFixture(),
+    loadCurrentMock(),
+    loadCurrentRouteVariant(),
     loadAlerts(),
   ]);
 });

@@ -8,39 +8,62 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
+const deepMerge = require("deepmerge");
 const EventEmitter = require("events");
 
-const {
-  INIT,
-  START,
-  STOP,
-  CHANGE_LEGACY_MOCKS,
-  CHANGE_MOCKS,
-  CHANGE_SETTINGS,
-  CHANGE_ALERTS,
-  LOAD_LEGACY_MOCKS,
-  LOAD_MOCKS,
-  LOAD_ROUTES,
-} = require("./eventNames");
-const tracer = require("./tracer");
+const Config = require("@mocks-server/config");
 
-const Config = require("./Config");
-const Orchestrator = require("./Orchestrator");
+const { CHANGE_MOCKS, CHANGE_ALERTS } = require("./eventNames");
+const tracer = require("./tracer");
 const Loaders = require("./Loaders");
 const Alerts = require("./Alerts");
-
 const RoutesHandlers = require("./routes-handlers/RoutesHandlers");
 const Mocks = require("./mocks/Mocks");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
-const LegacyMocks = require("./mocks-legacy/Mocks");
-const Settings = require("./settings/Settings");
+const FilesLoader = require("./files-loader/FilesLoader");
 
-const { scopedAlertsMethods, addEventListener } = require("./support/helpers");
+const { scopedAlertsMethods, addEventListener, arrayMerge } = require("./support/helpers");
+const Scaffold = require("./scaffold/Scaffold");
+
+const MODULE_NAME = "mocks";
+const CONFIG_PLUGINS_NAMESPACE = "plugins";
+const CONFIG_MOCKS_NAMESPACE = "mocks";
+const CONFIG_SERVER_NAMESPACE = "server";
+const CONFIG_FILES_LOADER = "files";
+
+const ROOT_OPTIONS = [
+  {
+    description: "Log level. Can be one of silly, debug, verbose, info, warn or error",
+    name: "log",
+    type: "string",
+    default: "info",
+  },
+  {
+    description: "Array of RouteHandlers to be added",
+    name: "routesHandlers",
+    type: "array",
+    default: [],
+  },
+];
 
 class Core {
-  constructor(programmaticConfig) {
+  constructor(programmaticConfig = {}) {
+    this._programmaticConfig = programmaticConfig;
+
     this._eventEmitter = new EventEmitter();
+    this._loadedMocks = false;
+    this._loadedRoutes = false;
+
+    this._config = new Config({ moduleName: MODULE_NAME });
+    this._configPlugins = this._config.addNamespace(CONFIG_PLUGINS_NAMESPACE);
+    this._configMocks = this._config.addNamespace(CONFIG_MOCKS_NAMESPACE);
+    this._configServer = this._config.addNamespace(CONFIG_SERVER_NAMESPACE);
+    this._configFilesLoader = this._config.addNamespace(CONFIG_FILES_LOADER);
+
+    [this._logOption, this._routesHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
+
+    this._logOption.onChange(tracer.set);
 
     this._alerts = new Alerts({
       onChange: (alerts) => {
@@ -48,38 +71,27 @@ class Core {
       },
     });
 
-    // TODO, remove v1 legacy code
-    this._legacyMocksLoaders = new Loaders({
-      onLoad: () => {
-        this._eventEmitter.emit(LOAD_LEGACY_MOCKS);
-      },
-    });
-
     this._mocksLoaders = new Loaders({
       onLoad: () => {
-        this._eventEmitter.emit(LOAD_MOCKS);
+        this._loadedMocks = true;
+        if (this._loadedRoutes) {
+          this._mocks.load();
+        }
       },
     });
 
     this._routesLoaders = new Loaders({
       onLoad: () => {
-        this._eventEmitter.emit(LOAD_ROUTES);
+        this._loadedRoutes = true;
+        if (this._loadedMocks) {
+          this._mocks.load();
+        }
       },
     });
 
-    this._config = new Config({
-      programmaticConfig,
-      ...scopedAlertsMethods("config", this._alerts.add, this._alerts.remove),
-    });
-
-    // TODO, refactor. Pass specific callbacks instead of objects
-    this._settings = new Settings(this._eventEmitter, this._config);
-
     this._plugins = new Plugins(
       {
-        createLegacyMocksLoader: () => {
-          return this._legacyMocksLoaders.new();
-        },
+        config: this._configPlugins,
         createMocksLoader: () => {
           return this._mocksLoaders.new();
         },
@@ -100,10 +112,9 @@ class Core {
 
     this._mocks = new Mocks(
       {
+        config: this._configMocks,
         getLoadedMocks: () => this._mocksLoaders.contents,
         getLoadedRoutes: () => this._routesLoaders.contents,
-        getCurrentMock: () => this._settings.get("mock"),
-        getDelay: () => this._settings.get("delay"),
         onChange: () => this._eventEmitter.emit(CHANGE_MOCKS),
         ...scopedAlertsMethods(
           "mocks",
@@ -112,31 +123,31 @@ class Core {
           this._alerts.rename
         ),
       },
-      this //To be used only by routeHandlers
+      this // To be used only by routeHandlers
     );
 
-    // TODO, remove v1 legacy code
-    this._legacyMocks = new LegacyMocks(
-      this._eventEmitter,
-      this._settings,
-      this._legacyMocksLoaders,
-      this,
-      scopedAlertsMethods("legacy-mocks", this._alerts.add, this._alerts.remove)
-    );
-
-    // TODO, refactor. Pass specific callbacks instead of objects
-    this._server = new Server(this._eventEmitter, this._settings, this._legacyMocks, this, {
+    this._server = new Server({
+      config: this._configServer,
       mocksRouter: this._mocks.router,
       ...scopedAlertsMethods("server", this._alerts.add, this._alerts.remove),
     });
 
-    // TODO, refactor. Pass specific callbacks instead of objects
-    this._orchestrator = new Orchestrator(
-      this._eventEmitter,
-      this._legacyMocks,
-      this._server,
-      this._mocks
-    );
+    this._filesLoader = new FilesLoader({
+      config: this._configFilesLoader,
+      loadMocks: this._mocksLoaders.new(),
+      loadRoutes: this._routesLoaders.new(),
+      ...scopedAlertsMethods("files", this._alerts.add, this._alerts.remove),
+    });
+
+    this._scaffold = new Scaffold({
+      config: this._config, // It needs the whole configuration to get option properties and create scaffold
+      ...scopedAlertsMethods(
+        "scaffold",
+        this._alerts.add,
+        this._alerts.remove,
+        this._alerts.rename
+      ),
+    });
 
     this._inited = false;
     this._stopPluginsPromise = null;
@@ -163,44 +174,54 @@ class Core {
 
   // Public methods
 
-  async init(options) {
+  async init(programmaticConfig) {
     if (this._inited) {
+      // in case it has been initializated manually before
       return Promise.resolve();
     }
-    await this._config.init(options);
     this._inited = true;
-    // Register plugins, let them add their custom settings
-    await this._plugins.register(this._config.coreOptions.plugins);
+
+    if (programmaticConfig) {
+      this._programmaticConfig = deepMerge(this._programmaticConfig, programmaticConfig, {
+        arrayMerge,
+      });
+    }
+
+    // Init config
+    await this._config.init(this._programmaticConfig);
+    tracer.set(this._logOption.value);
+
+    // Register plugins, let them add their custom config
+    await this._plugins.register();
+
     // Register routes handlers
-    await this._routesHandlers.register(this._config.coreOptions.routesHandlers);
-    // Init settings, read command line arguments, etc.
-    await this._settings.init(this._config.options);
-    // Settings are ready, init all
-    this._mocks.init(this._routesHandlers.handlers);
-    await this._legacyMocks.init();
-    await this._server.init();
-    return this._plugins.init().then(() => {
-      this._eventEmitter.emit(INIT, this);
+    await this._routesHandlers.register(this._routesHandlersOption.value);
+
+    await this._scaffold.init({
+      filesLoaderPath: this._filesLoader.path,
     });
+
+    // load config
+    await this._config.load();
+
+    // Config is ready, init all
+    this._mocks.init(this._routesHandlers.handlers);
+    await this._server.init();
+    await this._filesLoader.init();
+    return this._plugins.init();
   }
 
   async start() {
-    await this.init(); // in case it has not been initializated manually before
+    await this.init();
     await this._server.start();
-    return this._startPlugins().then(() => {
-      this._eventEmitter.emit(START, this);
-    });
+    this._filesLoader.start();
+    return this._startPlugins();
   }
 
   async stop() {
     await this._server.stop();
-    return this._stopPlugins().then(() => {
-      this._eventEmitter.emit(STOP, this);
-    });
-  }
-
-  addSetting(option) {
-    return this._settings.addCustom(option);
+    this._filesLoader.stop();
+    return this._stopPlugins();
   }
 
   addRoutesHandler(RoutesHandler) {
@@ -211,10 +232,6 @@ class Core {
 
   onChangeMocks(listener) {
     return addEventListener(listener, CHANGE_MOCKS, this._eventEmitter);
-  }
-
-  onChangeSettings(listener) {
-    return addEventListener(listener, CHANGE_SETTINGS, this._eventEmitter);
   }
 
   onChangeAlerts(listener) {
@@ -241,14 +258,6 @@ class Core {
     return this._alerts.values;
   }
 
-  get settings() {
-    return this._settings;
-  }
-
-  get lowLevelConfig() {
-    return { ...this._config.coreOptions };
-  }
-
   get mocks() {
     return this._mocks;
   }
@@ -257,24 +266,8 @@ class Core {
     return tracer;
   }
 
-  // TODO, remove v1 legacy code
-  addFixturesHandler(Handler) {
-    return this._legacyMocks.addFixturesHandler(Handler);
-  }
-
-  // TODO, remove v1 legacy code
-  onChangeLegacyMocks(listener) {
-    return addEventListener(listener, CHANGE_LEGACY_MOCKS, this._eventEmitter);
-  }
-
-  // TODO, remove v1 legacy code
-  get behaviors() {
-    return this._legacyMocks.behaviors;
-  }
-
-  // TODO, remove v1 legacy code
-  get fixtures() {
-    return this._legacyMocks.fixtures;
+  get config() {
+    return this._config;
   }
 }
 

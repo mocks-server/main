@@ -10,15 +10,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const {
   getIds,
-  validationSingleMessage,
+  customValidationSingleMessage,
   compileRouteValidator,
   routeValidationErrors,
   variantValidationErrors,
   mockValidationErrors,
   mockRouteVariantsValidationErrors,
-  catchInitValidatorError,
-  undoInitValidator,
-  restoreValidator,
 } = require("../../src/mocks/validations");
 const DefaultRoutesHandler = require("../../src/routes-handlers/default/DefaultRoutesHandler");
 
@@ -45,62 +42,6 @@ describe("mocks validations", () => {
     },
   };
 
-  beforeAll(() => {
-    catchInitValidatorError();
-  });
-
-  describe("validation initialization", () => {
-    afterAll(() => {
-      restoreValidator();
-    });
-
-    describe("catchInitValidatorError", () => {
-      it("should return error if there is an error initializating validator", () => {
-        undoInitValidator();
-        expect(catchInitValidatorError()).toBeInstanceOf(Error);
-      });
-
-      it("should do nothing if validator was already inited", () => {
-        restoreValidator();
-        expect(catchInitValidatorError()).toEqual(null);
-      });
-    });
-
-    describe("compileRouteValidator", () => {
-      it("should initialize a fake routeValidator if there was an error initializating validator", () => {
-        undoInitValidator();
-        compileRouteValidator();
-        expect(
-          routeValidationErrors({
-            ...VALID_ROUTE,
-            id: undefined,
-          })
-        ).toEqual(null);
-      });
-    });
-
-    describe("undo init validator", () => {
-      it("should not fail if called twice", () => {
-        undoInitValidator();
-        undoInitValidator();
-        expect(
-          routeValidationErrors({
-            ...VALID_ROUTE,
-            id: undefined,
-          })
-        ).toEqual(null);
-      });
-    });
-
-    describe("restore validator", () => {
-      it("should not fail if called twice", () => {
-        restoreValidator();
-        restoreValidator();
-        expect(catchInitValidatorError()).toEqual(null);
-      });
-    });
-  });
-
   describe("getIds", () => {
     it("should return array with ids", () => {
       expect(getIds([{ id: "id-1" }, { id: "id-2" }])).toEqual(["id-1", "id-2"]);
@@ -110,7 +51,7 @@ describe("mocks validations", () => {
   describe("validationSingleMessage", () => {
     it("should return all message properties joined", () => {
       expect(
-        validationSingleMessage([
+        customValidationSingleMessage([
           {
             message: "foo",
           },
@@ -123,7 +64,7 @@ describe("mocks validations", () => {
 
     it("should omit empty messages", () => {
       expect(
-        validationSingleMessage([
+        customValidationSingleMessage([
           {
             message: "foo",
           },
@@ -152,8 +93,8 @@ describe("mocks validations", () => {
         ...VALID_ROUTE,
         id: undefined,
       });
-      expect(errors.message).toEqual('Route is invalid: Should have a string property "id"');
-      expect(errors.errors.length).toEqual(3);
+      expect(errors.message).toEqual("Route is invalid:  must have required property 'id'");
+      expect(errors.errors.length).toEqual(1);
     });
 
     it("should return error if route id is not string", () => {
@@ -161,10 +102,8 @@ describe("mocks validations", () => {
         ...VALID_ROUTE,
         id: 4,
       });
-      expect(errors.message).toEqual(
-        'Route with id "4" is invalid: Property "id" should be string'
-      );
-      expect(errors.errors.length).toEqual(3);
+      expect(errors.message).toEqual("Route with id '4' is invalid: /id: type must be string");
+      expect(errors.errors.length).toEqual(1);
     });
 
     it("should return error if route url is not valid", () => {
@@ -173,7 +112,7 @@ describe("mocks validations", () => {
         url: 4,
       });
       expect(errors.message).toEqual(
-        'Route with id "foo-route" is invalid: Property "url" should be a string or a RegExp'
+        "Route with id 'foo-route' is invalid: /url: type must be string. /url: instanceof must pass \"instanceof\" keyword validation. /url: oneOf must match exactly one schema in oneOf"
       );
       expect(errors.errors.length).toEqual(3);
     });
@@ -192,7 +131,7 @@ describe("mocks validations", () => {
         method: "FOO",
       });
       expect(errors.message).toEqual(
-        'Route with id "foo-route" is invalid: Property "method" should be a string or an array with unique items. Allowed values for "method" are "GET,POST,PATCH,DELETE,PUT,OPTIONS,HEAD,TRACE"'
+        "Route with id 'foo-route' is invalid: /method: enum must be equal to one of the allowed values. /method: type must be array. /method: oneOf must match exactly one schema in oneOf"
       );
     });
 
@@ -202,7 +141,7 @@ describe("mocks validations", () => {
         delay: -2,
       });
       expect(errors.message).toEqual(
-        'Route with id "foo-route" is invalid: Property "delay" should be a positive integer'
+        "Route with id 'foo-route' is invalid: /delay: minimum must be >= 0"
       );
     });
 
@@ -212,7 +151,7 @@ describe("mocks validations", () => {
         variants: "foo",
       });
       expect(errors.message).toEqual(
-        'Route with id "foo-route" is invalid: Property "variants" should be an array'
+        "Route with id 'foo-route' is invalid: /variants: type must be array"
       );
     });
 
@@ -229,7 +168,7 @@ describe("mocks validations", () => {
         ],
       });
       expect(errors.message).toEqual(
-        'Route with id "foo-route" is invalid: Property "id" should be string in variant 0. Property "id" should be string in variant 1'
+        "Route with id 'foo-route' is invalid: /variants/0/id: type must be string. /variants/1/id: type must be string"
       );
     });
 
@@ -244,7 +183,7 @@ describe("mocks validations", () => {
         ],
       });
       expect(errors.message).toEqual(
-        'Route with id "foo-route" is invalid: Property "handler" should be one of "foo-handler" in variant 0'
+        "Route with id 'foo-route' is invalid: /variants/0/handler must be equal to one of the allowed values: foo-handler"
       );
     });
 
@@ -260,7 +199,7 @@ describe("mocks validations", () => {
         ],
       });
       expect(errors.message).toEqual(
-        'Route with id "foo-route" is invalid: Property "delay" should be a positive integer or "null" in variant 0'
+        "Route with id 'foo-route' is invalid: /variants/0/delay: type must be null. /variants/0/delay: minimum must be >= 0. /variants/0/delay: oneOf must match exactly one schema in oneOf"
       );
     });
 
@@ -278,7 +217,7 @@ describe("mocks validations", () => {
         ],
       });
       expect(errors.message).toEqual(
-        'Route with id "4" is invalid: Property "id" should be string. Property "method" should be a string or an array with unique items. Allowed values for "method" are "GET,POST,PATCH,DELETE,PUT,OPTIONS,HEAD,TRACE". Property "delay" should be a positive integer. Property "id" should be string in variant 0. Property "handler" should be one of "foo-handler" in variant 0. Property "delay" should be a positive integer or "null" in variant 0. Should have a property "url"'
+        "Route with id '4' is invalid:  must have required property 'url'. /id: type must be string. /method: enum must be equal to one of the allowed values. /method: type must be array. /method: oneOf must match exactly one schema in oneOf. /delay: minimum must be >= 0. /variants/0/id: type must be string. /variants/0/delay: type must be null. /variants/0/delay: minimum must be >= 0. /variants/0/delay: oneOf must match exactly one schema in oneOf"
       );
     });
   });
@@ -321,7 +260,7 @@ describe("mocks validations", () => {
         DefaultRoutesHandler
       );
       expect(errors.message).toEqual(
-        'Variant in route with id "foo-route" is invalid: Should have a property "response"'
+        "Variant in route with id 'foo-route' is invalid:  must have required property 'response'"
       );
     });
 
@@ -332,7 +271,7 @@ describe("mocks validations", () => {
         DefaultRoutesHandler
       );
       expect(errors.message).toEqual(
-        'Variant with id "foo-variant" in route with id "foo-route" is invalid: Should have a property "response"'
+        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid:  must have required property 'response'"
       );
     });
 
@@ -348,7 +287,7 @@ describe("mocks validations", () => {
         DefaultRoutesHandler
       );
       expect(errors.message).toEqual(
-        'Variant with id "foo-variant" in route with id "foo-route" is invalid: Property "response.headers" should be an object. Should have an integer property "response.status". Property "response" should be a valid object or a function'
+        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: /response must have required property 'status'"
       );
     });
 
@@ -382,8 +321,8 @@ describe("mocks validations", () => {
       const errors = mockValidationErrors({
         routesVariants: [],
       });
-      expect(errors.errors.length).toEqual(2);
-      expect(errors.message).toEqual('Mock is invalid: Should have a string property "id"');
+      expect(errors.errors.length).toEqual(1);
+      expect(errors.message).toEqual("Mock is invalid:  must have required property 'id'");
     });
 
     it("should return error if mock has not routesVariants", () => {
@@ -391,7 +330,7 @@ describe("mocks validations", () => {
         id: "foo",
       });
       expect(errors.message).toEqual(
-        'Mock with id "foo" is invalid: Should have a property "routesVariants"'
+        "Mock with id 'foo' is invalid:  must have required property 'routesVariants'"
       );
     });
 
@@ -401,7 +340,7 @@ describe("mocks validations", () => {
         foo: "foo",
       });
       expect(errors.message).toEqual(
-        'Mock is invalid: Extra property "foo" is not allowed. Property "from" should be string. Should have a string property "id". Should have a property "routesVariants"'
+        "Mock is invalid:  must have required property 'routesVariants'. /from: type must be string"
       );
     });
   });
@@ -445,7 +384,7 @@ describe("mocks validations", () => {
         ROUTE_VARIANTS
       );
       expect(errors.message).toEqual(
-        'Mock with id "foo" is invalid: routeVariant with id "foo:fake" was not found, use a valid "routeId:variantId" identifier. routeVariant with id "foo2:success" was not found, use a valid "routeId:variantId" identifier'
+        "Mock with id 'foo' is invalid: routeVariant with id 'foo:fake' was not found, use a valid 'routeId:variantId' identifier. routeVariant with id 'foo2:success' was not found, use a valid 'routeId:variantId' identifier"
       );
     });
 
@@ -459,7 +398,7 @@ describe("mocks validations", () => {
         ROUTE_VARIANTS
       );
       expect(errors.message).toEqual(
-        'Mock with id "foo" is invalid: route with id "foo" is used more than once in the same mock'
+        "Mock with id 'foo' is invalid: route with id 'foo' is used more than once in the same mock"
       );
     });
 
@@ -473,7 +412,7 @@ describe("mocks validations", () => {
         ROUTE_VARIANTS
       );
       expect(errors.message).toEqual(
-        'Mock with id "foo" is invalid: route with id "foo" is used more than once in the same mock. routeVariant with id "foo2:success" was not found, use a valid "routeId:variantId" identifier'
+        "Mock with id 'foo' is invalid: route with id 'foo' is used more than once in the same mock. routeVariant with id 'foo2:success' was not found, use a valid 'routeId:variantId' identifier"
       );
     });
 

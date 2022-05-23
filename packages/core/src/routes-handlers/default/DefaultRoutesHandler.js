@@ -12,8 +12,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { isFunction } = require("lodash");
 
-const FUNCTION = "function";
-
 class DefaultRoutesHandler {
   static get id() {
     return "default";
@@ -30,30 +28,31 @@ class DefaultRoutesHandler {
               properties: {
                 headers: {
                   type: "object",
-                  errorMessage: 'Property "response.headers" should be an object',
+                },
+                status: {
+                  type: "number",
+                },
+                body: {
+                  oneOf: [
+                    {
+                      type: "object",
+                    },
+                    {
+                      type: "array",
+                    },
+                  ],
                 },
               },
               required: ["status"],
-              errorMessage: {
-                required: {
-                  status: 'Should have an integer property "response.status"',
-                },
-              },
+              additionalProperties: false,
             },
             {
               instanceof: "Function",
             },
           ],
-          errorMessage: 'Property "response" should be a valid object or a function',
         },
       },
       required: ["response"],
-      errorMessage: {
-        type: "Should be an object",
-        required: {
-          response: 'Should have a property "response"',
-        },
-      },
     };
   }
 
@@ -84,7 +83,7 @@ class DefaultRoutesHandler {
 
   get plainResponsePreview() {
     return isFunction(this._response)
-      ? FUNCTION
+      ? null
       : {
           body: this._response.body,
           status: this._response.status,

@@ -13,9 +13,9 @@
 
 # Mocks-server administration api client built with @data-provider
 
-This package contains methods for administrating [`mocks-server`](https://mocks-server.org) _(through the [`@mocks-server/plugin-admin-api`](https://github.com/mocks-server/plugin-admin-api) REST API)_.
+This package provides an API client for administrating Mocks Server _(it performs requests to the [Admin API plugin][plugin-admin-api-url] under the hood)_.
 
-Built using [`data-provider`](https://github.com/data-provider), it can be used in Node.js, browsers, and it is also compatible with other `data-provider` packages, such as [`@data-provider/react`](https://github.com/data-provider/react), so can be easily integrated with frameworks.
+Built using [`data-provider`](https://github.com/data-provider), it can be used in Node.js, browsers, and it is also compatible with other `data-provider` packages, such as [`@data-provider/react`](https://github.com/data-provider/react), so it can be easily integrated with frameworks.
 
 ## Installation
 
@@ -64,23 +64,13 @@ Exported properties `about`, `settings`, `mocks`, `mocksModel`, `routes`, `route
 * `mocksModel.queries.byId(mockId).read()` - Returns a specific mock.
 * `routes.read()` - Returns collection of available routes.
 * `route(id).read()` - Returns a specific route.
-* `routes.queries.byId(id).read()` - Returns an specific route.
+* `routesModel.queries.byId(id).read()` - Returns an specific route.
 * `routesVariants.read()` - Returns collection of available routes variants.
 * `routeVariant(id).read()` - Returns a specific route variant.
-* `routesVariants.queries.byId(id).read()` - Returns an specific route variant.
+* `routesVariantsModel.queries.byId(id).read()` - Returns an specific route variant.
 * `customRouteVariants.read()` - Returns collection of current custom route variants.
 * `customRouteVariants.create(id)` - Sets a specific route variant to be used by current mock.
 * `customRouteVariants.delete()` - Restore routes variants to those defined in current mock.
-
-### Legacy methods
-Next methods correspond to Mocks Server legacy methods
-
-* `behaviors.read()` - Returns collection of available behaviors.
-* `behavior(behaviorName).read()` - Returns a specific behavior.
-* `behaviorsModel.queries.byName(behaviorName).read()` - Returns a specific behavior.
-* `fixtures.read()` - Returns collection of available fixtures.
-* `fixture(id).read()` - Returns a specific fixture.
-* `fixturesModel.queries.byId(id).read()` - Returns a specific fixture.
 
 ## Configuration
 

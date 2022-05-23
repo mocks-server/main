@@ -13,7 +13,7 @@ const path = require("path");
 const crossFetch = require("cross-fetch");
 const waitOn = require("wait-on");
 
-const InteractiveCliRunner = require("./InteractiveCliRunner");
+const InquirerCliRunner = require("@mocks-server/inquirer-cli-runner");
 
 const DEFAULT_BINARY_PATH = "../../../../../packages/main/bin/mocks-server";
 
@@ -103,9 +103,8 @@ const waitForServerAndCli = async (port) => {
 
 const mocksRunner = (args = [], options = {}) => {
   const argsToSend = [...args];
-  console.log(path.resolve(process.cwd(), DEFAULT_BINARY_PATH));
   argsToSend.unshift(DEFAULT_BINARY_PATH);
-  return new InteractiveCliRunner(
+  return new InquirerCliRunner(
     argsToSend,
     {
       ...defaultMocksRunnerOptions,

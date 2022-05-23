@@ -19,15 +19,16 @@ const expressRequestId = require("express-request-id");
 const tracer = require("../tracer");
 
 const addRequestId = expressRequestId();
-const jsonBodyParser = bodyParser.json();
-const formBodyParser = bodyParser.urlencoded({ extended: true });
 
-const traceRequest = (req, res, next) => {
+const jsonBodyParser = (options) => bodyParser.json(options);
+const urlEncodedBodyParser = (options) => bodyParser.urlencoded(options);
+
+const traceRequest = (req, _res, next) => {
   tracer.verbose(`Request received | ${req.method} => ${req.url} | Assigned id: ${req.id}`);
   next();
 };
 
-const notFound = (req, res, next) => {
+const notFound = (req, _res, next) => {
   tracer.debug(`Sending Not found response | ${req.id}`);
   next(Boom.notFound());
 };
@@ -51,7 +52,7 @@ const errorHandler = (err, req, res, next) => {
 module.exports = {
   addRequestId,
   jsonBodyParser,
-  formBodyParser,
+  urlEncodedBodyParser,
   traceRequest,
   notFound,
   errorHandler,

@@ -12,6 +12,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [3.0.0] - 2022-05-23
+
+### Added
+- feat(#249): Always add `cors` middleware to admin-api plugin. Even when it is disabled in the core for mocked routes.
+
+### Removed
+- feat: BREAKING CHANGE. Remove legacy APIs under the `/legacy` path
+- feat: BREAKING CHANGE. Remove `adminApiDeprecatedPaths` option.
+- feat: BREAKING CHANGE. Drop support for Node.js 12.x
+
+### Changed
+- feat: BREAKING CHANGE. Change received arguments to make the plugin compatible with core v3
+- feat: BREAKING CHANGE. Use new configuration method. Now plugin options have to be defined in the `plugins.adminApi` namespace.
+
+ ### Fixed
+- chore: Fix repository property in package.json
+
 ## [2.2.1] - 2022-03-28
 
 ### Changed

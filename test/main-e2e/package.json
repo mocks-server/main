@@ -6,6 +6,7 @@
     "test:e2e": "jest --runInBand"
   },
   "dependencies": {
-    "@mocks-server/main": "workspace:*"
+    "@mocks-server/main": "workspace:*",
+    "@mocks-server/inquirer-cli-runner": "workspace:*"
   }
 }

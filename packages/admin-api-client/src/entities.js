@@ -9,9 +9,6 @@ import {
   ROUTES,
   ROUTES_VARIANTS,
   MOCK_CUSTOM_ROUTES_VARIANTS,
-  LEGACY,
-  BEHAVIORS,
-  FIXTURES,
 } from "@mocks-server/admin-api-paths";
 
 const DEFAULT_OPTIONS = {
@@ -125,17 +122,3 @@ export const routeVariant = (id) => {
 };
 
 export const mockCustomRoutesVariants = new Fetcher(MOCK_CUSTOM_ROUTES_VARIANTS);
-
-// legacy methods
-
-export const behaviors = new Fetcher(`${LEGACY}/${BEHAVIORS}`);
-
-export const behavior = (name) => {
-  return new Fetcher(`${LEGACY}/${BEHAVIORS}`, name);
-};
-
-export const fixtures = new Fetcher(`${LEGACY}/${FIXTURES}`);
-
-export const fixture = (id) => {
-  return new Fetcher(`${LEGACY}/${FIXTURES}`, id);
-};

@@ -10,6 +10,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [4.0.0] - 2022-05-23
+
+### Removed
+- feat: BREAKING CHANGE. Remove mocksSetBehavior v1 legacy command
+- feat: BREAKING CHANGE. Drop support for Node.js 12.x
+
+### Fixed
+- chore: Fix repository property in package.json
+
 ## [3.0.2] - 2022-03-28
 
 ### Changed

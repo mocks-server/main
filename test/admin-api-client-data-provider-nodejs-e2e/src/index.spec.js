@@ -1,9 +1,10 @@
 const {
   readAbout,
-  readBehaviors,
-  readBehavior,
-  readFixtures,
-  readFixture,
+  readMocks,
+  readMock,
+  readRoutes,
+  readRoute,
+  readRouteVariant,
   readSettings,
   updateSettings,
   readAlerts,
@@ -19,9 +20,9 @@ describe("react-admin-client methods used through node", () => {
   });
 
   describe("when reading alerts", () => {
-    it("should return three alert", async () => {
+    it("should return one alert", async () => {
       const alerts = await readAlerts();
-      expect(alerts.length).toEqual(3);
+      expect(alerts.length).toEqual(1);
     });
 
     it("alert model should exist", async () => {
@@ -32,105 +33,87 @@ describe("react-admin-client methods used through node", () => {
     });
   });
 
-  describe("when reading fixtures", () => {
-    it("should return current fixtures collection", async () => {
-      const fixtures = await readFixtures();
-      expect(fixtures.length).toEqual(2);
+  describe("when reading routes", () => {
+    it("should return routes collection", async () => {
+      const routes = await readRoutes();
+      expect(routes.length).toEqual(1);
     });
 
-    it("first fixture model should exist", async () => {
-      const fixtures = await readFixtures();
-      const fixtureId = fixtures[0].id;
-      const fixture = await readFixture(fixtureId);
-      expect(fixture.id).toEqual(fixtureId);
-    });
-
-    it("second fixture model should exist", async () => {
-      const fixtures = await readFixtures();
-      const fixtureId = fixtures[1].id;
-      const fixture = await readFixture(fixtureId);
-      expect(fixture.id).toEqual(fixtureId);
+    it("first route model should exist", async () => {
+      const routes = await readRoutes();
+      const routeId = routes[0].id;
+      const route = await readRoute(routeId);
+      expect(route.id).toEqual(routeId);
     });
   });
 
-  describe("when reading behaviors", () => {
-    it("should return behaviors collection", async () => {
-      const behaviors = await readBehaviors();
-      expect(behaviors.length).toEqual(2);
+  describe("when reading mocks", () => {
+    it("should return mocks collection", async () => {
+      const mocks = await readMocks();
+      expect(mocks.length).toEqual(2);
     });
 
-    it("first behavior model should exist", async () => {
-      const behaviors = await readBehaviors();
-      const behaviorName = behaviors[0].name;
-      const behavior = await readBehavior(behaviorName);
-      expect(behavior.name).toEqual(behaviorName);
+    it("first mock model should exist", async () => {
+      const mocks = await readMocks();
+      const mockId = mocks[0].id;
+      const mock = await readMock(mockId);
+      expect(mock.id).toEqual(mockId);
     });
 
-    it("second behavior model should exist", async () => {
-      const behaviors = await readBehaviors();
-      const behaviorName = behaviors[1].name;
-      const behavior = await readBehavior(behaviorName);
-      expect(behavior.name).toEqual(behaviorName);
+    it("second mock model should exist", async () => {
+      const mocks = await readMocks();
+      const mockId = mocks[1].id;
+      const mock = await readMock(mockId);
+      expect(mock.id).toEqual(mockId);
     });
 
-    it("fixture of behavior base should exist", async () => {
-      const behaviors = await readBehaviors();
-      const fixtureId = behaviors[0].fixtures[0];
-      const fixture = await readFixture(fixtureId);
-      expect(fixture.id).toEqual(fixtureId);
+    it("route variant of mock base should exist", async () => {
+      const mocks = await readMocks();
+      const routeVariantId = mocks[0].routesVariants[0];
+      const routeVariant = await readRouteVariant(routeVariantId);
+      expect(routeVariant.id).toEqual(routeVariantId);
     });
 
-    it("first fixture of behavior user2 should exist", async () => {
-      const behaviors = await readBehaviors();
-      const fixtureId = behaviors[1].fixtures[0];
-      const fixture = await readFixture(fixtureId);
-      expect(fixture.id).toEqual(fixtureId);
-    });
-
-    it("first fixture of behavior user2 should exist", async () => {
-      const behaviors = await readBehaviors();
-      const fixtureId = behaviors[1].fixtures[0];
-      const fixture = await readFixture(fixtureId);
-      expect(fixture.id).toEqual(fixtureId);
+    it("first routeVariant of mock user2 should exist", async () => {
+      const mocks = await readMocks();
+      const routeVariantId = mocks[1].routesVariants[0];
+      const routeVariant = await readRouteVariant(routeVariantId);
+      expect(routeVariant.id).toEqual(routeVariantId);
     });
   });
 
   describe("when reading settings", () => {
-    it("should return current behavior", async () => {
+    it("should return current mock", async () => {
       const settings = await readSettings();
-      expect(settings.behavior).toEqual("base");
-    });
-
-    it("current behavior should exist", async () => {
-      const settings = await readSettings();
-      const currentBehavior = await readBehavior(settings.behavior);
-      expect(currentBehavior.name).toEqual(settings.behavior);
+      expect(settings.mocks.selected).toEqual(undefined);
     });
   });
 
   describe("when updating settings", () => {
-    it("should update current behavior", async () => {
+    it("should update current mock", async () => {
       await updateSettings({
-        behavior: "user2",
+        mocks: { selected: "user2" },
       });
       const settings = await readSettings();
-      expect(settings.behavior).toEqual("user2");
+      expect(settings.mocks.selected).toEqual("user2");
     });
 
     it("should update current delay", async () => {
       await updateSettings({
-        delay: 1000,
+        mocks: {
+          delay: 1000,
+        },
       });
       const settings = await readSettings();
-      expect(settings.delay).toEqual(1000);
+      expect(settings.mocks.delay).toEqual(1000);
     });
 
-    it("should update current behavior", async () => {
+    it("should update current mock again", async () => {
       await updateSettings({
-        behavior: "base",
+        mocks: { selected: "base" },
       });
       const settings = await readSettings();
-      expect(settings.behavior).toEqual("base");
+      expect(settings.mocks.selected).toEqual("base");
     });
   });
 });

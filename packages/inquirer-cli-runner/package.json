@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "name": "@mocks-server/inquirer-cli-runner",
+  "dependencies": {
+    "@mocks-server/cli-runner": "workspace:*"
+  }
+}

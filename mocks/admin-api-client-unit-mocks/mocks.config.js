@@ -1,7 +1,6 @@
 module.exports = {
-  options: {
+  log: "debug",
+  server: {
     port: 3200,
-    log: "debug",
-    pathLegacy: "legacy-mocks",
   },
 };

@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/config",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Modular configuration provider. Read it from file, environment and arguments",
   "keywords": [
     "configuration",

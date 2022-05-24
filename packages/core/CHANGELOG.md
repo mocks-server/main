@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGES
 
+## [3.0.1] - 2022-05-23
+
+### Fixed
+- fix(scaffold): Fix help url in configuration scaffold
+- fix(scaffold): Give a default value to `plugins.register` property in scaffold in order to avoid null values
+
 ## [3.0.0] - 2022-05-23
 
 ### Removed

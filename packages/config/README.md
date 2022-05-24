@@ -1,5 +1,3 @@
-<p align="center"><a href="https://mocks-server.org" target="_blank" rel="noopener noreferrer"><img width="120" src="https://www.mocks-server.org/img/logo_120.png" alt="Mocks Server logo"></a></p>
-
 <p align="center">
   <a href="https://github.com/mocks-server/main/actions?query=workflow%3Abuild+branch%3Amaster"><img src="https://github.com/mocks-server/main/workflows/build/badge.svg?branch=master" alt="Build Status"></a>
   <a href="https://codecov.io/gh/mocks-server/main"><img src="https://codecov.io/gh/mocks-server/main/branch/master/graph/badge.svg?token=2S8ZR55AJV" alt="Coverage"></a>
@@ -11,7 +9,7 @@
 
 ---
 
-# Mocks Server Config
+# Config provider
 
 Modular configuration provider. __Reads__ and __validates__ configuration from:
 
@@ -21,7 +19,7 @@ Modular configuration provider. __Reads__ and __validates__ configuration from:
 * Environment variables
 * Command line arguments
 
-As a summary it also provides:
+As a summary, it also provides:
 
 * Automatic config validation
 * Isolated configuration namespaces

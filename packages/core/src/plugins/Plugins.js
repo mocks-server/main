@@ -21,6 +21,11 @@ const OPTIONS = [
     name: "register",
     type: "array",
     default: [],
+    extraData: {
+      scaffold: {
+        value: [],
+      },
+    },
   },
 ];
 

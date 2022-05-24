@@ -18,7 +18,7 @@ const READ_WRITE_FILE_OPTIONS = {
   encoding: "utf8",
 };
 
-const MOCKS_SCAFFOLD_PATH = path.resolve(__dirname, "..", "..", "scaffold", "mocks");
+const MOCKS_SCAFFOLD_PATH = path.resolve(__dirname, "mocks");
 const DEFAULT_CONFIG_FILE = "mocks.config.js";
 
 function readTemplate(fileName) {

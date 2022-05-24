@@ -146,7 +146,7 @@ jobs:
         run: pnpm run project:coverage:to-workspace -- --project ${{ matrix.projectName }}
       - name: Upload coverage to Codecov
         if: steps.check-coverage.outputs.files_exists == 'true'
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           directory: ./${{steps.get-project-path.outputs.prop}}/coverage
           fail_ci_if_error: false

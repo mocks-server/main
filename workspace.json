@@ -24,6 +24,7 @@
     "inquirer-cli-runner": "packages/inquirer-cli-runner",
     "main": "packages/main",
     "main-e2e": "test/main-e2e",
+    "namespaced-sets": "packages/namespaced-sets",
     "plugin-admin-api": "packages/plugin-admin-api",
     "plugin-inquirer-cli": "packages/plugin-inquirer-cli",
     "plugin-inquirer-cli-e2e": "test/plugin-inquirer-cli-e2e",

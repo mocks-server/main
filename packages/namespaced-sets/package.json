@@ -1,0 +1,34 @@
+{
+  "name": "@mocks-server/namespaced-sets",
+  "version": "1.0.0",
+  "description": "Allows to manage sets in nested namespaces",
+  "keywords": [
+    "namespace",
+    "set",
+    "collection",
+    "namespaced",
+    "items"
+  ],
+  "author": "Javier Brea",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mocks-server/main.git",
+    "directory": "packages/namespaced-sets"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc", 
+    "test:unit": "jest"
+  },
+  "engines": {
+    "node": ">=14.x"
+  }
+}

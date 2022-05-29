@@ -1,0 +1,5 @@
+{
+  "root": "packages/namespaced-sets/",
+  "projectType": "library",
+  "tags": ["type:lib"]
+}

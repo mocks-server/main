@@ -1,4 +1,4 @@
-type elementId = string;
+type elementId = string | null;
 
 interface ElementBasics {
   id: elementId;
@@ -12,16 +12,36 @@ interface Item extends ElementBasics {
 }
 
 type items = Item[];
-
-type collectionId = elementId | null;
 type collections = Collection[];
+type element = Item | Collection;
+type elements = element[];
 
-function findById(elements: items, elementId: elementId): Item | null;
-function findById(elements: collections, elementId: elementId): Collection | null;
-function findById(elements: ElementBasics[], elementId: elementId) {
-  return elements.find((element: Item | Collection) => {
-    return element.id === elementId;
-  }) || null;
+function elementIdIsEqualTo(element: element, id: elementId): boolean {
+  return element.id === id;
+}
+
+interface IdComparer {
+  (element: element): boolean
+}
+
+function ElementIdIsEqualToId(id: elementId): IdComparer {
+  return function (element: element) {
+    return elementIdIsEqualTo(element, id);
+  };
+}
+
+function findById(elements: items, id: elementId): Item | null;
+function findById(elements: collections, id: elementId): Collection | null;
+function findById(elements: elements, id: elementId) {
+  return elements.find(ElementIdIsEqualToId(id)) || null;
+}
+
+function findIndexById(elements: elements, id: elementId): number {
+  return elements.findIndex(ElementIdIsEqualToId(id));
+}
+
+function cleanCollection(collection: Collection): void {
+  collection.clean();
 }
 
 export default class Collection implements ElementBasics {
@@ -34,13 +54,13 @@ export default class Collection implements ElementBasics {
    * @example const collection = new Collection("id")
    * @returns Root collection
   */
-  constructor(id: collectionId) {
-    this._id = id;
+  constructor(id?: elementId) {
+    this._id = id || null;
     this._collections = [];
     this._items = [];
   }
 
-  private _findCollection(id: elementId) {
+  private _findCollection(id: elementId = null) {
     return findById(this._collections, id);
   }
 
@@ -52,6 +72,10 @@ export default class Collection implements ElementBasics {
 
   private _findItem(id: elementId) {
     return findById(this._items, id);
+  }
+
+  private _findItemIndex(id: elementId) {
+    return findIndexById(this._items, id);
   }
 
   private _createItem(id: elementId, value: itemValue): Item {
@@ -66,8 +90,15 @@ export default class Collection implements ElementBasics {
   /**
    * @returns collection id
   */
-  public get id(): collectionId {
+  public get id(): elementId {
     return this._id;
+  }
+
+  /**
+   * Sets collection id
+  */
+  public set id(id: elementId) {
+    this._id = id;
   }
 
   /**
@@ -75,8 +106,25 @@ export default class Collection implements ElementBasics {
    * @example myCollection.collection("id");
    * @returns Child collection
   */
-  public collection(id: collectionId): Collection {
+  public collection(id: elementId): Collection {
     return this._findCollection(id) || this._createCollection(id);
+  }
+
+  /**
+   * Empty children collections
+   * @example myCollection.cleanCollections();
+  */
+  public cleanCollections(): void {
+    this._collections.forEach(cleanCollection);
+  }
+
+  /**
+   * Clean items and items in children collections recursively
+   * @example myCollection.clean();
+  */
+   public clean(): void {
+    this.cleanCollections();
+    this.cleanItems();
   }
 
   /**
@@ -84,7 +132,7 @@ export default class Collection implements ElementBasics {
    * @example myCollection.set("id", "value");
    * @returns item
   */
-  public setItem(id: elementId, value: itemValue): Item {
+  public set(id: elementId, value: itemValue): Item {
     let item = this._findItem(id);
     if (item) {
       item.value = value;
@@ -92,5 +140,44 @@ export default class Collection implements ElementBasics {
       item = this._createItem(id, value);
     }
     return item;
+  }
+
+  /**
+   * Returns the value of a collection item
+   * @example myCollection.get("id");
+   * @returns item value
+  */
+  public get(id: elementId): itemValue {
+    const item = this._findItem(id);
+    if(!item) {
+      return null;
+    }
+    return item?.value;
+  }
+
+  /**
+   * Removes a collection item
+   * @example myCollection.remove("id");
+  */
+  public remove(id: elementId): void {
+    const itemIndex = this._findItemIndex(id);
+    if (itemIndex > -1) {
+      this._items.splice(itemIndex, 1);
+    }
+  }
+
+  /**
+   * Empty collection items
+   * @example myCollection.cleanItems();
+  */
+   public cleanItems(): void {
+    this._items = [];
+  }
+
+  /**
+   * @returns collection items
+  */
+  public get items(): items {
+    return this._items;
   }
 }

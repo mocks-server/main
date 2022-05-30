@@ -3,7 +3,9 @@
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
     "outDir": "./dist",
     "declaration": true,
-    "target": "es5"
+    "target": "es5",
+    "strict": true,
+    "strictNullChecks": true
   },
   "include": [
     "src/**/*"

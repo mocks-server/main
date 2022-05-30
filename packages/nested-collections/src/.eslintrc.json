@@ -2,7 +2,7 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "./packages/namespaced-sets/tsconfig.json"
+    "project": "./packages/nested-collections/tsconfig.json"
   },
   "plugins": ["@typescript-eslint"],
   "extends": [

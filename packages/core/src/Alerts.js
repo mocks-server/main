@@ -79,8 +79,3 @@ class Alerts {
 }
 
 module.exports = Alerts;
-
-// alerts.namespace("foo").add(id, "foo")
-// alerts.namespace("foo").namespace("x").remove(id)
-// alerts.namespace("foo").clean()
-// alerts.namespace("foo").namespace("foo2").rename("var")

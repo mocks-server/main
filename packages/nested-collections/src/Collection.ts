@@ -1,3 +1,7 @@
+import EventEmitter from "events";
+
+import { CHANGE_EVENT, EventListener, addEventListener } from "./events";
+
 type elementId = string | null;
 
 interface ElementBasics {
@@ -48,6 +52,7 @@ export default class Collection implements ElementBasics {
   private _id: elementId;
   private _collections: collections
   private _items: items
+  private _eventEmitter: EventEmitter
 
   /**
    * Creates a root collection
@@ -55,9 +60,11 @@ export default class Collection implements ElementBasics {
    * @returns Root collection
   */
   constructor(id?: elementId) {
+    this._eventEmitter = new EventEmitter();
     this._id = id || null;
     this._collections = [];
     this._items = [];
+    this._emitChange = this._emitChange.bind(this);
   }
 
   private _findCollection(id: elementId = null) {
@@ -66,6 +73,7 @@ export default class Collection implements ElementBasics {
 
   private _createCollection(id: elementId): Collection {
     const collection = new Collection(id);
+    collection.onChange(this._emitChange);
     this._collections.push(collection);
     return collection;
   }
@@ -87,6 +95,10 @@ export default class Collection implements ElementBasics {
     return item;
   }
 
+  private _emitChange() {
+    this._eventEmitter.emit(CHANGE_EVENT);
+  }
+
   /**
    * @returns collection id
   */
@@ -99,6 +111,7 @@ export default class Collection implements ElementBasics {
   */
   public set id(id: elementId) {
     this._id = id;
+    this._emitChange();
   }
 
   /**
@@ -139,6 +152,7 @@ export default class Collection implements ElementBasics {
     } else {
       item = this._createItem(id, value);
     }
+    this._emitChange();
     return item;
   }
 
@@ -163,6 +177,7 @@ export default class Collection implements ElementBasics {
     const itemIndex = this._findItemIndex(id);
     if (itemIndex > -1) {
       this._items.splice(itemIndex, 1);
+      this._emitChange();
     }
   }
 
@@ -170,8 +185,9 @@ export default class Collection implements ElementBasics {
    * Empty collection items
    * @example myCollection.cleanItems();
   */
-   public cleanItems(): void {
+  public cleanItems(): void {
     this._items = [];
+    this._emitChange();
   }
 
   /**
@@ -179,5 +195,13 @@ export default class Collection implements ElementBasics {
   */
   public get items(): items {
     return this._items;
+  }
+
+  /**
+   * Executes the provided function whenever a change is made in items, children collections or their items
+   * @returns function to remove event listener
+  */
+  public onChange(listener: EventListener) {
+    return addEventListener(listener, CHANGE_EVENT, this._eventEmitter);
   }
 }

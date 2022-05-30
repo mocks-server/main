@@ -1,10 +1,29 @@
+import { createSandbox } from "sinon";
 import Collection from "../src/Collection.ts";
 
 const COLLECTION_ID = "foo-collection";
 const ITEM_ID = "foo-item";
 const FOO_VALUE = "foo-value";
 
+function wait(time = 200) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  });
+}
+
 describe("Collection", () => {
+  let sandbox;
+
+  beforeEach(() => {
+    sandbox = createSandbox();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
   describe("id", () => {
     it("getter should return null if no collection id is provided", () => {
       const collection = new Collection();
@@ -159,7 +178,141 @@ describe("Collection", () => {
       expect(collection2.items).toEqual([]);
       expect(collection3.items).toEqual([]);
       expect(collection.collection("new-collection")).toEqual(collection2);
-      expect(collection.collection("new-collection-2")).toEqual(collection3);
+      expect(collection2.collection("new-collection-2")).toEqual(collection3);
+    });
+  });
+
+  describe("onChange method", () => {
+    it("should run eventListener whenever a new item is added", (done) => {
+      const collection = new Collection();
+      collection.onChange(() => {
+        expect(collection.items).toEqual([{ id: ITEM_ID, value: FOO_VALUE }]);
+        done();
+      });
+      collection.set(ITEM_ID, FOO_VALUE);
+    });
+
+    it("should remove event listener when returned function is executed", async () => {
+      const collection = new Collection();
+      const spy = sandbox.spy();
+      const removeListener = collection.onChange(spy);
+      removeListener();
+      collection.set(ITEM_ID, FOO_VALUE);
+      await wait();
+      expect(spy.callCount).toEqual(0);
+    });
+
+    it("should run eventListener whenever a new item is added to any children collection", (done) => {
+      const collection = new Collection();
+      const childCollection = collection.collection("foo").collection("foo");
+      collection.onChange(() => {
+        expect(childCollection.items).toEqual([{ id: ITEM_ID, value: FOO_VALUE }]);
+        done();
+      });
+      childCollection.set(ITEM_ID, FOO_VALUE);
+    });
+
+    it("should run eventListener whenever an item value is changed", (done) => {
+      const collection = new Collection();
+      collection.set(ITEM_ID, FOO_VALUE);
+      collection.onChange(() => {
+        expect(collection.items).toEqual([{ id: ITEM_ID, value: "foo-new-value" }]);
+        done();
+      });
+      collection.set(ITEM_ID, "foo-new-value");
+    });
+
+    it("should run eventListener whenever an item value is changed in any children collection", (done) => {
+      const collection = new Collection();
+      const childCollection = collection.collection("foo").collection("foo");
+      childCollection.collection().set(ITEM_ID, FOO_VALUE);
+      collection.onChange(() => {
+        expect(childCollection.items).toEqual([{ id: ITEM_ID, value: "foo-new-value" }]);
+        done();
+      });
+      childCollection.set(ITEM_ID, "foo-new-value");
+    });
+
+    it("should run eventListener whenever an item is removed", (done) => {
+      const collection = new Collection();
+      collection.set(ITEM_ID, FOO_VALUE);
+      collection.onChange(() => {
+        expect(collection.items).toEqual([]);
+        done();
+      });
+      collection.remove(ITEM_ID);
+    });
+
+    it("should run eventListener whenever an item is removed in any children collection", (done) => {
+      const collection = new Collection();
+      const childCollection = collection.collection("foo").collection("foo");
+      childCollection.set(ITEM_ID, FOO_VALUE);
+      collection.onChange(() => {
+        expect(childCollection.items).toEqual([]);
+        done();
+      });
+      childCollection.remove(ITEM_ID);
+    });
+
+    it("should run eventListener whenever the collection is cleaned", (done) => {
+      const collection = new Collection();
+      collection.set(ITEM_ID, FOO_VALUE);
+      collection.onChange(() => {
+        expect(collection.items).toEqual([]);
+        done();
+      });
+      collection.clean();
+    });
+
+    it("should run eventListener whenever any children collection is cleaned", (done) => {
+      const collection = new Collection();
+      const childCollection = collection.collection("foo").collection("foo");
+      childCollection.set(ITEM_ID, FOO_VALUE);
+      collection.onChange(() => {
+        expect(childCollection.items).toEqual([]);
+        done();
+      });
+      childCollection.clean();
+    });
+
+    it("should run eventListener whenever the collection items are cleaned", (done) => {
+      const collection = new Collection();
+      collection.set(ITEM_ID, FOO_VALUE);
+      collection.onChange(() => {
+        expect(collection.items).toEqual([]);
+        done();
+      });
+      collection.cleanItems();
+    });
+
+    it("should run eventListener whenever any children collection items are cleaned", (done) => {
+      const collection = new Collection();
+      const childCollection = collection.collection("foo").collection("foo");
+      childCollection.set(ITEM_ID, FOO_VALUE);
+      collection.onChange(() => {
+        expect(childCollection.items).toEqual([]);
+        done();
+      });
+      childCollection.cleanItems();
+    });
+
+    it("should run eventListener whenever the collection id changes", (done) => {
+      const collection = new Collection();
+      collection.onChange(() => {
+        expect(collection.id).toEqual("foo-new-id");
+        done();
+      });
+      collection.id = "foo-new-id";
+    });
+
+    it("should run eventListener whenever any children collection id changes", (done) => {
+      const collection = new Collection();
+      const childCollection = collection.collection("foo").collection("foo");
+      collection.onChange(() => {
+        expect(childCollection.id).toEqual("foo-new-id");
+        done();
+      });
+      childCollection.id = "foo-new-id";
     });
   });
 });

@@ -5,7 +5,8 @@
     "declaration": true,
     "target": "es5",
     "strict": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "esModuleInterop": true,
   },
   "include": [
     "src/**/*"

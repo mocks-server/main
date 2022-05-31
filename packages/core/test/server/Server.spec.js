@@ -14,6 +14,7 @@ const http = require("http");
 
 const LibsMocks = require("../Libs.mocks.js");
 const ConfigMock = require("../Config.mocks");
+const Alerts = require("../../src/Alerts");
 
 const Server = require("../../src/server/Server");
 const tracer = require("../../src/tracer");
@@ -35,7 +36,8 @@ describe("Server", () => {
   let processOnStub;
   let server;
   let mockOptions;
-  let optionHost,
+  let alerts,
+    optionHost,
     optionPort,
     optionCorsEnabled,
     optionCorsOptions,
@@ -47,10 +49,10 @@ describe("Server", () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     configMock = new ConfigMock();
+    alerts = new Alerts("server");
     callbacks = {
       config: configMock.stubs.namespace,
-      addAlert: sandbox.stub(),
-      removeAlerts: sandbox.stub(),
+      alerts,
     };
 
     processOnStub = sandbox.stub(process, "on");
@@ -331,14 +333,17 @@ describe("Server", () => {
       try {
         await server.start();
       } catch (err) {
-        expect(callbacks.addAlert.calledWith("start", "Error starting server", err)).toEqual(true);
+        expect(alerts.get("start")).toEqual({
+          message: "Error starting server",
+          error: err,
+        });
       }
     });
 
     it("should remove start alerts when starts successfully", async () => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
       await server.start();
-      expect(callbacks.removeAlerts.calledWith("start")).toEqual(true);
+      expect(alerts.items.length).toEqual(0);
     });
 
     it("should call to start only once even when called multiple times in parallel", async () => {
@@ -360,7 +365,10 @@ describe("Server", () => {
         await server.init();
         await server.start();
       } catch (err) {
-        expect(callbacks.addAlert.calledWith("server", "Server error", err)).toEqual(true);
+        expect(alerts.get("server")).toEqual({
+          message: "Server error",
+          error: err,
+        });
       }
     });
 

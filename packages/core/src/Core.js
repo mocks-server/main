@@ -133,8 +133,6 @@ class Core {
       config: this._configServer,
       mocksRouter: this._mocks.router,
       alerts: this._alerts.collection(Server.id),
-      // LEGACY, remove when legacy alerts are removed
-      ...scopedAlertsMethods(Server.id, this._alertsLegacy.add, this._alertsLegacy.remove),
     });
 
     this._filesLoader = new FilesLoader({

@@ -164,7 +164,7 @@ describe("FilesLoader", () => {
       await filesLoader.init();
       expect(alerts.flat[1].collection).toEqual("files:routes:file");
       expect(alerts.flat[1].id).toEqual("foo");
-      expect(alerts.flat[1].value).toEqual(
+      expect(alerts.flat[1].value.message).toEqual(
         expect.stringContaining("Error loading routes from file foo")
       );
     });

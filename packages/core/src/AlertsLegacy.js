@@ -67,7 +67,7 @@ class AlertsLegacy {
     const value = lastCollection.get(lastCollectionId);
     if (value) {
       lastCollection.remove(lastCollectionId);
-      lastCollection.set(newLastCollectionId, value);
+      lastCollection.set(newLastCollectionId, value.message, value.error);
     }
   }
 

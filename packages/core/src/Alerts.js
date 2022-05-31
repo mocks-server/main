@@ -19,7 +19,7 @@ class Alerts extends NestedCollections {
 
   set(id, message, error) {
     if (error) {
-      tracer.error(`${message}: ${error}`);
+      tracer.error(`${message}: ${error.message}`);
       tracer.debug(error.stack);
     } else {
       tracer.warn(message);

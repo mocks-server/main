@@ -101,6 +101,7 @@ class Core {
         createRoutesLoader: () => {
           return this._routesLoaders.new();
         },
+        alerts: this._alerts.collection("plugins"),
         // LEGACY, remove when legacy alerts are removed
         ...scopedAlertsMethods(
           "plugins",
@@ -120,6 +121,7 @@ class Core {
         getLoadedMocks: () => this._mocksLoaders.contents,
         getLoadedRoutes: () => this._routesLoaders.contents,
         onChange: () => this._eventEmitter.emit(CHANGE_MOCKS),
+        alerts: this._alerts.collection("mocks"),
         // LEGACY, remove when legacy alerts are removed
         ...scopedAlertsMethods(
           "mocks",
@@ -134,6 +136,7 @@ class Core {
     this._server = new Server({
       config: this._configServer,
       mocksRouter: this._mocks.router,
+      alerts: this._alerts.collection("server"),
       // LEGACY, remove when legacy alerts are removed
       ...scopedAlertsMethods("server", this._legacyAlerts.add, this._legacyAlerts.remove),
     });
@@ -142,19 +145,14 @@ class Core {
       config: this._configFilesLoader,
       loadMocks: this._mocksLoaders.new(),
       loadRoutes: this._routesLoaders.new(),
+      alerts: this._alerts.collection("files"),
       // LEGACY, remove when legacy alerts are removed
       ...scopedAlertsMethods("files", this._legacyAlerts.add, this._legacyAlerts.remove),
     });
 
     this._scaffold = new Scaffold({
       config: this._config, // It needs the whole configuration to get option properties and create scaffold
-      // LEGACY, remove when legacy alerts are removed
-      ...scopedAlertsMethods(
-        "scaffold",
-        this._legacyAlerts.add,
-        this._legacyAlerts.remove,
-        this._legacyAlerts.rename
-      ),
+      alerts: this._alerts.collection("scaffold"),
     });
 
     this._inited = false;

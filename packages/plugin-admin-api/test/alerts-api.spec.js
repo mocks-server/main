@@ -85,7 +85,8 @@ describe("alerts api", () => {
     it("should return alert containing error", async () => {
       const response = await fetch("/admin/alerts");
       expect(response.body.length).toEqual(4);
-      expect(response.body[0].error.message).toEqual(
+      console.log(response.body);
+      expect(response.body[3].error.message).toEqual(
         expect.stringContaining("Cannot find module '../db/users'")
       );
     });

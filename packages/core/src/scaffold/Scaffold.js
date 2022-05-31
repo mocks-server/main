@@ -101,11 +101,11 @@ function parseNamespacesForTemplates(namespaces) {
 }
 
 class Scaffold {
-  constructor({ config, addAlert }) {
+  constructor({ config, alerts }) {
     this._config = config;
     this._readConfigFileOption = this._config.namespace("config").option("readFile");
     this._mockSelectedOption = this._config.namespace("mocks").option("selected");
-    this._addAlert = addAlert;
+    this._alerts = alerts;
   }
 
   _parseConfigForTemplates() {
@@ -138,7 +138,7 @@ class Scaffold {
     const configFileLoaded = !!this._config.loadedFile;
 
     if (this._readConfigFileOption.value && !configFileLoaded) {
-      this._addAlert("create:config", "Configuration file was not found. A scaffold was created");
+      this._alerts.set("config", "Configuration file was not found. A scaffold was created");
       // Set base mock, which is the one created in the scaffold
       if (!this._mockSelectedOption.value) {
         this._mockSelectedOption.value = "base";
@@ -151,7 +151,7 @@ class Scaffold {
 
   _checkAndCreateMocksScaffold(filesLoaderPath) {
     if (!fsExtra.existsSync(filesLoaderPath)) {
-      this._addAlert("create:mocks", "Mocks folder was not found. A scaffold was created");
+      this._alerts.set("mocks", "Mocks folder was not found. A scaffold was created");
       return this._createMocks(filesLoaderPath);
     }
     return Promise.resolve();

@@ -85,6 +85,28 @@ describe("Loaders", () => {
     });
   });
 
+  describe("values getter", () => {
+    it("should return alerts added to alerts object formatted in the same way", () => {
+      alerts.add("foo", "Foo message");
+      nestedCollection.set("foo-alert", "Foo message 2");
+      nestedCollection.collection("foo-collection").set("foo-alert-2", "Foo message 3");
+      expect(alerts.values).toEqual([
+        {
+          context: "foo",
+          message: "Foo message",
+        },
+        {
+          context: "foo-alert",
+          message: "Foo message 2",
+        },
+        {
+          context: "foo-collection:foo-alert-2",
+          message: "Foo message 3",
+        },
+      ]);
+    });
+  });
+
   describe("remove method", () => {
     it("should remove alerts starting by same context from values", async () => {
       expect.assertions(2);

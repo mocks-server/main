@@ -44,7 +44,9 @@ describe("Scaffold", () => {
 
     scaffold = new Scaffold({
       config: configMock.stubs.instance,
-      addAlert: sandbox.stub(),
+      alerts: {
+        set: sandbox.stub(),
+      },
     });
     scaffold._mockSelectedOption = { value: null };
     scaffold._readConfigFileOption = { value: true };

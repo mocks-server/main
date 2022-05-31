@@ -8,6 +8,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
+const { isString } = require("lodash");
+
 const tracer = require("./tracer");
 
 // LEGACY, remove when legacy alerts are removed
@@ -92,9 +94,18 @@ class Alerts {
         context = "";
         sep = "";
       }
+      context = `${context}${sep}${item.id}`;
+
+      if (isString(item.value)) {
+        return {
+          message: item.value,
+          context,
+        };
+      }
+
       return {
         ...item.value,
-        context: `${context}${sep}${item.id}`,
+        context,
       };
     });
   }

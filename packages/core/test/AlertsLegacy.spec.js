@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const NestedCollections = require("@mocks-server/nested-collections").default;
 
-const Alerts = require("../src/Alerts");
+const Alerts = require("../src/AlertsLegacy");
 const tracer = require("../src/tracer");
 
 describe("Loaders", () => {

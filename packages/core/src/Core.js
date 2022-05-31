@@ -17,7 +17,7 @@ const NestedCollections = require("@mocks-server/nested-collections").default;
 const { CHANGE_MOCKS, CHANGE_ALERTS } = require("./eventNames");
 const tracer = require("./tracer");
 const Loaders = require("./Loaders");
-const Alerts = require("./Alerts");
+const AlertsLegacy = require("./AlertsLegacy");
 const RoutesHandlers = require("./routes-handlers/RoutesHandlers");
 const Mocks = require("./mocks/Mocks");
 const Plugins = require("./plugins/Plugins");
@@ -66,7 +66,7 @@ class Core {
       this._eventEmitter.emit(CHANGE_ALERTS);
     });
 
-    this._legacyAlerts = new Alerts({
+    this._alertsLegacy = new AlertsLegacy({
       alerts: this._alerts,
     });
 
@@ -101,9 +101,9 @@ class Core {
         // LEGACY, remove when legacy alerts are removed
         ...scopedAlertsMethods(
           Plugins.id,
-          this._legacyAlerts.add,
-          this._legacyAlerts.remove,
-          this._legacyAlerts.rename
+          this._alertsLegacy.add,
+          this._alertsLegacy.remove,
+          this._alertsLegacy.rename
         ),
       },
       this //To be used only by plugins
@@ -121,9 +121,9 @@ class Core {
         // LEGACY, remove when legacy alerts are removed
         ...scopedAlertsMethods(
           Mocks.id,
-          this._legacyAlerts.add,
-          this._legacyAlerts.remove,
-          this._legacyAlerts.rename
+          this._alertsLegacy.add,
+          this._alertsLegacy.remove,
+          this._alertsLegacy.rename
         ),
       },
       this // To be used only by routeHandlers
@@ -134,7 +134,7 @@ class Core {
       mocksRouter: this._mocks.router,
       alerts: this._alerts.collection(Server.id),
       // LEGACY, remove when legacy alerts are removed
-      ...scopedAlertsMethods(Server.id, this._legacyAlerts.add, this._legacyAlerts.remove),
+      ...scopedAlertsMethods(Server.id, this._alertsLegacy.add, this._alertsLegacy.remove),
     });
 
     this._filesLoader = new FilesLoader({
@@ -256,7 +256,7 @@ class Core {
 
   get alerts() {
     // LEGACY, change by new alerts getter when legacy alerts are removed
-    return this._legacyAlerts.values;
+    return this._alertsLegacy.values;
   }
 
   get mocks() {

@@ -315,4 +315,46 @@ describe("Collection", () => {
       childCollection.id = "foo-new-id";
     });
   });
+
+  describe("flat getter", () => {
+    it("should return flat items of collection and children collections", () => {
+      const collection = new Collection("foo");
+      const childCollection1 = collection.collection("foo1");
+      const childCollection2 = childCollection1.collection("foo2");
+
+      collection.set(ITEM_ID, FOO_VALUE);
+      childCollection1.set(ITEM_ID, FOO_VALUE);
+      childCollection1.set("foo-item-2", "foo-value-2");
+      childCollection2.set(ITEM_ID, FOO_VALUE);
+      childCollection2.set("foo-item-3", "foo-value-3");
+
+      expect(collection.flat).toEqual([
+        {
+          collection: `foo`,
+          id: ITEM_ID,
+          value: FOO_VALUE,
+        },
+        {
+          collection: `foo:foo1`,
+          id: ITEM_ID,
+          value: FOO_VALUE,
+        },
+        {
+          collection: `foo:foo1`,
+          id: "foo-item-2",
+          value: "foo-value-2",
+        },
+        {
+          collection: `foo:foo1:foo2`,
+          id: ITEM_ID,
+          value: FOO_VALUE,
+        },
+        {
+          collection: `foo:foo1:foo2`,
+          id: "foo-item-3",
+          value: "foo-value-3",
+        },
+      ]);
+    });
+  });
 });

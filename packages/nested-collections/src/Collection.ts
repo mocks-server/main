@@ -15,7 +15,12 @@ interface Item extends ElementBasics {
   value: itemValue;
 }
 
+interface FlatItem extends Item {
+  collection: elementId,
+}
+
 type items = Item[];
+type flatItems = FlatItem[];
 type collections = Collection[];
 type element = Item | Collection;
 type elements = element[];
@@ -195,6 +200,29 @@ export default class Collection implements ElementBasics {
   */
   public get items(): items {
     return this._items;
+  }
+
+  /**
+   * @returns collection items and children collection items in a flat array
+  */
+  public get flat(): flatItems {
+    const items = this._items.map((item: Item): FlatItem => {
+      return {
+        ...item,
+        collection: this._id,
+      };
+    });
+    const collections = this._collections.reduce((allItems: flatItems, collection: Collection): flatItems => {
+      const collectionItems = collection.flat.map((collectionFlatItem: FlatItem): FlatItem => {
+        return {
+          ...collectionFlatItem,
+          collection: `${this._id}:${collectionFlatItem.collection}`,
+        };
+      });
+      return [...allItems, ...collectionItems];
+    }, []);
+
+    return [...items, ...collections];
   }
 
   /**

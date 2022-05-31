@@ -145,14 +145,12 @@ class Core {
       config: this._configFilesLoader,
       loadMocks: this._mocksLoaders.new(),
       loadRoutes: this._routesLoaders.new(),
-      alerts: this._alerts.collection("files"),
-      // LEGACY, remove when legacy alerts are removed
-      ...scopedAlertsMethods("files", this._legacyAlerts.add, this._legacyAlerts.remove),
+      alerts: this._alerts.collection(FilesLoader.id),
     });
 
     this._scaffold = new Scaffold({
       config: this._config, // It needs the whole configuration to get option properties and create scaffold
-      alerts: this._alerts.collection("scaffold"),
+      alerts: this._alerts.collection(Scaffold.id),
     });
 
     this._inited = false;

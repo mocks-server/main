@@ -58,11 +58,17 @@ const BABEL_REGISTER_OPTIONS = [
 ];
 
 class FilesLoaderBase {
-  constructor({ config, loadMocks, loadRoutes, addAlert, removeAlerts }, extraOptions = {}) {
+  static get id() {
+    return "files";
+  }
+
+  constructor({ config, loadMocks, loadRoutes, alerts }, extraOptions = {}) {
     this._loadMocks = loadMocks;
     this._loadRoutes = loadRoutes;
-    this._addAlert = addAlert;
-    this._removeAlerts = removeAlerts;
+    this._alerts = alerts;
+    this._mocksAlerts = alerts.collection("mocks");
+    this._routesAlerts = alerts.collection("routes");
+    this._routesFilesAlerts = this._routesAlerts.collection("file");
     this._customRequireCache = extraOptions.requireCache;
     this._require = extraOptions.require || require;
     this._config = config;
@@ -137,7 +143,10 @@ class FilesLoaderBase {
 
   _ensurePath() {
     if (!fsExtra.existsSync(this._path)) {
-      this._addAlert("load:folder", `Created folder "${this._path}"`);
+      const message = `Created folder "${this._path}"`;
+      this._alerts.set("folder", message);
+      tracer.warn(message);
+      // this._addAlert("load:folder", `Created folder "${this._path}"`);
       fsExtra.ensureDirSync(this._path);
     }
   }
@@ -167,18 +176,20 @@ class FilesLoaderBase {
         srcBase: routesPath,
         prefixBase: true,
       });
-
-      this._removeAlerts("load:routes");
+      this._routesAlerts.clean();
       const routes = flatten(
         routeFiles
           .map((filePath) => {
             const fileContent = this._readFile(filePath);
             const fileErrors = validateFileContent(fileContent);
             if (!!fileErrors) {
-              this._addAlert(
+              const message = `Error loading routes from file ${filePath}: ${fileErrors}`;
+              tracer.warn(message);
+              this._routesFilesAlerts.set(filePath, message);
+              /* this._addAlert(
                 `load:routes:file:${filePath}`,
                 `Error loading routes from file ${filePath}: ${fileErrors}`
-              );
+              ); */
               return null;
             }
             return fileContent;
@@ -189,7 +200,10 @@ class FilesLoaderBase {
       tracer.silly(`Loaded routes from folder ${routesPath}`);
     } catch (error) {
       this._loadRoutes([]);
-      this._addAlert("load:routes", `Error loading routes from folder ${routesPath}`, error);
+      const message = `Error loading routes from folder ${routesPath}`;
+      tracer.error(`${message}: ${error.message}`);
+      tracer.debug(error.stack);
+      this._routesAlerts.set("error", { message, error });
     }
   }
 
@@ -208,14 +222,19 @@ class FilesLoaderBase {
         }
         this._loadMocks(mocks);
         tracer.silly(`Loaded mocks from file ${mocksFile}`);
-        this._removeAlerts("load:mocks");
+        this._mocksAlerts.clean();
       } catch (error) {
         this._loadMocks([]);
-        this._addAlert("load:mocks", `Error loading mocks from file ${mocksFile}`, error);
+        const message = `Error loading mocks from file ${mocksFile}`;
+        tracer.error(`${message}: ${error.message}`);
+        tracer.debug(error.stack);
+        this._mocksAlerts.set("error", { message, error });
       }
     } else {
       this._loadMocks([]);
-      this._addAlert("load:mocks", `No mocks file was found in ${this._path}`);
+      const message = `No mocks file was found in ${this._path}`;
+      tracer.warn(message);
+      this._mocksAlerts.set("not-found", { message });
     }
   }
 

@@ -60,6 +60,12 @@ describe("Scaffold", () => {
     configMock.restore();
   });
 
+  describe("id", () => {
+    it("should return scaffold", async () => {
+      expect(Scaffold.id).toEqual("scaffold");
+    });
+  });
+
   describe("when initialized", () => {
     it("should create the mocks folder if it does not exists and neither config file", async () => {
       configMock.stubs.instance.loadedFile = false;

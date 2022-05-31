@@ -12,6 +12,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const path = require("path");
 const sinon = require("sinon");
 const { cloneDeep } = require("lodash");
+const NestedCollections = require("@mocks-server/nested-collections").default;
 
 const LibsMocks = require("../Libs.mocks");
 const CoreMocks = require("../Core.mocks");
@@ -71,6 +72,7 @@ describe("FilesLoader", () => {
   let watchOption;
   let babelRegisterOption;
   let babelRegisterOptionsOption;
+  let alerts;
 
   beforeEach(async () => {
     requireCache = cloneDeep(fooRequireCache);
@@ -85,12 +87,12 @@ describe("FilesLoader", () => {
     sandbox.stub(tracer, "error");
     sandbox.stub(tracer, "info");
     sandbox.stub(tracer, "silly");
+    alerts = new NestedCollections("files");
     pluginMethods = {
       core: coreInstance,
       loadRoutes: sandbox.stub(),
       loadMocks: sandbox.stub(),
-      addAlert: sandbox.stub(),
-      removeAlerts: sandbox.stub(),
+      alerts,
       config: configMock.stubs.namespace,
     };
 
@@ -119,6 +121,12 @@ describe("FilesLoader", () => {
     coreMocks.restore();
   });
 
+  describe("id", () => {
+    it("should return files", async () => {
+      expect(FilesLoader.id).toEqual("files");
+    });
+  });
+
   describe("path getter", () => {
     it("should return the resolved value of the path option", async () => {
       path.isAbsolute.returns(false);
@@ -139,7 +147,8 @@ describe("FilesLoader", () => {
     it("should not throw and add an alert if there is an error loading route files", async () => {
       libsMocks.stubs.globule.find.returns(["foo"]);
       await filesLoader.init();
-      expect(pluginMethods.addAlert.calledWith("load:routes")).toEqual(true);
+      console.log(alerts.flat);
+      expect(alerts.flat.length).toEqual(2);
     });
 
     it("should add an alert when a routes file content does not pass validation", async () => {
@@ -153,7 +162,11 @@ describe("FilesLoader", () => {
       filesLoader._babelRegisterOption = babelRegisterOption;
       filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await filesLoader.init();
-      expect(pluginMethods.addAlert.calledWith("load:routes:file:foo")).toEqual(true);
+      expect(alerts.flat[1].collection).toEqual("files:routes:file");
+      expect(alerts.flat[1].id).toEqual("foo");
+      expect(alerts.flat[1].value).toEqual(
+        expect.stringContaining("Error loading routes from file foo")
+      );
     });
 
     it("should not add an alert when a routes file content pass validation", async () => {
@@ -167,12 +180,12 @@ describe("FilesLoader", () => {
       filesLoader._babelRegisterOption = babelRegisterOption;
       filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await filesLoader.init();
-      expect(pluginMethods.addAlert.calledWith("load:routes:file:foo")).toEqual(false);
+      expect(alerts.flat.length).toEqual(0);
     });
 
     it("should not throw and add an alert if there is an error loading mocks file", async () => {
       await filesLoader.init();
-      expect(pluginMethods.addAlert.calledWith("load:mocks")).toEqual(true);
+      expect(alerts.flat.length).toEqual(1);
     });
 
     it("should remove alerts when mocks file loads successfully", async () => {
@@ -185,7 +198,7 @@ describe("FilesLoader", () => {
       filesLoader._babelRegisterOption = babelRegisterOption;
       filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await filesLoader.init();
-      expect(pluginMethods.removeAlerts.calledWith("load:mocks")).toEqual(true);
+      expect(alerts.flat.length).toEqual(0);
     });
 
     it("should call to loadMocks method when mocks file is loaded", async () => {
@@ -220,7 +233,7 @@ describe("FilesLoader", () => {
     it("should not throw and add an alert if there is an error in loadRoutesfiles method", async () => {
       tracer.silly.throws(new Error());
       await filesLoader.init();
-      expect(pluginMethods.addAlert.calledWith("load:routes")).toEqual(true);
+      expect(alerts.flat.length).toEqual(2);
     });
 
     it("should return a rejected promise if there is an error initializing", async () => {

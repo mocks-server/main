@@ -101,6 +101,10 @@ function parseNamespacesForTemplates(namespaces) {
 }
 
 class Scaffold {
+  static get id() {
+    return "scaffold";
+  }
+
   constructor({ config, alerts }) {
     this._config = config;
     this._readConfigFileOption = this._config.namespace("config").option("readFile");

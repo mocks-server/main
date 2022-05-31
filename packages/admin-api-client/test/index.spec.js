@@ -70,6 +70,7 @@ describe("react-admin-client methods used with node", () => {
         });
         await wait(2000);
         const alerts = await readAlerts();
+        console.log(alerts);
         expect(alerts.length).toEqual(0);
       });
     });

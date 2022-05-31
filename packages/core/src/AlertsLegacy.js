@@ -8,14 +8,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { isString } = require("lodash");
-
 const tracer = require("./tracer");
 
 // LEGACY, remove when legacy alerts are removed
-class Alerts {
+class AlertsLegacy {
   constructor({ alerts }) {
-    this._nestedCollections = alerts;
+    this._alerts = alerts;
     this.add = this.add.bind(this);
     this.remove = this.remove.bind(this);
     this.rename = this.rename.bind(this);
@@ -23,23 +21,12 @@ class Alerts {
 
   add(context, message, error) {
     tracer.silly(`Adding alert with context "${context}" and message "${message}"`);
-    const alert = {
-      context,
-      message,
-      error,
-    };
     const collectionIds = context.split(":");
     const alertId = collectionIds.pop();
     const alertCollection = collectionIds.reduce((currentCollection, collectionId) => {
       return currentCollection.collection(collectionId);
-    }, this._nestedCollections);
-    alertCollection.set(alertId, alert);
-    if (error) {
-      tracer.error(`${message}: ${error.message}`);
-      tracer.debug(error.stack);
-    } else {
-      tracer.warn(message);
-    }
+    }, this._alerts);
+    alertCollection.set(alertId, message, error);
   }
 
   remove(context) {
@@ -48,14 +35,14 @@ class Alerts {
     const collectionIds = context.split(":");
     const contextCollection = collectionIds.reduce((currentCollection, collectionId) => {
       return currentCollection.collection(collectionId);
-    }, this._nestedCollections);
+    }, this._alerts);
     contextCollection.clean();
 
     // Last context may be an item id instead of a collection. Remove it
     const alertId = collectionIds.pop();
     const alertCollection = collectionIds.reduce((currentCollection, collectionId) => {
       return currentCollection.collection(collectionId);
-    }, this._nestedCollections);
+    }, this._alerts);
     alertCollection.remove(alertId);
   }
 
@@ -68,14 +55,14 @@ class Alerts {
       const collection = currentCollection.collection(collectionId);
       collection.id = newCollectionsIds[currentIndex];
       return collection;
-    }, this._nestedCollections);
+    }, this._alerts);
 
     // Rename item
     const lastCollectionId = collectionIds.pop();
     const newLastCollectionId = newCollectionsIds.pop();
     const lastCollection = newCollectionsIds.reduce((currentCollection, collectionId) => {
       return currentCollection.collection(collectionId);
-    }, this._nestedCollections);
+    }, this._alerts);
 
     const value = lastCollection.get(lastCollectionId);
     if (value) {
@@ -85,7 +72,7 @@ class Alerts {
   }
 
   get values() {
-    return this._nestedCollections.flat.map((item) => {
+    return this._alerts.flat.map((item) => {
       let context = item.collection;
       let sep = ":";
       if (context.startsWith("alerts:")) {
@@ -94,21 +81,13 @@ class Alerts {
         context = "";
         sep = "";
       }
-      context = `${context}${sep}${item.id}`;
-
-      if (isString(item.value)) {
-        return {
-          message: item.value,
-          context,
-        };
-      }
 
       return {
         ...item.value,
-        context,
+        context: `${context}${sep}${item.id}`,
       };
     });
   }
 }
 
-module.exports = Alerts;
+module.exports = AlertsLegacy;

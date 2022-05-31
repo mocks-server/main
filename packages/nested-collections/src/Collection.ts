@@ -10,6 +10,12 @@ interface ElementBasics {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type itemValue = any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface Options {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Decorator?: any;
+  [x: string | number | symbol]: unknown;
+}
 
 interface Item extends ElementBasics {
   value: itemValue;
@@ -58,15 +64,20 @@ export default class Collection implements ElementBasics {
   private _collections: collections;
   private _items: items;
   private _eventEmitter: EventEmitter;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private _Decorator: any;
+  private _options: Options;
 
   /**
    * Creates a root collection
    * @example const collection = new Collection("id")
    * @returns Root collection
   */
-  constructor(id?: elementId) {
+  constructor(id: elementId = null, options: Options = {}) {
+    this._options = options;
+    this._Decorator = options.Decorator || Collection;
     this._eventEmitter = new EventEmitter();
-    this._id = id || null;
+    this._id = id;
     this._collections = [];
     this._items = [];
     this._emitChange = this._emitChange.bind(this);
@@ -77,7 +88,7 @@ export default class Collection implements ElementBasics {
   }
 
   private _createCollection(id: elementId): Collection {
-    const collection = new Collection(id);
+    const collection = new this._Decorator(id, this._options);
     collection.onChange(this._emitChange);
     this._collections.push(collection);
     return collection;

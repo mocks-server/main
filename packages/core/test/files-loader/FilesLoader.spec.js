@@ -12,7 +12,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const path = require("path");
 const sinon = require("sinon");
 const { cloneDeep } = require("lodash");
-const NestedCollections = require("@mocks-server/nested-collections").default;
+const Alerts = require("../../src/Alerts");
 
 const LibsMocks = require("../Libs.mocks");
 const CoreMocks = require("../Core.mocks");
@@ -87,7 +87,7 @@ describe("FilesLoader", () => {
     sandbox.stub(tracer, "error");
     sandbox.stub(tracer, "info");
     sandbox.stub(tracer, "silly");
-    alerts = new NestedCollections("files");
+    alerts = new Alerts("files");
     pluginMethods = {
       core: coreInstance,
       loadRoutes: sandbox.stub(),

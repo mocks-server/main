@@ -143,10 +143,7 @@ class FilesLoaderBase {
 
   _ensurePath() {
     if (!fsExtra.existsSync(this._path)) {
-      const message = `Created folder "${this._path}"`;
-      this._alerts.set("folder", message);
-      tracer.warn(message);
-      // this._addAlert("load:folder", `Created folder "${this._path}"`);
+      this._alerts.set("folder", `Created folder "${this._path}"`);
       fsExtra.ensureDirSync(this._path);
     }
   }
@@ -183,13 +180,10 @@ class FilesLoaderBase {
             const fileContent = this._readFile(filePath);
             const fileErrors = validateFileContent(fileContent);
             if (!!fileErrors) {
-              const message = `Error loading routes from file ${filePath}: ${fileErrors}`;
-              tracer.warn(message);
-              this._routesFilesAlerts.set(filePath, message);
-              /* this._addAlert(
-                `load:routes:file:${filePath}`,
+              this._routesFilesAlerts.set(
+                filePath,
                 `Error loading routes from file ${filePath}: ${fileErrors}`
-              ); */
+              );
               return null;
             }
             return fileContent;
@@ -200,10 +194,7 @@ class FilesLoaderBase {
       tracer.silly(`Loaded routes from folder ${routesPath}`);
     } catch (error) {
       this._loadRoutes([]);
-      const message = `Error loading routes from folder ${routesPath}`;
-      tracer.error(`${message}: ${error.message}`);
-      tracer.debug(error.stack);
-      this._routesAlerts.set("error", { message, error });
+      this._routesAlerts.set("error", `Error loading routes from folder ${routesPath}`, error);
     }
   }
 
@@ -225,16 +216,11 @@ class FilesLoaderBase {
         this._mocksAlerts.clean();
       } catch (error) {
         this._loadMocks([]);
-        const message = `Error loading mocks from file ${mocksFile}`;
-        tracer.error(`${message}: ${error.message}`);
-        tracer.debug(error.stack);
-        this._mocksAlerts.set("error", { message, error });
+        this._mocksAlerts.set("error", `Error loading mocks from file ${mocksFile}`, error);
       }
     } else {
       this._loadMocks([]);
-      const message = `No mocks file was found in ${this._path}`;
-      tracer.warn(message);
-      this._mocksAlerts.set("not-found", { message });
+      this._mocksAlerts.set("not-found", `No mocks file was found in ${this._path}`);
     }
   }
 

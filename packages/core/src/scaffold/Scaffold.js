@@ -14,8 +14,6 @@ const fsExtra = require("fs-extra");
 const handlebars = require("handlebars");
 const { isUndefined, compact } = require("lodash");
 
-const tracer = require("../tracer");
-
 const READ_WRITE_FILE_OPTIONS = {
   encoding: "utf8",
 };
@@ -144,9 +142,7 @@ class Scaffold {
     const configFileLoaded = !!this._config.loadedFile;
 
     if (this._readConfigFileOption.value && !configFileLoaded) {
-      const message = "Configuration file was not found. A scaffold was created";
-      tracer.warn(message);
-      this._alerts.set("config", message);
+      this._alerts.set("config", "Configuration file was not found. A scaffold was created");
       // Set base mock, which is the one created in the scaffold
       if (!this._mockSelectedOption.value) {
         this._mockSelectedOption.value = "base";
@@ -159,9 +155,7 @@ class Scaffold {
 
   _checkAndCreateMocksScaffold(filesLoaderPath) {
     if (!fsExtra.existsSync(filesLoaderPath)) {
-      const message = "Mocks folder was not found. A scaffold was created";
-      tracer.warn(message);
-      this._alerts.set("mocks", message);
+      this._alerts.set("mocks", "Mocks folder was not found. A scaffold was created");
       return this._createMocks(filesLoaderPath);
     }
     return Promise.resolve();

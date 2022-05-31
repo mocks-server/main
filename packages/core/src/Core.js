@@ -12,7 +12,6 @@ const deepMerge = require("deepmerge");
 const EventEmitter = require("events");
 
 const Config = require("@mocks-server/config");
-const NestedCollections = require("@mocks-server/nested-collections").default;
 
 const { CHANGE_MOCKS, CHANGE_ALERTS } = require("./eventNames");
 const tracer = require("./tracer");
@@ -26,6 +25,7 @@ const FilesLoader = require("./files-loader/FilesLoader");
 
 const { scopedAlertsMethods, addEventListener, arrayMerge } = require("./support/helpers");
 const Scaffold = require("./scaffold/Scaffold");
+const Alerts = require("./Alerts");
 
 const MODULE_NAME = "mocks";
 
@@ -61,7 +61,7 @@ class Core {
     [this._logOption, this._routesHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
 
     this._logOption.onChange(tracer.set);
-    this._alerts = new NestedCollections("alerts");
+    this._alerts = new Alerts("alerts");
     this._alerts.onChange(() => {
       this._eventEmitter.emit(CHANGE_ALERTS);
     });

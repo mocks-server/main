@@ -278,7 +278,7 @@ describe("Config from env vars", () => {
     });
   });
 
-  describe.only("when option is array", () => {
+  describe("when option is array", () => {
     it("option should get the value from env var", async () => {
       await run("no-config", "option-types", {
         env: {

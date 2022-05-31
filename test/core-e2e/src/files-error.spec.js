@@ -41,7 +41,7 @@ describe("when there is an error loading files", () => {
     });
 
     it("should have added an alert about error loading mocks", async () => {
-      expect(findAlert("load:mocks", core.alerts).message).toEqual(
+      expect(findAlert("files:mocks", core.alerts).message).toEqual(
         expect.stringContaining("Error loading mocks from file")
       );
     });
@@ -70,7 +70,7 @@ describe("when there is an error loading files", () => {
     });
 
     it("should have added an alert about error loading routes", async () => {
-      expect(findAlert("load:routes", core.alerts).message).toEqual(
+      expect(findAlert("files:routes", core.alerts).message).toEqual(
         expect.stringContaining("Error loading routes from folder")
       );
     });

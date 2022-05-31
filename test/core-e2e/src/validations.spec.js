@@ -32,7 +32,7 @@ describe("mocks and routes validations", () => {
     });
 
     it("should have added an alert about route file not exporting array", () => {
-      expect(findAlert("load:routes:file:", core.alerts).message).toEqual(
+      expect(findAlert("files:routes:file:", core.alerts).message).toEqual(
         expect.stringContaining("File does not export an array")
       );
     });
@@ -42,7 +42,7 @@ describe("mocks and routes validations", () => {
     });
 
     it("should have added an alert about mocks file loading error", () => {
-      expect(findAlert("load:mocks", core.alerts).error.message).toEqual(
+      expect(findAlert("files:mocks", core.alerts).error.message).toEqual(
         expect.stringContaining("File does not export an array")
       );
     });

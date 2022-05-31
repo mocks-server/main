@@ -31,7 +31,6 @@ const MODULE_NAME = "mocks";
 const CONFIG_PLUGINS_NAMESPACE = "plugins";
 const CONFIG_MOCKS_NAMESPACE = "mocks";
 const CONFIG_SERVER_NAMESPACE = "server";
-const CONFIG_FILES_LOADER = "files";
 
 const ROOT_OPTIONS = [
   {
@@ -60,7 +59,7 @@ class Core {
     this._configPlugins = this._config.addNamespace(CONFIG_PLUGINS_NAMESPACE);
     this._configMocks = this._config.addNamespace(CONFIG_MOCKS_NAMESPACE);
     this._configServer = this._config.addNamespace(CONFIG_SERVER_NAMESPACE);
-    this._configFilesLoader = this._config.addNamespace(CONFIG_FILES_LOADER);
+    this._configFilesLoader = this._config.addNamespace(FilesLoader.id);
 
     [this._logOption, this._routesHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
 

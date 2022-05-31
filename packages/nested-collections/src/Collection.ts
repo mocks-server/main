@@ -50,9 +50,9 @@ function cleanCollection(collection: Collection): void {
 
 export default class Collection implements ElementBasics {
   private _id: elementId;
-  private _collections: collections
-  private _items: items
-  private _eventEmitter: EventEmitter
+  private _collections: collections;
+  private _items: items;
+  private _eventEmitter: EventEmitter;
 
   /**
    * Creates a root collection

@@ -9,10 +9,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const tracer = require("./tracer");
+const NestedCollections = require("@mocks-server/nested-collections").default;
 
 class Alerts {
   constructor({ onChange }) {
-    this._onChange = onChange;
+    this._nestedCollections = new NestedCollections("alerts");
+    this._nestedCollections.onChange(onChange);
     this._alerts = new Set();
     this.add = this.add.bind(this);
     this.remove = this.remove.bind(this);
@@ -26,55 +28,77 @@ class Alerts {
       message,
       error,
     };
-    this._alerts.forEach((existantAlert) => {
-      if (existantAlert.context === context) {
-        this._alerts.delete(existantAlert);
-      }
-    });
-    this._alerts.add(alert);
+    const collectionIds = context.split(":");
+    const alertId = collectionIds.pop();
+    const alertCollection = collectionIds.reduce((currentCollection, collectionId) => {
+      return currentCollection.collection(collectionId);
+    }, this._nestedCollections);
+    alertCollection.set(alertId, alert);
     if (error) {
       tracer.error(`${message}: ${error.message}`);
       tracer.debug(error.stack);
     } else {
       tracer.warn(message);
     }
-    this._onChange(this.values);
   }
 
   remove(context) {
     tracer.silly(`Removing alerts with context "${context}"`);
-    let changed = false;
-    this._alerts.forEach((alert) => {
-      if (alert.context.indexOf(context) === 0) {
-        this._alerts.delete(alert);
-        changed = true;
-      }
-    });
-    if (changed) {
-      this._onChange(this.values);
-    }
+    // Clean collection with whole context
+    const collectionIds = context.split(":");
+    const contextCollection = collectionIds.reduce((currentCollection, collectionId) => {
+      return currentCollection.collection(collectionId);
+    }, this._nestedCollections);
+    contextCollection.clean();
+
+    // Last context may be an item id instead of a collection. Remove it
+    const alertId = collectionIds.pop();
+    const alertCollection = collectionIds.reduce((currentCollection, collectionId) => {
+      return currentCollection.collection(collectionId);
+    }, this._nestedCollections);
+    alertCollection.remove(alertId);
   }
 
   rename(oldContext, newContext) {
     tracer.silly(`Renaming alerts with context "${oldContext}" to context "${newContext}"`);
-    let changed = false;
-    this._alerts.forEach((alert) => {
-      if (alert.context.indexOf(oldContext) === 0) {
-        this._alerts.add({
-          ...alert,
-          context: alert.context.replace(oldContext, newContext),
-        });
-        this._alerts.delete(alert);
-        changed = true;
-      }
-    });
-    if (changed) {
-      this._onChange(this.values);
+    const collectionIds = oldContext.split(":");
+    const newCollectionsIds = newContext.split(":");
+
+    collectionIds.reduce((currentCollection, collectionId, currentIndex) => {
+      const collection = currentCollection.collection(collectionId);
+      collection.id = newCollectionsIds[currentIndex];
+      return collection;
+    }, this._nestedCollections);
+
+    // Rename item
+    const lastCollectionId = collectionIds.pop();
+    const newLastCollectionId = newCollectionsIds.pop();
+    const lastCollection = newCollectionsIds.reduce((currentCollection, collectionId) => {
+      return currentCollection.collection(collectionId);
+    }, this._nestedCollections);
+
+    const value = lastCollection.get(lastCollectionId);
+    if (value) {
+      lastCollection.remove(lastCollectionId);
+      lastCollection.set(newLastCollectionId, value);
     }
   }
 
   get values() {
-    return Array.from(this._alerts);
+    return this._nestedCollections.flat.map((item) => {
+      let context = item.collection;
+      let sep = ":";
+      if (context.startsWith("alerts:")) {
+        context = context.replace("alerts:", "");
+      } else {
+        context = "";
+        sep = "";
+      }
+      return {
+        ...item.value,
+        context: `${context}${sep}${item.id}`,
+      };
+    });
   }
 }
 

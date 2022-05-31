@@ -123,6 +123,7 @@ describe("plugins", () => {
         });
 
         it("should have added two plugin alerts", async () => {
+          console.log(core.alerts);
           expect(filterPluginAlerts(core.alerts)).toEqual([
             {
               // Plugin id is still not available in register method

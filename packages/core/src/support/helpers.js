@@ -11,7 +11,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const { isFunction, isUndefined } = require("lodash");
 
 function alertContext(contextScope, context) {
-  return `${contextScope}:${context || ""}`;
+  if (!context) {
+    return `${contextScope}`;
+  }
+  return `${contextScope}:${context}`;
 }
 
 /*

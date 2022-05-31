@@ -72,12 +72,7 @@ describe("Loaders", () => {
 
     it("should notify that alerts have changed", () => {
       alerts.add("foo", "Foo message");
-      expect(callbacks.onChange.getCall(0).args[0]).toEqual([
-        {
-          context: "foo",
-          message: "Foo message",
-        },
-      ]);
+      expect(callbacks.onChange.callCount).toEqual(1);
     });
 
     it("should trace error message if alert is called with it", async () => {
@@ -104,12 +99,12 @@ describe("Loaders", () => {
           message: "Foo message 1",
         },
         {
-          context: "foo:2",
-          message: "Foo message 2",
-        },
-        {
           context: "var",
           message: "Var message 1",
+        },
+        {
+          context: "foo:2",
+          message: "Foo message 2",
         },
       ]);
       alerts.remove("foo");
@@ -121,16 +116,48 @@ describe("Loaders", () => {
       ]);
     });
 
+    it("should remove alerts ending with same context", async () => {
+      expect.assertions(2);
+      alerts.add("foo", "Foo message 1");
+      alerts.add("foo:2", "Foo message 2");
+      alerts.add("var", "Var message 1");
+      expect(alerts.values).toEqual([
+        {
+          context: "foo",
+          message: "Foo message 1",
+        },
+        {
+          context: "var",
+          message: "Var message 1",
+        },
+        {
+          context: "foo:2",
+          message: "Foo message 2",
+        },
+      ]);
+      alerts.remove("foo:2");
+      expect(alerts.values).toEqual([
+        {
+          context: "foo",
+          message: "Foo message 1",
+        },
+        {
+          context: "var",
+          message: "Var message 1",
+        },
+      ]);
+    });
+
     it("should notify that alerts have changed if any is removed", () => {
       alerts.add("foo", "Foo message");
       alerts.remove("foo");
-      expect(callbacks.onChange.callCount).toEqual(2);
+      expect(callbacks.onChange.callCount).toEqual(3);
     });
 
     it("should not notify that alerts have changed if no one is removed", () => {
       alerts.add("foo", "Foo message");
       alerts.remove("var");
-      expect(callbacks.onChange.callCount).toEqual(1);
+      expect(callbacks.onChange.callCount).toEqual(2);
     });
   });
 
@@ -146,12 +173,12 @@ describe("Loaders", () => {
           message: "Foo message 1",
         },
         {
-          context: "foo:2",
-          message: "Foo message 2",
-        },
-        {
           context: "var",
           message: "Var message 1",
+        },
+        {
+          context: "foo:2",
+          message: "Foo message 2",
         },
       ]);
       alerts.rename("foo", "testing");
@@ -171,16 +198,82 @@ describe("Loaders", () => {
       ]);
     });
 
+    it("should support passing : at the end of contexts", async () => {
+      expect.assertions(2);
+      alerts.add("foo:var", "Foo message 1");
+      alerts.add("foo:var:2", "Foo message 2");
+      alerts.add("foo:var:x", "Var message 1");
+      expect(alerts.values).toEqual([
+        {
+          context: "foo:var",
+          message: "Foo message 1",
+        },
+        {
+          context: "foo:var:2",
+          message: "Foo message 2",
+        },
+        {
+          context: "foo:var:x",
+          message: "Var message 1",
+        },
+      ]);
+      alerts.rename("foo:", "testing:");
+      expect(alerts.values).toEqual([
+        {
+          context: "testing:var",
+          message: "Foo message 1",
+        },
+        {
+          context: "testing:var:2",
+          message: "Foo message 2",
+        },
+        {
+          context: "testing:var:x",
+          message: "Var message 1",
+        },
+      ]);
+    });
+
+    it("should rename alerts ending by same context from values", async () => {
+      expect.assertions(2);
+      alerts.add("foo", "Foo message 1");
+      alerts.add("foo:2", "Foo message 2");
+      alerts.add("var", "Var message 1");
+      expect(alerts.values).toEqual([
+        {
+          context: "foo",
+          message: "Foo message 1",
+        },
+        {
+          context: "var",
+          message: "Var message 1",
+        },
+        {
+          context: "foo:2",
+          message: "Foo message 2",
+        },
+      ]);
+      alerts.rename("foo:2", "foo:3");
+      expect(alerts.values).toEqual([
+        {
+          context: "foo",
+          message: "Foo message 1",
+        },
+        {
+          context: "var",
+          message: "Var message 1",
+        },
+        {
+          context: "foo:3",
+          message: "Foo message 2",
+        },
+      ]);
+    });
+
     it("should notify that alerts have changed if any is renamed", () => {
       alerts.add("foo", "Foo message");
       alerts.rename("foo", "testing");
-      expect(callbacks.onChange.callCount).toEqual(2);
-    });
-
-    it("should not notify that alerts have changed if no one is renamed", () => {
-      alerts.add("foo", "Foo message");
-      alerts.rename("var", "testing");
-      expect(callbacks.onChange.callCount).toEqual(1);
+      expect(callbacks.onChange.callCount).toEqual(4);
     });
   });
 });

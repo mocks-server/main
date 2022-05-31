@@ -125,7 +125,7 @@ describe("mocks and routes validations", () => {
     });
 
     it("should have added an alert about errors processing mocks", () => {
-      expect(filterAlerts("mocks:process:mocks", core.alerts)[1].message).toEqual(
+      expect(filterAlerts("mocks:process:mocks", core.alerts)[0].message).toEqual(
         "Critical errors found while loading mocks: 1"
       );
     });

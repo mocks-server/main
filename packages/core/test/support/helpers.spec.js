@@ -54,7 +54,7 @@ describe("helpers", () => {
 
         it("should add default context if it is not provided", () => {
           scopedAlertsMethods.addAlert(null, "Foo alert message", "foo error");
-          expect(addAlertsMethod.getCall(0).args[0]).toEqual("fooContext:");
+          expect(addAlertsMethod.getCall(0).args[0]).toEqual("fooContext");
         });
       });
 
@@ -66,7 +66,7 @@ describe("helpers", () => {
 
         it("should add default context if it is not provided", () => {
           scopedAlertsMethods.removeAlerts();
-          expect(removeAlertsMethod.getCall(0).args[0]).toEqual("fooContext:");
+          expect(removeAlertsMethod.getCall(0).args[0]).toEqual("fooContext");
         });
       });
 
@@ -102,7 +102,7 @@ describe("helpers", () => {
 
         it("should add default context if it is not provided", () => {
           scopedAlertsMethods.addAlert(null, "Foo alert message", "foo error");
-          expect(addAlertsMethod.getCall(0).args[0]).toEqual("fooContext:");
+          expect(addAlertsMethod.getCall(0).args[0]).toEqual("fooContext");
         });
       });
 
@@ -114,7 +114,7 @@ describe("helpers", () => {
 
         it("should add default context if it is not provided", () => {
           scopedAlertsMethods.removeAlerts();
-          expect(removeAlertsMethod.getCall(0).args[0]).toEqual("fooContext:");
+          expect(removeAlertsMethod.getCall(0).args[0]).toEqual("fooContext");
         });
       });
 

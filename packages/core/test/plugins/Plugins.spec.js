@@ -128,7 +128,7 @@ describe("Plugins", () => {
       expect(loadMocks.callCount).toEqual(1);
       expect(loadRoutes.callCount).toEqual(1);
       expect(callbacks.addAlert.calledWith("0:foo", "Foo message")).toEqual(true);
-      expect(callbacks.removeAlerts.calledWith("0:")).toEqual(true);
+      expect(callbacks.removeAlerts.calledWith("0")).toEqual(true);
     });
 
     it("should not register object plugins with register method throwing an error", async () => {
@@ -196,7 +196,7 @@ describe("Plugins", () => {
       expect(callbacks.addAlert.calledWith(`${addNativePlugins(0)}:foo`, "Foo message")).toEqual(
         true
       );
-      expect(callbacks.removeAlerts.calledWith(`${addNativePlugins(0)}:`)).toEqual(true);
+      expect(callbacks.removeAlerts.calledWith(`${addNativePlugins(0)}`)).toEqual(true);
     });
 
     it("should register function plugins returning a register method", async () => {
@@ -282,7 +282,7 @@ describe("Plugins", () => {
       expect(callbacks.addAlert.calledWith(`${addNativePlugins(0)}:foo`, "Foo message")).toEqual(
         true
       );
-      expect(callbacks.removeAlerts.calledWith(`${addNativePlugins(0)}:`)).toEqual(true);
+      expect(callbacks.removeAlerts.calledWith(`${addNativePlugins(0)}`)).toEqual(true);
     });
 
     it("should not register class plugins if class throw an error when being created", async () => {
@@ -534,7 +534,7 @@ describe("Plugins", () => {
       expect(loadMocks.callCount).toEqual(1);
       expect(loadRoutes.callCount).toEqual(1);
       expect(callbacks.addAlert.calledWith(`foo-plugin:foo`, "Foo message")).toEqual(true);
-      expect(callbacks.removeAlerts.calledWith(`foo-plugin:`)).toEqual(true);
+      expect(callbacks.removeAlerts.calledWith(`foo-plugin`)).toEqual(true);
     });
 
     it("should not pass the config object if plugin has not id", async () => {
@@ -702,7 +702,7 @@ describe("Plugins", () => {
       expect(loadMocks.callCount).toEqual(1);
       expect(loadRoutes.callCount).toEqual(1);
       expect(callbacks.addAlert.calledWith(`foo-plugin:foo`, "Foo message")).toEqual(true);
-      expect(callbacks.removeAlerts.calledWith(`foo-plugin:`)).toEqual(true);
+      expect(callbacks.removeAlerts.calledWith(`foo-plugin`)).toEqual(true);
     });
   });
 

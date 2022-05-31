@@ -41,6 +41,7 @@
     "@babel/register": "7.17.7",
     "@hapi/boom": "9.1.4",
     "@mocks-server/config": "workspace:*",
+    "@mocks-server/nested-collections": "workspace:*",
     "ajv": "8.11.0",
     "better-ajv-errors": "1.2.0",
     "body-parser": "1.20.0",

@@ -79,6 +79,12 @@ describe("Plugins", () => {
     libsMocks.restore();
   });
 
+  describe("id", () => {
+    it("should return plugins", async () => {
+      expect(Plugins.id).toEqual("plugins");
+    });
+  });
+
   describe("register method", () => {
     const METHOD = "Register";
     it("should do nothing if there are no plugins to register", async () => {

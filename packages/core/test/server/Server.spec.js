@@ -92,6 +92,12 @@ describe("Server", () => {
     sandbox.restore();
   });
 
+  describe("id", () => {
+    it("should return server", async () => {
+      expect(Server.id).toEqual("server");
+    });
+  });
+
   describe("when initialized", () => {
     it("should be listening to process exit signals and stop the server if occurs", async () => {
       processOnStub.callsFake((_event, cb) => {

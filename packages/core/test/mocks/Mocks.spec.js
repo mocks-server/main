@@ -53,6 +53,12 @@ describe("Mocks", () => {
     mockMock.restore();
   });
 
+  describe("id", () => {
+    it("should return mocks", async () => {
+      expect(Mocks.id).toEqual("mocks");
+    });
+  });
+
   describe("getDelay method", () => {
     it("should return delay option value", () => {
       mocks._currentDelayOption.value = "foo-delay";

@@ -30,6 +30,10 @@ const OPTIONS = [
 ];
 
 class Plugins {
+  static get id() {
+    return "plugins";
+  }
+
   constructor(
     { config, addAlert, removeAlerts, renameAlerts, createMocksLoader, createRoutesLoader },
     core

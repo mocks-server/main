@@ -43,6 +43,10 @@ const {
 const { getIds, compileRouteValidator } = require("./validations");
 
 class Mocks {
+  static get id() {
+    return "mocks";
+  }
+
   constructor(
     { config, getLoadedMocks, getLoadedRoutes, onChange, addAlert, removeAlerts },
     core

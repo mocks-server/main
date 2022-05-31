@@ -28,9 +28,6 @@ const { scopedAlertsMethods, addEventListener, arrayMerge } = require("./support
 const Scaffold = require("./scaffold/Scaffold");
 
 const MODULE_NAME = "mocks";
-const CONFIG_PLUGINS_NAMESPACE = "plugins";
-const CONFIG_MOCKS_NAMESPACE = "mocks";
-const CONFIG_SERVER_NAMESPACE = "server";
 
 const ROOT_OPTIONS = [
   {
@@ -56,9 +53,9 @@ class Core {
     this._loadedRoutes = false;
 
     this._config = new Config({ moduleName: MODULE_NAME });
-    this._configPlugins = this._config.addNamespace(CONFIG_PLUGINS_NAMESPACE);
-    this._configMocks = this._config.addNamespace(CONFIG_MOCKS_NAMESPACE);
-    this._configServer = this._config.addNamespace(CONFIG_SERVER_NAMESPACE);
+    this._configPlugins = this._config.addNamespace(Plugins.id);
+    this._configMocks = this._config.addNamespace(Mocks.id);
+    this._configServer = this._config.addNamespace(Server.id);
     this._configFilesLoader = this._config.addNamespace(FilesLoader.id);
 
     [this._logOption, this._routesHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
@@ -100,10 +97,10 @@ class Core {
         createRoutesLoader: () => {
           return this._routesLoaders.new();
         },
-        alerts: this._alerts.collection("plugins"),
+        alerts: this._alerts.collection(Plugins.id),
         // LEGACY, remove when legacy alerts are removed
         ...scopedAlertsMethods(
-          "plugins",
+          Plugins.id,
           this._legacyAlerts.add,
           this._legacyAlerts.remove,
           this._legacyAlerts.rename
@@ -120,10 +117,10 @@ class Core {
         getLoadedMocks: () => this._mocksLoaders.contents,
         getLoadedRoutes: () => this._routesLoaders.contents,
         onChange: () => this._eventEmitter.emit(CHANGE_MOCKS),
-        alerts: this._alerts.collection("mocks"),
+        alerts: this._alerts.collection(Mocks.id),
         // LEGACY, remove when legacy alerts are removed
         ...scopedAlertsMethods(
-          "mocks",
+          Mocks.id,
           this._legacyAlerts.add,
           this._legacyAlerts.remove,
           this._legacyAlerts.rename
@@ -135,9 +132,9 @@ class Core {
     this._server = new Server({
       config: this._configServer,
       mocksRouter: this._mocks.router,
-      alerts: this._alerts.collection("server"),
+      alerts: this._alerts.collection(Server.id),
       // LEGACY, remove when legacy alerts are removed
-      ...scopedAlertsMethods("server", this._legacyAlerts.add, this._legacyAlerts.remove),
+      ...scopedAlertsMethods(Server.id, this._legacyAlerts.add, this._legacyAlerts.remove),
     });
 
     this._filesLoader = new FilesLoader({

@@ -91,6 +91,10 @@ const URL_ENCODED_BODY_PARSER_OPTIONS = [
 ];
 
 class Server {
+  static get id() {
+    return "server";
+  }
+
   constructor({ config, addAlert, removeAlerts, mocksRouter }) {
     this._config = config;
     const corsConfigNamespace = this._config.addNamespace(CORS_NAMESPACE);

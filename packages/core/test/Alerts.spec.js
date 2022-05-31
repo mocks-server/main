@@ -9,6 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
+const NestedCollections = require("@mocks-server/nested-collections").default;
 
 const Alerts = require("../src/Alerts");
 const tracer = require("../src/tracer");
@@ -17,13 +18,15 @@ describe("Loaders", () => {
   let callbacks;
   let sandbox;
   let alerts;
+  let nestedCollection;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
     sandbox.stub(tracer, "error");
     sandbox.stub(tracer, "warn");
+    nestedCollection = new NestedCollections("alerts");
     callbacks = {
-      onChange: sandbox.stub(),
+      alerts: nestedCollection,
     };
     alerts = new Alerts(callbacks);
   });
@@ -68,11 +71,6 @@ describe("Loaders", () => {
           message: "Foo message 2",
         },
       ]);
-    });
-
-    it("should notify that alerts have changed", () => {
-      alerts.add("foo", "Foo message");
-      expect(callbacks.onChange.callCount).toEqual(1);
     });
 
     it("should trace error message if alert is called with it", async () => {
@@ -146,18 +144,6 @@ describe("Loaders", () => {
           message: "Var message 1",
         },
       ]);
-    });
-
-    it("should notify that alerts have changed if any is removed", () => {
-      alerts.add("foo", "Foo message");
-      alerts.remove("foo");
-      expect(callbacks.onChange.callCount).toEqual(3);
-    });
-
-    it("should not notify that alerts have changed if no one is removed", () => {
-      alerts.add("foo", "Foo message");
-      alerts.remove("var");
-      expect(callbacks.onChange.callCount).toEqual(2);
     });
   });
 
@@ -268,12 +254,6 @@ describe("Loaders", () => {
           message: "Foo message 2",
         },
       ]);
-    });
-
-    it("should notify that alerts have changed if any is renamed", () => {
-      alerts.add("foo", "Foo message");
-      alerts.rename("foo", "testing");
-      expect(callbacks.onChange.callCount).toEqual(4);
     });
   });
 });

@@ -9,6 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
+const NestedCollections = require("@mocks-server/nested-collections").default;
 
 const MocksMock = require("./mocks/Mocks.mock.js");
 const ServerMocks = require("./server/Server.mocks.js");
@@ -52,6 +53,7 @@ describe("Core", () => {
     configMocks = new ConfigMocks();
     filesLoaderMocks = new FilesLoaderMocks();
     scaffoldMocks = new ScaffoldMocks();
+    sandbox.stub(NestedCollections.prototype, "onChange");
 
     core = new Core();
     await core.init();
@@ -259,11 +261,10 @@ describe("Core", () => {
 
   describe("onChangeAlerts method", () => {
     it("should execute callback when alerts execute onChange callback", () => {
-      const FOO_ALERTS = ["foo", "foo2"];
       const spy = sandbox.spy();
       core.onChangeAlerts(spy);
-      alertsMocks.stubs.Constructor.mock.calls[0][0].onChange(FOO_ALERTS);
-      expect(spy.calledWith(FOO_ALERTS)).toEqual(true);
+      NestedCollections.prototype.onChange.getCall(0).args[0]();
+      expect(spy.callCount).toEqual(1);
     });
 
     it("should return a function to remove listener", () => {

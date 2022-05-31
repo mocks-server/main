@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -12,6 +12,7 @@ const deepMerge = require("deepmerge");
 const EventEmitter = require("events");
 
 const Config = require("@mocks-server/config");
+const NestedCollections = require("@mocks-server/nested-collections").default;
 
 const { CHANGE_MOCKS, CHANGE_ALERTS } = require("./eventNames");
 const tracer = require("./tracer");
@@ -64,11 +65,13 @@ class Core {
     [this._logOption, this._routesHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
 
     this._logOption.onChange(tracer.set);
+    this._alerts = new NestedCollections("alerts");
+    this._alerts.onChange(() => {
+      this._eventEmitter.emit(CHANGE_ALERTS);
+    });
 
-    this._alerts = new Alerts({
-      onChange: (alerts) => {
-        this._eventEmitter.emit(CHANGE_ALERTS, alerts);
-      },
+    this._legacyAlerts = new Alerts({
+      alerts: this._alerts,
     });
 
     this._mocksLoaders = new Loaders({
@@ -98,11 +101,12 @@ class Core {
         createRoutesLoader: () => {
           return this._routesLoaders.new();
         },
+        // LEGACY, remove when legacy alerts are removed
         ...scopedAlertsMethods(
           "plugins",
-          this._alerts.add,
-          this._alerts.remove,
-          this._alerts.rename
+          this._legacyAlerts.add,
+          this._legacyAlerts.remove,
+          this._legacyAlerts.rename
         ),
       },
       this //To be used only by plugins
@@ -116,11 +120,12 @@ class Core {
         getLoadedMocks: () => this._mocksLoaders.contents,
         getLoadedRoutes: () => this._routesLoaders.contents,
         onChange: () => this._eventEmitter.emit(CHANGE_MOCKS),
+        // LEGACY, remove when legacy alerts are removed
         ...scopedAlertsMethods(
           "mocks",
-          this._alerts.add,
-          this._alerts.remove,
-          this._alerts.rename
+          this._legacyAlerts.add,
+          this._legacyAlerts.remove,
+          this._legacyAlerts.rename
         ),
       },
       this // To be used only by routeHandlers
@@ -129,23 +134,26 @@ class Core {
     this._server = new Server({
       config: this._configServer,
       mocksRouter: this._mocks.router,
-      ...scopedAlertsMethods("server", this._alerts.add, this._alerts.remove),
+      // LEGACY, remove when legacy alerts are removed
+      ...scopedAlertsMethods("server", this._legacyAlerts.add, this._legacyAlerts.remove),
     });
 
     this._filesLoader = new FilesLoader({
       config: this._configFilesLoader,
       loadMocks: this._mocksLoaders.new(),
       loadRoutes: this._routesLoaders.new(),
-      ...scopedAlertsMethods("files", this._alerts.add, this._alerts.remove),
+      // LEGACY, remove when legacy alerts are removed
+      ...scopedAlertsMethods("files", this._legacyAlerts.add, this._legacyAlerts.remove),
     });
 
     this._scaffold = new Scaffold({
       config: this._config, // It needs the whole configuration to get option properties and create scaffold
+      // LEGACY, remove when legacy alerts are removed
       ...scopedAlertsMethods(
         "scaffold",
-        this._alerts.add,
-        this._alerts.remove,
-        this._alerts.rename
+        this._legacyAlerts.add,
+        this._legacyAlerts.remove,
+        this._legacyAlerts.rename
       ),
     });
 
@@ -255,7 +263,8 @@ class Core {
   // Expose child objects
 
   get alerts() {
-    return this._alerts.values;
+    // LEGACY, change by new alerts getter when legacy alerts are removed
+    return this._legacyAlerts.values;
   }
 
   get mocks() {

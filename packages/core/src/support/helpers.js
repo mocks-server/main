@@ -10,6 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { isFunction, isUndefined } = require("lodash");
 
+// LEGACY, remove when legacy alerts are removed
 function alertContext(contextScope, context) {
   if (!context) {
     return `${contextScope}`;
@@ -17,6 +18,7 @@ function alertContext(contextScope, context) {
   return `${contextScope}:${context}`;
 }
 
+// LEGACY, remove when legacy alerts are removed
 /*
 When registering plugins, their id is not still available, so its index is used as context.
 Afterwards it may change, so old alerts have to be renamed
@@ -53,6 +55,7 @@ function mutableScopedAlertsMethods(
   };
 }
 
+// LEGACY, remove when legacy alerts are removed
 function scopedAlertsMethods(
   contextScope,
   originalAddMethod,

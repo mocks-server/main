@@ -102,6 +102,10 @@ export default class Collection implements ElementBasics {
     return findIndexById(this._items, id);
   }
 
+  private _findCollectionIndex(id: elementId) {
+    return findIndexById(this._collections, id);
+  }
+
   private _createItem(id: elementId, value: itemValue): Item {
     const item = {
       id,
@@ -113,6 +117,17 @@ export default class Collection implements ElementBasics {
 
   private _emitChange() {
     this._eventEmitter.emit(CHANGE_EVENT);
+  }
+
+  private _setItem(id: elementId, value: itemValue): Item {
+    let item = this._findItem(id);
+    if (item) {
+      item.value = value;
+    } else {
+      item = this._createItem(id, value);
+    }
+    this._emitChange();
+    return item;
   }
 
   /**
@@ -131,12 +146,63 @@ export default class Collection implements ElementBasics {
   }
 
   /**
+   * @returns collections
+  */
+   public get collections(): collections {
+    return this._collections;
+  }
+
+  /**
+   * Removes a collection
+   * @example myCollection.removeCollection("id");
+  */
+  public removeCollection(id: elementId) {
+    // TODO, improve this. Avoid diuplicated code
+    const collectionIndex = this._findCollectionIndex(id);
+    if (collectionIndex > -1) {
+      this._collections.splice(collectionIndex, 1);
+      this._emitChange();
+    }
+  }
+
+  /**
    * Returns child collection with provided id or creates a new one
    * @example myCollection.collection("id");
    * @returns Child collection
   */
   public collection(id: elementId): Collection {
     return this._findCollection(id) || this._createCollection(id);
+  }
+
+  public merge(collection: Collection) {
+    collection.items.forEach((item: Item) => {
+      this._setItem(item.id, item.value);
+      collection.remove(item.id);
+    });
+    collection.collections.forEach((childCollection: Collection) => {
+      const sameCollection = this._findCollection(childCollection.id);
+      if (sameCollection) {
+        sameCollection.merge(childCollection);
+      } else {
+        this._collections.push(childCollection);
+        childCollection.removeCollection(childCollection.id);
+        this._emitChange();
+      }
+    });
+  }
+
+  public renameCollection(id: elementId, newId: elementId) {
+    if( id !== newId ){
+      const collection = this._findCollection(id);
+      const newCollection = this._findCollection(newId);
+      if (collection) {
+        if(newCollection) {
+          newCollection.merge(collection);
+        } else {
+          collection.id = id;
+        }
+      }
+    }
   }
 
   /**
@@ -162,14 +228,7 @@ export default class Collection implements ElementBasics {
    * @returns item
   */
   public set(id: elementId, value: itemValue): Item {
-    let item = this._findItem(id);
-    if (item) {
-      item.value = value;
-    } else {
-      item = this._createItem(id, value);
-    }
-    this._emitChange();
-    return item;
+    return this._setItem(id, value);
   }
 
   /**

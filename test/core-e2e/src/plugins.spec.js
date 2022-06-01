@@ -123,20 +123,16 @@ describe("plugins", () => {
         });
 
         it("should have added two plugin alerts", async () => {
-          expect(filterPluginAlerts(core.alerts)).toEqual([
-            {
-              // Plugin id is still not available in register method
-              // It should have been renamed when start alert is received using a different context
-              context: "plugins:test-plugin:test-register",
-              message: "Warning registering plugin",
-              error: undefined,
-            },
-            {
-              context: "plugins:test-plugin:test-start",
-              message: "Warning starting plugin",
-              error: undefined,
-            },
-          ]);
+          const alerts = filterPluginAlerts(core.alerts);
+          const registerAlert = alerts.find(
+            (alert) => alert.context === "plugins:test-plugin:test-register"
+          );
+          const startAlert = alerts.find(
+            (alert) => alert.context === "plugins:test-plugin:test-start"
+          );
+          expect(alerts.length).toEqual(2);
+          expect(registerAlert.message).toEqual("Warning registering plugin");
+          expect(startAlert.message).toEqual("Warning starting plugin");
         });
       });
 
@@ -264,6 +260,7 @@ describe("plugins", () => {
       }
 
       constructor({ core: coreInstance, addAlert, config }) {
+        this._core = coreInstance;
         coreInstance.addRouter("/foo-path", customRouter);
         addAlert("test-register", "Warning registering plugin");
         registerSpy(coreInstance);

@@ -50,11 +50,9 @@ class AlertsLegacy {
     tracer.silly(`Renaming alerts with context "${oldContext}" to context "${newContext}"`);
     const collectionIds = oldContext.split(":");
     const newCollectionsIds = newContext.split(":");
-
     collectionIds.reduce((currentCollection, collectionId, currentIndex) => {
-      const collection = currentCollection.collection(collectionId);
-      collection.id = newCollectionsIds[currentIndex];
-      return collection;
+      currentCollection.renameCollection(collectionId, newCollectionsIds[currentIndex]);
+      return currentCollection.collection(newCollectionsIds[currentIndex]);
     }, this._alerts);
 
     // Rename item

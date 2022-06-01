@@ -147,7 +147,6 @@ describe("FilesLoader", () => {
     it("should not throw and add an alert if there is an error loading route files", async () => {
       libsMocks.stubs.globule.find.returns(["foo"]);
       await filesLoader.init();
-      console.log(alerts.flat);
       expect(alerts.flat.length).toEqual(2);
     });
 

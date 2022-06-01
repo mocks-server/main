@@ -185,7 +185,7 @@ function getVariantHandler({ route, variant, variantIndex, routeHandlers, core, 
   const handlerId = variant.handler || DEFAULT_ROUTES_HANDLER;
   const Handler = findRouteHandler(routeHandlers, handlerId);
   const variantErrors = variantValidationErrors(route, variant, Handler);
-  const variantAlerts = alerts.collection(variantId || variantIndex);
+  const variantAlerts = alerts.collection(variant.id || variantIndex);
   variantAlerts.clean();
 
   if (!!variantErrors) {
@@ -268,21 +268,12 @@ function getRouteVariants({ routesDefinitions, alerts, routeHandlers, core }) {
   );
 }
 
-function getMock({
-  mockDefinition,
-  mockIndex,
-  mocksDefinitions,
-  routeVariants,
-  getGlobalDelay,
-  alerts,
-}) {
+function getMock({ mockDefinition, mocksDefinitions, routeVariants, getGlobalDelay, alerts }) {
   let mock = null;
-  const alertsMock = alerts.collection((mockDefinition && mockDefinition.id) || mockIndex);
-  alertsMock.clean();
 
   const mockRouteVariantsErrors = mockRouteVariantsValidationErrors(mockDefinition, routeVariants);
   if (!!mockRouteVariantsErrors) {
-    alertsMock.set("variants", mockRouteVariantsErrors.message);
+    alerts.set("variants", mockRouteVariantsErrors.message);
     tracer.silly(
       `Mock variants validation errors: ${JSON.stringify(mockRouteVariantsErrors.errors)}`
     );
@@ -292,7 +283,7 @@ function getMock({
 
   const mockErrors = mockValidationErrors(mockDefinition, routeVariants);
   if (!!mockErrors) {
-    alertsMock.set("validation", mockErrors.message);
+    alerts.set("validation", mockErrors.message);
     tracer.silly(`Mock validation errors: ${JSON.stringify(mockErrors.errors)}`);
     return null;
   }
@@ -304,12 +295,12 @@ function getMock({
         mockDefinition,
         mocksDefinitions,
         routeVariants,
-        alertsMock
+        alerts
       ),
       getDelay: getGlobalDelay,
     });
   } catch (error) {
-    alertsMock.set("process", "Error processing mock", error);
+    alerts.set("process", "Error processing mock", error);
   }
   return mock;
 }
@@ -320,22 +311,26 @@ function getMocks({ mocksDefinitions, alerts, routeVariants, getGlobalDelay }) {
   let ids = [];
   const mocks = compact(
     mocksDefinitions.map((mockDefinition, index) => {
+      const mockDefinitionId = mockDefinition && mockDefinition.id;
+      const alertsCollectionId =
+        !mockDefinitionId || ids.includes(mockDefinitionId) ? index : mockDefinitionId;
+      const alertsMock = alerts.collection(alertsCollectionId);
       const mock = getMock({
         mockDefinition,
-        mockIndex: index,
         mocksDefinitions,
         routeVariants,
         getGlobalDelay,
-        alerts,
+        alerts: alertsMock,
       });
       if (!mock) {
         errorsProcessing++;
         return null;
       }
       if (ids.includes(mock.id)) {
-        alerts
-          .collection(mock.id)
-          .set("duplicated", `Mock with duplicated id '${mock.id}' detected. It has been ignored`);
+        alertsMock.set(
+          "duplicated",
+          `Mock with duplicated id '${mock.id}' detected. It has been ignored`
+        );
         return null;
       }
 

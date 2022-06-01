@@ -35,7 +35,7 @@ describe("react-admin-client methods used with node", () => {
       it("should return alert about mock not defined", async () => {
         const alerts = await readAlerts();
         expect(alerts[0].message).toEqual(
-          expect.stringContaining('Option "mock" was not defined')
+          expect.stringContaining("Option 'mock' was not defined")
         );
       });
     });
@@ -48,12 +48,12 @@ describe("react-admin-client methods used with node", () => {
         });
         await wait(2000);
         const alerts = await readAlerts();
-        expect(alerts.length).toEqual(5);
+        expect(alerts.length).toEqual(3);
       });
 
       it("alert about files error should exist", async () => {
         const alerts = await readAlerts();
-        const alertId = alerts[4].id;
+        const alertId = alerts[2].id;
         const alert = await readAlert(alertId);
         expect(alert.id).toEqual(alertId);
         expect(alert.message).toEqual(expect.stringContaining("Error loading mocks"));

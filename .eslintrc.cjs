@@ -7,7 +7,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2018,
   },
-  plugins: ["prettier", "@nrwl/nx"],
+  plugins: ["prettier", "@nrwl/nx", "no-only-tests"],
   extends: ["prettier"],
   rules: {
     "prettier/prettier": [
@@ -17,6 +17,7 @@ module.exports = {
         parser: "flow",
       },
     ],
+    "no-only-tests/no-only-tests": [2],
     "no-shadow": [2, { builtinGlobals: true, hoist: "all" }],
     "no-undef": 2,
     "no-unused-vars": [2, { vars: "all", args: "after-used", ignoreRestSiblings: false }],

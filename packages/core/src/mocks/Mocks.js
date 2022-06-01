@@ -188,17 +188,18 @@ class Mocks {
 
   _createCustomMock() {
     const currentMockId = this._currentId;
+    const alerts = this._alertsMocks.collection("custom");
+    alerts.clean();
     this._customVariantsMock = getMock({
       mockDefinition: {
         id: `custom-variants:from:${currentMockId}`,
         from: currentMockId,
         routesVariants: this._customVariants,
       },
-      mockIndex: "custom",
       mocksDefinitions: this._mocksDefinitions,
       routeVariants: this._routesVariants,
       getGlobalDelay: this.getDelay,
-      alerts: this._alertsMocks,
+      alerts,
     });
   }
 

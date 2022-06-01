@@ -98,14 +98,14 @@ describe("events", () => {
       removeSpy = core.onChangeAlerts(spies.onChangeAlerts);
       option.value = "unexistant";
       await wait(500);
-      expect(spies.onChangeAlerts.callCount).toEqual(3);
+      expect(spies.onChangeAlerts.callCount).toEqual(1);
     });
 
     it("should not execute callback when event listener is removed", async () => {
       removeSpy();
       option.value = "unexistant2";
       await wait(500);
-      expect(spies.onChangeAlerts.callCount).toEqual(3);
+      expect(spies.onChangeAlerts.callCount).toEqual(1);
     });
   });
 });

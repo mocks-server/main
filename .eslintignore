@@ -6,3 +6,4 @@
 /packages/*/dist
 /packages/*/coverage
 /test/core-e2e/src/fixtures
+/test/main-e2e/src/fixtures

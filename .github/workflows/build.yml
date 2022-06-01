@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - release
+      - feat-alerts
   pull_request:
 jobs:
   get-affected:

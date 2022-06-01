@@ -577,7 +577,7 @@ describe("mocks helpers", () => {
       ]);
     });
 
-    it("alert should include variant id if both route and handler have ids", () => {
+    it("alert should include variant id if it is defined", () => {
       const variantHandler = getVariantHandler({
         route: { id: "foo-route" },
         variant: { id: "foo-variant" },
@@ -590,7 +590,7 @@ describe("mocks helpers", () => {
       expect(variantHandler).toEqual(null);
       expect(alerts.flat).toEqual([
         {
-          collection: "foo:foo-route:foo-variant",
+          collection: "foo:foo-variant",
           id: "validation",
           value: {
             message:
@@ -665,7 +665,6 @@ describe("mocks helpers", () => {
 
       expect(routeVariants).toEqual([]);
 
-      console.log(alerts.flat);
       expect(alerts.flat[0].id).toEqual("validation");
       expect(alerts.flat[0].value.message).toEqual(
         "Route with id 'foo-route' is invalid:  must have required property 'variants'"
@@ -816,7 +815,6 @@ describe("mocks helpers", () => {
           id: "foo-id",
           routesVariants: ["foo-route:foo-id"],
         },
-        mockIndex: "foo-index",
         mocksDefinitions: [],
         routeVariants: [],
         getGlobalDelay: () => {
@@ -839,7 +837,6 @@ describe("mocks helpers", () => {
           id: "foo-id",
           routesVariants: ["foo-route:foo-id"],
         },
-        mockIndex: "foo-index",
         mocksDefinitions: [],
         routeVariants: [
           {

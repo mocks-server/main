@@ -13,6 +13,7 @@ const express = require("express");
 
 const MockMock = require("./Mock.mock.js");
 
+const Alerts = require("../../src/Alerts");
 const Mocks = require("../../src/mocks/Mocks");
 const ConfigMock = require("../Config.mocks");
 const DefaultRoutesHandler = require("../../src/routes-handlers/default/DefaultRoutesHandler");
@@ -25,6 +26,7 @@ describe("Mocks", () => {
   let core;
   let methods;
   let routerMock;
+  let alerts;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -32,6 +34,7 @@ describe("Mocks", () => {
     mockMock = new MockMock();
     routerMock = sandbox.stub();
     sandbox.stub(express, "Router").returns(routerMock);
+    alerts = new Alerts("mocks");
 
     core = {};
     methods = {
@@ -40,8 +43,7 @@ describe("Mocks", () => {
       getLoadedRoutes: sandbox.stub().returns([]),
       getCurrentMock: sandbox.stub().returns(null),
       onChange: sandbox.stub(),
-      addAlert: sandbox.stub(),
-      removeAlerts: sandbox.stub(),
+      alerts,
     };
 
     mocks = new Mocks(methods, core);
@@ -188,9 +190,36 @@ describe("Mocks", () => {
     });
 
     describe("when loaded", () => {
-      it("should add an alert", () => {
+      it("should add alerts", () => {
         mocks.load();
-        expect(methods.addAlert.calledWith("process:mocks")).toEqual(true);
+        expect(alerts.flat).toEqual([
+          {
+            id: "settings",
+            value: { message: "Option 'mock' was not defined", error: undefined },
+            collection: "mocks",
+          },
+          {
+            id: "empty",
+            value: { message: "No mocks found", error: undefined },
+            collection: "mocks",
+          },
+          {
+            id: "critical-error",
+            value: {
+              message: "Critical errors found while loading mocks: 1",
+              error: undefined,
+            },
+            collection: "mocks:load-mocks",
+          },
+          {
+            id: "validation",
+            value: {
+              message: "Mock is invalid: : type must be object",
+              error: undefined,
+            },
+            collection: "mocks:load-mocks:0",
+          },
+        ]);
       });
     });
 

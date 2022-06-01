@@ -42,15 +42,15 @@ const {
 } = require("./helpers");
 const { getIds, compileRouteValidator } = require("./validations");
 
+const SETTINGS_ALERT_ID = "settings";
+const EMPTY_ALERT_ID = "empty";
+
 class Mocks {
   static get id() {
     return "mocks";
   }
 
-  constructor(
-    { config, getLoadedMocks, getLoadedRoutes, onChange, addAlert, removeAlerts },
-    core
-  ) {
+  constructor({ config, getLoadedMocks, getLoadedRoutes, onChange, alerts }, core) {
     this._config = config;
     [this._currentMockOption, this._currentDelayOption] = this._config.addOptions(OPTIONS);
     this._currentMockOption.onChange(this._setCurrent.bind(this));
@@ -58,9 +58,11 @@ class Mocks {
     this._getLoadedMocks = getLoadedMocks;
     this._getLoadedRoutes = getLoadedRoutes;
     this._onChange = onChange;
-    this._addAlert = addAlert;
-    this._removeAlerts = removeAlerts;
     this._core = core;
+
+    this._alerts = alerts;
+    this._alertsMocks = alerts.collection("load-mocks");
+    this._alertsRoutes = alerts.collection("load-routes");
 
     this._router = null;
     this._mocksDefinitions = [];
@@ -97,8 +99,7 @@ class Mocks {
     tracer.silly(JSON.stringify(this._mocksDefinitions));
     this._mocks = getMocks({
       mocksDefinitions: this._mocksDefinitions,
-      addAlert: this._addAlert,
-      removeAlerts: this._removeAlerts,
+      alerts: this._alertsMocks,
       routeVariants: this._routesVariants,
       getGlobalDelay: this.getDelay,
     });
@@ -109,8 +110,7 @@ class Mocks {
     tracer.silly(JSON.stringify(this._routesDefinitions));
     this._routesVariants = getRouteVariants({
       routesDefinitions: this._routesDefinitions,
-      addAlert: this._addAlert,
-      removeAlerts: this._removeAlerts,
+      alerts: this._alertsRoutes,
       routeHandlers: this._routesVariantsHandlers,
       core: this._core,
     });
@@ -141,34 +141,34 @@ class Mocks {
   _setCurrent(id) {
     tracer.verbose(`Trying to set current mock as "${id}"`);
     let current;
-    this._removeAlerts("current:settings");
+    this._alerts.remove(SETTINGS_ALERT_ID);
     if (!id) {
       current = this._mocks[0];
       if (current) {
-        this._addAlert(
-          "current:settings",
-          `Option "mock" was not defined. Using the first mock found`
+        this._alerts.set(
+          SETTINGS_ALERT_ID,
+          "Option 'mock' was not defined. Using the first mock found"
         );
       } else {
-        this._addAlert("current:settings", `Option "mock" was not defined`);
+        this._alerts.set(SETTINGS_ALERT_ID, "Option 'mock' was not defined");
       }
     } else {
       current = this._mocks.find((mock) => mock.id === id);
       if (!current) {
         current = this._mocks[0];
         if (current) {
-          this._addAlert(
-            "current:settings",
-            `Mock "${id}" was not found. Using the first one found`
+          this._alerts.set(
+            SETTINGS_ALERT_ID,
+            `Mock '${id}' was not found. Using the first one found`
           );
         }
       }
     }
     if (!current) {
-      this._addAlert("current:amount", "No mocks found");
+      this._alerts.set(EMPTY_ALERT_ID, "No mocks found");
     } else {
       tracer.info(`Current mock: "${current.id}"`);
-      this._removeAlerts("current:amount");
+      this._alerts.remove(EMPTY_ALERT_ID);
     }
 
     this._currentMock = current;
@@ -198,8 +198,7 @@ class Mocks {
       mocksDefinitions: this._mocksDefinitions,
       routeVariants: this._routesVariants,
       getGlobalDelay: this.getDelay,
-      addAlert: this._addAlert,
-      removeAlerts: this._removeAlerts,
+      alerts: this._alertsMocks,
     });
   }
 

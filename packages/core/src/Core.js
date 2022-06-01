@@ -59,13 +59,12 @@ class Core {
     this._configFilesLoader = this._config.addNamespace(FilesLoader.id);
 
     [this._logOption, this._routesHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
-
     this._logOption.onChange(tracer.set);
+
     this._alerts = new Alerts("alerts");
     this._alerts.onChange(() => {
       this._eventEmitter.emit(CHANGE_ALERTS);
     });
-
     this._alertsLegacy = new AlertsLegacy({
       alerts: this._alerts,
     });
@@ -91,13 +90,13 @@ class Core {
     this._plugins = new Plugins(
       {
         config: this._configPlugins,
+        alerts: this._alerts.collection(Plugins.id),
         createMocksLoader: () => {
           return this._mocksLoaders.new();
         },
         createRoutesLoader: () => {
           return this._routesLoaders.new();
         },
-        alerts: this._alerts.collection(Plugins.id),
         // LEGACY, remove when legacy alerts are removed
         ...scopedAlertsMethods(
           Plugins.id,
@@ -114,32 +113,25 @@ class Core {
     this._mocks = new Mocks(
       {
         config: this._configMocks,
+        alerts: this._alerts.collection(Mocks.id),
         getLoadedMocks: () => this._mocksLoaders.contents,
         getLoadedRoutes: () => this._routesLoaders.contents,
         onChange: () => this._eventEmitter.emit(CHANGE_MOCKS),
-        alerts: this._alerts.collection(Mocks.id),
-        // LEGACY, remove when legacy alerts are removed
-        ...scopedAlertsMethods(
-          Mocks.id,
-          this._alertsLegacy.add,
-          this._alertsLegacy.remove,
-          this._alertsLegacy.rename
-        ),
       },
       this // To be used only by routeHandlers
     );
 
     this._server = new Server({
       config: this._configServer,
-      mocksRouter: this._mocks.router,
       alerts: this._alerts.collection(Server.id),
+      mocksRouter: this._mocks.router,
     });
 
     this._filesLoader = new FilesLoader({
       config: this._configFilesLoader,
+      alerts: this._alerts.collection(FilesLoader.id),
       loadMocks: this._mocksLoaders.new(),
       loadRoutes: this._routesLoaders.new(),
-      alerts: this._alerts.collection(FilesLoader.id),
     });
 
     this._scaffold = new Scaffold({

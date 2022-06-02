@@ -98,12 +98,8 @@ export default class Collection implements ElementBasics {
     return findById(this._items, id);
   }
 
-  private _findItemIndex(id: elementId) {
-    return findIndexById(this._items, id);
-  }
-
-  private _findCollectionIndex(id: elementId) {
-    return findIndexById(this._collections, id);
+  private _findElementIndex(id: elementId, elements: elements) {
+    return findIndexById(elements, id);
   }
 
   private _createItem(id: elementId, value: itemValue): Item {
@@ -130,6 +126,73 @@ export default class Collection implements ElementBasics {
     return item;
   }
 
+  private _changeId(id: elementId) {
+    this._id = id;
+    this._emitChange();
+  }
+
+  private _removeElement(id: elementId, elements: elements) {
+    const elementIndex = this._findElementIndex(id, elements);
+    if (elementIndex > -1) {
+      elements.splice(elementIndex, 1);
+      this._emitChange();
+    }
+  }
+
+  private _removeCollection(id: elementId) {
+    this._removeElement(id, this._collections);
+  }
+
+  private _remove(id: elementId): void {
+    this._removeElement(id, this._items);
+  }
+
+  private get _flat(): flatItems {
+    const items = this._items.map((item: Item): FlatItem => {
+      return {
+        ...item,
+        collection: this._id,
+      };
+    });
+    const collections = this._collections.reduce((allItems: flatItems, collection: Collection): flatItems => {
+      const collectionItems = collection._flat.map((collectionFlatItem: FlatItem): FlatItem => {
+        return {
+          ...collectionFlatItem,
+          collection: `${this._id}:${collectionFlatItem.collection}`,
+        };
+      });
+      return [...allItems, ...collectionItems];
+    }, []);
+
+    return [...items, ...collections];
+  }
+
+  private _merge(collection: Collection) {
+    [...collection._items].forEach((item: Item) => {
+      this._setItem(item.id, item.value);
+      collection._remove(item.id);
+    });
+    [...collection._collections].forEach((childCollection: Collection) => {
+      const sameCollection = this._findCollection(childCollection.id);
+      if (sameCollection) {
+        sameCollection._merge(childCollection);
+      } else {
+        this._collections.push(childCollection);
+        collection._removeCollection(childCollection.id);
+        this._emitChange();
+      }
+    });
+  }
+
+  private _cleanCollections(): void {
+    this._collections.forEach(cleanCollection);
+  }
+
+  private _cleanItems(): void {
+    this._items = [];
+    this._emitChange();
+  }
+
   /**
    * @returns collection id
   */
@@ -138,18 +201,10 @@ export default class Collection implements ElementBasics {
   }
 
   /**
-   * Sets collection id
+   * Sets collection id. Do not use it for changing a child collection id. Use renameCollection instead
   */
   public set id(id: elementId) {
-    this._id = id;
-    this._emitChange();
-  }
-
-  /**
-   * @returns collections
-  */
-   public get collections(): collections {
-    return this._collections;
+    this._changeId(id);
   }
 
   /**
@@ -157,12 +212,7 @@ export default class Collection implements ElementBasics {
    * @example myCollection.removeCollection("id");
   */
   public removeCollection(id: elementId) {
-    // TODO, improve this. Avoid diuplicated code
-    const collectionIndex = this._findCollectionIndex(id);
-    if (collectionIndex > -1) {
-      this._collections.splice(collectionIndex, 1);
-      this._emitChange();
-    }
+    this._removeCollection(id);
   }
 
   /**
@@ -174,53 +224,38 @@ export default class Collection implements ElementBasics {
     return this._findCollection(id) || this._createCollection(id);
   }
 
+  /**
+   * Merges current collection with the received one recursively
+  */
   public merge(collection: Collection) {
-    [...collection.items].forEach((item: Item) => {
-      this._setItem(item.id, item.value);
-      collection.remove(item.id);
-    });
-    [...collection.collections].forEach((childCollection: Collection) => {
-      const sameCollection = this._findCollection(childCollection.id);
-      if (sameCollection) {
-        sameCollection.merge(childCollection);
-      } else {
-        this._collections.push(childCollection);
-        collection.removeCollection(childCollection.id);
-        this._emitChange();
-      }
-    });
+    this._merge(collection);
   }
 
+  /**
+   * Changes a collection id. Id id already exists in other collection, then it merges them
+  */
   public renameCollection(id: elementId, newId: elementId) {
     if( id !== newId ){
       const collection = this._findCollection(id);
       const newCollection = this._findCollection(newId);
       if (collection) {
         if(newCollection) {
-          newCollection.merge(collection);
-          this.removeCollection(id);
+          newCollection._merge(collection);
+          this._removeCollection(id);
         } else {
-          collection.id = newId;
+          collection._changeId(newId);
         }
       }
     }
   }
 
   /**
-   * Empty children collections
-   * @example myCollection.cleanCollections();
-  */
-  public cleanCollections(): void {
-    this._collections.forEach(cleanCollection);
-  }
-
-  /**
    * Clean items and items in children collections recursively
    * @example myCollection.clean();
   */
-   public clean(): void {
-    this.cleanCollections();
-    this.cleanItems();
+  public clean(): void {
+    this._cleanCollections();
+    this._cleanItems();
   }
 
   /**
@@ -250,11 +285,7 @@ export default class Collection implements ElementBasics {
    * @example myCollection.remove("id");
   */
   public remove(id: elementId): void {
-    const itemIndex = this._findItemIndex(id);
-    if (itemIndex > -1) {
-      this._items.splice(itemIndex, 1);
-      this._emitChange();
-    }
+    this._remove(id);
   }
 
   /**
@@ -262,8 +293,7 @@ export default class Collection implements ElementBasics {
    * @example myCollection.cleanItems();
   */
   public cleanItems(): void {
-    this._items = [];
-    this._emitChange();
+    this._cleanItems();
   }
 
   /**
@@ -277,23 +307,7 @@ export default class Collection implements ElementBasics {
    * @returns collection items and children collection items in a flat array
   */
   public get flat(): flatItems {
-    const items = this._items.map((item: Item): FlatItem => {
-      return {
-        ...item,
-        collection: this._id,
-      };
-    });
-    const collections = this._collections.reduce((allItems: flatItems, collection: Collection): flatItems => {
-      const collectionItems = collection.flat.map((collectionFlatItem: FlatItem): FlatItem => {
-        return {
-          ...collectionFlatItem,
-          collection: `${this._id}:${collectionFlatItem.collection}`,
-        };
-      });
-      return [...allItems, ...collectionItems];
-    }, []);
-
-    return [...items, ...collections];
+    return this._flat;
   }
 
   /**

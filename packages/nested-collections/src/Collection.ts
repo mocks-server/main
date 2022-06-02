@@ -175,17 +175,17 @@ export default class Collection implements ElementBasics {
   }
 
   public merge(collection: Collection) {
-    collection.items.forEach((item: Item) => {
+    [...collection.items].forEach((item: Item) => {
       this._setItem(item.id, item.value);
       collection.remove(item.id);
     });
-    collection.collections.forEach((childCollection: Collection) => {
+    [...collection.collections].forEach((childCollection: Collection) => {
       const sameCollection = this._findCollection(childCollection.id);
       if (sameCollection) {
         sameCollection.merge(childCollection);
       } else {
         this._collections.push(childCollection);
-        childCollection.removeCollection(childCollection.id);
+        collection.removeCollection(childCollection.id);
         this._emitChange();
       }
     });
@@ -198,6 +198,7 @@ export default class Collection implements ElementBasics {
       if (collection) {
         if(newCollection) {
           newCollection.merge(collection);
+          this.removeCollection(id);
         } else {
           collection.id = newId;
         }

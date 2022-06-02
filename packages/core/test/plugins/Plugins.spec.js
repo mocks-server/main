@@ -196,6 +196,23 @@ describe("Plugins", () => {
       expect(alerts.flat[0].id).toEqual("foo-id");
     });
 
+    it("should have alerts available if Class has id getter", async () => {
+      class FooPlugin {
+        get id() {
+          return "foo-plugin";
+        }
+
+        register(methods) {
+          methods.alerts.set("foo-id", "Foo message");
+        }
+      }
+      pluginsOption.value = [FooPlugin];
+      await plugins.register();
+      expect(alerts.flat[0].collection).toEqual("plugins:foo-plugin");
+      expect(alerts.flat[0].value.message).toEqual("Foo message");
+      expect(alerts.flat[0].id).toEqual("foo-id");
+    });
+
     // TODO, test alerts when id is defined
     // TODO, test that alerts do not exist when id is not defined
 

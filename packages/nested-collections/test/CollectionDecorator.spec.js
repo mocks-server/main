@@ -368,4 +368,61 @@ describe("Collection Decorator", () => {
       ]);
     });
   });
+
+  describe("merge method", () => {
+    it("should move items and collections from origin collection to current collection recursively", () => {
+      const collection = new CollectionDecorator("a");
+      collection.set("foo-1-value", "foo-1");
+      collection.set("foo-2-value", "foo-2");
+      collection.collection("child-1").set("child-1-foo-1-value", "child-1-foo-1");
+      collection.collection("child-1").set("child-1-foo-2-value", "child-1-foo-2");
+      collection
+        .collection("child-1")
+        .collection("child-2")
+        .set("child-2-foo-1-value", "child-2-foo-1");
+
+      const collection2 = new CollectionDecorator("b");
+      collection2.set("b-foo-2-value", "foo-2");
+      collection2.collection("child-1").set("b-child-1-foo-1-value", "child-1-foo-1");
+      collection2
+        .collection("child-1")
+        .collection("child-2")
+        .set("b-child-2-foo-2-value", "child-2-foo-2");
+      collection2.collection("child-3").set("b-child-3-foo-1-value", "child-3-foo-1");
+
+      collection.merge(collection2);
+
+      expect(collection.flat).toEqual([
+        { id: "foo-1", value: "foo-1-value", collection: "a" },
+        { id: "foo-2", value: "b-foo-2-value", collection: "a" },
+        {
+          id: "child-1-foo-1",
+          value: "b-child-1-foo-1-value",
+          collection: "a:child-1",
+        },
+        {
+          id: "child-1-foo-2",
+          value: "child-1-foo-2-value",
+          collection: "a:child-1",
+        },
+        {
+          id: "child-2-foo-1",
+          value: "child-2-foo-1-value",
+          collection: "a:child-1:child-2",
+        },
+        {
+          id: "child-2-foo-2",
+          value: "b-child-2-foo-2-value",
+          collection: "a:child-1:child-2",
+        },
+        {
+          id: "child-3-foo-1",
+          value: "b-child-3-foo-1-value",
+          collection: "a:child-3",
+        },
+      ]);
+
+      expect(collection2.flat).toEqual([]);
+    });
+  });
 });

@@ -357,4 +357,270 @@ describe("Collection", () => {
       ]);
     });
   });
+
+  describe("merge method", () => {
+    it("should move items and collections from origin collection to current collection recursively", () => {
+      const collection = new Collection("a");
+      collection.set("foo-1", "foo-1-value");
+      collection.set("foo-2", "foo-2-value");
+      collection.collection("child-1").set("child-1-foo-1", "child-1-foo-1-value");
+      collection.collection("child-1").set("child-1-foo-2", "child-1-foo-2-value");
+      collection
+        .collection("child-1")
+        .collection("child-2")
+        .set("child-2-foo-1", "child-2-foo-1-value");
+
+      const collection2 = new Collection("b");
+      collection2.set("foo-2", "b-foo-2-value");
+      collection2.collection("child-1").set("child-1-foo-1", "b-child-1-foo-1-value");
+      collection2
+        .collection("child-1")
+        .collection("child-2")
+        .set("child-2-foo-2", "b-child-2-foo-2-value");
+      collection2.collection("child-3").set("child-3-foo-1", "b-child-3-foo-1-value");
+
+      collection.merge(collection2);
+
+      expect(collection.flat).toEqual([
+        { id: "foo-1", value: "foo-1-value", collection: "a" },
+        { id: "foo-2", value: "b-foo-2-value", collection: "a" },
+        {
+          id: "child-1-foo-1",
+          value: "b-child-1-foo-1-value",
+          collection: "a:child-1",
+        },
+        {
+          id: "child-1-foo-2",
+          value: "child-1-foo-2-value",
+          collection: "a:child-1",
+        },
+        {
+          id: "child-2-foo-1",
+          value: "child-2-foo-1-value",
+          collection: "a:child-1:child-2",
+        },
+        {
+          id: "child-2-foo-2",
+          value: "b-child-2-foo-2-value",
+          collection: "a:child-1:child-2",
+        },
+        {
+          id: "child-3-foo-1",
+          value: "b-child-3-foo-1-value",
+          collection: "a:child-3",
+        },
+      ]);
+
+      expect(collection2.flat).toEqual([]);
+    });
+  });
+
+  describe("renameCollection method", () => {
+    it("should merge the collection if there is another with the same id", () => {
+      const collection = new Collection("a");
+      collection.set("foo-1", "foo-1-value");
+      collection.set("foo-2", "foo-2-value");
+      collection.collection("child-1").set("child-1-foo-1", "child-1-foo-1-value");
+      collection.collection("child-1").set("child-1-foo-2", "child-1-foo-2-value");
+      collection
+        .collection("child-1")
+        .collection("child-2")
+        .set("child-2-foo-1", "child-2-foo-1-value");
+
+      collection.collection("b-child-1").set("child-1-foo-1", "b-child-1-foo-1-value");
+      collection.collection("b-child-1").set("b-child-1-foo-2", "b-child-1-foo-2-value");
+      collection
+        .collection("b-child-1")
+        .collection("child-2")
+        .set("child-2-foo-2", "b-child-2-foo-2-value");
+      collection.collection("child-3").set("child-3-foo-1", "b-child-3-foo-1-value");
+
+      collection.renameCollection("child-1", "b-child-1");
+
+      expect(collection.flat).toEqual([
+        { id: "foo-1", value: "foo-1-value", collection: "a" },
+        { id: "foo-2", value: "foo-2-value", collection: "a" },
+        {
+          id: "child-1-foo-1",
+          value: "child-1-foo-1-value",
+          collection: "a:b-child-1",
+        },
+        {
+          id: "b-child-1-foo-2",
+          value: "b-child-1-foo-2-value",
+          collection: "a:b-child-1",
+        },
+        {
+          id: "child-1-foo-2",
+          value: "child-1-foo-2-value",
+          collection: "a:b-child-1",
+        },
+        {
+          id: "child-2-foo-2",
+          value: "b-child-2-foo-2-value",
+          collection: "a:b-child-1:child-2",
+        },
+        {
+          id: "child-2-foo-1",
+          value: "child-2-foo-1-value",
+          collection: "a:b-child-1:child-2",
+        },
+        {
+          id: "child-3-foo-1",
+          value: "b-child-3-foo-1-value",
+          collection: "a:child-3",
+        },
+      ]);
+    });
+
+    it("should change collection id if there is no other collection with same id", () => {
+      const collection = new Collection("a");
+      collection.collection("child-1").set("child-1-foo-1", "child-1-foo-1-value");
+      collection.collection("child-2").set("child-2-foo-1", "child-2-foo-1-value");
+
+      collection.renameCollection("child-1", "b-child-1");
+
+      expect(collection.flat).toEqual([
+        {
+          id: "child-1-foo-1",
+          value: "child-1-foo-1-value",
+          collection: "a:b-child-1",
+        },
+        {
+          id: "child-2-foo-1",
+          value: "child-2-foo-1-value",
+          collection: "a:child-2",
+        },
+      ]);
+    });
+
+    it("should do nothing if collection id does not exist", async () => {
+      const collection = new Collection("a");
+      collection.collection("child-1").set("child-1-foo-1", "child-1-foo-1-value");
+      collection.collection("child-2").set("child-2-foo-1", "child-2-foo-1-value");
+
+      const spy = sandbox.spy();
+      collection.onChange(spy);
+
+      collection.renameCollection("child-foo", "b-child-1");
+
+      expect(collection.flat).toEqual([
+        {
+          id: "child-1-foo-1",
+          value: "child-1-foo-1-value",
+          collection: "a:child-1",
+        },
+        {
+          id: "child-2-foo-1",
+          value: "child-2-foo-1-value",
+          collection: "a:child-2",
+        },
+      ]);
+
+      await wait();
+      expect(spy.callCount).toEqual(0);
+    });
+
+    it("should do nothing if collection new id is the same", async () => {
+      const collection = new Collection("a");
+      collection.collection("child-1").set("child-1-foo-1", "child-1-foo-1-value");
+      collection.collection("child-2").set("child-2-foo-1", "child-2-foo-1-value");
+
+      const spy = sandbox.spy();
+      collection.onChange(spy);
+
+      collection.renameCollection("child-1", "child-1");
+
+      expect(collection.flat).toEqual([
+        {
+          id: "child-1-foo-1",
+          value: "child-1-foo-1-value",
+          collection: "a:child-1",
+        },
+        {
+          id: "child-2-foo-1",
+          value: "child-2-foo-1-value",
+          collection: "a:child-2",
+        },
+      ]);
+
+      await wait();
+      expect(spy.callCount).toEqual(0);
+    });
+  });
+
+  describe("removeCollection method", () => {
+    it("should remove collection and items recursively", () => {
+      const collection = new Collection("a");
+      collection.set("foo-1", "foo-1-value");
+      collection.collection("child-1").set("child-1-foo-1", "child-1-foo-1-value");
+      collection
+        .collection("child-1")
+        .collection("child-2")
+        .set("child-2-foo-1", "child-2-foo-1-value");
+      collection.collection("child-2").set("child-2-foo-1", "child-2-foo-1-value");
+
+      expect(collection.flat).toEqual([
+        { id: "foo-1", value: "foo-1-value", collection: "a" },
+        {
+          id: "child-1-foo-1",
+          value: "child-1-foo-1-value",
+          collection: "a:child-1",
+        },
+        {
+          id: "child-2-foo-1",
+          value: "child-2-foo-1-value",
+          collection: "a:child-1:child-2",
+        },
+        {
+          id: "child-2-foo-1",
+          value: "child-2-foo-1-value",
+          collection: "a:child-2",
+        },
+      ]);
+
+      collection.removeCollection("child-1");
+
+      expect(collection.flat).toEqual([
+        { id: "foo-1", value: "foo-1-value", collection: "a" },
+        {
+          id: "child-2-foo-1",
+          value: "child-2-foo-1-value",
+          collection: "a:child-2",
+        },
+      ]);
+    });
+
+    it("should do nothing if collection does not exist", async () => {
+      const collection = new Collection("a");
+      collection.set("foo-1", "foo-1-value");
+      collection.collection("child-1").set("child-1-foo-1", "child-1-foo-1-value");
+
+      const spy = sandbox.spy();
+      collection.onChange(spy);
+
+      expect(collection.flat).toEqual([
+        { id: "foo-1", value: "foo-1-value", collection: "a" },
+        {
+          id: "child-1-foo-1",
+          value: "child-1-foo-1-value",
+          collection: "a:child-1",
+        },
+      ]);
+
+      collection.removeCollection("child-2");
+
+      expect(collection.flat).toEqual([
+        { id: "foo-1", value: "foo-1-value", collection: "a" },
+        {
+          id: "child-1-foo-1",
+          value: "child-1-foo-1-value",
+          collection: "a:child-1",
+        },
+      ]);
+
+      await wait();
+      expect(spy.callCount).toEqual(0);
+    });
+  });
 });

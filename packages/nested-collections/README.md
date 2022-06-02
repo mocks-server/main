@@ -11,7 +11,7 @@
 
 # Nested collections
 
-A collections manager that allows to store items having an `id` and a `value`. Other descendant collections can be created recursively. Each collection has a method allowing to get items from all descendent collections in a flat way, adding a collection `id` to each one of them.
+A collections manager that allows to store items with an `id` and a `value`. Other descendant collections can be created recursively. Each collection has a method allowing to get items from all descendent collections in a flat way, adding a collection `id` to each one of them.
 
 It also provides methods for merging the collections, removing items or collections, etc. Events are emitted whenever any descendant collection or item changes.
 

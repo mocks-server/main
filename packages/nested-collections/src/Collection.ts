@@ -199,7 +199,7 @@ export default class Collection implements ElementBasics {
         if(newCollection) {
           newCollection.merge(collection);
         } else {
-          collection.id = id;
+          collection.id = newId;
         }
       }
     }

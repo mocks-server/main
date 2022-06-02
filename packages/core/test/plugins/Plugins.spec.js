@@ -16,6 +16,7 @@ const LibsMocks = require("../Libs.mocks.js");
 
 const Plugins = require("../../src/plugins/Plugins");
 const tracer = require("../../src/tracer");
+const Alerts = require("../../src/Alerts.js");
 
 const NATIVE_PLUGINS_QUANTITY = 0;
 
@@ -43,6 +44,7 @@ describe("Plugins", () => {
   let loadMocks;
   let loadRoutes;
   let pluginsOption;
+  let alerts;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
@@ -59,8 +61,10 @@ describe("Plugins", () => {
     configInstance = configMocks.stubs.instance;
     libsMocks.stubs.fsExtra.existsSync.returns(true);
     pluginsOption = { value: [] };
+    alerts = new Alerts("plugins");
     callbacks = {
       config: configInstance,
+      alerts,
       addAlert: sandbox.stub(),
       removeAlerts: sandbox.stub(),
       renameAlerts: sandbox.stub(),
@@ -137,6 +141,64 @@ describe("Plugins", () => {
       expect(callbacks.removeAlerts.calledWith("0")).toEqual(true);
     });
 
+    it("should not have alerts available if object has no id", async () => {
+      let pluginAlerts;
+      const fooPlugin = {
+        register: (methods) => {
+          pluginAlerts = methods.alerts;
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(pluginAlerts).toBe(undefined);
+    });
+
+    it("should not have alerts available if Class has no id", async () => {
+      let pluginAlerts;
+      class FooPlugin {
+        register(methods) {
+          pluginAlerts = methods.alerts;
+        }
+      }
+      pluginsOption.value = [FooPlugin];
+      await plugins.register();
+      expect(pluginAlerts).toBe(undefined);
+    });
+
+    it("should have alerts available if object has id", async () => {
+      const fooPlugin = {
+        id: "foo-plugin",
+        register: (methods) => {
+          methods.alerts.set("foo-id", "Foo message");
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(alerts.flat[0].collection).toEqual("plugins:foo-plugin");
+      expect(alerts.flat[0].value.message).toEqual("Foo message");
+      expect(alerts.flat[0].id).toEqual("foo-id");
+    });
+
+    it("should have alerts available if Class has id", async () => {
+      class FooPlugin {
+        static get id() {
+          return "foo-plugin";
+        }
+
+        register(methods) {
+          methods.alerts.set("foo-id", "Foo message");
+        }
+      }
+      pluginsOption.value = [FooPlugin];
+      await plugins.register();
+      expect(alerts.flat[0].collection).toEqual("plugins:foo-plugin");
+      expect(alerts.flat[0].value.message).toEqual("Foo message");
+      expect(alerts.flat[0].id).toEqual("foo-id");
+    });
+
+    // TODO, test alerts when id is defined
+    // TODO, test that alerts do not exist when id is not defined
+
     it("should not register object plugins with register method throwing an error", async () => {
       const fooPlugin = {
         register: () => {
@@ -149,33 +211,22 @@ describe("Plugins", () => {
     });
 
     it("should not register strings as plugins", async () => {
-      expect.assertions(2);
       pluginsOption.value = ["foo"];
       await plugins.register();
-      expect(
-        callbacks.addAlert.calledWith(
-          `register:${addNativePlugins(0)}`,
-          `Error registering plugin "${addNativePlugins(0)}"`
-        )
-      ).toEqual(true);
+      expect(alerts.flat[0].value.message).toEqual('Error registering plugin "0"');
+      expect(alerts.flat[0].collection).toEqual("plugins:register");
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
 
     it("should not register booleans as plugins", async () => {
-      expect.assertions(2);
       pluginsOption.value = [true];
       await plugins.register();
-      expect(
-        callbacks.addAlert.calledWith(
-          `register:${addNativePlugins(0)}`,
-          `Error registering plugin "${addNativePlugins(0)}"`
-        )
-      ).toEqual(true);
+      expect(alerts.flat[0].value.message).toEqual('Error registering plugin "0"');
+      expect(alerts.flat[0].collection).toEqual("plugins:register");
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
 
     it("should register function plugins executing them passing the core", async () => {
-      expect.assertions(2);
       let receivedCore;
       const fooPlugin = ({ core }) => {
         receivedCore = core;
@@ -292,7 +343,6 @@ describe("Plugins", () => {
     });
 
     it("should not register class plugins if class throw an error when being created", async () => {
-      expect.assertions(2);
       class FooPlugin {
         constructor() {
           throw new Error();
@@ -300,12 +350,8 @@ describe("Plugins", () => {
       }
       pluginsOption.value = [FooPlugin];
       await plugins.register();
-      expect(
-        callbacks.addAlert.calledWith(
-          `register:${addNativePlugins(0)}`,
-          `Error registering plugin "${addNativePlugins(0)}"`
-        )
-      ).toEqual(true);
+      expect(alerts.flat[0].value.message).toEqual('Error registering plugin "0"');
+      expect(alerts.flat[0].collection).toEqual("plugins:register");
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
 
@@ -345,7 +391,6 @@ describe("Plugins", () => {
     });
 
     it("should trace the total number of registered plugins", async () => {
-      expect.assertions(4);
       class FooPlugin {
         constructor() {
           throw new Error();
@@ -364,24 +409,11 @@ describe("Plugins", () => {
         { foo: "foo" },
       ];
       await plugins.register();
-      expect(
-        callbacks.addAlert.calledWith(
-          `register:${addNativePlugins(3)}`,
-          `Error registering plugin "${addNativePlugins(3)}"`
-        )
-      ).toEqual(true);
-      expect(
-        callbacks.addAlert.calledWith(
-          `register:${addNativePlugins(4)}`,
-          `Error registering plugin "${addNativePlugins(4)}"`
-        )
-      ).toEqual(true);
-      expect(
-        callbacks.addAlert.calledWith(
-          `register:${addNativePlugins(5)}`,
-          `Error registering plugin "${addNativePlugins(5)}"`
-        )
-      ).toEqual(true);
+      expect(alerts.flat.length).toEqual(4);
+      expect(alerts.flat[0].value.message).toEqual('Error registering plugin "0"');
+      expect(alerts.flat[1].value.message).toEqual('Error registering plugin "3"');
+      expect(alerts.flat[2].value.message).toEqual('Error registering plugin "4"');
+      expect(alerts.flat[3].value.message).toEqual('Error registering plugin "5"');
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 3))).toEqual(true);
     });
   });
@@ -449,7 +481,6 @@ describe("Plugins", () => {
     });
 
     it("should catch init method errors and notify alerts", async () => {
-      expect.assertions(3);
       const fooPlugin = {
         init: () => {
           throw new Error();
@@ -464,13 +495,8 @@ describe("Plugins", () => {
       pluginsOption.value = [fooPlugin, fooPlugin2, fooPlugin3];
       await plugins.register();
       await plugins.init();
-      expect(callbacks.removeAlerts.calledWith("init")).toEqual(true);
-      expect(
-        callbacks.addAlert.calledWith(
-          `init:${addNativePlugins(0)}`,
-          `Error initializating plugin "${addNativePlugins(0)}"`
-        )
-      ).toEqual(true);
+      expect(alerts.flat.length).toEqual(1);
+      expect(alerts.flat[0].value.message).toEqual('Error initializating plugin "0"');
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
 
@@ -617,7 +643,6 @@ describe("Plugins", () => {
     });
 
     it("should catch start method errors and notify alert", async () => {
-      expect.assertions(3);
       const fooPlugin = {
         start: () => {
           throw new Error();
@@ -632,13 +657,8 @@ describe("Plugins", () => {
       pluginsOption.value = [fooPlugin, fooPlugin2, fooPlugin3];
       await plugins.register();
       await plugins.start();
-      expect(callbacks.removeAlerts.calledWith("start")).toEqual(true);
-      expect(
-        callbacks.addAlert.calledWith(
-          `start:${addNativePlugins(0)}`,
-          `Error starting plugin "${addNativePlugins(0)}"`
-        )
-      ).toEqual(true);
+      expect(alerts.flat.length).toEqual(1);
+      expect(alerts.flat[0].value.message).toEqual('Error starting plugin "0"');
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
 
@@ -774,13 +794,8 @@ describe("Plugins", () => {
       pluginsOption.value = [fooPlugin, fooPlugin2, fooPlugin3];
       await plugins.register();
       await plugins.stop();
-      expect(callbacks.removeAlerts.calledWith("stop")).toEqual(true);
-      expect(
-        callbacks.addAlert.calledWith(
-          `stop:${addNativePlugins(0)}`,
-          `Error stopping plugin "${addNativePlugins(0)}"`
-        )
-      ).toEqual(true);
+      expect(alerts.flat.length).toEqual(1);
+      expect(alerts.flat[0].value.message).toEqual('Error stopping plugin "0"');
       expect(tracer.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
 

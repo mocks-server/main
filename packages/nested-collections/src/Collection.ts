@@ -289,7 +289,7 @@ export default class Collection implements ElementBasics {
   }
 
   /**
-   * Empty collection items
+   * Removes all collection items
    * @example myCollection.cleanItems();
   */
   public cleanItems(): void {

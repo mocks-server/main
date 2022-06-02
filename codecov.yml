@@ -31,6 +31,9 @@ coverage:
       main:
         flags:
           - main
+      nested-collections:
+        flags:
+          - nested-collections
       plugin-admin-api:
         flags:
           - plugin-admin-api
@@ -72,6 +75,10 @@ flags:
   main:
     paths:
       - packages/main/**
+    carryforward: true
+  nested-collections:
+    paths:
+      - packages/nested-collections/**
     carryforward: true
   plugin-admin-api:
     paths:

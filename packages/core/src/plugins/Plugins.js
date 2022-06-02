@@ -123,7 +123,10 @@ class Plugins {
   }
 
   _registerPlugin(Plugin, pluginMethods, pluginIndex) {
-    let pluginInstance, pluginConfig, pluginAlerts;
+    let pluginInstance,
+      pluginConfig,
+      pluginAlerts,
+      optionsAdded = false;
     const pluginOptions = { core: this._core, ...pluginMethods };
     if (isObject(Plugin) && !isFunction(Plugin)) {
       pluginInstance = Plugin;
@@ -142,6 +145,7 @@ class Plugins {
         };
         pluginInstance = new Plugin(pluginFinalOptions);
         this._pluginsOptions.push(pluginFinalOptions);
+        optionsAdded = true;
         this._pluginsInstances.push(pluginInstance);
         this._pluginsRegistered++;
       } catch (error) {
@@ -162,14 +166,21 @@ class Plugins {
     if (
       isFunction(pluginInstance.register) ||
       isFunction(pluginInstance.init) ||
-      isFunction(pluginInstance.start)
+      isFunction(pluginInstance.start) ||
+      isFunction(pluginInstance.stop)
     ) {
+      let pluginFinalOptions = { ...pluginOptions, config: pluginConfig, alerts: pluginAlerts };
       if (!pluginConfig && pluginInstance.id) {
         pluginConfig = this._config.addNamespace(pluginInstance.id);
         pluginAlerts = this._alerts.collection(pluginInstance.id);
+        pluginFinalOptions = { ...pluginOptions, config: pluginConfig, alerts: pluginAlerts };
+        if (optionsAdded) {
+          this._pluginsOptions.pop();
+        }
+        this._pluginsOptions.push(pluginFinalOptions);
+      } else {
+        this._pluginsOptions.push(pluginFinalOptions);
       }
-      const pluginFinalOptions = { ...pluginOptions, config: pluginConfig, alerts: pluginAlerts };
-      this._pluginsOptions.push(pluginFinalOptions);
       if (isFunction(pluginInstance.register)) {
         try {
           pluginInstance.register(pluginFinalOptions);

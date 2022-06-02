@@ -23,7 +23,7 @@ const {
   removeConfigFile,
 } = require("./support/helpers");
 
-describe("plugins", () => {
+describe("plugins using legacy alerts", () => {
   const FOO_CUSTOM_RESPONSE = {
     foo: "foo",
   };
@@ -210,9 +210,9 @@ describe("plugins", () => {
 
   testPlugin("created as an object", {
     id: "test-plugin",
-    register: ({ core: coreInstance, alerts, config }) => {
+    register: ({ core: coreInstance, addAlert, config }) => {
       coreInstance.addRouter("/foo-path", customRouter);
-      alerts.set("test-register", "Warning registering plugin");
+      addAlert("test-register", "Warning registering plugin");
       registerSpy(coreInstance);
       configSpy(config);
     },
@@ -227,27 +227,27 @@ describe("plugins", () => {
       coreInstance.onChangeAlerts(changeAlertsSpy);
       coreInstance.onChangeMocks(mocksLoadedSpy);
     },
-    start: ({ core: coreInstance, alerts }) => {
+    start: ({ core: coreInstance, addAlert }) => {
       startSpy(coreInstance);
-      alerts.set("test-start", "Warning starting plugin");
+      addAlert("test-start", "Warning starting plugin");
     },
-    stop: ({ alerts }) => {
-      alerts.clean();
+    stop: ({ removeAlerts }) => {
+      removeAlerts();
     },
   });
 
   testAsyncPlugin("created as an object", {
     // TODO, allow async register
     id: "test-plugin",
-    register: ({ alerts, config }) => {
-      alerts.set("test-register", "Warning registering plugin");
+    register: ({ addAlert, config }) => {
+      addAlert("test-register", "Warning registering plugin");
       configSpy(config);
     },
     init: () => {
       return wait(2000);
     },
-    start: ({ alerts }) => {
-      alerts.set("test-start", "Warning starting plugin");
+    start: ({ addAlert }) => {
+      addAlert("test-start", "Warning starting plugin");
       return wait(1000);
     },
   });
@@ -259,10 +259,10 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      constructor({ core: coreInstance, alerts, config }) {
+      constructor({ core: coreInstance, addAlert, config }) {
         this._core = coreInstance;
         coreInstance.addRouter("/foo-path", customRouter);
-        alerts.set("test-register", "Warning registering plugin");
+        addAlert("test-register", "Warning registering plugin");
         registerSpy(coreInstance);
         configSpy(config);
       }
@@ -277,12 +277,12 @@ describe("plugins", () => {
         coreInstance.onChangeAlerts(changeAlertsSpy);
         coreInstance.onChangeMocks(mocksLoadedSpy);
       }
-      start({ core: coreInstance, alerts }) {
-        alerts.set("test-start", "Warning starting plugin");
+      start({ core: coreInstance, addAlert }) {
+        addAlert("test-start", "Warning starting plugin");
         startSpy(coreInstance);
       }
-      stop({ alerts }) {
-        alerts.clean();
+      stop({ removeAlerts }) {
+        removeAlerts();
       }
     }
   );
@@ -294,9 +294,9 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      register({ core: coreInstance, alerts, config }) {
+      register({ core: coreInstance, addAlert, config }) {
         coreInstance.addRouter("/foo-path", customRouter);
-        alerts.set("test-register", "Warning registering plugin");
+        addAlert("test-register", "Warning registering plugin");
         registerSpy(coreInstance);
         configSpy(config);
       }
@@ -311,12 +311,12 @@ describe("plugins", () => {
         coreInstance.onChangeAlerts(changeAlertsSpy);
         coreInstance.onChangeMocks(mocksLoadedSpy);
       }
-      start({ core: coreInstance, alerts }) {
-        alerts.set("test-start", "Warning starting plugin");
+      start({ core: coreInstance, addAlert }) {
+        addAlert("test-start", "Warning starting plugin");
         startSpy(coreInstance);
       }
-      stop({ alerts }) {
-        alerts.clean();
+      stop({ removeAlerts }) {
+        removeAlerts();
       }
     }
   );
@@ -324,9 +324,9 @@ describe("plugins", () => {
   testPlugin(
     "created as a Class with register method and without static id",
     class Plugin {
-      register({ core: coreInstance, alerts, config }) {
+      register({ core: coreInstance, addAlert, config }) {
         coreInstance.addRouter("/foo-path", customRouter);
-        alerts.set("test-register", "Warning registering plugin");
+        addAlert("test-register", "Warning registering plugin");
         registerSpy(coreInstance);
         configSpy(config);
       }
@@ -341,12 +341,12 @@ describe("plugins", () => {
         coreInstance.onChangeAlerts(changeAlertsSpy);
         coreInstance.onChangeMocks(mocksLoadedSpy);
       }
-      start({ core: coreInstance, alerts }) {
-        alerts.set("test-start", "Warning starting plugin");
+      start({ core: coreInstance, addAlert }) {
+        addAlert("test-start", "Warning starting plugin");
         startSpy(coreInstance);
       }
-      stop({ alerts }) {
-        alerts.clean();
+      stop({ removeAlerts }) {
+        removeAlerts();
       }
       get id() {
         return "test-plugin";
@@ -361,30 +361,30 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      register({ core: coreInstance, alerts, config }) {
+      register({ core: coreInstance, addAlert, config }) {
         coreInstance.addRouter("/foo-path", customRouter);
-        alerts.set("test-register", "Warning registering plugin");
+        addAlert("test-register", "Warning registering plugin");
         registerSpy(coreInstance);
         configSpy(config);
       }
       async init() {
         await wait(2000);
       }
-      async start({ alerts }) {
-        alerts.set("test-start", "Warning starting plugin");
+      async start({ addAlert }) {
+        addAlert("test-start", "Warning starting plugin");
         await wait(1000);
       }
     }
   );
 
-  testPlugin("created as a function", ({ core: coreInstance }) => {
+  testPlugin("created as a function", ({ core: coreInstance, addAlert }) => {
     coreInstance.addRouter("/foo-path", customRouter);
+    addAlert("test-register", "Warning registering plugin");
     registerSpy(coreInstance);
     return {
       id: "test-plugin",
-      register({ config, alerts }) {
+      register({ config }) {
         configSpy(config);
-        alerts.set("test-register", "Warning registering plugin");
       },
       init: ({ core: coreIns }) => {
         initSpy(
@@ -397,31 +397,29 @@ describe("plugins", () => {
         coreIns.onChangeAlerts(changeAlertsSpy);
         coreIns.onChangeMocks(mocksLoadedSpy);
       },
-      start: ({ alerts: alertsHere }) => {
-        alertsHere.set("test-start", "Warning starting plugin");
+      start: ({ addAlert: addAlertHere }) => {
+        addAlertHere("test-start", "Warning starting plugin");
         startSpy(coreInstance);
       },
-      stop: ({ alerts: alertsHere }) => {
-        alertsHere.clean();
+      stop: ({ removeAlerts }) => {
+        removeAlerts();
       },
     };
   });
 
   testAsyncPlugin(
     "created as a function",
-    ({ core: coreInstance }) => {
+    ({ core: coreInstance, addAlert }) => {
       coreInstance.addRouter("/foo-path", customRouter);
+      addAlert("test-register", "Warning registering plugin");
       registerSpy(coreInstance);
       return {
-        register: ({ alerts }) => {
-          alerts.set("test-register", "Warning registering plugin");
-        },
         id: "test-plugin",
         init: async () => {
           await wait(2000);
         },
-        start: async ({ alerts }) => {
-          alerts.set("test-start", "Warning starting plugin");
+        start: async () => {
+          addAlert("test-start", "Warning starting plugin");
           await wait(1000);
         },
       };
@@ -432,9 +430,9 @@ describe("plugins", () => {
   testPlugin("created as a function returning register property", () => {
     return {
       id: "test-plugin",
-      register: ({ core: coreInstance, alerts, config }) => {
+      register: ({ core: coreInstance, addAlert, config }) => {
         coreInstance.addRouter("/foo-path", customRouter);
-        alerts.set("test-register", "Warning registering plugin");
+        addAlert("test-register", "Warning registering plugin");
         registerSpy(coreInstance);
         configSpy(config);
       },
@@ -449,12 +447,12 @@ describe("plugins", () => {
         coreInstance.onChangeAlerts(changeAlertsSpy);
         coreInstance.onChangeMocks(mocksLoadedSpy);
       },
-      start: ({ core: coreInstance, alerts }) => {
-        alerts.set("test-start", "Warning starting plugin");
+      start: ({ core: coreInstance, addAlert }) => {
+        addAlert("test-start", "Warning starting plugin");
         startSpy(coreInstance);
       },
-      stop: ({ alerts }) => {
-        alerts.clean();
+      stop: ({ removeAlerts }) => {
+        removeAlerts();
       },
     };
   });

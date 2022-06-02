@@ -41,6 +41,7 @@ To check out docs, visit [mocks-server.org][website-url].
 | [admin-api-paths] | [![admin-api-paths-status]][admin-api-paths-package] | Definition of [plugin-admin-api] routes |
 | [cypress-commands] | [![cypress-commands-status]][cypress-commands-package] | [Cypress][cypress] commands to administrate Mocks Server |
 | [config] | [![config-status]][config-package] | Provides configuration to [core][core] components and plugins |
+| [nested-collections] | [![nested-collections-status]][nested-collections-package] | Nested collections manager. Used to provide alert namespaces to plugins |
 
 ## Contributing
 
@@ -86,6 +87,10 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [config]: https://github.com/mocks-server/main/tree/master/packages/config
 [config-status]: https://img.shields.io/npm/v/@mocks-server/config.svg
 [config-package]: https://npmjs.com/package/@mocks-server/config
+
+[nested-collections]: https://github.com/mocks-server/main/tree/master/packages/nested-collections
+[nested-collections-status]: https://img.shields.io/npm/v/@mocks-server/nested-collections.svg
+[nested-collections-package]: https://npmjs.com/package/@mocks-server/nested-collections
 
 [website-url]: https://www.mocks-server.org
 [data-provider]: https://www.data-provider.org

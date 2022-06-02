@@ -8,7 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install pnpm
-      uses: pnpm/action-setup@v2.2.1
+      uses: pnpm/action-setup@v2.2.2
       with:
         version: "6.x"
     - uses: actions/setup-node@v3

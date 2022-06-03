@@ -253,7 +253,7 @@ describe("mocks validations", () => {
       ).toEqual(null);
     });
 
-    it("should return error if variant has not response property", () => {
+    it("should return error if variant has not response property and it has not id", () => {
       const errors = variantValidationErrors(
         { id: "foo-route" },
         { ...VALID_VARIANT, id: undefined, response: undefined },

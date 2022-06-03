@@ -19,6 +19,10 @@ const middlewares = require("./middlewares");
 const ALL_HOSTS = "0.0.0.0";
 const LOCALHOST = "localhost";
 
+const START_ALERT_ID = "start";
+const START_ERROR_MESSAGE = "Error starting server";
+const SERVER_ALERT_ID = "server";
+
 const OPTIONS = [
   {
     description: "Port number for the server to be listening at",
@@ -91,7 +95,11 @@ const URL_ENCODED_BODY_PARSER_OPTIONS = [
 ];
 
 class Server {
-  constructor({ config, addAlert, removeAlerts, mocksRouter }) {
+  static get id() {
+    return "server";
+  }
+
+  constructor({ config, alerts, mocksRouter }) {
     this._config = config;
     const corsConfigNamespace = this._config.addNamespace(CORS_NAMESPACE);
     const jsonBodyParserConfigNamespace = this._config.addNamespace(JSON_BODY_PARSER_NAMESPACE);
@@ -124,8 +132,7 @@ class Server {
     this._mocksRouter = mocksRouter;
     this._customRouters = [];
     this._error = null;
-    this._addAlert = addAlert;
-    this._removeAlerts = removeAlerts;
+    this._alerts = alerts;
 
     this._startServer = this._startServer.bind(this);
   }
@@ -177,9 +184,9 @@ class Server {
 
     // Create server
     this._server = http.createServer(this._express);
-    this._removeAlerts("server");
+    this._alerts.remove(SERVER_ALERT_ID);
     this._server.on("error", (error) => {
-      this._addAlert("server", `Server error`, error);
+      this._alerts.set(SERVER_ALERT_ID, "Server error", error);
       this._error = error;
       throw error;
     });
@@ -216,7 +223,7 @@ class Server {
           if (error) {
             this._serverStarting = false;
             this._serverStarted = false;
-            this._addAlert("start", `Error starting server`, error);
+            this._alerts.set(START_ALERT_ID, START_ERROR_MESSAGE, error);
             this._error = error;
             reject(error);
           } else {
@@ -224,13 +231,13 @@ class Server {
             this._error = null;
             this._serverStarting = false;
             this._serverStarted = true;
-            this._removeAlerts("start");
+            this._alerts.remove(START_ALERT_ID);
             resolve(this);
           }
         }
       );
     } catch (error) {
-      this._addAlert("start", `Error starting server`, error);
+      this._alerts.set(START_ALERT_ID, START_ERROR_MESSAGE, error);
       reject(error);
     }
   }

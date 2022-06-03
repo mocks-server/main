@@ -35,25 +35,41 @@ describe("react-admin-client methods used with node", () => {
       it("should return alert about mock not defined", async () => {
         const alerts = await readAlerts();
         expect(alerts[0].message).toEqual(
-          expect.stringContaining('Option "mock" was not defined')
+          expect.stringContaining("Option 'mock' was not defined")
         );
       });
     });
 
     describe("when there are alerts about files with error", () => {
-      it("should return alerts array", async () => {
+      it("should return 3 alerts", async () => {
         expect.assertions(1);
         await updateSettings({
           files: { path: "mocks-with-error" },
         });
         await wait(2000);
         const alerts = await readAlerts();
-        expect(alerts.length).toEqual(5);
+        expect(alerts.length).toEqual(3);
+      });
+
+      it("alert about mocks settings should exist", async () => {
+        const alerts = await readAlerts();
+        const alertId = alerts[0].id;
+        const alert = await readAlert(alertId);
+        expect(alert.id).toEqual(alertId);
+        expect(alert.message).toEqual(expect.stringContaining("Option 'mock' was not defined"));
+      });
+
+      it("alert about no mocks should exist", async () => {
+        const alerts = await readAlerts();
+        const alertId = alerts[1].id;
+        const alert = await readAlert(alertId);
+        expect(alert.id).toEqual(alertId);
+        expect(alert.message).toEqual(expect.stringContaining("No mocks found"));
       });
 
       it("alert about files error should exist", async () => {
         const alerts = await readAlerts();
-        const alertId = alerts[4].id;
+        const alertId = alerts[2].id;
         const alert = await readAlert(alertId);
         expect(alert.id).toEqual(alertId);
         expect(alert.message).toEqual(expect.stringContaining("Error loading mocks"));

@@ -59,7 +59,7 @@ describe("command line arguments", () => {
         mocks = mocksRunner(["--files.path=web-tutorial", "--mocks.selected=foo"]);
         await waitForServerAndCli();
         expect(mocks.currentScreen).toEqual(expect.stringContaining("ALERTS"));
-        expect(mocks.currentScreen).toEqual(expect.stringContaining('Mock "foo" was not found'));
+        expect(mocks.currentScreen).toEqual(expect.stringContaining("Mock 'foo' was not found"));
       });
 
       it("should set as current behavior the first one found", async () => {

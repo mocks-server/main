@@ -73,12 +73,6 @@ describe("Alerts Legacy", () => {
       ]);
     });
 
-    /* it("should trace error message if alert is called with it", async () => {
-      const FOO_ERROR = new Error("Foo error message");
-      alertsLegacy.add("foo", "Foo message", FOO_ERROR);
-      expect(tracer.error.calledWith("Foo message: Foo error message")).toEqual(true);
-    }); */
-
     it("should trace warn if alert is called without error", async () => {
       alertsLegacy.add("foo", "Foo message");
       expect(tracer.warn.calledWith("Foo message")).toEqual(true);

@@ -58,7 +58,7 @@ describe("plugins using legacy alerts", () => {
   });
 
   const testPlugin = (description, pluginConstructor, options = {}) => {
-    describe(description, () => {
+    describe(`${description}`, () => {
       beforeAll(async () => {
         core = await startCore("web-tutorial", {
           plugins: {
@@ -103,10 +103,6 @@ describe("plugins using legacy alerts", () => {
           expect(initSpy.getCall(0).args[1]).toEqual(fixturesFolder("web-tutorial"));
           expect(initSpy.getCall(0).args[2]).toEqual(3100);
           expect(initSpy.getCall(0).args[3]).toEqual(0);
-        });
-
-        it("should have passed core to init method", async () => {
-          expect(initSpy.getCall(0).args[0]).toEqual(core);
         });
 
         it("should have executed start method", async () => {

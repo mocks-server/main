@@ -7,7 +7,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2018,
   },
-  plugins: ["prettier", "@nrwl/nx", "no-only-tests"],
+  plugins: ["prettier", "@nrwl/nx"],
   extends: ["prettier"],
   rules: {
     "prettier/prettier": [
@@ -17,7 +17,6 @@ module.exports = {
         parser: "flow",
       },
     ],
-    "no-only-tests/no-only-tests": [2],
     "no-shadow": [2, { builtinGlobals: true, hoist: "all" }],
     "no-undef": 2,
     "no-unused-vars": [2, { vars: "all", args: "after-used", ignoreRestSiblings: false }],
@@ -59,6 +58,13 @@ module.exports = {
         expect: true,
         it: true,
       },
+      plugins: ["jest", "no-only-tests"],
+      extends: ["plugin:jest/recommended"],
+      rules: {
+        "jest/no-conditional-expect": [0],
+        "no-only-tests/no-only-tests": [2],
+        "jest/no-done-callback": [0],
+      },
     },
     {
       files: ["test/*/cypress/**/*.js"],
@@ -73,6 +79,10 @@ module.exports = {
         expect: true,
         it: true,
       },
+      plugins: ["no-only-tests"],
+      rules: {
+        "no-only-tests/no-only-tests": [2]
+      }
     },
     {
       files: ["scripts/**/*.js", "**/*.mjs"],

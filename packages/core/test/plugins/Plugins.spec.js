@@ -634,17 +634,6 @@ describe("Plugins", () => {
       expect(tracer.debug.calledWith('Starting plugin "foo-plugin"')).toEqual(true);
     });
 
-    it("should trace the plugin id", async () => {
-      const fooPlugin = {
-        start: sinon.spy(),
-        id: "foo-plugin",
-      };
-      pluginsOption.value = [fooPlugin];
-      await plugins.register();
-      await plugins.start();
-      expect(tracer.debug.calledWith('Starting plugin "foo-plugin"')).toEqual(true);
-    });
-
     it("should accept start methods non returning a Promise", async () => {
       expect.assertions(1);
       const fooPlugin = {

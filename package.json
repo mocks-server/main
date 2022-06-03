@@ -8,7 +8,6 @@
     "project:coverage:to-relative": "node ./scripts/commands/project-coverage-to-relative.js",
     "project:coverage:to-workspace": "node ./scripts/commands/project-coverage-to-workspace.js",
     "projects:target:print:array": "node ./scripts/commands/projects-target-print-array.js",
-    "affected:print:array": "node ./scripts/commands/affected-print-array.js",
     "affected:target:print:array": "node ./scripts/commands/affected-target-print-array.js",
     "affected:report": "node ./scripts/commands/affected-report.js",
     "affected:check": "node ./scripts/commands/affected-check.js",
@@ -92,6 +91,6 @@
   },
   "type": "module",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=14.0.0"
   }
 }

@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [3.1.0] - 2022-06-03
+
+### Changed
+- feat: Pass new `alerts` API to plugins. Add an alert if old `addAlert` or `removeAlerts` methods are used
+- chore(deps): Update devDependencies.
+
 ## [3.0.1] - 2022-05-23
 
 ### Fixed

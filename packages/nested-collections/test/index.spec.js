@@ -1,5 +1,5 @@
 import Collection from "../src/Collection.ts";
-import index from "../src/index.ts";
+const index = require("../src/index.ts");
 
 describe("index", () => {
   it("should export Collection class", () => {

@@ -20,7 +20,7 @@ It also provides methods for merging the collections, removing items or collecti
 A brief example:
 
 ```js
-const Collection = require("@mocks-server/nested-collections").default;
+const Collection = require("@mocks-server/nested-collections");
 
 const alerts = new Collection("alerts");
 alerts.set("root", "This alert is stored in the root collection");

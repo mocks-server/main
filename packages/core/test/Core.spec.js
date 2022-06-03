@@ -9,7 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
-const NestedCollections = require("@mocks-server/nested-collections").default;
+const NestedCollections = require("@mocks-server/nested-collections");
 
 const MocksMock = require("./mocks/Mocks.mock.js");
 const ServerMocks = require("./server/Server.mocks.js");

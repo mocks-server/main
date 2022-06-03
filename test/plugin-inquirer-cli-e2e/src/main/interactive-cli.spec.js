@@ -31,7 +31,7 @@ describe("interactive CLI", () => {
 
   describe("When started", () => {
     it("should display an alert because chosen mock does not exist", async () => {
-      expect(mocks.currentScreen).toEqual(expect.stringContaining('Mock "foo" was not found.'));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Mock 'foo' was not found."));
       expect(mocks.currentScreen).toEqual(expect.stringContaining("ALERTS"));
     });
 

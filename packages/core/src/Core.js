@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -16,7 +16,7 @@ const Config = require("@mocks-server/config");
 const { CHANGE_MOCKS, CHANGE_ALERTS } = require("./eventNames");
 const tracer = require("./tracer");
 const Loaders = require("./Loaders");
-const Alerts = require("./Alerts");
+const AlertsLegacy = require("./AlertsLegacy");
 const RoutesHandlers = require("./routes-handlers/RoutesHandlers");
 const Mocks = require("./mocks/Mocks");
 const Plugins = require("./plugins/Plugins");
@@ -25,12 +25,9 @@ const FilesLoader = require("./files-loader/FilesLoader");
 
 const { scopedAlertsMethods, addEventListener, arrayMerge } = require("./support/helpers");
 const Scaffold = require("./scaffold/Scaffold");
+const Alerts = require("./Alerts");
 
 const MODULE_NAME = "mocks";
-const CONFIG_PLUGINS_NAMESPACE = "plugins";
-const CONFIG_MOCKS_NAMESPACE = "mocks";
-const CONFIG_SERVER_NAMESPACE = "server";
-const CONFIG_FILES_LOADER = "files";
 
 const ROOT_OPTIONS = [
   {
@@ -56,19 +53,20 @@ class Core {
     this._loadedRoutes = false;
 
     this._config = new Config({ moduleName: MODULE_NAME });
-    this._configPlugins = this._config.addNamespace(CONFIG_PLUGINS_NAMESPACE);
-    this._configMocks = this._config.addNamespace(CONFIG_MOCKS_NAMESPACE);
-    this._configServer = this._config.addNamespace(CONFIG_SERVER_NAMESPACE);
-    this._configFilesLoader = this._config.addNamespace(CONFIG_FILES_LOADER);
+    this._configPlugins = this._config.addNamespace(Plugins.id);
+    this._configMocks = this._config.addNamespace(Mocks.id);
+    this._configServer = this._config.addNamespace(Server.id);
+    this._configFilesLoader = this._config.addNamespace(FilesLoader.id);
 
     [this._logOption, this._routesHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
-
     this._logOption.onChange(tracer.set);
 
-    this._alerts = new Alerts({
-      onChange: (alerts) => {
-        this._eventEmitter.emit(CHANGE_ALERTS, alerts);
-      },
+    this._alerts = new Alerts("alerts");
+    this._alerts.onChange(() => {
+      this._eventEmitter.emit(CHANGE_ALERTS);
+    });
+    this._alertsLegacy = new AlertsLegacy({
+      alerts: this._alerts,
     });
 
     this._mocksLoaders = new Loaders({
@@ -92,17 +90,19 @@ class Core {
     this._plugins = new Plugins(
       {
         config: this._configPlugins,
+        alerts: this._alerts.collection(Plugins.id),
         createMocksLoader: () => {
           return this._mocksLoaders.new();
         },
         createRoutesLoader: () => {
           return this._routesLoaders.new();
         },
+        // LEGACY, remove when legacy alerts are removed
         ...scopedAlertsMethods(
-          "plugins",
-          this._alerts.add,
-          this._alerts.remove,
-          this._alerts.rename
+          Plugins.id,
+          this._alertsLegacy.add,
+          this._alertsLegacy.remove,
+          this._alertsLegacy.rename
         ),
       },
       this //To be used only by plugins
@@ -113,40 +113,30 @@ class Core {
     this._mocks = new Mocks(
       {
         config: this._configMocks,
+        alerts: this._alerts.collection(Mocks.id),
         getLoadedMocks: () => this._mocksLoaders.contents,
         getLoadedRoutes: () => this._routesLoaders.contents,
         onChange: () => this._eventEmitter.emit(CHANGE_MOCKS),
-        ...scopedAlertsMethods(
-          "mocks",
-          this._alerts.add,
-          this._alerts.remove,
-          this._alerts.rename
-        ),
       },
       this // To be used only by routeHandlers
     );
 
     this._server = new Server({
       config: this._configServer,
+      alerts: this._alerts.collection(Server.id),
       mocksRouter: this._mocks.router,
-      ...scopedAlertsMethods("server", this._alerts.add, this._alerts.remove),
     });
 
     this._filesLoader = new FilesLoader({
       config: this._configFilesLoader,
+      alerts: this._alerts.collection(FilesLoader.id),
       loadMocks: this._mocksLoaders.new(),
       loadRoutes: this._routesLoaders.new(),
-      ...scopedAlertsMethods("files", this._alerts.add, this._alerts.remove),
     });
 
     this._scaffold = new Scaffold({
       config: this._config, // It needs the whole configuration to get option properties and create scaffold
-      ...scopedAlertsMethods(
-        "scaffold",
-        this._alerts.add,
-        this._alerts.remove,
-        this._alerts.rename
-      ),
+      alerts: this._alerts.collection(Scaffold.id),
     });
 
     this._inited = false;
@@ -255,7 +245,8 @@ class Core {
   // Expose child objects
 
   get alerts() {
-    return this._alerts.values;
+    // LEGACY, change by new alerts getter when legacy alerts are removed
+    return this._alertsLegacy.values;
   }
 
   get mocks() {

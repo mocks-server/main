@@ -1,0 +1,5 @@
+{
+  "root": "packages/nested-collections/",
+  "projectType": "library",
+  "tags": ["type:lib"]
+}

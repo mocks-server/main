@@ -58,6 +58,13 @@ module.exports = {
         expect: true,
         it: true,
       },
+      plugins: ["jest", "no-only-tests"],
+      extends: ["plugin:jest/recommended"],
+      rules: {
+        "jest/no-conditional-expect": [0],
+        "no-only-tests/no-only-tests": [2],
+        "jest/no-done-callback": [0],
+      },
     },
     {
       files: ["test/*/cypress/**/*.js"],
@@ -72,6 +79,10 @@ module.exports = {
         expect: true,
         it: true,
       },
+      plugins: ["no-only-tests"],
+      rules: {
+        "no-only-tests/no-only-tests": [2]
+      }
     },
     {
       files: ["scripts/**/*.js", "**/*.mjs"],
@@ -84,6 +95,16 @@ module.exports = {
       globals: {
         module: true,
       },
+    },
+    {
+      files: ["packages/**/*.ts"],
+      parser: "@typescript-eslint/parser",
+      plugins: ["@typescript-eslint"],
+      extends: [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+      ],
     },
   ],
 };

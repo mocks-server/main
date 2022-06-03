@@ -8,7 +8,6 @@
     "project:coverage:to-relative": "node ./scripts/commands/project-coverage-to-relative.js",
     "project:coverage:to-workspace": "node ./scripts/commands/project-coverage-to-workspace.js",
     "projects:target:print:array": "node ./scripts/commands/projects-target-print-array.js",
-    "affected:print:array": "node ./scripts/commands/affected-print-array.js",
     "affected:target:print:array": "node ./scripts/commands/affected-target-print-array.js",
     "affected:report": "node ./scripts/commands/affected-report.js",
     "affected:check": "node ./scripts/commands/affected-check.js",
@@ -38,20 +37,24 @@
     "@rollup/plugin-commonjs": "21.1.0",
     "@rollup/plugin-node-resolve": "13.3.0",
     "@testing-library/cypress": "8.0.2",
-    "@typescript-eslint/parser": "5.23.0",
+    "@typescript-eslint/eslint-plugin": "5.26.0",
+    "@typescript-eslint/parser": "5.27.0",
     "babel-jest": "27.5.1",
     "babel-loader": "8.2.5",
     "babel-plugin-module-resolver": "4.1.0",
+    "babel-plugin-replace-ts-export-assignment": "0.0.2",
     "babel-polyfill": "6.26.0",
     "commander": "9.1.0",
     "cross-env": "7.0.3",
     "cross-fetch": "3.1.5",
     "cross-spawn": "7.0.3",
-    "cypress": "9.6.1",
+    "cypress": "9.7.0",
     "cypress-fail-fast": "3.4.1",
     "deepmerge": "4.2.2",
     "eslint": "8.15.0",
     "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-jest": "26.4.6",
+    "eslint-plugin-no-only-tests": "2.6.0",
     "eslint-plugin-prettier": "4.0.0",
     "fs-extra": "10.1.0",
     "handlebars": "4.7.7",
@@ -80,6 +83,7 @@
   },
   "lint-staged": {
     "packages/**/*.js": "eslint",
+    "packages/**/*.ts": "eslint",
     "test/**/*.js": "eslint",
     "mocks/**/*.js": "eslint",
     "scripts/**/*.js": "eslint",
@@ -87,6 +91,6 @@
   },
   "type": "module",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=14.0.0"
   }
 }

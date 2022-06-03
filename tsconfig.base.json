@@ -30,6 +30,9 @@
       "@mocks-server/main": [
         "packages/main/index.js"
       ],
+      "@mocks-server/nested-collections": [
+        "packages/nested-collections/dist/index.js"
+      ],
       "@mocks-server/plugin-admin-api": [
         "packages/plugin-admin-api/index.js"
       ],

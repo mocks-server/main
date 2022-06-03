@@ -26,6 +26,7 @@ const {
 } = require("../../src/mocks/helpers");
 const { compileRouteValidator } = require("../../src/mocks/validations");
 const DefaultRoutesHandler = require("../../src/routes-handlers/default/DefaultRoutesHandler");
+const Alerts = require("../../src/Alerts");
 
 describe("mocks helpers", () => {
   class FooHandler {
@@ -58,7 +59,7 @@ describe("mocks helpers", () => {
       body: {},
     },
   };
-  let sandbox, addAlert, removeAlerts;
+  let sandbox, alerts;
 
   beforeAll(() => {
     compileRouteValidator([{ id: "foo-handler" }]);
@@ -66,8 +67,7 @@ describe("mocks helpers", () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    addAlert = sandbox.stub();
-    removeAlerts = sandbox.stub();
+    alerts = new Alerts("foo");
   });
 
   afterEach(() => {
@@ -561,16 +561,43 @@ describe("mocks helpers", () => {
         variantIndex: 0,
         routeHandlers: [DefaultRoutesHandler],
         core: {},
-        addAlert,
-        removeAlerts,
-        alertScope: "foo",
+        alerts,
       });
 
       expect(variantHandler).toEqual(null);
-      expect(addAlert.getCall(0).args[0]).toEqual("foo:0");
-      expect(addAlert.getCall(0).args[1]).toEqual(
-        "Variant in route with id 'undefined' is invalid:  must have required property 'response'"
-      );
+      expect(alerts.flat).toEqual([
+        {
+          collection: "foo:0",
+          id: "validation",
+          value: {
+            message:
+              "Variant in route with id 'undefined' is invalid:  must have required property 'response'",
+          },
+        },
+      ]);
+    });
+
+    it("alert should include variant id if it is defined", () => {
+      const variantHandler = getVariantHandler({
+        route: { id: "foo-route" },
+        variant: { id: "foo-variant" },
+        variantIndex: 0,
+        routeHandlers: [DefaultRoutesHandler],
+        core: {},
+        alerts,
+      });
+
+      expect(variantHandler).toEqual(null);
+      expect(alerts.flat).toEqual([
+        {
+          collection: "foo:foo-variant",
+          id: "validation",
+          value: {
+            message:
+              "Variant with id 'foo-variant' in route with id 'foo-route' is invalid:  must have required property 'response'",
+          },
+        },
+      ]);
     });
 
     it("should return a Handler instance if variant is valid", () => {
@@ -580,9 +607,7 @@ describe("mocks helpers", () => {
         variantIndex: 0,
         routeHandlers: [DefaultRoutesHandler],
         core: {},
-        addAlert,
-        removeAlerts,
-        alertScope: "foo",
+        alerts,
       });
 
       expect(variantHandler).toBeInstanceOf(DefaultRoutesHandler);
@@ -604,15 +629,12 @@ describe("mocks helpers", () => {
         variantIndex: 0,
         routeHandlers: [FooHandler, DefaultRoutesHandler],
         core: {},
-        addAlert,
-        removeAlerts,
-        alertScope: "foo",
-        processAlertScope: "process:route:1",
+        alerts,
       });
 
       expect(variantHandler).toEqual(null);
-      expect(addAlert.getCall(0).args[0]).toEqual("process:route:1:variant:0");
-      expect(addAlert.getCall(0).args[1]).toEqual("Error creating variant handler");
+      expect(alerts.flat[0].id).toEqual("process");
+      expect(alerts.flat[0].value.message).toEqual("Error creating variant handler");
     });
 
     it("should return variant delay if defined", () => {
@@ -622,9 +644,7 @@ describe("mocks helpers", () => {
         variantIndex: 0,
         routeHandlers: [DefaultRoutesHandler],
         core: {},
-        addAlert,
-        removeAlerts,
-        alertScope: "foo",
+        alerts,
       });
       expect(variantHandler.delay).toEqual(5000);
     });
@@ -640,13 +660,13 @@ describe("mocks helpers", () => {
         ],
         routeHandlers: [DefaultRoutesHandler],
         core: {},
-        addAlert,
-        removeAlerts,
+        alerts,
       });
 
       expect(routeVariants).toEqual([]);
-      expect(addAlert.getCall(0).args[0]).toEqual("validation:route:0");
-      expect(addAlert.getCall(0).args[1]).toEqual(
+
+      expect(alerts.flat[0].id).toEqual("validation");
+      expect(alerts.flat[0].value.message).toEqual(
         "Route with id 'foo-route' is invalid:  must have required property 'variants'"
       );
     });
@@ -661,13 +681,13 @@ describe("mocks helpers", () => {
         ],
         routeHandlers: [DefaultRoutesHandler],
         core: {},
-        addAlert,
-        removeAlerts,
+        alerts,
       });
 
       expect(routeVariants).toEqual([]);
-      expect(addAlert.getCall(0).args[0]).toEqual("validation:route:0");
-      expect(addAlert.getCall(0).args[1]).toEqual(
+
+      expect(alerts.flat[0].id).toEqual("validation");
+      expect(alerts.flat[0].value.message).toEqual(
         "Route with id 'foo-route' is invalid: /variants/0 must have required property 'id'"
       );
     });
@@ -682,8 +702,7 @@ describe("mocks helpers", () => {
         ],
         routeHandlers: [DefaultRoutesHandler],
         core: {},
-        addAlert,
-        removeAlerts,
+        alerts,
       });
 
       expect(routeVariants[0]).toBeInstanceOf(DefaultRoutesHandler);
@@ -710,11 +729,9 @@ describe("mocks helpers", () => {
         ],
         routeHandlers: [DefaultRoutesHandler],
         core: {},
-        addAlert,
-        removeAlerts,
+        alerts,
       });
 
-      expect(addAlert.callCount).toEqual(3);
       expect(routeVariants.length).toEqual(1);
       expect(routeVariants[0]).toBeInstanceOf(DefaultRoutesHandler);
       expect(routeVariants[0].id).toEqual("foo-variant");
@@ -738,13 +755,15 @@ describe("mocks helpers", () => {
         ],
         routeHandlers: [DefaultRoutesHandler],
         core: {},
-        addAlert,
-        removeAlerts,
+        alerts,
       });
 
       expect(routeVariants.length).toEqual(1);
-      expect(addAlert.callCount).toEqual(1);
-      expect(addAlert.getCall(0).args[0]).toEqual("validation:route:1:duplicated");
+
+      expect(alerts.flat[0].id).toEqual("duplicated");
+      expect(alerts.flat[0].value.message).toEqual(
+        "Route with duplicated id 'foo-route' detected. It has been ignored"
+      );
     });
 
     it("should omit duplicated variants", () => {
@@ -757,13 +776,15 @@ describe("mocks helpers", () => {
         ],
         routeHandlers: [DefaultRoutesHandler],
         core: {},
-        addAlert,
-        removeAlerts,
+        alerts,
       });
 
       expect(routeVariants.length).toEqual(1);
-      expect(addAlert.callCount).toEqual(1);
-      expect(addAlert.getCall(0).args[0]).toEqual("validation:route:0:variant:1:duplicated");
+
+      expect(alerts.flat[0].id).toEqual("duplicated");
+      expect(alerts.flat[0].value.message).toEqual(
+        "Route variant with duplicated id 'foo-variant' detected in route 'foo-route'. It has been ignored"
+      );
     });
 
     it("should omit not valid variants", () => {
@@ -777,13 +798,13 @@ describe("mocks helpers", () => {
         ],
         routeHandlers: [FooHandler],
         core: {},
-        addAlert,
-        removeAlerts,
+        alerts,
       });
 
       expect(routeVariants.length).toEqual(0);
-      expect(addAlert.callCount).toEqual(1);
-      expect(addAlert.getCall(0).args[0]).toEqual("process:route:0:variant:0");
+
+      expect(alerts.flat[0].id).toEqual("process");
+      expect(alerts.flat[0].value.message).toEqual("Error creating variant handler");
     });
   });
 
@@ -794,18 +815,17 @@ describe("mocks helpers", () => {
           id: "foo-id",
           routesVariants: ["foo-route:foo-id"],
         },
-        mockIndex: "foo-index",
         mocksDefinitions: [],
         routeVariants: [],
         getGlobalDelay: () => {
           //do nothing
         },
-        addAlert,
-        removeAlerts,
+        alerts,
       });
       expect(mock.id).toEqual("foo-id");
-      expect(addAlert.getCall(0).args[0]).toEqual("validation:mock:foo-index:variants");
-      expect(addAlert.getCall(0).args[1]).toEqual(
+
+      expect(alerts.flat[0].id).toEqual("variants");
+      expect(alerts.flat[0].value.message).toEqual(
         "Mock with id 'foo-id' is invalid: routeVariant with id 'foo-route:foo-id' was not found, use a valid 'routeId:variantId' identifier"
       );
     });
@@ -817,7 +837,6 @@ describe("mocks helpers", () => {
           id: "foo-id",
           routesVariants: ["foo-route:foo-id"],
         },
-        mockIndex: "foo-index",
         mocksDefinitions: [],
         routeVariants: [
           {
@@ -828,12 +847,12 @@ describe("mocks helpers", () => {
         getGlobalDelay: () => {
           //do nothing
         },
-        addAlert,
-        removeAlerts,
+        alerts,
       });
       expect(mock).toEqual(null);
-      expect(addAlert.getCall(0).args[0]).toEqual("process:mock:foo-index");
-      expect(addAlert.getCall(0).args[1]).toEqual("Error creating mock");
+
+      expect(alerts.flat[0].id).toEqual("process");
+      expect(alerts.flat[0].value.message).toEqual("Error processing mock");
     });
   });
 });

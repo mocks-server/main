@@ -47,14 +47,7 @@ function addMockRoutesVariants(mockRoutesVariants, routesVariantsToAdd) {
   return replacedMocksRoutesVariants;
 }
 
-function getMockRoutesVariants(
-  mock,
-  mocks,
-  routesVariants,
-  addAlert,
-  alertScope,
-  routesVariantsToAdd = []
-) {
+function getMockRoutesVariants(mock, mocks, routesVariants, alerts, routesVariantsToAdd = []) {
   const mockRoutesVariants = compact(
     mock.routesVariants.map((variantId) => {
       return findRouteVariantByVariantId(routesVariants, variantId);
@@ -67,22 +60,21 @@ function getMockRoutesVariants(
         from,
         mocks,
         routesVariants,
-        addAlert,
-        alertScope,
+        alerts,
         addMockRoutesVariants(mockRoutesVariants, routesVariantsToAdd)
       );
     }
     // TODO, throw an error in strict validation mode
-    addAlert(
-      `${alertScope}:from`,
-      `Mock with invalid 'from' property detected, '${mock.from}' was not found`
-    );
+    alerts.set("from", `Mock with invalid 'from' property detected, '${mock.from}' was not found`);
   }
   return addMockRoutesVariants(mockRoutesVariants, routesVariantsToAdd);
 }
 
 function getVariantId(routeId, variantId) {
-  return `${routeId}:${variantId}`;
+  if (routeId && variantId) {
+    return `${routeId}:${variantId}`;
+  }
+  return null;
 }
 
 function getPlainMocks(mocks, mocksDefinitions) {
@@ -187,29 +179,20 @@ function findRouteHandler(routeHandlers, handlerId) {
   return routeHandlers.find((routeHandlerCandidate) => routeHandlerCandidate.id === handlerId);
 }
 
-function getVariantHandler({
-  route,
-  variant,
-  variantIndex,
-  routeHandlers,
-  core,
-  addAlert,
-  removeAlerts,
-  alertScope,
-  processAlertScope,
-}) {
+function getVariantHandler({ route, variant, variantIndex, routeHandlers, core, alerts }) {
   let routeHandler = null;
   const variantId = getVariantId(route.id, variant.id);
   const handlerId = variant.handler || DEFAULT_ROUTES_HANDLER;
   const Handler = findRouteHandler(routeHandlers, handlerId);
   const variantErrors = variantValidationErrors(route, variant, Handler);
+  const variantAlerts = alerts.collection(variant.id || variantIndex);
+  variantAlerts.clean();
+
   if (!!variantErrors) {
-    addAlert(`${alertScope}:${variantIndex}`, variantErrors.message);
+    variantAlerts.set("validation", variantErrors.message);
     tracer.silly(`Variant validation errors: ${JSON.stringify(variantErrors.errors)}`);
     return null;
   }
-  const processVariantAlertScope = `${processAlertScope}:variant:${variantIndex}`;
-  removeAlerts(processVariantAlertScope);
 
   try {
     routeHandler = new Handler(
@@ -228,37 +211,35 @@ function getVariantHandler({
     routeHandler.url = route.url;
     routeHandler.method = route.method;
   } catch (error) {
-    addAlert(processVariantAlertScope, error.message);
-    tracer.error(`Error processing route variant: ${error.message}`);
+    variantAlerts.set("process", error.message, error);
   }
+
   return routeHandler;
 }
 
-function getRouteVariants({ routesDefinitions, addAlert, removeAlerts, routeHandlers, core }) {
+function getRouteVariants({ routesDefinitions, alerts, routeHandlers, core }) {
   let routeIds = [];
-  removeAlerts("validation:route");
-  removeAlerts("process:route");
+  alerts.clean();
   return compact(
     flatten(
       routesDefinitions.map((route, index) => {
         let routeVariantsIds = [];
+        const routeAlerts = alerts.collection(route.id || index);
         const routeErrors = routeValidationErrors(route);
-        const alertScope = `validation:route:${index}`;
-        const processAlertScope = `process:route:${index}`;
         if (!!routeErrors) {
-          addAlert(alertScope, routeErrors.message);
+          routeAlerts.set("validation", routeErrors.message);
           tracer.silly(`Route validation errors: ${JSON.stringify(routeErrors.errors)}`);
           return null;
         }
         if (routeIds.includes(route.id)) {
-          addAlert(
-            `${alertScope}:duplicated`,
+          routeAlerts.set(
+            "duplicated",
             `Route with duplicated id '${route.id}' detected. It has been ignored`
           );
           return null;
         }
         routeIds.push(route.id);
-
+        const variantsAlerts = routeAlerts.collection("variants");
         return route.variants.map((variant, variantIndex) => {
           const variantHandler = getVariantHandler({
             route,
@@ -266,17 +247,16 @@ function getRouteVariants({ routesDefinitions, addAlert, removeAlerts, routeHand
             variantIndex,
             routeHandlers,
             core,
-            addAlert,
-            removeAlerts,
-            alertScope,
-            processAlertScope,
+            alerts: variantsAlerts,
           });
           if (variantHandler) {
             if (routeVariantsIds.includes(variantHandler.id)) {
-              addAlert(
-                `${alertScope}:variant:${variantIndex}:duplicated`,
-                `Route variant with duplicated id '${variantHandler.id}' detected in route '${route.id}'. It has been ignored`
-              );
+              variantsAlerts
+                .collection(variantHandler.id)
+                .set(
+                  "duplicated",
+                  `Route variant with duplicated id '${variantHandler.id}' detected in route '${route.id}'. It has been ignored`
+                );
               return null;
             }
             routeVariantsIds.push(variantHandler.id);
@@ -288,25 +268,12 @@ function getRouteVariants({ routesDefinitions, addAlert, removeAlerts, routeHand
   );
 }
 
-function getMock({
-  mockDefinition,
-  mockIndex,
-  mocksDefinitions,
-  routeVariants,
-  getGlobalDelay,
-  addAlert,
-  removeAlerts,
-}) {
+function getMock({ mockDefinition, mocksDefinitions, routeVariants, getGlobalDelay, alerts }) {
   let mock = null;
-  const alertScope = `validation:mock:${mockIndex}`;
-  const alertVariantsScope = `${alertScope}:variants`;
-  const processAlertScope = `process:mock:${mockIndex}`;
-  removeAlerts(alertScope);
-  removeAlerts(processAlertScope);
 
   const mockRouteVariantsErrors = mockRouteVariantsValidationErrors(mockDefinition, routeVariants);
   if (!!mockRouteVariantsErrors) {
-    addAlert(alertVariantsScope, mockRouteVariantsErrors.message);
+    alerts.set("variants", mockRouteVariantsErrors.message);
     tracer.silly(
       `Mock variants validation errors: ${JSON.stringify(mockRouteVariantsErrors.errors)}`
     );
@@ -316,7 +283,7 @@ function getMock({
 
   const mockErrors = mockValidationErrors(mockDefinition, routeVariants);
   if (!!mockErrors) {
-    addAlert(alertScope, mockErrors.message);
+    alerts.set("validation", mockErrors.message);
     tracer.silly(`Mock validation errors: ${JSON.stringify(mockErrors.errors)}`);
     return null;
   }
@@ -328,40 +295,40 @@ function getMock({
         mockDefinition,
         mocksDefinitions,
         routeVariants,
-        addAlert,
-        alertScope
+        alerts
       ),
       getDelay: getGlobalDelay,
     });
   } catch (error) {
-    addAlert(processAlertScope, error.message);
-    tracer.error(`Error processing mock: ${error.message}`);
+    alerts.set("process", "Error processing mock", error);
   }
   return mock;
 }
 
-function getMocks({ mocksDefinitions, addAlert, removeAlerts, routeVariants, getGlobalDelay }) {
-  removeAlerts("process:mocks");
+function getMocks({ mocksDefinitions, alerts, routeVariants, getGlobalDelay }) {
+  alerts.clean();
   let errorsProcessing = 0;
   let ids = [];
   const mocks = compact(
     mocksDefinitions.map((mockDefinition, index) => {
+      const mockDefinitionId = mockDefinition && mockDefinition.id;
+      const alertsCollectionId =
+        !mockDefinitionId || ids.includes(mockDefinitionId) ? index : mockDefinitionId;
+      const alertsMock = alerts.collection(alertsCollectionId);
       const mock = getMock({
         mockDefinition,
-        mockIndex: index,
         mocksDefinitions,
         routeVariants,
         getGlobalDelay,
-        addAlert,
-        removeAlerts,
+        alerts: alertsMock,
       });
       if (!mock) {
         errorsProcessing++;
         return null;
       }
       if (ids.includes(mock.id)) {
-        addAlert(
-          `process:mocks:${index}:duplicated`,
+        alertsMock.set(
+          "duplicated",
           `Mock with duplicated id '${mock.id}' detected. It has been ignored`
         );
         return null;
@@ -372,7 +339,7 @@ function getMocks({ mocksDefinitions, addAlert, removeAlerts, routeVariants, get
     })
   );
   if (errorsProcessing > 0) {
-    addAlert("process:mocks", `Critical errors found while loading mocks: ${errorsProcessing}`);
+    alerts.set("critical-error", `Critical errors found while loading mocks: ${errorsProcessing}`);
   }
   return mocks;
 }

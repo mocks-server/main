@@ -4,15 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [To be removed]
-- Remove all legacy plugins, options and methods related to v1
-
 ## [unreleased]
 ### Added
 ### Changed
 ### Fixed
 ### Removed
-### BREAKING CHANGES
+
+## [3.1.0] - 2022-06-03
+
+### Changed
+- feat: Pass new `alerts` API to plugins. Add an alert if old `addAlert` or `removeAlerts` methods are used
+- chore(deps): Update devDependencies.
 
 ## [3.0.1] - 2022-05-23
 

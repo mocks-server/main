@@ -58,11 +58,17 @@ const BABEL_REGISTER_OPTIONS = [
 ];
 
 class FilesLoaderBase {
-  constructor({ config, loadMocks, loadRoutes, addAlert, removeAlerts }, extraOptions = {}) {
+  static get id() {
+    return "files";
+  }
+
+  constructor({ config, loadMocks, loadRoutes, alerts }, extraOptions = {}) {
     this._loadMocks = loadMocks;
     this._loadRoutes = loadRoutes;
-    this._addAlert = addAlert;
-    this._removeAlerts = removeAlerts;
+    this._alerts = alerts;
+    this._mocksAlerts = alerts.collection("mocks");
+    this._routesAlerts = alerts.collection("routes");
+    this._routesFilesAlerts = this._routesAlerts.collection("file");
     this._customRequireCache = extraOptions.requireCache;
     this._require = extraOptions.require || require;
     this._config = config;
@@ -137,7 +143,7 @@ class FilesLoaderBase {
 
   _ensurePath() {
     if (!fsExtra.existsSync(this._path)) {
-      this._addAlert("load:folder", `Created folder "${this._path}"`);
+      this._alerts.set("folder", `Created folder "${this._path}"`);
       fsExtra.ensureDirSync(this._path);
     }
   }
@@ -167,16 +173,15 @@ class FilesLoaderBase {
         srcBase: routesPath,
         prefixBase: true,
       });
-
-      this._removeAlerts("load:routes");
+      this._routesAlerts.clean();
       const routes = flatten(
         routeFiles
           .map((filePath) => {
             const fileContent = this._readFile(filePath);
             const fileErrors = validateFileContent(fileContent);
             if (!!fileErrors) {
-              this._addAlert(
-                `load:routes:file:${filePath}`,
+              this._routesFilesAlerts.set(
+                filePath,
                 `Error loading routes from file ${filePath}: ${fileErrors}`
               );
               return null;
@@ -189,7 +194,7 @@ class FilesLoaderBase {
       tracer.silly(`Loaded routes from folder ${routesPath}`);
     } catch (error) {
       this._loadRoutes([]);
-      this._addAlert("load:routes", `Error loading routes from folder ${routesPath}`, error);
+      this._routesAlerts.set("error", `Error loading routes from folder ${routesPath}`, error);
     }
   }
 
@@ -208,14 +213,14 @@ class FilesLoaderBase {
         }
         this._loadMocks(mocks);
         tracer.silly(`Loaded mocks from file ${mocksFile}`);
-        this._removeAlerts("load:mocks");
+        this._mocksAlerts.clean();
       } catch (error) {
         this._loadMocks([]);
-        this._addAlert("load:mocks", `Error loading mocks from file ${mocksFile}`, error);
+        this._mocksAlerts.set("error", `Error loading mocks from file ${mocksFile}`, error);
       }
     } else {
       this._loadMocks([]);
-      this._addAlert("load:mocks", `No mocks file was found in ${this._path}`);
+      this._mocksAlerts.set("not-found", `No mocks file was found in ${this._path}`);
     }
   }
 

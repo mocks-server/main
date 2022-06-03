@@ -32,11 +32,11 @@ describe("alerts api", () => {
     });
 
     it("should return specific alert when requested by id", async () => {
-      const response = await fetch("/admin/alerts/mocks%3Acurrent%3Asettings");
+      const response = await fetch("/admin/alerts/mocks%3Asettings");
       expect(response.body).toEqual({
-        id: "mocks:current:settings",
-        context: "mocks:current:settings",
-        message: 'Mock "foo" was not found. Using the first one found',
+        id: "mocks:settings",
+        context: "mocks:settings",
+        message: "Mock 'foo' was not found. Using the first one found",
         error: null,
       });
     });
@@ -85,7 +85,7 @@ describe("alerts api", () => {
     it("should return alert containing error", async () => {
       const response = await fetch("/admin/alerts");
       expect(response.body.length).toEqual(4);
-      expect(response.body[0].error.message).toEqual(
+      expect(response.body[3].error.message).toEqual(
         expect.stringContaining("Cannot find module '../db/users'")
       );
     });

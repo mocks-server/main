@@ -44,7 +44,9 @@ describe("Scaffold", () => {
 
     scaffold = new Scaffold({
       config: configMock.stubs.instance,
-      addAlert: sandbox.stub(),
+      alerts: {
+        set: sandbox.stub(),
+      },
     });
     scaffold._mockSelectedOption = { value: null };
     scaffold._readConfigFileOption = { value: true };
@@ -56,6 +58,12 @@ describe("Scaffold", () => {
     libsMocks.restore();
     sandbox.restore();
     configMock.restore();
+  });
+
+  describe("id", () => {
+    it("should return scaffold", async () => {
+      expect(Scaffold.id).toEqual("scaffold");
+    });
   });
 
   describe("when initialized", () => {

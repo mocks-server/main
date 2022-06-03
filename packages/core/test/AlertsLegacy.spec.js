@@ -14,6 +14,10 @@ const Alerts = require("../src/Alerts");
 const AlertsLegacy = require("../src/AlertsLegacy");
 const tracer = require("../src/tracer");
 
+function removeDeprecatedAlerts(alerts) {
+  return alerts.filter((alert) => !alert.context.startsWith("deprecated"));
+}
+
 describe("Alerts Legacy", () => {
   let callbacks;
   let sandbox;
@@ -38,7 +42,7 @@ describe("Alerts Legacy", () => {
   describe("add method", () => {
     it("should add alert to values", async () => {
       alertsLegacy.add("foo", "Foo message");
-      expect(alertsLegacy.values).toEqual([
+      expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
           message: "Foo message",
@@ -50,7 +54,7 @@ describe("Alerts Legacy", () => {
       alertsLegacy.add("foo", "Foo message 1");
       alertsLegacy.add("foo", "Foo message 2");
       alertsLegacy.add("foo", "Foo message 3");
-      expect(alertsLegacy.values).toEqual([
+      expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
           message: "Foo message 3",
@@ -61,7 +65,7 @@ describe("Alerts Legacy", () => {
     it("should keep previously added alerts if context is not the same", async () => {
       alertsLegacy.add("foo1", "Foo message 1");
       alertsLegacy.add("foo2", "Foo message 2");
-      expect(alertsLegacy.values).toEqual([
+      expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo1",
           message: "Foo message 1",
@@ -84,7 +88,7 @@ describe("Alerts Legacy", () => {
       alertsLegacy.add("foo", "Foo message");
       alerts.set("foo-alert", "Foo message 2");
       alerts.collection("foo-collection").set("foo-alert-2", "Foo message 3");
-      expect(alertsLegacy.values).toEqual([
+      expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
           message: "Foo message",
@@ -107,7 +111,7 @@ describe("Alerts Legacy", () => {
       alertsLegacy.add("foo", "Foo message 1");
       alertsLegacy.add("foo:2", "Foo message 2");
       alertsLegacy.add("var", "Var message 1");
-      expect(alertsLegacy.values).toEqual([
+      expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
           message: "Foo message 1",
@@ -122,7 +126,7 @@ describe("Alerts Legacy", () => {
         },
       ]);
       alertsLegacy.remove("foo");
-      expect(alertsLegacy.values).toEqual([
+      expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "var",
           message: "Var message 1",
@@ -135,7 +139,7 @@ describe("Alerts Legacy", () => {
       alertsLegacy.add("foo", "Foo message 1");
       alertsLegacy.add("foo:2", "Foo message 2");
       alertsLegacy.add("var", "Var message 1");
-      expect(alertsLegacy.values).toEqual([
+      expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
           message: "Foo message 1",
@@ -150,7 +154,7 @@ describe("Alerts Legacy", () => {
         },
       ]);
       alertsLegacy.remove("foo:2");
-      expect(alertsLegacy.values).toEqual([
+      expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
           message: "Foo message 1",
@@ -169,7 +173,7 @@ describe("Alerts Legacy", () => {
       alertsLegacy.add("foo", "Foo message 1");
       alertsLegacy.add("foo:2", "Foo message 2");
       alertsLegacy.add("var", "Var message 1");
-      expect(alertsLegacy.values).toEqual([
+      expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
           message: "Foo message 1",
@@ -184,7 +188,7 @@ describe("Alerts Legacy", () => {
         },
       ]);
       alertsLegacy.rename("foo", "testing");
-      expect(alertsLegacy.values).toEqual([
+      expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "var",
           message: "Var message 1",
@@ -205,7 +209,7 @@ describe("Alerts Legacy", () => {
       alertsLegacy.add("foo:var", "Foo message 1");
       alertsLegacy.add("foo:var:2", "Foo message 2");
       alertsLegacy.add("foo:var:x", "Var message 1");
-      expect(alertsLegacy.values).toEqual([
+      expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo:var",
           message: "Foo message 1",
@@ -220,7 +224,7 @@ describe("Alerts Legacy", () => {
         },
       ]);
       alertsLegacy.rename("foo:", "testing:");
-      expect(alertsLegacy.values).toEqual([
+      expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "testing:var",
           message: "Foo message 1",
@@ -241,7 +245,7 @@ describe("Alerts Legacy", () => {
       alertsLegacy.add("foo", "Foo message 1");
       alertsLegacy.add("foo:2", "Foo message 2");
       alertsLegacy.add("var", "Var message 1");
-      expect(alertsLegacy.values).toEqual([
+      expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
           message: "Foo message 1",
@@ -256,7 +260,7 @@ describe("Alerts Legacy", () => {
         },
       ]);
       alertsLegacy.rename("foo:2", "foo:3");
-      expect(alertsLegacy.values).toEqual([
+      expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
           message: "Foo message 1",

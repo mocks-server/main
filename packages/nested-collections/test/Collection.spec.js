@@ -53,6 +53,18 @@ describe("Collection", () => {
     });
   });
 
+  describe("path", () => {
+    it("getter should return collection id if collection is root", () => {
+      const collection = new Collection("foo");
+      expect(collection.path).toEqual("foo");
+    });
+
+    it("getter should return parent collections ids joined with collection id", () => {
+      const collection = new Collection("foo");
+      expect(collection.collection("foo-2").collection("foo-3").path).toEqual("foo:foo-2:foo-3");
+    });
+  });
+
   describe("set method", () => {
     it("should set the item value when it is an object", () => {
       const collection = new Collection();

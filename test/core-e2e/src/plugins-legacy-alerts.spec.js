@@ -130,6 +130,14 @@ describe("plugins using legacy alerts", () => {
           expect(registerAlert.message).toEqual("Warning registering plugin");
           expect(startAlert.message).toEqual("Warning starting plugin");
         });
+
+        it("should have added one deprecation alert", async () => {
+          const alerts = core.alerts;
+          const deprecationAlert = alerts.find((alert) => alert.context === "deprecated:addAlert");
+          expect(deprecationAlert.message).toEqual(
+            expect.stringContaining("Detected usage of deprecated method 'addAlert'")
+          );
+        });
       });
 
       describe("when emit events", () => {
@@ -149,7 +157,25 @@ describe("plugins using legacy alerts", () => {
           await core.stop();
         });
 
-        it("should have removed all alerts", async () => {
+        it("should have added deprecation alert", async () => {
+          const alerts = core.alerts;
+          const deprecationAlert = alerts.find(
+            (alert) => alert.context === "deprecated:removeAlert"
+          );
+          expect(deprecationAlert.message).toEqual(
+            expect.stringContaining("Detected usage of deprecated method 'removeAlerts'")
+          );
+        });
+
+        it("should have not removed deprecation alerts", async () => {
+          const alerts = core.alerts;
+          const deprecationAlerts = alerts.filter((alert) =>
+            alert.context.startsWith("deprecated")
+          );
+          expect(deprecationAlerts.length).toEqual(2);
+        });
+
+        it("should have removed all plugin alerts", async () => {
           expect(filterPluginAlerts(core.alerts)).toEqual([]);
         });
       });

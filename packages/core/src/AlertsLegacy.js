@@ -13,6 +13,7 @@ const tracer = require("./tracer");
 // LEGACY, remove when legacy alerts are removed
 class AlertsLegacy {
   constructor({ alerts }) {
+    this._deprecatedAlerts = alerts.collection("deprecated");
     this._alerts = alerts;
     this.add = this.add.bind(this);
     this.remove = this.remove.bind(this);
@@ -20,7 +21,10 @@ class AlertsLegacy {
   }
 
   add(context, message, error) {
-    tracer.silly(`Adding alert with context "${context}" and message "${message}"`);
+    this._deprecatedAlerts.set(
+      "addAlert",
+      `Detected usage of deprecated method 'addAlert'. Use alerts instead: https://www.mocks-server.org/docs/plugins-developing-plugins`
+    );
     const collectionIds = context.split(":");
     const alertId = collectionIds.pop();
     const alertCollection = collectionIds.reduce((currentCollection, collectionId) => {
@@ -30,6 +34,10 @@ class AlertsLegacy {
   }
 
   remove(context) {
+    this._deprecatedAlerts.set(
+      "removeAlert",
+      `Detected usage of deprecated method 'removeAlerts'. Use alerts instead: https://www.mocks-server.org/docs/plugins-developing-plugins`
+    );
     tracer.silly(`Removing alerts with context "${context}"`);
     // Clean collection with whole context
     const collectionIds = context.split(":");

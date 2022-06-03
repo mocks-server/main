@@ -18,6 +18,9 @@ class Alerts extends NestedCollections {
   }
 
   set(id, message, error) {
+    tracer.silly(
+      `Setting alert with id '${id}' and message '${message}' in collection '${this._path}'`
+    );
     if (error) {
       tracer.error(`${message}: ${error.message}`);
       tracer.debug(error.stack);
@@ -25,6 +28,11 @@ class Alerts extends NestedCollections {
       tracer.warn(message);
     }
     return super.set(id, { message, error });
+  }
+
+  remove(id) {
+    tracer.silly(`Removing alert with id '${id}' in collection '${this._path}'`);
+    return super.remove(id);
   }
 }
 

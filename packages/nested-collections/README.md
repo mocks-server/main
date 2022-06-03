@@ -81,6 +81,7 @@ const collection = new Collection("id");
 
 * __get `id`__: Returns the collection id. Used as setter, sets collection id. Do not use it for changing a child collection id. Use `renameCollection` instead.
 * __set `id`__: Sets collection id. Do not use it for changing a child collection id. Use `renameCollection` instead.
+* __get `path`__: Returns the collection id joined with all parent collections ids using `:` (`parentCollectionId:parentCollectionId:collectionId`).
 * __`removeCollection(collectionId)`__: Removes children collection, including all of its items and possible children collections.
   * `collectionId` _(String)_: Id of the collection to be removed.
 * __`collection(collectionId)`__: Returns child collection with provided id or creates a new one if it does not exists.

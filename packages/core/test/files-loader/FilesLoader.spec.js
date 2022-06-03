@@ -230,9 +230,9 @@ describe("FilesLoader", () => {
     });
 
     it("should not throw and add an alert if there is an error in loadRoutesfiles method", async () => {
-      tracer.silly.throws(new Error());
+      sandbox.stub(filesLoader, "_readFile").throws(new Error());
       await filesLoader.init();
-      expect(alerts.flat.length).toEqual(2);
+      expect(alerts.flat.length).toEqual(1);
     });
 
     it("should return a rejected promise if there is an error initializing", async () => {

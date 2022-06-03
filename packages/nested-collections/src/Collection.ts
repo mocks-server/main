@@ -14,6 +14,7 @@ type itemValue = any;
 interface Options {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Decorator?: any;
+  parent?: Collection,
   [x: string | number | symbol]: unknown;
 }
 
@@ -67,6 +68,7 @@ export default class Collection implements ElementBasics {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _Decorator: any;
   private _options: Options;
+  private _parent?: Collection;
 
   /**
    * Creates a root collection
@@ -76,6 +78,7 @@ export default class Collection implements ElementBasics {
   constructor(id: elementId = null, options: Options = {}) {
     this._options = options;
     this._Decorator = options.Decorator || Collection;
+    this._parent = options.parent;
     this._eventEmitter = new EventEmitter();
     this._id = id;
     this._collections = [];
@@ -88,7 +91,7 @@ export default class Collection implements ElementBasics {
   }
 
   private _createCollection(id: elementId): Collection {
-    const collection = new this._Decorator(id, this._options);
+    const collection = new this._Decorator(id, {...this._options, parent: this});
     collection.onChange(this._emitChange);
     this._collections.push(collection);
     return collection;
@@ -147,19 +150,23 @@ export default class Collection implements ElementBasics {
     this._removeElement(id, this._items);
   }
 
+  private get _path(): elementId {
+    if(this._parent) {
+      return `${this._parent._path}:${this._id}`;
+    }
+    return this._id;
+  }
+
   private get _flat(): flatItems {
     const items = this._items.map((item: Item): FlatItem => {
       return {
         ...item,
-        collection: this._id,
+        collection: this._path,
       };
     });
     const collections = this._collections.reduce((allItems: flatItems, collection: Collection): flatItems => {
       const collectionItems = collection._flat.map((collectionFlatItem: FlatItem): FlatItem => {
-        return {
-          ...collectionFlatItem,
-          collection: `${this._id}:${collectionFlatItem.collection}`,
-        };
+        return collectionFlatItem;
       });
       return [...allItems, ...collectionItems];
     }, []);
@@ -178,6 +185,7 @@ export default class Collection implements ElementBasics {
         sameCollection._merge(childCollection);
       } else {
         this._collections.push(childCollection);
+        childCollection._parent = this;
         collection._removeCollection(childCollection.id);
         this._emitChange();
       }
@@ -205,6 +213,13 @@ export default class Collection implements ElementBasics {
   */
   public set id(id: elementId) {
     this._changeId(id);
+  }
+
+  /**
+   * @returns collection id joined with parent collections ids
+  */
+   public get path(): elementId {
+    return this._path;
   }
 
   /**

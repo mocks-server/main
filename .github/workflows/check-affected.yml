@@ -16,7 +16,7 @@ jobs:
         with:
           main-branch-name: ${{github.event.pull_request.base.ref}}
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.2.1
+        uses: pnpm/action-setup@v2.2.2
         with:
           version: 6.15.1
       - name: Use Node.js

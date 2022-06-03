@@ -42,6 +42,7 @@ To check out docs, visit [mocks-server.org][website-url].
 | [cypress-commands] | [![cypress-commands-status]][cypress-commands-package] | [Cypress][cypress] commands to administrate Mocks Server |
 | [config] | [![config-status]][config-package] | Provides configuration to [core][core] components and plugins |
 | [nested-collections] | [![nested-collections-status]][nested-collections-package] | Nested collections manager. Used to provide alert namespaces to plugins |
+| [logger] | [![logger-status]][logger-package] | Winston-based logger with namespaces and events emitter |
 
 ## Contributing
 
@@ -91,6 +92,10 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [nested-collections]: https://github.com/mocks-server/main/tree/master/packages/nested-collections
 [nested-collections-status]: https://img.shields.io/npm/v/@mocks-server/nested-collections.svg
 [nested-collections-package]: https://npmjs.com/package/@mocks-server/nested-collections
+
+[logger]: https://github.com/mocks-server/main/tree/master/packages/logger
+[logger-status]: https://img.shields.io/npm/v/@mocks-server/logger.svg
+[logger-package]: https://npmjs.com/package/@mocks-server/logger
 
 [website-url]: https://www.mocks-server.org
 [data-provider]: https://www.data-provider.org

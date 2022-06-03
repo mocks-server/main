@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed
 
+## [1.0.2] - 2022-06-03
+
+### Changed
+- chore(deps): Update devDependencies
+
 ## [1.0.1] - 2022-05-23
 
 ### Changed

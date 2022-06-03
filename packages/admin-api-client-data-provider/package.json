@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/admin-api-client-data-provider",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Client of @mocks-server/plugin-admin-api built with @data-provider",
   "keywords": [
     "administration",

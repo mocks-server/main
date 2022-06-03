@@ -15,7 +15,7 @@ const winston = require("winston");
 const ArrayTransport = require("winston-array-transport");
 
 const format = winston.format.printf((info) => {
-  return `${info.timestamp} [Mocks ${info.level}] ${info.message}`;
+  return `${info.timestamp} [${info.label}][${info.level}] ${info.message}`;
 });
 
 const store = [];

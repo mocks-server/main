@@ -1,3 +1,34 @@
+declare type LevelSilly = "silly";
+declare type LevelDebug = "debug";
+declare type LevelVerbose = "verbose";
+declare type LevelInfo = "info";
+declare type LevelWarn = "warn";
+declare type LevelError = "error";
+declare type LevelSilent = "silent";
+declare type Level = LevelSilly | LevelDebug | LevelVerbose | LevelInfo | LevelWarn | LevelError | LevelSilent;
+declare type TransportConsole = "console";
+declare type TransportStore = "store";
+declare type TransportType = TransportConsole | TransportStore;
+declare type Log = string;
+declare type Label = string;
+declare const LEVEL_SILLY: LevelSilly;
+declare const LEVEL_DEBUG: LevelDebug;
+declare const LEVEL_VERBOSE: LevelVerbose;
+declare const LEVEL_INFO: LevelInfo;
+declare const LEVEL_WARN: LevelWarn;
+declare const LEVEL_ERROR: LevelError;
 export default class Logger {
-    constructor();
+    private _label;
+    private _transports;
+    private _container;
+    private _logger;
+    constructor(label: Label);
+    [LEVEL_SILLY](log: Log): void;
+    [LEVEL_DEBUG](log: Log): void;
+    [LEVEL_VERBOSE](log: Log): void;
+    [LEVEL_INFO](log: Log): void;
+    [LEVEL_WARN](log: Log): void;
+    [LEVEL_ERROR](log: Log): void;
+    set(level: Level, transport?: TransportType): void;
 }
+export {};

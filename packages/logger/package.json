@@ -1,0 +1,34 @@
+{
+  "name": "@mocks-server/logger",
+  "version": "1.0.0",
+  "description": "Namespaced logger",
+  "keywords": [
+    "log",
+    "console",
+    "traces",
+    "namespace",
+    "formatted"
+  ],
+  "author": "Javier Brea",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mocks-server/main.git",
+    "directory": "packages/logger"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc", 
+    "test:unit": "jest"
+  },
+  "engines": {
+    "node": ">=14.x"
+  }
+}

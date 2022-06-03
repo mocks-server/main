@@ -28,6 +28,9 @@ coverage:
       cypress-commands:
         flags:
           - cypress-commands
+      logger:
+        flags:
+          - logger
       main:
         flags:
           - main
@@ -71,6 +74,10 @@ flags:
   cypress-commands:
     paths:
       - packages/cypress-commands/**
+    carryforward: true
+  logger:
+    paths:
+      - packages/logger/**
     carryforward: true
   main:
     paths:

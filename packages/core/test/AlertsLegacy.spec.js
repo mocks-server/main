@@ -9,6 +9,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
+const Logger = require("@mocks-server/logger");
+
 const Alerts = require("../src/Alerts");
 
 const AlertsLegacy = require("../src/AlertsLegacy");
@@ -23,12 +25,16 @@ describe("Alerts Legacy", () => {
   let sandbox;
   let alertsLegacy;
   let alerts;
+  let logger;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
+    sandbox.stub(Logger.prototype, "error");
+    sandbox.stub(Logger.prototype, "warn");
     sandbox.stub(tracer, "error");
     sandbox.stub(tracer, "warn");
-    alerts = new Alerts("alerts");
+    logger = new Logger();
+    alerts = new Alerts("alerts", { logger });
     callbacks = {
       alerts,
     };
@@ -79,7 +85,7 @@ describe("Alerts Legacy", () => {
 
     it("should trace warn if alert is called without error", async () => {
       alertsLegacy.add("foo", "Foo message");
-      expect(tracer.warn.calledWith("Foo message")).toEqual(true);
+      expect(logger.warn.calledWith("Foo message")).toEqual(true);
     });
   });
 

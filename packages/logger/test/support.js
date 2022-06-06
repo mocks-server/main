@@ -8,7 +8,7 @@ function formatLabelOrLevel(labelOrLevel) {
 }
 
 export function formattedLog(label, level, message) {
-  return `${formatLabelOrLevel(label)}${formatLabelOrLevel(level)} ${message}`;
+  return `${formatLabelOrLevel(level)}${formatLabelOrLevel(label)} ${message}`;
 }
 
 export function cleanLog(log) {

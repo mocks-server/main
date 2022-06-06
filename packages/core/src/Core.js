@@ -12,6 +12,7 @@ const deepMerge = require("deepmerge");
 const EventEmitter = require("events");
 
 const Config = require("@mocks-server/config");
+const Logger = require("@mocks-server/logger");
 
 const { CHANGE_MOCKS, CHANGE_ALERTS } = require("./eventNames");
 const tracer = require("./tracer");
@@ -46,12 +47,16 @@ const ROOT_OPTIONS = [
 
 class Core {
   constructor(programmaticConfig = {}) {
+    this._logger = new Logger();
+    this._configLogger = this._logger.namespace("config");
+
     this._programmaticConfig = programmaticConfig;
 
     this._eventEmitter = new EventEmitter();
     this._loadedMocks = false;
     this._loadedRoutes = false;
 
+    // Create config
     this._config = new Config({ moduleName: MODULE_NAME });
     this._configPlugins = this._config.addNamespace(Plugins.id);
     this._configMocks = this._config.addNamespace(Mocks.id);
@@ -59,9 +64,13 @@ class Core {
     this._configFilesLoader = this._config.addNamespace(FilesLoader.id);
 
     [this._logOption, this._routesHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
+    this._logOption.onChange(this._configLogger.setLevel.bind(this._configLogger));
+
+    // LEGACY, to be removed
     this._logOption.onChange(tracer.set);
 
-    this._alerts = new Alerts("alerts");
+    // Create alerts
+    this._alerts = new Alerts("alerts", { logger: this._logger.namespace("alerts") });
     this._alerts.onChange(() => {
       this._eventEmitter.emit(CHANGE_ALERTS);
     });
@@ -69,6 +78,7 @@ class Core {
       alerts: this._alerts,
     });
 
+    // Create mocks loaders
     this._mocksLoaders = new Loaders({
       onLoad: () => {
         this._loadedMocks = true;
@@ -78,6 +88,7 @@ class Core {
       },
     });
 
+    // Create routes loaders
     this._routesLoaders = new Loaders({
       onLoad: () => {
         this._loadedRoutes = true;
@@ -87,6 +98,7 @@ class Core {
       },
     });
 
+    // Create plugins
     this._plugins = new Plugins(
       {
         config: this._configPlugins,
@@ -108,8 +120,10 @@ class Core {
       this //To be used only by plugins
     );
 
+    // Create routes handlers
     this._routesHandlers = new RoutesHandlers();
 
+    // Create mocks
     this._mocks = new Mocks(
       {
         config: this._configMocks,
@@ -121,12 +135,14 @@ class Core {
       this // To be used only by routeHandlers
     );
 
+    // Create server
     this._server = new Server({
       config: this._configServer,
       alerts: this._alerts.collection(Server.id),
       mocksRouter: this._mocks.router,
     });
 
+    // Create files loaders
     this._filesLoader = new FilesLoader({
       config: this._configFilesLoader,
       alerts: this._alerts.collection(FilesLoader.id),
@@ -134,6 +150,7 @@ class Core {
       loadRoutes: this._routesLoaders.new(),
     });
 
+    // Create scaffold
     this._scaffold = new Scaffold({
       config: this._config, // It needs the whole configuration to get option properties and create scaffold
       alerts: this._alerts.collection(Scaffold.id),
@@ -179,6 +196,9 @@ class Core {
 
     // Init config
     await this._config.init(this._programmaticConfig);
+    this._logger.setLevel(this._logOption.value);
+
+    // LEGACY, to be removed
     tracer.set(this._logOption.value);
 
     // Register plugins, let them add their custom config
@@ -253,6 +273,7 @@ class Core {
     return this._mocks;
   }
 
+  // LEGACY, to be removed
   get tracer() {
     return tracer;
   }

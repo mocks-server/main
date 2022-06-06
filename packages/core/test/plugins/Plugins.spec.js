@@ -9,6 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
+const Logger = require("@mocks-server/logger");
 
 const CoreMocks = require("../Core.mocks.js");
 const ConfigMocks = require("../Config.mocks.js");
@@ -45,6 +46,7 @@ describe("Plugins", () => {
   let loadRoutes;
   let pluginsOption;
   let alerts;
+  let logger;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
@@ -53,6 +55,12 @@ describe("Plugins", () => {
     sandbox.stub(tracer, "verbose");
     sandbox.stub(tracer, "debug");
     sandbox.stub(tracer, "error");
+    sandbox.stub(Logger.prototype, "verbose");
+    sandbox.stub(Logger.prototype, "debug");
+    sandbox.stub(Logger.prototype, "error");
+    sandbox.stub(Logger.prototype, "warn");
+    logger = new Logger();
+
     sandbox.spy(console, "log");
     coreMocks = new CoreMocks();
     configMocks = new ConfigMocks();
@@ -61,7 +69,7 @@ describe("Plugins", () => {
     configInstance = configMocks.stubs.instance;
     libsMocks.stubs.fsExtra.existsSync.returns(true);
     pluginsOption = { value: [] };
-    alerts = new Alerts("plugins");
+    alerts = new Alerts("plugins", { logger });
     callbacks = {
       config: configInstance,
       alerts,

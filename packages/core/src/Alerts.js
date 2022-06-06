@@ -10,28 +10,25 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const NestedCollections = require("@mocks-server/nested-collections");
 
-const tracer = require("./tracer");
-
 class Alerts extends NestedCollections {
   constructor(id, options) {
     super(id, { ...options, Decorator: Alerts });
+    this._logger = options.logger.namespace(id);
   }
 
   set(id, message, error) {
-    tracer.silly(
-      `Setting alert with id '${id}' and message '${message}' in collection '${this._path}'`
-    );
+    this._logger.silly(`Setting alert with id '${id}'`);
     if (error) {
-      tracer.error(`${message}: ${error.message}`);
-      tracer.debug(error.stack);
+      this._logger.error(`${message}: ${error.message}`);
+      this._logger.debug(error.stack);
     } else {
-      tracer.warn(message);
+      this._logger.warn(message);
     }
     return super.set(id, { message, error });
   }
 
   remove(id) {
-    tracer.silly(`Removing alert with id '${id}' in collection '${this._path}'`);
+    this._logger.silly(`Removing alert with id '${id}'`);
     return super.remove(id);
   }
 }

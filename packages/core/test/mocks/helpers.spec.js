@@ -10,6 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 const express = require("express");
+const Logger = require("@mocks-server/logger");
 
 const {
   getVariantId,
@@ -59,7 +60,7 @@ describe("mocks helpers", () => {
       body: {},
     },
   };
-  let sandbox, alerts;
+  let sandbox, alerts, logger;
 
   beforeAll(() => {
     compileRouteValidator([{ id: "foo-handler" }]);
@@ -67,7 +68,10 @@ describe("mocks helpers", () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    alerts = new Alerts("foo");
+    sandbox.stub(Logger.prototype, "warn");
+    sandbox.stub(Logger.prototype, "error");
+    logger = new Logger();
+    alerts = new Alerts("foo", { logger });
   });
 
   afterEach(() => {

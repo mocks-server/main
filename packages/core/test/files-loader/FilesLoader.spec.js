@@ -12,8 +12,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const path = require("path");
 const sinon = require("sinon");
 const { cloneDeep } = require("lodash");
-const Alerts = require("../../src/Alerts");
+const Logger = require("@mocks-server/logger");
 
+const Alerts = require("../../src/Alerts");
 const LibsMocks = require("../Libs.mocks");
 const CoreMocks = require("../Core.mocks");
 const ConfigMock = require("../Config.mocks");
@@ -73,6 +74,7 @@ describe("FilesLoader", () => {
   let babelRegisterOption;
   let babelRegisterOptionsOption;
   let alerts;
+  let logger;
 
   beforeEach(async () => {
     requireCache = cloneDeep(fooRequireCache);
@@ -87,7 +89,16 @@ describe("FilesLoader", () => {
     sandbox.stub(tracer, "error");
     sandbox.stub(tracer, "info");
     sandbox.stub(tracer, "silly");
-    alerts = new Alerts("files");
+
+    sandbox.stub(Logger.prototype, "warn");
+    sandbox.stub(Logger.prototype, "verbose");
+    sandbox.stub(Logger.prototype, "debug");
+    sandbox.stub(Logger.prototype, "error");
+    sandbox.stub(Logger.prototype, "info");
+    sandbox.stub(Logger.prototype, "silly");
+    logger = new Logger();
+
+    alerts = new Alerts("files", { logger });
     pluginMethods = {
       core: coreInstance,
       loadRoutes: sandbox.stub(),

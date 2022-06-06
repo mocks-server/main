@@ -11,6 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 const http = require("http");
+const Logger = require("@mocks-server/logger");
 
 const LibsMocks = require("../Libs.mocks.js");
 const ConfigMock = require("../Config.mocks");
@@ -37,6 +38,7 @@ describe("Server", () => {
   let server;
   let mockOptions;
   let alerts,
+    logger,
     optionHost,
     optionPort,
     optionCorsEnabled,
@@ -49,19 +51,24 @@ describe("Server", () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     configMock = new ConfigMock();
-    alerts = new Alerts("server");
-    callbacks = {
-      config: configMock.stubs.namespace,
-      alerts,
-    };
 
     processOnStub = sandbox.stub(process, "on");
     sandbox.stub(process, "exit");
     sandbox.stub(tracer, "error");
     sandbox.stub(tracer, "info");
     sandbox.stub(tracer, "debug");
+    sandbox.stub(Logger.prototype, "error");
+    sandbox.stub(Logger.prototype, "info");
+    sandbox.stub(Logger.prototype, "debug");
     sandbox.stub(middlewares, "jsonBodyParser");
     sandbox.stub(middlewares, "urlEncodedBodyParser");
+
+    logger = new Logger();
+    alerts = new Alerts("server", { logger });
+    callbacks = {
+      config: configMock.stubs.namespace,
+      alerts,
+    };
 
     libsMocks = new LibsMocks();
     server = new Server(callbacks);

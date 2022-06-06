@@ -9,20 +9,22 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
-const Alerts = require("../src/Alerts");
+const Logger = require("@mocks-server/logger");
 
-const tracer = require("../src/tracer");
+const Alerts = require("../src/Alerts");
 
 describe("Alerts", () => {
   let sandbox;
   let alerts;
+  let logger;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
-    sandbox.stub(tracer, "error");
-    sandbox.stub(tracer, "warn");
-    sandbox.stub(tracer, "debug");
-    alerts = new Alerts("alerts");
+    logger = new Logger();
+    sandbox.stub(Logger.prototype, "error");
+    sandbox.stub(Logger.prototype, "warn");
+    sandbox.stub(Logger.prototype, "debug");
+    alerts = new Alerts("alerts", { logger });
   });
 
   afterEach(() => {
@@ -68,13 +70,13 @@ describe("Alerts", () => {
       const FOO_ERROR = new Error("Foo error message");
       FOO_ERROR.stack = "foo-stack";
       alerts.set("foo", "Foo message", FOO_ERROR);
-      expect(tracer.error.calledWith("Foo message: Foo error message")).toEqual(true);
-      expect(tracer.debug.calledWith("foo-stack")).toEqual(true);
+      expect(logger.error.calledWith("Foo message: Foo error message")).toEqual(true);
+      expect(logger.debug.calledWith("foo-stack")).toEqual(true);
     });
 
     it("should trace warn if alert is called without error", async () => {
       alerts.set("foo", "Foo message");
-      expect(tracer.warn.calledWith("Foo message")).toEqual(true);
+      expect(logger.warn.calledWith("Foo message")).toEqual(true);
     });
   });
 });

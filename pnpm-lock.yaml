@@ -223,6 +223,7 @@ importers:
       '@babel/register': 7.17.7
       '@hapi/boom': 9.1.4
       '@mocks-server/config': workspace:*
+      '@mocks-server/logger': workspace:*
       '@mocks-server/nested-collections': workspace:*
       ajv: 8.11.0
       better-ajv-errors: 1.2.0
@@ -237,12 +238,11 @@ importers:
       is-promise: 4.0.0
       lodash: 4.17.21
       node-watch: 0.7.3
-      winston: 3.7.2
-      winston-array-transport: 1.1.9
     dependencies:
       '@babel/register': 7.17.7_@babel+core@7.17.10
       '@hapi/boom': 9.1.4
       '@mocks-server/config': link:../config
+      '@mocks-server/logger': link:../logger
       '@mocks-server/nested-collections': link:../nested-collections
       ajv: 8.11.0
       better-ajv-errors: 1.2.0_ajv@8.11.0
@@ -257,8 +257,6 @@ importers:
       is-promise: 4.0.0
       lodash: 4.17.21
       node-watch: 0.7.3
-      winston: 3.7.2
-      winston-array-transport: 1.1.9
 
   packages/cypress-commands:
     specifiers:

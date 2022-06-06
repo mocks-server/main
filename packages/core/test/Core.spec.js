@@ -81,7 +81,7 @@ describe("Core", () => {
 
     it("should listen to change trace level when log option changes", async () => {
       core = new Core();
-      expect(configMocks.stubs.option.onChange.getCall(0).args[0]).toEqual(tracer.set);
+      expect(configMocks.stubs.option.onChange.getCall(1).args[0]).toEqual(tracer.set);
     });
   });
 

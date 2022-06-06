@@ -73,7 +73,7 @@ function formatLabelOrLevel(labelOrLevel: Label | Level): Log {
 }
 
 function logTemplate(log: winston.Logform.TransformableInfo): Log {
-  return `${log.timestamp} ${formatLabelOrLevel(log.label)}${formatLabelOrLevel(log.level)} ${log.message}`;
+  return `${log.timestamp} ${formatLabelOrLevel(log.level)}${formatLabelOrLevel(log.label)} ${log.message}`;
 }
 
 function createArrayTransport(store: LogsStore, defaultLevel: Level, storeLimit: StoreLimit): ArrayTransportInstance {

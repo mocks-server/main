@@ -1,63 +1,51 @@
+import EventEmitter from "events";
+
 import winston from "winston";
 import ArrayTransport from "winston-array-transport";
 
-type LevelSilly = "silly";
-type LevelDebug = "debug";
-type LevelVerbose = "verbose";
-type LevelInfo = "info";
-type LevelWarn = "warn";
-type LevelError = "error";
-type LevelSilent = "silent";
+import { observableStore, CHANGE_EVENT, addEventListener } from "./events";
 
-type Level = LevelSilly | LevelDebug | LevelVerbose | LevelInfo | LevelWarn | LevelError | LevelSilent;
-type PinnedLevel = boolean | undefined;
-
-type TransportConsole = "console";
-type TransportStore = "store";
-type TransportGlobalStore = "globalStore";
-type TransportType = TransportConsole | TransportStore;
-type WinstonTransportType = TransportConsole | TransportStore | TransportGlobalStore;
-
-type Log = string;
-type Label = string;
-type LogsStore = Log[];
-
-interface Transports {
-  console: winston.transports.ConsoleTransportInstance;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  store: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  globalStore: any;
-}
-
-interface TransportsPinnedLevels {
-  console: boolean;
-  store: boolean;
-}
-
-interface LoggerOptions {
-  level?: Level,
-}
+import type {
+    LogsStore,
+    LevelSilly,
+    LevelDebug,
+    LevelVerbose,
+    LevelInfo,
+    LevelWarn,
+    LevelError,
+    LevelSilent,
+    TransportConsole,
+    TransportStore, 
+    TransportGlobalStore,
+    Label,
+    Level,
+    Log,
+    TransportsPinnedLevels,
+    PinnedLevel,
+    LoggerOptions,
+    SetOptions,
+    WinstonTransportType,
+    SetTransportLevelOptions,
+    TransportType,
+    SetBaseLevelOptions,
+    EventListener,
+    StoreLimit,
+    ArrayTransportInstance,
+  } from "./types";
 
 interface LoggerPrivateOptions {
   parent?: Logger,
   globalStore?: LogsStore,
+  globalStoreTransport?: ArrayTransportInstance,
 }
 
-interface SetBaseLevelOptions {
-  pinned?: PinnedLevel,
-  forcePropagation?: boolean,
+interface Transports {
+  console: winston.transports.ConsoleTransportInstance;
+  store: ArrayTransportInstance;
+  globalStore: ArrayTransportInstance;
 }
 
-interface SetTransportLevelOptions extends SetBaseLevelOptions {
-  fromBaseLevel?: boolean,
-}
-
-interface SetOptions extends SetBaseLevelOptions {
-  transport?: TransportType,
-  propagate?: boolean,
-}
-
+const DEFAULT_STORE_LIMIT = 1000;
 const TIME_FORMAT = "HH:mm:ss:SS";
 
 const LEVEL_SILLY: LevelSilly = "silly";
@@ -88,11 +76,10 @@ function logTemplate(log: winston.Logform.TransformableInfo): Log {
   return `${log.timestamp} ${formatLabelOrLevel(log.label)}${formatLabelOrLevel(log.level)} ${log.message}`;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function createArrayTransport(store: LogsStore, defaultLevel: Level): any {
+function createArrayTransport(store: LogsStore, defaultLevel: Level, storeLimit: StoreLimit): ArrayTransportInstance {
   return new ArrayTransport({
     array: store,
-    limit: 1000,
+    limit: storeLimit,
     level: defaultLevel,
     format: winston.format.combine(
       formatTimestamp,
@@ -112,11 +99,11 @@ function createConsoleTransport(defaultLevel: Level): winston.transports.Console
   })
 }
 
-function createTransports(store: LogsStore, globalStore: LogsStore, defaultLevel: Level): Transports {
+function createTransports(store: LogsStore, defaultLevel: Level, storeLimit: StoreLimit, globalStoreTransport: ArrayTransportInstance): Transports {
   return {
     [TRANSPORT_CONSOLE]: createConsoleTransport(defaultLevel),
-    [TRANSPORT_STORE]: createArrayTransport(store, defaultLevel),
-    [TRANSPORT_GLOBAL_STORE]: createArrayTransport(globalStore, defaultLevel),
+    [TRANSPORT_STORE]: createArrayTransport(store, defaultLevel, storeLimit),
+    [TRANSPORT_GLOBAL_STORE]: globalStoreTransport,
   }
 }
 
@@ -133,22 +120,29 @@ export default class Logger {
   private _transports : Transports;
   private _container : winston.Container;
   private _logger: winston.Logger;
-  private _store: LogsStore = [];
+  private _store: LogsStore;
+  private _storeEmitter: EventEmitter = new EventEmitter();
   private _globalStore: LogsStore;
+  private _globalStoreEmitter: EventEmitter = new EventEmitter();
   private _namespaces: Logger[] = [];
   private _parent: Logger | undefined;
   private _level: Level;
   private _transportsPinnedLevels: TransportsPinnedLevels = { [TRANSPORT_CONSOLE]: false, [TRANSPORT_STORE]: false };
   private _pinnedLevel: PinnedLevel = false;
+  private _globalStoreTransport: ArrayTransportInstance;
 
-  constructor(label: Label = "", { level }: LoggerOptions = {}, { parent, globalStore = [] }: LoggerPrivateOptions = {}) {
-    this._globalStore = globalStore;
+  constructor(label: Label = "", { level, storeLimit = DEFAULT_STORE_LIMIT, globalStoreLimit = DEFAULT_STORE_LIMIT }: LoggerOptions = {}, { parent, globalStore, globalStoreTransport }: LoggerPrivateOptions = {}) {
     this._parent = parent;
     const parentLevel = this._parent && this._parent.level;
     const defaultLevel = level || parentLevel || LEVEL_INFO;
     this._level = defaultLevel;
     this._label = parent ? namespaceLabel(parent, label) : label;
-    this._transports = createTransports(this._store, this._globalStore, defaultLevel);
+
+    this._store = observableStore(this._storeEmitter, storeLimit);
+    this._globalStore = globalStore || observableStore(this._globalStoreEmitter, globalStoreLimit);
+    this._globalStoreTransport = globalStoreTransport || createArrayTransport(this._globalStore, defaultLevel, globalStoreLimit);
+    this._transports = createTransports(this._store, defaultLevel, storeLimit, this._globalStoreTransport);
+    
     this._container = new winston.Container();
 
     this._container.add(label, {
@@ -214,7 +208,7 @@ export default class Logger {
   }
 
   private _createNamespace(label: Label, options: LoggerOptions): Logger {
-    const namespace = new Logger(label, options, { parent: this, globalStore: this._globalStore });
+    const namespace = new Logger(label, options, { parent: this, globalStoreTransport: this._globalStoreTransport, globalStore: this._globalStore });
     this._namespaces.push(namespace);
     return namespace;
   }
@@ -269,5 +263,13 @@ export default class Logger {
 
   public cleanStore() {
     this._store.splice(0, this._store.length);
+  }
+
+  public onChangeStore(listener: EventListener) {
+    return addEventListener(listener, CHANGE_EVENT, this._storeEmitter);
+  }
+
+  public onChangeGlobalStore(listener: EventListener) {
+    return addEventListener(listener, CHANGE_EVENT, this._globalStoreEmitter);
   }
 }

@@ -88,34 +88,35 @@ function logTemplate(log: winston.Logform.TransformableInfo): Log {
   return `${log.timestamp} ${formatLabelOrLevel(log.label)}${formatLabelOrLevel(log.level)} ${log.message}`;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function createArrayTransport(store: LogsStore, defaultLevel: Level): any {
+  return new ArrayTransport({
+    array: store,
+    limit: 1000,
+    level: defaultLevel,
+    format: winston.format.combine(
+      formatTimestamp,
+      formatLog
+    ),
+  })
+}
+
+function createConsoleTransport(defaultLevel: Level): winston.transports.ConsoleTransportInstance {
+  return new winston.transports.Console({
+    level: defaultLevel,
+    format: winston.format.combine(
+      winston.format.colorize(),
+      formatTimestamp,
+      formatLog
+    ),
+  })
+}
+
 function createTransports(store: LogsStore, globalStore: LogsStore, defaultLevel: Level): Transports {
   return {
-    [TRANSPORT_CONSOLE]: new winston.transports.Console({
-      level: defaultLevel,
-      format: winston.format.combine(
-        winston.format.colorize(),
-        formatTimestamp,
-        formatLog
-      ),
-    }),
-    [TRANSPORT_STORE]: new ArrayTransport({
-      array: store,
-      limit: 1000,
-      level: defaultLevel,
-      format: winston.format.combine(
-        formatTimestamp,
-        formatLog
-      ),
-    }),
-    [TRANSPORT_GLOBAL_STORE]: new ArrayTransport({
-      array: globalStore,
-      limit: 1000,
-      level: defaultLevel,
-      format: winston.format.combine(
-        formatTimestamp,
-        formatLog
-      ),
-    }),
+    [TRANSPORT_CONSOLE]: createConsoleTransport(defaultLevel),
+    [TRANSPORT_STORE]: createArrayTransport(store, defaultLevel),
+    [TRANSPORT_GLOBAL_STORE]: createArrayTransport(globalStore, defaultLevel),
   }
 }
 

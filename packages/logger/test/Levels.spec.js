@@ -11,14 +11,13 @@ global.console = {
   error: jest.fn(),
 };
 
-describe("Logger", () => {
+describe("Levels", () => {
   let sandbox;
   let logger;
 
   beforeEach(() => {
     sandbox = createSandbox();
     sandbox.stub(console, "log");
-    logger = new Logger(LABEL);
   });
 
   afterEach(() => {
@@ -27,6 +26,7 @@ describe("Logger", () => {
 
   function shouldLog(level) {
     it(`should log ${level} with created namespace`, () => {
+      console.log.reset();
       logger[level]("Hello world");
       expect(cleanLogs(console.log.getCall(0).args[0])).toEqual(
         formattedLog(LABEL, level, "Hello world")
@@ -36,26 +36,33 @@ describe("Logger", () => {
 
   function shouldNotLog(level) {
     it(`should not log ${level} with created namespace`, () => {
+      console.log.reset();
       logger[level]("foo");
       expect(console.log.callCount).toEqual(0);
     });
   }
 
-  function shouldStoreLog(level) {
+  function shouldStoreLog(level, message = "Hello") {
     it(`should add ${level} log to store`, () => {
-      logger[level]("Hello");
-      expect(cleanLogs(logger.logs)).toEqual([formattedLog(LABEL, level, "Hello")]);
+      logger.cleanStore();
+      logger[level](message);
+      expect(cleanLogs(logger.store)).toEqual([formattedLog(LABEL, level, message)]);
     });
   }
 
-  function shouldNotStoreLog(level) {
+  function shouldNotStoreLog(level, message = "Hello") {
     it(`should not add ${level} log to store`, () => {
-      logger[level]("foo");
-      expect(logger.logs.length).toEqual(0);
+      logger.cleanStore();
+      logger[level](message);
+      expect(logger.store.length).toEqual(0);
     });
   }
 
   describe("when created", () => {
+    beforeEach(() => {
+      logger = new Logger(LABEL);
+    });
+
     describe("silly method", () => {
       shouldNotLog("silly");
       shouldNotStoreLog("silly");
@@ -84,7 +91,7 @@ describe("Logger", () => {
         logger.info("Hello");
         logger.info("Hi");
         logger.info("message 3");
-        expect(cleanLogs(logger.logs)).toEqual([
+        expect(cleanLogs(logger.store)).toEqual([
           formattedLog(LABEL, "info", "Hello"),
           formattedLog(LABEL, "info", "Hi"),
           formattedLog(LABEL, "info", "message 3"),
@@ -169,7 +176,7 @@ describe("Logger", () => {
   describe("when level is set to warn", () => {
     beforeEach(() => {
       logger = new Logger(LABEL);
-      logger.set("warn");
+      logger.setLevel("warn");
     });
 
     describe("info method", () => {
@@ -186,7 +193,7 @@ describe("Logger", () => {
   describe("when console level is set to warn", () => {
     beforeEach(() => {
       logger = new Logger(LABEL);
-      logger.set("warn", "console");
+      logger.setLevel("warn", { transport: "console" });
     });
 
     describe("info method", () => {
@@ -200,10 +207,101 @@ describe("Logger", () => {
     });
   });
 
+  describe("when console level is set to warn and pinned", () => {
+    beforeAll(() => {
+      logger = new Logger(LABEL);
+      logger.setLevel("warn", { transport: "console", pinned: true });
+    });
+
+    describe("info method", () => {
+      shouldNotLog("info");
+      shouldStoreLog("info");
+    });
+
+    describe("info method after changing base level to error", () => {
+      beforeAll(() => {
+        logger.setLevel("error");
+      });
+
+      shouldNotLog("info");
+      shouldNotStoreLog("info");
+
+      it("should have level as error", () => {
+        expect(logger.level).toEqual("error");
+      });
+    });
+
+    describe("info method after changing base level to silly", () => {
+      beforeAll(() => {
+        logger.setLevel("silly");
+      });
+
+      shouldNotLog("info");
+      shouldStoreLog("info");
+
+      it("should have level as silly", () => {
+        expect(logger.level).toEqual("silly");
+      });
+    });
+
+    describe("info method after changing console level to silly without being pinned", () => {
+      beforeAll(() => {
+        logger.setLevel("silly", { transport: "console" });
+      });
+
+      shouldLog("info");
+      shouldStoreLog("info");
+
+      it("should have level as silly", () => {
+        expect(logger.level).toEqual("silly");
+      });
+    });
+
+    describe("info method after changing base level to warn", () => {
+      beforeAll(() => {
+        logger.setLevel("warn");
+      });
+
+      shouldNotLog("info");
+      shouldNotStoreLog("info");
+      shouldLog("warn");
+      shouldStoreLog("warn");
+
+      it("should have level as warn", () => {
+        expect(logger.level).toEqual("warn");
+      });
+    });
+  });
+
+  describe("when transport level is pinned but base level is set using forcePropagation", () => {
+    beforeAll(() => {
+      logger = new Logger(LABEL);
+      logger.setLevel("warn", { transport: "console", pinned: true });
+    });
+
+    describe("info method when changing base level without forcePropagation", () => {
+      beforeAll(() => {
+        logger.setLevel("info");
+      });
+
+      shouldNotLog("info");
+      shouldStoreLog("info");
+    });
+
+    describe("info method after changing base level with forcePropagation", () => {
+      beforeAll(() => {
+        logger.setLevel("info", { forcePropagation: true });
+      });
+
+      shouldLog("info");
+      shouldStoreLog("info");
+    });
+  });
+
   describe("when store level is set to warn", () => {
     beforeEach(() => {
       logger = new Logger(LABEL);
-      logger.set("warn", "store");
+      logger.setLevel("warn", { transport: "store" });
     });
 
     describe("info method", () => {
@@ -220,7 +318,7 @@ describe("Logger", () => {
   describe("when level is set to silent", () => {
     beforeEach(() => {
       logger = new Logger(LABEL);
-      logger.set("silent");
+      logger.setLevel("silent");
     });
 
     describe("silly method", () => {

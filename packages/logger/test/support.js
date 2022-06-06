@@ -1,6 +1,9 @@
 import stripAnsi from "strip-ansi";
 
 function formatLabelOrLevel(labelOrLevel) {
+  if (!labelOrLevel.length) {
+    return "";
+  }
   return `[${labelOrLevel}]`;
 }
 

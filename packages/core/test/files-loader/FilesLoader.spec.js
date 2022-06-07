@@ -12,7 +12,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const path = require("path");
 const sinon = require("sinon");
 const { cloneDeep } = require("lodash");
-const Logger = require("@mocks-server/logger");
+const { Logger } = require("@mocks-server/logger");
 
 const Alerts = require("../../src/Alerts");
 const LibsMocks = require("../Libs.mocks");

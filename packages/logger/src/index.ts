@@ -1,2 +1,2 @@
-import Logger from "./Logger";
-export = Logger;
+export * from "./types";
+export { default as Logger } from "./Logger";

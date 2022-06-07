@@ -131,6 +131,10 @@ export default class Logger {
   private _pinnedLevel: PinnedLevel = false;
   private _globalStoreTransport: ArrayTransportInstance;
 
+  /**
+   * Creates a root logger
+   * @returns Returns a new Logger instance
+  */
   constructor(label: Label = "", { level, storeLimit = DEFAULT_STORE_LIMIT, globalStoreLimit = DEFAULT_STORE_LIMIT }: LoggerOptions = {}, { parent, globalStore, globalStoreTransport }: LoggerPrivateOptions = {}) {
     this._parent = parent;
     const parentLevel = this._parent && this._parent.level;

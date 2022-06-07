@@ -12,7 +12,7 @@ const deepMerge = require("deepmerge");
 const EventEmitter = require("events");
 
 const Config = require("@mocks-server/config");
-const Logger = require("@mocks-server/logger");
+const { Logger } = require("@mocks-server/logger");
 
 const { CHANGE_MOCKS, CHANGE_ALERTS } = require("./eventNames");
 const tracer = require("./tracer");
@@ -47,14 +47,14 @@ const ROOT_OPTIONS = [
 
 class Core {
   constructor(programmaticConfig = {}) {
-    this._logger = new Logger();
-    this._configLogger = this._logger.namespace("config");
-
     this._programmaticConfig = programmaticConfig;
-
     this._eventEmitter = new EventEmitter();
     this._loadedMocks = false;
     this._loadedRoutes = false;
+
+    // Create logger
+    this._logger = new Logger();
+    this._configLogger = this._logger.namespace("config");
 
     // Create config
     this._config = new Config({ moduleName: MODULE_NAME });
@@ -103,6 +103,7 @@ class Core {
       {
         config: this._configPlugins,
         alerts: this._alerts.collection(Plugins.id),
+        logger: this._logger.namespace(Plugins.id),
         createMocksLoader: () => {
           return this._mocksLoaders.new();
         },

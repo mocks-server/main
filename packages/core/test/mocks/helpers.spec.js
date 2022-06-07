@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 const express = require("express");
-const Logger = require("@mocks-server/logger");
+const { Logger } = require("@mocks-server/logger");
 
 const {
   getVariantId,

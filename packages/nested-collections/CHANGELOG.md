@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed
 
+## [2.0.0] - 2022-06-03
+
+### Changed
+- feat: BREAKING CHANGE. Export NestedCollections as named export
+
+### Added
+- feat: Export types
+
 ## [1.0.0] - 2022-06-03
 
 ### Added

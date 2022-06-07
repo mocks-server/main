@@ -2,42 +2,41 @@ import EventEmitter from "events";
 
 import { CHANGE_EVENT, EventListener, addEventListener } from "./events";
 
-type elementId = string | null;
+export type elementId = string | null;
 
-interface ElementBasics {
+export interface ElementBasics {
   id: elementId;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type itemValue = any;
+export type itemValue = any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface Options {
+export interface CollectionOptions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Decorator?: any;
   parent?: Collection,
   [x: string | number | symbol]: unknown;
 }
 
-interface Item extends ElementBasics {
+export interface Item extends ElementBasics {
   value: itemValue;
 }
 
-interface FlatItem extends Item {
+export interface FlatItem extends Item {
   collection: elementId,
 }
 
-type items = Item[];
-type flatItems = FlatItem[];
-type collections = Collection[];
-type element = Item | Collection;
-type elements = element[];
+export type items = Item[];
+export type flatItems = FlatItem[];
+export type collections = Collection[];
+export type element = Item | Collection;
+export type elements = element[];
+export interface IdComparer {
+  (element: element): boolean
+}
 
 function elementIdIsEqualTo(element: element, id: elementId): boolean {
   return element.id === id;
-}
-
-interface IdComparer {
-  (element: element): boolean
 }
 
 function ElementIdIsEqualToId(id: elementId): IdComparer {
@@ -67,7 +66,7 @@ export default class Collection implements ElementBasics {
   private _eventEmitter: EventEmitter;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _Decorator: any;
-  private _options: Options;
+  private _options: CollectionOptions;
   private _parent?: Collection;
 
   /**
@@ -75,7 +74,7 @@ export default class Collection implements ElementBasics {
    * @example const collection = new Collection("id")
    * @returns Root collection
   */
-  constructor(id: elementId = null, options: Options = {}) {
+  constructor(id: elementId = null, options: CollectionOptions = {}) {
     this._options = options;
     this._Decorator = options.Decorator || Collection;
     this._parent = options.parent;

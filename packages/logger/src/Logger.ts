@@ -173,7 +173,7 @@ export default class Logger {
     if (forcePropagation || !fromBaseLevel || (fromBaseLevel && !this._transportsPinnedLevels[transport])) {
       this._transportsPinnedLevels[transport] = pinned;
       this._setWinstonTransportLevel(level, transport);
-      if(transport === TRANSPORT_STORE) {
+      if(transport === TRANSPORT_STORE && !this._parent) {
         this._setWinstonTransportLevel(level, TRANSPORT_GLOBAL_STORE);
       }
     }

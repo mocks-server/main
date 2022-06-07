@@ -134,6 +134,32 @@ describe("Namespaces", () => {
         formattedLog("foo-label:foo-label-2:foo-label-3", "error", "Hello from second"),
       ]);
     });
+
+    it("should store logs from all namespaces when a child namespace change store level", () => {
+      logger.info("Hello from root");
+      firstNamespace.warn("Hello from first");
+      secondNamespace.error("Hello from second");
+
+      expect(cleanLogs(logger.globalStore)).toEqual([
+        formattedLog(LABEL, "info", "Hello from root"),
+        formattedLog("foo-label:foo-label-2", "warn", "Hello from first"),
+        formattedLog("foo-label:foo-label-2:foo-label-3", "error", "Hello from second"),
+      ]);
+
+      firstNamespace.setLevel("silent", { transport: "store" });
+      logger.info("Hello 2 from root");
+      firstNamespace.warn("Hello 2 from first");
+      expect(cleanLogs(logger.globalStore)).toEqual([
+        formattedLog(LABEL, "info", "Hello from root"),
+        formattedLog("foo-label:foo-label-2", "warn", "Hello from first"),
+        formattedLog("foo-label:foo-label-2:foo-label-3", "error", "Hello from second"),
+        formattedLog(LABEL, "info", "Hello 2 from root"),
+        formattedLog("foo-label:foo-label-2", "warn", "Hello 2 from first"),
+      ]);
+      expect(cleanLogs(firstNamespace.store)).toEqual([
+        formattedLog("foo-label:foo-label-2", "warn", "Hello from first"),
+      ]);
+    });
   });
 
   describe("when base namespace level is changed", () => {

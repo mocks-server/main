@@ -49,6 +49,7 @@ describe("Mocks", () => {
       getCurrentMock: sandbox.stub().returns(null),
       onChange: sandbox.stub(),
       alerts,
+      logger,
     };
 
     mocks = new Mocks(methods, core);

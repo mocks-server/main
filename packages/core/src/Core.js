@@ -132,6 +132,7 @@ class Core {
       {
         config: this._configMocks,
         alerts: this._alerts.collection(Mocks.id),
+        logger: this._logger.namespace(Mocks.id),
         getLoadedMocks: () => this._mocksLoaders.contents,
         getLoadedRoutes: () => this._routesLoaders.contents,
         onChange: () => this._eventEmitter.emit(CHANGE_MOCKS),

@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -10,12 +10,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 
-const tracer = require("../tracer");
-
 const { HTTP_METHODS } = require("./validations");
 
 class Mock {
-  constructor({ id, routesVariants, getDelay }) {
+  constructor({ id, routesVariants, getDelay, logger }) {
+    this._logger = logger;
     this._id = id;
     this._routesVariants = routesVariants;
     this._getDelay = getDelay;
@@ -33,7 +32,7 @@ class Mock {
         this._router[httpMethod](routeVariant.url, (_req, _res, next) => {
           const delay = routeVariant.delay !== null ? routeVariant.delay : this._getDelay();
           if (delay > 0) {
-            tracer.verbose(`Applying delay of ${delay}ms to route variant "${this._id}"`);
+            this._logger.verbose(`Applying delay of ${delay}ms to route variant "${this._id}"`);
             setTimeout(() => {
               next();
             }, delay);

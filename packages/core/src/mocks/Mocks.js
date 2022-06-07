@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -9,8 +9,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const express = require("express");
-
-const tracer = require("../tracer");
 
 const OPTIONS = [
   {
@@ -32,11 +30,11 @@ const OPTIONS = [
 ];
 
 const {
-  getPlainMocks,
-  getPlainRoutes,
-  getPlainRoutesVariants,
-  addCustomVariant,
-  getRouteVariants,
+  getPlainMocks, //
+  getPlainRoutes, //
+  getPlainRoutesVariants, //
+  addCustomVariant, //
+  getRouteVariants, //
   getMocks,
   getMock,
 } = require("./helpers");
@@ -50,7 +48,10 @@ class Mocks {
     return "mocks";
   }
 
-  constructor({ config, getLoadedMocks, getLoadedRoutes, onChange, alerts }, core) {
+  constructor({ config, getLoadedMocks, logger, getLoadedRoutes, onChange, alerts }, core) {
+    this._logger = logger;
+    this._loggerRoutes = logger.namespace("routes");
+
     this._config = config;
     [this._currentMockOption, this._currentDelayOption] = this._config.addOptions(OPTIONS);
     this._currentMockOption.onChange(this._setCurrent.bind(this));
@@ -95,26 +96,28 @@ class Mocks {
   }
 
   _processMocks() {
-    tracer.debug("Processing loaded mocks");
-    tracer.silly(JSON.stringify(this._mocksDefinitions));
+    this._logger.debug("Processing loaded mocks");
+    this._logger.silly(JSON.stringify(this._mocksDefinitions));
     this._mocks = getMocks({
       mocksDefinitions: this._mocksDefinitions,
       alerts: this._alertsMocks,
+      logger: this._logger,
       routeVariants: this._routesVariants,
       getGlobalDelay: this.getDelay,
     });
   }
 
   _processRoutes() {
-    tracer.debug("Processing loaded routes");
-    tracer.silly(JSON.stringify(this._routesDefinitions));
+    this._loggerRoutes.debug("Processing loaded routes");
+    this._loggerRoutes.silly(JSON.stringify(this._routesDefinitions));
     this._routesVariants = getRouteVariants({
       routesDefinitions: this._routesDefinitions,
       alerts: this._alertsRoutes,
+      logger: this._loggerRoutes,
       routeHandlers: this._routesVariantsHandlers,
       core: this._core,
     });
-    tracer.debug(`Processed ${this._routesVariants.length} route variants`);
+    this._loggerRoutes.debug(`Processed ${this._routesVariants.length} route variants`);
   }
 
   load() {
@@ -139,7 +142,7 @@ class Mocks {
   }
 
   _setCurrent(id) {
-    tracer.verbose(`Trying to set current mock as "${id}"`);
+    this._logger.verbose(`Trying to set current mock as "${id}"`);
     let current;
     this._alerts.remove(SETTINGS_ALERT_ID);
     if (!id) {
@@ -167,7 +170,7 @@ class Mocks {
     if (!current) {
       this._alerts.set(EMPTY_ALERT_ID, "No mocks found");
     } else {
-      tracer.info(`Current mock: "${current.id}"`);
+      this._logger.info(`Current mock: "${current.id}"`);
       this._alerts.remove(EMPTY_ALERT_ID);
     }
 
@@ -200,6 +203,7 @@ class Mocks {
       routeVariants: this._routesVariants,
       getGlobalDelay: this.getDelay,
       alerts,
+      logger: this._logger,
     });
   }
 

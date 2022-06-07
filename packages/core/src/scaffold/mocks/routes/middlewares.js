@@ -10,11 +10,9 @@ module.exports = [
     variants: [
       {
         id: "enabled",
-        response: (_req, res, next, mocksServer) => {
+        response: (_req, res, next, core) => {
           res.set("x-mocks-server-example", "some-value");
-          mocksServer.tracer.info(
-            "Custom header added by add-headers:enabled route variant middleware"
-          );
+          core.tracer.info("Custom header added by add-headers:enabled route variant middleware");
           next();
         },
       },

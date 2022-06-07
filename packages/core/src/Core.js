@@ -75,12 +75,15 @@ class Core {
     this._logOption.onChange(tracer.set);
 
     // Create alerts
-    this._alerts = new Alerts("alerts", { logger: this._logger.namespace("alerts") });
+    const alertsLogger = this._logger.namespace("alerts");
+    const alertsLegacyLogger = alertsLogger.namespace("deprecated");
+    this._alerts = new Alerts("alerts", { logger: alertsLogger });
     this._alerts.onChange(() => {
       this._eventEmitter.emit(CHANGE_ALERTS);
     });
     this._alertsLegacy = new AlertsLegacy({
       alerts: this._alerts,
+      logger: alertsLegacyLogger,
     });
 
     // Create mocks loaders
@@ -155,6 +158,7 @@ class Core {
     // Create files loaders
     this._filesLoader = new FilesLoader({
       config: this._configFilesLoader,
+      logger: this._logger.namespace(FilesLoader.id),
       alerts: this._alerts.collection(FilesLoader.id),
       loadMocks: this._mocksLoaders.new(),
       loadRoutes: this._routesLoaders.new(),
@@ -164,6 +168,7 @@ class Core {
     this._scaffold = new Scaffold({
       config: this._config, // It needs the whole configuration to get option properties and create scaffold
       alerts: this._alerts.collection(Scaffold.id),
+      logger: this._logger.namespace(Scaffold.id),
     });
 
     this._inited = false;

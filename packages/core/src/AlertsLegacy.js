@@ -8,11 +8,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const tracer = require("./tracer");
-
 // LEGACY, remove when legacy alerts are removed
 class AlertsLegacy {
-  constructor({ alerts }) {
+  constructor({ alerts, logger }) {
+    this._logger = logger;
     this._deprecatedAlerts = alerts.collection("deprecated");
     this._alerts = alerts;
     this.add = this.add.bind(this);
@@ -38,7 +37,7 @@ class AlertsLegacy {
       "removeAlert",
       `Detected usage of deprecated method 'removeAlerts'. Use alerts instead: https://www.mocks-server.org/docs/plugins-developing-plugins`
     );
-    tracer.silly(`Removing alerts with context "${context}"`);
+    this._logger.silly(`Removing alerts with context "${context}"`);
     // Clean collection with whole context
     const collectionIds = context.split(":");
     const contextCollection = collectionIds.reduce((currentCollection, collectionId) => {
@@ -55,7 +54,7 @@ class AlertsLegacy {
   }
 
   rename(oldContext, newContext) {
-    tracer.silly(`Renaming alerts with context "${oldContext}" to context "${newContext}"`);
+    this._logger.silly(`Renaming alerts with context "${oldContext}" to context "${newContext}"`);
     const collectionIds = oldContext.split(":");
     const newCollectionsIds = newContext.split(":");
     collectionIds.reduce((currentCollection, collectionId, currentIndex) => {

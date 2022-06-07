@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -14,7 +14,6 @@ const { Logger } = require("@mocks-server/logger");
 const Alerts = require("../src/Alerts");
 
 const AlertsLegacy = require("../src/AlertsLegacy");
-const tracer = require("../src/tracer");
 
 function removeDeprecatedAlerts(alerts) {
   return alerts.filter((alert) => !alert.context.startsWith("deprecated"));
@@ -26,17 +25,18 @@ describe("Alerts Legacy", () => {
   let alertsLegacy;
   let alerts;
   let logger;
+  let legacyLogger;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
     sandbox.stub(Logger.prototype, "error");
     sandbox.stub(Logger.prototype, "warn");
-    sandbox.stub(tracer, "error");
-    sandbox.stub(tracer, "warn");
     logger = new Logger();
+    legacyLogger = logger.namespace("deprecated");
     alerts = new Alerts("alerts", { logger });
     callbacks = {
       alerts,
+      logger: legacyLogger,
     };
     alertsLegacy = new AlertsLegacy(callbacks);
   });

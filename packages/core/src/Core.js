@@ -67,7 +67,9 @@ class Core {
     this._configFilesLoader = this._config.addNamespace(FilesLoader.id);
 
     [this._logOption, this._routesHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
-    this._logOption.onChange(this._configLogger.setLevel.bind(this._configLogger));
+    this._logOption.onChange((level) => {
+      this._logger.setLevel(level);
+    });
 
     // LEGACY, to be removed
     this._logOption.onChange(tracer.set);
@@ -145,6 +147,7 @@ class Core {
     // Create server
     this._server = new Server({
       config: this._configServer,
+      logger: this._logger.namespace(Server.id),
       alerts: this._alerts.collection(Server.id),
       mocksRouter: this._mocks.router,
     });

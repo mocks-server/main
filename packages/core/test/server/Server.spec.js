@@ -16,10 +16,11 @@ const { Logger } = require("@mocks-server/logger");
 const LibsMocks = require("../Libs.mocks.js");
 const ConfigMock = require("../Config.mocks");
 const Alerts = require("../../src/Alerts");
+const bodyParser = require("body-parser");
 
 const Server = require("../../src/server/Server");
-const tracer = require("../../src/tracer");
-const middlewares = require("../../src/server/middlewares");
+
+jest.mock("body-parser");
 
 const wait = (time = 1000) => {
   return new Promise((resolve) => {
@@ -54,20 +55,18 @@ describe("Server", () => {
 
     processOnStub = sandbox.stub(process, "on");
     sandbox.stub(process, "exit");
-    sandbox.stub(tracer, "error");
-    sandbox.stub(tracer, "info");
-    sandbox.stub(tracer, "debug");
     sandbox.stub(Logger.prototype, "error");
     sandbox.stub(Logger.prototype, "info");
     sandbox.stub(Logger.prototype, "debug");
-    sandbox.stub(middlewares, "jsonBodyParser");
-    sandbox.stub(middlewares, "urlEncodedBodyParser");
+    bodyParser.json = sandbox.stub();
+    bodyParser.urlencoded = sandbox.stub();
 
     logger = new Logger();
     alerts = new Alerts("server", { logger });
     callbacks = {
       config: configMock.stubs.namespace,
       alerts,
+      logger,
     };
 
     libsMocks = new LibsMocks();
@@ -291,7 +290,7 @@ describe("Server", () => {
       optionJsonBodyParserEnabled.value = true;
       await server.init();
       await server.start();
-      expect(middlewares.jsonBodyParser.callCount).toEqual(1);
+      expect(bodyParser.json.callCount).toEqual(1);
     });
 
     it("should not add jsonBodyParser middleware if jsonBodyParser option is disabled", async () => {
@@ -299,7 +298,7 @@ describe("Server", () => {
       optionJsonBodyParserEnabled.value = false;
       await server.init();
       await server.start();
-      expect(middlewares.jsonBodyParser.callCount).toEqual(0);
+      expect(bodyParser.json.callCount).toEqual(0);
     });
 
     it("should add urlEncodedBodyParser middleware if urlEncodedBodyParser option is enabled", async () => {
@@ -307,7 +306,7 @@ describe("Server", () => {
       optionUrlEncodedBodyParserEnabled.value = true;
       await server.init();
       await server.start();
-      expect(middlewares.urlEncodedBodyParser.callCount).toEqual(1);
+      expect(bodyParser.urlencoded.callCount).toEqual(1);
     });
 
     it("should not add urlEncodedBodyParser middleware if urlEncodedBodyParser option is disabled", async () => {
@@ -315,7 +314,7 @@ describe("Server", () => {
       optionUrlEncodedBodyParserEnabled.value = false;
       await server.init();
       await server.start();
-      expect(middlewares.urlEncodedBodyParser.callCount).toEqual(0);
+      expect(bodyParser.urlencoded.callCount).toEqual(0);
     });
 
     it("should reject the promise if an error occurs when calling to server listen method", async () => {
@@ -397,7 +396,7 @@ describe("Server", () => {
       optionHost.value = "0.0.0.0";
       await server.start();
       expect(
-        tracer.info.calledWith("Server started and listening at http://localhost:500")
+        logger.info.calledWith("Server started and listening at http://localhost:500")
       ).toEqual(true);
     });
 
@@ -407,7 +406,7 @@ describe("Server", () => {
       optionHost.value = "foo-host";
       await server.start();
       expect(
-        tracer.info.calledWith("Server started and listening at http://foo-host:600")
+        logger.info.calledWith("Server started and listening at http://foo-host:600")
       ).toEqual(true);
     });
 

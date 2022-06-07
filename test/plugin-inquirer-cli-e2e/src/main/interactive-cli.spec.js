@@ -118,7 +118,7 @@ describe("interactive CLI", () => {
       await wait(1000);
       expect(mocks.currentScreen).toEqual(expect.stringContaining("Displaying logs"));
       expect(mocks.currentScreen).toEqual(
-        expect.stringContaining("[Mocks verbose] Request received")
+        expect.stringContaining("[verbose][server] Request received")
       );
       await mocks.pressEnter();
     });

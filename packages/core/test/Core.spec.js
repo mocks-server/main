@@ -56,6 +56,7 @@ describe("Core", () => {
     scaffoldMocks = new ScaffoldMocks();
     sandbox.stub(NestedCollections.prototype, "onChange");
     sandbox.stub(Logger.prototype, "onChangeGlobalStore");
+    sandbox.stub(Logger.prototype, "setLevel");
 
     core = new Core();
     await core.init();
@@ -79,6 +80,12 @@ describe("Core", () => {
       core = new Core(fooConfig);
       await core.init();
       expect(configMocks.stubs.instance.init.getCall(1).args[0]).toEqual(fooConfig);
+    });
+
+    it("should listen to change logger level when log option changes", async () => {
+      core = new Core();
+      configMocks.stubs.option.onChange.getCall(0).args[0]("foo-level");
+      expect(core._logger.setLevel.getCall(1).args[0]).toEqual("foo-level");
     });
 
     it("should listen to change trace level when log option changes", async () => {

@@ -14,6 +14,8 @@ const express = require("express");
 const filterPluginAlerts = (alerts) =>
   alerts.filter((alert) => alert.context.indexOf("plugins") === 0);
 
+const filterLogs = (logs, text) => logs.filter((log) => log.includes(text));
+
 const {
   startCore,
   fetch,
@@ -64,6 +66,7 @@ describe("plugins", () => {
           plugins: {
             register: [pluginConstructor],
           },
+          log: "info",
         });
       });
 
@@ -91,8 +94,20 @@ describe("plugins", () => {
           expect(registerSpy.callCount).toEqual(1);
         });
 
+        it("should have executed logger in register method", () => {
+          expect(
+            filterLogs(core.logs, "[plugins:test-plugin] Log from register method").length
+          ).toEqual(1);
+        });
+
         it("should have executed init method", async () => {
           expect(initSpy.callCount).toEqual(1);
+        });
+
+        it("should have executed logger in init method", () => {
+          expect(
+            filterLogs(core.logs, "[plugins:test-plugin] Log from init method").length
+          ).toEqual(1);
         });
 
         it("should have passed core to init method", async () => {
@@ -107,6 +122,12 @@ describe("plugins", () => {
 
         it("should have executed start method", async () => {
           expect(startSpy.callCount).toEqual(1);
+        });
+
+        it("should have executed logger in start method", () => {
+          expect(
+            filterLogs(core.logs, "[plugins:test-plugin] Log from start method").length
+          ).toEqual(1);
         });
 
         it("should have passed core to start method", async () => {
@@ -151,6 +172,12 @@ describe("plugins", () => {
 
         it("should have removed all alerts", async () => {
           expect(filterPluginAlerts(core.alerts)).toEqual([]);
+        });
+
+        it("should have executed logger in stop method", () => {
+          expect(
+            filterLogs(core.logs, "[plugins:test-plugin] Log from stop method").length
+          ).toEqual(1);
         });
       });
     });
@@ -206,13 +233,15 @@ describe("plugins", () => {
 
   testPlugin("created as an object", {
     id: "test-plugin",
-    register: ({ core: coreInstance, alerts, config }) => {
+    register: ({ core: coreInstance, alerts, config, logger }) => {
+      logger.info("Log from register method");
       coreInstance.addRouter("/foo-path", customRouter);
       alerts.set("test-register", "Warning registering plugin");
       registerSpy(coreInstance);
       configSpy(config);
     },
-    init: ({ core: coreInstance }) => {
+    init: ({ core: coreInstance, logger }) => {
+      logger.info("Log from init method");
       initSpy(
         coreInstance,
         coreInstance.config.namespace("files").option("path").value,
@@ -223,11 +252,13 @@ describe("plugins", () => {
       coreInstance.onChangeAlerts(changeAlertsSpy);
       coreInstance.onChangeMocks(mocksLoadedSpy);
     },
-    start: ({ core: coreInstance, alerts }) => {
+    start: ({ core: coreInstance, alerts, logger }) => {
+      logger.info("Log from start method");
       startSpy(coreInstance);
       alerts.set("test-start", "Warning starting plugin");
     },
-    stop: ({ alerts }) => {
+    stop: ({ alerts, logger }) => {
+      logger.info("Log from stop method");
       alerts.clean();
     },
   });
@@ -255,14 +286,16 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      constructor({ core: coreInstance, alerts, config }) {
+      constructor({ core: coreInstance, alerts, config, logger }) {
+        logger.info("Log from register method");
         this._core = coreInstance;
         coreInstance.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy(coreInstance);
         configSpy(config);
       }
-      init({ core: coreInstance }) {
+      init({ core: coreInstance, logger }) {
+        logger.info("Log from init method");
         initSpy(
           coreInstance,
           coreInstance.config.namespace("files").option("path").value,
@@ -273,11 +306,13 @@ describe("plugins", () => {
         coreInstance.onChangeAlerts(changeAlertsSpy);
         coreInstance.onChangeMocks(mocksLoadedSpy);
       }
-      start({ core: coreInstance, alerts }) {
+      start({ core: coreInstance, alerts, logger }) {
+        logger.info("Log from start method");
         alerts.set("test-start", "Warning starting plugin");
         startSpy(coreInstance);
       }
-      stop({ alerts }) {
+      stop({ alerts, logger }) {
+        logger.info("Log from stop method");
         alerts.clean();
       }
     }
@@ -290,13 +325,15 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      register({ core: coreInstance, alerts, config }) {
+      register({ core: coreInstance, alerts, config, logger }) {
+        logger.info("Log from register method");
         coreInstance.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy(coreInstance);
         configSpy(config);
       }
-      init({ core: coreInstance }) {
+      init({ core: coreInstance, logger }) {
+        logger.info("Log from init method");
         initSpy(
           coreInstance,
           coreInstance.config.namespace("files").option("path").value,
@@ -307,11 +344,13 @@ describe("plugins", () => {
         coreInstance.onChangeAlerts(changeAlertsSpy);
         coreInstance.onChangeMocks(mocksLoadedSpy);
       }
-      start({ core: coreInstance, alerts }) {
+      start({ core: coreInstance, alerts, logger }) {
+        logger.info("Log from start method");
         alerts.set("test-start", "Warning starting plugin");
         startSpy(coreInstance);
       }
-      stop({ alerts }) {
+      stop({ alerts, logger }) {
+        logger.info("Log from stop method");
         alerts.clean();
       }
     }
@@ -320,13 +359,15 @@ describe("plugins", () => {
   testPlugin(
     "created as a Class with register method and without static id",
     class Plugin {
-      register({ core: coreInstance, alerts, config }) {
+      register({ core: coreInstance, alerts, config, logger }) {
+        logger.info("Log from register method");
         coreInstance.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy(coreInstance);
         configSpy(config);
       }
-      init({ core: coreInstance }) {
+      init({ core: coreInstance, logger }) {
+        logger.info("Log from init method");
         initSpy(
           coreInstance,
           coreInstance.config.namespace("files").option("path").value,
@@ -337,11 +378,13 @@ describe("plugins", () => {
         coreInstance.onChangeAlerts(changeAlertsSpy);
         coreInstance.onChangeMocks(mocksLoadedSpy);
       }
-      start({ core: coreInstance, alerts }) {
+      start({ core: coreInstance, alerts, logger }) {
+        logger.info("Log from start method");
         alerts.set("test-start", "Warning starting plugin");
         startSpy(coreInstance);
       }
-      stop({ alerts }) {
+      stop({ alerts, logger }) {
+        logger.info("Log from stop method");
         alerts.clean();
       }
       get id() {
@@ -378,11 +421,13 @@ describe("plugins", () => {
     registerSpy(coreInstance);
     return {
       id: "test-plugin",
-      register({ config, alerts }) {
+      register({ config, alerts, logger }) {
+        logger.info("Log from register method");
         configSpy(config);
         alerts.set("test-register", "Warning registering plugin");
       },
-      init: ({ core: coreIns }) => {
+      init: ({ core: coreIns, logger }) => {
+        logger.info("Log from init method");
         initSpy(
           coreIns,
           coreIns.config.namespace("files").option("path").value,
@@ -393,11 +438,13 @@ describe("plugins", () => {
         coreIns.onChangeAlerts(changeAlertsSpy);
         coreIns.onChangeMocks(mocksLoadedSpy);
       },
-      start: ({ alerts: alertsHere }) => {
+      start: ({ alerts: alertsHere, logger }) => {
+        logger.info("Log from start method");
         alertsHere.set("test-start", "Warning starting plugin");
         startSpy(coreInstance);
       },
-      stop: ({ alerts: alertsHere }) => {
+      stop: ({ alerts: alertsHere, logger }) => {
+        logger.info("Log from stop method");
         alertsHere.clean();
       },
     };
@@ -428,13 +475,15 @@ describe("plugins", () => {
   testPlugin("created as a function returning register property", () => {
     return {
       id: "test-plugin",
-      register: ({ core: coreInstance, alerts, config }) => {
+      register: ({ core: coreInstance, alerts, config, logger }) => {
+        logger.info("Log from register method");
         coreInstance.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy(coreInstance);
         configSpy(config);
       },
-      init: ({ core: coreInstance }) => {
+      init: ({ core: coreInstance, logger }) => {
+        logger.info("Log from init method");
         initSpy(
           coreInstance,
           coreInstance.config.namespace("files").option("path").value,
@@ -445,11 +494,13 @@ describe("plugins", () => {
         coreInstance.onChangeAlerts(changeAlertsSpy);
         coreInstance.onChangeMocks(mocksLoadedSpy);
       },
-      start: ({ core: coreInstance, alerts }) => {
+      start: ({ core: coreInstance, alerts, logger }) => {
+        logger.info("Log from start method");
         alerts.set("test-start", "Warning starting plugin");
         startSpy(coreInstance);
       },
-      stop: ({ alerts }) => {
+      stop: ({ alerts, logger }) => {
+        logger.info("Log from stop method");
         alerts.clean();
       },
     };

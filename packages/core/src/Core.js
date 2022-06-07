@@ -14,7 +14,7 @@ const EventEmitter = require("events");
 const Config = require("@mocks-server/config");
 const { Logger } = require("@mocks-server/logger");
 
-const { CHANGE_MOCKS, CHANGE_ALERTS } = require("./eventNames");
+const { CHANGE_MOCKS, CHANGE_ALERTS, CHANGE_LOGS } = require("./eventNames");
 const tracer = require("./tracer");
 const Loaders = require("./Loaders");
 const AlertsLegacy = require("./AlertsLegacy");
@@ -55,6 +55,9 @@ class Core {
     // Create logger
     this._logger = new Logger();
     this._configLogger = this._logger.namespace("config");
+    this._logger.onChangeGlobalStore(() => {
+      this._eventEmitter.emit(CHANGE_LOGS);
+    });
 
     // Create config
     this._config = new Config({ moduleName: MODULE_NAME });
@@ -249,6 +252,10 @@ class Core {
     return addEventListener(listener, CHANGE_ALERTS, this._eventEmitter);
   }
 
+  onChangeLogs(listener) {
+    return addEventListener(listener, CHANGE_LOGS, this._eventEmitter);
+  }
+
   // Expose Server methods and getters
 
   restartServer() {
@@ -277,6 +284,10 @@ class Core {
   // LEGACY, to be removed
   get tracer() {
     return tracer;
+  }
+
+  get logs() {
+    return this._logger.globalStore;
   }
 
   get config() {

@@ -10,6 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 const NestedCollections = require("@mocks-server/nested-collections");
+const { Logger } = require("@mocks-server/logger");
 
 const MocksMock = require("./mocks/Mocks.mock.js");
 const ServerMocks = require("./server/Server.mocks.js");
@@ -54,6 +55,7 @@ describe("Core", () => {
     filesLoaderMocks = new FilesLoaderMocks();
     scaffoldMocks = new ScaffoldMocks();
     sandbox.stub(NestedCollections.prototype, "onChange");
+    sandbox.stub(Logger.prototype, "onChangeGlobalStore");
 
     core = new Core();
     await core.init();
@@ -279,6 +281,26 @@ describe("Core", () => {
     });
   });
 
+  describe("onChangeLogs method", () => {
+    it("should execute callback when logs execute onChangeGlobalStore callback", () => {
+      const spy = sandbox.spy();
+      core.onChangeLogs(spy);
+      Logger.prototype.onChangeGlobalStore.getCall(0).args[0]();
+      expect(spy.callCount).toEqual(1);
+    });
+
+    it("should return a function to remove listener", () => {
+      expect.assertions(2);
+      const spy = sandbox.spy();
+      const removeCallback = core.onChangeLogs(spy);
+      core._eventEmitter.emit("change:logs");
+      expect(spy.callCount).toEqual(1);
+      removeCallback();
+      core._eventEmitter.emit("change:logs");
+      expect(spy.callCount).toEqual(1);
+    });
+  });
+
   describe("when mocksLoaders load", () => {
     it("should not load mocks if routes are not loaded", () => {
       expect.assertions(1);
@@ -348,6 +370,12 @@ describe("Core", () => {
   describe("tracer getter", () => {
     it("should return tracer instance", () => {
       expect(core.tracer).toEqual(tracer);
+    });
+  });
+
+  describe("logs getter", () => {
+    it("should return Logger global store from logs", () => {
+      expect(core.logs).toEqual(core._logger.globalStore);
     });
   });
 

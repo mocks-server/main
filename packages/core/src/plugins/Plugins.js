@@ -11,8 +11,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const isPromise = require("is-promise");
 const { isObject, isFunction } = require("lodash");
 
-const tracer = require("../tracer");
-
 const { scopedAlertsMethods } = require("../support/helpers");
 
 const OPTIONS = [
@@ -38,6 +36,7 @@ class Plugins {
     {
       config,
       alerts,
+      logger,
       addAlert,
       removeAlerts,
       renameAlerts,
@@ -47,6 +46,7 @@ class Plugins {
     core
   ) {
     this._config = config;
+    this._logger = logger;
 
     [this._pluginsToRegister] = this._config.addOptions(OPTIONS);
 
@@ -76,7 +76,7 @@ class Plugins {
     this._alertsRegister.clean();
     this._plugins = this._pluginsToRegister.value;
     return this._registerPlugins().then(() => {
-      tracer.verbose(`Registered ${this._pluginsRegistered} plugins without errors`);
+      this._logger.verbose(`Registered ${this._pluginsRegistered} plugins without errors`);
       return Promise.resolve();
     });
   }
@@ -84,7 +84,7 @@ class Plugins {
   init() {
     this._alertsInit.clean();
     return this._initPlugins().then(() => {
-      tracer.verbose(`Initializated ${this._pluginsInitialized} plugins without errors`);
+      this._logger.verbose(`Initializated ${this._pluginsInitialized} plugins without errors`);
       return Promise.resolve();
     });
   }
@@ -92,7 +92,7 @@ class Plugins {
   start() {
     this._alertsStart.clean();
     return this._startPlugins().then(() => {
-      tracer.verbose(`Started ${this._pluginsStarted} plugins without errors`);
+      this._logger.verbose(`Started ${this._pluginsStarted} plugins without errors`);
       return Promise.resolve();
     });
   }
@@ -100,7 +100,7 @@ class Plugins {
   stop() {
     this._alertsStop.clean();
     return this._stopPlugins().then(() => {
-      tracer.verbose(`Stopped ${this._pluginsStopped} plugins without errors`);
+      this._logger.verbose(`Stopped ${this._pluginsStopped} plugins without errors`);
       return Promise.resolve();
     });
   }
@@ -126,6 +126,7 @@ class Plugins {
     let pluginInstance,
       pluginConfig,
       pluginAlerts,
+      pluginLogger,
       optionsAdded = false;
     const pluginOptions = { core: this._core, ...pluginMethods };
     if (isObject(Plugin) && !isFunction(Plugin)) {
@@ -137,11 +138,13 @@ class Plugins {
         if (Plugin.id) {
           pluginConfig = this._config.addNamespace(Plugin.id);
           pluginAlerts = this._alerts.collection(Plugin.id);
+          pluginLogger = this._logger.namespace(Plugin.id);
         }
         const pluginFinalOptions = {
           ...pluginOptions,
           config: pluginConfig,
           alerts: pluginAlerts,
+          logger: pluginLogger,
         };
         pluginInstance = new Plugin(pluginFinalOptions);
         this._pluginsOptions.push(pluginFinalOptions);
@@ -169,11 +172,22 @@ class Plugins {
       isFunction(pluginInstance.start) ||
       isFunction(pluginInstance.stop)
     ) {
-      let pluginFinalOptions = { ...pluginOptions, config: pluginConfig, alerts: pluginAlerts };
+      let pluginFinalOptions = {
+        ...pluginOptions,
+        config: pluginConfig,
+        alerts: pluginAlerts,
+        logger: pluginLogger,
+      };
       if (!pluginConfig && pluginInstance.id) {
         pluginConfig = this._config.addNamespace(pluginInstance.id);
         pluginAlerts = this._alerts.collection(pluginInstance.id);
-        pluginFinalOptions = { ...pluginOptions, config: pluginConfig, alerts: pluginAlerts };
+        pluginLogger = this._logger.namespace(pluginInstance.id);
+        pluginFinalOptions = {
+          ...pluginOptions,
+          config: pluginConfig,
+          alerts: pluginAlerts,
+          logger: pluginLogger,
+        };
         if (optionsAdded) {
           this._pluginsOptions.pop();
         }
@@ -220,7 +234,7 @@ class Plugins {
     this._pluginsInitialized = this._pluginsInitialized - 1;
     const pluginId = this._pluginId(index);
     this._alertsInit.set(pluginId, `Error initializating plugin "${pluginId}"`, error);
-    tracer.debug(error.toString());
+    this._logger.debug(error.toString());
     return Promise.resolve();
   }
 
@@ -237,7 +251,7 @@ class Plugins {
       this._pluginsInitialized = this._pluginsInitialized - 1;
       return initNextPlugin();
     }
-    tracer.debug(`Initializing plugin "${pluginId}"`);
+    this._logger.debug(`Initializing plugin "${pluginId}"`);
     let pluginInit;
     try {
       pluginInit = this._pluginsInstances[pluginIndex].init(this._pluginsOptions[pluginIndex]);
@@ -259,7 +273,7 @@ class Plugins {
     this._pluginsStarted = this._pluginsStarted - 1;
     const pluginId = this._pluginId(index);
     this._alertsStart.set(pluginId, `Error starting plugin "${pluginId}"`, error);
-    tracer.debug(error.toString());
+    this._logger.debug(error.toString());
     return Promise.resolve();
   }
 
@@ -276,7 +290,7 @@ class Plugins {
       this._pluginsStarted = this._pluginsStarted - 1;
       return startNextPlugin();
     }
-    tracer.debug(`Starting plugin "${pluginId}"`);
+    this._logger.debug(`Starting plugin "${pluginId}"`);
     let pluginStart;
     try {
       pluginStart = this._pluginsInstances[pluginIndex].start(this._pluginsOptions[pluginIndex]);
@@ -298,7 +312,7 @@ class Plugins {
     this._pluginsStopped = this._pluginsStopped - 1;
     const pluginId = this._pluginId(index);
     this._alertsStop.set(pluginId, `Error stopping plugin "${pluginId}"`, error);
-    tracer.debug(error.toString());
+    this._logger.debug(error.toString());
     return Promise.resolve();
   }
 
@@ -316,7 +330,7 @@ class Plugins {
       this._pluginsStopped = this._pluginsStopped - 1;
       return stopNextPlugin();
     }
-    tracer.debug(`Stopping plugin "${pluginId}"`);
+    this._logger.debug(`Stopping plugin "${pluginId}"`);
     let pluginStop;
     try {
       pluginStop = this._pluginsInstances[pluginIndex].stop(this._pluginsOptions[pluginIndex]);

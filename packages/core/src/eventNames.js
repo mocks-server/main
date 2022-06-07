@@ -11,4 +11,5 @@ Unless required by applicable law or agreed to in writing, software distributed 
 module.exports = {
   CHANGE_MOCKS: "change:mocks",
   CHANGE_ALERTS: "change:alerts",
+  CHANGE_LOGS: "change:logs",
 };

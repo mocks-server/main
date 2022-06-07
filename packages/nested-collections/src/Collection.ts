@@ -2,6 +2,8 @@ import EventEmitter from "events";
 
 import { CHANGE_EVENT, EventListener, addEventListener } from "./events";
 
+export { EventListener } from "./events";
+
 export type elementId = string | null;
 
 export interface ElementBasics {

@@ -201,7 +201,11 @@ function getVariantHandler({ route, variant, variantIndex, routeHandlers, core, 
         url: route.url,
         method: route.method,
       },
-      core
+      // TODO, pass a custom core
+      core,
+      {
+        logger, // Do not document this parameter, because it will be removed in next minor version
+      }
     );
     routeHandler.delay = getRouteHandlerDelay(variant, route);
     routeHandler.id = variant.id;

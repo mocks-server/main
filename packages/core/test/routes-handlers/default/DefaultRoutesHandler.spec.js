@@ -9,8 +9,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
-const CoreMocks = require("../../Core.mocks.js");
+const { Logger } = require("@mocks-server/logger");
 
+const CoreMocks = require("../../Core.mocks.js");
 const DefaultRoutesHandler = require("../../../src/routes-handlers/default/DefaultRoutesHandler");
 
 describe("DefaultRoutesHandler", () => {
@@ -44,7 +45,9 @@ describe("DefaultRoutesHandler", () => {
     };
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
-    defaultRoutesHandler = new DefaultRoutesHandler(FOO_ROUTE, coreInstance);
+    defaultRoutesHandler = new DefaultRoutesHandler(FOO_ROUTE, coreInstance, {
+      logger: new Logger(),
+    });
   });
 
   afterEach(() => {
@@ -74,7 +77,10 @@ describe("DefaultRoutesHandler", () => {
             // do nothing
           },
         },
-        coreInstance
+        coreInstance,
+        {
+          logger: new Logger(),
+        }
       );
       expect(defaultRoutesHandler.plainResponsePreview).toEqual(null);
     });
@@ -91,7 +97,10 @@ describe("DefaultRoutesHandler", () => {
       const FOO_HEADERS = { foo: "foo" };
       defaultRoutesHandler = new DefaultRoutesHandler(
         { ...FOO_ROUTE, response: { ...FOO_ROUTE.response, headers: FOO_HEADERS } },
-        coreInstance
+        coreInstance,
+        {
+          logger: new Logger(),
+        }
       );
       defaultRoutesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
       expect(expressStubs.res.set.getCall(0).args[0]).toEqual(FOO_HEADERS);
@@ -101,7 +110,10 @@ describe("DefaultRoutesHandler", () => {
       const fooResponseMethod = sandbox.stub();
       defaultRoutesHandler = new DefaultRoutesHandler(
         { ...FOO_ROUTE, response: fooResponseMethod },
-        coreInstance
+        coreInstance,
+        {
+          logger: new Logger(),
+        }
       );
       defaultRoutesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
       expect(fooResponseMethod.getCall(0).args[0]).toEqual(expressStubs.req);
@@ -118,7 +130,10 @@ describe("DefaultRoutesHandler", () => {
             // do nothing
           },
         },
-        coreInstance
+        coreInstance,
+        {
+          logger: new Logger(),
+        }
       );
       expect(defaultRoutesHandler.plainResponsePreview).toEqual(null);
     });

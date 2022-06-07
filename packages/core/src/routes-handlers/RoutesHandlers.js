@@ -14,7 +14,8 @@ const tracer = require("../tracer");
 const DefaultRoutesHandler = require("./default/DefaultRoutesHandler");
 
 class RoutesHandlers {
-  constructor() {
+  constructor({ logger }) {
+    this._logger = logger;
     this._registeredRouteHandlers = [];
     this._routeHandlers = [DefaultRoutesHandler];
   }
@@ -26,7 +27,7 @@ class RoutesHandlers {
   register(routeHandlers = []) {
     this._routeHandlers = this._routeHandlers.concat(routeHandlers);
     return this._registerHandlers().then(() => {
-      tracer.verbose(
+      this._logger.verbose(
         `Registered ${this._registeredRouteHandlers.length} routes handlers without errors`
       );
       return Promise.resolve();

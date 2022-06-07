@@ -125,7 +125,9 @@ class Core {
     );
 
     // Create routes handlers
-    this._routesHandlers = new RoutesHandlers();
+    this._routesHandlers = new RoutesHandlers({
+      logger: this._logger.namespace("routesHandlers"),
+    });
 
     // Create mocks
     this._mocks = new Mocks(

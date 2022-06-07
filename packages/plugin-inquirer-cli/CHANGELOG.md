@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGE
 
+## [unreleased]
+### Changed
+- refactor: Remove unused property
+
 ## [3.0.1] - 2022-06-03
 
 ### Changed

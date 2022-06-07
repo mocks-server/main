@@ -269,7 +269,7 @@ describe("Cli", () => {
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(0);
     });
 
-    it("should silent core tracer", () => {
+    it("should silent core logs", () => {
       expect(optionLog.value).toEqual("silent");
     });
 

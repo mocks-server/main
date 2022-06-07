@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Javier Brea
+Copyright 2020-2022 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -17,14 +17,14 @@ const Boom = require("@hapi/boom");
 const { addCollectionMiddleware } = require("./support/middlewares");
 
 class CustomRoutesVariants {
-  constructor(core) {
+  constructor({ core, logger }) {
     this._core = core;
-    this._tracer = core.tracer;
+    this._logger = logger;
     this._router = express.Router();
     addCollectionMiddleware(this._router, {
       name: "custom routes variants",
       getItems: this._getCollection.bind(this),
-      tracer: core.tracer,
+      logger: this._logger,
     });
 
     this._router.post("/", this.add.bind(this));

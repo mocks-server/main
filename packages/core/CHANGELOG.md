@@ -10,6 +10,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+### Changed
+- feat: Use new logger. Deprecate `tracer` in core API. Provide namespaced loggers to plugins
+
+### Added
+- feat: Add `onChangeLogs` method, allowing to execute a callback whenever logs changes
+- feat: Add `logs` getter, returning an array with all logs
+
 ## [3.1.0] - 2022-06-03
 
 ### Changed

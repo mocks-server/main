@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Javier Brea
+Copyright 2020-2022 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -16,20 +16,20 @@ const express = require("express");
 const { addCollectionMiddleware, addModelMiddleware } = require("./support/middlewares");
 
 class AlertsApi {
-  constructor(core) {
+  constructor({ core, logger }) {
     this._core = core;
-    this._tracer = core.tracer;
+    this._logger = logger;
     this._router = express.Router();
     addCollectionMiddleware(this._router, {
       name: "alerts",
       getItems: this._parseCollection.bind(this),
-      tracer: core.tracer,
+      logger: this._logger.namespace("alerts"),
     });
     addModelMiddleware(this._router, {
       name: "alert",
       getItems: this._getCollection.bind(this),
       parseItem: this._parseModel.bind(this),
-      tracer: core.tracer,
+      logger: this._logger.namespace("alert"),
       finder: (context) => (item) => item.context === context,
     });
   }

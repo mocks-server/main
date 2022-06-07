@@ -129,7 +129,6 @@ class Cli {
   constructor({ core, config }) {
     this._config = config;
     this._core = core;
-    this._tracer = core.tracer;
     this._inited = false;
     this._started = false;
     this._currentScreen = null;

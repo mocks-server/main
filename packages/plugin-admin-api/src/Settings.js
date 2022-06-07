@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -17,9 +17,9 @@ const Boom = require("@hapi/boom");
 const { PLUGIN_NAME } = require("./support/constants");
 
 class SettingsApi {
-  constructor(core) {
+  constructor({ core, logger }) {
     this._core = core;
-    this._tracer = core.tracer;
+    this._logger = logger;
     this._config = this._core.config;
     this._router = express.Router();
     this._router.patch("/", this.patch.bind(this));
@@ -43,7 +43,7 @@ class SettingsApi {
   }
 
   get(req, res) {
-    this._tracer.verbose(`${PLUGIN_NAME}: Sending settings | ${req.id}`);
+    this._logger.verbose(`${PLUGIN_NAME}: Sending settings | ${req.id}`);
     res.status(200);
     res.send(this._config.value);
   }

@@ -12,7 +12,7 @@ module.exports = [
         id: "enabled",
         response: (_req, res, next, core) => {
           res.set("x-mocks-server-example", "some-value");
-          core.tracer.info("Custom header added by add-headers:enabled route variant middleware");
+          core.logger.info("Custom header added by add-headers:enabled route variant middleware");
           next();
         },
       },

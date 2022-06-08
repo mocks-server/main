@@ -29,6 +29,7 @@
     "test:unit": "jest"
   },
   "dependencies": {
+    "chalk": "4.1.1",
     "winston": "3.7.2",
     "winston-array-transport": "1.1.9"
   },

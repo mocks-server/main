@@ -42,6 +42,9 @@ const { getIds, compileRouteValidator } = require("./validations");
 
 const SETTINGS_ALERT_ID = "settings";
 const EMPTY_ALERT_ID = "empty";
+const LOAD_MOCKS_NAMESPACE = "loadMocks";
+const LOAD_ROUTES_NAMESPACE = "loadRoutes";
+const ROUTES_NAMESPACE = "routes";
 
 class Mocks {
   static get id() {
@@ -50,7 +53,9 @@ class Mocks {
 
   constructor({ config, getLoadedMocks, logger, getLoadedRoutes, onChange, alerts }, core) {
     this._logger = logger;
-    this._loggerRoutes = logger.namespace("routes");
+    this._loggerLoadRoutes = logger.namespace(LOAD_ROUTES_NAMESPACE);
+    this._loggerLoadMocks = logger.namespace(LOAD_MOCKS_NAMESPACE);
+    this._loggerRoutes = logger.namespace(ROUTES_NAMESPACE);
 
     this._config = config;
     [this._currentMockOption, this._currentDelayOption] = this._config.addOptions(OPTIONS);
@@ -62,8 +67,9 @@ class Mocks {
     this._core = core;
 
     this._alerts = alerts;
-    this._alertsMocks = alerts.collection("load-mocks");
-    this._alertsRoutes = alerts.collection("load-routes");
+    this._alertsLoadRoutes = alerts.collection(LOAD_ROUTES_NAMESPACE);
+    this._alertsMocks = alerts.collection(LOAD_MOCKS_NAMESPACE);
+    this._alertsRoutes = alerts.collection(ROUTES_NAMESPACE);
 
     this._router = null;
     this._mocksDefinitions = [];
@@ -96,28 +102,30 @@ class Mocks {
   }
 
   _processMocks() {
-    this._logger.debug("Processing loaded mocks");
-    this._logger.silly(JSON.stringify(this._mocksDefinitions));
+    this._loggerLoadMocks.debug("Processing loaded mocks");
+    this._loggerLoadMocks.silly(JSON.stringify(this._mocksDefinitions));
     this._mocks = getMocks({
       mocksDefinitions: this._mocksDefinitions,
       alerts: this._alertsMocks,
-      logger: this._logger,
+      logger: this._loggerLoadMocks,
       routeVariants: this._routesVariants,
       getGlobalDelay: this.getDelay,
     });
   }
 
   _processRoutes() {
-    this._loggerRoutes.debug("Processing loaded routes");
-    this._loggerRoutes.silly(JSON.stringify(this._routesDefinitions));
+    this._loggerLoadRoutes.debug("Processing loaded routes");
+    this._loggerLoadRoutes.silly(JSON.stringify(this._routesDefinitions));
     this._routesVariants = getRouteVariants({
       routesDefinitions: this._routesDefinitions,
-      alerts: this._alertsRoutes,
-      logger: this._loggerRoutes,
+      alerts: this._alertsLoadRoutes,
+      alertsRoutes: this._alertsRoutes,
+      logger: this._loggerLoadRoutes,
+      loggerRoutes: this._loggerRoutes,
       routeHandlers: this._routesVariantsHandlers,
       core: this._core,
     });
-    this._loggerRoutes.debug(`Processed ${this._routesVariants.length} route variants`);
+    this._loggerLoadRoutes.debug(`Processed ${this._routesVariants.length} route variants`);
   }
 
   load() {
@@ -203,7 +211,7 @@ class Mocks {
       routeVariants: this._routesVariants,
       getGlobalDelay: this.getDelay,
       alerts,
-      logger: this._logger,
+      logger: this._loggerLoadMocks,
     });
   }
 

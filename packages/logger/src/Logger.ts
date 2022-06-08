@@ -2,6 +2,7 @@ import EventEmitter from "events";
 
 import winston from "winston";
 import ArrayTransport from "winston-array-transport";
+import chalk from "chalk";
 
 import { observableStore, CHANGE_EVENT, addEventListener } from "./events";
 
@@ -60,10 +61,16 @@ const TRANSPORT_CONSOLE: TransportConsole = "console";
 const TRANSPORT_STORE: TransportStore = "store";
 const TRANSPORT_GLOBAL_STORE: TransportGlobalStore = "globalStore";
 
-const formatLog = winston.format.printf(logTemplate);
 const formatTimestamp = winston.format.timestamp({
     format: TIME_FORMAT,
   });
+
+function colourLabel(label: Label ): Label {
+  if (!label.length) {
+    return "";
+  }
+  return chalk.grey(label);
+}
 
 function formatLabelOrLevel(labelOrLevel: Label | Level): Log {
   if (!labelOrLevel.length) {
@@ -72,9 +79,21 @@ function formatLabelOrLevel(labelOrLevel: Label | Level): Log {
   return `[${labelOrLevel}]`;
 }
 
-function logTemplate(log: winston.Logform.TransformableInfo): Log {
-  return `${log.timestamp} ${formatLabelOrLevel(log.level)}${formatLabelOrLevel(log.label)} ${log.message}`;
+function logTemplate(log: winston.Logform.TransformableInfo, colors = false): Log {
+  const label = colors ? colourLabel(log.label) : log.label;
+  return `${log.timestamp} ${formatLabelOrLevel(log.level)}${formatLabelOrLevel(label)} ${log.message}`;
 }
+
+function colorsTemplate(log: winston.Logform.TransformableInfo): Log {
+  return logTemplate(log, true);
+}
+
+function template(log: winston.Logform.TransformableInfo): Log {
+  return logTemplate(log);
+}
+
+const formatLog = winston.format.printf(colorsTemplate);
+const formatStore = winston.format.printf(template);
 
 function createArrayTransport(store: LogsStore, defaultLevel: Level, storeLimit: StoreLimit): ArrayTransportInstance {
   return new ArrayTransport({
@@ -84,7 +103,7 @@ function createArrayTransport(store: LogsStore, defaultLevel: Level, storeLimit:
     maxListeners: 100, // Array transport does not support setting limit to 0
     format: winston.format.combine(
       formatTimestamp,
-      formatLog
+      formatStore
     ),
   })
 }

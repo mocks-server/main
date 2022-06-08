@@ -12,6 +12,7 @@ const sinon = require("sinon");
 const express = require("express");
 const { Logger } = require("@mocks-server/logger");
 
+const CoreMocks = require("../Core.mocks.js");
 const {
   getVariantId,
   getMockRoutesVariants,
@@ -60,7 +61,7 @@ describe("mocks helpers", () => {
       body: {},
     },
   };
-  let sandbox, alerts, logger;
+  let sandbox, alerts, logger, loggerRoutes, alertsRoutes, coreMocks;
 
   beforeAll(() => {
     compileRouteValidator([{ id: "foo-handler" }]);
@@ -71,11 +72,15 @@ describe("mocks helpers", () => {
     sandbox.stub(Logger.prototype, "warn");
     sandbox.stub(Logger.prototype, "error");
     logger = new Logger();
+    coreMocks = new CoreMocks();
     alerts = new Alerts("foo", { logger });
+    loggerRoutes = new Logger();
+    alertsRoutes = new Alerts("routes", { logger });
   });
 
   afterEach(() => {
     sandbox.restore();
+    coreMocks.restore();
   });
 
   describe("getVariantId", () => {
@@ -564,9 +569,11 @@ describe("mocks helpers", () => {
         variant: {},
         variantIndex: 0,
         routeHandlers: [DefaultRoutesHandler],
-        core: {},
+        core: coreMocks.stubs.instance,
         alerts,
         logger,
+        alertsRoutes,
+        loggerRoutes,
       });
 
       expect(variantHandler).toEqual(null);
@@ -588,9 +595,11 @@ describe("mocks helpers", () => {
         variant: { id: "foo-variant" },
         variantIndex: 0,
         routeHandlers: [DefaultRoutesHandler],
-        core: {},
+        core: coreMocks.stubs.instance,
         alerts,
         logger,
+        alertsRoutes,
+        loggerRoutes,
       });
 
       expect(variantHandler).toEqual(null);
@@ -612,9 +621,11 @@ describe("mocks helpers", () => {
         variant: VALID_VARIANT,
         variantIndex: 0,
         routeHandlers: [DefaultRoutesHandler],
-        core: {},
+        core: coreMocks.stubs.instance,
         alerts,
         logger,
+        alertsRoutes,
+        loggerRoutes,
       });
 
       expect(variantHandler).toBeInstanceOf(DefaultRoutesHandler);
@@ -635,9 +646,11 @@ describe("mocks helpers", () => {
         },
         variantIndex: 0,
         routeHandlers: [FooHandler, DefaultRoutesHandler],
-        core: {},
+        core: coreMocks.stubs.instance,
         alerts,
         logger,
+        alertsRoutes,
+        loggerRoutes,
       });
 
       expect(variantHandler).toEqual(null);
@@ -651,9 +664,11 @@ describe("mocks helpers", () => {
         variant: { ...VALID_VARIANT, delay: 5000 },
         variantIndex: 0,
         routeHandlers: [DefaultRoutesHandler],
-        core: {},
+        core: coreMocks.stubs.instance,
         alerts,
         logger,
+        alertsRoutes,
+        loggerRoutes,
       });
       expect(variantHandler.delay).toEqual(5000);
     });
@@ -668,9 +683,11 @@ describe("mocks helpers", () => {
           },
         ],
         routeHandlers: [DefaultRoutesHandler],
-        core: {},
+        core: coreMocks.stubs.instance,
         alerts,
         logger,
+        alertsRoutes,
+        loggerRoutes,
       });
 
       expect(routeVariants).toEqual([]);
@@ -690,9 +707,11 @@ describe("mocks helpers", () => {
           },
         ],
         routeHandlers: [DefaultRoutesHandler],
-        core: {},
+        core: coreMocks.stubs.instance,
         alerts,
         logger,
+        alertsRoutes,
+        loggerRoutes,
       });
 
       expect(routeVariants).toEqual([]);
@@ -712,9 +731,11 @@ describe("mocks helpers", () => {
           },
         ],
         routeHandlers: [DefaultRoutesHandler],
-        core: {},
+        core: coreMocks.stubs.instance,
         alerts,
         logger,
+        alertsRoutes,
+        loggerRoutes,
       });
 
       expect(routeVariants[0]).toBeInstanceOf(DefaultRoutesHandler);
@@ -740,9 +761,11 @@ describe("mocks helpers", () => {
           {},
         ],
         routeHandlers: [DefaultRoutesHandler],
-        core: {},
+        core: coreMocks.stubs.instance,
         alerts,
         logger,
+        alertsRoutes,
+        loggerRoutes,
       });
 
       expect(routeVariants.length).toEqual(1);
@@ -767,9 +790,11 @@ describe("mocks helpers", () => {
           },
         ],
         routeHandlers: [DefaultRoutesHandler],
-        core: {},
+        core: coreMocks.stubs.instance,
         alerts,
         logger,
+        alertsRoutes,
+        loggerRoutes,
       });
 
       expect(routeVariants.length).toEqual(1);
@@ -789,9 +814,11 @@ describe("mocks helpers", () => {
           },
         ],
         routeHandlers: [DefaultRoutesHandler],
-        core: {},
+        core: coreMocks.stubs.instance,
         alerts,
         logger,
+        alertsRoutes,
+        loggerRoutes,
       });
 
       expect(routeVariants.length).toEqual(1);
@@ -812,9 +839,11 @@ describe("mocks helpers", () => {
           },
         ],
         routeHandlers: [FooHandler],
-        core: {},
+        core: coreMocks.stubs.instance,
         alerts,
         logger,
+        alertsRoutes,
+        loggerRoutes,
       });
 
       expect(routeVariants.length).toEqual(0);

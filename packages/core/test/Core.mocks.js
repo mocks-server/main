@@ -42,6 +42,14 @@ class CoreMock {
         restoreRoutesVariants: this._sandbox.stub(),
       },
       logs: ["foo", "foo2"],
+      logger: {
+        silly: this._sandbox.stub(),
+        debug: this._sandbox.stub(),
+        verbose: this._sandbox.stub(),
+        info: this._sandbox.stub(),
+        warn: this._sandbox.stub(),
+        error: this._sandbox.stub(),
+      },
     };
 
     Core.mockImplementation(() => this._stubs);

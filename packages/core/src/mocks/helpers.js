@@ -10,6 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { flatten, compact } = require("lodash");
 
+const CustomCore = require("../CustomCore");
 const Mock = require("./Mock");
 const {
   variantValidationErrors,
@@ -178,13 +179,33 @@ function findRouteHandler(routeHandlers, handlerId) {
   return routeHandlers.find((routeHandlerCandidate) => routeHandlerCandidate.id === handlerId);
 }
 
-function getVariantHandler({ route, variant, variantIndex, routeHandlers, core, logger, alerts }) {
+function getVariantHandler({
+  route,
+  variant,
+  variantIndex,
+  routeHandlers,
+  core,
+  logger,
+  loggerRoutes,
+  alerts,
+  alertsRoutes,
+}) {
   let routeHandler = null;
   const variantId = getVariantId(route.id, variant.id);
   const handlerId = variant.handler || DEFAULT_ROUTES_HANDLER;
   const Handler = findRouteHandler(routeHandlers, handlerId);
   const variantErrors = variantValidationErrors(route, variant, Handler);
   const variantAlerts = alerts.collection(variant.id || variantIndex);
+
+  const variantNamespace = variantId || getVariantId(route.id, variantIndex);
+  const routeVariantLogger = loggerRoutes.namespace(variantNamespace);
+  const routeVariantAlerts = alertsRoutes.collection(variantNamespace);
+  const routeVariantCustomCore = new CustomCore({
+    core,
+    logger: routeVariantLogger,
+    alerts: routeVariantAlerts,
+  });
+
   variantAlerts.clean();
 
   if (!!variantErrors) {
@@ -201,11 +222,7 @@ function getVariantHandler({ route, variant, variantIndex, routeHandlers, core, 
         url: route.url,
         method: route.method,
       },
-      // TODO, pass a custom core
-      core,
-      {
-        logger, // Do not document this parameter, because it will be removed in next minor version
-      }
+      routeVariantCustomCore
     );
     routeHandler.delay = getRouteHandlerDelay(variant, route);
     routeHandler.id = variant.id;
@@ -220,7 +237,15 @@ function getVariantHandler({ route, variant, variantIndex, routeHandlers, core, 
   return routeHandler;
 }
 
-function getRouteVariants({ routesDefinitions, alerts, logger, routeHandlers, core }) {
+function getRouteVariants({
+  routesDefinitions,
+  alerts,
+  alertsRoutes,
+  logger,
+  loggerRoutes,
+  routeHandlers,
+  core,
+}) {
   let routeIds = [];
   alerts.clean();
   return compact(
@@ -251,6 +276,8 @@ function getRouteVariants({ routesDefinitions, alerts, logger, routeHandlers, co
             routeHandlers,
             core,
             logger,
+            alertsRoutes,
+            loggerRoutes,
             alerts: variantsAlerts,
           });
           if (variantHandler) {

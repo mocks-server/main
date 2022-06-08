@@ -34,7 +34,7 @@ describe("DefaultRoutesHandler", () => {
     sandbox = sinon.createSandbox();
     expressStubs = {
       req: {
-        id: "foo-requrest-id",
+        id: "foo-request-id",
       },
       res: {
         status: sandbox.stub(),

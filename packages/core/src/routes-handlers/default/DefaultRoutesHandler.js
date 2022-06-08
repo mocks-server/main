@@ -56,27 +56,25 @@ class DefaultRoutesHandler {
     };
   }
 
-  // TODO, pass a custom core, the third parameter will be removed in next minor version. It is not documented in the public API
-  constructor(route, core, { logger }) {
+  constructor(route, core) {
     this._response = route.response;
     this._variantId = route.variantId;
-    this._logger = logger;
+    this._logger = core.logger;
     this._core = core;
   }
 
   middleware(req, res, next) {
-    this._logger.info(`Request ${req.method} => ${req.url} => "${this._variantId}"`);
+    this._logger.info(`Request ${req.method} => ${req.url}`);
     if (isFunction(this._response)) {
-      this._logger.debug(
-        `Route variant "${this._variantId}" response is a function, executing middleware | req: ${req.id}`
-      );
+      this._logger.verbose(`Response is a function, executing middleware | req: ${req.id}`);
       this._response(req, res, next, this._core);
     } else {
-      this._logger.debug(`Responding with route variant "${this._variantId}" | req: ${req.id}`);
       if (this._response.headers) {
+        this._logger.debug(`Setting headers | req: ${req.id}`);
         res.set(this._response.headers);
       }
       res.status(this._response.status);
+      this._logger.debug(`Sending response | req: ${req.id}`);
       res.send(this._response.body);
     }
   }

@@ -215,7 +215,7 @@ describe("Mocks", () => {
               message: "Critical errors found while loading mocks: 1",
               error: undefined,
             },
-            collection: "mocks:load-mocks",
+            collection: "mocks:loadMocks",
           },
           {
             id: "validation",
@@ -223,7 +223,7 @@ describe("Mocks", () => {
               message: "Mock is invalid: : type must be object",
               error: undefined,
             },
-            collection: "mocks:load-mocks:0",
+            collection: "mocks:loadMocks:0",
           },
         ]);
       });

@@ -106,6 +106,9 @@ class Core {
       },
     });
 
+    this._loadMocks = this._mocksLoaders.new();
+    this._loadRoutes = this._routesLoaders.new();
+
     // Create plugins
     this._plugins = new Plugins(
       {
@@ -253,6 +256,14 @@ class Core {
     this._routesHandlers.add(RoutesHandler);
   }
 
+  loadMocks(mocks) {
+    this._loadMocks(mocks);
+  }
+
+  loadRoutes(routes) {
+    this._loadRoutes(routes);
+  }
+
   // Listeners
 
   onChangeMocks(listener) {
@@ -283,9 +294,9 @@ class Core {
 
   // Expose child objects
 
+  // LEGACY, change by whole alerts object in next major version
   get alerts() {
-    // LEGACY, change by new alerts getter when legacy alerts are removed
-    return this._alertsLegacy.values;
+    return this._alerts.customFlat;
   }
 
   get mocks() {
@@ -300,6 +311,10 @@ class Core {
 
   get logs() {
     return this._logger.globalStore;
+  }
+
+  get logger() {
+    return this._logger;
   }
 
   get config() {

@@ -66,6 +66,12 @@ describe("Namespaces", () => {
         expect(logger._namespaces.length).toEqual(1);
       });
     });
+
+    describe("root property", () => {
+      it("should return root logger", () => {
+        expect(namespace.namespace("foo-label-2").namespace("foo-label-3").root).toBe(logger);
+      });
+    });
   });
 
   describe("when root logger has no label", () => {

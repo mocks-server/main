@@ -31,6 +31,25 @@ class Alerts extends NestedCollections {
     this._logger.silly(`Removing alert with id '${id}'`);
     return super.remove(id);
   }
+
+  // LEGACY, to be removed in next major version
+  get customFlat() {
+    return this.flat.map((item) => {
+      let context = item.collection;
+      let sep = ":";
+      if (context.startsWith("alerts:")) {
+        context = context.replace("alerts:", "");
+      } else {
+        context = "";
+        sep = "";
+      }
+
+      return {
+        ...item.value,
+        context: `${context}${sep}${item.id}`,
+      };
+    });
+  }
 }
 
 module.exports = Alerts;

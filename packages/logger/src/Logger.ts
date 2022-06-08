@@ -36,6 +36,7 @@ import type {
 
 interface LoggerPrivateOptions {
   parent?: Logger,
+  root?: Logger,
   globalStore?: LogsStore,
   globalStoreTransport?: ArrayTransportInstance,
 }
@@ -146,6 +147,7 @@ export default class Logger {
   private _globalStoreEmitter: EventEmitter = new EventEmitter();
   private _namespaces: Logger[] = [];
   private _parent: Logger | undefined;
+  private _root: Logger;
   private _level: Level;
   private _transportsPinnedLevels: TransportsPinnedLevels = { [TRANSPORT_CONSOLE]: false, [TRANSPORT_STORE]: false };
   private _pinnedLevel: PinnedLevel = false;
@@ -155,8 +157,9 @@ export default class Logger {
    * Creates a root logger
    * @returns Returns a new Logger instance
   */
-  constructor(label: Label = "", { level, storeLimit = DEFAULT_STORE_LIMIT, globalStoreLimit = DEFAULT_STORE_LIMIT }: LoggerOptions = {}, { parent, globalStore, globalStoreTransport }: LoggerPrivateOptions = {}) {
+  constructor(label: Label = "", { level, storeLimit = DEFAULT_STORE_LIMIT, globalStoreLimit = DEFAULT_STORE_LIMIT }: LoggerOptions = {}, { parent, root, globalStore, globalStoreTransport }: LoggerPrivateOptions = {}) {
     this._parent = parent;
+    this._root = root || this;
     const parentLevel = this._parent && this._parent.level;
     const defaultLevel = level || parentLevel || LEVEL_INFO;
     this._level = defaultLevel;
@@ -232,7 +235,7 @@ export default class Logger {
   }
 
   private _createNamespace(label: Label, options: LoggerOptions): Logger {
-    const namespace = new Logger(label, options, { parent: this, globalStoreTransport: this._globalStoreTransport, globalStore: this._globalStore });
+    const namespace = new Logger(label, options, { parent: this, root: this._root, globalStoreTransport: this._globalStoreTransport, globalStore: this._globalStore });
     this._namespaces.push(namespace);
     return namespace;
   }
@@ -295,5 +298,9 @@ export default class Logger {
 
   public onChangeGlobalStore(listener: EventListener) {
     return addEventListener(listener, CHANGE_EVENT, this._globalStoreEmitter);
+  }
+
+  public get root() {
+    return this._root;
   }
 }

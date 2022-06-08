@@ -39,6 +39,7 @@ describe("Core", () => {
   let filesLoaderMocks;
   let scaffoldMocks;
   let core;
+  let mockedLoader;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
@@ -57,6 +58,8 @@ describe("Core", () => {
     sandbox.stub(NestedCollections.prototype, "onChange");
     sandbox.stub(Logger.prototype, "onChangeGlobalStore");
     sandbox.stub(Logger.prototype, "setLevel");
+    mockedLoader = sandbox.stub();
+    loadersMocks.stubs.instance.new.returns(mockedLoader);
 
     core = new Core();
     await core.init();
@@ -85,7 +88,7 @@ describe("Core", () => {
     it("should listen to change logger level when log option changes", async () => {
       core = new Core();
       configMocks.stubs.option.onChange.getCall(0).args[0]("foo-level");
-      expect(core._logger.setLevel.getCall(1).args[0]).toEqual("foo-level");
+      expect(core.logger.setLevel.getCall(1).args[0]).toEqual("foo-level");
     });
 
     it("should listen to change trace level when log option changes", async () => {
@@ -113,6 +116,20 @@ describe("Core", () => {
           FOO_LOADER
         );
       });
+    });
+  });
+
+  describe("loadMocks method", () => {
+    it("should call to mocks loader", () => {
+      core.loadMocks("foo");
+      expect(mockedLoader.getCall(0).args[0]).toEqual("foo");
+    });
+  });
+
+  describe("loadRoutes method", () => {
+    it("should call to mocks loader", () => {
+      core.loadRoutes("foo");
+      expect(mockedLoader.getCall(0).args[0]).toEqual("foo");
     });
   });
 
@@ -382,7 +399,7 @@ describe("Core", () => {
 
   describe("logs getter", () => {
     it("should return Logger global store from logs", () => {
-      expect(core.logs).toEqual(core._logger.globalStore);
+      expect(core.logs).toEqual(core.logger.globalStore);
     });
   });
 

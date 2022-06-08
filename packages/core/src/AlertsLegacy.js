@@ -77,21 +77,7 @@ class AlertsLegacy {
   }
 
   get values() {
-    return this._alerts.flat.map((item) => {
-      let context = item.collection;
-      let sep = ":";
-      if (context.startsWith("alerts:")) {
-        context = context.replace("alerts:", "");
-      } else {
-        context = "";
-        sep = "";
-      }
-
-      return {
-        ...item.value,
-        context: `${context}${sep}${item.id}`,
-      };
-    });
+    return this._alerts.customFlat;
   }
 }
 

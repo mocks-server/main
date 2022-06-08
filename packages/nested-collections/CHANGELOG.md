@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - feat: Export types
+- feat: Add root getter
 
 ## [1.0.0] - 2022-06-03
 

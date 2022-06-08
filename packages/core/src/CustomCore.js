@@ -8,6 +8,8 @@ const CORE_METHODS = [
   "restartServer",
   "addRouter",
   "removeRouter",
+  "loadMocks",
+  "loadRoutes",
 ];
 
 function cloneMethods(origin, dest) {
@@ -34,11 +36,16 @@ class CustomCore {
     cloneMethods(this._core, this);
 
     // Add custom methods
-    this.loadMocks = loadMocks; //add to core?
-    this.loadRoutes = loadRoutes; //add to core?
-    this.config = config; //add to core?
-    this.alerts = alerts; //add to core when legacy core alerts are removed
-    this.logger = logger; //add to core?
+    if (loadMocks) {
+      this.loadMocks = loadMocks;
+    }
+    if (loadRoutes) {
+      this.loadRoutes = loadRoutes;
+    }
+
+    this._config = config;
+    this._alerts = alerts;
+    this._logger = logger;
 
     // LEGACY, to be removed
     this.addAlert = addAlert;
@@ -56,12 +63,26 @@ class CustomCore {
     return this._core.mocks;
   }
 
+  // LEGACY. To be removed
   get tracer() {
+    // Add alert here if the property is used
     return this._core.tracer;
   }
 
   get logs() {
     return this._core.logs;
+  }
+
+  get config() {
+    return this._config || this._core.config;
+  }
+
+  get alerts() {
+    return this._alerts;
+  }
+
+  get logger() {
+    return this._logger;
   }
 }
 

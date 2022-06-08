@@ -50,6 +50,8 @@ class CoreMock {
         warn: this._sandbox.stub(),
         error: this._sandbox.stub(),
       },
+      loadMocks: this._sandbox.stub(),
+      loadRoutes: this._sandbox.stub(),
     };
 
     Core.mockImplementation(() => this._stubs);

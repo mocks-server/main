@@ -17,6 +17,7 @@ export interface CollectionOptions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Decorator?: any;
   parent?: Collection,
+  root?: Collection,
   [x: string | number | symbol]: unknown;
 }
 
@@ -70,6 +71,7 @@ export default class Collection implements ElementBasics {
   private _Decorator: any;
   private _options: CollectionOptions;
   private _parent?: Collection;
+  private _root: Collection;
 
   /**
    * Creates a root collection
@@ -80,6 +82,7 @@ export default class Collection implements ElementBasics {
     this._options = options;
     this._Decorator = options.Decorator || Collection;
     this._parent = options.parent;
+    this._root = options.root || this;
     this._eventEmitter = new EventEmitter();
     this._id = id;
     this._collections = [];
@@ -92,7 +95,7 @@ export default class Collection implements ElementBasics {
   }
 
   private _createCollection(id: elementId): Collection {
-    const collection = new this._Decorator(id, {...this._options, parent: this});
+    const collection = new this._Decorator(id, {...this._options, parent: this, root: this._root });
     collection.onChange(this._emitChange);
     this._collections.push(collection);
     return collection;
@@ -332,5 +335,12 @@ export default class Collection implements ElementBasics {
   */
   public onChange(listener: EventListener) {
     return addEventListener(listener, CHANGE_EVENT, this._eventEmitter);
+  }
+
+  /**
+   * @returns root collection
+  */
+   public get root(): Collection {
+    return this._root;
   }
 }

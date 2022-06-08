@@ -64,6 +64,18 @@ describe("Collection Decorator", () => {
     });
   });
 
+  describe("root", () => {
+    it("should return same collection if it is root", () => {
+      const collection = new CollectionDecorator();
+      expect(collection.root).toBe(collection);
+    });
+
+    it("should return root collection if it is a namespace", () => {
+      const collection = new CollectionDecorator("foo");
+      expect(collection.collection("foo-2").collection("foo-3").root).toBe(collection);
+    });
+  });
+
   describe("set method", () => {
     it("should set the item value when it is an object", () => {
       const collection = new CollectionDecorator();

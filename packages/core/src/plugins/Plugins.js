@@ -12,6 +12,7 @@ const isPromise = require("is-promise");
 const { isObject, isFunction } = require("lodash");
 
 const { scopedAlertsMethods } = require("../support/helpers");
+const CustomCore = require("../CustomCore");
 
 const OPTIONS = [
   {
@@ -127,7 +128,8 @@ class Plugins {
       pluginConfig,
       pluginAlerts,
       pluginLogger,
-      optionsAdded = false;
+      optionsAdded = false,
+      customCore;
     const pluginOptions = { core: this._core, ...pluginMethods };
     if (isObject(Plugin) && !isFunction(Plugin)) {
       pluginInstance = Plugin;
@@ -146,8 +148,9 @@ class Plugins {
           alerts: pluginAlerts,
           logger: pluginLogger,
         };
-        pluginInstance = new Plugin(pluginFinalOptions);
-        this._pluginsOptions.push(pluginFinalOptions);
+        customCore = new CustomCore(pluginFinalOptions);
+        pluginInstance = new Plugin(customCore);
+        this._pluginsOptions.push(customCore);
         optionsAdded = true;
         this._pluginsInstances.push(pluginInstance);
         this._pluginsRegistered++;
@@ -155,7 +158,7 @@ class Plugins {
         if (error.message.includes("is not a constructor")) {
           try {
             const pluginFunc = Plugin;
-            pluginInstance = pluginFunc(pluginOptions) || {};
+            pluginInstance = pluginFunc(new CustomCore(pluginOptions)) || {};
             this._pluginsInstances.push(pluginInstance);
             this._pluginsRegistered++;
           } catch (err) {
@@ -188,16 +191,20 @@ class Plugins {
           alerts: pluginAlerts,
           logger: pluginLogger,
         };
+        customCore = new CustomCore(pluginFinalOptions);
         if (optionsAdded) {
           this._pluginsOptions.pop();
         }
-        this._pluginsOptions.push(pluginFinalOptions);
+        this._pluginsOptions.push(customCore);
       } else {
-        this._pluginsOptions.push(pluginFinalOptions);
+        if (!customCore) {
+          customCore = new CustomCore(pluginFinalOptions);
+        }
+        this._pluginsOptions.push(customCore);
       }
       if (isFunction(pluginInstance.register)) {
         try {
-          pluginInstance.register(pluginFinalOptions);
+          pluginInstance.register(customCore);
         } catch (error) {
           this._catchRegisterError(error, pluginIndex);
           this._pluginsRegistered = this._pluginsRegistered - 1;

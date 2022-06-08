@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -22,7 +22,8 @@ class CoreMock {
       init: this._sandbox.stub().resolves(),
       start: this._sandbox.stub().resolves(),
       stop: this._sandbox.stub().resolves(),
-      restart: this._sandbox.stub().resolves(),
+      addRoutesHandler: this._sandbox.stub(),
+      restartServer: this._sandbox.stub().resolves(),
       tracer: {
         silly: this._sandbox.stub(),
         debug: this._sandbox.stub(),
@@ -33,13 +34,14 @@ class CoreMock {
       },
       addRouter: this._sandbox.stub(),
       removeRouter: this._sandbox.stub(),
-      serverError: null,
-      _eventEmitter: {
-        on: this._sandbox.stub(),
-        removeListener: this._sandbox.stub(),
-        emit: this._sandbox.stub(),
+      onChangeMocks: this._sandbox.stub(),
+      onChangeAlerts: this._sandbox.stub(),
+      onChangeLogs: this._sandbox.stub(),
+      mocks: {
+        useRouteVariant: this._sandbox.stub(),
+        restoreRoutesVariants: this._sandbox.stub(),
       },
-      loadMocks: this._sandbox.stub(),
+      logs: ["foo", "foo2"],
     };
 
     Core.mockImplementation(() => this._stubs);

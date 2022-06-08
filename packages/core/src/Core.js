@@ -294,6 +294,7 @@ class Core {
 
   // LEGACY, to be removed
   get tracer() {
+    // Add alert here if the property is used
     return tracer;
   }
 

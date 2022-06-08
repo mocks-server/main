@@ -160,6 +160,141 @@ describe("Plugins", () => {
       expect(pluginAlerts).toBe(undefined);
     });
 
+    it("should have core mocks available", async () => {
+      let pluginObject;
+      const fooPlugin = {
+        register: ({ mocks }) => {
+          pluginObject = mocks;
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(pluginObject).toBe(coreInstance.mocks);
+    });
+
+    it("should have core tracer available", async () => {
+      let pluginObject;
+      const fooPlugin = {
+        register: ({ tracer }) => {
+          pluginObject = tracer;
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(pluginObject).toBe(coreInstance.tracer);
+    });
+
+    it("should have core logs available", async () => {
+      let pluginObject;
+      const fooPlugin = {
+        register: ({ logs }) => {
+          pluginObject = logs;
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(pluginObject).toBe(coreInstance.logs);
+    });
+
+    it("should have core start method available", async () => {
+      const fooPlugin = {
+        register: ({ start }) => {
+          start();
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(coreInstance.start.callCount).toEqual(1);
+    });
+
+    it("should have core stop method available", async () => {
+      const fooPlugin = {
+        register: ({ stop }) => {
+          stop();
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(coreInstance.stop.callCount).toEqual(1);
+    });
+
+    it("should have core addRoutesHandler method available", async () => {
+      const fooPlugin = {
+        register: ({ addRoutesHandler }) => {
+          addRoutesHandler();
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(coreInstance.addRoutesHandler.callCount).toEqual(1);
+    });
+
+    it("should have core onChangeMocks method available", async () => {
+      const fooPlugin = {
+        register: ({ onChangeMocks }) => {
+          onChangeMocks();
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(coreInstance.onChangeMocks.callCount).toEqual(1);
+    });
+
+    it("should have core onChangeAlerts method available", async () => {
+      const fooPlugin = {
+        register: ({ onChangeAlerts }) => {
+          onChangeAlerts();
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(coreInstance.onChangeAlerts.callCount).toEqual(1);
+    });
+
+    it("should have core onChangeLogs method available", async () => {
+      const fooPlugin = {
+        register: ({ onChangeLogs }) => {
+          onChangeLogs();
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(coreInstance.onChangeLogs.callCount).toEqual(1);
+    });
+
+    it("should have core restartServer method available", async () => {
+      const fooPlugin = {
+        register: ({ restartServer }) => {
+          restartServer();
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(coreInstance.restartServer.callCount).toEqual(1);
+    });
+
+    it("should have core addRouter method available", async () => {
+      const fooPlugin = {
+        register: ({ addRouter }) => {
+          addRouter();
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(coreInstance.addRouter.callCount).toEqual(1);
+    });
+
+    it("should have core removeRouter method available", async () => {
+      const fooPlugin = {
+        register: ({ removeRouter }) => {
+          removeRouter();
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(coreInstance.removeRouter.callCount).toEqual(1);
+    });
+
     it("should not have logs available if object has no id", async () => {
       let pluginLogger;
       const fooPlugin = {

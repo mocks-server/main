@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed
 
+## [Unreleased]
+
+### Added
+- feat: Add `root` getter returning root config object to namespaces. Add it also to root config as an alias in order to keep the same interface.
+
 ## [1.0.2] - 2022-06-03
 
 ### Changed

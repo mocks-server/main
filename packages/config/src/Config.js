@@ -173,7 +173,7 @@ class Config {
         namespaces: this._namespaces,
         options: this._rootNamespace && this._rootNamespace.options,
         allowNoName: !this._rootNamespace,
-      }) || new Namespace(name, { brothers: this._namespaces });
+      }) || new Namespace(name, { brothers: this._namespaces, root: this });
     this._namespaces.push(namespace);
     return namespace;
   }
@@ -204,6 +204,10 @@ class Config {
 
   get options() {
     return this._rootNamespace.options;
+  }
+
+  get root() {
+    return this;
   }
 
   set(configuration = {}, options = {}) {

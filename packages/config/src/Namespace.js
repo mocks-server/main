@@ -10,9 +10,10 @@ const {
 } = require("./namespaces");
 
 class Namespace {
-  constructor(name, { parents = [], brothers }) {
+  constructor(name, { parents = [], brothers, root }) {
     this._brothers = brothers;
     this._parents = parents;
+    this._root = root;
     this._eventEmitter = new EventEmitter();
     this._name = name;
     this._namespaces = [];
@@ -56,7 +57,7 @@ class Namespace {
   addNamespace(name) {
     const namespace =
       checkNamespaceName(name, { namespaces: this._namespaces, options: this._options }) ||
-      new Namespace(name, { parents: [...this._parents, this] });
+      new Namespace(name, { parents: [...this._parents, this], root: this._root });
     this._namespaces.push(namespace);
     return namespace;
   }
@@ -67,6 +68,10 @@ class Namespace {
 
   get parents() {
     return [...this._parents];
+  }
+
+  get root() {
+    return this._root;
   }
 
   get namespaces() {

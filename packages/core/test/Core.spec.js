@@ -34,7 +34,6 @@ describe("Core", () => {
   let pluginsInstance;
   let configMocks;
   let alertsMocks;
-  let alertsInstance;
   let loadersMocks;
   let filesLoaderMocks;
   let scaffoldMocks;
@@ -50,7 +49,6 @@ describe("Core", () => {
     pluginsMocks = new PluginsMocks();
     pluginsInstance = pluginsMocks.stubs.instance;
     alertsMocks = new AlertsMocks();
-    alertsInstance = alertsMocks.stubs.instance;
     loadersMocks = new LoadersMocks();
     configMocks = new ConfigMocks();
     filesLoaderMocks = new FilesLoaderMocks();
@@ -417,7 +415,7 @@ describe("Core", () => {
 
   describe("alerts getter", () => {
     it("should return alerts", () => {
-      expect(core.alerts).toEqual(alertsInstance.values);
+      expect(core.alerts).toEqual(core._alerts.customFlat);
     });
   });
 });

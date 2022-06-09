@@ -85,6 +85,7 @@ class Core {
       alerts: this._alerts,
       logger: alertsLegacyLogger,
     });
+    this._deprecationAlerts = this._alerts.collection("deprecated");
 
     // Create mocks loaders
     this._mocksLoaders = new Loaders({
@@ -305,7 +306,7 @@ class Core {
 
   // LEGACY, to be removed
   get tracer() {
-    // Add alert here if the property is used
+    this._deprecationAlerts.set("tracer", "Usage of tracer is deprecated. Use logger instead");
     return tracer;
   }
 

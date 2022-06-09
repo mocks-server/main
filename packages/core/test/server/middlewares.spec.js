@@ -181,7 +181,6 @@ describe("middlewares", () => {
   describe("jsonBodyParser", () => {
     it("should call to json body parser passing options to it", () => {
       middlewares.jsonBodyParser({ foo: "foo" });
-      console.log(bodyParser.json.callCount);
       expect(bodyParser.json.getCall(0).args[0]).toEqual({ foo: "foo" });
     });
   });

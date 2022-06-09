@@ -118,7 +118,7 @@ describe("plugins using legacy alerts", () => {
           expect(response.body).toEqual(FOO_CUSTOM_RESPONSE);
         });
 
-        it("should have added two plugin alerts", async () => {
+        it("should have added three plugin alerts", async () => {
           const alerts = filterPluginAlerts(core.alerts);
           const registerAlert = alerts.find(
             (alert) => alert.context === "plugins:test-plugin:test-register"
@@ -126,9 +126,15 @@ describe("plugins using legacy alerts", () => {
           const startAlert = alerts.find(
             (alert) => alert.context === "plugins:test-plugin:test-start"
           );
-          expect(alerts.length).toEqual(2);
+          const deprecatedCoreAlert = alerts.find(
+            (alert) => alert.context === "plugins:test-plugin:deprecated:core"
+          );
+          expect(alerts.length).toEqual(3);
           expect(registerAlert.message).toEqual("Warning registering plugin");
           expect(startAlert.message).toEqual("Warning starting plugin");
+          expect(deprecatedCoreAlert.message).toEqual(
+            "Usage of core property is deprecated. Use properties at first level instead"
+          );
         });
 
         it("should have added one deprecation alert", async () => {
@@ -210,7 +216,7 @@ describe("plugins using legacy alerts", () => {
           });
         }
 
-        it("should have added two alerts", async () => {
+        it("should have added three alerts", async () => {
           expect(filterPluginAlerts(core.alerts)).toEqual([
             {
               // Plugin id is still not available in register method
@@ -223,6 +229,12 @@ describe("plugins using legacy alerts", () => {
               context: "plugins:test-plugin:test-start",
               message: "Warning starting plugin",
               error: undefined,
+            },
+            {
+              context: "plugins:test-plugin:deprecated:core",
+              error: undefined,
+              message:
+                "Usage of core property is deprecated. Use properties at first level instead",
             },
           ]);
         });
@@ -261,7 +273,8 @@ describe("plugins using legacy alerts", () => {
   testAsyncPlugin("created as an object", {
     // TODO, allow async register
     id: "test-plugin",
-    register: ({ addAlert, config }) => {
+    register: ({ core: coreInstance, addAlert, config }) => {
+      coreInstance.addRouter("/foo-path", customRouter);
       addAlert("test-register", "Warning registering plugin");
       configSpy(config);
     },
@@ -399,13 +412,13 @@ describe("plugins using legacy alerts", () => {
     }
   );
 
-  testPlugin("created as a function", ({ core: coreInstance, addAlert }) => {
-    coreInstance.addRouter("/foo-path", customRouter);
+  testPlugin("created as a function", ({ addAlert }) => {
     addAlert("test-register", "Warning registering plugin");
-    registerSpy(coreInstance);
     return {
       id: "test-plugin",
-      register({ config }) {
+      register({ core: coreInstance, config, addRouter }) {
+        registerSpy(coreInstance);
+        addRouter("/foo-path", customRouter);
         configSpy(config);
       },
       init: ({ core: coreIns }) => {
@@ -419,7 +432,7 @@ describe("plugins using legacy alerts", () => {
         coreIns.onChangeAlerts(changeAlertsSpy);
         coreIns.onChangeMocks(mocksLoadedSpy);
       },
-      start: ({ addAlert: addAlertHere }) => {
+      start: ({ core: coreInstance, addAlert: addAlertHere }) => {
         addAlertHere("test-start", "Warning starting plugin");
         startSpy(coreInstance);
       },
@@ -432,11 +445,13 @@ describe("plugins using legacy alerts", () => {
   testAsyncPlugin(
     "created as a function",
     ({ core: coreInstance, addAlert }) => {
-      coreInstance.addRouter("/foo-path", customRouter);
       addAlert("test-register", "Warning registering plugin");
       registerSpy(coreInstance);
       return {
         id: "test-plugin",
+        register: ({ core: coreRegisterInstance }) => {
+          coreRegisterInstance.addRouter("/foo-path", customRouter);
+        },
         init: async () => {
           await wait(2000);
         },

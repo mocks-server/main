@@ -45,6 +45,9 @@ class CustomCore {
 
     this._config = config;
     this._alerts = alerts;
+    this._deprecationAlerts = alerts
+      ? alerts.collection("deprecated")
+      : this._core._deprecationAlerts;
     this._logger = logger;
 
     // LEGACY, to be removed
@@ -55,7 +58,11 @@ class CustomCore {
 
   // LEGACY. To be removed
   get core() {
-    // Add alert here if the property is used
+    // TODO, add link to releases URL.
+    this._deprecationAlerts.set(
+      "core",
+      "Usage of core property is deprecated. Use properties at first level instead"
+    );
     return this._core;
   }
 
@@ -63,9 +70,7 @@ class CustomCore {
     return this._core.mocks;
   }
 
-  // LEGACY. To be removed
   get tracer() {
-    // Add alert here if the property is used
     return this._core.tracer;
   }
 

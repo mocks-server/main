@@ -16,8 +16,7 @@ const express = require("express");
 const { version } = require("../package.json");
 
 class AboutApi {
-  constructor({ core, logger }) {
-    this._core = core;
+  constructor({ logger }) {
     this._logger = logger;
     this._router = express.Router();
     this._router.get("/", this.getAbout.bind(this));

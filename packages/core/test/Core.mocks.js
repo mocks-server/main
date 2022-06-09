@@ -52,6 +52,9 @@ class CoreMock {
       },
       loadMocks: this._sandbox.stub(),
       loadRoutes: this._sandbox.stub(),
+      _deprecationAlerts: {
+        set: this._sandbox.stub(),
+      },
     };
 
     Core.mockImplementation(() => this._stubs);

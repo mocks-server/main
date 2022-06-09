@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 
 ### Changed
-- feat: Use new namespaced logger provided to plugins
+- feat: Use new custom core API
 
 ## [3.0.1] - 2022-06-03
 

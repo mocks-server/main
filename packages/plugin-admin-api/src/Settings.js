@@ -17,10 +17,9 @@ const Boom = require("@hapi/boom");
 const { PLUGIN_NAME } = require("./support/constants");
 
 class SettingsApi {
-  constructor({ core, logger }) {
-    this._core = core;
+  constructor({ logger, config }) {
     this._logger = logger;
-    this._config = this._core.config;
+    this._config = config.root;
     this._router = express.Router();
     this._router.patch("/", this.patch.bind(this));
     this._router.get("/", this.get.bind(this));

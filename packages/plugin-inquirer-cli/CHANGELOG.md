@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - refactor: Remove unused property
 
+### Added
+- feat: Display context in errors and warnings
+
 ## [3.0.1] - 2022-06-03
 
 ### Changed

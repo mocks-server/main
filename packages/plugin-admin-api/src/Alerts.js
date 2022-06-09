@@ -16,8 +16,8 @@ const express = require("express");
 const { addCollectionMiddleware, addModelMiddleware } = require("./support/middlewares");
 
 class AlertsApi {
-  constructor({ core, logger }) {
-    this._core = core;
+  constructor({ logger, alerts }) {
+    this._alerts = alerts;
     this._logger = logger;
     this._router = express.Router();
     addCollectionMiddleware(this._router, {
@@ -50,11 +50,11 @@ class AlertsApi {
   }
 
   _parseCollection() {
-    return this._core.alerts.map(this._parseModel);
+    return this._alerts.root.customFlat.map(this._parseModel);
   }
 
   _getCollection() {
-    return this._core.alerts;
+    return this._alerts.root.customFlat;
   }
 
   get router() {

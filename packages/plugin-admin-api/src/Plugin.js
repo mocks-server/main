@@ -47,48 +47,48 @@ class Plugin {
     return PLUGIN_NAME;
   }
 
-  constructor({ core, config, logger }) {
-    this._core = core;
+  constructor({ config, logger, mocks, addRouter, removeRouter, alerts }) {
+    this._addRouterMethod = addRouter;
+    this._removeRouterMethod = removeRouter;
     this._logger = logger;
     this._config = config;
 
     this._adminApiPathOption = this._config.addOption(OPTION);
 
     this._settingsApi = new Settings({
-      core: this._core,
       logger: this._logger.namespace("settings"),
+      config,
     });
     this._alertsApi = new Alerts({
-      core: this._core,
+      alerts,
       logger: this._logger.namespace("alerts"),
     });
     this._aboutApi = new About({
-      core: this._core,
       logger: this._logger.namespace("about"),
     });
     this._customRoutesVariantsApi = new CustomRoutesVariants({
-      core: this._core,
       logger: this._logger.namespace("customRouteVariants"),
+      mocks,
     });
 
     this._mocksApi = readCollectionAndModelRouter({
       collectionName: "mocks",
       modelName: "mock",
-      getItems: () => this._core.mocks.plainMocks,
+      getItems: () => mocks.plainMocks,
       logger: this._logger.namespace("mocks"),
     });
 
     this._routesApi = readCollectionAndModelRouter({
       collectionName: "routes",
       modelName: "route",
-      getItems: () => this._core.mocks.plainRoutes,
+      getItems: () => mocks.plainRoutes,
       logger: this._logger.namespace("routes"),
     });
 
     this._routesVariantsApi = readCollectionAndModelRouter({
       collectionName: "routes variants",
       modelName: "route variant",
-      getItems: () => this._core.mocks.plainRoutesVariants,
+      getItems: () => mocks.plainRoutesVariants,
       logger: this._logger.namespace("routeVariants"),
     });
 
@@ -127,12 +127,12 @@ class Plugin {
   _addRouter() {
     this._removeRouter();
     this._routersPath = this._adminApiPathOption.value;
-    this._core.addRouter(this._routersPath, this._router);
+    this._addRouterMethod(this._routersPath, this._router);
   }
 
   _removeRouter() {
     if (this._routersPath) {
-      this._core.removeRouter(this._routersPath, this._router);
+      this._removeRouterMethod(this._routersPath, this._router);
       this._routersPath = null;
     }
   }

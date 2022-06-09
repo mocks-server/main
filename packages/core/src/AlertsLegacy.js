@@ -22,7 +22,7 @@ class AlertsLegacy {
   add(context, message, error) {
     this._deprecatedAlerts.set(
       "addAlert",
-      `Detected usage of deprecated method 'addAlert'. Use alerts instead: https://www.mocks-server.org/docs/plugins-developing-plugins`
+      `Detected usage of deprecated method 'addAlert'. Use alerts instead: https://www.mocks-server.org/docs/api-mocks-server-api#alerts`
     );
     const collectionIds = context.split(":");
     const alertId = collectionIds.pop();
@@ -35,7 +35,7 @@ class AlertsLegacy {
   remove(context) {
     this._deprecatedAlerts.set(
       "removeAlert",
-      `Detected usage of deprecated method 'removeAlerts'. Use alerts instead: https://www.mocks-server.org/docs/plugins-developing-plugins`
+      `Detected usage of deprecated method 'removeAlerts'. Use alerts instead: https://www.mocks-server.org/docs/api-mocks-server-api#alerts`
     );
     this._logger.silly(`Removing alerts with context "${context}"`);
     // Clean collection with whole context

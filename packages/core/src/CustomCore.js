@@ -61,7 +61,7 @@ class CustomCore {
     // TODO, add link to releases URL.
     this._deprecationAlerts.set(
       "core",
-      "Usage of core property is deprecated. Use properties at first level instead"
+      "Usage of core property is deprecated. Use properties at first level instead: https://www.mocks-server.org/docs/next/guides-migrating-from-v3#plugins"
     );
     return this._core;
   }

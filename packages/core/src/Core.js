@@ -312,13 +312,21 @@ class Core {
     return this._alerts.customFlat;
   }
 
+  // Provides access to alerts API while alerts legacy is maintained
+  get alertsApi() {
+    return this._alerts;
+  }
+
   get mocks() {
     return this._mocks;
   }
 
   // LEGACY, to be removed
   get tracer() {
-    this._deprecationAlerts.set("tracer", "Usage of tracer is deprecated. Use logger instead");
+    this._deprecationAlerts.set(
+      "tracer",
+      "Usage of tracer is deprecated. Use logger instead: https://www.mocks-server.org/docs/next/guides-migrating-from-v3#logger"
+    );
     return tracer;
   }
 

@@ -24,7 +24,7 @@ describe("environment", () => {
       expect(option.value).toEqual("foo-from-env");
     });
 
-    it("should return value from environment in programmaticLoadedValues getter", async () => {
+    it("should return value from environment in envLoadedValues getter", async () => {
       ({ config, namespace, option } = createConfig({ moduleName: "testA" }));
       process.env["TEST_A_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init();
@@ -32,6 +32,20 @@ describe("environment", () => {
         fooNamespace: {
           fooOption: "foo-from-env",
         },
+      });
+    });
+
+    it("should return value of root options from environment in envLoadedValues getter", async () => {
+      ({ config, namespace, option } = createConfig({ moduleName: "testRoot" }));
+      config.addOption({
+        name: "rootOption",
+        type: "string",
+        default: "default-value",
+      });
+      process.env["TEST_ROOT_ROOT_OPTION"] = "foo-from-env";
+      await config.init();
+      expect(config.envLoadedValues).toEqual({
+        rootOption: "foo-from-env",
       });
     });
 

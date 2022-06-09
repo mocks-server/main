@@ -38,7 +38,11 @@ class Environment {
     return namespaces.reduce((config, namespace) => {
       const namespaceConfig = this._readNamespace(namespace);
       if (!isEmpty(namespaceConfig)) {
-        config[namespace.name] = namespaceConfig;
+        if (namespace.name) {
+          config[namespace.name] = namespaceConfig;
+        } else {
+          config = { ...config, ...namespaceConfig };
+        }
       }
       return config;
     }, {});

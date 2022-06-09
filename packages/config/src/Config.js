@@ -190,6 +190,22 @@ class Config {
     return getNamespacesValues(this._namespaces);
   }
 
+  get programmaticLoadedValues() {
+    return { ...this._programmaticConfig };
+  }
+
+  get fileLoadedValues() {
+    return { ...this._fileConfig };
+  }
+
+  get envLoadedValues() {
+    return { ...this._envConfig };
+  }
+
+  get argsLoadedValues() {
+    return { ...this._argsConfig };
+  }
+
   get loadedFile() {
     return this._files.loadedFile;
   }

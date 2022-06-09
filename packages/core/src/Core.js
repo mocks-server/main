@@ -198,6 +198,19 @@ class Core {
     });
   }
 
+  async _loadConfig() {
+    await this._config.load();
+
+    this._configLogger.debug(
+      `Programmatic config: ${JSON.stringify(this._config.programmaticLoadedValues)}`
+    );
+    this._configLogger.debug(`Config from file: ${JSON.stringify(this._config.fileLoadedValues)}`);
+    this._configLogger.debug(`Config from env: ${JSON.stringify(this._config.envLoadedValues)}`);
+    this._configLogger.debug(`Config from args: ${JSON.stringify(this._config.argsLoadedValues)}`);
+    this._configLogger.verbose(`Config: ${JSON.stringify(this._config.value)}`);
+    this._configLogger.info(`Configuration loaded`);
+  }
+
   // Public methods
 
   async init(programmaticConfig) {
@@ -230,8 +243,7 @@ class Core {
       filesLoaderPath: this._filesLoader.path,
     });
 
-    // load config
-    await this._config.load();
+    await this._loadConfig();
 
     // Config is ready, init all
     this._mocks.init(this._routesHandlers.handlers);

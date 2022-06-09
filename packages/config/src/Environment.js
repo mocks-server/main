@@ -1,4 +1,4 @@
-const { isUndefined, snakeCase } = require("lodash");
+const { isUndefined, isEmpty, snakeCase } = require("lodash");
 
 const { getOptionParserWithBooleansAndArrays } = require("./types");
 const { namespaceAndParentNames } = require("./namespaces");
@@ -21,32 +21,31 @@ class Environment {
     return process.env[envVarName(this._moduleName, namespace, optionName)];
   }
 
-  _readNamespace(namespace, config) {
-    let namespaceConfig = config;
-    if (namespace.name) {
-      config[namespace.name] = config[namespace.name] || {};
-      namespaceConfig = config[namespace.name];
-    }
-    namespace.options.forEach((option) => {
+  _readNamespace(namespace) {
+    const values = namespace.options.reduce((optionsValues, option) => {
       const value = this.loadFromEnv(namespace, option.name);
       if (!isUndefined(value)) {
         const parser = getOptionParserWithBooleansAndArrays(option);
-        namespaceConfig[option.name] = parser(value);
+        optionsValues[option.name] = parser(value);
       }
-    });
-    this._readNamespaces(namespace.namespaces, namespaceConfig);
+      return optionsValues;
+    }, {});
+    const namespacesConfig = this._readNamespaces(namespace.namespaces);
+    return { ...values, ...namespacesConfig };
   }
 
-  _readNamespaces(namespaces, config) {
-    namespaces.forEach((namespace) => {
-      this._readNamespace(namespace, config);
-    });
+  _readNamespaces(namespaces) {
+    return namespaces.reduce((config, namespace) => {
+      const namespaceConfig = this._readNamespace(namespace);
+      if (!isEmpty(namespaceConfig)) {
+        config[namespace.name] = namespaceConfig;
+      }
+      return config;
+    }, {});
   }
 
   read(namespaces) {
-    const config = {};
-    this._readNamespaces(namespaces, config);
-    this._config = config;
+    this._config = this._readNamespaces(namespaces);
     return this._config;
   }
 }

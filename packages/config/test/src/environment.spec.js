@@ -24,6 +24,17 @@ describe("environment", () => {
       expect(option.value).toEqual("foo-from-env");
     });
 
+    it("should return value from environment in programmaticLoadedValues getter", async () => {
+      ({ config, namespace, option } = createConfig({ moduleName: "testA" }));
+      process.env["TEST_A_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
+      await config.init();
+      expect(config.envLoadedValues).toEqual({
+        fooNamespace: {
+          fooOption: "foo-from-env",
+        },
+      });
+    });
+
     it("should not return value from it when readEnvironment option is disabled using init argument", async () => {
       ({ config, namespace, option } = createConfig({ moduleName: "testDisabled" }));
       process.env["TEST_DISABLED_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";

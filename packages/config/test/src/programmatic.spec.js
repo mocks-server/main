@@ -72,6 +72,17 @@ describe("programmatic", () => {
       expect(option.value).toEqual("foo-value-2");
     });
 
+    it("should return value in programmaticLoadedValues getter", async () => {
+      await config.init({
+        fooNamespace: { fooOption: "foo-value-2" },
+      });
+      expect(config.programmaticLoadedValues).toEqual({
+        fooNamespace: {
+          fooOption: "foo-value-2",
+        },
+      });
+    });
+
     it("option should get value from it when calling to start", async () => {
       await config.load({
         fooNamespace: { fooOption: "foo-value-2" },

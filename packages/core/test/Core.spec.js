@@ -23,6 +23,7 @@ const ScaffoldMocks = require("./scaffold/Scaffold.mocks.js");
 
 const Core = require("../src/Core");
 const tracer = require("../src/tracer");
+const Alerts = require("../src/Alerts");
 
 describe("Core", () => {
   let sandbox;
@@ -416,6 +417,13 @@ describe("Core", () => {
   describe("alerts getter", () => {
     it("should return alerts", () => {
       expect(core.alerts).toEqual(core._alerts.customFlat);
+    });
+  });
+
+  describe("alertsApi getter", () => {
+    it("should return alerts API", () => {
+      expect(core.alertsApi instanceof Alerts).toBe(true);
+      expect(core.alertsApi.id).toEqual("alerts");
     });
   });
 });

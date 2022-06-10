@@ -30,11 +30,11 @@ const OPTIONS = [
 ];
 
 const {
-  getPlainMocks, //
-  getPlainRoutes, //
-  getPlainRoutesVariants, //
-  addCustomVariant, //
-  getRouteVariants, //
+  getPlainMocks,
+  getPlainRoutes,
+  getPlainRoutesVariants,
+  addCustomVariant,
+  getRouteVariants,
   getMocks,
   getMock,
 } = require("./helpers");

@@ -1,7 +1,7 @@
 {
   "name": "@mocks-server/nested-collections",
-  "version": "1.0.0",
-  "description": "Allows to manage nested collections",
+  "version": "2.0.0",
+  "description": "Nested collections manager",
   "keywords": [
     "namespace",
     "set",

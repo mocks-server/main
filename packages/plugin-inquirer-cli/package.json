@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/plugin-inquirer-cli",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "Mocks server plugin providing an interactive CLI",
   "keywords": [
     "mocks-server-plugin",

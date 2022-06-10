@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [unreleased]
+## [3.2.0] - 2022-06-27
 
 ### Changed
 - feat: Use new logger. Deprecate `tracer` in core API. Provide namespaced loggers to plugins. closes #339 

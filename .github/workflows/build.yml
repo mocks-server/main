@@ -6,7 +6,6 @@ on:
     branches:
       - master
       - release
-      - feat-339-traces
   pull_request:
 jobs:
   get-affected:

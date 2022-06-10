@@ -133,7 +133,9 @@ describe("plugins using legacy alerts", () => {
           expect(registerAlert.message).toEqual("Warning registering plugin");
           expect(startAlert.message).toEqual("Warning starting plugin");
           expect(deprecatedCoreAlert.message).toEqual(
-            "Usage of core property is deprecated. Use properties at first level instead"
+            expect.stringContaining(
+              "Usage of core property is deprecated. Use properties at first level instead"
+            )
           );
         });
 
@@ -234,7 +236,7 @@ describe("plugins using legacy alerts", () => {
               context: "plugins:test-plugin:deprecated:core",
               error: undefined,
               message:
-                "Usage of core property is deprecated. Use properties at first level instead",
+                "Usage of core property is deprecated. Use properties at first level instead: https://www.mocks-server.org/docs/next/guides-migrating-from-v3#plugins",
             },
           ]);
         });

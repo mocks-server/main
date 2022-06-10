@@ -13,13 +13,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 
 ### Changed
-- feat: Use new logger. Deprecate `tracer` in core API. Provide namespaced loggers to plugins
+- feat: Use new logger. Deprecate `tracer` in core API. Provide namespaced loggers to plugins. closes #339 
 - feat: Pass custom core to route variant middlewares and route handlers. The `alerts` and `logger` properties are namespaced for each different route variant.
 - feat: Pass new custom core API to plugins. All core methods are available in the first parameter. The `core` property is still available for backward compatibility, but using it produces an alert.
 
 ### Added
 - feat: Add `onChangeLogs` method, allowing to execute a callback whenever logs changes.
 - feat: Add `logs` getter, returning an array with all logs.
+- feat: Log configuration initial values. closes #333 
 
 ## [3.1.0] - 2022-06-03
 

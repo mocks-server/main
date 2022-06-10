@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -46,13 +46,22 @@ function renderSectionFooter() {
   console.log("");
 }
 
-function renderHeader(description, message, status) {
-  return `${chalk.bold("‧")} ${description}: ${renderWithStatusColor(message, status)}`;
+function renderHeader(description, message, status, context) {
+  const contextToRender = context ? chalk.grey(`[${context}] `) : "";
+  return `${chalk.bold("‧")} ${description}: ${contextToRender}${renderWithStatusColor(
+    message,
+    status
+  )}`;
 }
 
 function renderAlert(alert) {
   const message = alert.error ? `${alert.message}: ${formatError(alert.error)}` : alert.message;
-  return renderHeader(alert.error ? "Error" : "Warning", message, alert.error ? 2 : 1);
+  return renderHeader(
+    alert.error ? "Error" : "Warning",
+    message,
+    alert.error ? 2 : 1,
+    alert.context
+  );
 }
 
 function renderLogsMode() {

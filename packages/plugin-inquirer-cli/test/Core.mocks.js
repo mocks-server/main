@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -29,14 +29,6 @@ class CoreMock {
       start: this._sandbox.stub().resolves(),
       stop: this._sandbox.stub().resolves(),
       restartServer: this._sandbox.stub().resolves(),
-      tracer: {
-        silly: this._sandbox.stub(),
-        debug: this._sandbox.stub(),
-        verbose: this._sandbox.stub(),
-        info: this._sandbox.stub(),
-        warn: this._sandbox.stub(),
-        error: this._sandbox.stub(),
-      },
       onChangeAlerts: this._sandbox.stub().returns(doNothing),
       onChangeMocks: this._sandbox.stub().returns(doNothing),
       addRouter: this._sandbox.stub(),
@@ -52,7 +44,11 @@ class CoreMock {
         restoreRoutesVariants: this._sandbox.stub(),
       },
       config: new ConfigMock().stubs.instance,
-      alerts: [],
+      alerts: {
+        root: {
+          customFlat: [],
+        },
+      },
       serverError: null,
     };
 

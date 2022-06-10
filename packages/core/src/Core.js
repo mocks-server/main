@@ -12,8 +12,9 @@ const deepMerge = require("deepmerge");
 const EventEmitter = require("events");
 
 const Config = require("@mocks-server/config");
+const { Logger } = require("@mocks-server/logger");
 
-const { CHANGE_MOCKS, CHANGE_ALERTS } = require("./eventNames");
+const { CHANGE_MOCKS, CHANGE_ALERTS, CHANGE_LOGS } = require("./eventNames");
 const tracer = require("./tracer");
 const Loaders = require("./Loaders");
 const AlertsLegacy = require("./AlertsLegacy");
@@ -47,11 +48,18 @@ const ROOT_OPTIONS = [
 class Core {
   constructor(programmaticConfig = {}) {
     this._programmaticConfig = programmaticConfig;
-
     this._eventEmitter = new EventEmitter();
     this._loadedMocks = false;
     this._loadedRoutes = false;
 
+    // Create logger
+    this._logger = new Logger();
+    this._configLogger = this._logger.namespace("config");
+    this._logger.onChangeGlobalStore(() => {
+      this._eventEmitter.emit(CHANGE_LOGS);
+    });
+
+    // Create config
     this._config = new Config({ moduleName: MODULE_NAME });
     this._configPlugins = this._config.addNamespace(Plugins.id);
     this._configMocks = this._config.addNamespace(Mocks.id);
@@ -59,16 +67,27 @@ class Core {
     this._configFilesLoader = this._config.addNamespace(FilesLoader.id);
 
     [this._logOption, this._routesHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
+    this._logOption.onChange((level) => {
+      this._logger.setLevel(level);
+    });
+
+    // LEGACY, to be removed
     this._logOption.onChange(tracer.set);
 
-    this._alerts = new Alerts("alerts");
+    // Create alerts
+    const alertsLogger = this._logger.namespace("alerts");
+    const alertsLegacyLogger = alertsLogger.namespace("deprecated");
+    this._alerts = new Alerts("alerts", { logger: alertsLogger });
     this._alerts.onChange(() => {
       this._eventEmitter.emit(CHANGE_ALERTS);
     });
     this._alertsLegacy = new AlertsLegacy({
       alerts: this._alerts,
+      logger: alertsLegacyLogger,
     });
+    this._deprecationAlerts = this._alerts.collection("deprecated");
 
+    // Create mocks loaders
     this._mocksLoaders = new Loaders({
       onLoad: () => {
         this._loadedMocks = true;
@@ -78,6 +97,7 @@ class Core {
       },
     });
 
+    // Create routes loaders
     this._routesLoaders = new Loaders({
       onLoad: () => {
         this._loadedRoutes = true;
@@ -87,10 +107,15 @@ class Core {
       },
     });
 
+    this._loadMocks = this._mocksLoaders.new();
+    this._loadRoutes = this._routesLoaders.new();
+
+    // Create plugins
     this._plugins = new Plugins(
       {
         config: this._configPlugins,
         alerts: this._alerts.collection(Plugins.id),
+        logger: this._logger.namespace(Plugins.id),
         createMocksLoader: () => {
           return this._mocksLoaders.new();
         },
@@ -108,12 +133,17 @@ class Core {
       this //To be used only by plugins
     );
 
-    this._routesHandlers = new RoutesHandlers();
+    // Create routes handlers
+    this._routesHandlers = new RoutesHandlers({
+      logger: this._logger.namespace("routesHandlers"),
+    });
 
+    // Create mocks
     this._mocks = new Mocks(
       {
         config: this._configMocks,
         alerts: this._alerts.collection(Mocks.id),
+        logger: this._logger.namespace(Mocks.id),
         getLoadedMocks: () => this._mocksLoaders.contents,
         getLoadedRoutes: () => this._routesLoaders.contents,
         onChange: () => this._eventEmitter.emit(CHANGE_MOCKS),
@@ -121,22 +151,28 @@ class Core {
       this // To be used only by routeHandlers
     );
 
+    // Create server
     this._server = new Server({
       config: this._configServer,
+      logger: this._logger.namespace(Server.id),
       alerts: this._alerts.collection(Server.id),
       mocksRouter: this._mocks.router,
     });
 
+    // Create files loaders
     this._filesLoader = new FilesLoader({
       config: this._configFilesLoader,
+      logger: this._logger.namespace(FilesLoader.id),
       alerts: this._alerts.collection(FilesLoader.id),
       loadMocks: this._mocksLoaders.new(),
       loadRoutes: this._routesLoaders.new(),
     });
 
+    // Create scaffold
     this._scaffold = new Scaffold({
       config: this._config, // It needs the whole configuration to get option properties and create scaffold
       alerts: this._alerts.collection(Scaffold.id),
+      logger: this._logger.namespace(Scaffold.id),
     });
 
     this._inited = false;
@@ -162,6 +198,19 @@ class Core {
     });
   }
 
+  async _loadConfig() {
+    await this._config.load();
+
+    this._configLogger.debug(
+      `Programmatic config: ${JSON.stringify(this._config.programmaticLoadedValues)}`
+    );
+    this._configLogger.debug(`Config from file: ${JSON.stringify(this._config.fileLoadedValues)}`);
+    this._configLogger.debug(`Config from env: ${JSON.stringify(this._config.envLoadedValues)}`);
+    this._configLogger.debug(`Config from args: ${JSON.stringify(this._config.argsLoadedValues)}`);
+    this._configLogger.verbose(`Config: ${JSON.stringify(this._config.value)}`);
+    this._configLogger.info(`Configuration loaded`);
+  }
+
   // Public methods
 
   async init(programmaticConfig) {
@@ -179,6 +228,9 @@ class Core {
 
     // Init config
     await this._config.init(this._programmaticConfig);
+    this._logger.setLevel(this._logOption.value);
+
+    // LEGACY, to be removed
     tracer.set(this._logOption.value);
 
     // Register plugins, let them add their custom config
@@ -191,8 +243,7 @@ class Core {
       filesLoaderPath: this._filesLoader.path,
     });
 
-    // load config
-    await this._config.load();
+    await this._loadConfig();
 
     // Config is ready, init all
     this._mocks.init(this._routesHandlers.handlers);
@@ -218,6 +269,14 @@ class Core {
     this._routesHandlers.add(RoutesHandler);
   }
 
+  loadMocks(mocks) {
+    this._loadMocks(mocks);
+  }
+
+  loadRoutes(routes) {
+    this._loadRoutes(routes);
+  }
+
   // Listeners
 
   onChangeMocks(listener) {
@@ -226,6 +285,10 @@ class Core {
 
   onChangeAlerts(listener) {
     return addEventListener(listener, CHANGE_ALERTS, this._eventEmitter);
+  }
+
+  onChangeLogs(listener) {
+    return addEventListener(listener, CHANGE_LOGS, this._eventEmitter);
   }
 
   // Expose Server methods and getters
@@ -244,17 +307,35 @@ class Core {
 
   // Expose child objects
 
+  // LEGACY, change by whole alerts object in next major version
   get alerts() {
-    // LEGACY, change by new alerts getter when legacy alerts are removed
-    return this._alertsLegacy.values;
+    return this._alerts.customFlat;
+  }
+
+  // Provides access to alerts API while alerts legacy is maintained
+  get alertsApi() {
+    return this._alerts;
   }
 
   get mocks() {
     return this._mocks;
   }
 
+  // LEGACY, to be removed
   get tracer() {
+    this._deprecationAlerts.set(
+      "tracer",
+      "Usage of tracer is deprecated. Use logger instead: https://www.mocks-server.org/docs/next/guides-migrating-from-v3#logger"
+    );
     return tracer;
+  }
+
+  get logs() {
+    return this._logger.globalStore;
+  }
+
+  get logger() {
+    return this._logger;
   }
 
   get config() {

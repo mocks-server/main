@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -9,27 +9,26 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const Boom = require("@hapi/boom");
-const { PLUGIN_NAME } = require("./constants");
 
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function collectionMiddleware({ name, getItems, tracer }) {
+function collectionMiddleware({ name, getItems, logger }) {
   return function (req, res) {
-    tracer.verbose(`${PLUGIN_NAME}: Sending ${name} | ${req.id}`);
+    logger.verbose(`Sending ${name} | ${req.id}`);
     res.status(200);
     res.send(getItems());
   };
 }
 
-function modelMiddleware({ name, getItems, parseItem, tracer, finder }) {
+function modelMiddleware({ name, getItems, parseItem, logger, finder }) {
   const capitalizedName = capitalize(name);
   const returnItem = parseItem ? (item) => parseItem(item) : (item) => item;
   const finderMethod = finder ? finder : (id) => (item) => item.id === id;
   return function (req, res, next) {
     const id = req.params.id;
-    tracer.verbose(`${PLUGIN_NAME}: Sending ${name} ${id} | ${req.id}`);
+    logger.verbose(`Sending ${name} ${id} | ${req.id}`);
     const foundItem = getItems().find(finderMethod(id));
     if (foundItem) {
       res.status(200);

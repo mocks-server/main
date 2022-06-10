@@ -20,9 +20,9 @@ It also provides methods for merging the collections, removing items or collecti
 A brief example:
 
 ```js
-const Collection = require("@mocks-server/nested-collections");
+const { NestedCollections } = require("@mocks-server/nested-collections");
 
-const alerts = new Collection("alerts");
+const alerts = new NestedCollections("alerts");
 alerts.set("root", "This alert is stored in the root collection");
 
 const pluginsAlerts = alerts.collection("plugins");
@@ -66,16 +66,16 @@ console.log(alerts.flat);
 
 ## API
 
-### Collection
+### NestedCollections
 
 ```js
-const collection = new Collection("id");
+const collection = new NestedCollections("id");
 ``` 
 
-* __`Collection(id, options)`__. Returns a `collection` instance.
+* __`NestedCollections(id, options)`__. Returns a `collection` instance.
   * __`id`__ _(String)_: Id for the root collection
   * __`options`__ _(Object)_:
-    * __`Decorator`__ - Custom constructor to be used when creating children collections. Useful to extend the `Collection` class (read ["extending Collection"](#extending-collection) for further info).
+    * __`Decorator`__ - Custom constructor to be used when creating children collections. Useful to extend the `NestedCollections` class (read ["extending NestedCollections"](#extending-collection) for further info).
 
 ### collection instance
 
@@ -103,12 +103,12 @@ const collection = new Collection("id");
 * __`onChange(callback)`__: Allows to add a listener that will be executed whenever any descendant collection or item changes. __It returns a function that removes the listener once executed__.
   * `callback(value)` _(Function)_: Callback to be executed.
 
-## Extending Collection
+## Extending NestedCollections
 
-In order to be able to decorate the `Collection` methods easily, a `Decorator` option can be passed as second argument to it. When present, it will be used to create children collections, so you can extend the `Collection` methods, while nested collections will be still created with your class. For example:
+In order to be able to decorate the `NestedCollections` methods easily, a `Decorator` option can be passed as second argument to it. When present, it will be used to create children collections, so you can extend the `NestedCollections` methods, while nested collections will be still created with your class. For example:
 
 ```js
-class Alerts extends Collections {
+class Alerts extends NestedCollections {
   constructor(id, options) {
     // Nested collections will be created always using this class
     super(id, { ...options, Decorator: Alerts });

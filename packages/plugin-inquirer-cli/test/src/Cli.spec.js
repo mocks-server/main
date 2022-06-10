@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -34,6 +34,13 @@ describe("Cli", () => {
   let optionMock;
   let mockOptions;
   let onChangeEmojis;
+  let cliArgs;
+  let onChangeLog;
+  let onChangeCli;
+  let onChangeDelay;
+  let onChangeHost;
+  let onChangeWatch;
+  let onChangeMock;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
@@ -41,17 +48,31 @@ describe("Cli", () => {
     coreMocks = new CoreMocks();
     configMock = new ConfigMocks();
     coreInstance = coreMocks.stubs.instance;
-    cli = new Cli({ core: coreInstance, config: configMock.stubs.namespace });
+    cliArgs = {
+      alerts: coreMocks.stubs.instance.alerts,
+      mocks: coreMocks.stubs.instance.mocks,
+      onChangeAlerts: coreMocks.stubs.instance.onChangeAlerts,
+      onChangeMocks: coreMocks.stubs.instance.onChangeMocks,
+      restartServer: coreMocks.stubs.instance.restartServer,
+      config: configMock.stubs.namespace,
+    };
+    cli = new Cli(cliArgs);
     onChangeEmojis = sandbox.stub();
+    onChangeLog = sandbox.stub();
+    onChangeCli = sandbox.stub();
+    onChangeDelay = sandbox.stub();
+    onChangeHost = sandbox.stub();
+    onChangeWatch = sandbox.stub();
+    onChangeMock = sandbox.stub();
     expect.assertions(1);
     mockOptions = () => {
-      optionCli = { ...cli._optionCli, value: true };
+      optionCli = { ...cli._optionCli, onChange: onChangeCli, value: true };
       optionEmojis = { ...cli._optionEmojis, onChange: onChangeEmojis, value: true };
-      optionLog = { ...cli._optionLog, value: "info" };
-      optionDelay = { ...cli._optionDelay, value: 0 };
-      optionHost = { ...cli._optionHost, value: "0.0.0.0" };
-      optionWatch = { ...cli._optionWatch, value: true };
-      optionMock = { ...cli._optionMock, value: "base" };
+      optionLog = { ...cli._optionLog, onChange: onChangeLog, value: "info" };
+      optionDelay = { ...cli._optionDelay, onChange: onChangeDelay, value: 0 };
+      optionHost = { ...cli._optionHost, onChange: onChangeHost, value: "0.0.0.0" };
+      optionWatch = { ...cli._optionWatch, onChange: onChangeWatch, value: true };
+      optionMock = { ...cli._optionMock, onChange: onChangeMock, value: "base" };
       cli._optionEmojis = optionEmojis;
       cli._optionDelay = optionDelay;
       cli._optionCli = optionCli;
@@ -83,7 +104,7 @@ describe("Cli", () => {
 
     it("not be initializated if cli setting is disabled", async () => {
       inquirerMocks.reset();
-      cli = new Cli({ core: coreInstance, config: configMock.stubs.namespace });
+      cli = new Cli(cliArgs);
       mockOptions();
       optionCli.value = false;
       await cli.init();
@@ -98,42 +119,42 @@ describe("Cli", () => {
 
     it("should start cli when core cli setting is true and cli was not started", async () => {
       expect.assertions(2);
-      optionCli.onChange.getCall(0).args[0](true);
+      onChangeCli.getCall(0).args[0](true);
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(0).args[0]).toEqual("main");
     });
 
     it("should refresh main menu when delay option is changed and current screen is main menu", async () => {
       expect.assertions(2);
-      optionDelay.onChange.getCall(3).args[0]("foo");
+      optionDelay.onChange.getCall(0).args[0]("foo");
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
     it("should refresh main menu when host option is changed and current screen is main menu", async () => {
       expect.assertions(2);
-      optionHost.onChange.getCall(4).args[0]("foo");
+      optionHost.onChange.getCall(0).args[0]("foo");
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
     it("should refresh main menu when log option is changed and current screen is main menu", async () => {
       expect.assertions(2);
-      optionLog.onChange.getCall(1).args[0]("foo");
+      onChangeLog.getCall(0).args[0]("foo");
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
     it("should refresh main menu when watch option is changed and current screen is main menu", async () => {
       expect.assertions(2);
-      optionWatch.onChange.getCall(4).args[0](false);
+      onChangeWatch.getCall(0).args[0](false);
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
     it("should not display main menu when mock is changed and current screen is not main menu", async () => {
       cli._currentScreen = "FOO";
-      optionMock.onChange.getCall(2).args[0]("foo");
+      onChangeMock.getCall(0).args[0]("foo");
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
     });
 
@@ -141,7 +162,7 @@ describe("Cli", () => {
       await cli.stop();
       inquirerMocks.reset();
       cli._currentScreen = "FOO";
-      optionMock.onChange.getCall(2).args[0]("foo");
+      onChangeMock.getCall(0).args[0]("foo");
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(0);
     });
 
@@ -150,7 +171,7 @@ describe("Cli", () => {
       inquirerMocks.reset();
       expect.assertions(2);
       optionCli.value = true;
-      optionCli.onChange.getCall(0).args[0](true);
+      onChangeCli.getCall(0).args[0](true);
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(0).args[0]).toEqual("main");
     });
@@ -159,14 +180,14 @@ describe("Cli", () => {
       await cli.stop();
       inquirerMocks.reset();
       optionCli.value = false;
-      optionCli.onChange.getCall(0).args[0](false);
+      onChangeCli.getCall(0).args[0](false);
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(0);
     });
 
     it("should stop cli if it was started and cli option is false", async () => {
       inquirerMocks.reset();
       optionCli.value = false;
-      optionCli.onChange.getCall(0).args[0](false);
+      onChangeCli.getCall(0).args[0](false);
       expect(inquirerMocks.stubs.inquirer.clearScreen.getCall(0).args[0]).toEqual({
         header: false,
       });
@@ -176,7 +197,7 @@ describe("Cli", () => {
       expect.assertions(2);
       cli._isOverwritingLogLevel = false;
       optionLog.value = "debug";
-      optionLog.onChange.getCall(0).args[0]("debug");
+      onChangeLog.getCall(0).args[0]("debug");
       expect(cli._logLevel).toEqual("debug");
       expect(optionLog.value).toEqual("silent");
     });
@@ -185,7 +206,7 @@ describe("Cli", () => {
       await cli.stop();
       inquirerMocks.reset();
       optionLog.value = "debug";
-      optionLog.onChange.getCall(0).args[0]("debug");
+      onChangeLog.getCall(0).args[0]("debug");
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(0);
     });
 
@@ -193,7 +214,7 @@ describe("Cli", () => {
       cli._isOverwritingLogLevel = false;
       cli._currentScreen = "logs";
       optionLog.value = "debug";
-      optionLog.onChange.getCall(0).args[0]("debug");
+      onChangeLog.getCall(0).args[0]("debug");
       expect(optionLog.value).toEqual("debug");
     });
 
@@ -202,7 +223,7 @@ describe("Cli", () => {
       cli._silentTraces();
       expect(cli._isOverwritingLogLevel).toEqual(true);
       optionLog.value = "silent";
-      optionLog.onChange.getCall(0).args[0]("silent");
+      onChangeLog.getCall(0).args[0]("silent");
       expect(cli._isOverwritingLogLevel).toEqual(false);
     });
 
@@ -252,7 +273,7 @@ describe("Cli", () => {
 
     it("should init if it has not been inited before", async () => {
       inquirerMocks.reset();
-      cli = new Cli({ core: coreInstance, config: configMock.stubs.namespace });
+      cli = new Cli(cliArgs);
       mockOptions();
       optionCli.value = true;
       await cli.start();
@@ -261,7 +282,7 @@ describe("Cli", () => {
 
     it("should do nothing if cli is disabled", async () => {
       inquirerMocks.reset();
-      cli = new Cli({ core: coreInstance, config: configMock.stubs.namespace });
+      cli = new Cli(cliArgs);
       mockOptions();
       optionCli.value = false;
       await cli.init();
@@ -269,7 +290,7 @@ describe("Cli", () => {
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(0);
     });
 
-    it("should silent core tracer", () => {
+    it("should silent core logs", () => {
       expect(optionLog.value).toEqual("silent");
     });
 
@@ -571,7 +592,7 @@ describe("Cli", () => {
       expect.assertions(2);
       const fooLogLevel = "foo-log-level";
       coreMocks.reset();
-      cli = new Cli({ core: coreInstance, config: configMock.stubs.namespace });
+      cli = new Cli(cliArgs);
       mockOptions();
       optionCli.value = true;
       optionLog.value = fooLogLevel;
@@ -683,16 +704,27 @@ describe("Cli", () => {
     });
   });
 
-  describe("when printing alerts", () => {
+  describe("when displaying alerts", () => {
     it("should not display alerts if core alerts are empty", async () => {
       coreInstance.alerts = [];
       await cli.start();
       expect(cli._alertsHeader().length).toEqual(0);
     });
 
+    it("should display provided alert context", async () => {
+      coreInstance.alerts.root.customFlat = [
+        {
+          message: "foo message",
+          context: "foo-context",
+        },
+      ];
+      await cli.start();
+      expect(cli._alertsHeader()[0]).toEqual(expect.stringContaining("[foo-context]"));
+    });
+
     it("should display provided alert in yellow when it has no error", async () => {
       expect.assertions(2);
-      coreInstance.alerts = [
+      coreInstance.alerts.root.customFlat = [
         {
           message: "foo message",
         },
@@ -704,7 +736,7 @@ describe("Cli", () => {
 
     it("should display provided alert in red when it has error", async () => {
       expect.assertions(2);
-      coreInstance.alerts = [
+      coreInstance.alerts.root.customFlat = [
         {
           message: "foo message",
           error: {

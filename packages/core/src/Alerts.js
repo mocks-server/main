@@ -8,31 +8,47 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const NestedCollections = require("@mocks-server/nested-collections");
-
-const tracer = require("./tracer");
+const { NestedCollections } = require("@mocks-server/nested-collections");
 
 class Alerts extends NestedCollections {
   constructor(id, options) {
     super(id, { ...options, Decorator: Alerts });
+    this._logger = options.logger.namespace(id);
   }
 
   set(id, message, error) {
-    tracer.silly(
-      `Setting alert with id '${id}' and message '${message}' in collection '${this._path}'`
-    );
+    this._logger.silly(`Setting alert with id '${id}'`);
     if (error) {
-      tracer.error(`${message}: ${error.message}`);
-      tracer.debug(error.stack);
+      this._logger.error(`${message}: ${error.message}`);
+      this._logger.debug(error.stack);
     } else {
-      tracer.warn(message);
+      this._logger.warn(message);
     }
     return super.set(id, { message, error });
   }
 
   remove(id) {
-    tracer.silly(`Removing alert with id '${id}' in collection '${this._path}'`);
+    this._logger.silly(`Removing alert with id '${id}'`);
     return super.remove(id);
+  }
+
+  // LEGACY, to be removed in next major version
+  get customFlat() {
+    return this.flat.map((item) => {
+      let context = item.collection;
+      let sep = ":";
+      if (context.startsWith("alerts:")) {
+        context = context.replace("alerts:", "");
+      } else {
+        context = "";
+        sep = "";
+      }
+
+      return {
+        ...item.value,
+        context: `${context}${sep}${item.id}`,
+      };
+    });
   }
 }
 

@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -126,10 +126,13 @@ class Cli {
     return "inquirerCli";
   }
 
-  constructor({ core, config }) {
+  constructor({ config, alerts, mocks, onChangeAlerts, onChangeMocks, restartServer }) {
+    this._alerts = alerts;
+    this._restartServerMethod = restartServer;
     this._config = config;
-    this._core = core;
-    this._tracer = core.tracer;
+    this._mocks = mocks;
+    this._onChangeAlerts = onChangeAlerts;
+    this._onChangeMocks = onChangeMocks;
     this._inited = false;
     this._started = false;
     this._currentScreen = null;
@@ -142,12 +145,12 @@ class Cli {
     this._optionCli = this._config.addOption(OPTIONS[0]);
     this._optionEmojis = this._config.addOption(OPTIONS[1]);
 
-    this._optionLog = this._core.config.option("log");
-    this._optionMock = this._core.config.namespace("mocks").option("selected");
-    this._optionDelay = this._core.config.namespace("mocks").option("delay");
-    this._optionPort = this._core.config.namespace("server").option("port");
-    this._optionHost = this._core.config.namespace("server").option("host");
-    this._optionWatch = this._core.config.namespace("files").option("watch");
+    this._optionLog = this._config.root.option("log");
+    this._optionMock = this._config.root.namespace("mocks").option("selected");
+    this._optionDelay = this._config.root.namespace("mocks").option("delay");
+    this._optionPort = this._config.root.namespace("server").option("port");
+    this._optionHost = this._config.root.namespace("server").option("host");
+    this._optionWatch = this._config.root.namespace("files").option("watch");
   }
 
   init() {
@@ -178,8 +181,8 @@ class Cli {
       return Promise.resolve();
     }
     this._started = true;
-    this._stopListeningChangeAlerts = this._core.onChangeAlerts(this._refreshMenuIfStarted);
-    this._stopListeningChangeMocks = this._core.onChangeMocks(this._refreshMenuIfStarted);
+    this._stopListeningChangeAlerts = this._onChangeAlerts(this._refreshMenuIfStarted);
+    this._stopListeningChangeMocks = this._onChangeMocks(this._refreshMenuIfStarted);
     this._logLevel = this._optionLog.value;
     this._silentTraces();
     this._displayMainMenu();
@@ -254,13 +257,13 @@ class Cli {
     const delay = this._optionDelay.value;
     const watchEnabled = this._optionWatch.value;
 
-    const currentMock = this._core.mocks.current || "-";
-    const availableMocks = this._core.mocks.plainMocks.length;
-    const availableRoutes = this._core.mocks.plainRoutes.length;
-    const availableRoutesVariants = this._core.mocks.plainRoutesVariants.length;
+    const currentMock = this._mocks.current || "-";
+    const availableMocks = this._mocks.plainMocks.length;
+    const availableRoutes = this._mocks.plainRoutes.length;
+    const availableRoutesVariants = this._mocks.plainRoutesVariants.length;
 
-    const currentMockMessage = this._core.mocks.customRoutesVariants.length
-      ? `${currentMock} (custom variants: ${this._core.mocks.customRoutesVariants.join(",")})`
+    const currentMockMessage = this._mocks.customRoutesVariants.length
+      ? `${currentMock} (custom variants: ${this._mocks.customRoutesVariants.join(",")})`
       : currentMock;
 
     return [
@@ -269,7 +272,7 @@ class Cli {
       renderHeader(
         `Current mock`,
         currentMockMessage,
-        getCurrentMockMessageLevel(this._core.mocks.customRoutesVariants, currentMock)
+        getCurrentMockMessageLevel(this._mocks.customRoutesVariants, currentMock)
       ),
       renderHeader(`Mocks`, availableMocks, availableMocks < 1 ? 2 : 0),
       renderHeader(`Routes`, availableRoutes, availableRoutes < 1 ? 2 : 0),
@@ -284,7 +287,7 @@ class Cli {
   }
 
   _alertsHeader() {
-    return this._core.alerts.map(renderAlert);
+    return this._alerts.root.customFlat.map(renderAlert);
   }
 
   async _displayMainMenu() {
@@ -316,7 +319,7 @@ class Cli {
   async _changeCurrentMock() {
     this._currentScreen = SCREENS.MOCK;
     this._cli.clearScreen();
-    const mocksIds = this._core.mocks.ids;
+    const mocksIds = this._mocks.ids;
     if (!mocksIds.length) {
       return this._displayMainMenu();
     }
@@ -335,7 +338,7 @@ class Cli {
   async _changeRouteVariant() {
     this._currentScreen = SCREENS.MOCK;
     this._cli.clearScreen();
-    const routeVariantsIds = this._core.mocks.plainRoutesVariants.map((variant) => variant.id);
+    const routeVariantsIds = this._mocks.plainRoutesVariants.map((variant) => variant.id);
     if (!routeVariantsIds.length) {
       return this._displayMainMenu();
     }
@@ -347,12 +350,12 @@ class Cli {
         return Promise.resolve(routeVariantsIds.filter((variant) => variant.includes(input)));
       },
     });
-    this._core.mocks.useRouteVariant(variantId);
+    this._mocks.useRouteVariant(variantId);
     return this._displayMainMenu();
   }
 
   async _restoreRoutesVariants() {
-    this._core.mocks.restoreRoutesVariants();
+    this._mocks.restoreRoutesVariants();
     return this._displayMainMenu();
   }
 
@@ -366,7 +369,7 @@ class Cli {
 
   async _restartServer() {
     try {
-      await this._core.restartServer();
+      await this._restartServerMethod();
     } catch (err) {}
     return this._displayMainMenu();
   }

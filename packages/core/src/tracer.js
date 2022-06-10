@@ -1,6 +1,6 @@
 /*
+Copyright 2019-2022 Javier Brea
 Copyright 2019 XbyOrange
-Copyright 2019 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -15,7 +15,7 @@ const winston = require("winston");
 const ArrayTransport = require("winston-array-transport");
 
 const format = winston.format.printf((info) => {
-  return `${info.timestamp} [Mocks ${info.level}] ${info.message}`;
+  return `${info.timestamp} [${info.level}][tracer:legacy] ${info.message}`;
 });
 
 const store = [];

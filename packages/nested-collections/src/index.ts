@@ -1,2 +1,2 @@
-import Collection from "./Collection";
-export = Collection;
+export * from "./Collection";
+export { default as NestedCollections } from "./Collection";

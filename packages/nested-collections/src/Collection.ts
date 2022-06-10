@@ -2,42 +2,44 @@ import EventEmitter from "events";
 
 import { CHANGE_EVENT, EventListener, addEventListener } from "./events";
 
-type elementId = string | null;
+export type { EventListener } from "./events";
 
-interface ElementBasics {
+export type elementId = string | null;
+
+export interface ElementBasics {
   id: elementId;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type itemValue = any;
+export type itemValue = any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface Options {
+export interface CollectionOptions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Decorator?: any;
   parent?: Collection,
+  root?: Collection,
   [x: string | number | symbol]: unknown;
 }
 
-interface Item extends ElementBasics {
+export interface Item extends ElementBasics {
   value: itemValue;
 }
 
-interface FlatItem extends Item {
+export interface FlatItem extends Item {
   collection: elementId,
 }
 
-type items = Item[];
-type flatItems = FlatItem[];
-type collections = Collection[];
-type element = Item | Collection;
-type elements = element[];
+export type items = Item[];
+export type flatItems = FlatItem[];
+export type collections = Collection[];
+export type element = Item | Collection;
+export type elements = element[];
+export interface IdComparer {
+  (element: element): boolean
+}
 
 function elementIdIsEqualTo(element: element, id: elementId): boolean {
   return element.id === id;
-}
-
-interface IdComparer {
-  (element: element): boolean
 }
 
 function ElementIdIsEqualToId(id: elementId): IdComparer {
@@ -67,18 +69,20 @@ export default class Collection implements ElementBasics {
   private _eventEmitter: EventEmitter;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _Decorator: any;
-  private _options: Options;
+  private _options: CollectionOptions;
   private _parent?: Collection;
+  private _root: Collection;
 
   /**
    * Creates a root collection
    * @example const collection = new Collection("id")
    * @returns Root collection
   */
-  constructor(id: elementId = null, options: Options = {}) {
+  constructor(id: elementId = null, options: CollectionOptions = {}) {
     this._options = options;
     this._Decorator = options.Decorator || Collection;
     this._parent = options.parent;
+    this._root = options.root || this;
     this._eventEmitter = new EventEmitter();
     this._id = id;
     this._collections = [];
@@ -91,7 +95,7 @@ export default class Collection implements ElementBasics {
   }
 
   private _createCollection(id: elementId): Collection {
-    const collection = new this._Decorator(id, {...this._options, parent: this});
+    const collection = new this._Decorator(id, {...this._options, parent: this, root: this._root });
     collection.onChange(this._emitChange);
     this._collections.push(collection);
     return collection;
@@ -331,5 +335,12 @@ export default class Collection implements ElementBasics {
   */
   public onChange(listener: EventListener) {
     return addEventListener(listener, CHANGE_EVENT, this._eventEmitter);
+  }
+
+  /**
+   * @returns root collection
+  */
+   public get root(): Collection {
+    return this._root;
   }
 }

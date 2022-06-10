@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -9,7 +9,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
-const NestedCollections = require("@mocks-server/nested-collections");
+const { NestedCollections } = require("@mocks-server/nested-collections");
+const { Logger } = require("@mocks-server/logger");
 
 const MocksMock = require("./mocks/Mocks.mock.js");
 const ServerMocks = require("./server/Server.mocks.js");
@@ -22,6 +23,7 @@ const ScaffoldMocks = require("./scaffold/Scaffold.mocks.js");
 
 const Core = require("../src/Core");
 const tracer = require("../src/tracer");
+const Alerts = require("../src/Alerts");
 
 describe("Core", () => {
   let sandbox;
@@ -33,11 +35,11 @@ describe("Core", () => {
   let pluginsInstance;
   let configMocks;
   let alertsMocks;
-  let alertsInstance;
   let loadersMocks;
   let filesLoaderMocks;
   let scaffoldMocks;
   let core;
+  let mockedLoader;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
@@ -48,12 +50,15 @@ describe("Core", () => {
     pluginsMocks = new PluginsMocks();
     pluginsInstance = pluginsMocks.stubs.instance;
     alertsMocks = new AlertsMocks();
-    alertsInstance = alertsMocks.stubs.instance;
     loadersMocks = new LoadersMocks();
     configMocks = new ConfigMocks();
     filesLoaderMocks = new FilesLoaderMocks();
     scaffoldMocks = new ScaffoldMocks();
     sandbox.stub(NestedCollections.prototype, "onChange");
+    sandbox.stub(Logger.prototype, "onChangeGlobalStore");
+    sandbox.stub(Logger.prototype, "setLevel");
+    mockedLoader = sandbox.stub();
+    loadersMocks.stubs.instance.new.returns(mockedLoader);
 
     core = new Core();
     await core.init();
@@ -79,9 +84,15 @@ describe("Core", () => {
       expect(configMocks.stubs.instance.init.getCall(1).args[0]).toEqual(fooConfig);
     });
 
+    it("should listen to change logger level when log option changes", async () => {
+      core = new Core();
+      configMocks.stubs.option.onChange.getCall(0).args[0]("foo-level");
+      expect(core.logger.setLevel.getCall(1).args[0]).toEqual("foo-level");
+    });
+
     it("should listen to change trace level when log option changes", async () => {
       core = new Core();
-      expect(configMocks.stubs.option.onChange.getCall(0).args[0]).toEqual(tracer.set);
+      expect(configMocks.stubs.option.onChange.getCall(1).args[0]).toEqual(tracer.set);
     });
   });
 
@@ -104,6 +115,20 @@ describe("Core", () => {
           FOO_LOADER
         );
       });
+    });
+  });
+
+  describe("loadMocks method", () => {
+    it("should call to mocks loader", () => {
+      core.loadMocks("foo");
+      expect(mockedLoader.getCall(0).args[0]).toEqual("foo");
+    });
+  });
+
+  describe("loadRoutes method", () => {
+    it("should call to mocks loader", () => {
+      core.loadRoutes("foo");
+      expect(mockedLoader.getCall(0).args[0]).toEqual("foo");
     });
   });
 
@@ -279,6 +304,26 @@ describe("Core", () => {
     });
   });
 
+  describe("onChangeLogs method", () => {
+    it("should execute callback when logs execute onChangeGlobalStore callback", () => {
+      const spy = sandbox.spy();
+      core.onChangeLogs(spy);
+      Logger.prototype.onChangeGlobalStore.getCall(0).args[0]();
+      expect(spy.callCount).toEqual(1);
+    });
+
+    it("should return a function to remove listener", () => {
+      expect.assertions(2);
+      const spy = sandbox.spy();
+      const removeCallback = core.onChangeLogs(spy);
+      core._eventEmitter.emit("change:logs");
+      expect(spy.callCount).toEqual(1);
+      removeCallback();
+      core._eventEmitter.emit("change:logs");
+      expect(spy.callCount).toEqual(1);
+    });
+  });
+
   describe("when mocksLoaders load", () => {
     it("should not load mocks if routes are not loaded", () => {
       expect.assertions(1);
@@ -351,6 +396,12 @@ describe("Core", () => {
     });
   });
 
+  describe("logs getter", () => {
+    it("should return Logger global store from logs", () => {
+      expect(core.logs).toEqual(core.logger.globalStore);
+    });
+  });
+
   describe("mocks getter", () => {
     it("should return mocks instance", () => {
       expect(core.mocks).toEqual(mocksInstance);
@@ -365,7 +416,14 @@ describe("Core", () => {
 
   describe("alerts getter", () => {
     it("should return alerts", () => {
-      expect(core.alerts).toEqual(alertsInstance.values);
+      expect(core.alerts).toEqual(core._alerts.customFlat);
+    });
+  });
+
+  describe("alertsApi getter", () => {
+    it("should return alerts API", () => {
+      expect(core.alertsApi instanceof Alerts).toBe(true);
+      expect(core.alertsApi.id).toEqual("alerts");
     });
   });
 });

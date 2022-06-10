@@ -10,6 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 const express = require("express");
+const { Logger } = require("@mocks-server/logger");
 
 const MockMock = require("./Mock.mock.js");
 
@@ -27,6 +28,7 @@ describe("Mocks", () => {
   let methods;
   let routerMock;
   let alerts;
+  let logger;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -34,7 +36,10 @@ describe("Mocks", () => {
     mockMock = new MockMock();
     routerMock = sandbox.stub();
     sandbox.stub(express, "Router").returns(routerMock);
-    alerts = new Alerts("mocks");
+    sandbox.stub(Logger.prototype, "warn");
+    sandbox.stub(Logger.prototype, "error");
+    logger = new Logger();
+    alerts = new Alerts("mocks", { logger });
 
     core = {};
     methods = {
@@ -44,6 +49,7 @@ describe("Mocks", () => {
       getCurrentMock: sandbox.stub().returns(null),
       onChange: sandbox.stub(),
       alerts,
+      logger,
     };
 
     mocks = new Mocks(methods, core);
@@ -209,7 +215,7 @@ describe("Mocks", () => {
               message: "Critical errors found while loading mocks: 1",
               error: undefined,
             },
-            collection: "mocks:load-mocks",
+            collection: "mocks:loadMocks",
           },
           {
             id: "validation",
@@ -217,7 +223,7 @@ describe("Mocks", () => {
               message: "Mock is invalid: : type must be object",
               error: undefined,
             },
-            collection: "mocks:load-mocks:0",
+            collection: "mocks:loadMocks:0",
           },
         ]);
       });

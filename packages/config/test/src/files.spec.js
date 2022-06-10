@@ -65,6 +65,18 @@ describe("files", () => {
       expect(option.value).toEqual("value-from-file");
     });
 
+    it("should return value from files in fileLoadedValues getter", async () => {
+      cosmiconfigStub.search.resolves({
+        config: { fooNamespace: { fooOption: "value-from-file" } },
+      });
+      await config.init();
+      expect(config.fileLoadedValues).toEqual({
+        fooNamespace: {
+          fooOption: "value-from-file",
+        },
+      });
+    });
+
     it("should pass option to cosmiconfig when config.fileSearchPlaces is defined", async () => {
       cosmiconfigStub.search.resolves({
         config: { fooNamespace: { fooOption: "value-from-file" } },

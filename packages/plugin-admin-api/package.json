@@ -31,7 +31,7 @@
     "test:unit": "jest --runInBand"
   },
   "peerDependencies": {
-    "@mocks-server/core": "3.x"
+    "@mocks-server/core": ">=3.2.0 <4.x"
   },
   "dependencies": {
     "@hapi/boom": "9.1.4",

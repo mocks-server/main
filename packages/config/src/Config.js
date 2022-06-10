@@ -173,7 +173,7 @@ class Config {
         namespaces: this._namespaces,
         options: this._rootNamespace && this._rootNamespace.options,
         allowNoName: !this._rootNamespace,
-      }) || new Namespace(name, { brothers: this._namespaces });
+      }) || new Namespace(name, { brothers: this._namespaces, root: this });
     this._namespaces.push(namespace);
     return namespace;
   }
@@ -190,6 +190,22 @@ class Config {
     return getNamespacesValues(this._namespaces);
   }
 
+  get programmaticLoadedValues() {
+    return { ...this._programmaticConfig };
+  }
+
+  get fileLoadedValues() {
+    return { ...this._fileConfig };
+  }
+
+  get envLoadedValues() {
+    return { ...this._envConfig };
+  }
+
+  get argsLoadedValues() {
+    return { ...this._argsConfig };
+  }
+
   get loadedFile() {
     return this._files.loadedFile;
   }
@@ -204,6 +220,10 @@ class Config {
 
   get options() {
     return this._rootNamespace.options;
+  }
+
+  get root() {
+    return this;
   }
 
   set(configuration = {}, options = {}) {

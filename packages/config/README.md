@@ -335,6 +335,10 @@ const config = new Config({ moduleName: "mocks", mergeArrays: false });
 * __`loadedFile`__: Getter returning the file path of the loaded configuration file. It returns `null` if no configuration file was loaded.
 * __`namespaces`__: Getter returning array with all root namespaces.
 * __`options`__: Getter returning array with all root options.
+* __`programmaticLoadedValues`__: Getter returning initial values from programmatic config. Useful for debugging purposes.
+* __`fileLoadedValues`__: Getter returning initial values from file config. Useful for debugging purposes.
+* __`envLoadedValues`__: Getter returning initial values from environment config. Useful for debugging purposes.
+* __`argsLoadedValues`__: Getter returning initial values from arguments. Useful for debugging purposes.
 
 ### Namespace instance
 
@@ -362,6 +366,7 @@ const namespace = config.addNamespace("name");
 * __`set(configuration)`__: Set configuration properties to each correspondent child namespace and options.
   * `configuration` _(Object)_: Object with configuration. Levels in the object correspond to child namespaces names, and last level keys correspond to option names.
 * __`value`__: Getter returning the current values from all child namespaces and options as an object. Levels in the object correspond to namespaces names, and last level keys correspond to option names. It can be also used as setter as an alias of the `set` method, with default options.
+* __`root`__: Getter returning the root configuration object.
 
 ### Option instance
 

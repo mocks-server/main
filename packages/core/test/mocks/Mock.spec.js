@@ -11,6 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const LibsMocks = require("../Libs.mocks.js");
+const { Logger } = require("@mocks-server/logger");
 
 const Mock = require("../../src/mocks/Mock");
 
@@ -21,6 +22,7 @@ describe("Mock", () => {
   let getDelay;
   let routesVariants;
   let middlewareMethodsStubs;
+  let logger;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -56,7 +58,8 @@ describe("Mock", () => {
     };
     getDelay = sandbox.stub();
     libsMocks = new LibsMocks();
-    mock = new Mock({ id: "mock-id", routesVariants, getDelay });
+    logger = new Logger();
+    mock = new Mock({ id: "mock-id", routesVariants, getDelay, logger });
   });
 
   afterEach(() => {

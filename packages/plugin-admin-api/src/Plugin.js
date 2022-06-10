@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -47,37 +47,49 @@ class Plugin {
     return PLUGIN_NAME;
   }
 
-  constructor({ core, config }) {
-    this._core = core;
-    this._tracer = core.tracer;
+  constructor({ config, logger, mocks, addRouter, removeRouter, alerts }) {
+    this._addRouterMethod = addRouter;
+    this._removeRouterMethod = removeRouter;
+    this._logger = logger;
     this._config = config;
 
     this._adminApiPathOption = this._config.addOption(OPTION);
 
-    this._settingsApi = new Settings(this._core);
-    this._alertsApi = new Alerts(this._core);
-    this._aboutApi = new About(this._core);
-    this._customRoutesVariantsApi = new CustomRoutesVariants(this._core);
+    this._settingsApi = new Settings({
+      logger: this._logger.namespace("settings"),
+      config,
+    });
+    this._alertsApi = new Alerts({
+      alerts,
+      logger: this._logger.namespace("alerts"),
+    });
+    this._aboutApi = new About({
+      logger: this._logger.namespace("about"),
+    });
+    this._customRoutesVariantsApi = new CustomRoutesVariants({
+      logger: this._logger.namespace("customRouteVariants"),
+      mocks,
+    });
 
     this._mocksApi = readCollectionAndModelRouter({
       collectionName: "mocks",
       modelName: "mock",
-      getItems: () => this._core.mocks.plainMocks,
-      tracer: core.tracer,
+      getItems: () => mocks.plainMocks,
+      logger: this._logger.namespace("mocks"),
     });
 
     this._routesApi = readCollectionAndModelRouter({
       collectionName: "routes",
       modelName: "route",
-      getItems: () => this._core.mocks.plainRoutes,
-      tracer: core.tracer,
+      getItems: () => mocks.plainRoutes,
+      logger: this._logger.namespace("routes"),
     });
 
     this._routesVariantsApi = readCollectionAndModelRouter({
       collectionName: "routes variants",
       modelName: "route variant",
-      getItems: () => this._core.mocks.plainRoutesVariants,
-      tracer: core.tracer,
+      getItems: () => mocks.plainRoutesVariants,
+      logger: this._logger.namespace("routeVariants"),
     });
 
     this._onChangeAdminApiPath = this._onChangeAdminApiPath.bind(this);
@@ -115,12 +127,12 @@ class Plugin {
   _addRouter() {
     this._removeRouter();
     this._routersPath = this._adminApiPathOption.value;
-    this._core.addRouter(this._routersPath, this._router);
+    this._addRouterMethod(this._routersPath, this._router);
   }
 
   _removeRouter() {
     if (this._routersPath) {
-      this._core.removeRouter(this._routersPath, this._router);
+      this._removeRouterMethod(this._routersPath, this._router);
       this._routersPath = null;
     }
   }

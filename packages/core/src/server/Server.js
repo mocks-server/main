@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -13,8 +13,14 @@ const http = require("http");
 
 const express = require("express");
 const cors = require("cors");
-const tracer = require("../tracer");
-const middlewares = require("./middlewares");
+const {
+  addRequestId,
+  jsonBodyParser,
+  logRequest,
+  urlEncodedBodyParser,
+  notFound,
+  errorHandler,
+} = require("./middlewares");
 
 const ALL_HOSTS = "0.0.0.0";
 const LOCALHOST = "localhost";
@@ -99,7 +105,8 @@ class Server {
     return "server";
   }
 
-  constructor({ config, alerts, mocksRouter }) {
+  constructor({ config, alerts, mocksRouter, logger }) {
+    this._logger = logger;
     this._config = config;
     const corsConfigNamespace = this._config.addNamespace(CORS_NAMESPACE);
     const jsonBodyParserConfigNamespace = this._config.addNamespace(JSON_BODY_PARSER_NAMESPACE);
@@ -140,7 +147,7 @@ class Server {
   init() {
     process.on("SIGINT", () => {
       this.stop().then(() => {
-        tracer.info("Server closed");
+        this._logger.info("Server closed");
       });
       process.exit();
     });
@@ -151,11 +158,11 @@ class Server {
     if (this._serverInitted) {
       return;
     }
-    tracer.debug("Configuring server");
+    this._logger.debug("Configuring server");
     this._express = express();
 
     // Add middlewares
-    this._express.use(middlewares.addRequestId);
+    this._express.use(addRequestId());
 
     // TODO, move to variants router. Add options to routes to configure it
     if (this._corsEnabledOption.value) {
@@ -164,23 +171,21 @@ class Server {
 
     // TODO, move to middleware variant handler. Add options to variant to configure it
     if (this._jsonBodyParserEnabledOption.value) {
-      this._express.use(middlewares.jsonBodyParser(this._jsonBodyParserOptionsOption.value));
+      this._express.use(jsonBodyParser(this._jsonBodyParserOptionsOption.value));
     }
     if (this._urlEncodedBodyParserEnabledOption.value) {
-      this._express.use(
-        middlewares.urlEncodedBodyParser(this._urlEncodedBodyParserOptionsOption.value)
-      );
+      this._express.use(urlEncodedBodyParser(this._urlEncodedBodyParserOptionsOption.value));
     }
 
     // TODO, move to variants router. Add options to routes to configure it
-    this._express.use(middlewares.traceRequest);
+    this._express.use(logRequest({ logger: this._logger }));
     this._registerCustomRouters();
     this._express.use(this._mocksRouter);
 
     // TODO, Add options to allow to disable or configure it
-    this._express.use(middlewares.notFound);
+    this._express.use(notFound({ logger: this._logger }));
 
-    this._express.use(middlewares.errorHandler);
+    this._express.use(errorHandler({ logger: this._logger }));
 
     // Create server
     this._server = http.createServer(this._express);
@@ -227,7 +232,7 @@ class Server {
             this._error = error;
             reject(error);
           } else {
-            tracer.info(`Server started and listening at http://${hostName}:${port}`);
+            this._logger.info(`Server started and listening at http://${hostName}:${port}`);
             this._error = null;
             this._serverStarting = false;
             this._serverStarted = true;
@@ -243,9 +248,9 @@ class Server {
   }
 
   _registerCustomRouters() {
-    tracer.debug("Registering custom routers in server");
+    this._logger.debug("Registering custom routers in server");
     this._customRouters.forEach((customRouter) => {
-      tracer.silly(`Registering custom router with path ${customRouter.path}`);
+      this._logger.silly(`Registering custom router with path ${customRouter.path}`);
       this._express.use(customRouter.path, customRouter.router);
     });
   }
@@ -256,9 +261,9 @@ class Server {
     }
     if (this._server) {
       this._serverStopping = new Promise((resolve) => {
-        tracer.verbose("Stopping server");
+        this._logger.verbose("Stopping server");
         this._server.close(() => {
-          tracer.info("Server stopped");
+          this._logger.info("Server stopped");
           this._serverStarted = false;
           this._serverStopping = false;
           resolve();
@@ -272,7 +277,7 @@ class Server {
   async start() {
     this._initServer();
     if (this._serverStarting) {
-      tracer.debug("Server is already starting, returning same promise");
+      this._logger.debug("Server is already starting, returning same promise");
       return this._serverStarting;
     }
     this._serverStarting = new Promise(this._startServer);
@@ -290,7 +295,7 @@ class Server {
   }
 
   addCustomRouter(path, router) {
-    tracer.info(`Adding custom router with path ${path}`);
+    this._logger.info(`Adding custom router with path ${path}`);
     this._customRouters.push({
       path,
       router,
@@ -299,7 +304,7 @@ class Server {
   }
 
   removeCustomRouter(path, router) {
-    tracer.info(`Removing custom router with path ${path}`);
+    this._logger.info(`Removing custom router with path ${path}`);
     let indexToRemove = this._getCustomRouterIndex(path, router);
     if (indexToRemove !== null) {
       this._customRouters.splice(indexToRemove, 1);

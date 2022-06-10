@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 ### Changed
 - refactor: Remove unused property
+- feat: Use new custom core API
 
 ### Added
 - feat: Display context in errors and warnings

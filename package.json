@@ -50,7 +50,6 @@
     "cross-spawn": "7.0.3",
     "cypress": "9.7.0",
     "cypress-fail-fast": "3.4.1",
-    "date-fns": "2.28.0",
     "deepmerge": "4.2.2",
     "eslint": "8.15.0",
     "eslint-config-prettier": "8.5.0",

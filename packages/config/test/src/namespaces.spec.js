@@ -26,6 +26,13 @@ describe("namespaces", () => {
       expect(config.namespaces.includes(namespace)).toBe(true);
     });
 
+    it("should have root property returning root config", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(namespace.root).toBe(config);
+      expect(config.root).toBe(config);
+    });
+
     it("should return same namespace if name already exists", async () => {
       let namespace2;
       config = new Config();

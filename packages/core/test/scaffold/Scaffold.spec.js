@@ -12,12 +12,12 @@ const path = require("path");
 
 const fsExtra = require("fs-extra");
 const sinon = require("sinon");
+const { Logger } = require("@mocks-server/logger");
 
 const LibsMocks = require("../Libs.mocks");
 const ConfigMock = require("../Config.mocks");
 
 const Scaffold = require("../../src/scaffold/Scaffold");
-const tracer = require("../../src/tracer");
 
 function readSnapshot(fileName) {
   return fsExtra.readFile(path.resolve(__dirname, "snapshots", fileName), {
@@ -30,23 +30,21 @@ describe("Scaffold", () => {
   let sandbox;
   let libsMocks;
   let scaffold;
+  let logger;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
     configMock = new ConfigMock();
     configMock.stubs.option.value = "foo-path";
     libsMocks = new LibsMocks();
-    sandbox.stub(tracer, "verbose");
-    sandbox.stub(tracer, "debug");
-    sandbox.stub(tracer, "error");
-    sandbox.stub(tracer, "info");
-    sandbox.stub(tracer, "silly");
+    logger = new Logger();
 
     scaffold = new Scaffold({
       config: configMock.stubs.instance,
       alerts: {
         set: sandbox.stub(),
       },
+      logger,
     });
     scaffold._mockSelectedOption = { value: null };
     scaffold._readConfigFileOption = { value: true };

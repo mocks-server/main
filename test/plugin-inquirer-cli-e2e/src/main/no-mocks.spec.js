@@ -21,7 +21,9 @@ describe("with no behaviors", () => {
     mocks = mocksRunner(["--files.path=no-mocks", "--mocks.selected=foo"]);
     await waitForServerAndCli();
     expect(mocks.currentScreen).toEqual(expect.stringContaining("ALERTS"));
-    expect(mocks.currentScreen).toEqual(expect.stringContaining("Warning: No mocks found"));
+    expect(mocks.currentScreen).toEqual(
+      expect.stringContaining("Warning: [mocks:empty] No mocks found")
+    );
   });
 
   it("should print a dash as current behavior", async () => {

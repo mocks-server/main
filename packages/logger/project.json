@@ -1,0 +1,5 @@
+{
+  "root": "packages/logger/",
+  "projectType": "library",
+  "tags": ["type:lib"]
+}

@@ -105,7 +105,8 @@ class Scaffold {
     return "scaffold";
   }
 
-  constructor({ config, alerts }) {
+  constructor({ config, alerts, logger }) {
+    this._logger = logger;
     this._config = config;
     this._readConfigFileOption = this._config.namespace("config").option("readFile");
     this._mockSelectedOption = this._config.namespace("mocks").option("selected");
@@ -120,6 +121,7 @@ class Scaffold {
   }
 
   async _createConfig() {
+    this._logger.info("Creating config file");
     const configTemplate = await readTemplate("config.hbs");
     const namespaceTemplate = await readTemplate("namespace.hbs");
     const optionTemplate = await readTemplate("option.hbs");
@@ -135,6 +137,7 @@ class Scaffold {
   }
 
   _createMocks(destPath) {
+    this._logger.info("Creating mocks folder");
     return fsExtra.copy(MOCKS_SCAFFOLD_PATH, destPath);
   }
 

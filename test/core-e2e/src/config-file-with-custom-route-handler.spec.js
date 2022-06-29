@@ -33,7 +33,7 @@ describe("when adding route handlers in config file", () => {
     });
 
     it("should have log level silly", async () => {
-      expect(mocks.logs.current).toEqual(expect.stringContaining("[Mocks silly]"));
+      expect(mocks.logs.current).toEqual(expect.stringContaining("[silly]"));
     });
 
     it("should serve users in /api/users path", async () => {

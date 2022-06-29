@@ -22,6 +22,7 @@
     "cypress-commands-e2e": "test/cypress-commands-e2e",
     "cypress-commands-e2e-vanilla-app": "mocks/cypress-commands-e2e-vanilla-app",
     "inquirer-cli-runner": "packages/inquirer-cli-runner",
+    "logger": "packages/logger",
     "main": "packages/main",
     "main-e2e": "test/main-e2e",
     "nested-collections": "packages/nested-collections",

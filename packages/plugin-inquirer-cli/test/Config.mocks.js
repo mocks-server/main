@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -56,6 +56,8 @@ class ConfigMock {
       namespace: this._sandbox.stub().returns(this._namespace),
       option: this._sandbox.stub().returns(this._option),
     };
+    this._stubs.root = this._stubs;
+    this._namespace.root = this._stubs;
   }
 
   get stubs() {

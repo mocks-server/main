@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -12,17 +12,17 @@ const express = require("express");
 
 const { addCollectionMiddleware, addModelMiddleware } = require("./middlewares");
 
-function readCollectionAndModelRouter({ collectionName, modelName, getItems, tracer }) {
+function readCollectionAndModelRouter({ collectionName, modelName, getItems, logger }) {
   const router = express.Router();
   addCollectionMiddleware(router, {
     name: collectionName,
     getItems,
-    tracer,
+    logger,
   });
   addModelMiddleware(router, {
     name: modelName,
     getItems,
-    tracer,
+    logger,
   });
   return router;
 }

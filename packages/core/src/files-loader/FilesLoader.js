@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2021-2022 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -21,7 +21,6 @@ const {
   getFilesGlobule,
   validateFileContent,
 } = require("./helpers");
-const tracer = require("../tracer");
 
 const ROUTES_FOLDER = "routes";
 
@@ -62,7 +61,8 @@ class FilesLoaderBase {
     return "files";
   }
 
-  constructor({ config, loadMocks, loadRoutes, alerts }, extraOptions = {}) {
+  constructor({ config, loadMocks, logger, loadRoutes, alerts }, extraOptions = {}) {
+    this._logger = logger;
     this._loadMocks = loadMocks;
     this._loadRoutes = loadRoutes;
     this._alerts = alerts;
@@ -96,7 +96,7 @@ class FilesLoaderBase {
 
   stop() {
     if (this._watcher) {
-      tracer.debug("Stopping files watch");
+      this._logger.debug("Stopping files watch");
       this._watcher.close();
     }
   }
@@ -151,7 +151,7 @@ class FilesLoaderBase {
   _loadFiles() {
     this._path = this._getPath();
     this._ensurePath();
-    tracer.info(`Loading files from folder ${this._path}`);
+    this._logger.info(`Loading files from folder ${this._path}`);
     if (!!this._babelRegisterOption.value) {
       this._require("@babel/register")(
         babelRegisterDefaultOptions(this._path, this._babelRegisterOptionsOption.value)
@@ -191,7 +191,7 @@ class FilesLoaderBase {
           .filter((fileContent) => !!fileContent)
       );
       this._loadRoutes(routes);
-      tracer.silly(`Loaded routes from folder ${routesPath}`);
+      this._logger.silly(`Loaded routes from folder ${routesPath}`);
     } catch (error) {
       this._loadRoutes([]);
       this._routesAlerts.set("error", `Error loading routes from folder ${routesPath}`, error);
@@ -212,7 +212,7 @@ class FilesLoaderBase {
           throw new Error(fileErrors);
         }
         this._loadMocks(mocks);
-        tracer.silly(`Loaded mocks from file ${mocksFile}`);
+        this._logger.silly(`Loaded mocks from file ${mocksFile}`);
         this._mocksAlerts.clean();
       } catch (error) {
         this._loadMocks([]);
@@ -228,12 +228,12 @@ class FilesLoaderBase {
     const enabled = this._watchOption.value;
     this.stop();
     if (enabled) {
-      tracer.debug("Starting files watcher");
+      this._logger.debug("Starting files watcher");
       this._watcher = watch(
         this._path,
         { recursive: true },
         debounce(() => {
-          tracer.info("File change detected");
+          this._logger.info("File change detected");
           this._loadFiles();
         }),
         1000

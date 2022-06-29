@@ -37,6 +37,13 @@ describe("namespaces nested", () => {
       ({ config, parentNamespace, namespace, option } = createConfig());
     });
 
+    it("should have root property returning root config", async () => {
+      namespace = config.addNamespace("foo");
+      expect(parentNamespace.root).toBe(config);
+      expect(namespace.root).toBe(config);
+      expect(config.root).toBe(config);
+    });
+
     it("should throw when config has unknown namespaces", async () => {
       await config.init({
         parentNamespace: {

@@ -11,12 +11,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 const Boom = require("@hapi/boom");
+const { Logger } = require("@mocks-server/logger");
 
 jest.mock("body-parser");
 
 const bodyParser = require("body-parser");
 
-const tracer = require("../../src/tracer");
 const middlewares = require("../../src/server/middlewares");
 
 describe("middlewares", () => {
@@ -26,6 +26,7 @@ describe("middlewares", () => {
   let resMock;
   let nextSpy;
   let headerSpy;
+  let logger;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -37,6 +38,7 @@ describe("middlewares", () => {
       header: headerSpy,
       send: sendSpy,
     };
+    logger = new Logger();
     nextSpy = sandbox.spy();
     bodyParser.json = sandbox.stub();
     bodyParser.urlencoded = sandbox.stub();
@@ -46,35 +48,35 @@ describe("middlewares", () => {
     sandbox.restore();
   });
 
-  describe("traceRequest", () => {
+  describe("logRequest", () => {
     const fooRequest = {
       method: "foo-method",
       url: "foo-url",
       id: "foo-id",
     };
-    let tracerStub;
+    let loggerStub;
 
     beforeEach(() => {
-      tracerStub = sandbox.stub(tracer, "verbose");
+      loggerStub = sandbox.stub(logger, "verbose");
     });
 
     it("should call to tracer verbose method, printing the request method", () => {
-      middlewares.traceRequest(fooRequest, resMock, nextSpy);
-      expect(tracerStub.getCall(0).args[0]).toEqual(expect.stringContaining("foo-method"));
+      middlewares.logRequest({ logger })(fooRequest, resMock, nextSpy);
+      expect(loggerStub.getCall(0).args[0]).toEqual(expect.stringContaining("foo-method"));
     });
 
     it("should call to tracer verbose method, printing the request url", () => {
-      middlewares.traceRequest(fooRequest, resMock, nextSpy);
-      expect(tracerStub.getCall(0).args[0]).toEqual(expect.stringContaining("foo-url"));
+      middlewares.logRequest({ logger })(fooRequest, resMock, nextSpy);
+      expect(loggerStub.getCall(0).args[0]).toEqual(expect.stringContaining("foo-url"));
     });
 
     it("should call to tracer verbose method, printing the request id", () => {
-      middlewares.traceRequest(fooRequest, resMock, nextSpy);
-      expect(tracerStub.getCall(0).args[0]).toEqual(expect.stringContaining("foo-id"));
+      middlewares.logRequest({ logger })(fooRequest, resMock, nextSpy);
+      expect(loggerStub.getCall(0).args[0]).toEqual(expect.stringContaining("foo-id"));
     });
 
     it("should call to next callback", () => {
-      middlewares.traceRequest(fooRequest, resMock, nextSpy);
+      middlewares.logRequest({ logger })(fooRequest, resMock, nextSpy);
       expect(nextSpy.callCount).toEqual(1);
     });
   });
@@ -84,20 +86,20 @@ describe("middlewares", () => {
     const fooRequest = {
       id: "foo-id",
     };
-    let tracerStub;
+    let loggerStub;
 
     beforeEach(() => {
-      tracerStub = sandbox.stub(tracer, "debug");
+      loggerStub = sandbox.stub(logger, "debug");
       sandbox.stub(Boom, "notFound").returns(fooNotFoundError);
     });
 
     it("should call to tracer debug method, printing the request id", () => {
-      middlewares.notFound(fooRequest, resMock, nextSpy);
-      expect(tracerStub.getCall(0).args[0]).toEqual(expect.stringContaining("foo-id"));
+      middlewares.notFound({ logger })(fooRequest, resMock, nextSpy);
+      expect(loggerStub.getCall(0).args[0]).toEqual(expect.stringContaining("foo-id"));
     });
 
     it("should call to next callback, passing a not found error", () => {
-      middlewares.notFound(fooRequest, resMock, nextSpy);
+      middlewares.notFound({ logger })(fooRequest, resMock, nextSpy);
       expect(nextSpy.getCall(0).args[0]).toEqual(fooNotFoundError);
     });
   });
@@ -118,60 +120,60 @@ describe("middlewares", () => {
         statusCode: "foo-bad-implementation-status-code",
         payload: "foo-bad-implementation-payload",
       };
-      sandbox.stub(tracer, "error");
-      sandbox.stub(tracer, "silly");
+      sandbox.stub(logger, "error");
+      sandbox.stub(logger, "silly");
       sandbox.stub(Boom, "isBoom").returns(false);
       sandbox.stub(Boom, "badImplementation").returns(fooBadImplementationError);
     });
 
     it("should call to next callback if no error is received", () => {
-      middlewares.errorHandler(null, fooRequest, resMock, nextSpy);
+      middlewares.errorHandler({ logger })(null, fooRequest, resMock, nextSpy);
       expect(nextSpy.callCount).toEqual(1);
     });
 
     it("should trace the received error with the request id", () => {
-      middlewares.errorHandler(fooError, fooRequest, resMock, nextSpy);
-      expect(tracer.error.getCall(0).args[0]).toEqual(expect.stringContaining("foo-id"));
+      middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
+      expect(logger.error.getCall(0).args[0]).toEqual(expect.stringContaining("foo-id"));
     });
 
     it("should convert the received error to a bad implementation error if it is not a Boom error", () => {
-      middlewares.errorHandler(fooError, fooRequest, resMock, nextSpy);
+      middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
       expect(Boom.badImplementation.getCall(0).args[0]).toEqual(fooError);
     });
 
     it("should trace the received error message", () => {
-      middlewares.errorHandler(fooError, fooRequest, resMock, nextSpy);
-      expect(tracer.error.getCall(0).args[0]).toEqual(
+      middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
+      expect(logger.error.getCall(0).args[0]).toEqual(
         expect.stringContaining("foo bad implementation error message")
       );
     });
 
     it("should trace the received error stack", () => {
-      middlewares.errorHandler(fooError, fooRequest, resMock, nextSpy);
-      expect(tracer.silly.getCall(0).args[0]).toEqual(fooError.stack.toString());
+      middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
+      expect(logger.silly.getCall(0).args[0]).toEqual(fooError.stack.toString());
     });
 
     it("should call to set response status as error statusCode", () => {
       fooError.stack = null;
-      middlewares.errorHandler(fooError, fooRequest, resMock, nextSpy);
+      middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
       expect(resMock.status.getCall(0).args[0]).toEqual("foo-bad-implementation-status-code");
     });
 
     it("should call to send response with error payload", () => {
       fooError.stack = null;
-      middlewares.errorHandler(fooError, fooRequest, resMock, nextSpy);
+      middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
       expect(resMock.send.getCall(0).args[0]).toEqual("foo-bad-implementation-payload");
     });
 
     it("should not trace error stack if error is controlled", () => {
       Boom.isBoom.returns(true);
-      middlewares.errorHandler(fooError, fooRequest, resMock, nextSpy);
-      expect(tracer.silly.callCount).toEqual(0);
+      middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
+      expect(logger.silly.callCount).toEqual(0);
     });
 
     it("should not convert the received error if it is controlled", () => {
       Boom.isBoom.returns(true);
-      middlewares.errorHandler(fooError, fooRequest, resMock, nextSpy);
+      middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
       expect(Boom.badImplementation.callCount).toEqual(0);
     });
   });
@@ -179,7 +181,6 @@ describe("middlewares", () => {
   describe("jsonBodyParser", () => {
     it("should call to json body parser passing options to it", () => {
       middlewares.jsonBodyParser({ foo: "foo" });
-      console.log(bodyParser.json.callCount);
       expect(bodyParser.json.getCall(0).args[0]).toEqual({ foo: "foo" });
     });
   });

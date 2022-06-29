@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Javier Brea
+Copyright 2020-2022 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -17,14 +17,14 @@ const Boom = require("@hapi/boom");
 const { addCollectionMiddleware } = require("./support/middlewares");
 
 class CustomRoutesVariants {
-  constructor(core) {
-    this._core = core;
-    this._tracer = core.tracer;
+  constructor({ logger, mocks }) {
+    this._mocks = mocks;
+    this._logger = logger;
     this._router = express.Router();
     addCollectionMiddleware(this._router, {
       name: "custom routes variants",
       getItems: this._getCollection.bind(this),
-      tracer: core.tracer,
+      logger: this._logger,
     });
 
     this._router.post("/", this.add.bind(this));
@@ -32,16 +32,16 @@ class CustomRoutesVariants {
   }
 
   _getCollection() {
-    return this._core.mocks.customRoutesVariants;
+    return this._mocks.customRoutesVariants;
   }
 
   add(req, res, next) {
     const id = req.body.id;
-    const routeVariant = this._core.mocks.plainRoutesVariants.find(
+    const routeVariant = this._mocks.plainRoutesVariants.find(
       (routeVariantCandidate) => routeVariantCandidate.id === id
     );
     if (routeVariant) {
-      this._core.mocks.useRouteVariant(id);
+      this._mocks.useRouteVariant(id);
       res.status(204);
       res.send();
     } else {
@@ -50,7 +50,7 @@ class CustomRoutesVariants {
   }
 
   delete(_req, res) {
-    this._core.mocks.restoreRoutesVariants();
+    this._mocks.restoreRoutesVariants();
     res.status(204);
     res.send();
   }

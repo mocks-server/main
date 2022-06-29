@@ -27,10 +27,10 @@ class ProxyRoutesHandler {
     };
   }
 
-  constructor(route, mocksServer) {
+  constructor(route, core) {
     this._response = route.response;
     this._variantId = route.variantId;
-    this._mocksServer = mocksServer;
+    this._core = core;
     this._host = route.host;
     this._options = route.options;
     this.middleware = httpProxy(this._host, this._options);

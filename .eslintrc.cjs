@@ -81,8 +81,8 @@ module.exports = {
       },
       plugins: ["no-only-tests"],
       rules: {
-        "no-only-tests/no-only-tests": [2]
-      }
+        "no-only-tests/no-only-tests": [2],
+      },
     },
     {
       files: ["scripts/**/*.js", "**/*.mjs"],

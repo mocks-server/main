@@ -10,6 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed
 
+## [1.1.0] - 2022-06-27
+
+### Added
+- feat: Add `root` getter returning root config object to namespaces. Add it also to root config as an alias in order to keep the same interface.
+- feat: Add `programmaticLoadedValues` getter returning initial values from programmatic config. Useful for debugging purposes
+- feat: Add `fileLoadedValues` getter returning initial values from file config. Useful for debugging purposes
+- feat: Add `envLoadedValues` getter returning initial values from environment config. Useful for debugging purposes
+- feat: Add `argsLoadedValues` getter returning initial values from args. Useful for debugging purposes
+
+### Changed
+- refactor: Do not create empty namespaces in internal environment configuration
+
 ## [1.0.2] - 2022-06-03
 
 ### Changed

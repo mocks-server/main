@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { flatten, compact } = require("lodash");
 
-const tracer = require("../tracer");
+const CustomCore = require("../CustomCore");
 const Mock = require("./Mock");
 const {
   variantValidationErrors,
@@ -179,18 +179,38 @@ function findRouteHandler(routeHandlers, handlerId) {
   return routeHandlers.find((routeHandlerCandidate) => routeHandlerCandidate.id === handlerId);
 }
 
-function getVariantHandler({ route, variant, variantIndex, routeHandlers, core, alerts }) {
+function getVariantHandler({
+  route,
+  variant,
+  variantIndex,
+  routeHandlers,
+  core,
+  logger,
+  loggerRoutes,
+  alerts,
+  alertsRoutes,
+}) {
   let routeHandler = null;
   const variantId = getVariantId(route.id, variant.id);
   const handlerId = variant.handler || DEFAULT_ROUTES_HANDLER;
   const Handler = findRouteHandler(routeHandlers, handlerId);
   const variantErrors = variantValidationErrors(route, variant, Handler);
   const variantAlerts = alerts.collection(variant.id || variantIndex);
+
+  const variantNamespace = variantId || getVariantId(route.id, variantIndex);
+  const routeVariantLogger = loggerRoutes.namespace(variantNamespace);
+  const routeVariantAlerts = alertsRoutes.collection(variantNamespace);
+  const routeVariantCustomCore = new CustomCore({
+    core,
+    logger: routeVariantLogger,
+    alerts: routeVariantAlerts,
+  });
+
   variantAlerts.clean();
 
   if (!!variantErrors) {
     variantAlerts.set("validation", variantErrors.message);
-    tracer.silly(`Variant validation errors: ${JSON.stringify(variantErrors.errors)}`);
+    logger.silly(`Variant validation errors: ${JSON.stringify(variantErrors.errors)}`);
     return null;
   }
 
@@ -202,7 +222,7 @@ function getVariantHandler({ route, variant, variantIndex, routeHandlers, core, 
         url: route.url,
         method: route.method,
       },
-      core
+      routeVariantCustomCore
     );
     routeHandler.delay = getRouteHandlerDelay(variant, route);
     routeHandler.id = variant.id;
@@ -217,7 +237,15 @@ function getVariantHandler({ route, variant, variantIndex, routeHandlers, core, 
   return routeHandler;
 }
 
-function getRouteVariants({ routesDefinitions, alerts, routeHandlers, core }) {
+function getRouteVariants({
+  routesDefinitions,
+  alerts,
+  alertsRoutes,
+  logger,
+  loggerRoutes,
+  routeHandlers,
+  core,
+}) {
   let routeIds = [];
   alerts.clean();
   return compact(
@@ -228,7 +256,7 @@ function getRouteVariants({ routesDefinitions, alerts, routeHandlers, core }) {
         const routeErrors = routeValidationErrors(route);
         if (!!routeErrors) {
           routeAlerts.set("validation", routeErrors.message);
-          tracer.silly(`Route validation errors: ${JSON.stringify(routeErrors.errors)}`);
+          logger.silly(`Route validation errors: ${JSON.stringify(routeErrors.errors)}`);
           return null;
         }
         if (routeIds.includes(route.id)) {
@@ -247,6 +275,9 @@ function getRouteVariants({ routesDefinitions, alerts, routeHandlers, core }) {
             variantIndex,
             routeHandlers,
             core,
+            logger,
+            alertsRoutes,
+            loggerRoutes,
             alerts: variantsAlerts,
           });
           if (variantHandler) {
@@ -268,13 +299,20 @@ function getRouteVariants({ routesDefinitions, alerts, routeHandlers, core }) {
   );
 }
 
-function getMock({ mockDefinition, mocksDefinitions, routeVariants, getGlobalDelay, alerts }) {
+function getMock({
+  mockDefinition,
+  mocksDefinitions,
+  routeVariants,
+  logger,
+  getGlobalDelay,
+  alerts,
+}) {
   let mock = null;
 
   const mockRouteVariantsErrors = mockRouteVariantsValidationErrors(mockDefinition, routeVariants);
   if (!!mockRouteVariantsErrors) {
     alerts.set("variants", mockRouteVariantsErrors.message);
-    tracer.silly(
+    logger.silly(
       `Mock variants validation errors: ${JSON.stringify(mockRouteVariantsErrors.errors)}`
     );
     // TODO, add strict validation mode
@@ -284,7 +322,7 @@ function getMock({ mockDefinition, mocksDefinitions, routeVariants, getGlobalDel
   const mockErrors = mockValidationErrors(mockDefinition, routeVariants);
   if (!!mockErrors) {
     alerts.set("validation", mockErrors.message);
-    tracer.silly(`Mock validation errors: ${JSON.stringify(mockErrors.errors)}`);
+    logger.silly(`Mock validation errors: ${JSON.stringify(mockErrors.errors)}`);
     return null;
   }
 
@@ -297,6 +335,7 @@ function getMock({ mockDefinition, mocksDefinitions, routeVariants, getGlobalDel
         routeVariants,
         alerts
       ),
+      logger,
       getDelay: getGlobalDelay,
     });
   } catch (error) {
@@ -305,7 +344,7 @@ function getMock({ mockDefinition, mocksDefinitions, routeVariants, getGlobalDel
   return mock;
 }
 
-function getMocks({ mocksDefinitions, alerts, routeVariants, getGlobalDelay }) {
+function getMocks({ mocksDefinitions, alerts, logger, routeVariants, getGlobalDelay }) {
   alerts.clean();
   let errorsProcessing = 0;
   let ids = [];
@@ -320,6 +359,7 @@ function getMocks({ mocksDefinitions, alerts, routeVariants, getGlobalDelay }) {
         mocksDefinitions,
         routeVariants,
         getGlobalDelay,
+        logger,
         alerts: alertsMock,
       });
       if (!mock) {

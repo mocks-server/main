@@ -12,14 +12,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const path = require("path");
 const sinon = require("sinon");
 const { cloneDeep } = require("lodash");
-const Alerts = require("../../src/Alerts");
+const { Logger } = require("@mocks-server/logger");
 
+const Alerts = require("../../src/Alerts");
 const LibsMocks = require("../Libs.mocks");
 const CoreMocks = require("../Core.mocks");
 const ConfigMock = require("../Config.mocks");
 
 const FilesLoader = require("../../src/files-loader/FilesLoader");
-const tracer = require("../../src/tracer");
 
 const wait = () => {
   return new Promise((resolve) => {
@@ -73,6 +73,7 @@ describe("FilesLoader", () => {
   let babelRegisterOption;
   let babelRegisterOptionsOption;
   let alerts;
+  let logger;
 
   beforeEach(async () => {
     requireCache = cloneDeep(fooRequireCache);
@@ -82,18 +83,23 @@ describe("FilesLoader", () => {
     coreMocks = new CoreMocks();
     libsMocks = new LibsMocks();
     coreInstance = coreMocks.stubs.instance;
-    sandbox.stub(tracer, "verbose");
-    sandbox.stub(tracer, "debug");
-    sandbox.stub(tracer, "error");
-    sandbox.stub(tracer, "info");
-    sandbox.stub(tracer, "silly");
-    alerts = new Alerts("files");
+
+    sandbox.stub(Logger.prototype, "warn");
+    sandbox.stub(Logger.prototype, "verbose");
+    sandbox.stub(Logger.prototype, "debug");
+    sandbox.stub(Logger.prototype, "error");
+    sandbox.stub(Logger.prototype, "info");
+    sandbox.stub(Logger.prototype, "silly");
+    logger = new Logger();
+
+    alerts = new Alerts("files", { logger });
     pluginMethods = {
       core: coreInstance,
       loadRoutes: sandbox.stub(),
       loadMocks: sandbox.stub(),
       alerts,
       config: configMock.stubs.namespace,
+      logger,
     };
 
     filesLoader = new FilesLoader(pluginMethods, {
@@ -236,7 +242,7 @@ describe("FilesLoader", () => {
     });
 
     it("should return a rejected promise if there is an error initializing", async () => {
-      tracer.info.throws(new Error("foo error"));
+      Logger.prototype.info.throws(new Error("foo error"));
       await expect(() => filesLoader.init()).rejects.toThrow("foo error");
     });
 

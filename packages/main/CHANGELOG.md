@@ -16,8 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 
-### Added
+### Changed
 - chore(deps): Update core dependency to v3.3.0
+
+### Added
 - feat: Pass pkg advanced option to core for displaying update notifications of this package instead of core
 
 ## [3.2.0] - 2022-06-27

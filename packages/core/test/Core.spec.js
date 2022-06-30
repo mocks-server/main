@@ -20,6 +20,7 @@ const AlertsMocks = require("./AlertsLegacy.mocks.js");
 const LoadersMocks = require("./Loaders.mocks.js");
 const FilesLoaderMocks = require("./files-loader/FilesLoader.mocks.js");
 const ScaffoldMocks = require("./scaffold/Scaffold.mocks.js");
+const UpdateNotifierMock = require("./UpdateNotifier.mock.js");
 
 const Core = require("../src/Core");
 const tracer = require("../src/tracer");
@@ -40,9 +41,11 @@ describe("Core", () => {
   let scaffoldMocks;
   let core;
   let mockedLoader;
+  let updateNotifierMock;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
+    updateNotifierMock = new UpdateNotifierMock();
     mocksMock = new MocksMock();
     mocksInstance = mocksMock.stubs.instance;
     serverMocks = new ServerMocks();
@@ -74,16 +77,10 @@ describe("Core", () => {
     loadersMocks.restore();
     filesLoaderMocks.restore();
     scaffoldMocks.restore();
+    updateNotifierMock.restore();
   });
 
   describe("when created", () => {
-    it("should init Config with received config", async () => {
-      const fooConfig = { foo: "foo" };
-      core = new Core(fooConfig);
-      await core.init();
-      expect(configMocks.stubs.instance.init.getCall(1).args[0]).toEqual(fooConfig);
-    });
-
     it("should listen to change logger level when log option changes", async () => {
       core = new Core();
       configMocks.stubs.option.onChange.getCall(0).args[0]("foo-level");
@@ -166,6 +163,13 @@ describe("Core", () => {
       expect(pluginsInstance.register.callCount).toEqual(1);
     });
 
+    it("should init Config with received config", async () => {
+      const fooConfig = { foo: "foo" };
+      core = new Core(fooConfig);
+      await core.init();
+      expect(configMocks.stubs.instance.init.getCall(1).args[0]).toEqual(fooConfig);
+    });
+
     it("should extend config from constructor with config from init", async () => {
       core = new Core({ foo: "foo" });
       await core.init({ foo2: "foo2" });
@@ -189,6 +193,18 @@ describe("Core", () => {
 
     it("should init server", () => {
       expect(serverInstance.init.callCount).toEqual(1);
+    });
+
+    it("should init update notifier", () => {
+      expect(updateNotifierMock.stubs.instance.init.callCount).toEqual(1);
+    });
+
+    it("should pass pkg advanced option to update notifier if received in constructor", () => {
+      core = new Core({ foo: "foo" }, { pkg: { name: "foo-name", version: "foo-version" } });
+      expect(updateNotifierMock.stubs.Constructor.mock.calls[1][0].pkg).toEqual({
+        name: "foo-name",
+        version: "foo-version",
+      });
     });
 
     it("should init scaffold", () => {

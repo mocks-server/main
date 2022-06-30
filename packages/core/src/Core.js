@@ -23,10 +23,10 @@ const Mocks = require("./mocks/Mocks");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
 const FilesLoader = require("./files-loader/FilesLoader");
-
-const { scopedAlertsMethods, addEventListener, arrayMerge } = require("./support/helpers");
 const Scaffold = require("./scaffold/Scaffold");
 const Alerts = require("./Alerts");
+const UpdateNotifier = require("./UpdateNotifier");
+const { scopedAlertsMethods, addEventListener, arrayMerge } = require("./support/helpers");
 
 const MODULE_NAME = "mocks";
 
@@ -46,7 +46,7 @@ const ROOT_OPTIONS = [
 ];
 
 class Core {
-  constructor(programmaticConfig = {}) {
+  constructor(programmaticConfig = {}, advancedOptions = {}) {
     this._programmaticConfig = programmaticConfig;
     this._eventEmitter = new EventEmitter();
     this._loadedMocks = false;
@@ -86,6 +86,12 @@ class Core {
       logger: alertsLegacyLogger,
     });
     this._deprecationAlerts = this._alerts.collection("deprecated");
+
+    // Create update notifier
+    this._updateNotifier = new UpdateNotifier({
+      alerts: this._alerts.collection(UpdateNotifier.id),
+      pkg: advancedOptions.pkg,
+    });
 
     // Create mocks loaders
     this._mocksLoaders = new Loaders({
@@ -225,6 +231,9 @@ class Core {
         arrayMerge,
       });
     }
+
+    // Update notifier
+    this._updateNotifier.init();
 
     // Init config
     await this._config.init(this._programmaticConfig);

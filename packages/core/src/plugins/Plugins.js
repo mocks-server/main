@@ -28,6 +28,10 @@ const OPTIONS = [
   },
 ];
 
+function formatDeprecatedMessage(format) {
+  return `Defining Plugins as ${format} is deprecated and it won't be supported in next major version. Consider migrating it to a Class Plugin: https://www.mocks-server.org/docs/plugins-developing-plugins`;
+}
+
 class Plugins {
   static get id() {
     return "plugins";
@@ -57,6 +61,7 @@ class Plugins {
     this._alertsInit = this._alerts.collection("init");
     this._alertsStart = this._alerts.collection("start");
     this._alertsStop = this._alerts.collection("stop");
+    this._alertsFormat = this._alerts.collection("format");
 
     this._addAlert = addAlert;
     this._removeAlerts = removeAlerts;
@@ -125,6 +130,8 @@ class Plugins {
 
   _registerPlugin(Plugin, pluginMethods, pluginIndex) {
     let pluginInstance,
+      formatIsObject,
+      formatIsFunction,
       pluginConfig,
       pluginAlerts,
       pluginLogger,
@@ -135,6 +142,7 @@ class Plugins {
       pluginInstance = Plugin;
       this._pluginsInstances.push(pluginInstance);
       this._pluginsRegistered++;
+      formatIsObject = true;
     } else {
       try {
         if (Plugin.id) {
@@ -161,6 +169,7 @@ class Plugins {
             pluginInstance = pluginFunc(new CustomCore(pluginOptions)) || {};
             this._pluginsInstances.push(pluginInstance);
             this._pluginsRegistered++;
+            formatIsFunction = true;
           } catch (err) {
             return this._catchRegisterError(err, pluginIndex);
           }
@@ -210,6 +219,12 @@ class Plugins {
           this._pluginsRegistered = this._pluginsRegistered - 1;
         }
       }
+    }
+    if (formatIsObject) {
+      this._alertsFormat.set(this._pluginId(pluginIndex), formatDeprecatedMessage("objects"));
+    }
+    if (formatIsFunction) {
+      this._alertsFormat.set(this._pluginId(pluginIndex), formatDeprecatedMessage("functions"));
     }
     return pluginInstance;
   }

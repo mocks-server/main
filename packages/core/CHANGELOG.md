@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [3.4.0] - 2022-07-01
+
+### Added
+- feat(#351): Add an alert when plugins are defined as objects or functions
+
 ## [3.3.0] - 2022-07-01
 
 ### Added

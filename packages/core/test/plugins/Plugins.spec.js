@@ -319,6 +319,22 @@ describe("Plugins", () => {
       expect(pluginAlerts).toBe(undefined);
     });
 
+    it("should add an alert if plugin is an object", async () => {
+      const fooPlugin = {
+        id: "foo-plugin",
+        register: (methods) => {
+          methods.alerts.set("foo-id", "Foo message");
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(alerts.flat[0].collection).toEqual("plugins:format");
+      expect(alerts.flat[0].value.message).toEqual(
+        expect.stringContaining("Defining Plugins as objects is deprecated")
+      );
+      expect(alerts.flat[0].id).toEqual("foo-plugin");
+    });
+
     it("should have alerts available if object has id", async () => {
       const fooPlugin = {
         id: "foo-plugin",
@@ -328,9 +344,9 @@ describe("Plugins", () => {
       };
       pluginsOption.value = [fooPlugin];
       await plugins.register();
-      expect(alerts.flat[0].collection).toEqual("plugins:foo-plugin");
-      expect(alerts.flat[0].value.message).toEqual("Foo message");
-      expect(alerts.flat[0].id).toEqual("foo-id");
+      expect(alerts.flat[1].collection).toEqual("plugins:foo-plugin");
+      expect(alerts.flat[1].value.message).toEqual("Foo message");
+      expect(alerts.flat[1].id).toEqual("foo-id");
     });
 
     it("should have alerts available if Class has id", async () => {
@@ -403,6 +419,21 @@ describe("Plugins", () => {
       await plugins.register();
       expect(receivedCore).toEqual(coreInstance);
       expect(logger.verbose.calledWith(pluginsTraceAddingNative(METHOD, 1))).toEqual(true);
+    });
+
+    it("should add an alert if plugin is a function", async () => {
+      const fooPlugin = () => {
+        return {
+          id: "foo-plugin",
+        };
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(alerts.flat[0].collection).toEqual("plugins:format");
+      expect(alerts.flat[0].value.message).toEqual(
+        expect.stringContaining("Defining Plugins as functions is deprecated")
+      );
+      expect(alerts.flat[0].id).toEqual("foo-plugin");
     });
 
     it("should register function plugins executing them passing custom methods", async () => {
@@ -577,7 +608,7 @@ describe("Plugins", () => {
         { foo: "foo" },
       ];
       await plugins.register();
-      expect(alerts.flat.length).toEqual(4);
+      expect(alerts.flat.length).toEqual(6);
       expect(alerts.flat[0].value.message).toEqual('Error registering plugin "0"');
       expect(alerts.flat[1].value.message).toEqual('Error registering plugin "3"');
       expect(alerts.flat[2].value.message).toEqual('Error registering plugin "4"');
@@ -663,7 +694,7 @@ describe("Plugins", () => {
       pluginsOption.value = [fooPlugin, fooPlugin2, fooPlugin3];
       await plugins.register();
       await plugins.init();
-      expect(alerts.flat.length).toEqual(1);
+      expect(alerts.flat.length).toEqual(4);
       expect(alerts.flat[0].value.message).toEqual('Error initializating plugin "0"');
       expect(logger.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
@@ -814,7 +845,7 @@ describe("Plugins", () => {
       pluginsOption.value = [fooPlugin, fooPlugin2, fooPlugin3];
       await plugins.register();
       await plugins.start();
-      expect(alerts.flat.length).toEqual(1);
+      expect(alerts.flat.length).toEqual(4);
       expect(alerts.flat[0].value.message).toEqual('Error starting plugin "0"');
       expect(logger.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
@@ -951,7 +982,7 @@ describe("Plugins", () => {
       pluginsOption.value = [fooPlugin, fooPlugin2, fooPlugin3];
       await plugins.register();
       await plugins.stop();
-      expect(alerts.flat.length).toEqual(1);
+      expect(alerts.flat.length).toEqual(4);
       expect(alerts.flat[0].value.message).toEqual('Error stopping plugin "0"');
       expect(logger.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });

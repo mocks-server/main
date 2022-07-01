@@ -12,7 +12,10 @@ const sinon = require("sinon");
 const express = require("express");
 
 const filterPluginAlerts = (alerts) =>
-  alerts.filter((alert) => alert.context.indexOf("plugins") === 0);
+  alerts.filter(
+    (alert) =>
+      alert.context.indexOf("plugins") === 0 && alert.context.indexOf("plugins:format") !== 0
+  );
 
 const filterLogs = (logs, text) => logs.filter((log) => log.includes(text));
 
@@ -223,6 +226,53 @@ describe("plugins", () => {
     });
   };
 
+  testPlugin("created as an object", {
+    id: "test-plugin",
+    register: ({ addRouter, alerts, config, logger }) => {
+      registerSpy();
+      logger.info("Log from register method");
+      addRouter("/foo-path", customRouter);
+      alerts.set("test-register", "Warning registering plugin");
+      configSpy(config);
+    },
+    init: ({ onChangeAlerts, onChangeMocks, config, logger }) => {
+      logger.info("Log from init method");
+      initSpy(
+        config.root.namespace("files").option("path").value,
+        config.root.namespace("server").option("port").value,
+        config.root.namespace("mocks").option("delay").value
+      );
+      config.root.option("log").value = "silly";
+      onChangeAlerts(changeAlertsSpy);
+      onChangeMocks(mocksLoadedSpy);
+    },
+    start: ({ alerts, logger }) => {
+      logger.info("Log from start method");
+      alerts.set("test-start", "Warning starting plugin");
+      startSpy();
+    },
+    stop: ({ alerts, logger }) => {
+      logger.info("Log from stop method");
+      alerts.clean();
+    },
+  });
+
+  testAsyncPlugin("created as an object", {
+    // TODO, allow async register
+    id: "test-plugin",
+    register: ({ alerts, config }) => {
+      alerts.set("test-register", "Warning registering plugin");
+      configSpy(config);
+    },
+    init: () => {
+      return wait(2000);
+    },
+    start: ({ alerts }) => {
+      alerts.set("test-start", "Warning starting plugin");
+      return wait(1000);
+    },
+  });
+
   testPlugin(
     "created as a Class",
     class Plugin {
@@ -355,4 +405,92 @@ describe("plugins", () => {
       }
     }
   );
+
+  testPlugin("created as a function", ({ addRouter }) => {
+    addRouter("/foo-path", customRouter);
+    registerSpy();
+    return {
+      id: "test-plugin",
+      register({ config, alerts, logger }) {
+        logger.info("Log from register method");
+        configSpy(config);
+        alerts.set("test-register", "Warning registering plugin");
+      },
+      init: ({ config, logger, onChangeAlerts, onChangeMocks }) => {
+        logger.info("Log from init method");
+        initSpy(
+          config.root.namespace("files").option("path").value,
+          config.root.namespace("server").option("port").value,
+          config.root.namespace("mocks").option("delay").value
+        );
+        config.root.option("log").value = "silly";
+        onChangeAlerts(changeAlertsSpy);
+        onChangeMocks(mocksLoadedSpy);
+      },
+      start: ({ alerts: alertsHere, logger }) => {
+        logger.info("Log from start method");
+        alertsHere.set("test-start", "Warning starting plugin");
+        startSpy();
+      },
+      stop: ({ alerts: alertsHere, logger }) => {
+        logger.info("Log from stop method");
+        alertsHere.clean();
+      },
+    };
+  });
+
+  testAsyncPlugin(
+    "created as a function",
+    ({ addRouter }) => {
+      addRouter("/foo-path", customRouter);
+      registerSpy();
+      return {
+        register: ({ alerts }) => {
+          alerts.set("test-register", "Warning registering plugin");
+        },
+        id: "test-plugin",
+        init: async () => {
+          await wait(2000);
+        },
+        start: async ({ alerts }) => {
+          alerts.set("test-start", "Warning starting plugin");
+          await wait(1000);
+        },
+      };
+    },
+    { doNotTestConfig: true }
+  );
+
+  testPlugin("created as a function returning register property", () => {
+    return {
+      id: "test-plugin",
+      register: ({ addRouter, alerts, config, logger }) => {
+        logger.info("Log from register method");
+        addRouter("/foo-path", customRouter);
+        alerts.set("test-register", "Warning registering plugin");
+        registerSpy();
+        configSpy(config);
+      },
+      init: ({ logger, config, onChangeAlerts, onChangeMocks }) => {
+        logger.info("Log from init method");
+        initSpy(
+          config.root.namespace("files").option("path").value,
+          config.root.namespace("server").option("port").value,
+          config.root.namespace("mocks").option("delay").value
+        );
+        config.root.option("log").value = "silly";
+        onChangeAlerts(changeAlertsSpy);
+        onChangeMocks(mocksLoadedSpy);
+      },
+      start: ({ alerts, logger }) => {
+        logger.info("Log from start method");
+        alerts.set("test-start", "Warning starting plugin");
+        startSpy();
+      },
+      stop: ({ alerts, logger }) => {
+        logger.info("Log from stop method");
+        alerts.clean();
+      },
+    };
+  });
 });

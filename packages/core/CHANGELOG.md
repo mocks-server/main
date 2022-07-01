@@ -10,6 +10,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [3.3.0] - 2022-07-01
+
+### Added
+- feat(#332): Add update notifier. Display an alert in case package is out of date.
+- feat: Add `advancedOptions` parameter to Core constructor. Add `pkg` option allowing to determine name and version for update notifier.
+
+### Fixed
+- fix: Add Winston missing dependencies
+
 ## [3.2.0] - 2022-06-27
 
 ### Changed

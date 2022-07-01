@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/core",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "Pluggable mock server supporting multiple route variants and mocks",
   "keywords": [
     "mocks",
@@ -55,7 +55,10 @@
     "handlebars": "4.7.7",
     "is-promise": "4.0.0",
     "lodash": "4.17.21",
-    "node-watch": "0.7.3"
+    "node-watch": "0.7.3",
+    "update-notifier": "5.1.0",
+    "winston": "3.7.2",
+    "winston-array-transport": "1.1.9"
   },
   "engines": {
     "node": ">=14.x"

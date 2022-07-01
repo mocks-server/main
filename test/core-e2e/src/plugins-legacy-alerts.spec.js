@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -12,7 +12,10 @@ const sinon = require("sinon");
 const express = require("express");
 
 const filterPluginAlerts = (alerts) =>
-  alerts.filter((alert) => alert.context.indexOf("plugins") === 0);
+  alerts.filter(
+    (alert) =>
+      alert.context.indexOf("plugins") === 0 && alert.context.indexOf("plugins:format") !== 0
+  );
 
 const {
   startCore,

@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [unreleased]
+## [3.3.0] - 2022-07-01
 
 ### Added
 - feat(#332): Add update notifier. Display an alert in case package is out of date.

@@ -7,13 +7,18 @@ module.exports = [
       {
         id: "enabled",
         delay: 1000,
-        handler: "proxy",
-        host: "http://127.0.0.1:3200",
-        options: {},
+        handler: "proxy-v4",
+        response: {
+          host: "http://127.0.0.1:3200",
+          options: {},
+        },
       },
       {
         id: "disabled",
-        response: (_req, _res, next) => next(),
+        handler: "middleware",
+        response: {
+          middleware: (_req, _res, next) => next(),
+        },
       },
     ],
   },

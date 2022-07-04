@@ -13,25 +13,30 @@ module.exports = [
     variants: [
       {
         id: "enabled",
-        handler: "proxy",
-        host: "http://127.0.0.1:3200",
-        options: {
-          userResDecorator: function (_proxyRes, proxyResData) {
-            const data = JSON.parse(proxyResData.toString("utf8"));
-            let newData;
-            if (Array.isArray(data)) {
-              newData = data.map(modifyUser);
-            } else {
-              newData = modifyUser(data);
-            }
+        handler: "proxy-v4",
+        response: {
+          host: "http://127.0.0.1:3200",
+          options: {
+            userResDecorator: function (_proxyRes, proxyResData) {
+              const data = JSON.parse(proxyResData.toString("utf8"));
+              let newData;
+              if (Array.isArray(data)) {
+                newData = data.map(modifyUser);
+              } else {
+                newData = modifyUser(data);
+              }
 
-            return JSON.stringify(newData);
+              return JSON.stringify(newData);
+            },
           },
         },
       },
       {
         id: "disabled",
-        response: (_req, _res, next) => next(),
+        handler: "middleware",
+        response: {
+          middleware: (_req, _res, next) => next(),
+        },
       },
     ],
   },

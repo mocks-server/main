@@ -64,7 +64,6 @@ class DefaultRoutesHandler {
   }
 
   middleware(req, res, next) {
-    this._logger.info(`Request ${req.method} => ${req.url}`);
     if (isFunction(this._response)) {
       this._logger.verbose(`Response is a function, executing middleware | req: ${req.id}`);
       this._response(req, res, next, this._core);
@@ -74,7 +73,7 @@ class DefaultRoutesHandler {
         res.set(this._response.headers);
       }
       res.status(this._response.status);
-      this._logger.debug(`Sending response | req: ${req.id}`);
+      this._logger.verbose(`Sending response | req: ${req.id}`);
       res.send(this._response.body);
     }
   }

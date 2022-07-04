@@ -18,6 +18,7 @@ module.exports = [
     variants: [
       {
         id: "success",
+        handler: "json",
         response: {
           status: 200,
           body: USERS,

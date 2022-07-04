@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { flatten, compact } = require("lodash");
+const { flatten, compact, isUndefined } = require("lodash");
 
 const CustomCore = require("../CustomCore");
 const Mock = require("./Mock");
@@ -139,7 +139,10 @@ function getPlainRoutesVariants(routesVariants) {
       id: routeVariant.variantId,
       routeId: routeVariant.routeId,
       handler: routeVariant.constructor.id,
-      response: routeVariant.plainResponsePreview,
+      response: !isUndefined(routeVariant.preview)
+        ? routeVariant.preview
+        : // TODO, deprecated, remove plainResponsePreview
+          routeVariant.plainResponsePreview,
       delay: routeVariant.delay,
     };
   });
@@ -215,15 +218,17 @@ function getVariantHandler({
   }
 
   try {
+    const variantArgument = Handler.version === "4" ? variant.response : variant;
     routeHandler = new Handler(
       {
-        ...variant,
+        ...variantArgument,
         variantId,
         url: route.url,
         method: route.method,
       },
       routeVariantCustomCore
     );
+    // TODO, do not add properties to handler. Store it in "handler" property
     routeHandler.delay = getRouteHandlerDelay(variant, route);
     routeHandler.id = variant.id;
     routeHandler.variantId = variantId;
@@ -304,6 +309,7 @@ function getMock({
   mocksDefinitions,
   routeVariants,
   logger,
+  loggerRoutes,
   getGlobalDelay,
   alerts,
 }) {
@@ -335,7 +341,7 @@ function getMock({
         routeVariants,
         alerts
       ),
-      logger,
+      logger: loggerRoutes,
       getDelay: getGlobalDelay,
     });
   } catch (error) {
@@ -344,7 +350,14 @@ function getMock({
   return mock;
 }
 
-function getMocks({ mocksDefinitions, alerts, logger, routeVariants, getGlobalDelay }) {
+function getMocks({
+  mocksDefinitions,
+  alerts,
+  logger,
+  loggerRoutes,
+  routeVariants,
+  getGlobalDelay,
+}) {
   alerts.clean();
   let errorsProcessing = 0;
   let ids = [];
@@ -360,6 +373,7 @@ function getMocks({ mocksDefinitions, alerts, logger, routeVariants, getGlobalDe
         routeVariants,
         getGlobalDelay,
         logger,
+        loggerRoutes,
         alerts: alertsMock,
       });
       if (!mock) {

@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -12,9 +12,9 @@ const sinon = require("sinon");
 const { Logger } = require("@mocks-server/logger");
 
 const CoreMocks = require("../../Core.mocks.js");
-const DefaultRoutesHandler = require("../../../src/routes-handlers/default/DefaultRoutesHandler");
+const DefaultRoutesHandler = require("../../../src/routes-handlers/handlers/Default");
 
-describe("DefaultRoutesHandler", () => {
+describe("Default routes handler", () => {
   const FOO_ROUTE = {
     variantId: "foo-id",
     method: "POST",
@@ -122,7 +122,7 @@ describe("DefaultRoutesHandler", () => {
       expect(fooResponseMethod.getCall(0).args[3]).toEqual(coreInstance);
     });
 
-    it("should return function if response is a function", () => {
+    it("should return null in plainResponsePreview if response is a function", () => {
       defaultRoutesHandler = new DefaultRoutesHandler(
         {
           ...FOO_ROUTE,

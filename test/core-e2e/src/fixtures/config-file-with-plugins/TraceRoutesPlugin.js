@@ -3,7 +3,7 @@ class Plugin {
     return "trace-routes";
   }
 
-  constructor({ core, config }) {
+  constructor({ mocks, config, logger }) {
     this._traceRoutes = config.addOption({
       name: "traceRoutes",
       type: "boolean",
@@ -12,35 +12,36 @@ class Plugin {
     });
     this._traceRoutes.onChange(this._onChangeTraceRoutes.bind(this));
 
-    this._core = core;
+    this._mocks = mocks;
     this._onChangeMocks = this._onChangeMocks.bind(this);
+    this._logger = logger;
   }
 
   get displayName() {
     return "trace-routes";
   }
 
-  init({ core }) {
+  init({ onChangeMocks, logger }) {
     this._enabled = this._traceRoutes.value;
-    this._removeChangeMocksListener = core.onChangeMocks(this._onChangeMocks);
-    core.tracer.debug(`traceRoutes initial value is ${this._traceRoutes.value}`);
+    this._removeChangeMocksListener = onChangeMocks(this._onChangeMocks);
+    logger.debug(`traceRoutes initial value is ${this._traceRoutes.value}`);
   }
 
   traceRoutes() {
     if (this._enabled && this._started) {
-      this._core.tracer.info(`There are ${this._core.mocks.plainRoutes.length} routes available`);
+      this._logger.info(`There are ${this._mocks.plainRoutes.length} routes available`);
     }
   }
 
-  start({ core }) {
+  start() {
     this._started = true;
-    core.tracer.debug("traceRoutes plugin started");
+    this._logger.debug("traceRoutes plugin started");
     this.traceRoutes();
   }
 
-  stop({ core }) {
+  stop() {
     this._started = false;
-    core.tracer.debug("traceRoutes plugin stopped");
+    this._logger.debug("traceRoutes plugin stopped");
   }
 
   _onChangeTraceRoutes() {

@@ -108,6 +108,7 @@ class Mocks {
       mocksDefinitions: this._mocksDefinitions,
       alerts: this._alertsMocks,
       logger: this._loggerLoadMocks,
+      loggerRoutes: this._loggerRoutes,
       routeVariants: this._routesVariants,
       getGlobalDelay: this.getDelay,
     });
@@ -212,6 +213,7 @@ class Mocks {
       getGlobalDelay: this.getDelay,
       alerts,
       logger: this._loggerLoadMocks,
+      loggerRoutes: this._loggerRoutes,
     });
   }
 

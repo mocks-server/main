@@ -117,6 +117,7 @@ const routesSchema = {
             ],
           },
         },
+        // TODO, require "response" in all variants to be an object, do not allow additionalProperties
         required: ["id"],
       },
     },
@@ -282,17 +283,26 @@ function variantValidationErrors(route, variant, Handler) {
     return null;
   }
   const variantValidator = ajv.compile(Handler.validationSchema);
-  const isValid = variantValidator(variant);
+  const isVersion4 = Handler.version === "4";
+  const dataToCheck = isVersion4 ? variant.response : variant;
+  const dataMessage = isVersion4 ? "Invalid 'response' property:" : "";
+  const isValid = variantValidator(dataToCheck);
   if (!isValid) {
+    let validationMessage;
+    try {
+      validationMessage = validationSingleMessage(
+        Handler.validationSchema,
+        dataToCheck || {},
+        variantValidator.errors
+      );
+    } catch (error) {
+      validationMessage = " Wrong type";
+    }
     const idTrace = variant && variant.id ? `${traceId(variant.id)} ` : "";
     return {
       message: `Variant ${idTrace}in route ${traceId(
         route.id
-      )} is invalid: ${validationSingleMessage(
-        Handler.validationSchema,
-        variant,
-        variantValidator.errors
-      )}`,
+      )} is invalid: ${dataMessage}${validationMessage}`,
       errors: variantValidator.errors,
     };
   }

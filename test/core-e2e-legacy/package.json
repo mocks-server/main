@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "scripts": {
+    "test:e2e": "jest --runInBand --detectOpenHandles"
+  },
+  "dependencies": {
+    "@mocks-server/core": "workspace:*",
+    "@mocks-server/cli-runner": "workspace:*",
+    "express": "4.17.3"
+  }
+}

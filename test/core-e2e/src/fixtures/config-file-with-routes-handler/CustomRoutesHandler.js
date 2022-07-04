@@ -15,24 +15,22 @@ class CustomRoutesHandler {
     return "custom";
   }
 
-  constructor(route, core) {
-    this._method = route.method;
-    this._url = route.url;
-    this._response = route.response;
-    this._variantId = route.variantId;
+  static get version() {
+    return "4";
+  }
+
+  constructor(response, core) {
+    this._response = response;
     this._core = core;
   }
 
-  middleware(req, res, next) {
-    this._core.tracer.debug(
-      `Responding with custom route handler to route variant "${this._variantId}" | req: ${req.id}`
-    );
-    this._core.tracer.info(`Custom request ${req.method} => ${req.url} => "${this._variantId}"`);
+  middleware(req, res) {
+    this._core.logger.info(`Custom request ${req.method} => ${req.url}`);
     res.status(this._response.status);
     res.send(this._response.body);
   }
 
-  get plainResponsePreview() {
+  get preview() {
     return {
       body: this._response.body,
       status: this._response.status,

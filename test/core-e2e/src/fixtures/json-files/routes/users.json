@@ -6,6 +6,7 @@
     "variants": [
       {
         "id": "success",
+        "handler": "json",
         "response": {
           "status": 200,
           "body": [
@@ -22,6 +23,7 @@
       },
       {
         "id": "error",
+        "handler": "json",
         "response": {
           "status": 403,
           "body": {
@@ -38,6 +40,7 @@
     "variants": [
       {
         "id": "1",
+        "handler": "json",
         "response": {
           "status": 200,
           "body": {
@@ -48,6 +51,7 @@
       },
       {
         "id": "2",
+        "handler": "json",
         "response": {
           "status": 200,
           "body": {

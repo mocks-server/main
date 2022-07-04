@@ -85,7 +85,7 @@ describe("when method is defined as array", () => {
           {
             id: "get-user:1",
             routeId: "get-user",
-            handler: "default",
+            handler: "json",
             response: {
               body: {
                 id: 1,
@@ -98,7 +98,7 @@ describe("when method is defined as array", () => {
           {
             id: "get-user:2",
             routeId: "get-user",
-            handler: "default",
+            handler: "json",
             response: {
               body: {
                 id: 2,
@@ -111,7 +111,7 @@ describe("when method is defined as array", () => {
           {
             id: "get-users:success",
             routeId: "get-users",
-            handler: "default",
+            handler: "json",
             response: {
               body: [
                 {
@@ -130,7 +130,7 @@ describe("when method is defined as array", () => {
           {
             id: "get-users:error",
             routeId: "get-users",
-            handler: "default",
+            handler: "json",
             response: {
               body: {
                 message: "Bad data",

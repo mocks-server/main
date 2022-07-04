@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -27,7 +27,8 @@ const {
   getMock,
 } = require("../../src/mocks/helpers");
 const { compileRouteValidator } = require("../../src/mocks/validations");
-const DefaultRoutesHandler = require("../../src/routes-handlers/default/DefaultRoutesHandler");
+const DefaultRoutesHandler = require("../../src/routes-handlers/handlers/Default");
+const JsonRoutesHandler = require("../../src/routes-handlers/handlers/Json");
 const Alerts = require("../../src/Alerts");
 
 describe("mocks helpers", () => {
@@ -465,7 +466,7 @@ describe("mocks helpers", () => {
   });
 
   describe("getPlainRoutesVariants", () => {
-    it("should return routes variants in plain format", () => {
+    it("should return routes variants in plain format when using legacy plainResponsePreview property", () => {
       expect(
         getPlainRoutesVariants([
           {
@@ -481,6 +482,44 @@ describe("mocks helpers", () => {
             routeId: "route-2",
             constructor: { id: "handler-id-2" },
             plainResponsePreview: "response-preview-2",
+            delay: "delay-2",
+            foo: "foo-2",
+          },
+        ])
+      ).toEqual([
+        {
+          id: "route-1:variant-1",
+          routeId: "route-1",
+          handler: "handler-id-1",
+          response: "response-preview-1",
+          delay: "delay-1",
+        },
+        {
+          id: "route-2:variant-1",
+          routeId: "route-2",
+          handler: "handler-id-2",
+          response: "response-preview-2",
+          delay: "delay-2",
+        },
+      ]);
+    });
+
+    it("should return routes variants in plain format when using preview property", () => {
+      expect(
+        getPlainRoutesVariants([
+          {
+            variantId: "route-1:variant-1",
+            routeId: "route-1",
+            constructor: { id: "handler-id-1" },
+            preview: "response-preview-1",
+            delay: "delay-1",
+            foo: "foo-1",
+          },
+          {
+            variantId: "route-2:variant-1",
+            routeId: "route-2",
+            constructor: { id: "handler-id-2" },
+            preview: "response-preview-2",
             delay: "delay-2",
             foo: "foo-2",
           },
@@ -664,6 +703,121 @@ describe("mocks helpers", () => {
         variant: { ...VALID_VARIANT, delay: 5000 },
         variantIndex: 0,
         routeHandlers: [DefaultRoutesHandler],
+        core: coreMocks.stubs.instance,
+        alerts,
+        logger,
+        alertsRoutes,
+        loggerRoutes,
+      });
+      expect(variantHandler.delay).toEqual(5000);
+    });
+  });
+
+  describe("getVariantHandler for v4 variant handlers", () => {
+    it("should add an alert if variant is not valid", () => {
+      const variantHandler = getVariantHandler({
+        route: {},
+        variant: {
+          handler: "json",
+          response: "foo",
+        },
+        variantIndex: 0,
+        routeHandlers: [JsonRoutesHandler],
+        core: coreMocks.stubs.instance,
+        alerts,
+        logger,
+        alertsRoutes,
+        loggerRoutes,
+      });
+
+      expect(variantHandler).toEqual(null);
+      expect(alerts.flat).toEqual([
+        {
+          collection: "foo:0",
+          id: "validation",
+          value: {
+            message:
+              "Variant in route with id 'undefined' is invalid: Invalid 'response' property:: type must be object",
+          },
+        },
+      ]);
+    });
+
+    it("alert should include variant id if it is defined", () => {
+      const variantHandler = getVariantHandler({
+        route: { id: "foo-route" },
+        variant: { handler: "json", id: "foo-variant" },
+        variantIndex: 0,
+        routeHandlers: [JsonRoutesHandler],
+        core: coreMocks.stubs.instance,
+        alerts,
+        logger,
+        alertsRoutes,
+        loggerRoutes,
+      });
+
+      expect(variantHandler).toEqual(null);
+      expect(alerts.flat).toEqual([
+        {
+          collection: "foo:foo-variant",
+          id: "validation",
+          value: {
+            message:
+              "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'response' property:: type must be object",
+          },
+        },
+      ]);
+    });
+
+    it("should return a Handler instance if variant is valid", () => {
+      const variantHandler = getVariantHandler({
+        route: { ...VALID_ROUTE, delay: 3000 },
+        variant: { ...VALID_VARIANT, handler: "json" },
+        variantIndex: 0,
+        routeHandlers: [JsonRoutesHandler],
+        core: coreMocks.stubs.instance,
+        alerts,
+        logger,
+        alertsRoutes,
+        loggerRoutes,
+      });
+
+      expect(variantHandler).toBeInstanceOf(JsonRoutesHandler);
+      expect(variantHandler.delay).toEqual(3000);
+      expect(variantHandler.id).toEqual("foo-variant");
+      expect(variantHandler.variantId).toEqual("foo-route:foo-variant");
+      expect(variantHandler.routeId).toEqual("foo-route");
+      expect(variantHandler.url).toEqual("/foo");
+      expect(variantHandler.method).toEqual("POST");
+    });
+
+    it("should add an Alert and return null is there is an error instantiating Handler", () => {
+      const variantHandler = getVariantHandler({
+        route: { ...VALID_ROUTE, handler: "json", delay: 3000 },
+        variant: {
+          ...VALID_VARIANT,
+          handler: "foo-handler",
+        },
+        variantIndex: 0,
+        routeHandlers: [FooHandler, JsonRoutesHandler],
+        core: coreMocks.stubs.instance,
+        alerts,
+        logger,
+        alertsRoutes,
+        loggerRoutes,
+      });
+
+      expect(variantHandler).toEqual(null);
+      expect(alerts.flat[0].id).toEqual("process");
+      expect(alerts.flat[0].value.message).toEqual("Error creating variant handler");
+    });
+
+    it("should return variant delay if defined", () => {
+      const variantHandler = getVariantHandler({
+        route: { ...VALID_ROUTE, delay: 3000 },
+        variant: { ...VALID_VARIANT, handler: "json", delay: 5000 },
+        variantIndex: 0,
+        routeHandlers: [JsonRoutesHandler],
         core: coreMocks.stubs.instance,
         alerts,
         logger,

@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -17,7 +17,7 @@ const MockMock = require("./Mock.mock.js");
 const Alerts = require("../../src/Alerts");
 const Mocks = require("../../src/mocks/Mocks");
 const ConfigMock = require("../Config.mocks");
-const DefaultRoutesHandler = require("../../src/routes-handlers/default/DefaultRoutesHandler");
+const DefaultRoutesHandler = require("../../src/routes-handlers/handlers/Default");
 
 describe("Mocks", () => {
   let configMock;

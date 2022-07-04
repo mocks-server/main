@@ -17,7 +17,9 @@ const {
   mockValidationErrors,
   mockRouteVariantsValidationErrors,
 } = require("../../src/mocks/validations");
-const DefaultRoutesHandler = require("../../src/routes-handlers/default/DefaultRoutesHandler");
+const DefaultRoutesHandler = require("../../src/routes-handlers/handlers/Default");
+const JsonRoutesHandler = require("../../src/routes-handlers/handlers/Json");
+const MiddlewareRoutesHandler = require("../../src/routes-handlers/handlers/Middleware");
 
 describe("mocks validations", () => {
   const VALID_ROUTE = {
@@ -241,7 +243,7 @@ describe("mocks validations", () => {
   });
 
   describe("variantValidationErrors", () => {
-    it("should return null if Hanlder has not validationSchema", () => {
+    it("should return null if Handler has not validationSchema", () => {
       expect(variantValidationErrors({}, {}, {})).toEqual(null);
     });
   });
@@ -303,6 +305,115 @@ describe("mocks validations", () => {
         DefaultRoutesHandler
       );
       expect(errors).toEqual(null);
+    });
+  });
+
+  describe("variantValidationErrors using Json handler schema", () => {
+    it("should return null if variant is valid", () => {
+      expect(
+        variantValidationErrors({ id: "foo-route" }, VALID_VARIANT, JsonRoutesHandler)
+      ).toEqual(null);
+    });
+
+    it("should return error if variant has not response property and it has not id", () => {
+      const errors = variantValidationErrors(
+        { id: "foo-route" },
+        { ...VALID_VARIANT, id: undefined, response: undefined },
+        JsonRoutesHandler
+      );
+      expect(errors.message).toEqual(
+        "Variant in route with id 'foo-route' is invalid: Invalid 'response' property:: type must be object"
+      );
+    });
+
+    it("should return error if variant has not response property", () => {
+      const errors = variantValidationErrors(
+        { id: "foo-route" },
+        { ...VALID_VARIANT, response: undefined },
+        JsonRoutesHandler
+      );
+      expect(errors.message).toEqual(
+        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'response' property:: type must be object"
+      );
+    });
+
+    it("should return error if variant response headers is not an object", () => {
+      const errors = variantValidationErrors(
+        { id: "foo-route" },
+        {
+          ...VALID_VARIANT,
+          response: {
+            headers: "foo",
+          },
+        },
+        JsonRoutesHandler
+      );
+      expect(errors.message).toEqual(
+        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'response' property: must have required property 'body'. /headers: type must be object"
+      );
+    });
+
+    it("should not allow defining variant response as a function", () => {
+      const errors = variantValidationErrors(
+        { id: "foo-route" },
+        {
+          ...VALID_VARIANT,
+          response: () => {
+            // do nothing
+          },
+        },
+        JsonRoutesHandler
+      );
+      expect(errors.message).toEqual(
+        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'response' property: Wrong type"
+      );
+    });
+  });
+
+  describe("variantValidationErrors using Middleware handler schema", () => {
+    const EMPTY_MIDDLEWARE = () => {};
+
+    it("should return null if variant is valid", () => {
+      expect(
+        variantValidationErrors(
+          { id: "foo-route" },
+          { ...VALID_VARIANT, response: { middleware: EMPTY_MIDDLEWARE } },
+          MiddlewareRoutesHandler
+        )
+      ).toEqual(null);
+    });
+
+    it("should return error if variant has not response property and it has not id", () => {
+      const errors = variantValidationErrors(
+        { id: "foo-route" },
+        { ...VALID_VARIANT, id: undefined, response: undefined },
+        MiddlewareRoutesHandler
+      );
+      expect(errors.message).toEqual(
+        "Variant in route with id 'foo-route' is invalid: Invalid 'response' property:: type must be object"
+      );
+    });
+
+    it("should return error if variant has not response property", () => {
+      const errors = variantValidationErrors(
+        { id: "foo-route" },
+        { ...VALID_VARIANT, response: undefined },
+        MiddlewareRoutesHandler
+      );
+      expect(errors.message).toEqual(
+        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'response' property:: type must be object"
+      );
+    });
+
+    it("should not allow defining variant response without middleware property", () => {
+      const errors = variantValidationErrors(
+        { id: "foo-route" },
+        VALID_VARIANT,
+        MiddlewareRoutesHandler
+      );
+      expect(errors.message).toEqual(
+        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'response' property: must have required property 'middleware'"
+      );
     });
   });
 
@@ -416,7 +527,7 @@ describe("mocks validations", () => {
       );
     });
 
-    it("should wotk when no routeVariants are provided in mock", () => {
+    it("should work when no routeVariants are provided in mock", () => {
       const errors = mockRouteVariantsValidationErrors({
         id: "foo",
         from: "foo-base",

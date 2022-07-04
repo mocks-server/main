@@ -29,7 +29,7 @@ describe("when adding route handlers", () => {
       await startExistingCore(core, fixturesFolder("custom-routes-handler"), {
         mocks: { selected: "custom-users" },
       });
-      core.tracer.set("debug", "store");
+      core.logger.setLevel("debug", { transport: "store" });
     });
 
     afterAll(async () => {
@@ -46,13 +46,7 @@ describe("when adding route handlers", () => {
     });
 
     it("custom handler should have traced", async () => {
-      expect(
-        findTrace(
-          'Responding with custom route handler to route variant "get-users:custom-success"',
-          core.tracer.store
-        )
-      ).toBeDefined();
-      expect(findTrace("Custom request GET =>", core.tracer.store)).toBeDefined();
+      expect(findTrace("Custom request GET => /api/users", core.logger.globalStore)).toBeDefined();
     });
   });
 });

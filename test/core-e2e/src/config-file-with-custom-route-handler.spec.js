@@ -46,9 +46,7 @@ describe("when adding route handlers in config file", () => {
 
     it("custom handler should have traced", async () => {
       expect(mocks.logs.current).toEqual(
-        expect.stringContaining(
-          'Responding with custom route handler to route variant "get-users:custom-success"'
-        )
+        expect.stringContaining("Custom request GET => /api/users")
       );
       expect(mocks.logs.current).toEqual(expect.stringContaining("Custom request GET =>"));
     });

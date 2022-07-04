@@ -24,7 +24,7 @@ const urlEncodedBodyParser = (options) => bodyParser.urlencoded(options);
 const logRequest =
   ({ logger }) =>
   (req, _res, next) => {
-    logger.verbose(`Request received | ${req.method} => ${req.url} | Assigned id: ${req.id}`);
+    logger.debug(`Request received | ${req.method} => ${req.url} | Assigned id: ${req.id}`);
     next();
   };
 

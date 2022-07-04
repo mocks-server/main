@@ -57,7 +57,7 @@ describe("middlewares", () => {
     let loggerStub;
 
     beforeEach(() => {
-      loggerStub = sandbox.stub(logger, "verbose");
+      loggerStub = sandbox.stub(logger, "debug");
     });
 
     it("should call to tracer verbose method, printing the request method", () => {

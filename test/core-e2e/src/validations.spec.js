@@ -76,7 +76,7 @@ describe("mocks and routes validations", () => {
         findAlert("mocks:loadRoutes:get-user-variant-invalid:variants:2:validation", core.alerts)
           .message
       ).toEqual(
-        "Variant with id '2' in route with id 'get-user-variant-invalid' is invalid: /response: type must be object. /response: instanceof must pass \"instanceof\" keyword validation. /response: oneOf must match exactly one schema in oneOf"
+        "Variant with id '2' in route with id 'get-user-variant-invalid' is invalid: Invalid 'response' property:: type must be object"
       );
     });
 

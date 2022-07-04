@@ -27,6 +27,7 @@ module.exports = [
     variants: [
       {
         id: "1",
+        handler: "json",
         response: {
           status: 200,
           body: USERS[0],
@@ -34,6 +35,7 @@ module.exports = [
       },
       {
         id: "2",
+        handler: "json",
         response: {
           status: 200,
           body: USERS[1],
@@ -48,6 +50,7 @@ module.exports = [
     variants: [
       {
         id: "1",
+        handler: "json",
         response: {
           status: 200,
           body: USERS[0],
@@ -55,6 +58,7 @@ module.exports = [
       },
       {
         id: "1",
+        handler: "json",
         response: {
           status: 200,
           body: USERS[0],
@@ -62,6 +66,7 @@ module.exports = [
       },
       {
         id: "2",
+        handler: "json",
         response: null,
       },
     ],
@@ -73,6 +78,7 @@ module.exports = [
     variants: [
       {
         id: "2",
+        handler: "json",
         response: {
           status: 200,
           body: USERS[1],

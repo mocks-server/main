@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat(#335): Pass only response property from variants to route variant handlers having the "version" property defined as "4". If it has another value, pass the whole variant object (for backward compatibility)
 - feat(#336): Add "Json" and "Middleware" variant handlers.
 - feat: Support defining the response preview in the handlers "preview" property. Keep also "plainResponsePreview" for backward compatibility.
+- feat: Support "deprecated" property in route handlers. Add an alert whenever any route variant uses a deprecated handler
 
 ### Changed
 - feat: Log requests in the middleware added by the Mock class, so it has not to be logged in every different handler.

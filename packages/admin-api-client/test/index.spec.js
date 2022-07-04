@@ -29,7 +29,8 @@ describe("react-admin-client methods used with node", () => {
     describe("when there are alerts", () => {
       it("should return alerts", async () => {
         const alerts = await readAlerts();
-        expect(alerts.length).toEqual(1);
+        // one alert is added due to the usage of default handler
+        expect(alerts.length).toEqual(2);
       });
 
       it("should return alert about mock not defined", async () => {
@@ -86,7 +87,8 @@ describe("react-admin-client methods used with node", () => {
         });
         await wait(2000);
         const alerts = await readAlerts();
-        expect(alerts.length).toEqual(0);
+        // one alert is added due to the usage of default handler
+        expect(alerts.length).toEqual(1);
       });
     });
   });

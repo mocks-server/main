@@ -203,6 +203,7 @@ function getVariantHandler({
   const variantNamespace = variantId || getVariantId(route.id, variantIndex);
   const routeVariantLogger = loggerRoutes.namespace(variantNamespace);
   const routeVariantAlerts = alertsRoutes.collection(variantNamespace);
+  const handlersAlerts = alertsRoutes.collection("handlers");
   const routeVariantCustomCore = new CustomCore({
     core,
     logger: routeVariantLogger,
@@ -219,6 +220,12 @@ function getVariantHandler({
 
   try {
     const variantArgument = Handler.version === "4" ? variant.response : variant;
+    if (Handler.deprecated) {
+      handlersAlerts.set(
+        Handler.id,
+        `Handler '${Handler.id}' is deprecated and will be removed in next major version. Consider using another handler.`
+      );
+    }
     routeHandler = new Handler(
       {
         ...variantArgument,
@@ -253,6 +260,7 @@ function getRouteVariants({
 }) {
   let routeIds = [];
   alerts.clean();
+  alertsRoutes.clean();
   return compact(
     flatten(
       routesDefinitions.map((route, index) => {

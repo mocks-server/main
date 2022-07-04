@@ -28,7 +28,8 @@ describe("alerts api", () => {
   describe("when started", () => {
     it("should return mock not found alert", async () => {
       const response = await fetch("/admin/alerts");
-      expect(response.body.length).toEqual(1);
+      // one alert is caused by deprecated handler
+      expect(response.body.length).toEqual(2);
     });
 
     it("should return specific alert when requested by id", async () => {
@@ -65,7 +66,8 @@ describe("alerts api", () => {
 
     it("should return no alerts", async () => {
       const response = await fetch("/admin/alerts");
-      expect(response.body.length).toEqual(0);
+      // one alert is caused by deprecated handler
+      expect(response.body.length).toEqual(1);
     });
   });
 

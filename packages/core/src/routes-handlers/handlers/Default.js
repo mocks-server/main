@@ -17,6 +17,10 @@ class DefaultRoutesHandler {
     return "default";
   }
 
+  static get deprecated() {
+    return true;
+  }
+
   static get validationSchema() {
     return {
       type: "object",

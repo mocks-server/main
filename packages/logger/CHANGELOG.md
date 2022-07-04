@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+### Changed
+- feat: Increase winston-array-transport maxEventListeners
+
 ## [1.0.0] - 2022-06-27
 
 ### Added

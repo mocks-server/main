@@ -103,7 +103,7 @@ describe("scaffold", () => {
         {
           id: "proxy-all:enabled",
           routeId: "proxy-all",
-          handler: "proxy",
+          handler: "proxy-v4",
           response: {
             host: "http://127.0.0.1:3200",
           },
@@ -112,7 +112,7 @@ describe("scaffold", () => {
         {
           id: "proxy-all:disabled",
           routeId: "proxy-all",
-          handler: "default",
+          handler: "middleware",
           response: null,
           delay: null,
         },

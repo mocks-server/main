@@ -8,13 +8,20 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { mocksRunner, fetch, waitForServerAndCli, wait } = require("./support/helpers");
+const {
+  mocksRunner,
+  fetch,
+  waitForServerAndCli,
+  wait,
+  cleanScaffold,
+} = require("./support/helpers");
 
 describe("scaffold", () => {
   jest.setTimeout(15000);
   let mocks;
 
   beforeAll(async () => {
+    await cleanScaffold();
     mocks = mocksRunner();
     await waitForServerAndCli();
   });
@@ -113,21 +120,21 @@ describe("scaffold", () => {
         {
           id: "add-headers:enabled",
           routeId: "add-headers",
-          handler: "default",
+          handler: "middleware",
           response: null,
           delay: null,
         },
         {
           id: "add-headers:disabled",
           routeId: "add-headers",
-          handler: "default",
+          handler: "middleware",
           response: null,
           delay: null,
         },
         {
           id: "get-users:success",
           routeId: "get-users",
-          handler: "default",
+          handler: "json",
           response: {
             body: [
               { id: 1, name: "John Doe" },
@@ -140,21 +147,21 @@ describe("scaffold", () => {
         {
           id: "get-users:error",
           routeId: "get-users",
-          handler: "default",
+          handler: "json",
           response: { body: { message: "Error" }, status: 400 },
           delay: null,
         },
         {
           id: "get-user:success",
           routeId: "get-user",
-          handler: "default",
+          handler: "json",
           response: { body: { id: 1, name: "John Doe" }, status: 200 },
           delay: null,
         },
         {
           id: "get-user:real",
           routeId: "get-user",
-          handler: "default",
+          handler: "middleware",
           response: null,
           delay: null,
         },

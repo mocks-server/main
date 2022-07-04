@@ -9,6 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
+const fsExtra = require("fs-extra");
 
 const crossFetch = require("cross-fetch");
 const waitOn = require("wait-on");
@@ -32,8 +33,15 @@ const fixturesFolder = (folderName) => {
   return path.resolve(baseFixturesFolder, folderName);
 };
 
+const scaffoldFolder = fixturesFolder("scaffold");
+
 const defaultMocksRunnerOptions = {
-  cwd: fixturesFolder("scaffold"),
+  cwd: scaffoldFolder,
+};
+
+const cleanScaffold = async () => {
+  await fsExtra.remove(path.resolve(scaffoldFolder, "mocks"));
+  await fsExtra.remove(path.resolve(scaffoldFolder, "mocks.config.js"));
 };
 
 const serverUrl = (port) => {
@@ -122,4 +130,5 @@ module.exports = {
   waitForServer,
   waitForServerAndCli,
   fixturesFolder,
+  cleanScaffold,
 };

@@ -278,11 +278,11 @@ importers:
     specifiers:
       chalk: 4.1.1
       winston: 3.7.2
-      winston-array-transport: 1.1.9
+      winston-array-transport: 1.1.10
     dependencies:
       chalk: 4.1.1
       winston: 3.7.2
-      winston-array-transport: 1.1.9
+      winston-array-transport: 1.1.10
 
   packages/main:
     specifiers:
@@ -16613,6 +16613,13 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       string-width: 4.2.3
+
+  /winston-array-transport/1.1.10:
+    resolution: {integrity: sha512-9VQ4NWDWG9MPGh9qdz7hkRVONwp6td2UihpRQlScFdHRp/XrfcgbuhMGS7ddxRVAB3bhVNnyHIi6+XDSaU1ulQ==}
+    engines: {node: '>=10'}
+    dependencies:
+      winston-transport: 4.5.0
+    dev: false
 
   /winston-array-transport/1.1.9:
     resolution: {integrity: sha512-KBh1dlSuP8N3Whq5XQDO1eC9SsUbsukPLsL2rcJx3qFK2fKiQba2PFxoHPhGn1mvrVxAoW8SM3nbEvADj32c6A==}

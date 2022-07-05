@@ -371,7 +371,9 @@ describe("mocks validations", () => {
   });
 
   describe("variantValidationErrors using Middleware handler schema", () => {
-    const EMPTY_MIDDLEWARE = () => {};
+    const EMPTY_MIDDLEWARE = () => {
+      // do nothing
+    };
 
     it("should return null if variant is valid", () => {
       expect(

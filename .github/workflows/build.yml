@@ -6,7 +6,6 @@ on:
     branches:
       - master
       - release
-      - feat-variants-format
   pull_request:
 jobs:
   get-affected:

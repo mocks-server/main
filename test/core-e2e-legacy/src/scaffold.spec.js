@@ -12,7 +12,7 @@ const path = require("path");
 const fsExtra = require("fs-extra");
 const {
   mocksRunner,
-  fetch,
+  doFetch,
   waitForServer,
   fixturesFolder,
   removeConfigFile,
@@ -59,7 +59,7 @@ describe("when nor config file nor mocks folder exists", () => {
       });
 
       it("should serve users under the /api/users path", async () => {
-        const users = await fetch("/api/users");
+        const users = await doFetch("/api/users");
         expect(users.status).toEqual(200);
         expect(users.body).toEqual([
           { id: 1, name: "John Doe" },
@@ -68,13 +68,13 @@ describe("when nor config file nor mocks folder exists", () => {
       });
 
       it("should serve user 1 under the /api/users/1 path", async () => {
-        const users = await fetch("/api/users/1");
+        const users = await doFetch("/api/users/1");
         expect(users.status).toEqual(200);
         expect(users.body).toEqual({ id: 1, name: "John Doe" });
       });
 
       it("should serve user 1 under the /api/users/2 path", async () => {
-        const users = await fetch("/api/users/2");
+        const users = await doFetch("/api/users/2");
         expect(users.status).toEqual(200);
         expect(users.body).toEqual({ id: 1, name: "John Doe" });
       });
@@ -96,7 +96,7 @@ describe("when nor config file nor mocks folder exists", () => {
       });
 
       it("should serve users under the /api/users path", async () => {
-        const users = await fetch("/api/users");
+        const users = await doFetch("/api/users");
         expect(users.status).toEqual(200);
         expect(users.body).toEqual([
           { id: 1, name: "John Doe" },
@@ -105,13 +105,13 @@ describe("when nor config file nor mocks folder exists", () => {
       });
 
       it("should serve user 1 under the /api/users/1 path", async () => {
-        const users = await fetch("/api/users/1");
+        const users = await doFetch("/api/users/1");
         expect(users.status).toEqual(200);
         expect(users.body).toEqual({ id: 1, name: "John Doe" });
       });
 
       it("should serve user 1 under the /api/users/2 path", async () => {
-        const users = await fetch("/api/users/2");
+        const users = await doFetch("/api/users/2");
         expect(users.status).toEqual(200);
         expect(users.body).toEqual({ id: 1, name: "John Doe" });
       });
@@ -173,7 +173,7 @@ describe("when nor config file nor mocks folder exists", () => {
     });
 
     it("should serve users under the /api/users path", async () => {
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -182,13 +182,13 @@ describe("when nor config file nor mocks folder exists", () => {
     });
 
     it("should serve user 1 under the /api/users/1 path", async () => {
-      const users = await fetch("/api/users/1");
+      const users = await doFetch("/api/users/1");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 1 under the /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2");
+      const users = await doFetch("/api/users/2");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
@@ -222,7 +222,7 @@ describe("when nor config file nor mocks folder exists", () => {
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2");
+      const users = await doFetch("/api/users/2");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });

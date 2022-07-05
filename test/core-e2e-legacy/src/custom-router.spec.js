@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const express = require("express");
 
 const Core = require("@mocks-server/core");
-const { fetch, fixturesFolder, waitForServer, removeConfigFile } = require("./support/helpers");
+const { doFetch, fixturesFolder, waitForServer, removeConfigFile } = require("./support/helpers");
 
 describe("when using custom router", () => {
   const customRouter = express.Router();
@@ -49,12 +49,12 @@ describe("when using custom router", () => {
     });
 
     it("custom router should be listening", async () => {
-      const response = await fetch("/api/custom");
+      const response = await doFetch("/api/custom");
       expect(response.body.customRouterListening).toEqual(true);
     });
 
     it("fixtures routers should be listening", async () => {
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -63,7 +63,7 @@ describe("when using custom router", () => {
 
     it("custom router should stop listening when is removed", async () => {
       await core.removeRouter("/api/custom", customRouter);
-      const response = await fetch("/api/custom");
+      const response = await doFetch("/api/custom");
       expect(response.status).toEqual(404);
     });
   });
@@ -93,12 +93,12 @@ describe("when using custom router", () => {
     });
 
     it("custom router should be listening", async () => {
-      const response = await fetch("/api/custom");
+      const response = await doFetch("/api/custom");
       expect(response.body.customRouterListening).toEqual(true);
     });
 
     it("mocks routers should be listening", async () => {
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -107,7 +107,7 @@ describe("when using custom router", () => {
 
     it("custom router should stop listening when is removed", async () => {
       await core.removeRouter("/api/custom", customRouter);
-      const response = await fetch("/api/custom");
+      const response = await doFetch("/api/custom");
       expect(response.status).toEqual(404);
     });
   });

@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startServer, fetch, waitForServer, wait, fixturesFolder } = require("./support/helpers");
+const { startServer, doFetch, waitForServer, wait, fixturesFolder } = require("./support/helpers");
 
 describe("alerts api", () => {
   let server;
@@ -27,13 +27,13 @@ describe("alerts api", () => {
 
   describe("when started", () => {
     it("should return mock not found alert", async () => {
-      const response = await fetch("/admin/alerts");
+      const response = await doFetch("/admin/alerts");
       // one alert is caused by deprecated handler
       expect(response.body.length).toEqual(2);
     });
 
     it("should return specific alert when requested by id", async () => {
-      const response = await fetch("/admin/alerts/mocks%3Asettings");
+      const response = await doFetch("/admin/alerts/mocks%3Asettings");
       expect(response.body).toEqual({
         id: "mocks:settings",
         context: "mocks:settings",
@@ -43,7 +43,7 @@ describe("alerts api", () => {
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -53,7 +53,7 @@ describe("alerts api", () => {
 
   describe("when mock is modified", () => {
     beforeAll(async () => {
-      await fetch("/admin/settings", {
+      await doFetch("/admin/settings", {
         method: "PATCH",
         body: {
           mocks: {
@@ -65,7 +65,7 @@ describe("alerts api", () => {
     }, 10000);
 
     it("should return no alerts", async () => {
-      const response = await fetch("/admin/alerts");
+      const response = await doFetch("/admin/alerts");
       // one alert is caused by deprecated handler
       expect(response.body.length).toEqual(1);
     });
@@ -73,7 +73,7 @@ describe("alerts api", () => {
 
   describe("when there is an error loading files", () => {
     beforeAll(async () => {
-      await fetch("/admin/settings", {
+      await doFetch("/admin/settings", {
         method: "PATCH",
         body: {
           files: {
@@ -85,7 +85,7 @@ describe("alerts api", () => {
     }, 10000);
 
     it("should return alert containing error", async () => {
-      const response = await fetch("/admin/alerts");
+      const response = await doFetch("/admin/alerts");
       expect(response.body.length).toEqual(4);
       expect(response.body[3].error.message).toEqual(
         expect.stringContaining("Cannot find module '../db/users'")

@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const {
   startCore,
-  fetch,
+  doFetch,
   waitForServer,
   waitForServerUrl,
   removeConfigFile,
@@ -42,7 +42,7 @@ describe("loadMocks and loadRoutes methods", () => {
 
   describe("When started", () => {
     it("should return users", async () => {
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -115,13 +115,13 @@ describe("loadMocks and loadRoutes methods", () => {
       core.config.namespace("mocks").option("selected").value = "users-and-library";
       await waitForServerUrl("/api/books");
 
-      const books = await fetch("/api/books");
+      const books = await doFetch("/api/books");
       expect(books.body).toEqual([{ id: 1, title: "1984" }]);
 
-      const authors = await fetch("/api/authors");
+      const authors = await doFetch("/api/authors");
       expect(authors.body).toEqual([{ id: 1, name: "George Orwell" }]);
 
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -130,27 +130,27 @@ describe("loadMocks and loadRoutes methods", () => {
 
     it("should be able to change to a new mock", async () => {
       await changeMockAndWait("authors-error");
-      const books = await fetch("/api/books");
+      const books = await doFetch("/api/books");
       expect(books.body).toEqual([{ id: 1, title: "1984" }]);
 
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
       ]);
 
-      const authors = await fetch("/api/authors");
+      const authors = await doFetch("/api/authors");
       expect(authors.status).toEqual(403);
     });
 
     it("should keep mocks loaded from files", async () => {
       await changeMockAndWait("base");
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
       ]);
-      const authors = await fetch("/api/authors");
+      const authors = await doFetch("/api/authors");
       expect(authors.status).toEqual(404);
     });
   });

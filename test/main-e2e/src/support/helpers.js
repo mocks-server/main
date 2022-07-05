@@ -48,7 +48,7 @@ const serverUrl = (port) => {
   return `http://127.0.0.1:${port || SERVER_PORT}`;
 };
 
-const fetch = (uri, options = {}) => {
+const doFetch = (uri, options = {}) => {
   const requestOptions = {
     ...defaultRequestOptions,
     ...options,
@@ -123,7 +123,7 @@ const mocksRunner = (args = [], options = {}) => {
 };
 
 module.exports = {
-  fetch,
+  doFetch,
   TimeCounter,
   mocksRunner,
   wait,

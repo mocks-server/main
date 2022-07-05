@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const {
   mocksRunner,
-  fetch,
+  doFetch,
   waitForServer,
   TimeCounter,
   removeConfigFile,
@@ -32,7 +32,7 @@ describe("delay argument", () => {
   it("should set delay", async () => {
     expect.assertions(2);
     const timeCounter = new TimeCounter();
-    const users = await fetch("/api/users");
+    const users = await doFetch("/api/users");
     timeCounter.stop();
     expect(users.body).toEqual([
       { id: 1, name: "John Doe" },

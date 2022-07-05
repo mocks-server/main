@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startCore, fetch, waitForServer, removeConfigFile } = require("./support/helpers");
+const { startCore, doFetch, waitForServer, removeConfigFile } = require("./support/helpers");
 
 describe("port setting", () => {
   let core;
@@ -25,7 +25,7 @@ describe("port setting", () => {
 
   describe("When started", () => {
     it("should be listening on port 3100", async () => {
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -37,7 +37,7 @@ describe("port setting", () => {
     it("should be listening on new port", async () => {
       core.config.namespace("server").option("port").value = 3005;
       await waitForServer(3005);
-      const users = await fetch("/api/users", {
+      const users = await doFetch("/api/users", {
         port: 3005,
       });
       expect(users.body).toEqual([

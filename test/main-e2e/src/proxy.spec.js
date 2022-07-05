@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const {
   mocksRunner,
-  fetch,
+  doFetch,
   waitForServerAndCli,
   wait,
   fixturesFolder,
@@ -43,7 +43,7 @@ describe("scaffold", () => {
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -51,19 +51,19 @@ describe("scaffold", () => {
     });
 
     it("should serve user 1 under the /api/users/1 path", async () => {
-      const users = await fetch("/api/users/1");
+      const users = await doFetch("/api/users/1");
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 1 under the /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2");
+      const users = await doFetch("/api/users/2");
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
   });
 
   describe("mocks api", () => {
     it("should return mocks", async () => {
-      const response = await fetch("/admin/mocks");
+      const response = await doFetch("/admin/mocks");
       expect(response.body).toEqual([
         {
           id: "base",
@@ -83,7 +83,7 @@ describe("scaffold", () => {
 
   describe("routes api", () => {
     it("should return routes", async () => {
-      const response = await fetch("/admin/routes");
+      const response = await doFetch("/admin/routes");
       expect(response.body).toEqual([
         {
           id: "proxy-all",
@@ -98,7 +98,7 @@ describe("scaffold", () => {
 
   describe("routes variants api", () => {
     it("should return routes variants", async () => {
-      const response = await fetch("/admin/routes-variants");
+      const response = await doFetch("/admin/routes-variants");
       expect(response.body).toEqual([
         {
           id: "proxy-all:enabled",
@@ -129,12 +129,12 @@ describe("scaffold", () => {
     });
 
     it("should return not found for /api/users path", async () => {
-      const usersResponse = await fetch("/api/users");
+      const usersResponse = await doFetch("/api/users");
       expect(usersResponse.status).toEqual(404);
     });
 
     it("should return not found for /api/users/2 path", async () => {
-      const usersResponse = await fetch("/api/users/2");
+      const usersResponse = await doFetch("/api/users/2");
       expect(usersResponse.status).toEqual(404);
     });
   });
@@ -153,7 +153,7 @@ describe("scaffold", () => {
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -161,14 +161,14 @@ describe("scaffold", () => {
     });
 
     it("should serve user 1 under the /api/users/1 path", async () => {
-      const users = await fetch("/api/users/1");
+      const users = await doFetch("/api/users/1");
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
   });
 
   describe("when using api to restore routes variants", () => {
     beforeAll(async () => {
-      await fetch("/admin/mock-custom-routes-variants", {
+      await doFetch("/admin/mock-custom-routes-variants", {
         method: "DELETE",
       });
     });
@@ -180,19 +180,19 @@ describe("scaffold", () => {
     });
 
     it("should return custom route variants in API", async () => {
-      const response = await fetch("/admin/mock-custom-routes-variants");
+      const response = await doFetch("/admin/mock-custom-routes-variants");
       expect(response.body).toEqual([]);
     });
 
     it("should return not found for /api/users path", async () => {
-      const usersResponse = await fetch("/api/users");
+      const usersResponse = await doFetch("/api/users");
       expect(usersResponse.status).toEqual(404);
     });
   });
 
   describe("when using api to change current mock", () => {
     beforeAll(async () => {
-      await fetch("/admin/settings", {
+      await doFetch("/admin/settings", {
         method: "PATCH",
         body: {
           mocks: {
@@ -203,7 +203,7 @@ describe("scaffold", () => {
     });
 
     it("should serve user 1 under the /api/users/1 path", async () => {
-      const users = await fetch("/api/users/1");
+      const users = await doFetch("/api/users/1");
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 

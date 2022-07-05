@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startServer, fetch, waitForServer } = require("./support/helpers");
+const { startServer, doFetch, waitForServer } = require("./support/helpers");
 
 describe("routes variants api", () => {
   let server;
@@ -24,7 +24,7 @@ describe("routes variants api", () => {
 
   describe("get /", () => {
     it("should return routes variants", async () => {
-      const response = await fetch("/admin/routes-variants");
+      const response = await doFetch("/admin/routes-variants");
       expect(response.body).toEqual([
         {
           id: "get-user:1",
@@ -73,7 +73,7 @@ describe("routes variants api", () => {
 
   describe("get /get-user:1", () => {
     it("should return route variant with id get-user:1", async () => {
-      const response = await fetch("/admin/routes-variants/get-user:1");
+      const response = await doFetch("/admin/routes-variants/get-user:1");
       expect(response.body).toEqual({
         id: "get-user:1",
         routeId: "get-user",
@@ -86,7 +86,7 @@ describe("routes variants api", () => {
 
   describe("get /get-user:2", () => {
     it("should return route variant with id get-user:2", async () => {
-      const response = await fetch("/admin/routes-variants/get-user:2");
+      const response = await doFetch("/admin/routes-variants/get-user:2");
       expect(response.body).toEqual({
         id: "get-user:2",
         routeId: "get-user",
@@ -99,7 +99,7 @@ describe("routes variants api", () => {
 
   describe("get unexistant route variant", () => {
     it("should return a not found error", async () => {
-      const response = await fetch("/admin/routes-variants/foo");
+      const response = await doFetch("/admin/routes-variants/foo");
       expect(response.status).toEqual(404);
       expect(response.body.message).toEqual('Route variant with id "foo" was not found');
     });

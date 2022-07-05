@@ -1,6 +1,6 @@
 const {
   startServer,
-  fetch,
+  doFetch,
   TimeCounter,
   waitForServer,
   waitForHost,
@@ -29,7 +29,7 @@ describe("when using delay option in server", () => {
   describe("get /users", () => {
     it("should return users from host after 1 second", async () => {
       const timeCounter = new TimeCounter();
-      const response = await fetch("/api/users");
+      const response = await doFetch("/api/users");
       timeCounter.stop();
       expect(timeCounter.total).toBeGreaterThan(999);
       expect(response.body).toEqual([
@@ -48,7 +48,7 @@ describe("when using delay option in server", () => {
   describe("get /users/2", () => {
     it("should return second user from host after 1 second", async () => {
       const timeCounter = new TimeCounter();
-      const response = await fetch("/api/users/2");
+      const response = await doFetch("/api/users/2");
       timeCounter.stop();
       expect(timeCounter.total).toBeGreaterThan(999);
       expect(response.body).toEqual({

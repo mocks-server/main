@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const {
   createCore,
   startExistingCore,
-  fetch,
+  doFetch,
   fixturesFolder,
   findTrace,
   removeConfigFile,
@@ -38,7 +38,7 @@ describe("when adding route handlers", () => {
     });
 
     it("should serve users in /api/users path", async () => {
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },

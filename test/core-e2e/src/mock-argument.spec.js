@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { mocksRunner, fetch, waitForServer, removeConfigFile } = require("./support/helpers");
+const { mocksRunner, doFetch, waitForServer, removeConfigFile } = require("./support/helpers");
 
 describe("mock argument", () => {
   const PATH_OPTION = "--files.path=web-tutorial";
@@ -23,7 +23,7 @@ describe("mock argument", () => {
     it("should set as current mock the first one found", async () => {
       mocks = mocksRunner([PATH_OPTION]);
       await waitForServer();
-      const users = await fetch("/api/users/2");
+      const users = await doFetch("/api/users/2");
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
   });
@@ -32,7 +32,7 @@ describe("mock argument", () => {
     it("should set current behavior", async () => {
       mocks = mocksRunner([PATH_OPTION, "--mocks.selected=user-real"]);
       await waitForServer();
-      const users = await fetch("/api/users/2");
+      const users = await doFetch("/api/users/2");
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
   });
@@ -47,7 +47,7 @@ describe("mock argument", () => {
     it("should set as current mock the first one found", async () => {
       mocks = mocksRunner([PATH_OPTION, "--mocks.selected=foo"]);
       await waitForServer();
-      const users = await fetch("/api/users/2");
+      const users = await doFetch("/api/users/2");
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
   });

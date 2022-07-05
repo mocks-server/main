@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const {
   startCore,
-  fetch,
+  doFetch,
   waitForServer,
   findTrace,
   removeConfigFile,
@@ -33,7 +33,7 @@ describe("route variants", () => {
 
   describe("base mock", () => {
     it("should serve users under the /api/users path", async () => {
-      const users = await fetch("/api/users?req=1");
+      const users = await doFetch("/api/users?req=1");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -48,7 +48,7 @@ describe("route variants", () => {
     });
 
     it("should serve user 1 under the /api/users/1 path", async () => {
-      const users = await fetch("/api/users/1?req=2");
+      const users = await doFetch("/api/users/1?req=2");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
@@ -60,7 +60,7 @@ describe("route variants", () => {
     });
 
     it("should serve user 1 under the /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2?req=3");
+      const users = await doFetch("/api/users/2?req=3");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
@@ -75,7 +75,7 @@ describe("route variants", () => {
   describe('when using route variant "get-user:2"', () => {
     it("should serve users under the /api/users path", async () => {
       core.mocks.useRouteVariant("get-user:2");
-      const users = await fetch("/api/users?req=4");
+      const users = await doFetch("/api/users?req=4");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -90,7 +90,7 @@ describe("route variants", () => {
     });
 
     it("should serve user 2 under the /api/users/1 path", async () => {
-      const users = await fetch("/api/users/1?req=5");
+      const users = await doFetch("/api/users/1?req=5");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
@@ -102,7 +102,7 @@ describe("route variants", () => {
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2?req=6");
+      const users = await doFetch("/api/users/2?req=6");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
@@ -117,7 +117,7 @@ describe("route variants", () => {
   describe('when using route variant "tracer:disabled"', () => {
     it("should serve users under the /api/users path", async () => {
       core.mocks.useRouteVariant("tracer:disabled");
-      const users = await fetch("/api/users?req=7");
+      const users = await doFetch("/api/users?req=7");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -131,7 +131,7 @@ describe("route variants", () => {
 
     it("should serve user 2 under the /api/users/1 path", async () => {
       core.mocks.useRouteVariant("get-user:2");
-      const users = await fetch("/api/users/1?req=8");
+      const users = await doFetch("/api/users/1?req=8");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
@@ -141,7 +141,7 @@ describe("route variants", () => {
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2?req=9");
+      const users = await doFetch("/api/users/2?req=9");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
@@ -154,7 +154,7 @@ describe("route variants", () => {
   describe('when using route variant "tracer:enabled"', () => {
     it("should serve users under the /api/users path", async () => {
       core.mocks.useRouteVariant("tracer:enabled");
-      const users = await fetch("/api/users?req=10");
+      const users = await doFetch("/api/users?req=10");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -169,7 +169,7 @@ describe("route variants", () => {
     });
 
     it("should serve user 2 under the /api/users/1 path", async () => {
-      const users = await fetch("/api/users/1?req=11");
+      const users = await doFetch("/api/users/1?req=11");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
@@ -181,7 +181,7 @@ describe("route variants", () => {
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2?req=12");
+      const users = await doFetch("/api/users/2?req=12");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
@@ -196,7 +196,7 @@ describe("route variants", () => {
   describe("when restoring route variants", () => {
     it("should serve users under the /api/users path", async () => {
       core.mocks.restoreRoutesVariants();
-      const users = await fetch("/api/users?req=1");
+      const users = await doFetch("/api/users?req=1");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -205,13 +205,13 @@ describe("route variants", () => {
     });
 
     it("should serve user 1 under the /api/users/1 path", async () => {
-      const users = await fetch("/api/users/1?req=2");
+      const users = await doFetch("/api/users/1?req=2");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 1 under the /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2?req=3");
+      const users = await doFetch("/api/users/2?req=3");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
@@ -220,7 +220,7 @@ describe("route variants", () => {
   describe('when using route variant "get-user:real"', () => {
     it("should serve users under the /api/users path", async () => {
       core.mocks.useRouteVariant("get-user:real");
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -229,13 +229,13 @@ describe("route variants", () => {
     });
 
     it("should serve user 1 under the /api/users/1 path", async () => {
-      const users = await fetch("/api/users/1");
+      const users = await doFetch("/api/users/1");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2");
+      const users = await doFetch("/api/users/2");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
@@ -247,7 +247,7 @@ describe("route variants", () => {
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -256,13 +256,13 @@ describe("route variants", () => {
     });
 
     it("should serve user 2 under the /api/users/1 path", async () => {
-      const users = await fetch("/api/users/1");
+      const users = await doFetch("/api/users/1");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2");
+      const users = await doFetch("/api/users/2");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
@@ -271,13 +271,13 @@ describe("route variants", () => {
   describe('when using route variant "get-user:real" again', () => {
     it("should serve user 1 under the /api/users/1 path", async () => {
       core.mocks.useRouteVariant("get-user:real");
-      const users = await fetch("/api/users/1");
+      const users = await doFetch("/api/users/1");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2");
+      const users = await doFetch("/api/users/2");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
@@ -286,13 +286,13 @@ describe("route variants", () => {
   describe("when restoring route variants again", () => {
     it("should serve user 2 under the /api/users/1 path", async () => {
       core.mocks.restoreRoutesVariants();
-      const users = await fetch("/api/users/1");
+      const users = await doFetch("/api/users/1");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2");
+      const users = await doFetch("/api/users/2");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });

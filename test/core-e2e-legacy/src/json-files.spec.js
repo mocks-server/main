@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const {
   startCore,
-  fetch,
+  doFetch,
   waitForServer,
   findAlert,
   removeConfigFile,
@@ -40,7 +40,7 @@ describe("json files", () => {
     });
 
     it("should serve users under the /api/users path", async () => {
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -49,13 +49,13 @@ describe("json files", () => {
     });
 
     it("should serve user 1 under the /api/users/1 path", async () => {
-      const users = await fetch("/api/users/1");
+      const users = await doFetch("/api/users/1");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 1 under the /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2");
+      const users = await doFetch("/api/users/2");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
@@ -71,7 +71,7 @@ describe("json files", () => {
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -80,13 +80,13 @@ describe("json files", () => {
     });
 
     it("should serve user 2 under the /api/users/1 path", async () => {
-      const users = await fetch("/api/users/1");
+      const users = await doFetch("/api/users/1");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2");
+      const users = await doFetch("/api/users/2");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
@@ -105,7 +105,7 @@ describe("json files", () => {
 
     // if mock not exists, it uses the first one found
     it("should serve users under the /api/users path", async () => {
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -114,13 +114,13 @@ describe("json files", () => {
     });
 
     it("should serve user 1 under the /api/users/1 path", async () => {
-      const users = await fetch("/api/users/1");
+      const users = await doFetch("/api/users/1");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 1 under the /api/users/2 path", async () => {
-      const users = await fetch("/api/users/2");
+      const users = await doFetch("/api/users/2");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });

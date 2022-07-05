@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startServer, fetch, fixturesFolder, wait, waitForServer } = require("./support/helpers");
+const { startServer, doFetch, fixturesFolder, wait, waitForServer } = require("./support/helpers");
 
 describe("when stopping plugin", () => {
   let server;
@@ -23,7 +23,7 @@ describe("when stopping plugin", () => {
 
   describe("when started", () => {
     it("should return current settings", async () => {
-      const response = await fetch("/admin/settings");
+      const response = await doFetch("/admin/settings");
       expect(response.body.files.path).toEqual(fixturesFolder("web-tutorial"));
     });
   });
@@ -32,13 +32,13 @@ describe("when stopping plugin", () => {
     it("should respond not found when requesting setting", async () => {
       await server._stopPlugins();
       await waitForServer();
-      const response = await fetch("/admin/settings");
+      const response = await doFetch("/admin/settings");
       expect(response.status).toEqual(404);
     });
 
     it("should respond to mocks requests", async () => {
       await server._stopPlugins();
-      const response = await fetch("/api/users");
+      const response = await doFetch("/api/users");
       expect(response.body).toEqual([
         {
           id: 1,
@@ -60,7 +60,7 @@ describe("when stopping plugin", () => {
         },
       });
       await wait(1000);
-      const response = await fetch("/api/users/2");
+      const response = await doFetch("/api/users/2");
       expect(response.body).toEqual({
         id: 2,
         name: "Jane Doe",
@@ -70,7 +70,7 @@ describe("when stopping plugin", () => {
     it("should have not started the plugin", async () => {
       await server._stopPlugins();
       await waitForServer();
-      const response = await fetch("/admin/settings");
+      const response = await doFetch("/admin/settings");
       expect(response.status).toEqual(404);
     });
   });
@@ -79,7 +79,7 @@ describe("when stopping plugin", () => {
     it("should respond with same mock", async () => {
       await server._startPlugins();
       await waitForServer();
-      const response = await fetch("/api/users/2");
+      const response = await doFetch("/api/users/2");
       expect(response.body).toEqual({
         id: 2,
         name: "Jane Doe",
@@ -87,7 +87,7 @@ describe("when stopping plugin", () => {
     });
 
     it("should have started the plugin", async () => {
-      const response = await fetch("/admin/settings");
+      const response = await doFetch("/admin/settings");
       expect(response.body.files.path).toEqual(fixturesFolder("web-tutorial"));
     });
   });

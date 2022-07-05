@@ -12,7 +12,7 @@ const path = require("path");
 const fsExtra = require("fs-extra");
 const {
   mocksRunner,
-  fetch,
+  doFetch,
   fixturesFolder,
   waitForServer,
   removeConfigFile,
@@ -60,7 +60,7 @@ describe("path argument", () => {
     });
 
     it("should serve users under the /api/users path", async () => {
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },

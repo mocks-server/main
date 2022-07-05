@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startCore, waitForServer, fetch, removeConfigFile } = require("./support/helpers");
+const { startCore, waitForServer, doFetch, removeConfigFile } = require("./support/helpers");
 
 describe("when method is defined as array", () => {
   let requestNumber = 1;
@@ -146,7 +146,7 @@ describe("when method is defined as array", () => {
 
   describe("base mock", () => {
     it("should serve users under the /api/users path", async () => {
-      const users = await fetch("/api/users?req=1");
+      const users = await doFetch("/api/users?req=1");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -156,7 +156,7 @@ describe("when method is defined as array", () => {
 
     const testMethod = (method, id, expectBody = true) => {
       it(`should serve user 1 under the /api/users/${id} path with ${method} method`, async () => {
-        const users = await fetch(`/api/users/${id}?req=${requestNumber}`, { method });
+        const users = await doFetch(`/api/users/${id}?req=${requestNumber}`, { method });
         requestNumber++;
         expect(users.status).toEqual(200);
         if (expectBody) {
@@ -186,7 +186,7 @@ describe("when method is defined as array", () => {
   describe('when using route variant "get-user:2"', () => {
     it("should serve users under the /api/users path", async () => {
       core.mocks.useRouteVariant("get-user:2");
-      const users = await fetch("/api/users?req=10");
+      const users = await doFetch("/api/users?req=10");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -196,7 +196,7 @@ describe("when method is defined as array", () => {
 
     const testMethod = (method, id, expectBody = true) => {
       it(`should serve user 2 under the /api/users/${id} path with ${method} method`, async () => {
-        const users = await fetch(`/api/users/${id}?req=${requestNumber}`, { method });
+        const users = await doFetch(`/api/users/${id}?req=${requestNumber}`, { method });
         requestNumber++;
         expect(users.status).toEqual(200);
         if (expectBody) {

@@ -1,4 +1,10 @@
-const { startServer, fetch, waitForServer, waitForHost, startHost } = require("./support/helpers");
+const {
+  startServer,
+  doFetch,
+  waitForServer,
+  waitForHost,
+  startHost,
+} = require("./support/helpers");
 
 describe("when using filter option", () => {
   let server, host;
@@ -17,7 +23,7 @@ describe("when using filter option", () => {
 
   describe("get /users", () => {
     it("should return modified users from host", async () => {
-      const response = await fetch("/api/users");
+      const response = await doFetch("/api/users");
       expect(response.body).toEqual([
         {
           id: 1,
@@ -33,7 +39,7 @@ describe("when using filter option", () => {
 
   describe("get /users/2", () => {
     it("should return second user from host", async () => {
-      const response = await fetch("/api/users/2");
+      const response = await doFetch("/api/users/2");
       expect(response.body).toEqual({
         id: 2,
         name: "Modified Jane Doe",

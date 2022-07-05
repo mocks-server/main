@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - refactor: Move loaders into loaders folder
 - refactor: Move alerts modules into alerts folder
 - refactor: Move support helpers to correspondent folders
+- refactor: Move classes in root folder to correspondent folders
 
 ## [3.5.0] - 2022-07-05
 

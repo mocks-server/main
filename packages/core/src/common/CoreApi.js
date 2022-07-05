@@ -18,7 +18,7 @@ function cloneMethods(origin, dest) {
   });
 }
 
-class CustomCore {
+class CoreApi {
   constructor({
     core,
     loadMocks,
@@ -91,4 +91,4 @@ class CustomCore {
   }
 }
 
-module.exports = CustomCore;
+module.exports = CoreApi;

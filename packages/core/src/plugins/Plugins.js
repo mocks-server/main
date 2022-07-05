@@ -12,7 +12,7 @@ const isPromise = require("is-promise");
 const { isObject, isFunction } = require("lodash");
 
 const { scopedAlertsMethods } = require("../alerts/legacyHelpers");
-const CustomCore = require("../CustomCore");
+const CoreApi = require("../common/CoreApi");
 
 const OPTIONS = [
   {
@@ -136,7 +136,7 @@ class Plugins {
       pluginAlerts,
       pluginLogger,
       optionsAdded = false,
-      customCore;
+      coreApi;
     const pluginOptions = { core: this._core, ...pluginMethods };
     if (isObject(Plugin) && !isFunction(Plugin)) {
       pluginInstance = Plugin;
@@ -156,9 +156,9 @@ class Plugins {
           alerts: pluginAlerts,
           logger: pluginLogger,
         };
-        customCore = new CustomCore(pluginFinalOptions);
-        pluginInstance = new Plugin(customCore);
-        this._pluginsOptions.push(customCore);
+        coreApi = new CoreApi(pluginFinalOptions);
+        pluginInstance = new Plugin(coreApi);
+        this._pluginsOptions.push(coreApi);
         optionsAdded = true;
         this._pluginsInstances.push(pluginInstance);
         this._pluginsRegistered++;
@@ -166,7 +166,7 @@ class Plugins {
         if (error.message.includes("is not a constructor")) {
           try {
             const pluginFunc = Plugin;
-            pluginInstance = pluginFunc(new CustomCore(pluginOptions)) || {};
+            pluginInstance = pluginFunc(new CoreApi(pluginOptions)) || {};
             this._pluginsInstances.push(pluginInstance);
             this._pluginsRegistered++;
             formatIsFunction = true;
@@ -200,20 +200,20 @@ class Plugins {
           alerts: pluginAlerts,
           logger: pluginLogger,
         };
-        customCore = new CustomCore(pluginFinalOptions);
+        coreApi = new CoreApi(pluginFinalOptions);
         if (optionsAdded) {
           this._pluginsOptions.pop();
         }
-        this._pluginsOptions.push(customCore);
+        this._pluginsOptions.push(coreApi);
       } else {
-        if (!customCore) {
-          customCore = new CustomCore(pluginFinalOptions);
+        if (!coreApi) {
+          coreApi = new CoreApi(pluginFinalOptions);
         }
-        this._pluginsOptions.push(customCore);
+        this._pluginsOptions.push(coreApi);
       }
       if (isFunction(pluginInstance.register)) {
         try {
-          pluginInstance.register(customCore);
+          pluginInstance.register(coreApi);
         } catch (error) {
           this._catchRegisterError(error, pluginIndex);
           this._pluginsRegistered = this._pluginsRegistered - 1;

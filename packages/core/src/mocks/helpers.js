@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const { flatten, compact, isUndefined } = require("lodash");
 
 const { getDataFromVariant, getPreview } = require("../routes-handlers/helpers");
-const CustomCore = require("../CustomCore");
+const CoreApi = require("../common/CoreApi");
 const Mock = require("./Mock");
 const {
   variantValidationErrors,
@@ -203,7 +203,7 @@ function getVariantHandler({
   const routeVariantLogger = loggerRoutes.namespace(variantNamespace);
   const routeVariantAlerts = alertsRoutes.collection(variantNamespace);
   const handlersAlerts = alertsRoutes.collection("handlers");
-  const routeVariantCustomCore = new CustomCore({
+  const routeVariantCoreApi = new CoreApi({
     core,
     logger: routeVariantLogger,
     alerts: routeVariantAlerts,
@@ -232,7 +232,7 @@ function getVariantHandler({
         url: route.url,
         method: route.method,
       },
-      routeVariantCustomCore
+      routeVariantCoreApi
     );
     // TODO, do not add properties to handler. Store it in "handler" property
     routeHandler.delay = getRouteHandlerDelay(variant, route);

@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-const tracer = require("../src/tracer");
+const tracer = require("../../src/common/legacyTracer");
 
 describe("tracer", () => {
   let sandbox;

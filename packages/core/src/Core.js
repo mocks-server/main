@@ -14,7 +14,7 @@ const EventEmitter = require("events");
 const Config = require("@mocks-server/config");
 const { Logger } = require("@mocks-server/logger");
 
-const tracer = require("./tracer");
+const tracer = require("./common/legacyTracer");
 const AlertsLegacy = require("./alerts/AlertsLegacy");
 const RoutesHandlers = require("./routes-handlers/RoutesHandlers");
 const Mocks = require("./mocks/Mocks");

@@ -23,7 +23,7 @@ const ScaffoldMocks = require("./scaffold/Scaffold.mocks.js");
 const UpdateNotifierMock = require("./UpdateNotifier.mock.js");
 
 const Core = require("../src/Core");
-const tracer = require("../src/tracer");
+const tracer = require("../src/common/legacyTracer");
 const Alerts = require("../src/alerts/Alerts");
 
 describe("Core", () => {

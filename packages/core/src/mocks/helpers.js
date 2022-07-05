@@ -222,7 +222,7 @@ function getVariantHandler({
     if (Handler.deprecated) {
       handlersAlerts.set(
         Handler.id,
-        `Handler '${Handler.id}' is deprecated and will be removed in next major version. Consider using another handler.`
+        `Handler '${Handler.id}' is deprecated and will be removed in next major version. Consider using another handler. https://www.mocks-server.org/docs/guides-migrating-from-v3#route-variants-handlers`
       );
     }
     routeHandler = new Handler(

@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [3.5.0] - 2022-07-05
+
+### Changed
+- chore(deps): Update core dependency to v3.5.0
+- chore(deps): Update plugin-proxy dependency to v3.0.0
+
 ## [3.4.0] - 2022-07-01
 
 ### Changed

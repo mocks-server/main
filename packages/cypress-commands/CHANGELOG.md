@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [4.0.2] - 2022-07-05
+
+### Changed
+- chore(deps): Update @mocks-server/admin-api-client
+
 ## [4.0.1] - 2022-06-03
 
 ### Changed

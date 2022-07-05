@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
-## [unreleased]
+## [5.0.2] - 2022-07-05
 
 ### Changed
 - refactor: Rename fetch variable into crossFetch

@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [unreleased]
+## [3.5.0] - 2022-07-05
 
 ### Added
 - feat(#335): Pass only response property from variants to route variant handlers having the "version" property defined as "4". If it has another value, pass the whole variant object (for backward compatibility)

@@ -16,7 +16,7 @@ const MockMock = require("./Mock.mock.js");
 
 const Alerts = require("../../src/alerts/Alerts");
 const Mocks = require("../../src/mocks/Mocks");
-const ConfigMock = require("../Config.mocks");
+const ConfigMock = require("../common/Config.mocks");
 const DefaultRoutesHandler = require("../../src/routes-handlers/handlers/Default");
 
 describe("Mocks", () => {

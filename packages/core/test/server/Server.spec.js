@@ -13,8 +13,8 @@ const sinon = require("sinon");
 const http = require("http");
 const { Logger } = require("@mocks-server/logger");
 
-const LibsMocks = require("../Libs.mocks.js");
-const ConfigMock = require("../Config.mocks");
+const LibsMocks = require("../common/Libs.mocks");
+const ConfigMock = require("../common/Config.mocks");
 const Alerts = require("../../src/alerts/Alerts");
 const bodyParser = require("body-parser");
 

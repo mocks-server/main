@@ -14,8 +14,8 @@ const fsExtra = require("fs-extra");
 const sinon = require("sinon");
 const { Logger } = require("@mocks-server/logger");
 
-const LibsMocks = require("../Libs.mocks");
-const ConfigMock = require("../Config.mocks");
+const LibsMocks = require("../common/Libs.mocks");
+const ConfigMock = require("../common/Config.mocks");
 
 const Scaffold = require("../../src/scaffold/Scaffold");
 

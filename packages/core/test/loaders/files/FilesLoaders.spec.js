@@ -15,9 +15,9 @@ const { cloneDeep } = require("lodash");
 const { Logger } = require("@mocks-server/logger");
 
 const Alerts = require("../../../src/alerts/Alerts");
-const LibsMocks = require("../../Libs.mocks");
+const LibsMocks = require("../../common/Libs.mocks");
 const CoreMocks = require("../../Core.mocks");
-const ConfigMock = require("../../Config.mocks");
+const ConfigMock = require("../../common/Config.mocks");
 
 const FilesLoaders = require("../../../src/loaders/files/FilesLoaders");
 

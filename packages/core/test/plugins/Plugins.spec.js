@@ -12,8 +12,8 @@ const sinon = require("sinon");
 const { Logger } = require("@mocks-server/logger");
 
 const CoreMocks = require("../Core.mocks.js");
-const ConfigMocks = require("../Config.mocks.js");
-const LibsMocks = require("../Libs.mocks.js");
+const ConfigMocks = require("../common/Config.mocks.js");
+const LibsMocks = require("../common/Libs.mocks");
 
 const Plugins = require("../../src/plugins/Plugins");
 const Alerts = require("../../src/alerts/Alerts");

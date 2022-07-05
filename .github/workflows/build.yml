@@ -85,8 +85,8 @@ jobs:
             ${{ runner.os }}-pnpm-store-
       - name: Install dependencies
         run: pnpm install
-      - name: Report affected
-        run: pnpm run affected:report
+      - name: Generate graph
+        run: pnpm run graph -- --file=graph.json
       - name: Lint
         run: pnpm run lint
   test-unit:

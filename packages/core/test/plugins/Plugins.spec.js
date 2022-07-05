@@ -16,7 +16,7 @@ const ConfigMocks = require("../Config.mocks.js");
 const LibsMocks = require("../Libs.mocks.js");
 
 const Plugins = require("../../src/plugins/Plugins");
-const Alerts = require("../../src/Alerts.js");
+const Alerts = require("../../src/alerts/Alerts");
 
 const NATIVE_PLUGINS_QUANTITY = 0;
 

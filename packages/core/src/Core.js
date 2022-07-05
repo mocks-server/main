@@ -16,7 +16,7 @@ const { Logger } = require("@mocks-server/logger");
 
 const { CHANGE_MOCKS, CHANGE_ALERTS, CHANGE_LOGS } = require("./eventNames");
 const tracer = require("./tracer");
-const AlertsLegacy = require("./AlertsLegacy");
+const AlertsLegacy = require("./alerts/AlertsLegacy");
 const RoutesHandlers = require("./routes-handlers/RoutesHandlers");
 const Mocks = require("./mocks/Mocks");
 const Plugins = require("./plugins/Plugins");
@@ -24,7 +24,7 @@ const Server = require("./server/Server");
 const Loaders = require("./loaders/Loaders");
 const FilesLoaders = require("./loaders/files/FilesLoaders");
 const Scaffold = require("./scaffold/Scaffold");
-const Alerts = require("./Alerts");
+const Alerts = require("./alerts/Alerts");
 const UpdateNotifier = require("./UpdateNotifier");
 const { scopedAlertsMethods, addEventListener, arrayMerge } = require("./support/helpers");
 

@@ -15,7 +15,7 @@ jest.mock("update-notifier");
 const { Logger } = require("@mocks-server/logger");
 const updateNotifier = require("update-notifier");
 const UpdateNotifier = require("../src/UpdateNotifier");
-const Alerts = require("../src/Alerts");
+const Alerts = require("../src/alerts/Alerts");
 
 describe("UpdateNotifier", () => {
   let sandbox, alerts, logger, updateNotifierMock;

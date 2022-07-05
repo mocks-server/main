@@ -14,7 +14,7 @@ const { Logger } = require("@mocks-server/logger");
 
 const MockMock = require("./Mock.mock.js");
 
-const Alerts = require("../../src/Alerts");
+const Alerts = require("../../src/alerts/Alerts");
 const Mocks = require("../../src/mocks/Mocks");
 const ConfigMock = require("../Config.mocks");
 const DefaultRoutesHandler = require("../../src/routes-handlers/handlers/Default");

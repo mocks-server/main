@@ -16,7 +16,7 @@ const MocksMock = require("./mocks/Mocks.mock.js");
 const ServerMocks = require("./server/Server.mocks.js");
 const PluginsMocks = require("./plugins/Plugins.mocks.js");
 const ConfigMocks = require("./Config.mocks.js");
-const AlertsMocks = require("./AlertsLegacy.mocks.js");
+const AlertsMocks = require("./alerts/AlertsLegacy.mocks.js");
 const LoadersMocks = require("./loaders/Loaders.mocks.js");
 const FilesLoadersMocks = require("./loaders/files/FilesLoaders.mocks.js");
 const ScaffoldMocks = require("./scaffold/Scaffold.mocks.js");
@@ -24,7 +24,7 @@ const UpdateNotifierMock = require("./UpdateNotifier.mock.js");
 
 const Core = require("../src/Core");
 const tracer = require("../src/tracer");
-const Alerts = require("../src/Alerts");
+const Alerts = require("../src/alerts/Alerts");
 
 describe("Core", () => {
   let sandbox;

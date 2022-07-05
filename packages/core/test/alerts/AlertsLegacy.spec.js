@@ -11,9 +11,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const { Logger } = require("@mocks-server/logger");
 
-const Alerts = require("../src/Alerts");
+const Alerts = require("../../src/alerts/Alerts");
 
-const AlertsLegacy = require("../src/AlertsLegacy");
+const AlertsLegacy = require("../../src/alerts/AlertsLegacy");
 
 function removeDeprecatedAlerts(alerts) {
   return alerts.filter((alert) => !alert.context.startsWith("deprecated"));

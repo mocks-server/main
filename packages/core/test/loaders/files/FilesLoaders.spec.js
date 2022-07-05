@@ -14,7 +14,7 @@ const sinon = require("sinon");
 const { cloneDeep } = require("lodash");
 const { Logger } = require("@mocks-server/logger");
 
-const Alerts = require("../../../src/Alerts");
+const Alerts = require("../../../src/alerts/Alerts");
 const LibsMocks = require("../../Libs.mocks");
 const CoreMocks = require("../../Core.mocks");
 const ConfigMock = require("../../Config.mocks");

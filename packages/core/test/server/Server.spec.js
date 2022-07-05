@@ -15,7 +15,7 @@ const { Logger } = require("@mocks-server/logger");
 
 const LibsMocks = require("../Libs.mocks.js");
 const ConfigMock = require("../Config.mocks");
-const Alerts = require("../../src/Alerts");
+const Alerts = require("../../src/alerts/Alerts");
 const bodyParser = require("body-parser");
 
 const Server = require("../../src/server/Server");

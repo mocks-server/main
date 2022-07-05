@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const { Logger } = require("@mocks-server/logger");
 
-const Alerts = require("../src/Alerts");
+const Alerts = require("../../src/alerts/Alerts");
 
 describe("Alerts", () => {
   let sandbox;

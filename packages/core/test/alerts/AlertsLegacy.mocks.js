@@ -10,9 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../src/AlertsLegacy");
+jest.mock("../../src/alerts/AlertsLegacy");
 
-const Alerts = require("../src/AlertsLegacy");
+const Alerts = require("../../src/alerts/AlertsLegacy");
 
 class ConfigMock {
   constructor() {

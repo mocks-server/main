@@ -16,13 +16,13 @@ const { Logger } = require("@mocks-server/logger");
 
 const { CHANGE_MOCKS, CHANGE_ALERTS, CHANGE_LOGS } = require("./eventNames");
 const tracer = require("./tracer");
-const Loaders = require("./Loaders");
 const AlertsLegacy = require("./AlertsLegacy");
 const RoutesHandlers = require("./routes-handlers/RoutesHandlers");
 const Mocks = require("./mocks/Mocks");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
-const FilesLoader = require("./files-loader/FilesLoader");
+const Loaders = require("./loaders/Loaders");
+const FilesLoaders = require("./loaders/files/FilesLoaders");
 const Scaffold = require("./scaffold/Scaffold");
 const Alerts = require("./Alerts");
 const UpdateNotifier = require("./UpdateNotifier");
@@ -64,7 +64,7 @@ class Core {
     this._configPlugins = this._config.addNamespace(Plugins.id);
     this._configMocks = this._config.addNamespace(Mocks.id);
     this._configServer = this._config.addNamespace(Server.id);
-    this._configFilesLoader = this._config.addNamespace(FilesLoader.id);
+    this._configFilesLoaders = this._config.addNamespace(FilesLoaders.id);
 
     [this._logOption, this._routesHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
     this._logOption.onChange((level) => {
@@ -166,10 +166,10 @@ class Core {
     });
 
     // Create files loaders
-    this._filesLoader = new FilesLoader({
-      config: this._configFilesLoader,
-      logger: this._logger.namespace(FilesLoader.id),
-      alerts: this._alerts.collection(FilesLoader.id),
+    this._filesLoader = new FilesLoaders({
+      config: this._configFilesLoaders,
+      logger: this._logger.namespace(FilesLoaders.id),
+      alerts: this._alerts.collection(FilesLoaders.id),
       loadMocks: this._mocksLoaders.new(),
       loadRoutes: this._routesLoaders.new(),
     });

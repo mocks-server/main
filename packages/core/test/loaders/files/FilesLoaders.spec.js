@@ -14,12 +14,12 @@ const sinon = require("sinon");
 const { cloneDeep } = require("lodash");
 const { Logger } = require("@mocks-server/logger");
 
-const Alerts = require("../../src/Alerts");
-const LibsMocks = require("../Libs.mocks");
-const CoreMocks = require("../Core.mocks");
-const ConfigMock = require("../Config.mocks");
+const Alerts = require("../../../src/Alerts");
+const LibsMocks = require("../../Libs.mocks");
+const CoreMocks = require("../../Core.mocks");
+const ConfigMock = require("../../Config.mocks");
 
-const FilesLoader = require("../../src/files-loader/FilesLoader");
+const FilesLoaders = require("../../../src/loaders/files/FilesLoaders");
 
 const wait = () => {
   return new Promise((resolve) => {
@@ -29,7 +29,7 @@ const wait = () => {
   });
 };
 
-describe("FilesLoader", () => {
+describe("FilesLoaders", () => {
   const fooRequireCache = {
     "foo-path": {
       id: "foo-path",
@@ -102,7 +102,7 @@ describe("FilesLoader", () => {
       logger,
     };
 
-    filesLoader = new FilesLoader(pluginMethods, {
+    filesLoader = new FilesLoaders(pluginMethods, {
       requireCache,
     });
     sandbox.stub(path, "isAbsolute").returns(true);
@@ -129,7 +129,7 @@ describe("FilesLoader", () => {
 
   describe("id", () => {
     it("should return files", async () => {
-      expect(FilesLoader.id).toEqual("files");
+      expect(FilesLoaders.id).toEqual("files");
     });
   });
 
@@ -158,7 +158,7 @@ describe("FilesLoader", () => {
 
     it("should add an alert when a routes file content does not pass validation", async () => {
       libsMocks.stubs.globule.find.returns(["foo"]);
-      filesLoader = new FilesLoader(pluginMethods, {
+      filesLoader = new FilesLoaders(pluginMethods, {
         requireCache,
         require: () => ({}),
       });
@@ -176,7 +176,7 @@ describe("FilesLoader", () => {
 
     it("should not add an alert when a routes file content pass validation", async () => {
       libsMocks.stubs.globule.find.returns(["foo"]);
-      filesLoader = new FilesLoader(pluginMethods, {
+      filesLoader = new FilesLoaders(pluginMethods, {
         requireCache,
         require: () => [],
       });
@@ -194,7 +194,7 @@ describe("FilesLoader", () => {
     });
 
     it("should remove alerts when mocks file loads successfully", async () => {
-      filesLoader = new FilesLoader(pluginMethods, {
+      filesLoader = new FilesLoaders(pluginMethods, {
         requireCache,
         require: () => [],
       });
@@ -207,7 +207,7 @@ describe("FilesLoader", () => {
     });
 
     it("should call to loadMocks method when mocks file is loaded", async () => {
-      filesLoader = new FilesLoader(pluginMethods, {
+      filesLoader = new FilesLoaders(pluginMethods, {
         requireCache,
         require: () => [],
       });
@@ -220,7 +220,7 @@ describe("FilesLoader", () => {
     });
 
     it("should try to load mocks.json when mock.js file does not exists", async () => {
-      filesLoader = new FilesLoader(pluginMethods, {
+      filesLoader = new FilesLoaders(pluginMethods, {
         requireCache,
         require: sandbox.spy,
       });
@@ -257,7 +257,7 @@ describe("FilesLoader", () => {
         //do nothing
       });
       coreInstance.lowLevelConfig = { babelRegister: true, babelRegisterOptions: {} };
-      filesLoader = new FilesLoader(pluginMethods, {
+      filesLoader = new FilesLoaders(pluginMethods, {
         requireCache,
         require: requireSpy,
       });
@@ -278,7 +278,7 @@ describe("FilesLoader", () => {
     });
 
     it("should require cache in order to found the mocks folder", async () => {
-      filesLoader = new FilesLoader(pluginMethods);
+      filesLoader = new FilesLoaders(pluginMethods);
       filesLoader._pathOption = pathOption;
       filesLoader._watchOption = watchOption;
       filesLoader._babelRegisterOption = babelRegisterOption;

@@ -11,9 +11,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../src/Loaders");
+jest.mock("../../src/loaders/Loaders");
 
-const Loaders = require("../src/Loaders");
+const Loaders = require("../../src/loaders/Loaders");
 
 const INITIAL_FILES = {
   file1: {

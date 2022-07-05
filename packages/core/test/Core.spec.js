@@ -17,8 +17,8 @@ const ServerMocks = require("./server/Server.mocks.js");
 const PluginsMocks = require("./plugins/Plugins.mocks.js");
 const ConfigMocks = require("./Config.mocks.js");
 const AlertsMocks = require("./AlertsLegacy.mocks.js");
-const LoadersMocks = require("./Loaders.mocks.js");
-const FilesLoaderMocks = require("./files-loader/FilesLoader.mocks.js");
+const LoadersMocks = require("./loaders/Loaders.mocks.js");
+const FilesLoadersMocks = require("./loaders/files/FilesLoaders.mocks.js");
 const ScaffoldMocks = require("./scaffold/Scaffold.mocks.js");
 const UpdateNotifierMock = require("./UpdateNotifier.mock.js");
 
@@ -37,7 +37,7 @@ describe("Core", () => {
   let configMocks;
   let alertsMocks;
   let loadersMocks;
-  let filesLoaderMocks;
+  let filesLoadersMocks;
   let scaffoldMocks;
   let core;
   let mockedLoader;
@@ -55,7 +55,7 @@ describe("Core", () => {
     alertsMocks = new AlertsMocks();
     loadersMocks = new LoadersMocks();
     configMocks = new ConfigMocks();
-    filesLoaderMocks = new FilesLoaderMocks();
+    filesLoadersMocks = new FilesLoadersMocks();
     scaffoldMocks = new ScaffoldMocks();
     sandbox.stub(NestedCollections.prototype, "onChange");
     sandbox.stub(Logger.prototype, "onChangeGlobalStore");
@@ -75,7 +75,7 @@ describe("Core", () => {
     pluginsMocks.restore();
     alertsMocks.restore();
     loadersMocks.restore();
-    filesLoaderMocks.restore();
+    filesLoadersMocks.restore();
     scaffoldMocks.restore();
     updateNotifierMock.restore();
   });

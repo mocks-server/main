@@ -1,4 +1,7 @@
-const { babelRegisterDefaultOptions, getFilesGlobule } = require("../../src/files-loader/helpers");
+const {
+  babelRegisterDefaultOptions,
+  getFilesGlobule,
+} = require("../../../src/loaders/files/helpers");
 
 describe("FilesLoader helpers", () => {
   describe("babelRegisterDefaultOptions", () => {

@@ -56,7 +56,7 @@ const BABEL_REGISTER_OPTIONS = [
   },
 ];
 
-class FilesLoaderBase {
+class FilesLoaders {
   static get id() {
     return "files";
   }
@@ -255,4 +255,4 @@ class FilesLoaderBase {
   }
 }
 
-module.exports = FilesLoaderBase;
+module.exports = FilesLoaders;

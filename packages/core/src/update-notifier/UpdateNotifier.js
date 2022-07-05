@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const updateNotifier = require("update-notifier");
 
-const packageJson = require("../package.json");
+const packageJson = require("../../package.json");
 
 class UpdateNotifier {
   static get id() {

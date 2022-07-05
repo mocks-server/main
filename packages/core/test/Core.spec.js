@@ -20,7 +20,7 @@ const AlertsMocks = require("./alerts/AlertsLegacy.mocks.js");
 const LoadersMocks = require("./loaders/Loaders.mocks.js");
 const FilesLoadersMocks = require("./loaders/files/FilesLoaders.mocks.js");
 const ScaffoldMocks = require("./scaffold/Scaffold.mocks.js");
-const UpdateNotifierMock = require("./UpdateNotifier.mock.js");
+const UpdateNotifierMock = require("./update-notifier/UpdateNotifier.mock.js");
 
 const Core = require("../src/Core");
 const tracer = require("../src/common/legacyTracer");

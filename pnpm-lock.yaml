@@ -17,7 +17,7 @@ importers:
       '@rollup/plugin-babel': 5.3.1
       '@rollup/plugin-commonjs': 21.1.0
       '@rollup/plugin-node-resolve': 13.3.0
-      '@testing-library/cypress': 8.0.2
+      '@testing-library/cypress': 8.0.3
       '@typescript-eslint/eslint-plugin': 5.26.0
       '@typescript-eslint/parser': 5.27.0
       babel-jest: 27.5.1
@@ -75,7 +75,7 @@ importers:
       '@rollup/plugin-babel': 5.3.1_e931bf24091652160a0c732af432d11d
       '@rollup/plugin-commonjs': 21.1.0_rollup@2.73.0
       '@rollup/plugin-node-resolve': 13.3.0_rollup@2.73.0
-      '@testing-library/cypress': 8.0.2_cypress@9.7.0
+      '@testing-library/cypress': 8.0.3_cypress@9.7.0
       '@typescript-eslint/eslint-plugin': 5.26.0_ebf6867741f3398a69467d87ff4602a6
       '@typescript-eslint/parser': 5.27.0_eslint@8.19.0+typescript@4.6.4
       babel-jest: 27.5.1_@babel+core@7.17.10
@@ -3355,11 +3355,11 @@ packages:
       defer-to-connect: 1.1.3
     dev: false
 
-  /@testing-library/cypress/8.0.2_cypress@9.7.0:
-    resolution: {integrity: sha512-KVdm7n37sg/A4e3wKMD4zUl0NpzzVhx06V9Tf0hZHZ7nrZ4yFva6Zwg2EFF1VzHkEfN/ahUzRtT1qiW+vuWnJw==}
+  /@testing-library/cypress/8.0.3_cypress@9.7.0:
+    resolution: {integrity: sha512-nY2YaSbmuPo5k6kL0iLj/pGPPfka3iwb3kpTx8QN/vOCns92Saz9wfACqB8FJzcR7+lfA4d5HUOWqmTddBzczg==}
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
-      cypress: ^2.1.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
+      cypress: ^2.1.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
     dependencies:
       '@babel/runtime': 7.17.8
       '@testing-library/dom': 8.11.4
@@ -11551,7 +11551,7 @@ packages:
       yallist: 4.0.0
 
   /lz-string/1.4.4:
-    resolution: {integrity: sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=}
+    resolution: {integrity: sha512-0ckx7ZHRPqb0oUm8zNr+90mtf9DQB60H1wMCjBtfi62Kl3a7JbHob6gA2bC+xRvZoOL+1hzUK8jeuEIQE8svEQ==}
     hasBin: true
     dev: true
 

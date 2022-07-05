@@ -57,6 +57,7 @@ module.exports = {
         describe: true,
         expect: true,
         it: true,
+        fetch: false,
       },
       plugins: ["jest", "no-only-tests"],
       extends: ["plugin:jest/recommended"],

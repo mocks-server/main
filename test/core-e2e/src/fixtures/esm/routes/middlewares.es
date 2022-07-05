@@ -10,17 +10,23 @@ const middlewares = [
     variants: [
       {
         id: "enabled",
-        response: (req, res, next, mocksServer) => {
-          res.set("x-mocks-server-example", "custom-header");
-          mocksServer.tracer.info(
-            "Custom header added by add-headers:enabled route variant middleware"
-          );
-          next();
+        handler: "middleware",
+        response: {
+          middleware: (req, res, next, mocksServer) => {
+            res.set("x-mocks-server-example", "custom-header");
+            mocksServer.tracer.info(
+              "Custom header added by add-headers:enabled route variant middleware"
+            );
+            next();
+          }
         },
       },
       {
         id: "disabled",
-        response: (req, res, next) => next(),
+        handler: "middleware",
+        response: {
+          middleware: (req, res, next) => next(),
+        }
       },
     ],
   },

@@ -22,6 +22,7 @@ module.exports = [
     variants: [
       {
         id: "success", // id of the variant
+        handler: "json", // variant handler
         response: {
           status: 200, // status to send
           body: USERS, // body to send
@@ -29,6 +30,7 @@ module.exports = [
       },
       {
         id: "error", // id of the variant
+        handler: "json", // variant handler
         response: {
           status: 400, // status to send
           body: {
@@ -46,6 +48,7 @@ module.exports = [
     variants: [
       {
         id: "success", // id of the variant
+        handler: "json", // variant handler
         response: {
           status: 200, // status to send
           body: USERS[0], // body to send
@@ -53,18 +56,21 @@ module.exports = [
       },
       {
         id: "real", // id of the variant
-        response: (req, res) => {
-          const userId = req.params.id;
-          const user = USERS.find((userData) => userData.id === Number(userId));
-          if (user) {
-            res.status(200);
-            res.send(user);
-          } else {
-            res.status(404);
-            res.send({
-              message: "User not found",
-            });
-          }
+        handler: "middleware", // variant handler
+        response: {
+          middleware: (req, res) => {
+            const userId = req.params.id;
+            const user = USERS.find((userData) => userData.id === Number(userId));
+            if (user) {
+              res.status(200);
+              res.send(user);
+            } else {
+              res.status(404);
+              res.send({
+                message: "User not found",
+              });
+            }
+          },
         },
       },
     ],

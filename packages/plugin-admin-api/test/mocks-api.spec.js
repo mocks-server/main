@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startServer, fetch, waitForServer } = require("./support/helpers");
+const { startServer, doFetch, waitForServer } = require("./support/helpers");
 
 describe("mocks api", () => {
   let server;
@@ -24,7 +24,7 @@ describe("mocks api", () => {
 
   describe("get /", () => {
     it("should return current mocks", async () => {
-      const response = await fetch("/admin/mocks");
+      const response = await doFetch("/admin/mocks");
       expect(response.body).toEqual([
         {
           id: "base",
@@ -50,7 +50,7 @@ describe("mocks api", () => {
 
   describe("get /base", () => {
     it("should return base mock", async () => {
-      const response = await fetch("/admin/mocks/base");
+      const response = await doFetch("/admin/mocks/base");
       expect(response.body).toEqual({
         id: "base",
         from: null,
@@ -62,7 +62,7 @@ describe("mocks api", () => {
 
   describe("get /user-2", () => {
     it("should return user-2 mock", async () => {
-      const response = await fetch("/admin/mocks/user-2");
+      const response = await doFetch("/admin/mocks/user-2");
       expect(response.body).toEqual({
         id: "user-2",
         from: "base",
@@ -74,7 +74,7 @@ describe("mocks api", () => {
 
   describe("get unexistant mock", () => {
     it("should return a not found error", async () => {
-      const response = await fetch("/admin/mocks/foo");
+      const response = await doFetch("/admin/mocks/foo");
       expect(response.status).toEqual(404);
       expect(response.body.message).toEqual('Mock with id "foo" was not found');
     });

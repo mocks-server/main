@@ -2,9 +2,9 @@
 // For a detailed explanation about using middlewares, visit:
 // https://mocks-server.org/docs/guides-using-middlewares
 
-function middleware(req: Object, res: Object, next: () => void, mocksServer: Object) : void {
+function middleware(req: Object, res: Object, next: () => void, core: Object) : void {
   res.set("x-mocks-server-example", "custom-header-typescript");
-  mocksServer.tracer.info(
+  core.logger.info(
     "Custom header added by add-headers:enabled route variant middleware using TypeScript"
   );
   next();
@@ -18,11 +18,17 @@ const middlewares = [
     variants: [
       {
         id: "enabled",
-        response: middleware,
+        handler: "middleware",
+        response: {
+          middleware
+        },
       },
       {
         id: "disabled",
-        response: (req, res, next) => next(),
+        handler: "middleware",
+        response: {
+          middleware: (req, res, next) => next(),
+        }
       },
     ],
   },

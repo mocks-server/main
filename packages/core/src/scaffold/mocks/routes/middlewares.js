@@ -10,15 +10,21 @@ module.exports = [
     variants: [
       {
         id: "enabled",
-        response: (_req, res, next, core) => {
-          res.set("x-mocks-server-example", "some-value");
-          core.logger.info("Custom header added by route variant middleware");
-          next();
+        handler: "middleware",
+        response: {
+          middleware: (_req, res, next, core) => {
+            res.set("x-mocks-server-example", "some-value");
+            core.logger.info("Custom header added by route variant middleware");
+            next();
+          },
         },
       },
       {
         id: "disabled",
-        response: (_req, _res, next) => next(),
+        handler: "middleware",
+        response: {
+          middleware: (_req, _res, next) => next(),
+        },
       },
     ],
   },

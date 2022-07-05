@@ -1,4 +1,4 @@
-import fetch from "cross-fetch";
+import crossFetch from "cross-fetch";
 
 import {
   DEFAULT_BASE_PATH,
@@ -47,11 +47,11 @@ class Fetcher {
   }
 
   _read() {
-    return fetch(this.url).then(handleResponse);
+    return crossFetch(this.url).then(handleResponse);
   }
 
   _patch(data) {
-    return fetch(this.url, {
+    return crossFetch(this.url, {
       method: "PATCH",
       body: JSON.stringify(data),
       headers: {
@@ -61,13 +61,13 @@ class Fetcher {
   }
 
   _delete() {
-    return fetch(this.url, {
+    return crossFetch(this.url, {
       method: "DELETE",
     }).then(handleResponse);
   }
 
   _create(data) {
-    return fetch(this.url, {
+    return crossFetch(this.url, {
       method: "POST",
       body: JSON.stringify(data),
       headers: {

@@ -101,7 +101,7 @@ function createArrayTransport(store: LogsStore, defaultLevel: Level, storeLimit:
     array: store,
     limit: storeLimit,
     level: defaultLevel,
-    maxListeners: 100, // Array transport does not support setting limit to 0
+    maxListeners: 0,
     format: winston.format.combine(
       formatTimestamp,
       formatStore

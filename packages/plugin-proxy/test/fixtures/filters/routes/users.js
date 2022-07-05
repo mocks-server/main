@@ -6,6 +6,7 @@ module.exports = [
     variants: [
       {
         id: "default",
+        handler: "json",
         response: {
           status: 200,
           body: {

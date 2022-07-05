@@ -85,7 +85,7 @@ describe("mocks and routes", () => {
         {
           id: "get-user:1",
           routeId: "get-user",
-          handler: "default",
+          handler: "json",
           response: {
             body: {
               id: 1,
@@ -98,7 +98,7 @@ describe("mocks and routes", () => {
         {
           id: "get-user:2",
           routeId: "get-user",
-          handler: "default",
+          handler: "json",
           response: {
             body: {
               id: 2,
@@ -111,14 +111,14 @@ describe("mocks and routes", () => {
         {
           id: "get-user:real",
           routeId: "get-user",
-          handler: "default",
+          handler: "middleware",
           response: null,
           delay: null,
         },
         {
           id: "get-users:success",
           routeId: "get-users",
-          handler: "default",
+          handler: "json",
           response: {
             body: [
               {
@@ -137,7 +137,7 @@ describe("mocks and routes", () => {
         {
           id: "get-users:error",
           routeId: "get-users",
-          handler: "default",
+          handler: "json",
           response: {
             body: {
               message: "Bad data",

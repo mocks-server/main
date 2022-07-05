@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const {
   startCore,
-  fetch,
+  doFetch,
   TimeCounter,
   waitForServer,
   removeConfigFile,
@@ -32,7 +32,7 @@ describe("delay setting", () => {
   describe("When started", () => {
     it("should respond with no delay", async () => {
       const timeCounter = new TimeCounter();
-      await fetch("/api/users");
+      await doFetch("/api/users");
       timeCounter.stop();
       expect(timeCounter.total).toBeLessThan(400);
     });
@@ -42,7 +42,7 @@ describe("delay setting", () => {
     it("should respond after defined delay", async () => {
       core.config.namespace("mocks").option("delay").value = 1000;
       const timeCounter = new TimeCounter();
-      await fetch("/api/users");
+      await doFetch("/api/users");
       timeCounter.stop();
       expect(timeCounter.total).toBeGreaterThan(999);
     });
@@ -52,7 +52,7 @@ describe("delay setting", () => {
     it("should respond after route variant defined delay", async () => {
       core.mocks.useRouteVariant("get-users:delayed");
       const timeCounter = new TimeCounter();
-      await fetch("/api/users");
+      await doFetch("/api/users");
       timeCounter.stop();
       expect(timeCounter.total).toBeGreaterThan(1999);
     });
@@ -60,7 +60,7 @@ describe("delay setting", () => {
     it("should respond with same delay after setting delay to zero", async () => {
       core.config.namespace("mocks").option("delay").value = 0;
       const timeCounter = new TimeCounter();
-      await fetch("/api/users");
+      await doFetch("/api/users");
       timeCounter.stop();
       expect(timeCounter.total).toBeGreaterThan(1999);
     });
@@ -68,7 +68,7 @@ describe("delay setting", () => {
     it("should respond with same delay after setting delay to 4000", async () => {
       core.config.namespace("mocks").option("delay").value = 4000;
       const timeCounter = new TimeCounter();
-      await fetch("/api/users");
+      await doFetch("/api/users");
       timeCounter.stop();
       expect(timeCounter.total).toBeGreaterThan(1999);
     });
@@ -77,7 +77,7 @@ describe("delay setting", () => {
   describe("When route has delay", () => {
     it("should respond after route defined delay", async () => {
       const timeCounter = new TimeCounter();
-      await fetch("/api/users/1");
+      await doFetch("/api/users/1");
       timeCounter.stop();
       expect(timeCounter.total).toBeGreaterThan(999);
     });
@@ -85,7 +85,7 @@ describe("delay setting", () => {
     it("should respond with same delay after setting delay to zero", async () => {
       core.config.namespace("mocks").option("delay").value = 0;
       const timeCounter = new TimeCounter();
-      await fetch("/api/users/1");
+      await doFetch("/api/users/1");
       timeCounter.stop();
       expect(timeCounter.total).toBeGreaterThan(999);
     });
@@ -95,7 +95,7 @@ describe("delay setting", () => {
     it("should respond after route variant defined delay", async () => {
       core.config.namespace("mocks").option("selected").value = "user-2";
       const timeCounter = new TimeCounter();
-      await fetch("/api/users/1");
+      await doFetch("/api/users/1");
       timeCounter.stop();
       expect(timeCounter.total).toBeGreaterThan(1999);
     });
@@ -109,14 +109,14 @@ describe("delay setting", () => {
     it("should respond with no delay", async () => {
       core.mocks.useRouteVariant("get-user:zero-delay");
       const timeCounter = new TimeCounter();
-      await fetch("/api/users/1");
+      await doFetch("/api/users/1");
       timeCounter.stop();
       expect(timeCounter.total).toBeLessThan(500);
     });
 
     it("should have zero delay in plain route variant", async () => {
       expect(core.mocks.plainRoutesVariants[2]).toEqual({
-        handler: "default",
+        handler: "json",
         id: "get-user:zero-delay",
         delay: 0,
         response: {
@@ -140,14 +140,14 @@ describe("delay setting", () => {
       core.config.namespace("mocks").option("delay").value = 3000;
       core.mocks.useRouteVariant("get-user:null-delay");
       const timeCounter = new TimeCounter();
-      await fetch("/api/users/1");
+      await doFetch("/api/users/1");
       timeCounter.stop();
       expect(timeCounter.total).toBeGreaterThan(2999);
     });
 
     it("should have null delay in plain route variant", async () => {
       expect(core.mocks.plainRoutesVariants[3]).toEqual({
-        handler: "default",
+        handler: "json",
         id: "get-user:null-delay",
         delay: null,
         response: {

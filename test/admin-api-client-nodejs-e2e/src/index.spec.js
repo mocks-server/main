@@ -154,14 +154,14 @@ describe("react-admin-client methods used with node", () => {
         {
           id: "get-user:1",
           routeId: "get-user",
-          handler: "default",
+          handler: "json",
           response: { body: [{ email: "foo@foo.com" }], status: 200 },
           delay: null,
         },
         {
           id: "get-user:2",
           routeId: "get-user",
-          handler: "default",
+          handler: "json",
           response: { body: [{ email: "foo2@foo2.com" }], status: 200 },
           delay: null,
         },
@@ -175,7 +175,7 @@ describe("react-admin-client methods used with node", () => {
       expect(data).toEqual({
         id: "get-user:2",
         routeId: "get-user",
-        handler: "default",
+        handler: "json",
         response: { body: [{ email: "foo2@foo2.com" }], status: 200 },
         delay: null,
       });

@@ -3,7 +3,7 @@ class Plugin {
     return "trace-mocks";
   }
 
-  constructor({ core, config }) {
+  constructor({ mocks, config, logger }) {
     this._traceMocks = config.addOption({
       name: "traceMocks",
       type: "boolean",
@@ -12,35 +12,36 @@ class Plugin {
     });
     this._traceMocks.onChange(this._onChangeTraceMocks.bind(this));
 
-    this._core = core;
+    this._mocks = mocks;
     this._onChangeMocks = this._onChangeMocks.bind(this);
+    this._logger = logger;
   }
 
   get displayName() {
     return "trace-mocks";
   }
 
-  init({ core }) {
+  init({ onChangeMocks, logger }) {
     this._enabled = this._traceMocks.value;
-    this._removeChangeMocksListener = core.onChangeMocks(this._onChangeMocks);
-    core.tracer.debug(`traceMocks initial value is ${this._traceMocks.value}`);
+    this._removeChangeMocksListener = onChangeMocks(this._onChangeMocks);
+    logger.debug(`traceMocks initial value is ${this._traceMocks.value}`);
   }
 
   traceMocks() {
     if (this._enabled && this._started) {
-      this._core.tracer.info(`There are ${this._core.mocks.plainMocks.length} mocks available`);
+      this._logger.info(`There are ${this._mocks.plainMocks.length} mocks available`);
     }
   }
 
-  start({ core }) {
+  start() {
     this._started = true;
-    core.tracer.debug("traceMocks plugin started");
+    this._logger.debug("traceMocks plugin started");
     this.traceMocks();
   }
 
-  stop({ core }) {
+  stop() {
     this._started = false;
-    core.tracer.debug("traceMocks plugin stopped");
+    this._logger.debug("traceMocks plugin stopped");
   }
 
   _onChangeTraceMocks() {

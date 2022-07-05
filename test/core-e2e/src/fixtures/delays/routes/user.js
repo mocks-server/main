@@ -19,6 +19,7 @@ module.exports = [
     variants: [
       {
         id: "1",
+        handler: "json",
         response: {
           status: 200,
           body: USERS[0],
@@ -26,6 +27,7 @@ module.exports = [
       },
       {
         id: "2",
+        handler: "json",
         delay: 2000,
         response: {
           status: 200,
@@ -34,6 +36,7 @@ module.exports = [
       },
       {
         id: "zero-delay",
+        handler: "json",
         delay: 0,
         response: {
           status: 200,
@@ -42,6 +45,7 @@ module.exports = [
       },
       {
         id: "null-delay",
+        handler: "json",
         delay: null,
         response: {
           status: 200,

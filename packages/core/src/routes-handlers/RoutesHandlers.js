@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -9,13 +9,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 // Default routes handler
-const DefaultRoutesHandler = require("./default/DefaultRoutesHandler");
+const DefaultRoutesHandler = require("./handlers/Default");
+const Json = require("./handlers/Json");
+const Middleware = require("./handlers/Middleware");
 
 class RoutesHandlers {
   constructor({ logger }) {
     this._logger = logger;
     this._registeredRouteHandlers = [];
-    this._routeHandlers = [DefaultRoutesHandler];
+    this._routeHandlers = [DefaultRoutesHandler, Json, Middleware];
   }
 
   add(RoutesHandler) {

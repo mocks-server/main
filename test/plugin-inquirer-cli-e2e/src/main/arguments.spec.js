@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { mocksRunner, fetch, waitForServerAndCli, TimeCounter } = require("./support/helpers");
+const { mocksRunner, doFetch, waitForServerAndCli, TimeCounter } = require("./support/helpers");
 
 describe("command line arguments", () => {
   let mocks;
@@ -22,7 +22,7 @@ describe("command line arguments", () => {
       expect.assertions(2);
       mocks = mocksRunner(["--files.path=web-tutorial"]);
       await waitForServerAndCli();
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -37,7 +37,7 @@ describe("command line arguments", () => {
         expect.assertions(2);
         mocks = mocksRunner(["--files.path=web-tutorial"]);
         await waitForServerAndCli();
-        const users = await fetch("/api/users/2");
+        const users = await doFetch("/api/users/2");
         expect(users.body).toEqual({ id: 1, name: "John Doe" });
         expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: base"));
       });
@@ -48,7 +48,7 @@ describe("command line arguments", () => {
         expect.assertions(2);
         mocks = mocksRunner(["--files.path=web-tutorial", "--mocks.selected=user-2"]);
         await waitForServerAndCli();
-        const users = await fetch("/api/users/2");
+        const users = await doFetch("/api/users/2");
         expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
         expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: user-2"));
       });
@@ -66,7 +66,7 @@ describe("command line arguments", () => {
         expect.assertions(3);
         mocks = mocksRunner(["--files.path=web-tutorial", "--mocks.selected=foo"]);
         await waitForServerAndCli();
-        const users = await fetch("/api/users/2");
+        const users = await doFetch("/api/users/2");
         expect(users.body).toEqual({ id: 1, name: "John Doe" });
         expect(mocks.currentScreen).toEqual(expect.stringContaining("Using the first one found"));
         expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: base"));
@@ -80,7 +80,7 @@ describe("command line arguments", () => {
       mocks = mocksRunner(["--files.path=web-tutorial", "--mocks.delay=2000"]);
       await waitForServerAndCli();
       const timeCounter = new TimeCounter();
-      const users = await fetch("/api/users");
+      const users = await doFetch("/api/users");
       timeCounter.stop();
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },

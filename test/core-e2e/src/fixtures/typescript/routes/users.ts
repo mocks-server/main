@@ -13,6 +13,7 @@ const routes = [
     variants: [
       {
         id: "success", // id of the variant
+        handler: "json",
         response: {
           status: 200, // status to send
           body: USERS, // body to send
@@ -20,6 +21,7 @@ const routes = [
       },
       {
         id: "error", // id of the variant
+        handler: "json",
         response: {
           status: 400, // status to send
           body: {
@@ -37,6 +39,7 @@ const routes = [
     variants: [
       {
         id: "success", // id of the variant
+        handler: "json",
         response: {
           status: 200, // status to send
           body: USERS[0], // body to send
@@ -44,17 +47,20 @@ const routes = [
       },
       {
         id: "real", // id of the variant
-        response: (req, res) => {
-          const userId = req.params.id;
-          const user = USERS.find((userData) => userData.id === Number(userId));
-          if (user) {
-            res.status(200);
-            res.send(user);
-          } else {
-            res.status(404);
-            res.send({
-              message: "User not found",
-            });
+        handler: "middleware",
+        response: {
+          middleware: (req, res) => {
+            const userId = req.params.id;
+            const user = USERS.find((userData) => userData.id === Number(userId));
+            if (user) {
+              res.status(200);
+              res.send(user);
+            } else {
+              res.status(404);
+              res.send({
+                message: "User not found",
+              });
+            }
           }
         },
       },

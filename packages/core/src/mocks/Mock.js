@@ -29,7 +29,8 @@ class Mock {
         : [routeVariant.method];
       methods.forEach((method) => {
         const httpMethod = HTTP_METHODS[method.toUpperCase()];
-        this._router[httpMethod](routeVariant.url, (_req, _res, next) => {
+        this._router[httpMethod](routeVariant.url, (req, _res, next) => {
+          this._logger.info(`Request ${req.method} => ${req.url} | req: ${req.id}`);
           const delay = routeVariant.delay !== null ? routeVariant.delay : this._getDelay();
           if (delay > 0) {
             this._logger.verbose(`Applying delay of ${delay}ms to route variant "${this._id}"`);

@@ -184,7 +184,6 @@ class Server {
 
     // TODO, Add options to allow to disable or configure it
     this._express.use(notFound({ logger: this._logger }));
-
     this._express.use(errorHandler({ logger: this._logger }));
 
     // Create server

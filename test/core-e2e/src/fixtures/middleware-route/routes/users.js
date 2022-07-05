@@ -18,6 +18,7 @@ module.exports = [
     variants: [
       {
         id: "success",
+        handler: "json",
         response: {
           status: 200,
           body: USERS,
@@ -25,6 +26,7 @@ module.exports = [
       },
       {
         id: "error",
+        handler: "json",
         response: {
           status: 403,
           body: {

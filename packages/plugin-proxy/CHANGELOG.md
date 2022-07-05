@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [3.0.0] - 2022-07-05
+
+### Changed
+- feat: Add routes handler "proxy-v4" using new handlers API released on @mocks-server/core@3.5.0. Keep old "legacy" handler for backward compatibility.
+- chore(deps): Require @mocks-server/core >=3.5.0 in peerDependencies
+
 ## [2.1.0]
 ### Changed
 - feat: Use new custom core API released on v3.2.0

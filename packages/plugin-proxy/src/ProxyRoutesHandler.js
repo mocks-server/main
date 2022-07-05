@@ -5,6 +5,10 @@ class ProxyRoutesHandler {
     return "proxy";
   }
 
+  static get deprecated() {
+    return true;
+  }
+
   static get validationSchema() {
     return {
       type: "object",

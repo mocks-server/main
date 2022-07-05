@@ -8,8 +8,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { flatten, compact } = require("lodash");
+const { flatten, compact, isUndefined } = require("lodash");
 
+const { getDataFromVariant, getPreview } = require("../routes-handlers/helpers");
 const CustomCore = require("../CustomCore");
 const Mock = require("./Mock");
 const {
@@ -135,11 +136,12 @@ function getPlainRoutes(routes, routesVariants) {
 
 function getPlainRoutesVariants(routesVariants) {
   return routesVariants.map((routeVariant) => {
+    const preview = getPreview(routeVariant);
     return {
       id: routeVariant.variantId,
       routeId: routeVariant.routeId,
       handler: routeVariant.constructor.id,
-      response: routeVariant.plainResponsePreview,
+      response: isUndefined(preview) ? null : preview,
       delay: routeVariant.delay,
     };
   });
@@ -200,6 +202,7 @@ function getVariantHandler({
   const variantNamespace = variantId || getVariantId(route.id, variantIndex);
   const routeVariantLogger = loggerRoutes.namespace(variantNamespace);
   const routeVariantAlerts = alertsRoutes.collection(variantNamespace);
+  const handlersAlerts = alertsRoutes.collection("handlers");
   const routeVariantCustomCore = new CustomCore({
     core,
     logger: routeVariantLogger,
@@ -215,15 +218,23 @@ function getVariantHandler({
   }
 
   try {
+    const variantArgument = getDataFromVariant(variant, Handler);
+    if (Handler.deprecated) {
+      handlersAlerts.set(
+        Handler.id,
+        `Handler '${Handler.id}' is deprecated and will be removed in next major version. Consider using another handler. https://www.mocks-server.org/docs/guides-migrating-from-v3#route-variants-handlers`
+      );
+    }
     routeHandler = new Handler(
       {
-        ...variant,
+        ...variantArgument,
         variantId,
         url: route.url,
         method: route.method,
       },
       routeVariantCustomCore
     );
+    // TODO, do not add properties to handler. Store it in "handler" property
     routeHandler.delay = getRouteHandlerDelay(variant, route);
     routeHandler.id = variant.id;
     routeHandler.variantId = variantId;
@@ -248,6 +259,7 @@ function getRouteVariants({
 }) {
   let routeIds = [];
   alerts.clean();
+  alertsRoutes.clean();
   return compact(
     flatten(
       routesDefinitions.map((route, index) => {
@@ -304,6 +316,7 @@ function getMock({
   mocksDefinitions,
   routeVariants,
   logger,
+  loggerRoutes,
   getGlobalDelay,
   alerts,
 }) {
@@ -335,7 +348,7 @@ function getMock({
         routeVariants,
         alerts
       ),
-      logger,
+      logger: loggerRoutes,
       getDelay: getGlobalDelay,
     });
   } catch (error) {
@@ -344,7 +357,14 @@ function getMock({
   return mock;
 }
 
-function getMocks({ mocksDefinitions, alerts, logger, routeVariants, getGlobalDelay }) {
+function getMocks({
+  mocksDefinitions,
+  alerts,
+  logger,
+  loggerRoutes,
+  routeVariants,
+  getGlobalDelay,
+}) {
   alerts.clean();
   let errorsProcessing = 0;
   let ids = [];
@@ -360,6 +380,7 @@ function getMocks({ mocksDefinitions, alerts, logger, routeVariants, getGlobalDe
         routeVariants,
         getGlobalDelay,
         logger,
+        loggerRoutes,
         alerts: alertsMock,
       });
       if (!mock) {

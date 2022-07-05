@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startServer, fetch, waitForServer } = require("./support/helpers");
+const { startServer, doFetch, waitForServer } = require("./support/helpers");
 
 describe("cors middleware", () => {
   let server;
@@ -24,7 +24,7 @@ describe("cors middleware", () => {
     });
 
     it("should add cors headers to admin api routes", async () => {
-      const response = await fetch("/admin/about", { method: "OPTIONS" });
+      const response = await doFetch("/admin/about", { method: "OPTIONS" });
       expect(response.headers.get("access-control-allow-origin")).toEqual("*");
       expect(response.headers.get("access-control-allow-methods")).toEqual(
         "GET,HEAD,PUT,PATCH,POST,DELETE"
@@ -32,7 +32,7 @@ describe("cors middleware", () => {
     });
 
     it("should add cors headers to mock routes", async () => {
-      const response = await fetch("/api/users/2", { method: "OPTIONS" });
+      const response = await doFetch("/api/users/2", { method: "OPTIONS" });
       expect(response.headers.get("access-control-allow-origin")).toEqual("*");
       expect(response.headers.get("access-control-allow-methods")).toEqual(
         "GET,HEAD,PUT,PATCH,POST,DELETE"
@@ -53,7 +53,7 @@ describe("cors middleware", () => {
     });
 
     it("should add cors headers to admin api routes", async () => {
-      const response = await fetch("/admin/about", { method: "OPTIONS" });
+      const response = await doFetch("/admin/about", { method: "OPTIONS" });
       expect(response.headers.get("access-control-allow-origin")).toEqual("*");
       expect(response.headers.get("access-control-allow-methods")).toEqual(
         "GET,HEAD,PUT,PATCH,POST,DELETE"
@@ -61,7 +61,7 @@ describe("cors middleware", () => {
     });
 
     it("should disable cors headers in mock routes", async () => {
-      const response = await fetch("/api/users/2", { method: "OPTIONS" });
+      const response = await doFetch("/api/users/2", { method: "OPTIONS" });
       expect(response.headers.get("access-control-allow-origin")).toEqual(null);
       expect(response.headers.get("access-control-allow-methods")).toEqual(null);
     });

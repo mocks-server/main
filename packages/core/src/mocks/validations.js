@@ -12,6 +12,8 @@ const Ajv = require("ajv");
 const { compact } = require("lodash");
 const betterAjvErrors = require("better-ajv-errors").default;
 
+const { getDataFromVariant, isVersion4 } = require("../routes-handlers/helpers");
+
 const ajv = new Ajv({ allErrors: true });
 
 const HTTP_METHODS = {
@@ -117,6 +119,7 @@ const routesSchema = {
             ],
           },
         },
+        // TODO, require "response" in all variants to be an object, do not allow additionalProperties
         required: ["id"],
       },
     },
@@ -282,17 +285,25 @@ function variantValidationErrors(route, variant, Handler) {
     return null;
   }
   const variantValidator = ajv.compile(Handler.validationSchema);
-  const isValid = variantValidator(variant);
+  const dataToCheck = getDataFromVariant(variant, Handler);
+  const dataMessage = isVersion4(Handler) ? "Invalid 'response' property:" : "";
+  const isValid = variantValidator(dataToCheck);
   if (!isValid) {
+    let validationMessage;
+    try {
+      validationMessage = validationSingleMessage(
+        Handler.validationSchema,
+        dataToCheck || {},
+        variantValidator.errors
+      );
+    } catch (error) {
+      validationMessage = " Wrong type";
+    }
     const idTrace = variant && variant.id ? `${traceId(variant.id)} ` : "";
     return {
       message: `Variant ${idTrace}in route ${traceId(
         route.id
-      )} is invalid: ${validationSingleMessage(
-        Handler.validationSchema,
-        variant,
-        variantValidator.errors
-      )}`,
+      )} is invalid: ${dataMessage}${validationMessage}`,
       errors: variantValidator.errors,
     };
   }

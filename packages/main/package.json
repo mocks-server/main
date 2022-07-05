@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/main",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "description": "Mock Server supporting multiple route variants and mocks",
   "keywords": [
     "mock",

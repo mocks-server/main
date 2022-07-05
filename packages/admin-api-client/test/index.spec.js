@@ -29,8 +29,7 @@ describe("react-admin-client methods used with node", () => {
     describe("when there are alerts", () => {
       it("should return alerts", async () => {
         const alerts = await readAlerts();
-        // one alert is added due to the usage of default handler
-        expect(alerts.length).toEqual(2);
+        expect(alerts.length).toEqual(1);
       });
 
       it("should return alert about mock not defined", async () => {
@@ -87,8 +86,7 @@ describe("react-admin-client methods used with node", () => {
         });
         await wait(2000);
         const alerts = await readAlerts();
-        // one alert is added due to the usage of default handler
-        expect(alerts.length).toEqual(1);
+        expect(alerts.length).toEqual(0);
       });
     });
   });
@@ -172,14 +170,14 @@ describe("react-admin-client methods used with node", () => {
         {
           id: "get-user:1",
           routeId: "get-user",
-          handler: "default",
+          handler: "json",
           response: { body: [{ email: "foo@foo.com" }], status: 200 },
           delay: null,
         },
         {
           id: "get-user:2",
           routeId: "get-user",
-          handler: "default",
+          handler: "json",
           response: { body: [{ email: "foo2@foo2.com" }], status: 200 },
           delay: null,
         },
@@ -193,7 +191,7 @@ describe("react-admin-client methods used with node", () => {
       expect(data).toEqual({
         id: "get-user:2",
         routeId: "get-user",
-        handler: "default",
+        handler: "json",
         response: { body: [{ email: "foo2@foo2.com" }], status: 200 },
         delay: null,
       });

@@ -42,21 +42,14 @@ module.exports = [
           options: {}, // Options for express-http-proxy
         },
       },
-      {
-        id: "disabled",
-        handler: "middleware",
-        response: {
-          middleware: (req, res, next) => next(),
-        },
-      },
     ],
   },
 ];
 ```
 
-### Route variant response
+### Options
 
-Here are listed the specific properties of a `proxy-v4` route variant. They must be defined in the `response` property of the variant:
+Here are listed the specific properties that can be defined in a `proxy-v4` route variant. They must be defined in the `response` property of the variant:
 
 * __`host`__ _(String|Function)_: The proxy host. Equivalent to the [`express-http-proxy` `host` option](https://github.com/villadora/express-http-proxy#host), so it can also be a function.
 * __`options`__ _(Object)_: Object containing any of the [options supported by the `express-http-proxy` package](https://github.com/villadora/express-http-proxy#options). Some of them are:
@@ -64,7 +57,7 @@ Here are listed the specific properties of a `proxy-v4` route variant. They must
   * __userResDecorator__ _(Function)_: [`userResDecorator` option](https://github.com/villadora/express-http-proxy#userresdecorator-was-intercept-supports-promise) for `express-http-proxy`.
   * __...__ all other [`express-http-proxy` options](https://github.com/villadora/express-http-proxy#options) are also supported.
 
-> Tip: Note that the `delay` option is still valid for routes handled by this plugin, so you can use it to simulate that host responses are slow.
+> Tip: Note that the variant `delay` option is still valid for routes handled by this plugin, so you can use it to simulate that host responses are slow.
 
 ## Usage of `proxy` handler
 
@@ -84,10 +77,6 @@ module.exports = [
         handler: "proxy", // This route variant will use the "proxy" handler from this plugin
         host: "https://www.google.com", // proxy host
         options: {}, // Options for express-http-proxy
-      },
-      {
-        id: "disabled",
-        response: (req, res, next) => next(),
       },
     ],
   },

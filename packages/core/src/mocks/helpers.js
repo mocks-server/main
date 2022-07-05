@@ -10,6 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { flatten, compact, isUndefined } = require("lodash");
 
+const { getDataFromVariant, getPreview } = require("../routes-handlers/helpers");
 const CustomCore = require("../CustomCore");
 const Mock = require("./Mock");
 const {
@@ -135,14 +136,12 @@ function getPlainRoutes(routes, routesVariants) {
 
 function getPlainRoutesVariants(routesVariants) {
   return routesVariants.map((routeVariant) => {
+    const preview = getPreview(routeVariant);
     return {
       id: routeVariant.variantId,
       routeId: routeVariant.routeId,
       handler: routeVariant.constructor.id,
-      response: !isUndefined(routeVariant.preview)
-        ? routeVariant.preview
-        : // TODO, deprecated, remove plainResponsePreview
-          routeVariant.plainResponsePreview,
+      response: isUndefined(preview) ? null : preview,
       delay: routeVariant.delay,
     };
   });
@@ -219,7 +218,7 @@ function getVariantHandler({
   }
 
   try {
-    const variantArgument = Handler.version === "4" ? variant.response : variant;
+    const variantArgument = getDataFromVariant(variant, Handler);
     if (Handler.deprecated) {
       handlersAlerts.set(
         Handler.id,

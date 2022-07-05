@@ -39,7 +39,7 @@ class ProxyRoutesHandler {
     this.middleware = httpProxy(this._host, this._options);
   }
 
-  get plainResponsePreview() {
+  get preview() {
     return {
       host: this._host,
     };

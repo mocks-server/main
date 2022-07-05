@@ -504,13 +504,13 @@ describe("mocks helpers", () => {
       ]);
     });
 
-    it("should return routes variants in plain format when using preview property", () => {
+    it("should return routes variants in plain format when constructor is v4", () => {
       expect(
         getPlainRoutesVariants([
           {
             variantId: "route-1:variant-1",
             routeId: "route-1",
-            constructor: { id: "handler-id-1" },
+            constructor: { id: "handler-id-1", version: "4" },
             preview: "response-preview-1",
             delay: "delay-1",
             foo: "foo-1",
@@ -518,7 +518,7 @@ describe("mocks helpers", () => {
           {
             variantId: "route-2:variant-1",
             routeId: "route-2",
-            constructor: { id: "handler-id-2" },
+            constructor: { id: "handler-id-2", version: "4" },
             preview: "response-preview-2",
             delay: "delay-2",
             foo: "foo-2",
@@ -537,6 +537,42 @@ describe("mocks helpers", () => {
           routeId: "route-2",
           handler: "handler-id-2",
           response: "response-preview-2",
+          delay: "delay-2",
+        },
+      ]);
+    });
+
+    it("should return null in response when no preview is defined", () => {
+      expect(
+        getPlainRoutesVariants([
+          {
+            variantId: "route-1:variant-1",
+            routeId: "route-1",
+            constructor: { id: "handler-id-1", version: "4" },
+            delay: "delay-1",
+            foo: "foo-1",
+          },
+          {
+            variantId: "route-2:variant-1",
+            routeId: "route-2",
+            constructor: { id: "handler-id-2", version: "4" },
+            delay: "delay-2",
+            foo: "foo-2",
+          },
+        ])
+      ).toEqual([
+        {
+          id: "route-1:variant-1",
+          routeId: "route-1",
+          handler: "handler-id-1",
+          response: null,
+          delay: "delay-1",
+        },
+        {
+          id: "route-2:variant-1",
+          routeId: "route-2",
+          handler: "handler-id-2",
+          response: null,
           delay: "delay-2",
         },
       ]);

@@ -12,6 +12,8 @@ const Ajv = require("ajv");
 const { compact } = require("lodash");
 const betterAjvErrors = require("better-ajv-errors").default;
 
+const { getDataFromVariant, isVersion4 } = require("../routes-handlers/helpers");
+
 const ajv = new Ajv({ allErrors: true });
 
 const HTTP_METHODS = {
@@ -283,9 +285,8 @@ function variantValidationErrors(route, variant, Handler) {
     return null;
   }
   const variantValidator = ajv.compile(Handler.validationSchema);
-  const isVersion4 = Handler.version === "4";
-  const dataToCheck = isVersion4 ? variant.response : variant;
-  const dataMessage = isVersion4 ? "Invalid 'response' property:" : "";
+  const dataToCheck = getDataFromVariant(variant, Handler);
+  const dataMessage = isVersion4(Handler) ? "Invalid 'response' property:" : "";
   const isValid = variantValidator(dataToCheck);
   if (!isValid) {
     let validationMessage;

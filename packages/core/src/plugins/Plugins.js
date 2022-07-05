@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const isPromise = require("is-promise");
 const { isObject, isFunction } = require("lodash");
 
-const { scopedAlertsMethods } = require("../support/helpers");
+const { scopedAlertsMethods } = require("../alerts/legacyHelpers");
 const CustomCore = require("../CustomCore");
 
 const OPTIONS = [

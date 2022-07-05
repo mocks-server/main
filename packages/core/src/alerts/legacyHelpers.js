@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -88,20 +88,6 @@ function scopedAlertsMethods(
   };
 }
 
-function addEventListener(listener, eventName, eventEmitter) {
-  const removeCallback = () => {
-    eventEmitter.removeListener(eventName, listener);
-  };
-  eventEmitter.on(eventName, listener);
-  return removeCallback;
-}
-
-function arrayMerge(_destinationArray, sourceArray) {
-  return sourceArray;
-}
-
 module.exports = {
   scopedAlertsMethods,
-  addEventListener,
-  arrayMerge,
 };

@@ -9,9 +9,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 const sinon = require("sinon");
 
-const helpers = require("../../src/support/helpers");
+const helpers = require("../../src/alerts/legacyHelpers");
 
-describe("helpers", () => {
+describe("events", () => {
   let sandbox;
 
   beforeEach(() => {

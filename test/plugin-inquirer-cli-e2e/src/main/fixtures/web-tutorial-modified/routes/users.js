@@ -18,6 +18,7 @@ module.exports = [
     variants: [
       {
         id: "success",
+        handler: "json",
         response: {
           headers: {
             "x-custom-header": "foo-header",
@@ -29,6 +30,7 @@ module.exports = [
       },
       {
         id: "error",
+        handler: "json",
         response: {
           status: 403,
           body: {
@@ -45,6 +47,7 @@ module.exports = [
     variants: [
       {
         id: "success",
+        handler: "json",
         response: {
           status: 200,
           body: [

@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -13,12 +13,12 @@ const sinon = require("sinon");
 const LibsMocks = require("../common/Libs.mocks");
 const { Logger } = require("@mocks-server/logger");
 
-const Mock = require("../../src/mocks/Mock");
+const Collection = require("../../src/routes/Collection");
 
-describe("Mock", () => {
+describe("Collection", () => {
   let sandbox;
   let libsMocks;
-  let mock;
+  let collection;
   let getDelay;
   let routesVariants;
   let middlewareMethodsStubs;
@@ -59,7 +59,7 @@ describe("Mock", () => {
     getDelay = sandbox.stub();
     libsMocks = new LibsMocks();
     logger = new Logger();
-    mock = new Mock({ id: "mock-id", routesVariants, getDelay, logger });
+    collection = new Collection({ id: "mock-id", routesVariants, getDelay, logger });
   });
 
   afterEach(() => {
@@ -69,19 +69,19 @@ describe("Mock", () => {
 
   describe("id getter", () => {
     it("should return mock id", () => {
-      expect(mock.id).toEqual("mock-id");
+      expect(collection.id).toEqual("mock-id");
     });
   });
 
   describe("routesVariants getter", () => {
     it("should return routesVariants", () => {
-      expect(mock.routesVariants).toEqual(routesVariants);
+      expect(collection.routesVariants).toEqual(routesVariants);
     });
   });
 
   describe("router getter", () => {
     it("should return express router", () => {
-      expect(mock.router).toEqual(libsMocks.stubs.expressRouter);
+      expect(collection.router).toEqual(libsMocks.stubs.expressRouter);
     });
   });
 

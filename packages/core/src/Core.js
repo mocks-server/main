@@ -16,12 +16,12 @@ const { Logger } = require("@mocks-server/logger");
 
 const tracer = require("./common/legacyTracer");
 const AlertsLegacy = require("./alerts/AlertsLegacy");
-const RoutesHandlers = require("./routes-handlers/RoutesHandlers");
-const Mocks = require("./mocks/Mocks");
+const VariantHandlers = require("./routes/variant-handlers/VariantHandlers");
+const Mocks = require("./routes/Collections");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
-const Loaders = require("./loaders/Loaders");
-const FilesLoaders = require("./loaders/files/FilesLoaders");
+const Loaders = require("./routes/Loaders");
+const FilesLoaders = require("./files/FilesLoaders");
 const Scaffold = require("./scaffold/Scaffold");
 const Alerts = require("./alerts/Alerts");
 const UpdateNotifier = require("./update-notifier/UpdateNotifier");
@@ -67,7 +67,7 @@ class Core {
     this._configServer = this._config.addNamespace(Server.id);
     this._configFilesLoaders = this._config.addNamespace(FilesLoaders.id);
 
-    [this._logOption, this._routesHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
+    [this._logOption, this._variantHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
     this._logOption.onChange((level) => {
       this._logger.setLevel(level);
     });
@@ -141,7 +141,7 @@ class Core {
     );
 
     // Create routes handlers
-    this._routesHandlers = new RoutesHandlers({
+    this._variantHandlers = new VariantHandlers({
       logger: this._logger.namespace("routesHandlers"),
     });
 
@@ -247,7 +247,7 @@ class Core {
     await this._plugins.register();
 
     // Register routes handlers
-    await this._routesHandlers.register(this._routesHandlersOption.value);
+    await this._variantHandlers.register(this._variantHandlersOption.value);
 
     await this._scaffold.init({
       filesLoaderPath: this._filesLoader.path,
@@ -256,7 +256,7 @@ class Core {
     await this._loadConfig();
 
     // Config is ready, init all
-    this._mocks.init(this._routesHandlers.handlers);
+    this._mocks.init(this._variantHandlers.handlers);
     await this._server.init();
     await this._filesLoader.init();
     return this._plugins.init();
@@ -275,8 +275,8 @@ class Core {
     return this._stopPlugins();
   }
 
-  addRoutesHandler(RoutesHandler) {
-    this._routesHandlers.add(RoutesHandler);
+  addRoutesHandler(VariantHandler) {
+    this._variantHandlers.add(VariantHandler);
   }
 
   loadMocks(mocks) {

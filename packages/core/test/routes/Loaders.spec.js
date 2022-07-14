@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-const Loaders = require("../../src/loaders/Loaders");
+const Loaders = require("../../src/routes/Loaders");
 
 describe("Loaders", () => {
   let sandbox;

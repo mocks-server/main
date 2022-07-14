@@ -12,7 +12,7 @@ const express = require("express");
 
 const OPTIONS = [
   {
-    description: "Selected mock",
+    description: "Selected collection",
     name: "selected",
     type: "string",
     extraData: {
@@ -46,7 +46,7 @@ const LOAD_MOCKS_NAMESPACE = "loadMocks";
 const LOAD_ROUTES_NAMESPACE = "loadRoutes";
 const ROUTES_NAMESPACE = "routes";
 
-class Mocks {
+class Collections {
   static get id() {
     return "mocks";
   }
@@ -254,4 +254,4 @@ class Mocks {
   }
 }
 
-module.exports = Mocks;
+module.exports = Collections;

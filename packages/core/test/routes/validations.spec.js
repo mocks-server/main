@@ -16,10 +16,10 @@ const {
   variantValidationErrors,
   mockValidationErrors,
   mockRouteVariantsValidationErrors,
-} = require("../../src/mocks/validations");
-const DefaultRoutesHandler = require("../../src/routes-handlers/handlers/Default");
-const JsonRoutesHandler = require("../../src/routes-handlers/handlers/Json");
-const MiddlewareRoutesHandler = require("../../src/routes-handlers/handlers/Middleware");
+} = require("../../src/routes/validations");
+const DefaultRoutesHandler = require("../../src/routes/variant-handlers/handlers/Default");
+const JsonRoutesHandler = require("../../src/routes/variant-handlers/handlers/Json");
+const MiddlewareRoutesHandler = require("../../src/routes/variant-handlers/handlers/Middleware");
 
 describe("mocks validations", () => {
   const VALID_ROUTE = {

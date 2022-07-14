@@ -10,9 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { flatten, compact, isUndefined } = require("lodash");
 
-const { getDataFromVariant, getPreview } = require("../routes-handlers/helpers");
+const { getDataFromVariant, getPreview } = require("./variant-handlers/helpers");
 const CoreApi = require("../common/CoreApi");
-const Mock = require("./Mock");
+const Collection = require("./Collection");
 const {
   variantValidationErrors,
   routeValidationErrors,
@@ -340,7 +340,7 @@ function getMock({
   }
 
   try {
-    mock = new Mock({
+    mock = new Collection({
       id: mockDefinition.id,
       routesVariants: getMockRoutesVariants(
         mockDefinition,

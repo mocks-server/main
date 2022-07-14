@@ -12,17 +12,17 @@ const sinon = require("sinon");
 const express = require("express");
 const { Logger } = require("@mocks-server/logger");
 
-const MockMock = require("./Mock.mock.js");
+const CollectionMock = require("./Collection.mock.js");
 
 const Alerts = require("../../src/alerts/Alerts");
-const Mocks = require("../../src/mocks/Mocks");
+const Collections = require("../../src/routes/Collections");
 const ConfigMock = require("../common/Config.mocks");
-const DefaultRoutesHandler = require("../../src/routes-handlers/handlers/Default");
+const DefaultRoutesHandler = require("../../src/routes/variant-handlers/handlers/Default");
 
-describe("Mocks", () => {
+describe("Collections", () => {
   let configMock;
   let sandbox;
-  let mockMock;
+  let collectionMock;
   let mocks;
   let core;
   let methods;
@@ -33,7 +33,7 @@ describe("Mocks", () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     configMock = new ConfigMock();
-    mockMock = new MockMock();
+    collectionMock = new CollectionMock();
     routerMock = sandbox.stub();
     sandbox.stub(express, "Router").returns(routerMock);
     sandbox.stub(Logger.prototype, "warn");
@@ -52,18 +52,18 @@ describe("Mocks", () => {
       logger,
     };
 
-    mocks = new Mocks(methods, core);
+    mocks = new Collections(methods, core);
     mocks.init([DefaultRoutesHandler]);
   });
 
   afterEach(() => {
     sandbox.restore();
-    mockMock.restore();
+    collectionMock.restore();
   });
 
   describe("id", () => {
     it("should return mocks", async () => {
-      expect(Mocks.id).toEqual("mocks");
+      expect(Collections.id).toEqual("mocks");
     });
   });
 

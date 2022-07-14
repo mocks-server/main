@@ -12,7 +12,7 @@ const express = require("express");
 
 const { HTTP_METHODS } = require("./validations");
 
-class Mock {
+class Collection {
   constructor({ id, routesVariants, getDelay, logger }) {
     this._logger = logger;
     this._id = id;
@@ -29,6 +29,7 @@ class Mock {
         : [routeVariant.method];
       methods.forEach((method) => {
         const httpMethod = HTTP_METHODS[method.toUpperCase()];
+        // TODO, add methods matcher
         this._router[httpMethod](routeVariant.url, (req, _res, next) => {
           this._logger.info(`Request ${req.method} => ${req.url} | req: ${req.id}`);
           const delay = routeVariant.delay !== null ? routeVariant.delay : this._getDelay();
@@ -59,4 +60,4 @@ class Mock {
   }
 }
 
-module.exports = Mock;
+module.exports = Collection;

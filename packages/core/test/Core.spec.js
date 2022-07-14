@@ -12,13 +12,13 @@ const sinon = require("sinon");
 const { NestedCollections } = require("@mocks-server/nested-collections");
 const { Logger } = require("@mocks-server/logger");
 
-const MocksMock = require("./mocks/Mocks.mock.js");
+const CollectionsMock = require("./routes/Collections.mock.js");
 const ServerMocks = require("./server/Server.mocks.js");
 const PluginsMocks = require("./plugins/Plugins.mocks.js");
 const ConfigMocks = require("./common/Config.mocks.js");
 const AlertsMocks = require("./alerts/AlertsLegacy.mocks.js");
-const LoadersMocks = require("./loaders/Loaders.mocks.js");
-const FilesLoadersMocks = require("./loaders/files/FilesLoaders.mocks.js");
+const LoadersMocks = require("./routes/Loaders.mocks.js");
+const FilesLoadersMocks = require("./files/FilesLoaders.mocks.js");
 const ScaffoldMocks = require("./scaffold/Scaffold.mocks.js");
 const UpdateNotifierMock = require("./update-notifier/UpdateNotifier.mock.js");
 
@@ -28,8 +28,8 @@ const Alerts = require("../src/alerts/Alerts");
 
 describe("Core", () => {
   let sandbox;
-  let mocksMock;
-  let mocksInstance;
+  let collectionsMock;
+  let collectionsInstance;
   let serverMocks;
   let serverInstance;
   let pluginsMocks;
@@ -46,8 +46,8 @@ describe("Core", () => {
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
     updateNotifierMock = new UpdateNotifierMock();
-    mocksMock = new MocksMock();
-    mocksInstance = mocksMock.stubs.instance;
+    collectionsMock = new CollectionsMock();
+    collectionsInstance = collectionsMock.stubs.instance;
     serverMocks = new ServerMocks();
     serverInstance = serverMocks.stubs.instance;
     pluginsMocks = new PluginsMocks();
@@ -69,7 +69,7 @@ describe("Core", () => {
 
   afterEach(() => {
     sandbox.restore();
-    mocksMock.restore();
+    collectionsMock.restore();
     serverMocks.restore();
     configMocks.restore();
     pluginsMocks.restore();
@@ -132,7 +132,7 @@ describe("Core", () => {
   describe("Mocks callbacks", () => {
     describe("getLoadedMocks", () => {
       it("should return mocksLoaders contents", () => {
-        expect(mocksMock.stubs.Constructor.mock.calls[0][0].getLoadedMocks()).toEqual(
+        expect(collectionsMock.stubs.Constructor.mock.calls[0][0].getLoadedMocks()).toEqual(
           core._mocksLoaders.contents
         );
       });
@@ -140,7 +140,7 @@ describe("Core", () => {
 
     describe("getLoadedRoutes", () => {
       it("should return routesLoaders contents", () => {
-        expect(mocksMock.stubs.Constructor.mock.calls[0][0].getLoadedRoutes()).toEqual(
+        expect(collectionsMock.stubs.Constructor.mock.calls[0][0].getLoadedRoutes()).toEqual(
           core._routesLoaders.contents
         );
       });
@@ -150,7 +150,7 @@ describe("Core", () => {
       it("should emit a change:mocks event", () => {
         const spy = sandbox.spy();
         core.onChangeMocks(spy);
-        mocksMock.stubs.Constructor.mock.calls[0][0].onChange();
+        collectionsMock.stubs.Constructor.mock.calls[0][0].onChange();
         expect(spy.callCount).toEqual(1);
       });
     });
@@ -275,8 +275,8 @@ describe("Core", () => {
     it("should add Route Handler", () => {
       core.addRoutesHandler("foo");
       // TODO, do not use private properties in testing
-      expect(core._routesHandlers._routeHandlers.length).toEqual(4);
-      expect(core._routesHandlers._routeHandlers[3]).toEqual("foo");
+      expect(core._variantHandlers._variantHandlers.length).toEqual(4);
+      expect(core._variantHandlers._variantHandlers[3]).toEqual("foo");
     });
   });
 
@@ -420,7 +420,7 @@ describe("Core", () => {
 
   describe("mocks getter", () => {
     it("should return mocks instance", () => {
-      expect(core.mocks).toEqual(mocksInstance);
+      expect(core.mocks).toEqual(collectionsInstance);
     });
   });
 

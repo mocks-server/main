@@ -25,10 +25,10 @@ const {
   getVariantHandler,
   getRouteVariants,
   getMock,
-} = require("../../src/mocks/helpers");
-const { compileRouteValidator } = require("../../src/mocks/validations");
-const DefaultRoutesHandler = require("../../src/routes-handlers/handlers/Default");
-const JsonRoutesHandler = require("../../src/routes-handlers/handlers/Json");
+} = require("../../src/routes/helpers");
+const { compileRouteValidator } = require("../../src/routes/validations");
+const DefaultRoutesHandler = require("../../src/routes/variant-handlers/handlers/Default");
+const JsonRoutesHandler = require("../../src/routes/variant-handlers/handlers/Json");
 const Alerts = require("../../src/alerts/Alerts");
 
 describe("mocks helpers", () => {

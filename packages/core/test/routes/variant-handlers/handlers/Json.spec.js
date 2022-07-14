@@ -10,8 +10,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-const CoreMocks = require("../../Core.mocks.js");
-const Json = require("../../../src/routes-handlers/handlers/Json");
+const CoreMocks = require("../../../Core.mocks.js");
+const Json = require("../../../../src/routes/variant-handlers/handlers/Json");
 
 describe("Json routes handler", () => {
   const FOO_VARIANT = {

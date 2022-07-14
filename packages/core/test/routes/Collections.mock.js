@@ -10,33 +10,36 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../src/mocks/Mock");
+jest.mock("../../src/routes/Collections");
 
-const Mock = require("../../src/mocks/Mock");
+const Collections = require("../../src/routes/Collections");
 
-class MockMock {
+const CURRENT = "foo";
+
+class Mock {
   constructor() {
     this._sandbox = sinon.createSandbox();
 
     this._stubs = {
-      id: "mock-id",
-      routesVariants: [],
-      router: this._sandbox.stub(),
+      current: CURRENT,
+      load: this._sandbox.stub(),
+      init: this._sandbox.stub(),
     };
 
-    Mock.mockImplementation(() => this._stubs);
+    Collections.mockImplementation(() => this._stubs);
   }
 
   get stubs() {
     return {
-      Constructor: Mock,
+      Constructor: Collections,
       instance: this._stubs,
     };
   }
 
   restore() {
+    this._stubs.current = CURRENT;
     this._sandbox.restore();
   }
 }
 
-module.exports = MockMock;
+module.exports = Mock;

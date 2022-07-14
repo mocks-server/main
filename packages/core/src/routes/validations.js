@@ -12,7 +12,7 @@ const Ajv = require("ajv");
 const { compact } = require("lodash");
 const betterAjvErrors = require("better-ajv-errors").default;
 
-const { getDataFromVariant, isVersion4 } = require("../routes-handlers/helpers");
+const { getDataFromVariant, isVersion4 } = require("./variant-handlers/helpers");
 
 const ajv = new Ajv({ allErrors: true });
 

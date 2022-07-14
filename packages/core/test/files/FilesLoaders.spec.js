@@ -14,12 +14,12 @@ const sinon = require("sinon");
 const { cloneDeep } = require("lodash");
 const { Logger } = require("@mocks-server/logger");
 
-const Alerts = require("../../../src/alerts/Alerts");
-const LibsMocks = require("../../common/Libs.mocks");
-const CoreMocks = require("../../Core.mocks");
-const ConfigMock = require("../../common/Config.mocks");
+const Alerts = require("../../src/alerts/Alerts");
+const LibsMocks = require("../common/Libs.mocks");
+const CoreMocks = require("../Core.mocks");
+const ConfigMock = require("../common/Config.mocks");
 
-const FilesLoaders = require("../../../src/loaders/files/FilesLoaders");
+const FilesLoaders = require("../../src/files/FilesLoaders");
 
 const wait = () => {
   return new Promise((resolve) => {

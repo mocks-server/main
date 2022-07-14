@@ -168,7 +168,8 @@ describe("mocks and routes validations", () => {
     });
 
     it("should return user 1 at /api/invalid-users/1 when changing to mock with no valid variant", async () => {
-      core.config.namespace("mocks").option("selected").value = "invalid-variant";
+      core.config.namespace("routes").namespace("collections").option("selected").value =
+        "invalid-variant";
       const response = await doFetch("/api/invalid-users/1");
       expect(response.status).toEqual(200);
       expect(response.body).toEqual({ id: 1, name: "John Doe" });

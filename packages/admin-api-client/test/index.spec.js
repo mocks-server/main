@@ -80,8 +80,10 @@ describe("react-admin-client methods used with node", () => {
       it("should return no alerts", async () => {
         await updateSettings({
           files: { path: "mocks" },
-          mocks: {
-            selected: "base",
+          routes: {
+            collections: {
+              selected: "base",
+            },
           },
         });
         await wait(2000);

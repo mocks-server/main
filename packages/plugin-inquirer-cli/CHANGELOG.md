@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGE
 
+## [unreleased]
+- feat: Use core v3.6 new options
+
 ## [3.1.0] - 2022-06-27
 ### Changed
 - refactor: Remove unused property

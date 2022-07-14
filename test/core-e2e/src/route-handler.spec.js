@@ -27,7 +27,7 @@ describe("when adding route handlers", () => {
       core = createCore();
       core.addRoutesHandler(RouteHandler);
       await startExistingCore(core, fixturesFolder("custom-routes-handler"), {
-        mocks: { selected: "custom-users" },
+        routes: { collections: { selected: "custom-users" } },
       });
       core.logger.setLevel("debug", { transport: "store" });
     });

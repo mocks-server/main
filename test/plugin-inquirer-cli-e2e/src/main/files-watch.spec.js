@@ -91,19 +91,19 @@ describe("files watcher", () => {
       });
     });
 
-    describe('When changing current mock to "user-2"', () => {
+    describe('When changing current collection to "user-2"', () => {
       beforeAll(async () => {
         await mocks.pressEnter();
         await mocks.cursorDown();
         await mocks.pressEnter();
       });
 
-      it("should display current mock in CLI", async () => {
+      it("should display current collection in CLI", async () => {
         await wait(500);
         expect(mocks.logs).toEqual(expect.stringContaining("Current mock: user-2"));
       });
 
-      it("should serve users collection mock under the /api/users path", async () => {
+      it("should serve users collection under the /api/users path", async () => {
         const users = await doFetch("/api/users");
         expect(users.body).toEqual([
           { id: 1, name: "John Doe modified" },

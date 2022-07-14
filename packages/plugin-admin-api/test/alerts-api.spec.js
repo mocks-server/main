@@ -14,8 +14,10 @@ describe("alerts api", () => {
   let server;
   beforeAll(async () => {
     server = await startServer("web-tutorial", {
-      mocks: {
-        selected: "foo",
+      routes: {
+        collections: {
+          selected: "foo",
+        },
       },
     });
     await waitForServer();
@@ -26,17 +28,17 @@ describe("alerts api", () => {
   });
 
   describe("when started", () => {
-    it("should return mock not found alert", async () => {
+    it("should return collection not found alert", async () => {
       const response = await doFetch("/admin/alerts");
       // one alert is caused by deprecated handler
       expect(response.body.length).toEqual(2);
     });
 
     it("should return specific alert when requested by id", async () => {
-      const response = await doFetch("/admin/alerts/mocks%3Asettings");
+      const response = await doFetch("/admin/alerts/routes%3Asettings");
       expect(response.body).toEqual({
-        id: "mocks:settings",
-        context: "mocks:settings",
+        id: "routes:settings",
+        context: "routes:settings",
         message: "Mock 'foo' was not found. Using the first one found",
         error: null,
       });
@@ -56,8 +58,10 @@ describe("alerts api", () => {
       await doFetch("/admin/settings", {
         method: "PATCH",
         body: {
-          mocks: {
-            selected: "base",
+          routes: {
+            collections: {
+              selected: "base",
+            },
           },
         },
       });

@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { mocksRunner, doFetch, waitForServer, removeConfigFile } = require("./support/helpers");
 
-describe("mock argument", () => {
+describe("collection.selected argument", () => {
   const PATH_OPTION = "--files.path=web-tutorial";
   let mocks;
 
@@ -20,7 +20,7 @@ describe("mock argument", () => {
   });
 
   describe("when not provided", () => {
-    it("should set as current mock the first one found", async () => {
+    it("should set as current collection the first one found", async () => {
       mocks = mocksRunner([PATH_OPTION]);
       await waitForServer();
       const users = await doFetch("/api/users/2");
@@ -29,8 +29,8 @@ describe("mock argument", () => {
   });
 
   describe("when provided and exists", () => {
-    it("should set current behavior", async () => {
-      mocks = mocksRunner([PATH_OPTION, "--mocks.selected=user-real"]);
+    it("should set current collection", async () => {
+      mocks = mocksRunner([PATH_OPTION, "--routes.collections.selected=user-real"]);
       await waitForServer();
       const users = await doFetch("/api/users/2");
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
@@ -39,13 +39,13 @@ describe("mock argument", () => {
 
   describe("when provided and does not exist", () => {
     it("should print a warning", async () => {
-      mocks = mocksRunner([PATH_OPTION, "--mocks.selected=foo"]);
+      mocks = mocksRunner([PATH_OPTION, "--routes.collections.selected=foo"]);
       await waitForServer();
       expect(mocks.logs.current).toEqual(expect.stringContaining("Mock 'foo' was not found"));
     });
 
     it("should set as current mock the first one found", async () => {
-      mocks = mocksRunner([PATH_OPTION, "--mocks.selected=foo"]);
+      mocks = mocksRunner([PATH_OPTION, "--routes.collections.selected=foo2"]);
       await waitForServer();
       const users = await doFetch("/api/users/2");
       expect(users.body).toEqual({ id: 1, name: "John Doe" });

@@ -19,9 +19,11 @@ module.exports = {
       //enabled: true,
     },
   },
-  mocks: {
+  routes: {
     // Selected mock
-    selected: "base",
+    collections: {
+      //selected: "base",
+    },
     // Global delay to apply to routes
     //delay: 0,
   },

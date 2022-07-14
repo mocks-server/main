@@ -32,7 +32,7 @@
     "test:unit": "jest"
   },
   "peerDependencies": {
-    "@mocks-server/core": ">=3.2.0 <4.x"
+    "@mocks-server/core": ">=3.6.0 <4.x"
   },
   "dependencies": {
     "chalk": "4.1.1",

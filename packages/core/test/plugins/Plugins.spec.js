@@ -287,12 +287,12 @@ describe("Plugins", () => {
     it("should have core.routes available", async () => {
       const fooPlugin = {
         register: ({ routes }) => {
-          routes.select();
+          routes.onChange();
         },
       };
       pluginsOption.value = [fooPlugin];
       await plugins.register();
-      expect(coreInstance.routes.select.callCount).toEqual(1);
+      expect(coreInstance.routes.onChange.callCount).toEqual(1);
     });
 
     it("should have core addRouter method available", async () => {

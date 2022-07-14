@@ -146,8 +146,12 @@ class Cli {
     this._optionEmojis = this._config.addOption(OPTIONS[1]);
 
     this._optionLog = this._config.root.option("log");
-    this._optionMock = this._config.root.namespace("mocks").option("selected");
-    this._optionDelay = this._config.root.namespace("mocks").option("delay");
+    this._optionMock = this._config.root
+      .namespace("routes")
+      .namespace("collections")
+      .option("selected");
+    this._optionDelay = this._config.root.namespace("routes").option("delay");
+    this._optionDelayLegacy = this._config.root.namespace("mocks").option("delay");
     this._optionPort = this._config.root.namespace("server").option("port");
     this._optionHost = this._config.root.namespace("server").option("host");
     this._optionWatch = this._config.root.namespace("files").option("watch");
@@ -254,7 +258,9 @@ class Cli {
   }
 
   _header() {
-    const delay = this._optionDelay.value;
+    const delay = this._optionDelay.hasBeenSet
+      ? this._optionDelay.value
+      : this._optionDelayLegacy.value;
     const watchEnabled = this._optionWatch.value;
 
     const currentMock = this._mocks.current || "-";

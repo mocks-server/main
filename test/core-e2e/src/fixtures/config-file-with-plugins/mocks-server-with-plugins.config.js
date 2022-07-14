@@ -9,7 +9,9 @@ module.exports = {
   plugins: {
     register: [TraceRoutesPlugin],
   },
-  mocks: {
-    selected: "user-2",
+  routes: {
+    collections: {
+      selected: "user-2",
+    }
   },
 };

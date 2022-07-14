@@ -29,6 +29,7 @@ describe("Cli", () => {
   let optionEmojis;
   let optionLog;
   let optionDelay;
+  let optionDelayLegacy;
   let optionHost;
   let optionWatch;
   let optionMock;
@@ -70,6 +71,7 @@ describe("Cli", () => {
       optionEmojis = { ...cli._optionEmojis, onChange: onChangeEmojis, value: true };
       optionLog = { ...cli._optionLog, onChange: onChangeLog, value: "info" };
       optionDelay = { ...cli._optionDelay, onChange: onChangeDelay, value: 0 };
+      optionDelayLegacy = { ...cli._optionDelayLegacy, value: 0 };
       optionHost = { ...cli._optionHost, onChange: onChangeHost, value: "0.0.0.0" };
       optionWatch = { ...cli._optionWatch, onChange: onChangeWatch, value: true };
       optionMock = { ...cli._optionMock, onChange: onChangeMock, value: "base" };
@@ -80,6 +82,7 @@ describe("Cli", () => {
       cli._optionHost = optionHost;
       cli._optionWatch = optionWatch;
       cli._optionMock = optionMock;
+      cli._optionDelayLegacy = optionDelayLegacy;
     };
     mockOptions();
     await cli.init();
@@ -623,12 +626,21 @@ describe("Cli", () => {
     });
 
     it("should print delay in yellow if is greater than 0", async () => {
+      optionDelay.hasBeenSet = true;
       optionDelay.value = 1000;
       await cli.start();
       expect(cli._header()[1]).toEqual(expect.stringContaining(chalk.yellow("1000")));
     });
 
+    it("should print legacy delay in yellow if is greater than 0", async () => {
+      optionDelay.hasBeenSet = false;
+      optionDelayLegacy.value = 1000;
+      await cli.start();
+      expect(cli._header()[1]).toEqual(expect.stringContaining(chalk.yellow("1000")));
+    });
+
     it("should print delay in green if is equal to 0", async () => {
+      optionDelay.hasBeenSet = true;
       optionDelay.value = 0;
       await cli.start();
       expect(cli._header()[1]).toEqual(expect.stringContaining(chalk.green("0")));

@@ -1,5 +1,5 @@
 /*
-Copyright 2021-present Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -169,7 +169,7 @@ describe("scaffold", () => {
     });
   });
 
-  describe('When changing current mock to "user-real"', () => {
+  describe('When changing current collection to "user-real"', () => {
     it("should display new selected mock", async () => {
       await mocks.pressEnter();
       await mocks.cursorDown(2);

@@ -32,7 +32,7 @@ describe("events", () => {
       onChangeSettings: sandbox.spy(),
       onChangeAlerts: sandbox.spy(),
     };
-    core = await startCore("web-tutorial", { mocks: { selected: "base" } });
+    core = await startCore("web-tutorial", { routes: { collections: { selected: "base" } } });
     await waitForServer();
   });
 
@@ -71,7 +71,7 @@ describe("events", () => {
     });
   });
 
-  describe("When mock is changed", () => {
+  describe("When selected collection is changed", () => {
     let option, removeSpy;
 
     it("should have emitted event", async () => {
@@ -94,7 +94,7 @@ describe("events", () => {
     let option, removeSpy;
 
     it("should have emitted event", async () => {
-      option = core.config.namespace("mocks").option("selected");
+      option = core.config.namespace("routes").namespace("collections").option("selected");
       removeSpy = core.onChangeAlerts(spies.onChangeAlerts);
       option.value = "unexistant";
       await wait(500);

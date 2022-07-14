@@ -9,6 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const express = require("express");
+const Collections = require("./collections/Collections");
 
 const LEGACY_OPTIONS = [
   // LEGACY, to be removed
@@ -82,7 +83,7 @@ class Routes {
     this._legacyConfig = legacyConfig;
     [this._currentMockOptionLegacy, this._currentDelayOptionLegacy] =
       this._legacyConfig.addOptions(LEGACY_OPTIONS);
-    this._currentMockOptionLegacy.onChange(this._setCurrent.bind(this));
+    this._currentMockOptionLegacy.onChange(this._setCurrentLegacy.bind(this));
 
     this._config = config;
     [this._currentDelayOption] = this._config.addOptions(OPTIONS);
@@ -98,6 +99,14 @@ class Routes {
     this._alertsMocks = alerts.collection(LOAD_MOCKS_NAMESPACE);
     this._alertsRoutes = alerts.collection(ROUTES_NAMESPACE);
 
+    this._collectionsConfig = this._config.addNamespace(Collections.id);
+    this._collectionsLogger = logger.namespace(Collections.id);
+    this._collections = new Collections({
+      logger: this._collectionsLogger,
+      config: this._collectionsConfig,
+      onChangeSelected: this._setCurrent.bind(this),
+    });
+
     this._router = null;
     this._mocksDefinitions = [];
     this._mocks = [];
@@ -110,10 +119,10 @@ class Routes {
     this._customVariantsMock = null;
 
     this.router = this.router.bind(this);
-    this.getDelay = this.getDelay.bind(this);
+    this._getDelay = this._getDelay.bind(this);
   }
 
-  getDelay() {
+  _getDelay() {
     if (this._currentDelayOptionLegacy.hasBeenSet) {
       this._alertsDeprecation.set(
         "mocks.delay",
@@ -123,6 +132,25 @@ class Routes {
     return this._currentDelayOption.hasBeenSet
       ? this._currentDelayOption.value
       : this._currentDelayOptionLegacy.value;
+  }
+
+  // LEGACY, to be removed
+  _addMocksSelectedOptionAlert() {
+    this._alertsDeprecation.set(
+      "mocks.selected",
+      "Usage of 'mocks.selected' option is deprecated. Use 'mock.collections.selected' instead"
+    );
+  }
+
+  // Temportal workaround to know selected collection in this class while it has a deprecated option setting the same value.
+  // TODO, move to Collections class
+  _getCollectionSelected() {
+    if (this._currentMockOptionLegacy.hasBeenSet) {
+      this._addMocksSelectedOptionAlert();
+    }
+    return this._collections._selectedOption.hasBeenSet
+      ? this._collections._selectedOption.value
+      : this._currentMockOptionLegacy.value;
   }
 
   _reloadRouter() {
@@ -145,7 +173,7 @@ class Routes {
       logger: this._loggerLoadMocks,
       loggerRoutes: this._loggerRoutes,
       routeVariants: this._routesVariants,
-      getGlobalDelay: this.getDelay,
+      getGlobalDelay: this._getDelay,
     });
   }
 
@@ -173,7 +201,7 @@ class Routes {
     this._plainRoutes = getPlainRoutes(this._routesDefinitions, this._routesVariants);
     this._plainRoutesVariants = getPlainRoutesVariants(this._routesVariants);
     this._plainMocks = getPlainMocks(this._mocks, this._mocksDefinitions);
-    this.current = this._currentMockOptionLegacy.value;
+    this._setCurrent(this._getCollectionSelected());
   }
 
   init(routesHandlers) {
@@ -224,7 +252,16 @@ class Routes {
     this._reloadRouter();
   }
 
+  _setCurrentLegacy(id) {
+    this._addMocksSelectedOptionAlert();
+    this._setCurrent(id);
+  }
+
   set current(id) {
+    this._alertsDeprecation.set(
+      "current",
+      "Usage of 'current()' method is deprecated. Use 'collections.select()' instead"
+    );
     this._setCurrent(id);
   }
 
@@ -245,7 +282,7 @@ class Routes {
       },
       mocksDefinitions: this._mocksDefinitions,
       routeVariants: this._routesVariants,
-      getGlobalDelay: this.getDelay,
+      getGlobalDelay: this._getDelay,
       alerts,
       logger: this._loggerLoadMocks,
       loggerRoutes: this._loggerRoutes,

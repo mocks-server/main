@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - refactor(#334): Reorganize files and folders
 - feat(#334): Deprecate core.restartServer, core.addRouter and core.removeRouter. Add alerts when used. core.server methods must be used instead.
 - feat(#334): Add new option routes.delay. Deprecate mocks.delay
+- feat(#334): Add new option routes.collections.selected. Deprecate mocks.selected
 
 ## [3.5.0] - 2022-07-05
 

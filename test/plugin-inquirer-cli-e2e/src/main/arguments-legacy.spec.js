@@ -46,7 +46,7 @@ describe("command line arguments", () => {
     describe("when provided and exists", () => {
       it("should set current mock", async () => {
         expect.assertions(2);
-        mocks = mocksRunner(["--files.path=web-tutorial", "--routes.collections.selected=user-2"]);
+        mocks = mocksRunner(["--files.path=web-tutorial", "--mocks.selected=user-2"]);
         await waitForServerAndCli();
         const users = await doFetch("/api/users/2");
         expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
@@ -56,7 +56,7 @@ describe("command line arguments", () => {
 
     describe("when provided and does not exist", () => {
       it("should display an alert", async () => {
-        mocks = mocksRunner(["--files.path=web-tutorial", "--routes.collections.selected=foo"]);
+        mocks = mocksRunner(["--files.path=web-tutorial", "--mocks.selected=foo"]);
         await waitForServerAndCli();
         expect(mocks.currentScreen).toEqual(expect.stringContaining("ALERTS"));
         expect(mocks.currentScreen).toEqual(expect.stringContaining("Mock 'foo' was not found"));
@@ -64,7 +64,7 @@ describe("command line arguments", () => {
 
       it("should set as current behavior the first one found", async () => {
         expect.assertions(3);
-        mocks = mocksRunner(["--files.path=web-tutorial", "--routes.collections.selected=foo"]);
+        mocks = mocksRunner(["--files.path=web-tutorial", "--mocks.selected=foo"]);
         await waitForServerAndCli();
         const users = await doFetch("/api/users/2");
         expect(users.body).toEqual({ id: 1, name: "John Doe" });
@@ -77,7 +77,7 @@ describe("command line arguments", () => {
   describe("delay option", () => {
     it("should set delay", async () => {
       expect.assertions(3);
-      mocks = mocksRunner(["--files.path=web-tutorial", "--routes.delay=2000"]);
+      mocks = mocksRunner(["--files.path=web-tutorial", "--mocks.delay=2000"]);
       await waitForServerAndCli();
       const timeCounter = new TimeCounter();
       const users = await doFetch("/api/users");

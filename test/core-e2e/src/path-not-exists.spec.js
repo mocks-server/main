@@ -27,7 +27,7 @@ describe("when path not exists", () => {
     await fsExtra.remove(fixturesFolder(FOLDER));
     core = await startCore(FOLDER);
     changeMock = (name) => {
-      core.config.namespace("mocks").option("selected").value = name;
+      core.config.namespace("routes").namespace("collections").option("selected").value = name;
     };
     await waitForServer();
   });

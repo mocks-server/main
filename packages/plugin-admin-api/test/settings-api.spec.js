@@ -41,6 +41,12 @@ describe("settings api", () => {
         mocks: {
           delay: 0,
         },
+        routes: {
+          collections: {
+            selected: "base",
+          },
+          delay: 0,
+        },
         files: {
           babelRegister: {
             enabled: false,

@@ -2,8 +2,10 @@ const path = require("path");
 
 module.exports = {
   log: "silly",
-  mocks: {
-    selected: "user-real",
+  routes: {
+    collections: {
+      selected: "user-real",
+    }
   },
   files: {
     babelRegister: {

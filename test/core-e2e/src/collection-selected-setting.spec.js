@@ -16,14 +16,14 @@ const {
   removeConfigFile,
 } = require("./support/helpers");
 
-describe("mock setting", () => {
-  let core, changeMock;
+describe("collection.selected setting", () => {
+  let core, changeCollection;
 
   beforeAll(async () => {
     core = await startCore("web-tutorial");
     await waitForServer();
-    changeMock = (name) => {
-      core.config.namespace("mocks").option("selected").value = name;
+    changeCollection = (name) => {
+      core.config.namespace("routes").namespace("collections").option("selected").value = name;
     };
   });
 
@@ -32,8 +32,8 @@ describe("mock setting", () => {
     await core.stop();
   });
 
-  describe("mock by default", () => {
-    it("should have added an alert about mock was not defined", () => {
+  describe("collection by default", () => {
+    it("should have added an alert about collection was not defined", () => {
       expect(findAlert("routes:settings", core.alerts).message).toEqual(
         expect.stringContaining("Option 'mock' was not defined")
       );
@@ -61,9 +61,9 @@ describe("mock setting", () => {
     });
   });
 
-  describe('when changing mock to "user-2"', () => {
+  describe('when changing collection to "user-2"', () => {
     beforeAll(() => {
-      changeMock("user-2");
+      changeCollection("user-2");
     });
 
     it("should have removed alert", () => {
@@ -94,7 +94,7 @@ describe("mock setting", () => {
 
   describe('when changing mock to "user-real"', () => {
     beforeAll(() => {
-      changeMock("user-real");
+      changeCollection("user-real");
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -126,7 +126,7 @@ describe("mock setting", () => {
 
   describe('when changing mock to "foo"', () => {
     beforeAll(() => {
-      changeMock("foo");
+      changeCollection("foo");
     });
 
     it("should have added an alert", () => {
@@ -158,9 +158,9 @@ describe("mock setting", () => {
     });
   });
 
-  describe('when changing mock again to "user-real"', () => {
+  describe('when changing collection again to "user-real"', () => {
     beforeAll(() => {
-      changeMock("user-real");
+      changeCollection("user-real");
     });
 
     it("should have removed alert", () => {

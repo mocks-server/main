@@ -21,7 +21,7 @@ describe("route variants", () => {
 
   beforeAll(async () => {
     core = await startCore("middleware-route", {
-      mocks: { selected: "base" },
+      routes: { collections: { selected: "base" } },
     });
     await waitForServer();
   });
@@ -243,7 +243,7 @@ describe("route variants", () => {
 
   describe('when changing mock to "user-2"', () => {
     beforeEach(() => {
-      core.config.namespace("mocks").option("selected").value = "user-2";
+      core.config.namespace("routes").namespace("collections").option("selected").value = "user-2";
     });
 
     it("should serve users collection mock under the /api/users path", async () => {

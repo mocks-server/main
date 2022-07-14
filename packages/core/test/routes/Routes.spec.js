@@ -80,13 +80,13 @@ describe("Routes", () => {
     it("should return delay option value", () => {
       routes._currentDelayOption.hasBeenSet = true;
       routes._currentDelayOption.value = "foo-delay";
-      expect(routes.getDelay()).toEqual("foo-delay");
+      expect(routes._getDelay()).toEqual("foo-delay");
     });
 
     it("should set an alert if legacy delay option has been set", () => {
       routes._currentDelayOptionLegacy.hasBeenSet = true;
       routes._currentDelayOptionLegacy.value = "foo-delay";
-      routes.getDelay();
+      routes._getDelay();
       const alert = alerts.flat.pop();
       expect(alert.id).toEqual("mocks.delay");
       expect(alert.value.message).toEqual(
@@ -99,7 +99,7 @@ describe("Routes", () => {
       routes._currentDelayOption.hasBeenSet = false;
       routes._currentDelayOption.value = "foo-delay";
       routes._currentDelayOptionLegacy.value = "foo-delay-legacy";
-      expect(routes.getDelay()).toEqual("foo-delay-legacy");
+      expect(routes._getDelay()).toEqual("foo-delay-legacy");
     });
   });
 
@@ -174,7 +174,7 @@ describe("Routes", () => {
     });
 
     describe("when loaded", () => {
-      it("should return mock id", () => {
+      it("should set selected collection id", () => {
         routes.load();
         expect(routes.current).toEqual("mock-id");
       });
@@ -182,6 +182,30 @@ describe("Routes", () => {
       it("should return array of ids in ids getter", () => {
         routes.load();
         expect(routes.ids).toEqual(["mock-id"]);
+      });
+
+      it("should set selected collection id using new option if it was set", () => {
+        routes._collections._selectedOption.hasBeenSet = true;
+        routes._collections._selectedOption.value = "mock-id";
+        routes.load();
+        expect(routes.current).toEqual("mock-id");
+      });
+
+      it("should set selected collection id using legacy option if new was not set", () => {
+        routes._collections._selectedOption.hasBeenSet = false;
+        routes._collections._selectedOption.value = "foo";
+        routes._currentMockOptionLegacy.hasBeenSet = true;
+        routes._currentMockOptionLegacy.value = "mock-id";
+        routes.load();
+        expect(routes.current).toEqual("mock-id");
+      });
+    });
+
+    describe("when legacy option mock.selected changes", () => {
+      it("should set current mock when it exists", () => {
+        routes.load();
+        routes._setCurrentLegacy("mock-id");
+        expect(routes.current).toEqual("mock-id");
       });
     });
 

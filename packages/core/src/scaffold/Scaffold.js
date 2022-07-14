@@ -109,7 +109,10 @@ class Scaffold {
     this._logger = logger;
     this._config = config;
     this._readConfigFileOption = this._config.namespace("config").option("readFile");
-    this._mockSelectedOption = this._config.namespace("mocks").option("selected");
+    this._collectionSelectedOption = this._config
+      .namespace("routes")
+      .namespace("collections")
+      .option("selected");
     this._alerts = alerts;
   }
 
@@ -147,9 +150,10 @@ class Scaffold {
     if (this._readConfigFileOption.value && !configFileLoaded) {
       this._alerts.set("config", "Configuration file was not found. A scaffold was created");
       // Set base mock, which is the one created in the scaffold
-      if (!this._mockSelectedOption.value) {
-        this._mockSelectedOption.value = "base";
-      }
+      // LEGACY, enable again when selected mock is not defined in the option. (when legacy option is removed)
+      /* if (!this._collectionSelectedOption.value) {
+        this._collectionSelectedOption.value = "base";
+      } */
 
       return this._createConfig();
     }

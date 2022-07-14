@@ -170,6 +170,10 @@ const removeConfigFile = () => {
   }
 };
 
+const removeNewLines = (str) => {
+  return str.replace(/(\r\n|\n|\r)/gm, "");
+};
+
 module.exports = {
   createCore,
   startExistingCore,
@@ -185,4 +189,5 @@ module.exports = {
   findAlert,
   findTrace,
   removeConfigFile,
+  removeNewLines,
 };

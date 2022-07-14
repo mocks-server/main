@@ -60,6 +60,9 @@ class CoreMock {
         addRouter: this._sandbox.stub(),
         removeRouter: this._sandbox.stub(),
       },
+      routes: {
+        select: this._sandbox.stub(),
+      },
     };
 
     Core.mockImplementation(() => this._stubs);

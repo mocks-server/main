@@ -37,7 +37,7 @@ describe("when there is an error loading files", () => {
     });
 
     it("should have added an alert about not mock found", async () => {
-      expect(findAlert("mocks:empty", core.alerts).message).toEqual("No mocks found");
+      expect(findAlert("routes:empty", core.alerts).message).toEqual("No mocks found");
     });
 
     it("should have added an alert about error loading mocks", async () => {

@@ -53,11 +53,6 @@ describe("when nor config file nor mocks folder exists", () => {
         expect(fsExtra.existsSync(configFile)).toEqual(true);
       });
 
-      it("should have base as selected mock in config file", async () => {
-        const config = require(configFile);
-        expect(config.mocks.selected).toEqual("base");
-      });
-
       it("should serve users under the /api/users path", async () => {
         const users = await doFetch("/api/users");
         expect(users.status).toEqual(200);
@@ -88,11 +83,6 @@ describe("when nor config file nor mocks folder exists", () => {
           cwd: fixturesFolder("temp"),
         });
         await waitForServer();
-      });
-
-      it("should have base as selected mock in config file", async () => {
-        const config = require(configFile);
-        expect(config.mocks.selected).toEqual("base");
       });
 
       it("should serve users under the /api/users path", async () => {

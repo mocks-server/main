@@ -64,7 +64,7 @@ describe("mocks and routes validations", () => {
 
     it("should have added an alert about route variant with duplicated id", () => {
       expect(
-        findAlert("mocks:loadRoutes:get-user-variant-invalid:variants:1:duplicated", core.alerts)
+        findAlert("routes:loadRoutes:get-user-variant-invalid:variants:1:duplicated", core.alerts)
           .message
       ).toEqual(
         "Route variant with duplicated id '1' detected in route 'get-user-variant-invalid'. It has been ignored"
@@ -73,7 +73,7 @@ describe("mocks and routes validations", () => {
 
     it("should have added an alert about route variant not valid", () => {
       expect(
-        findAlert("mocks:loadRoutes:get-user-variant-invalid:variants:2:validation", core.alerts)
+        findAlert("routes:loadRoutes:get-user-variant-invalid:variants:2:validation", core.alerts)
           .message
       ).toEqual(
         "Variant with id '2' in route with id 'get-user-variant-invalid' is invalid: Invalid 'response' property:: type must be object"
@@ -82,7 +82,7 @@ describe("mocks and routes validations", () => {
 
     it("should have added an alert about route duplicated", () => {
       expect(
-        findAlert("mocks:loadRoutes:get-user-variant-invalid:duplicated", core.alerts).message
+        findAlert("routes:loadRoutes:get-user-variant-invalid:duplicated", core.alerts).message
       ).toEqual(
         "Route with duplicated id 'get-user-variant-invalid' detected. It has been ignored"
       );
@@ -90,50 +90,50 @@ describe("mocks and routes validations", () => {
 
     it("should have added an alert about route invalid", () => {
       expect(
-        findAlert("mocks:loadRoutes:get-users-invalid:validation", core.alerts).message
+        findAlert("routes:loadRoutes:get-users-invalid:validation", core.alerts).message
       ).toEqual(
         "Route with id 'get-users-invalid' is invalid: /method: enum must be equal to one of the allowed values. /method: type must be array. /method: oneOf must match exactly one schema in oneOf"
       );
     });
 
     it("should have added an alert about mock routeVariant not found", () => {
-      expect(findAlert("mocks:loadMocks:base:variants", core.alerts).message).toEqual(
+      expect(findAlert("routes:loadMocks:base:variants", core.alerts).message).toEqual(
         "Mock with id 'base' is invalid: routeVariant with id 'get-users-invalid:success' was not found, use a valid 'routeId:variantId' identifier"
       );
     });
 
     it("should have added an alert about mock duplicated", () => {
-      expect(findAlert("mocks:loadMocks:1:duplicated", core.alerts).message).toEqual(
+      expect(findAlert("routes:loadMocks:1:duplicated", core.alerts).message).toEqual(
         "Mock with duplicated id 'base' detected. It has been ignored"
       );
     });
 
     it("should have added an alert about mock routeVariant not found in mock 2", () => {
-      expect(findAlert("mocks:loadMocks:invalid-variant:variants", core.alerts).message).toEqual(
+      expect(findAlert("routes:loadMocks:invalid-variant:variants", core.alerts).message).toEqual(
         "Mock with id 'invalid-variant' is invalid: routeVariant with id 'get-user-variant-invalid:2' was not found, use a valid 'routeId:variantId' identifier"
       );
     });
 
     it("should have added an alert about invalid mock 3", () => {
-      expect(findAlert("mocks:loadMocks:invalid-mock:validation", core.alerts).message).toEqual(
+      expect(findAlert("routes:loadMocks:invalid-mock:validation", core.alerts).message).toEqual(
         "Mock with id 'invalid-mock' is invalid:  must have required property 'routesVariants'"
       );
     });
 
     it("should have added an alert about mock with invalid from", () => {
-      expect(findAlert("mocks:loadMocks:invalid-from:from", core.alerts).message).toEqual(
+      expect(findAlert("routes:loadMocks:invalid-from:from", core.alerts).message).toEqual(
         "Mock with invalid 'from' property detected, 'foo' was not found"
       );
     });
 
     it("should have added an alert about mock with duplicated routes", () => {
-      expect(findAlert("mocks:loadMocks:duplicated-route:variants", core.alerts).message).toEqual(
+      expect(findAlert("routes:loadMocks:duplicated-route:variants", core.alerts).message).toEqual(
         "Mock with id 'duplicated-route' is invalid: route with id 'get-user' is used more than once in the same mock"
       );
     });
 
     it("should have added an alert about errors processing mocks", () => {
-      expect(filterAlerts("mocks:loadMocks", core.alerts)[0].message).toEqual(
+      expect(filterAlerts("routes:loadMocks", core.alerts)[0].message).toEqual(
         "Critical errors found while loading mocks: 1"
       );
     });

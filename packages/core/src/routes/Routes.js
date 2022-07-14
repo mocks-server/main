@@ -10,17 +10,32 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 
-const OPTIONS = [
+const LEGACY_OPTIONS = [
+  // LEGACY, to be removed
   {
-    description: "Selected collection",
+    description: "Selected collection. Legacy",
     name: "selected",
     type: "string",
     extraData: {
       scaffold: {
-        commented: false,
+        omit: true,
       },
     },
   },
+  {
+    description: "Global delay to apply to routes. Legacy",
+    name: "delay",
+    type: "number",
+    default: 0,
+    extraData: {
+      scaffold: {
+        omit: true,
+      },
+    },
+  },
+];
+
+const OPTIONS = [
   {
     description: "Global delay to apply to routes",
     name: "delay",
@@ -46,20 +61,31 @@ const LOAD_MOCKS_NAMESPACE = "loadMocks";
 const LOAD_ROUTES_NAMESPACE = "loadRoutes";
 const ROUTES_NAMESPACE = "routes";
 
-class Collections {
+class Routes {
   static get id() {
+    return "routes";
+  }
+
+  static get legacyId() {
     return "mocks";
   }
 
-  constructor({ config, getLoadedMocks, logger, getLoadedRoutes, onChange, alerts }, core) {
+  constructor(
+    { config, legacyConfig, getLoadedMocks, logger, getLoadedRoutes, onChange, alerts },
+    core
+  ) {
     this._logger = logger;
     this._loggerLoadRoutes = logger.namespace(LOAD_ROUTES_NAMESPACE);
     this._loggerLoadMocks = logger.namespace(LOAD_MOCKS_NAMESPACE);
     this._loggerRoutes = logger.namespace(ROUTES_NAMESPACE);
 
+    this._legacyConfig = legacyConfig;
+    [this._currentMockOptionLegacy, this._currentDelayOptionLegacy] =
+      this._legacyConfig.addOptions(LEGACY_OPTIONS);
+    this._currentMockOptionLegacy.onChange(this._setCurrent.bind(this));
+
     this._config = config;
-    [this._currentMockOption, this._currentDelayOption] = this._config.addOptions(OPTIONS);
-    this._currentMockOption.onChange(this._setCurrent.bind(this));
+    [this._currentDelayOption] = this._config.addOptions(OPTIONS);
 
     this._getLoadedMocks = getLoadedMocks;
     this._getLoadedRoutes = getLoadedRoutes;
@@ -67,6 +93,7 @@ class Collections {
     this._core = core;
 
     this._alerts = alerts;
+    this._alertsDeprecation = alerts.collection("deprecated");
     this._alertsLoadRoutes = alerts.collection(LOAD_ROUTES_NAMESPACE);
     this._alertsMocks = alerts.collection(LOAD_MOCKS_NAMESPACE);
     this._alertsRoutes = alerts.collection(ROUTES_NAMESPACE);
@@ -87,7 +114,15 @@ class Collections {
   }
 
   getDelay() {
-    return this._currentDelayOption.value;
+    if (this._currentDelayOptionLegacy.hasBeenSet) {
+      this._alertsDeprecation.set(
+        "mocks.delay",
+        "Option mocks.delay is deprecated. Use routes.delay instead"
+      );
+    }
+    return this._currentDelayOption.hasBeenSet
+      ? this._currentDelayOption.value
+      : this._currentDelayOptionLegacy.value;
   }
 
   _reloadRouter() {
@@ -138,7 +173,7 @@ class Collections {
     this._plainRoutes = getPlainRoutes(this._routesDefinitions, this._routesVariants);
     this._plainRoutesVariants = getPlainRoutesVariants(this._routesVariants);
     this._plainMocks = getPlainMocks(this._mocks, this._mocksDefinitions);
-    this.current = this._currentMockOption.value;
+    this.current = this._currentMockOptionLegacy.value;
   }
 
   init(routesHandlers) {
@@ -254,4 +289,4 @@ class Collections {
   }
 }
 
-module.exports = Collections;
+module.exports = Routes;

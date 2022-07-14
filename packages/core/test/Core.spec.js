@@ -12,7 +12,7 @@ const sinon = require("sinon");
 const { NestedCollections } = require("@mocks-server/nested-collections");
 const { Logger } = require("@mocks-server/logger");
 
-const CollectionsMock = require("./routes/Collections.mock.js");
+const RoutesMock = require("./routes/Routes.mock.js");
 const ServerMocks = require("./server/Server.mocks.js");
 const PluginsMocks = require("./plugins/Plugins.mocks.js");
 const ConfigMocks = require("./common/Config.mocks.js");
@@ -28,8 +28,8 @@ const Alerts = require("../src/alerts/Alerts");
 
 describe("Core", () => {
   let sandbox;
-  let collectionsMock;
-  let collectionsInstance;
+  let routesMock;
+  let routesInstance;
   let serverMocks;
   let serverInstance;
   let pluginsMocks;
@@ -46,8 +46,8 @@ describe("Core", () => {
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
     updateNotifierMock = new UpdateNotifierMock();
-    collectionsMock = new CollectionsMock();
-    collectionsInstance = collectionsMock.stubs.instance;
+    routesMock = new RoutesMock();
+    routesInstance = routesMock.stubs.instance;
     serverMocks = new ServerMocks();
     serverInstance = serverMocks.stubs.instance;
     pluginsMocks = new PluginsMocks();
@@ -69,7 +69,7 @@ describe("Core", () => {
 
   afterEach(() => {
     sandbox.restore();
-    collectionsMock.restore();
+    routesMock.restore();
     serverMocks.restore();
     configMocks.restore();
     pluginsMocks.restore();
@@ -132,15 +132,15 @@ describe("Core", () => {
   describe("Mocks callbacks", () => {
     describe("getLoadedMocks", () => {
       it("should return mocksLoaders contents", () => {
-        expect(collectionsMock.stubs.Constructor.mock.calls[0][0].getLoadedMocks()).toEqual(
-          core._mocksLoaders.contents
+        expect(routesMock.stubs.Constructor.mock.calls[0][0].getLoadedMocks()).toEqual(
+          core._routesLoaders.contents
         );
       });
     });
 
     describe("getLoadedRoutes", () => {
       it("should return routesLoaders contents", () => {
-        expect(collectionsMock.stubs.Constructor.mock.calls[0][0].getLoadedRoutes()).toEqual(
+        expect(routesMock.stubs.Constructor.mock.calls[0][0].getLoadedRoutes()).toEqual(
           core._routesLoaders.contents
         );
       });
@@ -150,7 +150,7 @@ describe("Core", () => {
       it("should emit a change:mocks event", () => {
         const spy = sandbox.spy();
         core.onChangeMocks(spy);
-        collectionsMock.stubs.Constructor.mock.calls[0][0].onChange();
+        routesMock.stubs.Constructor.mock.calls[0][0].onChange();
         expect(spy.callCount).toEqual(1);
       });
     });
@@ -344,14 +344,14 @@ describe("Core", () => {
     it("should not load mocks if routes are not loaded", () => {
       expect.assertions(1);
       loadersMocks.stubs.Constructor.mock.calls[0][0].onLoad();
-      expect(core._mocks.load.callCount).toEqual(0);
+      expect(core._routes.load.callCount).toEqual(0);
     });
 
     it("should load mocks if routes are loaded", () => {
       expect.assertions(1);
       loadersMocks.stubs.Constructor.mock.calls[1][0].onLoad();
       loadersMocks.stubs.Constructor.mock.calls[0][0].onLoad();
-      expect(core._mocks.load.callCount).toEqual(1);
+      expect(core._routes.load.callCount).toEqual(1);
     });
   });
 
@@ -359,14 +359,14 @@ describe("Core", () => {
     it("should not load mocks if mocks are not loaded", () => {
       expect.assertions(1);
       loadersMocks.stubs.Constructor.mock.calls[1][0].onLoad();
-      expect(core._mocks.load.callCount).toEqual(0);
+      expect(core._routes.load.callCount).toEqual(0);
     });
 
     it("should load mocks if mocks are loaded", () => {
       expect.assertions(1);
       loadersMocks.stubs.Constructor.mock.calls[0][0].onLoad();
       loadersMocks.stubs.Constructor.mock.calls[1][0].onLoad();
-      expect(core._mocks.load.callCount).toEqual(1);
+      expect(core._routes.load.callCount).toEqual(1);
     });
   });
 
@@ -420,7 +420,13 @@ describe("Core", () => {
 
   describe("mocks getter", () => {
     it("should return mocks instance", () => {
-      expect(core.mocks).toEqual(collectionsInstance);
+      expect(core.mocks).toEqual(routesInstance);
+    });
+  });
+
+  describe("routes getter", () => {
+    it("should return routes instance", () => {
+      expect(core.routes).toEqual(routesInstance);
     });
   });
 

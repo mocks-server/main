@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -10,9 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../src/routes/Collections");
+jest.mock("../../src/routes/Routes");
 
-const Collections = require("../../src/routes/Collections");
+const Routes = require("../../src/routes/Routes");
 
 const CURRENT = "foo";
 
@@ -26,12 +26,12 @@ class Mock {
       init: this._sandbox.stub(),
     };
 
-    Collections.mockImplementation(() => this._stubs);
+    Routes.mockImplementation(() => this._stubs);
   }
 
   get stubs() {
     return {
-      Constructor: Collections,
+      Constructor: Routes,
       instance: this._stubs,
     };
   }

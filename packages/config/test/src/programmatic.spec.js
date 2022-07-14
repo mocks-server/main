@@ -72,6 +72,13 @@ describe("programmatic", () => {
       expect(option.value).toEqual("foo-value-2");
     });
 
+    it("hasBeenSet property should be true", async () => {
+      await config.init({
+        fooNamespace: { fooOption: "foo-value-2" },
+      });
+      expect(option.hasBeenSet).toEqual(true);
+    });
+
     it("should return value in programmaticLoadedValues getter", async () => {
       await config.init({
         fooNamespace: { fooOption: "foo-value-2" },
@@ -83,11 +90,18 @@ describe("programmatic", () => {
       });
     });
 
-    it("option should get value from it when calling to start", async () => {
+    it("option should get value from it when calling to load", async () => {
       await config.load({
         fooNamespace: { fooOption: "foo-value-2" },
       });
       expect(option.value).toEqual("foo-value-2");
+    });
+
+    it("hasBeenSet property should be true when calling to load", async () => {
+      await config.load({
+        fooNamespace: { fooOption: "foo-value-2" },
+      });
+      expect(option.hasBeenSet).toEqual(true);
     });
 
     it("option should have cloned value", async () => {
@@ -170,6 +184,11 @@ describe("programmatic", () => {
       await config.init({});
       expect(option.value).toEqual("default-str");
     });
+
+    it("hasBeenSet property should return false", async () => {
+      await config.init({});
+      expect(option.hasBeenSet).toEqual(false);
+    });
   });
 
   describe("when programmatic config and namespace are provided but option is undefined", () => {
@@ -182,6 +201,13 @@ describe("programmatic", () => {
         fooNamespace: {},
       });
       expect(option.value).toEqual("default-str");
+    });
+
+    it("hasBeenSet property should return false", async () => {
+      await config.init({
+        fooNamespace: {},
+      });
+      expect(option.hasBeenSet).toEqual(false);
     });
   });
 });

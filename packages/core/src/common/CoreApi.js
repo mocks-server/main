@@ -105,6 +105,10 @@ class CoreApi {
   get server() {
     return this._core.server;
   }
+
+  get routes() {
+    return this._core.routes;
+  }
 }
 
 module.exports = CoreApi;

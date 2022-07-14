@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -282,6 +282,17 @@ describe("Plugins", () => {
       pluginsOption.value = [fooPlugin];
       await plugins.register();
       expect(coreInstance.server.restart.callCount).toEqual(1);
+    });
+
+    it("should have core.routes available", async () => {
+      const fooPlugin = {
+        register: ({ routes }) => {
+          routes.select();
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(coreInstance.routes.select.callCount).toEqual(1);
     });
 
     it("should have core addRouter method available", async () => {

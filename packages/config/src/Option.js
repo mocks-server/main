@@ -19,6 +19,7 @@ class Option {
     this._default = this._clone(properties.default);
     this._value = this._default;
     this._eventsStarted = false;
+    this._hasBeenSet = false;
   }
 
   get extraData() {
@@ -89,6 +90,7 @@ class Option {
 
   set(value, { merge = false } = {}) {
     if (!isUndefined(value)) {
+      this._hasBeenSet = true;
       if (merge && this.type === types.OBJECT) {
         this._merge(value);
       } else {
@@ -102,6 +104,10 @@ class Option {
 
   startEvents() {
     this._eventsStarted = true;
+  }
+
+  get hasBeenSet() {
+    return this._hasBeenSet;
   }
 }
 

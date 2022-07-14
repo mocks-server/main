@@ -15,15 +15,16 @@ const { Logger } = require("@mocks-server/logger");
 const CollectionMock = require("./Collection.mock.js");
 
 const Alerts = require("../../src/alerts/Alerts");
-const Collections = require("../../src/routes/Collections");
+const Routes = require("../../src/routes/Routes");
 const ConfigMock = require("../common/Config.mocks");
 const DefaultRoutesHandler = require("../../src/routes/variant-handlers/handlers/Default");
 
-describe("Collections", () => {
+describe("Routes", () => {
   let configMock;
+  let legacyConfigMock;
   let sandbox;
   let collectionMock;
-  let mocks;
+  let routes;
   let core;
   let methods;
   let routerMock;
@@ -33,6 +34,7 @@ describe("Collections", () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     configMock = new ConfigMock();
+    legacyConfigMock = new ConfigMock();
     collectionMock = new CollectionMock();
     routerMock = sandbox.stub();
     sandbox.stub(express, "Router").returns(routerMock);
@@ -44,6 +46,7 @@ describe("Collections", () => {
     core = {};
     methods = {
       config: configMock.stubs.namespace,
+      legacyConfig: legacyConfigMock.stubs.namespace,
       getLoadedMocks: sandbox.stub().returns([]),
       getLoadedRoutes: sandbox.stub().returns([]),
       getCurrentMock: sandbox.stub().returns(null),
@@ -52,8 +55,8 @@ describe("Collections", () => {
       logger,
     };
 
-    mocks = new Collections(methods, core);
-    mocks.init([DefaultRoutesHandler]);
+    routes = new Routes(methods, core);
+    routes.init([DefaultRoutesHandler]);
   });
 
   afterEach(() => {
@@ -62,56 +65,82 @@ describe("Collections", () => {
   });
 
   describe("id", () => {
+    it("should return routes", async () => {
+      expect(Routes.id).toEqual("routes");
+    });
+  });
+
+  describe("legacyId", () => {
     it("should return mocks", async () => {
-      expect(Collections.id).toEqual("mocks");
+      expect(Routes.legacyId).toEqual("mocks");
     });
   });
 
   describe("getDelay method", () => {
     it("should return delay option value", () => {
-      mocks._currentDelayOption.value = "foo-delay";
-      expect(mocks.getDelay()).toEqual("foo-delay");
+      routes._currentDelayOption.hasBeenSet = true;
+      routes._currentDelayOption.value = "foo-delay";
+      expect(routes.getDelay()).toEqual("foo-delay");
+    });
+
+    it("should set an alert if legacy delay option has been set", () => {
+      routes._currentDelayOptionLegacy.hasBeenSet = true;
+      routes._currentDelayOptionLegacy.value = "foo-delay";
+      routes.getDelay();
+      const alert = alerts.flat.pop();
+      expect(alert.id).toEqual("mocks.delay");
+      expect(alert.value.message).toEqual(
+        "Option mocks.delay is deprecated. Use routes.delay instead"
+      );
+      expect(alert.collection).toEqual("mocks:deprecated");
+    });
+
+    it("should return legacy delay option value if new option has not been set", () => {
+      routes._currentDelayOption.hasBeenSet = false;
+      routes._currentDelayOption.value = "foo-delay";
+      routes._currentDelayOptionLegacy.value = "foo-delay-legacy";
+      expect(routes.getDelay()).toEqual("foo-delay-legacy");
     });
   });
 
   describe("load method", () => {
     it("should process loaded mocks", () => {
-      mocks.load();
-      expect(mocks.plainMocks).toEqual([]);
+      routes.load();
+      expect(routes.plainMocks).toEqual([]);
     });
 
     it("should process loaded routes", () => {
-      mocks.load();
-      expect(mocks.plainRoutes).toEqual([]);
+      routes.load();
+      expect(routes.plainRoutes).toEqual([]);
     });
 
     it("should process routesVariants routes", () => {
-      mocks.load();
-      expect(mocks.plainRoutesVariants).toEqual([]);
+      routes.load();
+      expect(routes.plainRoutesVariants).toEqual([]);
     });
 
     it("should call onChange method", () => {
-      mocks.load();
+      routes.load();
       expect(methods.onChange.callCount).toEqual(1);
     });
   });
 
   describe("when there are no mocks", () => {
     it("should call to create express router", () => {
-      mocks.load();
+      routes.load();
       expect(express.Router.callCount).toEqual(1);
-      mocks.router();
+      routes.router();
       expect(routerMock.callCount).toEqual(1);
     });
 
     it("should return null as current", () => {
-      mocks.load();
-      expect(mocks.current).toEqual(null);
+      routes.load();
+      expect(routes.current).toEqual(null);
     });
 
     it("should return empty array in ids", () => {
-      mocks.load();
-      expect(mocks.ids).toEqual([]);
+      routes.load();
+      expect(routes.ids).toEqual([]);
     });
   });
 
@@ -146,45 +175,45 @@ describe("Collections", () => {
 
     describe("when loaded", () => {
       it("should return mock id", () => {
-        mocks.load();
-        expect(mocks.current).toEqual("mock-id");
+        routes.load();
+        expect(routes.current).toEqual("mock-id");
       });
 
       it("should return array of ids in ids getter", () => {
-        mocks.load();
-        expect(mocks.ids).toEqual(["mock-id"]);
+        routes.load();
+        expect(routes.ids).toEqual(["mock-id"]);
       });
     });
 
     describe("when setting current mock", () => {
       it("should set current mock when it exists", () => {
-        mocks.load();
-        mocks.current = "mock-id";
-        expect(mocks.current).toEqual("mock-id");
+        routes.load();
+        routes.current = "mock-id";
+        expect(routes.current).toEqual("mock-id");
       });
 
       it("should set default mock when id does not exists", () => {
-        mocks.load();
-        mocks.current = "foo-id";
-        expect(mocks.current).toEqual("mock-id");
+        routes.load();
+        routes.current = "foo-id";
+        expect(routes.current).toEqual("mock-id");
       });
     });
 
     describe("when setting custom route variant", () => {
       it("should return customVariants", () => {
-        mocks.load();
-        mocks.useRouteVariant("route-2:variant-2");
-        expect(mocks.customRoutesVariants).toEqual(["route-2:variant-2"]);
+        routes.load();
+        routes.useRouteVariant("route-2:variant-2");
+        expect(routes.customRoutesVariants).toEqual(["route-2:variant-2"]);
       });
     });
 
     describe("when restoring custom route variants", () => {
       it("should return empty array", () => {
-        mocks.load();
-        mocks.useRouteVariant("route-2:variant-2");
-        expect(mocks.customRoutesVariants).toEqual(["route-2:variant-2"]);
-        mocks.restoreRoutesVariants();
-        expect(mocks.customRoutesVariants).toEqual([]);
+        routes.load();
+        routes.useRouteVariant("route-2:variant-2");
+        expect(routes.customRoutesVariants).toEqual(["route-2:variant-2"]);
+        routes.restoreRoutesVariants();
+        expect(routes.customRoutesVariants).toEqual([]);
       });
     });
   });
@@ -197,7 +226,7 @@ describe("Collections", () => {
 
     describe("when loaded", () => {
       it("should add alerts", () => {
-        mocks.load();
+        routes.load();
         expect(alerts.flat).toEqual([
           {
             id: "settings",
@@ -231,9 +260,9 @@ describe("Collections", () => {
 
     describe("when setting current mock", () => {
       it("should not set mock when id does not exists", () => {
-        mocks.load();
-        mocks.current = "foo-id";
-        expect(mocks.current).toEqual(null);
+        routes.load();
+        routes.current = "foo-id";
+        expect(routes.current).toEqual(null);
       });
     });
   });

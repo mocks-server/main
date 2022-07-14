@@ -384,6 +384,7 @@ const rootOption = config.addOption("name2");
 * __`description`__: Getter returning the option description.
 * __`extraData`__: Getter returning the option extra data.
 * __`default`__: Getter returning the option default value.
+* __`hasBeenSet`__: Returns true if the option value has been actively set, no matter the source or method used to set it. Otherwise returns false.
 
 [website-url]: https://www.mocks-server.org
 [logo-url]: https://www.mocks-server.org/img/logo_120.png

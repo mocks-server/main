@@ -66,7 +66,7 @@ describe("command line arguments with cli disabled", () => {
         mocks = mocksRunner([
           "--files.path=web-tutorial",
           "--no-plugins.inquirerCli.enabled",
-          "--routes.collections.selected=user-2",
+          "--mock.collections.selected=user-2",
         ]);
         await waitForServer();
         const users = await doFetch("/api/users/2");
@@ -81,7 +81,7 @@ describe("command line arguments with cli disabled", () => {
       mocks = mocksRunner([
         "--files.path=web-tutorial",
         "--no-plugins.inquirerCli.enabled",
-        "--routes.delay=2000",
+        "--mock.delay=2000",
       ]);
       await waitForServer();
       const timeCounter = new TimeCounter();
@@ -101,7 +101,7 @@ describe("command line arguments with cli disabled", () => {
       mocks = mocksRunner([
         "--files.path=web-tutorial",
         "--no-plugins.inquirerCli.enabled",
-        "--routes.delay=2000",
+        "--mock.delay=2000",
       ]);
       await waitForServer();
       const timeCounter = new TimeCounter();

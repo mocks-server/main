@@ -14,7 +14,7 @@ describe("alerts api", () => {
   let server;
   beforeAll(async () => {
     server = await startServer("web-tutorial", {
-      routes: {
+      mock: {
         collections: {
           selected: "foo",
         },
@@ -35,10 +35,10 @@ describe("alerts api", () => {
     });
 
     it("should return specific alert when requested by id", async () => {
-      const response = await doFetch("/admin/alerts/routes%3Asettings");
+      const response = await doFetch("/admin/alerts/mock%3Asettings");
       expect(response.body).toEqual({
-        id: "routes:settings",
-        context: "routes:settings",
+        id: "mock:settings",
+        context: "mock:settings",
         message: "Mock 'foo' was not found. Using the first one found",
         error: null,
       });
@@ -58,7 +58,7 @@ describe("alerts api", () => {
       await doFetch("/admin/settings", {
         method: "PATCH",
         body: {
-          routes: {
+          mock: {
             collections: {
               selected: "base",
             },

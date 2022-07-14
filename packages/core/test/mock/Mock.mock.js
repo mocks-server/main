@@ -10,13 +10,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../src/routes/Routes");
+jest.mock("../../src/mock/Mock");
 
-const Routes = require("../../src/routes/Routes");
+const Mock = require("../../src/mock/Mock");
 
 const CURRENT = "foo";
 
-class Mock {
+class MockMock {
   constructor() {
     this._sandbox = sinon.createSandbox();
 
@@ -26,12 +26,12 @@ class Mock {
       init: this._sandbox.stub(),
     };
 
-    Routes.mockImplementation(() => this._stubs);
+    Mock.mockImplementation(() => this._stubs);
   }
 
   get stubs() {
     return {
-      Constructor: Routes,
+      Constructor: Mock,
       instance: this._stubs,
     };
   }
@@ -42,4 +42,4 @@ class Mock {
   }
 }
 
-module.exports = Mock;
+module.exports = MockMock;

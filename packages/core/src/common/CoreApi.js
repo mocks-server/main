@@ -106,8 +106,8 @@ class CoreApi {
     return this._core.server;
   }
 
-  get routes() {
-    return this._core.routes;
+  get mock() {
+    return this._core.mock;
   }
 }
 

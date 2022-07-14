@@ -1,5 +1,5 @@
 module.exports = {
-  routes: {
+  mock: {
     collections: {
       selected: "base",
     },

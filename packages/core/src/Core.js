@@ -16,11 +16,11 @@ const { Logger } = require("@mocks-server/logger");
 
 const tracer = require("./common/legacyTracer");
 const AlertsLegacy = require("./alerts/AlertsLegacy");
-const VariantHandlers = require("./routes/variant-handlers/VariantHandlers");
-const Routes = require("./routes/Routes");
+const VariantHandlers = require("./mock/variant-handlers/VariantHandlers");
+const Mock = require("./mock/Mock");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
-const Loaders = require("./routes/Loaders");
+const Loaders = require("./mock/Loaders");
 const FilesLoaders = require("./files/FilesLoaders");
 const Scaffold = require("./scaffold/Scaffold");
 const Alerts = require("./alerts/Alerts");
@@ -63,12 +63,12 @@ class Core {
     // Create config
     this._config = new Config({ moduleName: MODULE_NAME });
     this._configPlugins = this._config.addNamespace(Plugins.id);
-    this._configRoutes = this._config.addNamespace(Routes.id);
+    this._configMock = this._config.addNamespace(Mock.id);
     this._configServer = this._config.addNamespace(Server.id);
     this._configFilesLoaders = this._config.addNamespace(FilesLoaders.id);
 
     // LEGACY, to be removed
-    this._configMocksLegacy = this._config.addNamespace(Routes.legacyId);
+    this._configMocksLegacy = this._config.addNamespace(Mock.legacyId);
 
     [this._logOption, this._variantHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
     this._logOption.onChange((level) => {
@@ -102,7 +102,7 @@ class Core {
       onLoad: () => {
         this._loadedMocks = true;
         if (this._loadedRoutes) {
-          this._routes.load();
+          this._mock.load();
         }
       },
     });
@@ -112,7 +112,7 @@ class Core {
       onLoad: () => {
         this._loadedRoutes = true;
         if (this._loadedMocks) {
-          this._routes.load();
+          this._mock.load();
         }
       },
     });
@@ -148,14 +148,14 @@ class Core {
       logger: this._logger.namespace("routesHandlers"),
     });
 
-    // Create routes
-    this._routes = new Routes(
+    // Create mock
+    this._mock = new Mock(
       {
-        config: this._configRoutes,
+        config: this._configMock,
         // LEGACY, to be removed
         legacyConfig: this._configMocksLegacy,
-        alerts: this._alerts.collection(Routes.id),
-        logger: this._logger.namespace(Routes.id),
+        alerts: this._alerts.collection(Mock.id),
+        logger: this._logger.namespace(Mock.id),
         // LEGACY, to be removed
         getLoadedMocks: () => this._mocksLoaders.contents,
         getLoadedRoutes: () => this._routesLoaders.contents,
@@ -169,7 +169,7 @@ class Core {
       config: this._configServer,
       logger: this._logger.namespace(Server.id),
       alerts: this._alerts.collection(Server.id),
-      routesRouter: this._routes.router,
+      routesRouter: this._mock.router,
     });
 
     // Create files loaders
@@ -262,7 +262,7 @@ class Core {
     await this._loadConfig();
 
     // Config is ready, init all
-    this._routes.init(this._variantHandlers.handlers);
+    this._mock.init(this._variantHandlers.handlers);
     await this._server.init();
     await this._filesLoader.init();
     return this._plugins.init();
@@ -355,7 +355,7 @@ class Core {
 
   // LEGACY, to be removed
   get mocks() {
-    return this._routes;
+    return this._mock;
   }
 
   // LEGACY, to be removed
@@ -384,8 +384,8 @@ class Core {
     return this._server;
   }
 
-  get routes() {
-    return this._routes;
+  get mock() {
+    return this._mock;
   }
 }
 

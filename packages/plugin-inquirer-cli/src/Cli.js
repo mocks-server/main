@@ -147,10 +147,10 @@ class Cli {
 
     this._optionLog = this._config.root.option("log");
     this._optionMock = this._config.root
-      .namespace("routes")
+      .namespace("mock")
       .namespace("collections")
       .option("selected");
-    this._optionDelay = this._config.root.namespace("routes").option("delay");
+    this._optionDelay = this._config.root.namespace("mock").option("delay");
     this._optionDelayLegacy = this._config.root.namespace("mocks").option("delay");
     this._optionPort = this._config.root.namespace("server").option("port");
     this._optionHost = this._config.root.namespace("server").option("host");

@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = {
   log: "silly",
-  routes: {
+  mock: {
     collections: {
       selected: "user-2",
     }

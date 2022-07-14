@@ -1,7 +1,7 @@
 const path = require("path");
 
 module.exports = {
-  routes: {
+  mock: {
     collections: {
       selected: "user-real",
     }

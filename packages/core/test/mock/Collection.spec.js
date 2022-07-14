@@ -13,7 +13,7 @@ const sinon = require("sinon");
 const LibsMocks = require("../common/Libs.mocks");
 const { Logger } = require("@mocks-server/logger");
 
-const Collection = require("../../src/routes/Collection");
+const Collection = require("../../src/mock/Collection");
 
 describe("Collection", () => {
   let sandbox;

@@ -62,9 +62,9 @@ const LOAD_MOCKS_NAMESPACE = "loadMocks";
 const LOAD_ROUTES_NAMESPACE = "loadRoutes";
 const ROUTES_NAMESPACE = "routes";
 
-class Routes {
+class Mock {
   static get id() {
-    return "routes";
+    return "mock";
   }
 
   static get legacyId() {
@@ -126,7 +126,7 @@ class Routes {
     if (this._currentDelayOptionLegacy.hasBeenSet) {
       this._alertsDeprecation.set(
         "mocks.delay",
-        "Option mocks.delay is deprecated. Use routes.delay instead"
+        "Option mocks.delay is deprecated. Use mock.delay instead"
       );
     }
     return this._currentDelayOption.hasBeenSet
@@ -326,4 +326,4 @@ class Routes {
   }
 }
 
-module.exports = Routes;
+module.exports = Mock;

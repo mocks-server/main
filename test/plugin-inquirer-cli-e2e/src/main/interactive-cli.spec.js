@@ -21,7 +21,7 @@ describe("interactive CLI", () => {
   let mocks;
 
   beforeAll(async () => {
-    mocks = mocksRunner(["--files.path=web-tutorial", "--routes.collections.selected=foo"]);
+    mocks = mocksRunner(["--files.path=web-tutorial", "--mock.collections.selected=foo"]);
     await waitForServerAndCli();
   });
 
@@ -118,7 +118,7 @@ describe("interactive CLI", () => {
       await wait(1000);
       expect(mocks.currentScreen).toEqual(expect.stringContaining("Displaying logs"));
       expect(mocks.currentScreen).toEqual(
-        expect.stringContaining("[verbose][routes:routes:get-users:success] Sending response")
+        expect.stringContaining("[verbose][mock:routes:get-users:success] Sending response")
       );
       await mocks.pressEnter();
     });

@@ -284,15 +284,15 @@ describe("Plugins", () => {
       expect(coreInstance.server.restart.callCount).toEqual(1);
     });
 
-    it("should have core.routes available", async () => {
+    it("should have core.mock available", async () => {
       const fooPlugin = {
-        register: ({ routes }) => {
-          routes.onChange();
+        register: ({ mock }) => {
+          mock.onChange();
         },
       };
       pluginsOption.value = [fooPlugin];
       await plugins.register();
-      expect(coreInstance.routes.onChange.callCount).toEqual(1);
+      expect(coreInstance.mock.onChange.callCount).toEqual(1);
     });
 
     it("should have core addRouter method available", async () => {

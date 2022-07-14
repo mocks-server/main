@@ -23,7 +23,7 @@ describe("collection.selected setting", () => {
     core = await startCore("web-tutorial");
     await waitForServer();
     changeCollection = (name) => {
-      core.config.namespace("routes").namespace("collections").option("selected").value = name;
+      core.config.namespace("mock").namespace("collections").option("selected").value = name;
     };
   });
 
@@ -34,7 +34,7 @@ describe("collection.selected setting", () => {
 
   describe("collection by default", () => {
     it("should have added an alert about collection was not defined", () => {
-      expect(findAlert("routes:settings", core.alerts).message).toEqual(
+      expect(findAlert("mock:settings", core.alerts).message).toEqual(
         expect.stringContaining("Option 'mock' was not defined")
       );
     });
@@ -67,7 +67,7 @@ describe("collection.selected setting", () => {
     });
 
     it("should have removed alert", () => {
-      expect(findAlert("routes:settings", core.alerts)).toEqual(undefined);
+      expect(findAlert("mock:settings", core.alerts)).toEqual(undefined);
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -130,7 +130,7 @@ describe("collection.selected setting", () => {
     });
 
     it("should have added an alert", () => {
-      expect(findAlert("routes:settings", core.alerts).message).toEqual(
+      expect(findAlert("mock:settings", core.alerts).message).toEqual(
         expect.stringContaining("Mock 'foo' was not found")
       );
     });
@@ -164,7 +164,7 @@ describe("collection.selected setting", () => {
     });
 
     it("should have removed alert", () => {
-      expect(findAlert("routes:settings", core.alerts)).toEqual(undefined);
+      expect(findAlert("mock:settings", core.alerts)).toEqual(undefined);
     });
   });
 });

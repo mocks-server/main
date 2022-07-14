@@ -60,7 +60,7 @@ class CoreMock {
         addRouter: this._sandbox.stub(),
         removeRouter: this._sandbox.stub(),
       },
-      routes: {
+      mock: {
         onChange: this._sandbox.stub(),
       },
     };

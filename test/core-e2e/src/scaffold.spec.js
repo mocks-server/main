@@ -54,11 +54,11 @@ describe("when nor config file nor mocks folder exists", () => {
         expect(fsExtra.existsSync(configFile)).toEqual(true);
       });
 
-      it("should have routes.delay as 0 in config file", async () => {
+      it("should have mock.delay as 0 in config file", async () => {
         const config = await fsExtra.readFile(configFile, "utf-8");
         expect(removeNewLines(config)).toEqual(
           expect.stringContaining(
-            `routes: {    // Global delay to apply to routes    //delay: 0,    collections: {      // Selected collection      //selected: "base",    },  }`
+            `mock: {    // Global delay to apply to routes    //delay: 0,    collections: {      // Selected collection      //selected: "base",    },  }`
           )
         );
       });
@@ -95,11 +95,11 @@ describe("when nor config file nor mocks folder exists", () => {
         await waitForServer();
       });
 
-      it("should have routes.delay as 0 in config file", async () => {
+      it("should have mock.delay as 0 in config file", async () => {
         const config = await fsExtra.readFile(configFile, "utf-8");
         expect(removeNewLines(config)).toEqual(
           expect.stringContaining(
-            `routes: {    // Global delay to apply to routes    //delay: 0,    collections: {      // Selected collection      //selected: "base",    },  }`
+            `mock: {    // Global delay to apply to routes    //delay: 0,    collections: {      // Selected collection      //selected: "base",    },  }`
           )
         );
       });

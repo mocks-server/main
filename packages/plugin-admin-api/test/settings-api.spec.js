@@ -41,7 +41,7 @@ describe("settings api", () => {
         mocks: {
           delay: 0,
         },
-        routes: {
+        mock: {
           collections: {
             selected: "base",
           },

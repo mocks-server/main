@@ -34,7 +34,7 @@ describe("json files", () => {
 
   describe("mock by default", () => {
     it("should have added an alert about mock was not defined", () => {
-      expect(findAlert("routes:settings", core.alerts).message).toEqual(
+      expect(findAlert("mock:settings", core.alerts).message).toEqual(
         expect.stringContaining("Option 'mock' was not defined")
       );
     });
@@ -67,7 +67,7 @@ describe("json files", () => {
     });
 
     it("should have removed alert", () => {
-      expect(findAlert("routes:settings", core.alerts)).toEqual(undefined);
+      expect(findAlert("mock:settings", core.alerts)).toEqual(undefined);
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -98,7 +98,7 @@ describe("json files", () => {
     });
 
     it("should have added an alert", () => {
-      expect(findAlert("routes:settings", core.alerts).message).toEqual(
+      expect(findAlert("mock:settings", core.alerts).message).toEqual(
         expect.stringContaining("Mock 'foo' was not found")
       );
     });

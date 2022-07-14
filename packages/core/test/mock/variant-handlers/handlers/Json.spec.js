@@ -11,13 +11,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const CoreMocks = require("../../../Core.mocks.js");
-const Middleware = require("../../../../src/routes/variant-handlers/handlers/Middleware");
+const Json = require("../../../../src/mock/variant-handlers/handlers/Json");
 
 describe("Json routes handler", () => {
   const FOO_VARIANT = {
-    middleware: () => {
-      // do nothing
-    },
+    status: 200,
+    body: {},
   };
   let sandbox;
   let coreMocks;
@@ -40,7 +39,7 @@ describe("Json routes handler", () => {
     };
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
-    routesHandler = new Middleware(FOO_VARIANT, coreInstance);
+    routesHandler = new Json(FOO_VARIANT, coreInstance);
   });
 
   afterEach(() => {
@@ -49,41 +48,44 @@ describe("Json routes handler", () => {
   });
 
   describe("id", () => {
-    it("should have middleware value", () => {
-      expect(Middleware.id).toEqual("middleware");
+    it("should have json value", () => {
+      expect(Json.id).toEqual("json");
     });
   });
 
   describe("version", () => {
     it("should have 4 value", () => {
-      expect(Middleware.version).toEqual("4");
+      expect(Json.version).toEqual("4");
     });
   });
 
   describe("validationSchema", () => {
     it("should be defined", () => {
-      expect(Middleware.validationSchema).toBeDefined();
+      expect(Json.validationSchema).toBeDefined();
     });
   });
 
   describe("preview", () => {
-    it("should return null", () => {
-      expect(routesHandler.preview).toEqual(null);
+    it("should return response body and status", () => {
+      expect(routesHandler.preview).toEqual({
+        body: {},
+        status: 200,
+      });
     });
   });
 
   describe("middleware", () => {
-    it("should execute middleware function", () => {
-      const fooResponseMethod = sandbox.stub();
-      routesHandler = new Middleware(
-        { ...FOO_VARIANT, middleware: fooResponseMethod },
-        coreInstance
-      );
+    it("should return response body and status", () => {
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
-      expect(fooResponseMethod.getCall(0).args[0]).toEqual(expressStubs.req);
-      expect(fooResponseMethod.getCall(0).args[1]).toEqual(expressStubs.res);
-      expect(fooResponseMethod.getCall(0).args[2]).toEqual(expressStubs.next);
-      expect(fooResponseMethod.getCall(0).args[3]).toEqual(coreInstance);
+      expect(expressStubs.res.status.getCall(0).args[0]).toEqual(FOO_VARIANT.status);
+      expect(expressStubs.res.send.getCall(0).args[0]).toEqual(FOO_VARIANT.body);
+    });
+
+    it("should add headers if they are defined in response", () => {
+      const FOO_HEADERS = { foo: "foo" };
+      routesHandler = new Json({ ...FOO_VARIANT, headers: FOO_HEADERS }, coreInstance);
+      routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
+      expect(expressStubs.res.set.getCall(0).args[0]).toEqual(FOO_HEADERS);
     });
   });
 });

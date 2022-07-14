@@ -30,7 +30,7 @@ describe("collection.selected argument", () => {
 
   describe("when provided and exists", () => {
     it("should set current collection", async () => {
-      mocks = mocksRunner([PATH_OPTION, "--routes.collections.selected=user-real"]);
+      mocks = mocksRunner([PATH_OPTION, "--mock.collections.selected=user-real"]);
       await waitForServer();
       const users = await doFetch("/api/users/2");
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
@@ -39,13 +39,13 @@ describe("collection.selected argument", () => {
 
   describe("when provided and does not exist", () => {
     it("should print a warning", async () => {
-      mocks = mocksRunner([PATH_OPTION, "--routes.collections.selected=foo"]);
+      mocks = mocksRunner([PATH_OPTION, "--mock.collections.selected=foo"]);
       await waitForServer();
       expect(mocks.logs.current).toEqual(expect.stringContaining("Mock 'foo' was not found"));
     });
 
     it("should set as current mock the first one found", async () => {
-      mocks = mocksRunner([PATH_OPTION, "--routes.collections.selected=foo2"]);
+      mocks = mocksRunner([PATH_OPTION, "--mock.collections.selected=foo2"]);
       await waitForServer();
       const users = await doFetch("/api/users/2");
       expect(users.body).toEqual({ id: 1, name: "John Doe" });

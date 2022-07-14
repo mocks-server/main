@@ -22,7 +22,7 @@ describe("loadMocks and loadRoutes methods", () => {
   beforeAll(async () => {
     core = await startCore();
     changeMockAndWait = async (mockName) => {
-      core.config.namespace("routes").namespace("collections").option("selected").value = mockName;
+      core.config.namespace("mock").namespace("collections").option("selected").value = mockName;
       await new Promise((resolve) => {
         const interval = setInterval(() => {
           if (core.mocks.current === mockName) {
@@ -112,7 +112,7 @@ describe("loadMocks and loadRoutes methods", () => {
           routesVariants: ["get-authors:error"],
         },
       ]);
-      core.config.namespace("routes").namespace("collections").option("selected").value =
+      core.config.namespace("mock").namespace("collections").option("selected").value =
         "users-and-library";
       await waitForServerUrl("/api/books");
 

@@ -19,7 +19,7 @@ module.exports = {
       //enabled: true,
     },
   },
-  routes: {
+  mock: {
     // Selected mock
     collections: {
       //selected: "base",

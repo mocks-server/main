@@ -110,7 +110,7 @@ class Scaffold {
     this._config = config;
     this._readConfigFileOption = this._config.namespace("config").option("readFile");
     this._collectionSelectedOption = this._config
-      .namespace("routes")
+      .namespace("mock")
       .namespace("collections")
       .option("selected");
     this._alerts = alerts;

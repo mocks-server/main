@@ -4,7 +4,7 @@ const CustomRoutesHandler = require("./CustomRoutesHandler");
 module.exports = {
   log: "silly",
   routesHandlers: [CustomRoutesHandler],
-  routes: {
+  mock: {
     collections: {
       selected: "custom-users",
     }

@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 
 ### Changed
-- refactor: Reorganize files and folders
+- refactor(#334): Reorganize files and folders
+- feat(#334): Deprecate core.restartServer, core.addRouter and core.removeRouter. Add alerts when used. core.server methods must be used instead.
 
 ## [3.5.0] - 2022-07-05
 

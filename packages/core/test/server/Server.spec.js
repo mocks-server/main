@@ -124,7 +124,7 @@ describe("Server", () => {
   describe("add custom routers method", () => {
     it("should be registered when initializating http server", async () => {
       const fooRouter = sandbox.spy();
-      server.addCustomRouter("fooPath", fooRouter);
+      server.addRouter("fooPath", fooRouter);
       libsMocks.stubs.http.createServer.onListen.returns(null);
       await server.start();
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
@@ -135,7 +135,7 @@ describe("Server", () => {
       const fooRouter = sandbox.spy();
       libsMocks.stubs.http.createServer.onListen.returns(null);
       await server.start();
-      await server.addCustomRouter("fooPath", fooRouter);
+      await server.addRouter("fooPath", fooRouter);
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
       expect(http.createServer.callCount).toEqual(2);
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
@@ -149,7 +149,7 @@ describe("Server", () => {
       server.start();
       server.start();
       server.start();
-      await server.addCustomRouter("fooPath", fooRouter);
+      await server.addRouter("fooPath", fooRouter);
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
       expect(http.createServer.callCount).toEqual(2);
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
@@ -162,7 +162,7 @@ describe("Server", () => {
       libsMocks.stubs.http.createServer.onListen.returns(null);
       await server.start();
       await server.stop();
-      await server.addCustomRouter("fooPath", fooRouter);
+      await server.addRouter("fooPath", fooRouter);
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(false);
       await server.start();
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
@@ -174,8 +174,8 @@ describe("Server", () => {
   describe("remove custom routers method", () => {
     it("should not be registered when initializating http server if called before it is started", async () => {
       const fooRouter = sandbox.spy();
-      server.addCustomRouter("fooPath", fooRouter);
-      server.removeCustomRouter("fooPath", fooRouter);
+      server.addRouter("fooPath", fooRouter);
+      server.removeRouter("fooPath", fooRouter);
       libsMocks.stubs.http.createServer.onListen.returns(null);
       await server.start();
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(false);
@@ -185,11 +185,11 @@ describe("Server", () => {
       expect.assertions(4);
       const fooRouter = sandbox.spy();
       libsMocks.stubs.http.createServer.onListen.returns(null);
-      server.addCustomRouter("fooPath", fooRouter);
+      server.addRouter("fooPath", fooRouter);
       await server.start();
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
       libsMocks.stubs.express.use.reset();
-      await server.removeCustomRouter("fooPath", fooRouter);
+      await server.removeRouter("fooPath", fooRouter);
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(false);
       expect(http.createServer.callCount).toEqual(2);
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
@@ -199,11 +199,11 @@ describe("Server", () => {
       expect.assertions(3);
       const fooRouter = sandbox.spy();
       libsMocks.stubs.http.createServer.onListen.returns(null);
-      server.addCustomRouter("fooPath", fooRouter);
+      server.addRouter("fooPath", fooRouter);
       await server.start();
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
       libsMocks.stubs.express.use.reset();
-      await server.removeCustomRouter("foooooPath", fooRouter);
+      await server.removeRouter("foooooPath", fooRouter);
       expect(http.createServer.callCount).toEqual(1);
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(1);
     });
@@ -212,11 +212,11 @@ describe("Server", () => {
       expect.assertions(3);
       const fooRouter = sandbox.spy();
       libsMocks.stubs.http.createServer.onListen.returns(null);
-      server.addCustomRouter("fooPath", fooRouter);
+      server.addRouter("fooPath", fooRouter);
       await server.start();
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
       libsMocks.stubs.express.use.reset();
-      await server.removeCustomRouter("fooPath", () => {
+      await server.removeRouter("fooPath", () => {
         // do nothing
       });
       expect(http.createServer.callCount).toEqual(1);
@@ -228,14 +228,14 @@ describe("Server", () => {
       const fooRouter = sandbox.spy();
       libsMocks.stubs.http.createServer.onListen.delay(500);
       libsMocks.stubs.http.createServer.onListen.returns(null);
-      server.addCustomRouter("fooPath", fooRouter);
+      server.addRouter("fooPath", fooRouter);
       server.start();
       await server.start();
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
       libsMocks.stubs.express.use.reset();
       await server.stop();
       server.start();
-      await server.removeCustomRouter("fooPath", fooRouter);
+      await server.removeRouter("fooPath", fooRouter);
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(false);
       expect(http.createServer.callCount).toEqual(2);
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(3);
@@ -246,12 +246,12 @@ describe("Server", () => {
       const fooRouter = sandbox.spy();
       libsMocks.stubs.http.createServer.onListen.delay(500);
       libsMocks.stubs.http.createServer.onListen.returns(null);
-      server.addCustomRouter("fooPath", fooRouter);
+      server.addRouter("fooPath", fooRouter);
       await server.start();
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
       libsMocks.stubs.express.use.reset();
       await server.stop();
-      await server.removeCustomRouter("fooPath", fooRouter);
+      await server.removeRouter("fooPath", fooRouter);
       await server.start();
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(false);
       expect(http.createServer.callCount).toEqual(2);

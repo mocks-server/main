@@ -47,9 +47,8 @@ class Plugin {
     return PLUGIN_NAME;
   }
 
-  constructor({ config, logger, mocks, addRouter, removeRouter, alerts }) {
-    this._addRouterMethod = addRouter;
-    this._removeRouterMethod = removeRouter;
+  constructor({ config, logger, mocks, server, alerts }) {
+    this._server = server;
     this._logger = logger;
     this._config = config;
 
@@ -127,12 +126,12 @@ class Plugin {
   _addRouter() {
     this._removeRouter();
     this._routersPath = this._adminApiPathOption.value;
-    this._addRouterMethod(this._routersPath, this._router);
+    this._server.addRouter(this._routersPath, this._router);
   }
 
   _removeRouter() {
     if (this._routersPath) {
-      this._removeRouterMethod(this._routersPath, this._router);
+      this._server.removeRouter(this._routersPath, this._router);
       this._routersPath = null;
     }
   }

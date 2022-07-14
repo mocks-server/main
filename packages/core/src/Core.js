@@ -275,47 +275,66 @@ class Core {
     return this._stopPlugins();
   }
 
+  // LEGACY, to be removed
   addRoutesHandler(VariantHandler) {
     this._variantHandlers.add(VariantHandler);
   }
 
+  // LEGACY, to be removed
   loadMocks(mocks) {
     this._loadMocks(mocks);
   }
 
+  // LEGACY, to be removed
   loadRoutes(routes) {
     this._loadRoutes(routes);
   }
 
   // Listeners
 
+  // LEGACY, to be removed
   onChangeMocks(listener) {
     return addEventListener(listener, CHANGE_MOCKS, this._eventEmitter);
   }
 
+  // LEGACY, to be removed
   onChangeAlerts(listener) {
     return addEventListener(listener, CHANGE_ALERTS, this._eventEmitter);
   }
 
+  // LEGACY, to be removed
   onChangeLogs(listener) {
     return addEventListener(listener, CHANGE_LOGS, this._eventEmitter);
   }
 
   // Expose Server methods and getters
 
+  // LEGACY, to be removed
   restartServer() {
+    this._deprecationAlerts.set(
+      "restartServer",
+      "Usage of core.restartServer is deprecated. Use core.server.restart instead: https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+    );
     return this._server.restart();
   }
 
+  // LEGACY, to be removed
   addRouter(path, router) {
-    return this._server.addCustomRouter(path, router);
+    this._deprecationAlerts.set(
+      "addRouter",
+      "Usage of core.addRouter is deprecated. Use core.server.addRouter instead: https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+    );
+    return this._server.addRouter(path, router);
   }
 
+  // LEGACY, to be removed
   removeRouter(path, router) {
-    return this._server.removeCustomRouter(path, router);
+    this._deprecationAlerts.set(
+      "removeRouter",
+      "Usage of core.removeRouter is deprecated. Use core.server.removeRouter instead: https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+    );
+    return this._server.removeRouter(path, router);
   }
-
-  // Expose child objects
 
   // LEGACY, change by whole alerts object in next major version
   get alerts() {
@@ -323,10 +342,12 @@ class Core {
   }
 
   // Provides access to alerts API while alerts legacy is maintained
+  // LEGACY, to be removed
   get alertsApi() {
     return this._alerts;
   }
 
+  // LEGACY, to be removed
   get mocks() {
     return this._mocks;
   }
@@ -335,11 +356,12 @@ class Core {
   get tracer() {
     this._deprecationAlerts.set(
       "tracer",
-      "Usage of tracer is deprecated. Use logger instead: https://www.mocks-server.org/docs/next/guides-migrating-from-v3#logger"
+      "Usage of core.tracer is deprecated. Use core.logger instead: https://www.mocks-server.org/docs/next/guides-migrating-from-v3#logger"
     );
     return tracer;
   }
 
+  // LEGACY, to be removed
   get logs() {
     return this._logger.globalStore;
   }
@@ -350,6 +372,10 @@ class Core {
 
   get config() {
     return this._config;
+  }
+
+  get server() {
+    return this._server;
   }
 }
 

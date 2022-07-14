@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -25,8 +25,8 @@ class Mock {
       restart: this._sandbox.stub().resolves(),
       stop: this._sandbox.stub().resolves(),
       init: this._sandbox.stub().resolves(),
-      addCustomRouter: this._sandbox.stub().resolves(),
-      removeCustomRouter: this._sandbox.stub().resolves(),
+      addRouter: this._sandbox.stub().resolves(),
+      removeRouter: this._sandbox.stub().resolves(),
     };
 
     Server.mockImplementation(() => this._stubs);

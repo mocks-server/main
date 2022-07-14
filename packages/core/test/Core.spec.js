@@ -260,14 +260,14 @@ describe("Core", () => {
   describe("addRouter method", () => {
     it("should add router to server", () => {
       core.addRouter();
-      expect(serverInstance.addCustomRouter.callCount).toEqual(1);
+      expect(serverInstance.addRouter.callCount).toEqual(1);
     });
   });
 
   describe("removeRouter method", () => {
     it("should remove router from server", () => {
       core.removeRouter();
-      expect(serverInstance.removeCustomRouter.callCount).toEqual(1);
+      expect(serverInstance.removeRouter.callCount).toEqual(1);
     });
   });
 
@@ -440,6 +440,12 @@ describe("Core", () => {
     it("should return alerts API", () => {
       expect(core.alertsApi instanceof Alerts).toBe(true);
       expect(core.alertsApi.id).toEqual("alerts");
+    });
+  });
+
+  describe("server getter", () => {
+    it("should return server", () => {
+      expect(core.server).toEqual(serverMocks.stubs.instance);
     });
   });
 });

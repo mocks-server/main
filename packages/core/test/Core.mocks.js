@@ -55,6 +55,11 @@ class CoreMock {
       _deprecationAlerts: {
         set: this._sandbox.stub(),
       },
+      server: {
+        restart: this._sandbox.stub(),
+        addRouter: this._sandbox.stub(),
+        removeRouter: this._sandbox.stub(),
+      },
     };
 
     Core.mockImplementation(() => this._stubs);

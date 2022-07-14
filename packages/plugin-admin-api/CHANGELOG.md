@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+### Changed
+- feat(#334): Use new core.server API
+
 ## [3.1.0] - 2022-06-27
 
 ### Changed

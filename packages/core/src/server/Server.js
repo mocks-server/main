@@ -293,7 +293,7 @@ class Server {
     return routerIndex;
   }
 
-  addCustomRouter(path, router) {
+  addRouter(path, router) {
     this._logger.info(`Adding custom router with path ${path}`);
     this._customRouters.push({
       path,
@@ -302,7 +302,7 @@ class Server {
     return this._reinitServer();
   }
 
-  removeCustomRouter(path, router) {
+  removeRouter(path, router) {
     this._logger.info(`Removing custom router with path ${path}`);
     let indexToRemove = this._getCustomRouterIndex(path, router);
     if (indexToRemove !== null) {
@@ -317,6 +317,7 @@ class Server {
     return this.start();
   }
 
+  // LEGACY, to be removed
   get error() {
     return this._error;
   }

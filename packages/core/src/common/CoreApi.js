@@ -1,14 +1,23 @@
 const CORE_METHODS = [
   "start",
   "stop",
+  // LEGACY, to be removed
   "addRoutesHandler",
+  // LEGACY, to be removed
   "onChangeMocks",
+  // LEGACY, to be removed
   "onChangeAlerts",
+  // LEGACY, to be removed
   "onChangeLogs",
+  // LEGACY, to be removed
   "restartServer",
+  // LEGACY, to be removed
   "addRouter",
+  // LEGACY, to be removed
   "removeRouter",
+  // LEGACY, to be removed
   "loadMocks",
+  // LEGACY, to be removed
   "loadRoutes",
 ];
 
@@ -66,14 +75,17 @@ class CoreApi {
     return this._core;
   }
 
+  // LEGACY, to be removed
   get mocks() {
     return this._core.mocks;
   }
 
+  // LEGACY, to be removed
   get tracer() {
     return this._core.tracer;
   }
 
+  // LEGACY, to be removed
   get logs() {
     return this._core.logs;
   }
@@ -88,6 +100,10 @@ class CoreApi {
 
   get logger() {
     return this._logger;
+  }
+
+  get server() {
+    return this._core.server;
   }
 }
 

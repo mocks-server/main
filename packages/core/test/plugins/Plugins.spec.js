@@ -273,6 +273,17 @@ describe("Plugins", () => {
       expect(coreInstance.restartServer.callCount).toEqual(1);
     });
 
+    it("should have core.server available", async () => {
+      const fooPlugin = {
+        register: ({ server }) => {
+          server.restart();
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(coreInstance.server.restart.callCount).toEqual(1);
+    });
+
     it("should have core addRouter method available", async () => {
       const fooPlugin = {
         register: ({ addRouter }) => {

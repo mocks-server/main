@@ -230,9 +230,9 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      constructor({ addRouter, alerts, config, logger }) {
+      constructor({ server, alerts, config, logger }) {
         logger.info("Log from register method");
-        addRouter("/foo-path", customRouter);
+        server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy();
         configSpy(config);
@@ -267,9 +267,9 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      register({ addRouter, alerts, config, logger }) {
+      register({ server, alerts, config, logger }) {
         logger.info("Log from register method");
-        addRouter("/foo-path", customRouter);
+        server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy();
         configSpy(config);
@@ -300,9 +300,9 @@ describe("plugins", () => {
   testPlugin(
     "created as a Class with register method and without static id",
     class Plugin {
-      register({ addRouter, alerts, config, logger }) {
+      register({ server, alerts, config, logger }) {
         logger.info("Log from register method");
-        addRouter("/foo-path", customRouter);
+        server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy();
         configSpy(config);
@@ -340,8 +340,8 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      register({ addRouter, alerts, config }) {
-        addRouter("/foo-path", customRouter);
+      register({ server, alerts, config }) {
+        server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy();
         configSpy(config);

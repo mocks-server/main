@@ -11,8 +11,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const { Logger } = require("@mocks-server/logger");
 
-const CoreMocks = require("../../../Core.mocks.js");
-const DefaultRoutesHandler = require("../../../../src/mock/variant-handlers/handlers/Default");
+const CoreMocks = require("../../Core.mocks.js");
+const DefaultRoutesHandler = require("../../../src/variant-handlers/handlers/Default");
 
 describe("Default variant handler", () => {
   const FOO_ROUTE = {

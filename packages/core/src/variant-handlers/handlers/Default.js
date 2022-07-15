@@ -12,6 +12,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { isFunction } = require("lodash");
 
+// LEGACY, to be removed
 class DefaultRoutesHandler {
   static get id() {
     return "default";

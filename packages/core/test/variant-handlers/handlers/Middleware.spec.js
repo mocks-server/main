@@ -10,13 +10,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-const CoreMocks = require("../../../Core.mocks.js");
-const Json = require("../../../../src/mock/variant-handlers/handlers/Json");
+const CoreMocks = require("../../Core.mocks.js");
+const Middleware = require("../../../src/variant-handlers/handlers/Middleware");
 
 describe("Json routes handler", () => {
   const FOO_VARIANT = {
-    status: 200,
-    body: {},
+    middleware: () => {
+      // do nothing
+    },
   };
   let sandbox;
   let coreMocks;
@@ -39,7 +40,7 @@ describe("Json routes handler", () => {
     };
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
-    routesHandler = new Json(FOO_VARIANT, coreInstance);
+    routesHandler = new Middleware(FOO_VARIANT, coreInstance);
   });
 
   afterEach(() => {
@@ -48,44 +49,41 @@ describe("Json routes handler", () => {
   });
 
   describe("id", () => {
-    it("should have json value", () => {
-      expect(Json.id).toEqual("json");
+    it("should have middleware value", () => {
+      expect(Middleware.id).toEqual("middleware");
     });
   });
 
   describe("version", () => {
     it("should have 4 value", () => {
-      expect(Json.version).toEqual("4");
+      expect(Middleware.version).toEqual("4");
     });
   });
 
   describe("validationSchema", () => {
     it("should be defined", () => {
-      expect(Json.validationSchema).toBeDefined();
+      expect(Middleware.validationSchema).toBeDefined();
     });
   });
 
   describe("preview", () => {
-    it("should return response body and status", () => {
-      expect(routesHandler.preview).toEqual({
-        body: {},
-        status: 200,
-      });
+    it("should return null", () => {
+      expect(routesHandler.preview).toEqual(null);
     });
   });
 
   describe("middleware", () => {
-    it("should return response body and status", () => {
+    it("should execute middleware function", () => {
+      const fooResponseMethod = sandbox.stub();
+      routesHandler = new Middleware(
+        { ...FOO_VARIANT, middleware: fooResponseMethod },
+        coreInstance
+      );
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
-      expect(expressStubs.res.status.getCall(0).args[0]).toEqual(FOO_VARIANT.status);
-      expect(expressStubs.res.send.getCall(0).args[0]).toEqual(FOO_VARIANT.body);
-    });
-
-    it("should add headers if they are defined in response", () => {
-      const FOO_HEADERS = { foo: "foo" };
-      routesHandler = new Json({ ...FOO_VARIANT, headers: FOO_HEADERS }, coreInstance);
-      routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
-      expect(expressStubs.res.set.getCall(0).args[0]).toEqual(FOO_HEADERS);
+      expect(fooResponseMethod.getCall(0).args[0]).toEqual(expressStubs.req);
+      expect(fooResponseMethod.getCall(0).args[1]).toEqual(expressStubs.res);
+      expect(fooResponseMethod.getCall(0).args[2]).toEqual(expressStubs.next);
+      expect(fooResponseMethod.getCall(0).args[3]).toEqual(coreInstance);
     });
   });
 });

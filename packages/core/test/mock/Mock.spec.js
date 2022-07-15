@@ -17,7 +17,7 @@ const CollectionMock = require("./Collection.mock.js");
 const Alerts = require("../../src/alerts/Alerts");
 const Mock = require("../../src/mock/Mock");
 const ConfigMock = require("../common/Config.mocks");
-const DefaultRoutesHandler = require("../../src/mock/variant-handlers/handlers/Default");
+const DefaultRoutesHandler = require("../../src/variant-handlers/handlers/Default");
 
 describe("Mock", () => {
   let configMock;

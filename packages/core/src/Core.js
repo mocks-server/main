@@ -16,7 +16,7 @@ const { Logger } = require("@mocks-server/logger");
 
 const tracer = require("./common/legacyTracer");
 const AlertsLegacy = require("./alerts/AlertsLegacy");
-const VariantHandlers = require("./mock/variant-handlers/VariantHandlers");
+const VariantHandlers = require("./variant-handlers/VariantHandlers");
 const Mock = require("./mock/Mock");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");

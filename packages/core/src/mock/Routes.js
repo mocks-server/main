@@ -12,11 +12,12 @@ class Routes {
     return "routes";
   }
 
-  constructor({ logger, config }) {
+  constructor({ logger, config, onChangeDelay }) {
     this._logger = logger;
     this._config = config;
 
     [this._delayOption] = this._config.addOptions(OPTIONS);
+    this._delayOption.onChange(onChangeDelay);
   }
 }
 

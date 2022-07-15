@@ -28,7 +28,7 @@ describe("events", () => {
   beforeAll(async () => {
     sandbox = sinon.createSandbox();
     spies = {
-      onChangeMocks: sandbox.spy(),
+      onChangeMock: sandbox.spy(),
       onChangeSettings: sandbox.spy(),
       onChangeAlerts: sandbox.spy(),
     };
@@ -71,22 +71,42 @@ describe("events", () => {
     });
   });
 
-  describe("When selected collection is changed", () => {
+  describe("When routes or collections are changed", () => {
     let option, removeSpy;
 
     it("should have emitted event", async () => {
       option = core.config.namespace("files").option("path");
-      removeSpy = core.onChangeMocks(spies.onChangeMocks);
+      removeSpy = core.mock.onChange(spies.onChangeMock);
       option.value = fixturesFolder("web-tutorial-modified");
       await waitForServerUrl("/api/new-users");
-      expect(spies.onChangeMocks.callCount).toEqual(2);
+      expect(spies.onChangeMock.callCount).toEqual(2);
     });
 
     it("should not execute callback when event listener is removed", async () => {
       removeSpy();
       option.value = fixturesFolder("web-tutorial");
       await wait(5000);
-      expect(spies.onChangeMocks.callCount).toEqual(2);
+      expect(spies.onChangeMock.callCount).toEqual(2);
+    });
+  });
+
+  describe("When delay is changed", () => {
+    let option, removeSpy;
+
+    it("should have emitted event", async () => {
+      spies.onChangeMock.resetHistory();
+      option = core.config.namespace("mock").namespace("routes").option("delay");
+      removeSpy = core.mock.onChange(spies.onChangeMock);
+      option.value = 1000;
+      await wait(1000);
+      expect(spies.onChangeMock.callCount).toEqual(1);
+    });
+
+    it("should not execute callback when event listener is removed", async () => {
+      removeSpy();
+      option.value = 0;
+      await wait(1000);
+      expect(spies.onChangeMock.callCount).toEqual(1);
     });
   });
 

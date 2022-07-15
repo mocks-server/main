@@ -63,6 +63,8 @@ class CoreMock {
       },
       mock: {
         onChange: this._sandbox.stub(),
+        useRouteVariant: this._sandbox.stub(),
+        restoreRouteVariants: this._sandbox.stub(),
       },
       variantHandlers: {
         register: this._sandbox.stub(),

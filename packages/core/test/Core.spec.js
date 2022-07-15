@@ -148,7 +148,7 @@ describe("Core", () => {
     });
 
     describe("onChange", () => {
-      it("should emit a change:mocks event", () => {
+      it("should emit a change:mock event", () => {
         const spy = sandbox.spy();
         core.onChangeMocks(spy);
         mockMock.stubs.Constructor.mock.calls[0][0].onChange();
@@ -293,7 +293,7 @@ describe("Core", () => {
     it("should add listener to eventEmitter", () => {
       const spy = sandbox.spy();
       core.onChangeMocks(spy);
-      core._eventEmitter.emit("change:mocks");
+      core._eventEmitter.emit("change:mock");
       expect(spy.callCount).toEqual(1);
     });
 
@@ -301,10 +301,10 @@ describe("Core", () => {
       expect.assertions(2);
       const spy = sandbox.spy();
       const removeCallback = core.onChangeMocks(spy);
-      core._eventEmitter.emit("change:mocks");
+      core._eventEmitter.emit("change:mock");
       expect(spy.callCount).toEqual(1);
       removeCallback();
-      core._eventEmitter.emit("change:mocks");
+      core._eventEmitter.emit("change:mock");
       expect(spy.callCount).toEqual(1);
     });
   });

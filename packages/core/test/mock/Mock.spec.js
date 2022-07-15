@@ -103,6 +103,26 @@ describe("Mock", () => {
     });
   });
 
+  describe("onChange method", () => {
+    it("should add listener to eventEmitter", () => {
+      const spy = sandbox.spy();
+      mock.onChange(spy);
+      mock._eventEmitter.emit("change:mock");
+      expect(spy.callCount).toEqual(1);
+    });
+
+    it("should return a function to remove listener", () => {
+      expect.assertions(2);
+      const spy = sandbox.spy();
+      const removeCallback = mock.onChange(spy);
+      mock._eventEmitter.emit("change:mock");
+      expect(spy.callCount).toEqual(1);
+      removeCallback();
+      mock._eventEmitter.emit("change:mock");
+      expect(spy.callCount).toEqual(1);
+    });
+  });
+
   describe("load method", () => {
     it("should process loaded mocks", () => {
       mock.load();

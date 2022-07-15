@@ -17,7 +17,7 @@ function addEventListener(listener, eventName, eventEmitter) {
 }
 
 module.exports = {
-  CHANGE_MOCKS: "change:mocks",
+  CHANGE_MOCK: "change:mock",
   CHANGE_ALERTS: "change:alerts",
   CHANGE_LOGS: "change:logs",
   addEventListener,

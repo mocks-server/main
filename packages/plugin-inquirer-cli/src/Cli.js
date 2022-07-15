@@ -126,13 +126,14 @@ class Cli {
     return "inquirerCli";
   }
 
-  constructor({ config, alerts, mocks, onChangeAlerts, onChangeMocks, restartServer }) {
+  constructor({ config, alerts, mock, onChangeAlerts, server }) {
     this._alerts = alerts;
-    this._restartServerMethod = restartServer;
+    this._server = server;
     this._config = config;
-    this._mocks = mocks;
+    this._mock = mock;
+    this._onChangeMock = this._mock.onChange;
     this._onChangeAlerts = onChangeAlerts;
-    this._onChangeMocks = onChangeMocks;
+
     this._inited = false;
     this._started = false;
     this._currentScreen = null;
@@ -186,7 +187,7 @@ class Cli {
     }
     this._started = true;
     this._stopListeningChangeAlerts = this._onChangeAlerts(this._refreshMenuIfStarted);
-    this._stopListeningChangeMocks = this._onChangeMocks(this._refreshMenuIfStarted);
+    this._stopListeningChangeMocks = this._onChangeMock(this._refreshMenuIfStarted);
     this._logLevel = this._optionLog.value;
     this._silentTraces();
     this._displayMainMenu();
@@ -263,13 +264,13 @@ class Cli {
       : this._optionDelayLegacy.value;
     const watchEnabled = this._optionWatch.value;
 
-    const currentMock = this._mocks.current || "-";
-    const availableMocks = this._mocks.plainMocks.length;
-    const availableRoutes = this._mocks.plainRoutes.length;
-    const availableRoutesVariants = this._mocks.plainRoutesVariants.length;
+    const currentMock = this._mock.current || "-";
+    const availableMocks = this._mock.plainMocks.length;
+    const availableRoutes = this._mock.plainRoutes.length;
+    const availableRoutesVariants = this._mock.plainRoutesVariants.length;
 
-    const currentMockMessage = this._mocks.customRoutesVariants.length
-      ? `${currentMock} (custom variants: ${this._mocks.customRoutesVariants.join(",")})`
+    const currentMockMessage = this._mock.customRoutesVariants.length
+      ? `${currentMock} (custom variants: ${this._mock.customRoutesVariants.join(",")})`
       : currentMock;
 
     return [
@@ -278,7 +279,7 @@ class Cli {
       renderHeader(
         `Current mock`,
         currentMockMessage,
-        getCurrentMockMessageLevel(this._mocks.customRoutesVariants, currentMock)
+        getCurrentMockMessageLevel(this._mock.customRoutesVariants, currentMock)
       ),
       renderHeader(`Mocks`, availableMocks, availableMocks < 1 ? 2 : 0),
       renderHeader(`Routes`, availableRoutes, availableRoutes < 1 ? 2 : 0),
@@ -325,7 +326,7 @@ class Cli {
   async _changeCurrentMock() {
     this._currentScreen = SCREENS.MOCK;
     this._cli.clearScreen();
-    const mocksIds = this._mocks.ids;
+    const mocksIds = this._mock.ids;
     if (!mocksIds.length) {
       return this._displayMainMenu();
     }
@@ -344,7 +345,7 @@ class Cli {
   async _changeRouteVariant() {
     this._currentScreen = SCREENS.MOCK;
     this._cli.clearScreen();
-    const routeVariantsIds = this._mocks.plainRoutesVariants.map((variant) => variant.id);
+    const routeVariantsIds = this._mock.plainRoutesVariants.map((variant) => variant.id);
     if (!routeVariantsIds.length) {
       return this._displayMainMenu();
     }
@@ -356,12 +357,12 @@ class Cli {
         return Promise.resolve(routeVariantsIds.filter((variant) => variant.includes(input)));
       },
     });
-    this._mocks.useRouteVariant(variantId);
+    this._mock.useRouteVariant(variantId);
     return this._displayMainMenu();
   }
 
   async _restoreRouteVariants() {
-    this._mocks.restoreRouteVariants();
+    this._mock.restoreRouteVariants();
     return this._displayMainMenu();
   }
 
@@ -375,7 +376,7 @@ class Cli {
 
   async _restartServer() {
     try {
-      await this._restartServerMethod();
+      await this._server.restart();
     } catch (err) {}
     return this._displayMainMenu();
   }

@@ -237,7 +237,7 @@ describe("plugins", () => {
         registerSpy();
         configSpy(config);
       }
-      init({ onChangeAlerts, onChangeMocks, logger, config }) {
+      init({ onChangeAlerts, mock, logger, config }) {
         logger.info("Log from init method");
         initSpy(
           config.root.namespace("files").option("path").value,
@@ -246,7 +246,7 @@ describe("plugins", () => {
         );
         config.root.option("log").value = "silly";
         onChangeAlerts(changeAlertsSpy);
-        onChangeMocks(mocksLoadedSpy);
+        mock.onChange(mocksLoadedSpy);
       }
       start({ alerts, logger }) {
         logger.info("Log from start method");
@@ -274,7 +274,7 @@ describe("plugins", () => {
         registerSpy();
         configSpy(config);
       }
-      init({ logger, config, onChangeAlerts, onChangeMocks }) {
+      init({ logger, config, onChangeAlerts, mock }) {
         logger.info("Log from init method");
         initSpy(
           config.root.namespace("files").option("path").value,
@@ -283,7 +283,7 @@ describe("plugins", () => {
         );
         config.root.option("log").value = "silly";
         onChangeAlerts(changeAlertsSpy);
-        onChangeMocks(mocksLoadedSpy);
+        mock.onChange(mocksLoadedSpy);
       }
       start({ alerts, logger }) {
         logger.info("Log from start method");
@@ -307,7 +307,7 @@ describe("plugins", () => {
         registerSpy();
         configSpy(config);
       }
-      init({ logger, config, onChangeAlerts, onChangeMocks }) {
+      init({ logger, config, onChangeAlerts, mock }) {
         logger.info("Log from init method");
         initSpy(
           config.root.namespace("files").option("path").value,
@@ -316,7 +316,7 @@ describe("plugins", () => {
         );
         config.root.option("log").value = "silly";
         onChangeAlerts(changeAlertsSpy);
-        onChangeMocks(mocksLoadedSpy);
+        mock.onChange(mocksLoadedSpy);
       }
       start({ alerts, logger }) {
         logger.info("Log from start method");

@@ -7,8 +7,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
+const EventEmitter = require("events");
 
 const express = require("express");
+
+const { addEventListener, CHANGE_MOCK } = require("../common/events");
 const Collections = require("./Collections");
 const Routes = require("./Routes");
 
@@ -67,6 +70,7 @@ class Mock {
     { config, legacyConfig, getLoadedMocks, logger, getLoadedRoutes, onChange, alerts },
     core
   ) {
+    this._eventEmitter = new EventEmitter();
     this._logger = logger;
     this._loggerLoadRoutes = logger.namespace(LOAD_ROUTES_NAMESPACE);
     this._loggerLoadMocks = logger.namespace(LOAD_MOCKS_NAMESPACE);
@@ -75,6 +79,7 @@ class Mock {
     [this._currentMockOptionLegacy, this._currentDelayOptionLegacy] =
       this._legacyConfig.addOptions(LEGACY_OPTIONS);
     this._currentMockOptionLegacy.onChange(this._setCurrentLegacy.bind(this));
+    this._currentDelayOptionLegacy.onChange(this._emitChange.bind(this));
 
     this._config = config;
 
@@ -96,6 +101,7 @@ class Mock {
     this._routes = new Routes({
       logger: this._routesLogger,
       config: this._routesConfig,
+      onChangeDelay: this._emitChange.bind(this),
     });
 
     // TODO, move collections logic to Collections Class
@@ -120,6 +126,11 @@ class Mock {
 
     this.router = this.router.bind(this);
     this._getDelay = this._getDelay.bind(this);
+  }
+
+  _emitChange() {
+    this._eventEmitter.emit(CHANGE_MOCK);
+    this._onChange();
   }
 
   _getDelay() {
@@ -163,7 +174,7 @@ class Mock {
     } else {
       this._router = express.Router();
     }
-    this._onChange();
+    this._emitChange();
   }
 
   _processMocks() {
@@ -309,6 +320,10 @@ class Mock {
     this._customVariants = addCustomVariant(variantId, this._customVariants);
     this._createCustomMock();
     this._reloadRouter();
+  }
+
+  onChange(listener) {
+    return addEventListener(listener, CHANGE_MOCK, this._eventEmitter);
   }
 
   get customRoutesVariants() {

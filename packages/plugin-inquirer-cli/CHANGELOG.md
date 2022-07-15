@@ -12,13 +12,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### BREAKING CHANGE
 
 ## [unreleased]
+
+### Changed
 - feat: Use core v3.6 new options
+- feat: Use core.mock.restoreRouteVariants method
+- feat: Use core.server.restart method
+- feat: Use core.mock.onChange method
 
 ## [3.1.0] - 2022-06-27
 ### Changed
 - refactor: Remove unused property
 - feat(#334): Use new custom core API
-- feat(#334): Use core.mock.restoreRouteVariants method
 
 ### Added
 - feat: Display context in errors and warnings

@@ -12,12 +12,18 @@ class Routes {
     return "routes";
   }
 
-  constructor({ logger, config, onChangeDelay }) {
+  constructor({ logger, config, onChangeDelay, getPlainRoutes }) {
     this._logger = logger;
     this._config = config;
 
+    this._getPlainRoutes = getPlainRoutes;
+
     [this._delayOption] = this._config.addOptions(OPTIONS);
     this._delayOption.onChange(onChangeDelay);
+  }
+
+  get plain() {
+    return this._getPlainRoutes();
   }
 }
 

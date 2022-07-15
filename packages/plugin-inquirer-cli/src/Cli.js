@@ -265,7 +265,7 @@ class Cli {
 
     const currentMock = this._mock.current || "-";
     const availableMocks = this._mock.plainMocks.length;
-    const availableRoutes = this._mock.plainRoutes.length;
+    const availableRoutes = this._mock.routes.plain.length;
     const availableRoutesVariants = this._mock.plainRoutesVariants.length;
 
     const currentMockMessage = this._mock.customRoutesVariants.length

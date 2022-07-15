@@ -47,7 +47,7 @@ class Plugin {
     return PLUGIN_NAME;
   }
 
-  constructor({ config, logger, mocks, server, alerts }) {
+  constructor({ config, logger, mock, server, alerts }) {
     this._server = server;
     this._logger = logger;
     this._config = config;
@@ -67,27 +67,27 @@ class Plugin {
     });
     this._customRoutesVariantsApi = new CustomRoutesVariants({
       logger: this._logger.namespace("customRouteVariants"),
-      mocks,
+      mock,
     });
 
     this._mocksApi = readCollectionAndModelRouter({
       collectionName: "mocks",
       modelName: "mock",
-      getItems: () => mocks.plainMocks,
+      getItems: () => mock.plainMocks,
       logger: this._logger.namespace("mocks"),
     });
 
     this._routesApi = readCollectionAndModelRouter({
       collectionName: "routes",
       modelName: "route",
-      getItems: () => mocks.plainRoutes,
+      getItems: () => mock.routes.plain,
       logger: this._logger.namespace("routes"),
     });
 
     this._routesVariantsApi = readCollectionAndModelRouter({
       collectionName: "routes variants",
       modelName: "route variant",
-      getItems: () => mocks.plainRoutesVariants,
+      getItems: () => mock.plainRoutesVariants,
       logger: this._logger.namespace("routeVariants"),
     });
 

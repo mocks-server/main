@@ -167,6 +167,15 @@ describe("Mock", () => {
     });
   });
 
+  describe("routes", () => {
+    describe("plain", () => {
+      it("should return routes in plain format", () => {
+        mock._plainRoutes = ["foo", "foo-2"];
+        expect(mock.routes.plain).toEqual(["foo", "foo-2"]);
+      });
+    });
+  });
+
   describe("when there are valid mocks and routes", () => {
     beforeEach(() => {
       mock._routesLoaders.contents = [

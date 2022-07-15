@@ -17,8 +17,8 @@ const Boom = require("@hapi/boom");
 const { addCollectionMiddleware } = require("./support/middlewares");
 
 class CustomRoutesVariants {
-  constructor({ logger, mocks }) {
-    this._mocks = mocks;
+  constructor({ logger, mock }) {
+    this._mock = mock;
     this._logger = logger;
     this._router = express.Router();
     addCollectionMiddleware(this._router, {
@@ -32,16 +32,16 @@ class CustomRoutesVariants {
   }
 
   _getCollection() {
-    return this._mocks.customRoutesVariants;
+    return this._mock.customRoutesVariants;
   }
 
   add(req, res, next) {
     const id = req.body.id;
-    const routeVariant = this._mocks.plainRoutesVariants.find(
+    const routeVariant = this._mock.plainRoutesVariants.find(
       (routeVariantCandidate) => routeVariantCandidate.id === id
     );
     if (routeVariant) {
-      this._mocks.useRouteVariant(id);
+      this._mock.useRouteVariant(id);
       res.status(204);
       res.send();
     } else {
@@ -50,7 +50,7 @@ class CustomRoutesVariants {
   }
 
   delete(_req, res) {
-    this._mocks.restoreRouteVariants();
+    this._mock.restoreRouteVariants();
     res.status(204);
     res.send();
   }

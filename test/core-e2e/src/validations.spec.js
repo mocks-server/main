@@ -38,7 +38,7 @@ describe("mocks and routes validations", () => {
     });
 
     it("should have loaded valid routes", () => {
-      expect(core.mocks.plainRoutes.length).toEqual(1);
+      expect(core.mock.routes.plain.length).toEqual(1);
     });
 
     it("should have added an alert about mocks file loading error", () => {
@@ -139,7 +139,7 @@ describe("mocks and routes validations", () => {
     });
 
     it("should have not loaded invalid routes", () => {
-      expect(core.mocks.plainRoutes.length).toEqual(2);
+      expect(core.mock.routes.plain.length).toEqual(2);
     });
 
     it("should have not loaded invalid route variants", () => {

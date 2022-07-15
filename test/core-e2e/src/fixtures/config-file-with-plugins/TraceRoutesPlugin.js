@@ -29,7 +29,7 @@ class Plugin {
 
   traceRoutes() {
     if (this._enabled && this._started) {
-      this._logger.info(`There are ${this._mock.plainRoutes.length} routes available`);
+      this._logger.info(`There are ${this._mock.routes.plain.length} routes available`);
     }
   }
 

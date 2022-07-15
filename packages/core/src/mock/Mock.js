@@ -98,6 +98,7 @@ class Mock {
       logger: this._routesLogger,
       config: this._routesConfig,
       onChangeDelay: this._emitChange.bind(this),
+      getPlainRoutes: this._getPlainRoutes.bind(this),
     });
 
     // TODO, move collections logic to Collections Class
@@ -367,12 +368,24 @@ class Mock {
     return [...this._plainMocks];
   }
 
-  get plainRoutes() {
+  _getPlainRoutes() {
     return [...this._plainRoutes];
+  }
+
+  get plainRoutes() {
+    this._alertsDeprecation.set(
+      "plainRoutes",
+      "Usage of 'plainRoutes' getter is deprecated. Use 'routes.plain' instead"
+    );
+    return this._getPlainRoutes();
   }
 
   get plainRoutesVariants() {
     return [...this._plainRoutesVariants];
+  }
+
+  get routes() {
+    return this._routes;
   }
 }
 

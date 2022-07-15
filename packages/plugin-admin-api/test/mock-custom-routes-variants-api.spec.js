@@ -14,7 +14,9 @@ describe("mock custom routes variants api", () => {
   let server;
 
   beforeAll(async () => {
-    server = await startServer("web-tutorial");
+    server = await startServer("web-tutorial", {
+      log: "silly",
+    });
     await waitForServer();
   });
 

@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Use core.mock.restoreRouteVariants method
 - feat: Use core.server.restart method
 - feat: Use core.mock.onChange method
+- feat: Use core.mock.routes.plain getter
 
 ## [3.1.0] - 2022-06-27
 ### Changed

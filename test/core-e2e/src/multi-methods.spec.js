@@ -35,7 +35,7 @@ describe("when method is defined as array", () => {
       });
 
       it("should have two routes", async () => {
-        expect(core.mocks.plainRoutes.length).toEqual(2);
+        expect(core.mock.routes.plain.length).toEqual(2);
       });
 
       it("should have four route variants", async () => {
@@ -62,7 +62,7 @@ describe("when method is defined as array", () => {
       });
 
       it("should return plain routes", async () => {
-        expect(core.mocks.plainRoutes).toEqual([
+        expect(core.mock.routes.plain).toEqual([
           {
             id: "get-user",
             url: "/api/users/:id",

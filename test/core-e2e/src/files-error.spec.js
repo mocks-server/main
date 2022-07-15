@@ -25,7 +25,7 @@ describe("when there is an error loading files", () => {
     });
 
     it("should have two routes", async () => {
-      expect(core.mocks.plainRoutes.length).toEqual(2);
+      expect(core.mock.routes.plain.length).toEqual(2);
     });
 
     it("should have four route variants", async () => {
@@ -62,7 +62,7 @@ describe("when there is an error loading files", () => {
     });
 
     it("should have zero routes", async () => {
-      expect(core.mocks.plainRoutes.length).toEqual(0);
+      expect(core.mock.routes.plain.length).toEqual(0);
     });
 
     it("should have zero route variants", async () => {

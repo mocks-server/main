@@ -15,8 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 
 ### Changed
-- feat(#334): Use new core.server API
-- feat(#334): Use core.mock.restoreRouteVariants
+- feat: Use new core.server API
+- feat: Use core.mock.restoreRouteVariants
+- feat: Use core.mock.routes.plain getter
 
 ## [3.1.0] - 2022-06-27
 

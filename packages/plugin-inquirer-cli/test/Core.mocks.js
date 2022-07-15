@@ -42,6 +42,9 @@ class CoreMock {
         useRouteVariant: this._sandbox.stub(),
         restoreRouteVariants: this._sandbox.stub(),
         onChange: this._sandbox.stub().returns(doNothing),
+        routes: {
+          plain: [],
+        },
       },
       server: {
         restart: this._sandbox.stub(),

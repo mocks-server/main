@@ -679,13 +679,13 @@ describe("Cli", () => {
     });
 
     it("should print current routes in red if there are less than 1", async () => {
-      coreInstance.mock.plainRoutes = [];
+      coreInstance.mock.routes.plain = [];
       await cli.start();
       expect(cli._header()[4]).toEqual(expect.stringContaining(chalk.red("0")));
     });
 
     it("should print current routes in green if there are less than 1", async () => {
-      coreInstance.mock.plainRoutes = [{}, {}];
+      coreInstance.mock.routes.plain = [{}, {}];
       await cli.start();
       expect(cli._header()[4]).toEqual(expect.stringContaining(chalk.green("2")));
     });

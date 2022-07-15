@@ -242,7 +242,7 @@ describe("plugins", () => {
         initSpy(
           config.root.namespace("files").option("path").value,
           config.root.namespace("server").option("port").value,
-          config.root.namespace("mocks").option("delay").value
+          config.root.namespace("mock").namespace("routes").option("delay").value
         );
         config.root.option("log").value = "silly";
         onChangeAlerts(changeAlertsSpy);
@@ -279,7 +279,7 @@ describe("plugins", () => {
         initSpy(
           config.root.namespace("files").option("path").value,
           config.root.namespace("server").option("port").value,
-          config.root.namespace("mocks").option("delay").value
+          config.root.namespace("mock").namespace("routes").option("delay").value
         );
         config.root.option("log").value = "silly";
         onChangeAlerts(changeAlertsSpy);
@@ -312,7 +312,7 @@ describe("plugins", () => {
         initSpy(
           config.root.namespace("files").option("path").value,
           config.root.namespace("server").option("port").value,
-          config.root.namespace("mocks").option("delay").value
+          config.root.namespace("mock").namespace("routes").option("delay").value
         );
         config.root.option("log").value = "silly";
         onChangeAlerts(changeAlertsSpy);

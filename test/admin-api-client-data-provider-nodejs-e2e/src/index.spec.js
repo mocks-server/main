@@ -98,7 +98,7 @@ describe("react-admin-client methods used through node", () => {
       expect(settings.mocks.selected).toEqual("user2");
     });
 
-    it("should update current delay", async () => {
+    it("should update current delay using legacy option", async () => {
       await updateSettings({
         mocks: {
           delay: 1000,
@@ -108,12 +108,24 @@ describe("react-admin-client methods used through node", () => {
       expect(settings.mocks.delay).toEqual(1000);
     });
 
-    it("should update current mock again", async () => {
+    it("should update current delay", async () => {
       await updateSettings({
-        mocks: { selected: "base" },
+        mock: {
+          routes: {
+            delay: 1000,
+          },
+        },
       });
       const settings = await readSettings();
-      expect(settings.mocks.selected).toEqual("base");
+      expect(settings.mock.routes.delay).toEqual(1000);
+    });
+
+    it("should update current mock again", async () => {
+      await updateSettings({
+        mock: { collections: { selected: "base" } },
+      });
+      const settings = await readSettings();
+      expect(settings.mock.collections.selected).toEqual("base");
     });
   });
 });

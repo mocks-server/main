@@ -38,8 +38,14 @@ const example = async () => {
   console.log("Current mocks-server settings are", currentSettings);
 
   await settings.update({
-    mock: "user-super-admin",
-    delay: 1000
+    mock: {
+      collections: {
+        selected: "user-super-admin",
+      },
+      routes: {
+        delay: 1000,
+      },
+    },
   });
   console.log("Mock and delay changed");
 };

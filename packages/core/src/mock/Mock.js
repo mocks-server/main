@@ -10,6 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 const Collections = require("./Collections");
+const Routes = require("./Routes");
 
 const LEGACY_OPTIONS = [
   // LEGACY, to be removed
@@ -33,15 +34,6 @@ const LEGACY_OPTIONS = [
         omit: true,
       },
     },
-  },
-];
-
-const OPTIONS = [
-  {
-    description: "Global delay to apply to routes",
-    name: "delay",
-    type: "number",
-    default: 0,
   },
 ];
 
@@ -78,7 +70,6 @@ class Mock {
     this._logger = logger;
     this._loggerLoadRoutes = logger.namespace(LOAD_ROUTES_NAMESPACE);
     this._loggerLoadMocks = logger.namespace(LOAD_MOCKS_NAMESPACE);
-    this._loggerRoutes = logger.namespace(ROUTES_NAMESPACE);
 
     this._legacyConfig = legacyConfig;
     [this._currentMockOptionLegacy, this._currentDelayOptionLegacy] =
@@ -86,7 +77,6 @@ class Mock {
     this._currentMockOptionLegacy.onChange(this._setCurrentLegacy.bind(this));
 
     this._config = config;
-    [this._currentDelayOption] = this._config.addOptions(OPTIONS);
 
     this._getLoadedMocks = getLoadedMocks;
     this._getLoadedRoutes = getLoadedRoutes;
@@ -99,6 +89,16 @@ class Mock {
     this._alertsMocks = alerts.collection(LOAD_MOCKS_NAMESPACE);
     this._alertsRoutes = alerts.collection(ROUTES_NAMESPACE);
 
+    this._routesConfig = this._config.addNamespace(Routes.id);
+    this._routesLogger = logger.namespace(ROUTES_NAMESPACE);
+
+    // TODO, move routes logic to Routes Class
+    this._routes = new Routes({
+      logger: this._routesLogger,
+      config: this._routesConfig,
+    });
+
+    // TODO, move collections logic to Collections Class
     this._collectionsConfig = this._config.addNamespace(Collections.id);
     this._collectionsLogger = logger.namespace(Collections.id);
     this._collections = new Collections({
@@ -123,14 +123,16 @@ class Mock {
   }
 
   _getDelay() {
+    // Temportal workaround to know current delay in this class
+    // TODO, move to Routes class
     if (this._currentDelayOptionLegacy.hasBeenSet) {
       this._alertsDeprecation.set(
         "mocks.delay",
-        "Option mocks.delay is deprecated. Use mock.delay instead"
+        "Option 'mocks.delay' is deprecated. Use 'mock.routes.delay' instead"
       );
     }
-    return this._currentDelayOption.hasBeenSet
-      ? this._currentDelayOption.value
+    return this._routes._delayOption.hasBeenSet
+      ? this._routes._delayOption.value
       : this._currentDelayOptionLegacy.value;
   }
 
@@ -171,7 +173,7 @@ class Mock {
       mocksDefinitions: this._mocksDefinitions,
       alerts: this._alertsMocks,
       logger: this._loggerLoadMocks,
-      loggerRoutes: this._loggerRoutes,
+      loggerRoutes: this._routesLogger,
       routeVariants: this._routesVariants,
       getGlobalDelay: this._getDelay,
     });
@@ -185,7 +187,7 @@ class Mock {
       alerts: this._alertsLoadRoutes,
       alertsRoutes: this._alertsRoutes,
       logger: this._loggerLoadRoutes,
-      loggerRoutes: this._loggerRoutes,
+      loggerRoutes: this._routesLogger,
       routeHandlers: this._routesVariantsHandlers,
       core: this._core,
     });
@@ -285,7 +287,7 @@ class Mock {
       getGlobalDelay: this._getDelay,
       alerts,
       logger: this._loggerLoadMocks,
-      loggerRoutes: this._loggerRoutes,
+      loggerRoutes: this._routesLogger,
     });
   }
 

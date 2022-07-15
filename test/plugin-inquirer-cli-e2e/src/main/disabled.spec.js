@@ -81,7 +81,7 @@ describe("command line arguments with cli disabled", () => {
       mocks = mocksRunner([
         "--files.path=web-tutorial",
         "--no-plugins.inquirerCli.enabled",
-        "--mock.delay=2000",
+        "--mocks.delay=2000",
       ]);
       await waitForServer();
       const timeCounter = new TimeCounter();
@@ -101,7 +101,7 @@ describe("command line arguments with cli disabled", () => {
       mocks = mocksRunner([
         "--files.path=web-tutorial",
         "--no-plugins.inquirerCli.enabled",
-        "--mock.delay=2000",
+        "--mock.routes.delay=2000",
       ]);
       await waitForServer();
       const timeCounter = new TimeCounter();

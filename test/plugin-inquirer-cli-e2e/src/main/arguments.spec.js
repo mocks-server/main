@@ -77,7 +77,7 @@ describe("command line arguments", () => {
   describe("delay option", () => {
     it("should set delay", async () => {
       expect.assertions(3);
-      mocks = mocksRunner(["--files.path=web-tutorial", "--mock.delay=2000"]);
+      mocks = mocksRunner(["--files.path=web-tutorial", "--mock.routes.delay=2000"]);
       await waitForServerAndCli();
       const timeCounter = new TimeCounter();
       const users = await doFetch("/api/users");

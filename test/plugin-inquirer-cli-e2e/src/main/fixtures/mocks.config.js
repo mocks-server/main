@@ -24,8 +24,10 @@ module.exports = {
     collections: {
       //selected: "base",
     },
-    // Global delay to apply to routes
-    //delay: 0,
+    routes: {
+      // Global delay to apply to routes
+      //delay: 0,
+    },
   },
   server: {
     // Port number for the server to be listening at

@@ -74,7 +74,7 @@ describe("command line arguments", () => {
     });
   });
 
-  describe("delay option", () => {
+  describe("delay legacy option", () => {
     it("should set delay", async () => {
       expect.assertions(3);
       mocks = mocksRunner(["--files.path=web-tutorial", "--mocks.delay=2000"]);

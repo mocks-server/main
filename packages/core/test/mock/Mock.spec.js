@@ -78,8 +78,8 @@ describe("Mock", () => {
 
   describe("getDelay method", () => {
     it("should return delay option value", () => {
-      mock._currentDelayOption.hasBeenSet = true;
-      mock._currentDelayOption.value = "foo-delay";
+      mock._routes._delayOption.hasBeenSet = true;
+      mock._routes._delayOption.value = "foo-delay";
       expect(mock._getDelay()).toEqual("foo-delay");
     });
 
@@ -90,14 +90,14 @@ describe("Mock", () => {
       const alert = alerts.flat.pop();
       expect(alert.id).toEqual("mocks.delay");
       expect(alert.value.message).toEqual(
-        "Option mocks.delay is deprecated. Use mock.delay instead"
+        "Option 'mocks.delay' is deprecated. Use 'mock.routes.delay' instead"
       );
       expect(alert.collection).toEqual("mocks:deprecated");
     });
 
     it("should return legacy delay option value if new option has not been set", () => {
-      mock._currentDelayOption.hasBeenSet = false;
-      mock._currentDelayOption.value = "foo-delay";
+      mock._routes._delayOption.hasBeenSet = false;
+      mock._routes._delayOption.value = "foo-delay";
       mock._currentDelayOptionLegacy.value = "foo-delay-legacy";
       expect(mock._getDelay()).toEqual("foo-delay-legacy");
     });

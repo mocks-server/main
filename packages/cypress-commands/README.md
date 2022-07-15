@@ -53,7 +53,7 @@ Restore routes variants to those defined in current mock.
 
 Set routes delay.
 
-##### `cy.mocksSetSettings({ files: { watch: false}, mocks: { delay: 0 }})`
+##### `cy.mocksSetSettings({ files: { watch: false}, mock: { routes: { delay: 0 }}})`
 
 Set any [Mocks Server setting][mocks-server-options-url].
 

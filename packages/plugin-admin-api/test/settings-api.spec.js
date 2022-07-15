@@ -45,7 +45,9 @@ describe("settings api", () => {
           collections: {
             selected: "base",
           },
-          delay: 0,
+          routes: {
+            delay: 0,
+          },
         },
         files: {
           babelRegister: {
@@ -119,7 +121,7 @@ describe("settings api", () => {
         const settingsResponse = await doFetch("/admin/settings");
         expect(settingsUpdateResponse.status).toEqual(400);
         expect(settingsUpdateResponse.body.message).toEqual(expect.stringContaining("foo"));
-        expect(settingsResponse.body.mocks.delay).toEqual(0);
+        expect(settingsResponse.body.mock.routes.delay).toEqual(0);
       });
     });
 
@@ -146,7 +148,7 @@ describe("settings api", () => {
         expect(timeCounter.total).toBeGreaterThan(2000);
       });
 
-      it("should set delay option to 0", async () => {
+      it("should set delay option to 0 when using legacy option", async () => {
         const timeCounter = new TimeCounter();
         await doFetch("/admin/settings", {
           method: "PATCH",
@@ -156,6 +158,40 @@ describe("settings api", () => {
             },
           },
         });
+        await doFetch("/api/users");
+        timeCounter.stop();
+        expect(timeCounter.total).toBeLessThan(200);
+      });
+
+      it("should set delay option to 1000", async () => {
+        await doFetch("/admin/settings", {
+          method: "PATCH",
+          body: {
+            mock: {
+              routes: {
+                delay: 1000,
+              },
+            },
+          },
+        });
+        const timeCounter = new TimeCounter();
+        await doFetch("/api/users");
+        timeCounter.stop();
+        expect(timeCounter.total).toBeGreaterThan(900);
+      });
+
+      it("should set delay option to 0", async () => {
+        await doFetch("/admin/settings", {
+          method: "PATCH",
+          body: {
+            mock: {
+              routes: {
+                delay: 0,
+              },
+            },
+          },
+        });
+        const timeCounter = new TimeCounter();
         await doFetch("/api/users");
         timeCounter.stop();
         expect(timeCounter.total).toBeLessThan(200);

@@ -80,12 +80,14 @@ describe("react-admin-client methods used with node", () => {
   describe("when updating settings", () => {
     it("should update current delay", async () => {
       await updateSettings({
-        mocks: {
-          delay: 1000,
+        mock: {
+          routes: {
+            delay: 1000,
+          },
         },
       });
       const settings = await readSettings();
-      expect(settings.mocks.delay).toEqual(1000);
+      expect(settings.mock.routes.delay).toEqual(1000);
     });
   });
 

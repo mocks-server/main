@@ -49,7 +49,7 @@ describe("commands", () => {
   });
 
   describe("setMock command", () => {
-    it("should call to update delay", () => {
+    it("should call to set current collection", () => {
       setMock("foo");
       expect(
         apiClient.updateSettings.calledWith({
@@ -87,7 +87,7 @@ describe("commands", () => {
   });
 
   describe("setSettings command", () => {
-    it("should call to update delay", () => {
+    it("should call to update settings", () => {
       setSettings("foo");
       expect(apiClient.updateSettings.calledWith("foo")).toBe(true);
     });

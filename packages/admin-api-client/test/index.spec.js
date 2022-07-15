@@ -94,7 +94,7 @@ describe("react-admin-client methods used with node", () => {
   });
 
   describe("when updating settings", () => {
-    it("should update current delay", async () => {
+    it("should update current delay using legacy option", async () => {
       await updateSettings({
         mocks: {
           delay: 1000,
@@ -102,6 +102,18 @@ describe("react-admin-client methods used with node", () => {
       });
       const settings = await readSettings();
       expect(settings.mocks.delay).toEqual(1000);
+    });
+
+    it("should update current delay", async () => {
+      await updateSettings({
+        mock: {
+          routes: {
+            delay: 2000,
+          },
+        },
+      });
+      const settings = await readSettings();
+      expect(settings.mock.routes.delay).toEqual(2000);
     });
   });
 

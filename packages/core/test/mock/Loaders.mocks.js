@@ -40,8 +40,10 @@ class Mock {
   constructor() {
     this._sandbox = sinon.createSandbox();
 
+    this._loader = this._sandbox.stub();
+
     this._stubs = {
-      new: this._sandbox.stub(),
+      new: this._sandbox.stub().returns(this._loader),
     };
 
     Loaders.mockImplementation(() => this._stubs);
@@ -51,6 +53,7 @@ class Mock {
     return {
       Constructor: Loaders,
       instance: this._stubs,
+      loader: this._loader,
     };
   }
 

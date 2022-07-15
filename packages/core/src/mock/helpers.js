@@ -264,7 +264,7 @@ function getRouteVariants({
     flatten(
       routesDefinitions.map((route, index) => {
         let routeVariantsIds = [];
-        const routeAlerts = alerts.collection(route.id || index);
+        const routeAlerts = alerts.collection((route && route.id) || index);
         const routeErrors = routeValidationErrors(route);
         if (!!routeErrors) {
           routeAlerts.set("validation", routeErrors.message);

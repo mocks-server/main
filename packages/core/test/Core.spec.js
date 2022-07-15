@@ -17,7 +17,6 @@ const ServerMocks = require("./server/Server.mocks.js");
 const PluginsMocks = require("./plugins/Plugins.mocks.js");
 const ConfigMocks = require("./common/Config.mocks.js");
 const AlertsMocks = require("./alerts/AlertsLegacy.mocks.js");
-const LoadersMocks = require("./mock/Loaders.mocks.js");
 const FilesLoadersMocks = require("./files/FilesLoaders.mocks.js");
 const ScaffoldMocks = require("./scaffold/Scaffold.mocks.js");
 const UpdateNotifierMock = require("./update-notifier/UpdateNotifier.mock.js");
@@ -40,7 +39,6 @@ describe("Core", () => {
   let filesLoadersMocks;
   let scaffoldMocks;
   let core;
-  let mockedLoader;
   let updateNotifierMock;
 
   beforeEach(async () => {
@@ -53,15 +51,13 @@ describe("Core", () => {
     pluginsMocks = new PluginsMocks();
     pluginsInstance = pluginsMocks.stubs.instance;
     alertsMocks = new AlertsMocks();
-    loadersMocks = new LoadersMocks();
+    loadersMocks = mockMock.stubs.loaders;
     configMocks = new ConfigMocks();
     filesLoadersMocks = new FilesLoadersMocks();
     scaffoldMocks = new ScaffoldMocks();
     sandbox.stub(NestedCollections.prototype, "onChange");
     sandbox.stub(Logger.prototype, "onChangeGlobalStore");
     sandbox.stub(Logger.prototype, "setLevel");
-    mockedLoader = sandbox.stub();
-    loadersMocks.stubs.instance.new.returns(mockedLoader);
 
     core = new Core();
     core.variantHandlers._registerOption.value = [];
@@ -75,7 +71,6 @@ describe("Core", () => {
     configMocks.restore();
     pluginsMocks.restore();
     alertsMocks.restore();
-    loadersMocks.restore();
     filesLoadersMocks.restore();
     scaffoldMocks.restore();
     updateNotifierMock.restore();
@@ -97,56 +92,36 @@ describe("Core", () => {
   describe("Plugins callbacks", () => {
     describe("createMocksLoader", () => {
       it("should return a new loader", () => {
-        const FOO_LOADER = "foo";
-        loadersMocks.stubs.instance.new.returns(FOO_LOADER);
-        expect(pluginsMocks.stubs.Constructor.mock.calls[0][0].createMocksLoader()).toEqual(
-          FOO_LOADER
-        );
+        pluginsMocks.stubs.Constructor.mock.calls[0][0].createMocksLoader()("foo-collection");
+        expect(loadersMocks.loadCollections.callCount).toEqual(1);
+        expect(loadersMocks.loadCollections.getCall(0).args[0]).toEqual("foo-collection");
       });
     });
 
     describe("createRoutesLoader", () => {
       it("should return a new loader", () => {
-        const FOO_LOADER = "foo";
-        loadersMocks.stubs.instance.new.returns(FOO_LOADER);
-        expect(pluginsMocks.stubs.Constructor.mock.calls[0][0].createRoutesLoader()).toEqual(
-          FOO_LOADER
-        );
+        pluginsMocks.stubs.Constructor.mock.calls[0][0].createRoutesLoader()("foo-routes");
+        expect(loadersMocks.loadRoutes.callCount).toEqual(1);
+        expect(loadersMocks.loadRoutes.getCall(0).args[0]).toEqual("foo-routes");
       });
     });
   });
 
   describe("loadMocks method", () => {
-    it("should call to mocks loader", () => {
+    it("should call to mock loader loadCollections", () => {
       core.loadMocks("foo");
-      expect(mockedLoader.getCall(0).args[0]).toEqual("foo");
+      expect(loadersMocks.loadCollections.getCall(0).args[0]).toEqual("foo");
     });
   });
 
   describe("loadRoutes method", () => {
-    it("should call to mocks loader", () => {
+    it("should call to mock loader loadRoutes", () => {
       core.loadRoutes("foo");
-      expect(mockedLoader.getCall(0).args[0]).toEqual("foo");
+      expect(loadersMocks.loadRoutes.getCall(0).args[0]).toEqual("foo");
     });
   });
 
   describe("Mocks callbacks", () => {
-    describe("getLoadedMocks", () => {
-      it("should return mocksLoaders contents", () => {
-        expect(mockMock.stubs.Constructor.mock.calls[0][0].getLoadedMocks()).toEqual(
-          core._routesLoaders.contents
-        );
-      });
-    });
-
-    describe("getLoadedRoutes", () => {
-      it("should return routesLoaders contents", () => {
-        expect(mockMock.stubs.Constructor.mock.calls[0][0].getLoadedRoutes()).toEqual(
-          core._routesLoaders.contents
-        );
-      });
-    });
-
     describe("onChange", () => {
       it("should emit a change:mock event", () => {
         const spy = sandbox.spy();
@@ -346,36 +321,6 @@ describe("Core", () => {
       removeCallback();
       core._eventEmitter.emit("change:logs");
       expect(spy.callCount).toEqual(1);
-    });
-  });
-
-  describe("when mocksLoaders load", () => {
-    it("should not load mocks if routes are not loaded", () => {
-      expect.assertions(1);
-      loadersMocks.stubs.Constructor.mock.calls[0][0].onLoad();
-      expect(core._mock.load.callCount).toEqual(0);
-    });
-
-    it("should load mocks if routes are loaded", () => {
-      expect.assertions(1);
-      loadersMocks.stubs.Constructor.mock.calls[1][0].onLoad();
-      loadersMocks.stubs.Constructor.mock.calls[0][0].onLoad();
-      expect(core._mock.load.callCount).toEqual(1);
-    });
-  });
-
-  describe("when routesLoaders load", () => {
-    it("should not load mocks if mocks are not loaded", () => {
-      expect.assertions(1);
-      loadersMocks.stubs.Constructor.mock.calls[1][0].onLoad();
-      expect(core._mock.load.callCount).toEqual(0);
-    });
-
-    it("should load mocks if mocks are loaded", () => {
-      expect.assertions(1);
-      loadersMocks.stubs.Constructor.mock.calls[0][0].onLoad();
-      loadersMocks.stubs.Constructor.mock.calls[1][0].onLoad();
-      expect(core._mock.load.callCount).toEqual(1);
     });
   });
 

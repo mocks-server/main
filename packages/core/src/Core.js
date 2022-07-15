@@ -20,7 +20,6 @@ const VariantHandlers = require("./variant-handlers/VariantHandlers");
 const Mock = require("./mock/Mock");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
-const Loaders = require("./mock/Loaders");
 const FilesLoaders = require("./files/FilesLoaders");
 const Scaffold = require("./scaffold/Scaffold");
 const Alerts = require("./alerts/Alerts");
@@ -97,28 +96,29 @@ class Core {
       pkg: advancedOptions.pkg,
     });
 
-    // Create mocks loaders
-    this._mocksLoaders = new Loaders({
-      onLoad: () => {
-        this._loadedMocks = true;
-        if (this._loadedRoutes) {
-          this._mock.load();
-        }
-      },
+    // Create variant handlers
+    this._variantHandlers = new VariantHandlers({
+      logger: this._logger.namespace(VariantHandlers.id),
+      config: this._config.addNamespace(VariantHandlers.id),
     });
 
-    // Create routes loaders
-    this._routesLoaders = new Loaders({
-      onLoad: () => {
-        this._loadedRoutes = true;
-        if (this._loadedMocks) {
-          this._mock.load();
-        }
+    // Create mock
+    this._mock = new Mock(
+      {
+        config: this._configMock,
+        alerts: this._alerts.collection(Mock.id),
+        logger: this._logger.namespace(Mock.id),
+        // LEGACY, to be removed
+        legacyConfig: this._configMocksLegacy,
+        onChange: () => this._eventEmitter.emit(CHANGE_MOCK),
       },
-    });
+      this // To be used only by routeHandlers
+    );
 
-    this._loadMocks = this._mocksLoaders.new();
-    this._loadRoutes = this._routesLoaders.new();
+    // LEGACY, to be removed
+    const loaders = this._mock.createLoaders();
+    this._loadMocks = loaders.loadCollections;
+    this._loadRoutes = loaders.loadRoutes;
 
     // Create plugins
     this._plugins = new Plugins(
@@ -126,11 +126,26 @@ class Core {
         config: this._configPlugins,
         alerts: this._alerts.collection(Plugins.id),
         logger: this._logger.namespace(Plugins.id),
+        // LEGACY, to be removed
         createMocksLoader: () => {
-          return this._mocksLoaders.new();
+          const { loadCollections } = this._mock.createLoaders();
+          return (collections) => {
+            this._deprecationAlerts.set(
+              "loadMocks",
+              "Usage of 'core.loadMocks' method is deprecated. Use 'core.mock.createLoaders' instead. https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+            );
+            return loadCollections(collections);
+          };
         },
         createRoutesLoader: () => {
-          return this._routesLoaders.new();
+          const { loadRoutes } = this._mock.createLoaders();
+          return (routes) => {
+            this._deprecationAlerts.set(
+              "loadRoutes",
+              "Usage of 'core.loadRoutes' method is deprecated. Use 'core.mock.createLoaders' instead. https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+            );
+            return loadRoutes(routes);
+          };
         },
         // LEGACY, remove when legacy alerts are removed
         ...scopedAlertsMethods(
@@ -143,28 +158,6 @@ class Core {
       this //To be used only by plugins
     );
 
-    // Create variant handlers
-    this._variantHandlers = new VariantHandlers({
-      logger: this._logger.namespace(VariantHandlers.id),
-      config: this._config.addNamespace(VariantHandlers.id),
-    });
-
-    // Create mock
-    this._mock = new Mock(
-      {
-        config: this._configMock,
-        // LEGACY, to be removed
-        legacyConfig: this._configMocksLegacy,
-        alerts: this._alerts.collection(Mock.id),
-        logger: this._logger.namespace(Mock.id),
-        // LEGACY, to be removed
-        getLoadedMocks: () => this._mocksLoaders.contents,
-        getLoadedRoutes: () => this._routesLoaders.contents,
-        onChange: () => this._eventEmitter.emit(CHANGE_MOCK),
-      },
-      this // To be used only by routeHandlers
-    );
-
     // Create server
     this._server = new Server({
       config: this._configServer,
@@ -173,13 +166,15 @@ class Core {
       routesRouter: this._mock.router,
     });
 
+    const fileLoaders = this._mock.createLoaders();
+
     // Create files loaders
     this._filesLoader = new FilesLoaders({
       config: this._configFilesLoaders,
       logger: this._logger.namespace(FilesLoaders.id),
       alerts: this._alerts.collection(FilesLoaders.id),
-      loadMocks: this._mocksLoaders.new(),
-      loadRoutes: this._routesLoaders.new(),
+      loadMocks: fileLoaders.loadCollections,
+      loadRoutes: fileLoaders.loadRoutes,
     });
 
     // Create scaffold
@@ -299,11 +294,19 @@ class Core {
 
   // LEGACY, to be removed
   loadMocks(mocks) {
+    this._deprecationAlerts.set(
+      "loadMocks",
+      "Usage of 'core.loadMocks' method is deprecated. Use 'core.mock.createLoaders' instead. https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+    );
     this._loadMocks(mocks);
   }
 
   // LEGACY, to be removed
   loadRoutes(routes) {
+    this._deprecationAlerts.set(
+      "loadRoutes",
+      "Usage of 'core.loadRoutes' method is deprecated. Use 'core.mock.createLoaders' instead. https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+    );
     this._loadRoutes(routes);
   }
 

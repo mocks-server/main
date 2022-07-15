@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -16,11 +16,83 @@ const {
   removeConfigFile,
 } = require("./support/helpers");
 
-describe("loadMocks and loadRoutes methods", () => {
+describe("loadCollections and loadRoutes methods", () => {
   let core, changeMockAndWait;
 
   beforeAll(async () => {
-    core = await startCore();
+    class Plugin {
+      static get id() {
+        return "test-plugin";
+      }
+      register({ mock }) {
+        this._mock = mock;
+      }
+      start() {
+        const { loadRoutes, loadCollections } = this._mock.createLoaders();
+        loadRoutes([
+          {
+            id: "get-books",
+            url: "/api/books",
+            method: "GET",
+            variants: [
+              {
+                id: "success",
+                response: {
+                  status: 200,
+                  body: [{ id: 1, title: "1984" }],
+                },
+              },
+              {
+                id: "error",
+                response: {
+                  status: 403,
+                  body: {
+                    message: "Bad data",
+                  },
+                },
+              },
+            ],
+          },
+          {
+            id: "get-authors",
+            url: "/api/authors",
+            method: "GET",
+            variants: [
+              {
+                id: "success",
+                response: {
+                  status: 200,
+                  body: [{ id: 1, name: "George Orwell" }],
+                },
+              },
+              {
+                id: "error",
+                response: {
+                  status: 403,
+                  body: {
+                    message: "Bad data",
+                  },
+                },
+              },
+            ],
+          },
+        ]);
+        loadCollections([
+          {
+            id: "users-and-library",
+            from: "base",
+            routesVariants: ["get-books:success", "get-authors:success"],
+          },
+          {
+            id: "authors-error",
+            from: "users-and-library",
+            routesVariants: ["get-authors:error"],
+          },
+        ]);
+      }
+    }
+
+    core = await startCore(null, { plugins: { register: [Plugin] } });
     changeMockAndWait = async (mockName) => {
       core.config.namespace("mock").namespace("collections").option("selected").value = mockName;
       await new Promise((resolve) => {
@@ -48,70 +120,8 @@ describe("loadMocks and loadRoutes methods", () => {
         { id: 2, name: "Jane Doe" },
       ]);
     });
-  });
 
-  describe("When routes and mocks are loaded using core methods", () => {
     it("should have loaded new mocks and routes", async () => {
-      core.loadRoutes([
-        {
-          id: "get-books",
-          url: "/api/books",
-          method: "GET",
-          variants: [
-            {
-              id: "success",
-              response: {
-                status: 200,
-                body: [{ id: 1, title: "1984" }],
-              },
-            },
-            {
-              id: "error",
-              response: {
-                status: 403,
-                body: {
-                  message: "Bad data",
-                },
-              },
-            },
-          ],
-        },
-        {
-          id: "get-authors",
-          url: "/api/authors",
-          method: "GET",
-          variants: [
-            {
-              id: "success",
-              response: {
-                status: 200,
-                body: [{ id: 1, name: "George Orwell" }],
-              },
-            },
-            {
-              id: "error",
-              response: {
-                status: 403,
-                body: {
-                  message: "Bad data",
-                },
-              },
-            },
-          ],
-        },
-      ]);
-      core.loadMocks([
-        {
-          id: "users-and-library",
-          from: "base",
-          routesVariants: ["get-books:success", "get-authors:success"],
-        },
-        {
-          id: "authors-error",
-          from: "users-and-library",
-          routesVariants: ["get-authors:error"],
-        },
-      ]);
       core.config.namespace("mock").namespace("collections").option("selected").value =
         "users-and-library";
       await waitForServerUrl("/api/books");

@@ -12,7 +12,8 @@ const sinon = require("sinon");
 const express = require("express");
 const { Logger } = require("@mocks-server/logger");
 
-const CollectionMock = require("./Collection.mock.js");
+const CollectionMock = require("./Collection.mock");
+const LoadersMock = require("./Loaders.mocks");
 
 const Alerts = require("../../src/alerts/Alerts");
 const Mock = require("../../src/mock/Mock");
@@ -30,10 +31,12 @@ describe("Mock", () => {
   let routerMock;
   let alerts;
   let logger;
+  let loadersMock;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     configMock = new ConfigMock();
+    loadersMock = new LoadersMock();
     legacyConfigMock = new ConfigMock();
     collectionMock = new CollectionMock();
     routerMock = sandbox.stub();
@@ -47,8 +50,6 @@ describe("Mock", () => {
     methods = {
       config: configMock.stubs.namespace,
       legacyConfig: legacyConfigMock.stubs.namespace,
-      getLoadedMocks: sandbox.stub().returns([]),
-      getLoadedRoutes: sandbox.stub().returns([]),
       getCurrentMock: sandbox.stub().returns(null),
       onChange: sandbox.stub(),
       alerts,
@@ -56,6 +57,8 @@ describe("Mock", () => {
     };
 
     mock = new Mock(methods, core);
+    mock._routesLoaders.contents = [];
+    mock._collectionsLoaders.contents = [];
     mock.init([DefaultRoutesHandler]);
   });
 
@@ -166,18 +169,7 @@ describe("Mock", () => {
 
   describe("when there are valid mocks and routes", () => {
     beforeEach(() => {
-      methods.getLoadedMocks.returns([
-        {
-          id: "mock-1",
-          routesVariants: ["route-1:variant-1", "route-2:variant-1"],
-        },
-        {
-          id: "mock-2",
-          from: "mock-1",
-          routesVariants: ["route-2:variant-2"],
-        },
-      ]);
-      methods.getLoadedRoutes.returns([
+      mock._routesLoaders.contents = [
         {
           id: "route-1",
           variants: [{ id: "variant-1", method: "GET", response: { body: {}, status: 200 } }],
@@ -190,7 +182,18 @@ describe("Mock", () => {
             { id: "variant-2", delay: 1000, method: "GET", response: { body: {}, status: 200 } },
           ],
         },
-      ]);
+      ];
+      mock._collectionsLoaders.contents = [
+        {
+          id: "mock-1",
+          routesVariants: ["route-1:variant-1", "route-2:variant-1"],
+        },
+        {
+          id: "mock-2",
+          from: "mock-1",
+          routesVariants: ["route-2:variant-2"],
+        },
+      ];
     });
 
     describe("when loaded", () => {
@@ -274,8 +277,8 @@ describe("Mock", () => {
 
   describe("when there are no valid collections", () => {
     beforeEach(() => {
-      methods.getLoadedMocks.returns([null]);
-      methods.getLoadedRoutes.returns([]);
+      mock._routesLoaders.contents = [];
+      mock._collectionsLoaders.contents = [null];
     });
 
     describe("when loaded", () => {
@@ -291,6 +294,11 @@ describe("Mock", () => {
             id: "empty",
             value: { message: "No mocks found", error: undefined },
             collection: "mocks",
+          },
+          {
+            id: "validation",
+            value: { message: "Route is invalid: : type must be object", error: undefined },
+            collection: "mocks:loadRoutes:0",
           },
           {
             id: "critical-error",
@@ -318,6 +326,48 @@ describe("Mock", () => {
         mock.current = "foo-id";
         expect(mock.current).toEqual(null);
       });
+    });
+  });
+
+  describe("createLoaders method", () => {
+    it("should return new loaders", () => {
+      const { loadRoutes, loadCollections } = mock.createLoaders();
+      expect(loadRoutes).toBe(loadersMock.stubs.loader);
+      expect(loadCollections).toBe(loadersMock.stubs.loader);
+    });
+  });
+
+  describe("when collections load", () => {
+    it("should not load collections if routes are not loaded", () => {
+      sandbox.spy(mock, "load");
+      expect.assertions(1);
+      loadersMock.stubs.Constructor.mock.calls[0][0].onLoad();
+      expect(mock.load.callCount).toEqual(0);
+    });
+
+    it("should load collections if routes are loaded", () => {
+      sandbox.spy(mock, "load");
+      expect.assertions(1);
+      loadersMock.stubs.Constructor.mock.calls[1][0].onLoad();
+      loadersMock.stubs.Constructor.mock.calls[0][0].onLoad();
+      expect(mock.load.callCount).toEqual(1);
+    });
+  });
+
+  describe("when routes load", () => {
+    it("should not load routes if collections are not loaded", () => {
+      sandbox.spy(mock, "load");
+      expect.assertions(1);
+      loadersMock.stubs.Constructor.mock.calls[1][0].onLoad();
+      expect(mock.load.callCount).toEqual(0);
+    });
+
+    it("should load routes if collections are loaded", () => {
+      sandbox.spy(mock, "load");
+      expect.assertions(1);
+      loadersMock.stubs.Constructor.mock.calls[0][0].onLoad();
+      loadersMock.stubs.Constructor.mock.calls[1][0].onLoad();
+      expect(mock.load.callCount).toEqual(1);
     });
   });
 });

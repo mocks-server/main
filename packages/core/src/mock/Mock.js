@@ -12,6 +12,7 @@ const EventEmitter = require("events");
 const express = require("express");
 
 const { addEventListener, CHANGE_MOCK } = require("../common/events");
+const Loaders = require("./Loaders");
 const Collections = require("./Collections");
 const Routes = require("./Routes");
 
@@ -66,10 +67,7 @@ class Mock {
     return "mocks";
   }
 
-  constructor(
-    { config, legacyConfig, getLoadedMocks, logger, getLoadedRoutes, onChange, alerts },
-    core
-  ) {
+  constructor({ config, legacyConfig, logger, onChange, alerts }, core) {
     this._eventEmitter = new EventEmitter();
     this._logger = logger;
     this._loggerLoadRoutes = logger.namespace(LOAD_ROUTES_NAMESPACE);
@@ -83,8 +81,6 @@ class Mock {
 
     this._config = config;
 
-    this._getLoadedMocks = getLoadedMocks;
-    this._getLoadedRoutes = getLoadedRoutes;
     this._onChange = onChange;
     this._core = core;
 
@@ -111,6 +107,28 @@ class Mock {
       logger: this._collectionsLogger,
       config: this._collectionsConfig,
       onChangeSelected: this._setCurrent.bind(this),
+    });
+
+    // Create collections loaders
+    this._collectionsLoaders = new Loaders({
+      onLoad: () => {
+        // First time wait for other loader to have finished
+        this._loadedCollections = true;
+        if (this._loadedRoutes) {
+          this.load();
+        }
+      },
+    });
+
+    // Create routes loaders
+    this._routesLoaders = new Loaders({
+      onLoad: () => {
+        // First time wait for other loader to have finished
+        this._loadedRoutes = true;
+        if (this._loadedCollections) {
+          this.load();
+        }
+      },
     });
 
     this._router = null;
@@ -206,8 +224,8 @@ class Mock {
   }
 
   load() {
-    this._routesDefinitions = this._getLoadedRoutes();
-    this._mocksDefinitions = this._getLoadedMocks();
+    this._routesDefinitions = this._routesLoaders.contents;
+    this._mocksDefinitions = this._collectionsLoaders.contents;
     this._processRoutes();
     this._processMocks();
     this._mocksIds = getIds(this._mocks);
@@ -324,6 +342,13 @@ class Mock {
 
   onChange(listener) {
     return addEventListener(listener, CHANGE_MOCK, this._eventEmitter);
+  }
+
+  createLoaders() {
+    return {
+      loadRoutes: this._routesLoaders.new(),
+      loadCollections: this._collectionsLoaders.new(),
+    };
   }
 
   get customRoutesVariants() {

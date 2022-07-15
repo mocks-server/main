@@ -131,7 +131,6 @@ class Cli {
     this._server = server;
     this._config = config;
     this._mock = mock;
-    this._onChangeMock = this._mock.onChange;
     this._onChangeAlerts = onChangeAlerts;
 
     this._inited = false;
@@ -187,7 +186,7 @@ class Cli {
     }
     this._started = true;
     this._stopListeningChangeAlerts = this._onChangeAlerts(this._refreshMenuIfStarted);
-    this._stopListeningChangeMocks = this._onChangeMock(this._refreshMenuIfStarted);
+    this._stopListeningChangeMocks = this._mock.onChange(this._refreshMenuIfStarted);
     this._logLevel = this._optionLog.value;
     this._silentTraces();
     this._displayMainMenu();

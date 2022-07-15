@@ -292,6 +292,14 @@ class Mock {
   }
 
   restoreRoutesVariants() {
+    this._alertsDeprecation.set(
+      "current",
+      "Usage of 'restoreRoutesVariants()' method is deprecated. Use 'restoreRouteVariants()' instead"
+    );
+    this.restoreRouteVariants();
+  }
+
+  restoreRouteVariants() {
     this._stopUsingVariants();
     this._reloadRouter();
   }

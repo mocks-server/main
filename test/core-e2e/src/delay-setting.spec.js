@@ -103,7 +103,7 @@ describe("delay setting", () => {
 
   describe("When route has delay and route variant has zero delay", () => {
     afterEach(() => {
-      core.mock.restoreRoutesVariants();
+      core.mock.restoreRouteVariants();
     });
 
     it("should respond with no delay", async () => {
@@ -133,7 +133,7 @@ describe("delay setting", () => {
 
   describe("When route has delay and route variant has null delay", () => {
     afterEach(() => {
-      core.mock.restoreRoutesVariants();
+      core.mock.restoreRouteVariants();
     });
 
     it("should respond with global server delay", async () => {

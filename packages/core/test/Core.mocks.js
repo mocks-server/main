@@ -40,6 +40,7 @@ class CoreMock {
       mocks: {
         useRouteVariant: this._sandbox.stub(),
         restoreRoutesVariants: this._sandbox.stub(),
+        restoreRouteVariants: this._sandbox.stub(),
       },
       logs: ["foo", "foo2"],
       logger: {

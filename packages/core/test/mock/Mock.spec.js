@@ -231,12 +231,22 @@ describe("Mock", () => {
       });
     });
 
-    describe("when restoring custom route variants", () => {
+    describe("when restoring custom route variants using legacy method", () => {
       it("should return empty array", () => {
         mock.load();
         mock.useRouteVariant("route-2:variant-2");
         expect(mock.customRoutesVariants).toEqual(["route-2:variant-2"]);
         mock.restoreRoutesVariants();
+        expect(mock.customRoutesVariants).toEqual([]);
+      });
+    });
+
+    describe("when restoring custom route variants", () => {
+      it("should return empty array", () => {
+        mock.load();
+        mock.useRouteVariant("route-2:variant-2");
+        expect(mock.customRoutesVariants).toEqual(["route-2:variant-2"]);
+        mock.restoreRouteVariants();
         expect(mock.customRoutesVariants).toEqual([]);
       });
     });

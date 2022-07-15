@@ -50,7 +50,7 @@ class CustomRoutesVariants {
   }
 
   delete(_req, res) {
-    this._mocks.restoreRoutesVariants();
+    this._mocks.restoreRouteVariants();
     res.status(204);
     res.send();
   }

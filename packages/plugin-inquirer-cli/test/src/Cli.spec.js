@@ -540,7 +540,7 @@ describe("Cli", () => {
 
     it("should call to restore variants", async () => {
       await cli.start();
-      expect(coreInstance.mocks.restoreRoutesVariants.callCount).toEqual(1);
+      expect(coreInstance.mocks.restoreRouteVariants.callCount).toEqual(1);
     });
   });
 

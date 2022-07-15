@@ -308,7 +308,7 @@ class Cli {
       case "variant":
         return this._changeRouteVariant();
       case "restoreVariants":
-        return this._restoreRoutesVariants();
+        return this._restoreRouteVariants();
       case "delay":
         return this._changeDelay();
       case "restart":
@@ -360,8 +360,8 @@ class Cli {
     return this._displayMainMenu();
   }
 
-  async _restoreRoutesVariants() {
-    this._mocks.restoreRoutesVariants();
+  async _restoreRouteVariants() {
+    this._mocks.restoreRouteVariants();
     return this._displayMainMenu();
   }
 

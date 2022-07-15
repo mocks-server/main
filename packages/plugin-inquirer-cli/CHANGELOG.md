@@ -17,7 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [3.1.0] - 2022-06-27
 ### Changed
 - refactor: Remove unused property
-- feat: Use new custom core API
+- feat(#334): Use new custom core API
+- feat(#334): Use core.mock.restoreRouteVariants method
 
 ### Added
 - feat: Display context in errors and warnings

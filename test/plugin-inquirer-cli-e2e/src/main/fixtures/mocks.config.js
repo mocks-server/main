@@ -11,6 +11,10 @@ module.exports = {
     // Allow unknown arguments
     //allowUnknownArguments: false,
   },
+  variantHandlers: {
+    // Variant Handlers to be registered
+    //register: [],
+  },
   plugins: {
     // Plugins to be registered
     //register: [null],

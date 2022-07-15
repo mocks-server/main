@@ -12,33 +12,53 @@ const DefaultVariantHandler = require("./handlers/Default");
 const Json = require("./handlers/Json");
 const Middleware = require("./handlers/Middleware");
 
+const OPTIONS = [
+  {
+    description: "VariantHandlers to be registered",
+    name: "register",
+    type: "array",
+    default: [],
+  },
+];
+
 class VariantHandlers {
-  constructor({ logger }) {
+  static get id() {
+    return "variantHandlers";
+  }
+
+  constructor({ logger, config }) {
     this._logger = logger;
     this._registeredVariantHandlers = [];
-    this._variantHandlers = [DefaultVariantHandler, Json, Middleware];
+    this._coreVariantHandlers = [DefaultVariantHandler, Json, Middleware];
+    this._config = config;
+
+    [this._registerOption] = this._config.addOptions(OPTIONS);
   }
 
-  add(VariantHandler) {
-    this._variantHandlers.push(VariantHandler);
+  _registerOne(VariantHandler) {
+    // TODO, check id, etc..
+    this._logger.verbose(`Registering "${VariantHandler.id}" variant handler`);
+    this._registeredVariantHandlers.push(VariantHandler);
   }
 
-  register(variantHandlers = []) {
-    this._variantHandlers = this._variantHandlers.concat(variantHandlers);
-    return this._registerHandlers().then(() => {
-      this._logger.verbose(
-        `Registered ${this._registeredVariantHandlers.length} variant handlers without errors`
-      );
-      return Promise.resolve();
+  register(variantHandlers) {
+    variantHandlers.forEach((VariantHandler) => {
+      this._registerOne(VariantHandler);
     });
   }
 
-  _registerHandlers() {
-    this._variantHandlers.forEach((VariantHandler) => {
-      // TODO, check id, etc..
-      this._registeredVariantHandlers.push(VariantHandler);
-      this._logger.verbose(`Registering "${VariantHandler.id}" variant handler`);
-    });
+  // LEGACY, remove parameter
+  registerConfig(variantHandlersFromLegacyConfig) {
+    const variantHandlersToRegister = [
+      ...this._coreVariantHandlers,
+      ...variantHandlersFromLegacyConfig,
+      ...this._registerOption.value,
+    ];
+    this.register(variantHandlersToRegister);
+    this._logger.verbose(
+      `Registered ${variantHandlersToRegister.length} variant handlers without errors`
+    );
+
     return Promise.resolve();
   }
 

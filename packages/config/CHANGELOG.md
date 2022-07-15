@@ -11,7 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 ## [Unreleased]
+
+### Added
 - feat: Add `hasBeenSet` property to option
+
+### Fixed
+- fix: Remove unused folder
 
 ## [1.1.0] - 2022-06-27
 

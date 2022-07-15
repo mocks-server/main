@@ -39,7 +39,7 @@ const ROOT_OPTIONS = [
     default: "info",
   },
   {
-    description: "Array of RouteHandlers to be added",
+    description: "Array of VariantHandlers to be added. Legacy",
     name: "routesHandlers",
     type: "array",
     default: [],
@@ -143,9 +143,10 @@ class Core {
       this //To be used only by plugins
     );
 
-    // Create routes handlers
+    // Create variant handlers
     this._variantHandlers = new VariantHandlers({
-      logger: this._logger.namespace("routesHandlers"),
+      logger: this._logger.namespace(VariantHandlers.id),
+      config: this._config.addNamespace(VariantHandlers.id),
     });
 
     // Create mock
@@ -252,8 +253,14 @@ class Core {
     // Register plugins, let them add their custom config
     await this._plugins.register();
 
-    // Register routes handlers
-    await this._variantHandlers.register(this._variantHandlersOption.value);
+    if (this._variantHandlersOption.hasBeenSet) {
+      this._deprecationAlerts.set(
+        "routesHandlers",
+        "Usage of option 'routesHandlers' is deprecated. Use 'variantHandlers.register' instead"
+      );
+    }
+
+    await this._variantHandlers.registerConfig(this._variantHandlersOption.value);
 
     await this._scaffold.init({
       filesLoaderPath: this._filesLoader.path,
@@ -283,7 +290,11 @@ class Core {
 
   // LEGACY, to be removed
   addRoutesHandler(VariantHandler) {
-    this._variantHandlers.add(VariantHandler);
+    this._deprecationAlerts.set(
+      "addRoutesHandler",
+      "Usage of option 'addRoutesHandler' method is deprecated. Use 'variantHandlers.register' instead. https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+    );
+    this._variantHandlers.register([VariantHandler]);
   }
 
   // LEGACY, to be removed
@@ -386,6 +397,10 @@ class Core {
 
   get mock() {
     return this._mock;
+  }
+
+  get variantHandlers() {
+    return this._variantHandlers;
   }
 }
 

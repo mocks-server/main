@@ -27,7 +27,6 @@
     "access": "public"
   },
   "files": [
-    "scaffold",
     "src",
     "index.js"
   ],

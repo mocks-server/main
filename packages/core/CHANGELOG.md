@@ -14,10 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - refactor(#334): Reorganize files and folders
-- feat(#334): Deprecate core.restartServer, core.addRouter and core.removeRouter. Add alerts when used. core.server methods must be used instead.
-- feat(#334): Expose new core.mock API
-- feat(#334): Add new option mock.routes.delay. Deprecate mocks.delay
-- feat(#334): Add new option mock.collections.selected. Deprecate mocks.selected
+- feat(#334): Deprecate `core.restartServer`, `core.addRouter` and `core.removeRouter` methods. Add alerts when used. `core.server` methods must be used instead.
+- feat(#334): Expose new `core.mock` API
+- feat(#334): Add new option `mock.routes.delay`. Deprecate `mocks.delay`
+- feat(#334): Add new option `mock.collections.selected`. Deprecate `mocks.selected`
+- feat(#334): Deprecate `core.addRoutesHandler` method. Add alerts when used. `core.variantHandlers.register` method must be used instead.
+- feat(#334): Deprecate `routesHandlers` option. `variantHandlers.register` option must be used instead.
 
 ## [3.5.0] - 2022-07-05
 

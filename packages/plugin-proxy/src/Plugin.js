@@ -6,9 +6,8 @@ class Plugin {
     return "proxyRoutesHandler";
   }
 
-  constructor({ addRoutesHandler }) {
-    addRoutesHandler(ProxyRoutesHandler);
-    addRoutesHandler(ProxyRoutesHandlerV4);
+  constructor({ variantHandlers }) {
+    variantHandlers.register([ProxyRoutesHandler, ProxyRoutesHandlerV4]);
   }
 }
 

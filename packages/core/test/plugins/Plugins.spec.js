@@ -295,6 +295,17 @@ describe("Plugins", () => {
       expect(coreInstance.mock.onChange.callCount).toEqual(1);
     });
 
+    it("should have core.variantHandlers available", async () => {
+      const fooPlugin = {
+        register: ({ variantHandlers }) => {
+          variantHandlers.register();
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(coreInstance.variantHandlers.register.callCount).toEqual(1);
+    });
+
     it("should have core addRouter method available", async () => {
       const fooPlugin = {
         register: ({ addRouter }) => {

@@ -85,6 +85,9 @@ describe("settings api", () => {
             },
           },
         },
+        variantHandlers: {
+          register: [],
+        },
       });
     });
   });

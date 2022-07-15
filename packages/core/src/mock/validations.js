@@ -136,8 +136,8 @@ function getIds(objs) {
   return objs.map((obj) => obj.id);
 }
 
-function compileRouteValidator(routesHandlers) {
-  const supportedRouteHandlersIds = getIds(routesHandlers);
+function compileRouteValidator(variantHandlers) {
+  const supportedRouteHandlersIds = getIds(variantHandlers);
   const schema = { ...routesSchema };
   schema.properties.variants.items.properties.handler.enum = supportedRouteHandlersIds;
   routeSchema = { ...schema };

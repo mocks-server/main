@@ -188,7 +188,7 @@ class Mock {
       alertsRoutes: this._alertsRoutes,
       logger: this._loggerLoadRoutes,
       loggerRoutes: this._routesLogger,
-      routeHandlers: this._routesVariantsHandlers,
+      routeHandlers: this._variantHandlers,
       core: this._core,
     });
     this._loggerLoadRoutes.debug(`Processed ${this._routesVariants.length} route variants`);
@@ -206,9 +206,9 @@ class Mock {
     this._setCurrent(this._getCollectionSelected());
   }
 
-  init(routesHandlers) {
-    compileRouteValidator(routesHandlers);
-    this._routesVariantsHandlers = routesHandlers;
+  init(variantHandlers) {
+    compileRouteValidator(variantHandlers);
+    this._variantHandlers = variantHandlers;
   }
 
   router(req, res, next) {

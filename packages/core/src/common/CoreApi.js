@@ -109,6 +109,10 @@ class CoreApi {
   get mock() {
     return this._core.mock;
   }
+
+  get variantHandlers() {
+    return this._core.variantHandlers;
+  }
 }
 
 module.exports = CoreApi;

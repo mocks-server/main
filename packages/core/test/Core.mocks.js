@@ -63,6 +63,9 @@ class CoreMock {
       mock: {
         onChange: this._sandbox.stub(),
       },
+      variantHandlers: {
+        register: this._sandbox.stub(),
+      },
     };
 
     Core.mockImplementation(() => this._stubs);

@@ -64,6 +64,7 @@ describe("Core", () => {
     loadersMocks.stubs.instance.new.returns(mockedLoader);
 
     core = new Core();
+    core.variantHandlers._registerOption.value = [];
     await core.init();
   });
 
@@ -191,6 +192,14 @@ describe("Core", () => {
       expect(pluginsInstance.register.callCount).toEqual(1);
     });
 
+    it("should add an Alert if legacy routesHandlers option is set", async () => {
+      core = new Core();
+      sandbox.spy(core._deprecationAlerts, "set");
+      core._variantHandlersOption.hasBeenSet = true;
+      await core.init();
+      expect(core._deprecationAlerts.set.callCount).toEqual(1);
+    });
+
     it("should init server", () => {
       expect(serverInstance.init.callCount).toEqual(1);
     });
@@ -275,8 +284,8 @@ describe("Core", () => {
     it("should add Route Handler", () => {
       core.addRoutesHandler("foo");
       // TODO, do not use private properties in testing
-      expect(core._variantHandlers._variantHandlers.length).toEqual(4);
-      expect(core._variantHandlers._variantHandlers[3]).toEqual("foo");
+      expect(core._variantHandlers._registeredVariantHandlers.length).toEqual(4);
+      expect(core._variantHandlers._registeredVariantHandlers[3]).toEqual("foo");
     });
   });
 
@@ -452,6 +461,12 @@ describe("Core", () => {
   describe("server getter", () => {
     it("should return server", () => {
       expect(core.server).toEqual(serverMocks.stubs.instance);
+    });
+  });
+
+  describe("variantHandlers getter", () => {
+    it("should return variantHandlers", () => {
+      expect(core.variantHandlers).toEqual(core._variantHandlers);
     });
   });
 });

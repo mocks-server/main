@@ -9,7 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const express = require("express");
-const Collections = require("./collections/Collections");
+const Collections = require("./Collections");
 
 const LEGACY_OPTIONS = [
   // LEGACY, to be removed

@@ -96,7 +96,8 @@ describe("plugins", () => {
 
         it("should have executed logger in register method", () => {
           expect(
-            filterLogs(core.logs, "[plugins:test-plugin] Log from register method").length
+            filterLogs(core.logger.globalStore, "[plugins:test-plugin] Log from register method")
+              .length
           ).toEqual(1);
         });
 
@@ -106,7 +107,8 @@ describe("plugins", () => {
 
         it("should have executed logger in init method", () => {
           expect(
-            filterLogs(core.logs, "[plugins:test-plugin] Log from init method").length
+            filterLogs(core.logger.globalStore, "[plugins:test-plugin] Log from init method")
+              .length
           ).toEqual(1);
         });
 
@@ -122,7 +124,8 @@ describe("plugins", () => {
 
         it("should have executed logger in start method", () => {
           expect(
-            filterLogs(core.logs, "[plugins:test-plugin] Log from start method").length
+            filterLogs(core.logger.globalStore, "[plugins:test-plugin] Log from start method")
+              .length
           ).toEqual(1);
         });
 
@@ -168,7 +171,8 @@ describe("plugins", () => {
 
         it("should have executed logger in stop method", () => {
           expect(
-            filterLogs(core.logs, "[plugins:test-plugin] Log from stop method").length
+            filterLogs(core.logger.globalStore, "[plugins:test-plugin] Log from stop method")
+              .length
           ).toEqual(1);
         });
       });

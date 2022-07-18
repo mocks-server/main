@@ -356,9 +356,21 @@ class Mock {
     };
   }
 
+  _getPlainCustomRouteVariants() {
+    return [...this._customVariants];
+  }
+
+  get customRouteVariants() {
+    return this._getPlainCustomRouteVariants();
+  }
+
   // Legacy, to be removed
   get customRoutesVariants() {
-    return [...this._customVariants];
+    this._alertsDeprecation.set(
+      "customRoutesVariants",
+      "Usage of 'customRoutesVariants' getter is deprecated. Use 'mock.plainCustomRouteVariants' instead"
+    );
+    return this._getPlainCustomRouteVariants();
   }
 
   _getSelectedCollection() {

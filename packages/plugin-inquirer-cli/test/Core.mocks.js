@@ -38,6 +38,7 @@ class CoreMock {
         plainRoutes: [],
         plainRoutesVariants: [],
         customRoutesVariants: [],
+        customRouteVariants: [],
         ids: [],
         useRouteVariant: this._sandbox.stub(),
         restoreRouteVariants: this._sandbox.stub(),

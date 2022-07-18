@@ -22,7 +22,7 @@ class CustomRoutesVariants {
     this._logger = logger;
     this._router = express.Router();
     addCollectionMiddleware(this._router, {
-      name: "custom routes variants",
+      name: "custom route variants",
       getItems: this._getCollection.bind(this),
       logger: this._logger,
     });
@@ -32,7 +32,7 @@ class CustomRoutesVariants {
   }
 
   _getCollection() {
-    return this._mock.customRoutesVariants;
+    return this._mock.customRouteVariants;
   }
 
   add(req, res, next) {

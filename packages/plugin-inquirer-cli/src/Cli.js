@@ -268,8 +268,8 @@ class Cli {
     const availableRoutes = this._mock.routes.plain.length;
     const availableRoutesVariants = this._mock.routes.plainVariants.length;
 
-    const currentMockMessage = this._mock.customRoutesVariants.length
-      ? `${currentMock} (custom variants: ${this._mock.customRoutesVariants.join(",")})`
+    const currentMockMessage = this._mock.customRouteVariants.length
+      ? `${currentMock} (custom variants: ${this._mock.customRouteVariants.join(",")})`
       : currentMock;
 
     return [
@@ -278,7 +278,7 @@ class Cli {
       renderHeader(
         `Current mock`,
         currentMockMessage,
-        getCurrentMockMessageLevel(this._mock.customRoutesVariants, currentMock)
+        getCurrentMockMessageLevel(this._mock.customRouteVariants, currentMock)
       ),
       renderHeader(`Mocks`, availableMocks, availableMocks < 1 ? 2 : 0),
       renderHeader(`Routes`, availableRoutes, availableRoutes < 1 ? 2 : 0),

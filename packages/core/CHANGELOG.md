@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat(#334): Deprecate `core.addRoutesHandler` method. Add alerts when used. `core.variantHandlers.register` method must be used instead.
 - feat(#334): Deprecate `routesHandlers` option. `variantHandlers.register` option must be used instead.
 - feat(#334): Deprecate `core.mocks.restoreRoutesVariants` method. `core.mock.restoreRouteVariants` method must be used instead.
+- feat(#334): Deprecate `core.mocks.customRoutesVariants` method. `core.mock.customRouteVariants` method must be used instead.
 - feat(#334): Deprecate `core.onChangeMocks` method. `core.mock.onChange` method must be used instead.
 - feat(#334): Deprecate `core.loadMocks` method. `core.mock.createLoaders` method must be used instead.
 - feat(#334): Deprecate `core.loadRoutes` method. `core.mock.createLoaders` method must be used instead.

@@ -291,6 +291,7 @@ describe("Mock", () => {
         mock.load();
         mock.useRouteVariant("route-2:variant-2");
         expect(mock.customRoutesVariants).toEqual(["route-2:variant-2"]);
+        expect(mock.customRouteVariants).toEqual(["route-2:variant-2"]);
       });
     });
 
@@ -299,8 +300,10 @@ describe("Mock", () => {
         mock.load();
         mock.useRouteVariant("route-2:variant-2");
         expect(mock.customRoutesVariants).toEqual(["route-2:variant-2"]);
+        expect(mock.customRouteVariants).toEqual(["route-2:variant-2"]);
         mock.restoreRoutesVariants();
         expect(mock.customRoutesVariants).toEqual([]);
+        expect(mock.customRouteVariants).toEqual([]);
       });
     });
 
@@ -309,8 +312,10 @@ describe("Mock", () => {
         mock.load();
         mock.useRouteVariant("route-2:variant-2");
         expect(mock.customRoutesVariants).toEqual(["route-2:variant-2"]);
+        expect(mock.customRouteVariants).toEqual(["route-2:variant-2"]);
         mock.restoreRouteVariants();
         expect(mock.customRoutesVariants).toEqual([]);
+        expect(mock.customRouteVariants).toEqual([]);
       });
     });
   });

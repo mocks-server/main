@@ -1,3 +1,5 @@
+const { docsUrl } = require("./helpers");
+
 const CORE_METHODS = [
   "start",
   "stop",
@@ -70,7 +72,9 @@ class CoreApi {
     // TODO, add link to releases URL.
     this._deprecationAlerts.set(
       "core",
-      "Usage of core property is deprecated. Use properties at first level instead: https://www.mocks-server.org/docs/next/guides-migrating-from-v3#plugins"
+      `Usage of core property is deprecated. Use properties at first level instead: ${docsUrl(
+        "releases/migrating-from-v3#plugins"
+      )}`
     );
     return this._core;
   }

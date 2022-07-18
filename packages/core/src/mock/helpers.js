@@ -20,6 +20,7 @@ const {
   findRouteVariantByVariantId,
   collectionRouteVariantsValidationErrors,
 } = require("./validations");
+const { docsUrl } = require("../common/helpers");
 
 const DEFAULT_ROUTES_HANDLER = "default";
 
@@ -243,7 +244,11 @@ function getVariantHandler({
     if (Handler.deprecated) {
       handlersAlerts.set(
         Handler.id,
-        `Handler '${Handler.id}' is deprecated and will be removed in next major version. Consider using another handler. https://www.mocks-server.org/docs/guides-migrating-from-v3#route-variants-handlers`
+        `Handler '${
+          Handler.id
+        }' is deprecated and will be removed in next major version. Consider using another handler. ${docsUrl(
+          "releases/migrating-from-v3#route-variants-handlers"
+        )}`
       );
     }
     routeHandler = new Handler(

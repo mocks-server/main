@@ -8,6 +8,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
+const { deprecatedMessage } = require("../common/helpers");
+
 // LEGACY, remove when legacy alerts are removed
 class AlertsLegacy {
   constructor({ alerts, logger }) {
@@ -22,7 +24,7 @@ class AlertsLegacy {
   add(context, message, error) {
     this._deprecatedAlerts.set(
       "addAlert",
-      `Detected usage of deprecated method 'addAlert'. Use alerts instead: https://www.mocks-server.org/docs/api-mocks-server-api#alerts`
+      deprecatedMessage("method", "addAlert", "alerts", "api/core/alerts")
     );
     const collectionIds = context.split(":");
     const alertId = collectionIds.pop();
@@ -35,7 +37,7 @@ class AlertsLegacy {
   remove(context) {
     this._deprecatedAlerts.set(
       "removeAlert",
-      `Detected usage of deprecated method 'removeAlerts'. Use alerts instead: https://www.mocks-server.org/docs/api-mocks-server-api#alerts`
+      deprecatedMessage("method", "removeAlert", "alerts", "api/core/alerts")
     );
     this._logger.silly(`Removing alerts with context '${context}'`);
     // Clean collection with whole context

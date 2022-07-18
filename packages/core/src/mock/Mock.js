@@ -15,6 +15,7 @@ const { addEventListener, CHANGE_MOCK } = require("../common/events");
 const Loaders = require("./Loaders");
 const Collections = require("./Collections");
 const Routes = require("./Routes");
+const { deprecatedMessage } = require("../common/helpers");
 
 const LEGACY_OPTIONS = [
   // LEGACY, to be removed
@@ -162,7 +163,12 @@ class Mock {
     if (this._currentDelayOptionLegacy.hasBeenSet) {
       this._alertsDeprecation.set(
         "mocks.delay",
-        "Option 'mocks.delay' is deprecated. Use 'mock.routes.delay' instead"
+        deprecatedMessage(
+          "option",
+          "mocks.delay",
+          "mock.routes.delay",
+          "releases/migrating-from-v3#options"
+        )
       );
     }
     return this._routes._delayOption.hasBeenSet
@@ -174,7 +180,12 @@ class Mock {
   _addCollectionsSelectedOptionAlert() {
     this._alertsDeprecation.set(
       "mocks.selected",
-      "Usage of 'mocks.selected' option is deprecated. Use 'mock.collections.selected' instead"
+      deprecatedMessage(
+        "option",
+        "mocks.selected",
+        "mock.collections.selected",
+        "releases/migrating-from-v3#options"
+      )
     );
   }
 
@@ -300,7 +311,12 @@ class Mock {
   set current(id) {
     this._alertsDeprecation.set(
       "current",
-      "Usage of 'current' setter is deprecated. Use 'mock.collections.select()' instead"
+      deprecatedMessage(
+        "setter",
+        "mocks.current",
+        "mock.collections.select()",
+        "releases/migrating-from-v3#api"
+      )
     );
     this._setCurrent(id);
   }
@@ -333,7 +349,12 @@ class Mock {
   restoreRoutesVariants() {
     this._alertsDeprecation.set(
       "restorerouteVariants",
-      "Usage of 'restorerouteVariants()' method is deprecated. Use 'restoreRouteVariants()' instead"
+      deprecatedMessage(
+        "method",
+        "mocks.restoreRoutesVariants",
+        "mock.restoreRouteVariants",
+        "releases/migrating-from-v3#api"
+      )
     );
     this.restoreRouteVariants();
   }
@@ -373,7 +394,12 @@ class Mock {
   get customRoutesVariants() {
     this._alertsDeprecation.set(
       "customrouteVariants",
-      "Usage of 'customrouteVariants' getter is deprecated. Use 'mock.plainCustomRouteVariants' instead"
+      deprecatedMessage(
+        "method",
+        "mocks.customrouteVariants",
+        "mock.plainCustomRouteVariants",
+        "releases/migrating-from-v3#api"
+      )
     );
     return this._getPlainCustomRouteVariants();
   }
@@ -386,7 +412,12 @@ class Mock {
   get current() {
     this._alertsDeprecation.set(
       "current",
-      "Usage of 'current' getter is deprecated. Use 'mock.collections.selected' instead"
+      deprecatedMessage(
+        "getter",
+        "mocks.current",
+        "mock.collections.selected",
+        "releases/migrating-from-v3#api"
+      )
     );
     return this._getSelectedCollection();
   }
@@ -399,7 +430,12 @@ class Mock {
   get ids() {
     this._alertsDeprecation.set(
       "ids",
-      "Usage of 'ids' getter is deprecated. Use 'mock.collections.ids' instead"
+      deprecatedMessage(
+        "getter",
+        "mocks.ids",
+        "mock.collections.ids",
+        "releases/migrating-from-v3#api"
+      )
     );
     return this._getCollectionsIds();
   }
@@ -412,7 +448,12 @@ class Mock {
   get plainMocks() {
     this._alertsDeprecation.set(
       "plainMocks",
-      "Usage of 'plainMocks' getter is deprecated. Use 'mock.collections.plain' instead"
+      deprecatedMessage(
+        "getter",
+        "mocks.plainMocks",
+        "mock.collections.plain",
+        "releases/migrating-from-v3#api"
+      )
     );
     return this._getPlainCollections();
   }
@@ -429,7 +470,12 @@ class Mock {
   get plainRoutes() {
     this._alertsDeprecation.set(
       "plainRoutes",
-      "Usage of 'plainRoutes' getter is deprecated. Use 'mock.routes.plain' instead"
+      deprecatedMessage(
+        "getter",
+        "mocks.plainRoutes",
+        "mock.routes.plain",
+        "releases/migrating-from-v3#api"
+      )
     );
     return this._getPlainRoutes();
   }
@@ -437,8 +483,13 @@ class Mock {
   // Legacy, to be removed
   get plainRoutesVariants() {
     this._alertsDeprecation.set(
-      "plainrouteVariants",
-      "Usage of 'plainrouteVariants' getter is deprecated. Use 'mock.routes.plainVariants' instead"
+      "plainRoutesVariants",
+      deprecatedMessage(
+        "getter",
+        "mocks.plainRoutesVariants",
+        "mock.routes.plainVariants",
+        "releases/migrating-from-v3#api"
+      )
     );
     return this._getPlainVariants();
   }

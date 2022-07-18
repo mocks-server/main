@@ -13,6 +13,7 @@ const { isObject, isFunction } = require("lodash");
 
 const { scopedAlertsMethods } = require("../alerts/legacyHelpers");
 const CoreApi = require("../common/CoreApi");
+const { docsUrl } = require("../common/helpers");
 
 const OPTIONS = [
   {
@@ -29,7 +30,9 @@ const OPTIONS = [
 ];
 
 function formatDeprecatedMessage(format) {
-  return `Defining Plugins as ${format} is deprecated and it won't be supported in next major version. Consider migrating it to a Class Plugin: https://www.mocks-server.org/docs/plugins/development`;
+  return `Defining Plugins as ${format} is deprecated and it won't be supported in next major version. Consider migrating it to a Class Plugin: ${docsUrl(
+    "plugins/development"
+  )}`;
 }
 
 class Plugins {

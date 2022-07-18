@@ -1,6 +1,6 @@
 // Use this file only as a guide for first steps using middlewares. Delete it when no more needed.
 // For a detailed explanation about using middlewares, visit:
-// https://mocks-server.org/docs/guides-using-middlewares
+// https://www.mocks-server.org/docs/usage/variants/middleware
 
 module.exports = [
   {

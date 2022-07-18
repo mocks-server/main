@@ -93,7 +93,9 @@ describe("Mock", () => {
       const alert = alerts.flat.pop();
       expect(alert.id).toEqual("mocks.delay");
       expect(alert.value.message).toEqual(
-        "Option 'mocks.delay' is deprecated. Use 'mock.routes.delay' instead"
+        expect.stringContaining(
+          "Usage of 'mocks.delay' option is deprecated. Use 'mock.routes.delay' instead"
+        )
       );
       expect(alert.collection).toEqual("mocks:deprecated");
     });

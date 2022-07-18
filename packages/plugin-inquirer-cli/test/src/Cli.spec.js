@@ -658,19 +658,19 @@ describe("Cli", () => {
     });
 
     it("should print current mock in red if it is null", async () => {
-      coreInstance.mock.current = null;
+      coreInstance.mock.collections.selected = null;
       await cli.start();
       expect(cli._header()[2]).toEqual(expect.stringContaining(chalk.red("-")));
     });
 
     it("should print current mock in green if it is defined", async () => {
-      coreInstance.mock.current = "foo";
+      coreInstance.mock.collections.selected = "foo";
       await cli.start();
       expect(cli._header()[2]).toEqual(expect.stringContaining(chalk.green("foo")));
     });
 
     it("should print current mock in yellow if there are custom routes variants", async () => {
-      coreInstance.mock.current = "foo";
+      coreInstance.mock.collections.selected = "foo";
       coreInstance.mock.customRoutesVariants = ["foo-variant", "foo-variant-2"];
       await cli.start();
       expect(cli._header()[2]).toEqual(

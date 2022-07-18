@@ -30,6 +30,9 @@ class MockMock {
       load: this._sandbox.stub(),
       init: this._sandbox.stub(),
       createLoaders: this._sandbox.stub().returns(this._loadersStubs),
+      collections: {
+        selected: CURRENT,
+      },
     };
 
     Mock.mockImplementation(() => this._stubs);
@@ -44,6 +47,7 @@ class MockMock {
   }
 
   restore() {
+    this._stubs.collections.selected = CURRENT;
     this._stubs.current = CURRENT;
     this._sandbox.restore();
   }

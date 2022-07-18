@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Use core.mock.onChange method
 - feat: Use core.mock.routes.plain getter
 - feat: Use core.mock.routes.plainVariants getter
+- feat: Use core.mock.collections.selected getter
 
 ## [3.1.0] - 2022-06-27
 ### Changed

@@ -20,12 +20,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat(#334): Add new option `mock.collections.selected`. Deprecate `mocks.selected`
 - feat(#334): Deprecate `core.addRoutesHandler` method. Add alerts when used. `core.variantHandlers.register` method must be used instead.
 - feat(#334): Deprecate `routesHandlers` option. `variantHandlers.register` option must be used instead.
-- feat(#334): Deprecate `core.mock.restoreRoutesVariants` method. `core.mock.restoreRouteVariants` method must be used instead.
+- feat(#334): Deprecate `core.mocks.restoreRoutesVariants` method. `core.mock.restoreRouteVariants` method must be used instead.
 - feat(#334): Deprecate `core.onChangeMocks` method. `core.mock.onChange` method must be used instead.
 - feat(#334): Deprecate `core.loadMocks` method. `core.mock.createLoaders` method must be used instead.
 - feat(#334): Deprecate `core.loadRoutes` method. `core.mock.createLoaders` method must be used instead.
-- feat(#334): Deprecate `core.mock.plainRoutes` getter. `core.mock.routes.plain` getter must be used instead.
-- feat(#334): Deprecate `core.mock.plainRoutesVariants` getter. `core.mock.routes.plainVariants` getter must be used instead.
+- feat(#334): Deprecate `core.mocks.plainRoutes` getter. `core.mock.routes.plain` getter must be used instead.
+- feat(#334): Deprecate `core.mocks.plainRoutesVariants` getter. `core.mock.routes.plainVariants` getter must be used instead.
+- feat(#334): Deprecate `core.mocks.current` getter. `core.mock.collections.selected` getter must be used instead.
 
 ## [3.5.0] - 2022-07-05
 

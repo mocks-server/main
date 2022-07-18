@@ -46,6 +46,9 @@ class CoreMock {
           plain: [],
           plainVariants: [],
         },
+        collections: {
+          selected: "foo-current",
+        },
       },
       server: {
         restart: this._sandbox.stub(),

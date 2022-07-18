@@ -161,6 +161,11 @@ describe("Mock", () => {
       expect(mock.current).toEqual(null);
     });
 
+    it("should return null as selected collection", () => {
+      mock.load();
+      expect(mock.collections.selected).toEqual(null);
+    });
+
     it("should return empty array in ids", () => {
       mock.load();
       expect(mock.ids).toEqual([]);
@@ -213,9 +218,14 @@ describe("Mock", () => {
     });
 
     describe("when loaded", () => {
-      it("should set selected collection id", () => {
+      it("should set current id", () => {
         mock.load();
         expect(mock.current).toEqual("mock-id");
+      });
+
+      it("should set selected collection id", () => {
+        mock.load();
+        expect(mock.collections.selected).toEqual("mock-id");
       });
 
       it("should return array of ids in ids getter", () => {
@@ -253,6 +263,12 @@ describe("Mock", () => {
         mock.load();
         mock.current = "mock-id";
         expect(mock.current).toEqual("mock-id");
+      });
+
+      it("should set selected collection when it exists", () => {
+        mock.load();
+        mock.current = "mock-id";
+        expect(mock.collections.selected).toEqual("mock-id");
       });
 
       it("should set default collection when id does not exists", () => {

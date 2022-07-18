@@ -109,6 +109,7 @@ class Mock {
       logger: this._collectionsLogger,
       config: this._collectionsConfig,
       onChangeSelected: this._setCurrent.bind(this),
+      getSelectedCollection: this._getSelectedCollection.bind(this),
     });
 
     // Create collections loaders
@@ -290,10 +291,11 @@ class Mock {
     this._setCurrent(id);
   }
 
+  // Legacy, to be removed
   set current(id) {
     this._alertsDeprecation.set(
       "current",
-      "Usage of 'current()' method is deprecated. Use 'collections.select()' instead"
+      "Usage of 'current' setter is deprecated. Use 'mock.collections.select()' instead"
     );
     this._setCurrent(id);
   }
@@ -322,9 +324,10 @@ class Mock {
     });
   }
 
+  // Legacy, to be removed
   restoreRoutesVariants() {
     this._alertsDeprecation.set(
-      "current",
+      "restoreRoutesVariants",
       "Usage of 'restoreRoutesVariants()' method is deprecated. Use 'restoreRouteVariants()' instead"
     );
     this.restoreRouteVariants();
@@ -353,18 +356,30 @@ class Mock {
     };
   }
 
+  // Legacy, to be removed
   get customRoutesVariants() {
     return [...this._customVariants];
   }
 
-  get current() {
+  _getSelectedCollection() {
     return this._currentId;
   }
 
+  // Legacy, to be removed
+  get current() {
+    this._alertsDeprecation.set(
+      "current",
+      "Usage of 'current' getter is deprecated. Use 'mock.collections.selected' instead"
+    );
+    return this._getSelectedCollection();
+  }
+
+  // Legacy, to be removed
   get ids() {
     return [...this._mocksIds];
   }
 
+  // Legacy, to be removed
   get plainMocks() {
     return [...this._plainMocks];
   }
@@ -377,24 +392,30 @@ class Mock {
     return [...this._plainVariants];
   }
 
+  // Legacy, to be removed
   get plainRoutes() {
     this._alertsDeprecation.set(
       "plainRoutes",
-      "Usage of 'plainRoutes' getter is deprecated. Use 'routes.plain' instead"
+      "Usage of 'plainRoutes' getter is deprecated. Use 'mock.routes.plain' instead"
     );
     return this._getPlainRoutes();
   }
 
+  // Legacy, to be removed
   get plainRoutesVariants() {
     this._alertsDeprecation.set(
       "plainRoutesVariants",
-      "Usage of 'plainRoutesVariants' getter is deprecated. Use 'routes.plainVariants' instead"
+      "Usage of 'plainRoutesVariants' getter is deprecated. Use 'mock.routes.plainVariants' instead"
     );
     return this._getPlainVariants();
   }
 
   get routes() {
     return this._routes;
+  }
+
+  get collections() {
+    return this._collections;
   }
 }
 

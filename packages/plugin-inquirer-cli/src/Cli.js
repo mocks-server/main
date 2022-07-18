@@ -263,7 +263,7 @@ class Cli {
       : this._optionDelayLegacy.value;
     const watchEnabled = this._optionWatch.value;
 
-    const currentMock = this._mock.current || "-";
+    const currentMock = this._mock.collections.selected || "-";
     const availableMocks = this._mock.plainMocks.length;
     const availableRoutes = this._mock.routes.plain.length;
     const availableRoutesVariants = this._mock.routes.plainVariants.length;

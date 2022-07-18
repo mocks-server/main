@@ -87,7 +87,7 @@ class Plugin {
     this._routesVariantsApi = readCollectionAndModelRouter({
       collectionName: "routes variants",
       modelName: "route variant",
-      getItems: () => mock.plainRoutesVariants,
+      getItems: () => mock.routes.plainVariants,
       logger: this._logger.namespace("routeVariants"),
     });
 

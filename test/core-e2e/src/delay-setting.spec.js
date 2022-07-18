@@ -115,7 +115,7 @@ describe("delay setting", () => {
     });
 
     it("should have zero delay in plain route variant", async () => {
-      expect(core.mock.plainRoutesVariants[2]).toEqual({
+      expect(core.mock.routes.plainVariants[2]).toEqual({
         handler: "json",
         id: "get-user:zero-delay",
         delay: 0,
@@ -146,7 +146,7 @@ describe("delay setting", () => {
     });
 
     it("should have null delay in plain route variant", async () => {
-      expect(core.mock.plainRoutesVariants[3]).toEqual({
+      expect(core.mock.routes.plainVariants[3]).toEqual({
         handler: "json",
         id: "get-user:null-delay",
         delay: null,

@@ -25,7 +25,7 @@ describe("loadCollections and loadRoutes methods", () => {
       core.config.namespace("mock").namespace("collections").option("selected").value = mockName;
       await new Promise((resolve) => {
         const interval = setInterval(() => {
-          if (core.mocks.current === mockName) {
+          if (core.mock.current === mockName) {
             clearInterval(interval);
             resolve();
           }

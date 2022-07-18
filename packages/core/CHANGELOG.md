@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat(#334): Deprecate `core.loadMocks` method. `core.mock.createLoaders` method must be used instead.
 - feat(#334): Deprecate `core.loadRoutes` method. `core.mock.createLoaders` method must be used instead.
 - feat(#334): Deprecate `core.mock.plainRoutes` getter. `core.mock.routes.plain` getter must be used instead.
+- feat(#334): Deprecate `core.mock.plainRoutesVariants` getter. `core.mock.routes.plainVariants` getter must be used instead.
 
 ## [3.5.0] - 2022-07-05
 

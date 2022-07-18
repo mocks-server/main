@@ -48,7 +48,7 @@ describe("mocks and routes validations", () => {
     });
 
     it("should have not loaded mocks", () => {
-      expect(core.mocks.plainMocks.length).toEqual(0);
+      expect(core.mock.plainMocks.length).toEqual(0);
     });
   });
 
@@ -143,11 +143,11 @@ describe("mocks and routes validations", () => {
     });
 
     it("should have not loaded invalid route variants", () => {
-      expect(core.mocks.plainRoutesVariants.length).toEqual(3);
+      expect(core.mock.routes.plainVariants.length).toEqual(3);
     });
 
     it("should have not loaded invalid mocks", () => {
-      expect(core.mocks.plainMocks.length).toEqual(4);
+      expect(core.mock.plainMocks.length).toEqual(4);
     });
 
     it("should return user 2 at /api/users/1", async () => {

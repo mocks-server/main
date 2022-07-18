@@ -44,6 +44,7 @@ class CoreMock {
         onChange: this._sandbox.stub().returns(doNothing),
         routes: {
           plain: [],
+          plainVariants: [],
         },
       },
       server: {

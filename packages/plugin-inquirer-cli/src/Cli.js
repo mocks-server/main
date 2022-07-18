@@ -266,7 +266,7 @@ class Cli {
     const currentMock = this._mock.current || "-";
     const availableMocks = this._mock.plainMocks.length;
     const availableRoutes = this._mock.routes.plain.length;
-    const availableRoutesVariants = this._mock.plainRoutesVariants.length;
+    const availableRoutesVariants = this._mock.routes.plainVariants.length;
 
     const currentMockMessage = this._mock.customRoutesVariants.length
       ? `${currentMock} (custom variants: ${this._mock.customRoutesVariants.join(",")})`
@@ -344,7 +344,7 @@ class Cli {
   async _changeRouteVariant() {
     this._currentScreen = SCREENS.MOCK;
     this._cli.clearScreen();
-    const routeVariantsIds = this._mock.plainRoutesVariants.map((variant) => variant.id);
+    const routeVariantsIds = this._mock.routes.plainVariants.map((variant) => variant.id);
     if (!routeVariantsIds.length) {
       return this._displayMainMenu();
     }

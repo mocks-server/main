@@ -174,6 +174,13 @@ describe("Mock", () => {
         expect(mock.routes.plain).toEqual(["foo", "foo-2"]);
       });
     });
+
+    describe("plainVariants", () => {
+      it("should return variants in plain format", () => {
+        mock._plainVariants = ["foo", "foo-2"];
+        expect(mock.routes.plainVariants).toEqual(["foo", "foo-2"]);
+      });
+    });
   });
 
   describe("when there are valid mocks and routes", () => {

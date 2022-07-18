@@ -25,7 +25,7 @@ describe("mocks and routes", () => {
 
   describe("amounts", () => {
     it("should have three mocks", async () => {
-      expect(core.mocks.plainMocks.length).toEqual(3);
+      expect(core.mock.plainMocks.length).toEqual(3);
     });
 
     it("should have two routes", async () => {
@@ -33,13 +33,13 @@ describe("mocks and routes", () => {
     });
 
     it("should have five route variants", async () => {
-      expect(core.mocks.plainRoutesVariants.length).toEqual(5);
+      expect(core.mock.routes.plainVariants.length).toEqual(5);
     });
   });
 
   describe("plainMocks", () => {
     it("should return plain mocks", async () => {
-      expect(core.mocks.plainMocks).toEqual([
+      expect(core.mock.plainMocks).toEqual([
         {
           id: "base",
           from: null,
@@ -81,7 +81,7 @@ describe("mocks and routes", () => {
     });
 
     it("should return plain routesVariants", async () => {
-      expect(core.mocks.plainRoutesVariants).toEqual([
+      expect(core.mock.routes.plainVariants).toEqual([
         {
           id: "get-user:1",
           routeId: "get-user",

@@ -99,6 +99,7 @@ class Mock {
       config: this._routesConfig,
       onChangeDelay: this._emitChange.bind(this),
       getPlainRoutes: this._getPlainRoutes.bind(this),
+      getPlainVariants: this._getPlainVariants.bind(this),
     });
 
     // TODO, move collections logic to Collections Class
@@ -138,7 +139,7 @@ class Mock {
     this._plainMocks = [];
     this._routesDefinitions = [];
     this._plainRoutes = [];
-    this._plainRoutesVariants = [];
+    this._plainVariants = [];
     this._routesVariants = [];
     this._customVariants = [];
     this._customVariantsMock = null;
@@ -231,7 +232,7 @@ class Mock {
     this._processMocks();
     this._mocksIds = getIds(this._mocks);
     this._plainRoutes = getPlainRoutes(this._routesDefinitions, this._routesVariants);
-    this._plainRoutesVariants = getPlainRoutesVariants(this._routesVariants);
+    this._plainVariants = getPlainRoutesVariants(this._routesVariants);
     this._plainMocks = getPlainMocks(this._mocks, this._mocksDefinitions);
     this._setCurrent(this._getCollectionSelected());
   }
@@ -372,6 +373,10 @@ class Mock {
     return [...this._plainRoutes];
   }
 
+  _getPlainVariants() {
+    return [...this._plainVariants];
+  }
+
   get plainRoutes() {
     this._alertsDeprecation.set(
       "plainRoutes",
@@ -381,7 +386,11 @@ class Mock {
   }
 
   get plainRoutesVariants() {
-    return [...this._plainRoutesVariants];
+    this._alertsDeprecation.set(
+      "plainRoutesVariants",
+      "Usage of 'plainRoutesVariants' getter is deprecated. Use 'routes.plainVariants' instead"
+    );
+    return this._getPlainVariants();
   }
 
   get routes() {

@@ -31,7 +31,7 @@ describe("when method is defined as array", () => {
   describe("plain mocks and routes", () => {
     describe("amounts", () => {
       it("should have two mocks", async () => {
-        expect(core.mocks.plainMocks.length).toEqual(2);
+        expect(core.mock.plainMocks.length).toEqual(2);
       });
 
       it("should have two routes", async () => {
@@ -39,13 +39,13 @@ describe("when method is defined as array", () => {
       });
 
       it("should have four route variants", async () => {
-        expect(core.mocks.plainRoutesVariants.length).toEqual(4);
+        expect(core.mock.routes.plainVariants.length).toEqual(4);
       });
     });
 
     describe("plainMocks", () => {
       it("should return plain mocks", async () => {
-        expect(core.mocks.plainMocks).toEqual([
+        expect(core.mock.plainMocks).toEqual([
           {
             id: "base",
             from: null,
@@ -81,7 +81,7 @@ describe("when method is defined as array", () => {
       });
 
       it("should return plain routesVariants", async () => {
-        expect(core.mocks.plainRoutesVariants).toEqual([
+        expect(core.mock.routes.plainVariants).toEqual([
           {
             id: "get-user:1",
             routeId: "get-user",
@@ -185,7 +185,7 @@ describe("when method is defined as array", () => {
 
   describe('when using route variant "get-user:2"', () => {
     it("should serve users under the /api/users path", async () => {
-      core.mocks.useRouteVariant("get-user:2");
+      core.mock.useRouteVariant("get-user:2");
       const users = await doFetch("/api/users?req=10");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([

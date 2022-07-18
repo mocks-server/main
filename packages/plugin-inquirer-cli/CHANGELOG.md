@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Use core.mock.collections.selected getter
 - feat: Use core.mock.collections.ids getter
 - feat: Use core.mock.collections.plain getter
+- feat: Use core.alerts.onChange method
 
 ## [3.1.0] - 2022-06-27
 ### Changed

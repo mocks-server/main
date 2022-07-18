@@ -61,6 +61,7 @@ class CoreMock {
         root: {
           customFlat: [],
         },
+        onChange: this._sandbox.stub().returns(doNothing),
       },
       serverError: null,
     };

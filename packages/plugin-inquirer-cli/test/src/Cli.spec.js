@@ -52,7 +52,6 @@ describe("Cli", () => {
     cliArgs = {
       alerts: coreMocks.stubs.instance.alerts,
       mock: coreMocks.stubs.instance.mock,
-      onChangeAlerts: coreMocks.stubs.instance.onChangeAlerts,
       server: coreMocks.stubs.instance.server,
       config: configMock.stubs.namespace,
     };
@@ -258,7 +257,7 @@ describe("Cli", () => {
 
     it("should refresh main menu", async () => {
       expect.assertions(2);
-      coreInstance.onChangeAlerts.getCall(0).args[0]();
+      coreInstance.alerts.onChange.getCall(0).args[0]();
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -308,7 +307,7 @@ describe("Cli", () => {
     beforeEach(async () => {
       removeChangeMocksSpy = sinon.spy();
       removeChangeAlertsSpy = sinon.spy();
-      coreInstance.onChangeAlerts.returns(removeChangeAlertsSpy);
+      coreInstance.alerts.onChange.returns(removeChangeAlertsSpy);
       coreInstance.mock.onChange.returns(removeChangeMocksSpy);
       await cli.start();
     });

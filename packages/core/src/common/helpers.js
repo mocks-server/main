@@ -12,6 +12,16 @@ function arrayMerge(_destinationArray, sourceArray) {
   return sourceArray;
 }
 
+function docsUrl(url) {
+  return `https://www.mocks-server.org/docs/${url}`;
+}
+
+function deprecatedMessage(type, oldName, newName, url) {
+  return `Usage of '${oldName}' ${type} is deprecated. Use '${newName}' instead: ${docsUrl(url)}`;
+}
+
 module.exports = {
   arrayMerge,
+  deprecatedMessage,
+  docsUrl,
 };

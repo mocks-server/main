@@ -126,12 +126,11 @@ class Cli {
     return "inquirerCli";
   }
 
-  constructor({ config, alerts, mock, onChangeAlerts, server }) {
+  constructor({ config, alerts, mock, server }) {
     this._alerts = alerts;
     this._server = server;
     this._config = config;
     this._mock = mock;
-    this._onChangeAlerts = onChangeAlerts;
 
     this._inited = false;
     this._started = false;
@@ -185,7 +184,7 @@ class Cli {
       return Promise.resolve();
     }
     this._started = true;
-    this._stopListeningChangeAlerts = this._onChangeAlerts(this._refreshMenuIfStarted);
+    this._stopListeningChangeAlerts = this._alerts.onChange(this._refreshMenuIfStarted);
     this._stopListeningChangeMocks = this._mock.onChange(this._refreshMenuIfStarted);
     this._logLevel = this._optionLog.value;
     this._silentTraces();

@@ -237,7 +237,7 @@ describe("plugins", () => {
         registerSpy();
         configSpy(config);
       }
-      init({ onChangeAlerts, mock, logger, config }) {
+      init({ alerts, mock, logger, config }) {
         logger.info("Log from init method");
         initSpy(
           config.root.namespace("files").option("path").value,
@@ -245,7 +245,7 @@ describe("plugins", () => {
           config.root.namespace("mock").namespace("routes").option("delay").value
         );
         config.root.option("log").value = "silly";
-        onChangeAlerts(changeAlertsSpy);
+        alerts.onChange(changeAlertsSpy);
         mock.onChange(mocksLoadedSpy);
       }
       start({ alerts, logger }) {
@@ -274,7 +274,7 @@ describe("plugins", () => {
         registerSpy();
         configSpy(config);
       }
-      init({ logger, config, onChangeAlerts, mock }) {
+      init({ logger, config, alerts, mock }) {
         logger.info("Log from init method");
         initSpy(
           config.root.namespace("files").option("path").value,
@@ -282,7 +282,7 @@ describe("plugins", () => {
           config.root.namespace("mock").namespace("routes").option("delay").value
         );
         config.root.option("log").value = "silly";
-        onChangeAlerts(changeAlertsSpy);
+        alerts.onChange(changeAlertsSpy);
         mock.onChange(mocksLoadedSpy);
       }
       start({ alerts, logger }) {
@@ -307,7 +307,7 @@ describe("plugins", () => {
         registerSpy();
         configSpy(config);
       }
-      init({ logger, config, onChangeAlerts, mock }) {
+      init({ logger, config, alerts, mock }) {
         logger.info("Log from init method");
         initSpy(
           config.root.namespace("files").option("path").value,
@@ -315,7 +315,7 @@ describe("plugins", () => {
           config.root.namespace("mock").namespace("routes").option("delay").value
         );
         config.root.option("log").value = "silly";
-        onChangeAlerts(changeAlertsSpy);
+        alerts.onChange(changeAlertsSpy);
         mock.onChange(mocksLoadedSpy);
       }
       start({ alerts, logger }) {

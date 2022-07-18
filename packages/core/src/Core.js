@@ -26,7 +26,7 @@ const Alerts = require("./alerts/Alerts");
 const UpdateNotifier = require("./update-notifier/UpdateNotifier");
 const { scopedAlertsMethods } = require("./alerts/legacyHelpers");
 const { addEventListener, CHANGE_MOCK, CHANGE_ALERTS, CHANGE_LOGS } = require("./common/events");
-const { arrayMerge } = require("./common/helpers");
+const { arrayMerge, deprecatedMessage } = require("./common/helpers");
 
 const MODULE_NAME = "mocks";
 
@@ -132,7 +132,12 @@ class Core {
           return (collections) => {
             this._deprecationAlerts.set(
               "loadMocks",
-              "Usage of 'core.loadMocks' method is deprecated. Use 'core.mock.createLoaders' instead. https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+              deprecatedMessage(
+                "method",
+                "core.loadMocks",
+                "core.mock.createLoaders",
+                "releases/migrating-from-v3#api"
+              )
             );
             return loadCollections(collections);
           };
@@ -142,7 +147,12 @@ class Core {
           return (routes) => {
             this._deprecationAlerts.set(
               "loadRoutes",
-              "Usage of 'core.loadRoutes' method is deprecated. Use 'core.mock.createLoaders' instead. https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+              deprecatedMessage(
+                "method",
+                "core.loadRoutes",
+                "core.mock.createLoaders",
+                "releases/migrating-from-v3#api"
+              )
             );
             return loadRoutes(routes);
           };
@@ -251,7 +261,12 @@ class Core {
     if (this._variantHandlersOption.hasBeenSet) {
       this._deprecationAlerts.set(
         "routesHandlers",
-        "Usage of 'routesHandlers' option is deprecated. Use 'variantHandlers.register' instead"
+        deprecatedMessage(
+          "option",
+          "routesHandlers",
+          "variantHandlers.register",
+          "configuration/migrating-from-v3#options"
+        )
       );
     }
 
@@ -287,7 +302,12 @@ class Core {
   addRoutesHandler(VariantHandler) {
     this._deprecationAlerts.set(
       "addRoutesHandler",
-      "Usage of 'addRoutesHandler' option is deprecated. Use 'variantHandlers.register' instead. https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+      deprecatedMessage(
+        "method",
+        "core.addRoutesHandler",
+        "core.variantHandlers.register",
+        "releases/migrating-from-v3#api"
+      )
     );
     this._variantHandlers.register([VariantHandler]);
   }
@@ -296,7 +316,12 @@ class Core {
   loadMocks(collections) {
     this._deprecationAlerts.set(
       "loadMocks",
-      "Usage of 'core.loadMocks' method is deprecated. Use 'core.mock.createLoaders' instead. https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+      deprecatedMessage(
+        "method",
+        "core.loadMocks",
+        "core.mock.createLoaders",
+        "releases/migrating-from-v3#api"
+      )
     );
     this._loadCollections(collections);
   }
@@ -305,7 +330,12 @@ class Core {
   loadRoutes(routes) {
     this._deprecationAlerts.set(
       "loadRoutes",
-      "Usage of 'core.loadRoutes' method is deprecated. Use 'core.mock.createLoaders' instead. https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+      deprecatedMessage(
+        "method",
+        "core.loadRoutes",
+        "core.mock.createLoaders",
+        "releases/migrating-from-v3#api"
+      )
     );
     this._loadRoutes(routes);
   }
@@ -316,13 +346,27 @@ class Core {
   onChangeMocks(listener) {
     this._deprecationAlerts.set(
       "onChangeMocks",
-      "Usage of 'core.onChangeMocks' method is deprecated. Use 'core.mock.onChange' instead. https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+      deprecatedMessage(
+        "method",
+        "core.onChangeMocks",
+        "core.mock.onChange",
+        "releases/migrating-from-v3#api"
+      )
     );
     return addEventListener(listener, CHANGE_MOCK, this._eventEmitter);
   }
 
   // LEGACY, to be removed
   onChangeAlerts(listener) {
+    this._deprecationAlerts.set(
+      "onChangeAlerts",
+      deprecatedMessage(
+        "method",
+        "core.onChangeAlerts",
+        "core.alerts.onChange",
+        "releases/migrating-from-v3#api"
+      )
+    );
     return addEventListener(listener, CHANGE_ALERTS, this._eventEmitter);
   }
 
@@ -337,7 +381,12 @@ class Core {
   restartServer() {
     this._deprecationAlerts.set(
       "restartServer",
-      "Usage of 'core.restartServer' is deprecated. Use 'core.server.restart' instead: https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+      deprecatedMessage(
+        "method",
+        "core.restartServer",
+        "core.server.restart",
+        "releases/migrating-from-v3#api"
+      )
     );
     return this._server.restart();
   }
@@ -346,7 +395,12 @@ class Core {
   addRouter(path, router) {
     this._deprecationAlerts.set(
       "addRouter",
-      "Usage of 'core.addRouter' method is deprecated. Use 'core.server.addRouter' instead: https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+      deprecatedMessage(
+        "method",
+        "core.addRouter",
+        "core.server.addRouter",
+        "releases/migrating-from-v3#api"
+      )
     );
     return this._server.addRouter(path, router);
   }
@@ -355,7 +409,12 @@ class Core {
   removeRouter(path, router) {
     this._deprecationAlerts.set(
       "removeRouter",
-      "Usage of 'core.removeRouter' method is deprecated. Use 'core.server.removeRouter' instead: https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
+      deprecatedMessage(
+        "method",
+        "core.removeRouter",
+        "core.server.removeRouter",
+        "releases/migrating-from-v3#api"
+      )
     );
     return this._server.removeRouter(path, router);
   }
@@ -380,13 +439,27 @@ class Core {
   get tracer() {
     this._deprecationAlerts.set(
       "tracer",
-      "Usage of 'core.tracer' is deprecated. Use 'core.logger' instead: https://www.mocks-server.org/docs/next/guides-migrating-from-v3#logger"
+      deprecatedMessage(
+        "object",
+        "core.tracer",
+        "core.logger",
+        "releases/migrating-from-v3#logger"
+      )
     );
     return tracer;
   }
 
   // LEGACY, to be removed
   get logs() {
+    this._deprecationAlerts.set(
+      "logs",
+      deprecatedMessage(
+        "getter",
+        "core.logs",
+        "core.logger.globalStore",
+        "releases/migrating-from-v3#logger"
+      )
+    );
     return this._logger.globalStore;
   }
 

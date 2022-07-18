@@ -365,7 +365,7 @@ class Core {
       deprecatedMessage(
         "method",
         "core.onChangeAlerts",
-        "core.alerts.onChange",
+        "core.alerts.root.onChange",
         "releases/migrating-from-v3#api"
       )
     );

@@ -157,7 +157,7 @@ describe("files watcher", () => {
   describe("When files are modified and contain an error", () => {
     beforeAll(async () => {
       fsExtra.copySync(fixturesFolder("files-error-mock"), fixturesFolder("temp"));
-      await wait(2000);
+      await wait(3000);
     });
 
     it("should display an error", async () => {

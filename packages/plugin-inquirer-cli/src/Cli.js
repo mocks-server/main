@@ -184,7 +184,7 @@ class Cli {
       return Promise.resolve();
     }
     this._started = true;
-    this._stopListeningChangeAlerts = this._alerts.onChange(this._refreshMenuIfStarted);
+    this._stopListeningChangeAlerts = this._alerts.root.onChange(this._refreshMenuIfStarted);
     this._stopListeningChangeMocks = this._mock.onChange(this._refreshMenuIfStarted);
     this._logLevel = this._optionLog.value;
     this._silentTraces();

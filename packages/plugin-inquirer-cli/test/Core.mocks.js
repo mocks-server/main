@@ -60,8 +60,8 @@ class CoreMock {
       alerts: {
         root: {
           customFlat: [],
+          onChange: this._sandbox.stub().returns(doNothing),
         },
-        onChange: this._sandbox.stub().returns(doNothing),
       },
       serverError: null,
     };

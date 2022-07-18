@@ -54,8 +54,8 @@ describe("when path not exists", () => {
       );
     });
 
-    it("should have three mocks", async () => {
-      expect(core.mock.plainMocks.length).toEqual(3);
+    it("should have three collections", async () => {
+      expect(core.mock.collections.plain.length).toEqual(3);
     });
 
     it("should have three routes", async () => {

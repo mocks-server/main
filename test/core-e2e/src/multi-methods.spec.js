@@ -28,10 +28,10 @@ describe("when method is defined as array", () => {
     await core.stop();
   });
 
-  describe("plain mocks and routes", () => {
+  describe("plain collections and routes", () => {
     describe("amounts", () => {
-      it("should have two mocks", async () => {
-        expect(core.mock.plainMocks.length).toEqual(2);
+      it("should have two collections", async () => {
+        expect(core.mock.collections.plain.length).toEqual(2);
       });
 
       it("should have two routes", async () => {
@@ -43,9 +43,9 @@ describe("when method is defined as array", () => {
       });
     });
 
-    describe("plainMocks", () => {
-      it("should return plain mocks", async () => {
-        expect(core.mock.plainMocks).toEqual([
+    describe("collections.plain", () => {
+      it("should return plain collections", async () => {
+        expect(core.mock.collections.plain).toEqual([
           {
             id: "base",
             from: null,

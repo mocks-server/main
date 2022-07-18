@@ -32,8 +32,8 @@ describe("when there is an error loading files", () => {
       expect(core.mock.routes.plainVariants.length).toEqual(5);
     });
 
-    it("should have no mocks", async () => {
-      expect(core.mock.plainMocks.length).toEqual(0);
+    it("should have no collections", async () => {
+      expect(core.mock.collections.plain.length).toEqual(0);
     });
 
     it("should have added an alert about not mock found", async () => {
@@ -58,7 +58,7 @@ describe("when there is an error loading files", () => {
     });
 
     it("should have three mocks", async () => {
-      expect(core.mock.plainMocks.length).toEqual(3);
+      expect(core.mock.collections.plain.length).toEqual(3);
     });
 
     it("should have zero routes", async () => {
@@ -76,7 +76,7 @@ describe("when there is an error loading files", () => {
     });
 
     it("mocks should not have routes variants", () => {
-      expect(core.mock.plainMocks).toEqual([
+      expect(core.mock.collections.plain).toEqual([
         {
           id: "base",
           from: null,

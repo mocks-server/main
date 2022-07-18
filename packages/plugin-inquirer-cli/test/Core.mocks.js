@@ -49,6 +49,8 @@ class CoreMock {
         },
         collections: {
           selected: "foo-current",
+          ids: [],
+          plain: [],
         },
       },
       server: {

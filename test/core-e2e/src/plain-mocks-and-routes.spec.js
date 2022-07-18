@@ -24,8 +24,8 @@ describe("mocks and routes", () => {
   });
 
   describe("amounts", () => {
-    it("should have three mocks", async () => {
-      expect(core.mock.plainMocks.length).toEqual(3);
+    it("should have three collections", async () => {
+      expect(core.mock.collections.plain.length).toEqual(3);
     });
 
     it("should have two routes", async () => {
@@ -37,9 +37,9 @@ describe("mocks and routes", () => {
     });
   });
 
-  describe("plainMocks", () => {
-    it("should return plain mocks", async () => {
-      expect(core.mock.plainMocks).toEqual([
+  describe("collections.plain", () => {
+    it("should return plain collections", async () => {
+      expect(core.mock.collections.plain).toEqual([
         {
           id: "base",
           from: null,

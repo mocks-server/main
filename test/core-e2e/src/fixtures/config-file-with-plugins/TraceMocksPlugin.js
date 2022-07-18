@@ -29,7 +29,7 @@ class Plugin {
 
   traceMocks() {
     if (this._enabled && this._started) {
-      this._logger.info(`There are ${this._mock.plainMocks.length} mocks available`);
+      this._logger.info(`There are ${this._mock.collections.plain.length} mocks available`);
     }
   }
 

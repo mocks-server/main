@@ -73,7 +73,7 @@ class Plugin {
     this._mocksApi = readCollectionAndModelRouter({
       collectionName: "mocks",
       modelName: "mock",
-      getItems: () => mock.plainMocks,
+      getItems: () => mock.collections.plain,
       logger: this._logger.namespace("mocks"),
     });
 

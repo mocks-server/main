@@ -343,14 +343,14 @@ describe("Cli", () => {
     let originalIds;
 
     beforeEach(() => {
-      originalIds = coreInstance.mock.ids;
-      coreInstance.mock.ids = ["foo-mock"];
+      originalIds = coreInstance.mock.collections.ids;
+      coreInstance.mock.collections.ids = ["foo-mock"];
       inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("mock");
       inquirerMocks.stubs.inquirer.inquire.onCall(1).resolves(fooSelectedMock);
     });
 
     afterEach(() => {
-      coreInstance.mock.ids = originalIds;
+      coreInstance.mock.collections.ids = originalIds;
     });
 
     it("should call to clear screen", async () => {
@@ -359,7 +359,7 @@ describe("Cli", () => {
     });
 
     it("should display main menu if there are no mocks", async () => {
-      coreInstance.mock.ids = [];
+      coreInstance.mock.collections.ids = [];
       await cli.start();
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -381,7 +381,7 @@ describe("Cli", () => {
       inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.mock.ids = fooMocks;
+      coreInstance.mock.collections.ids = fooMocks;
       await cli._changeCurrentMock();
       expect(optionMock.value).toEqual(["foo1", "foo2"]);
     });
@@ -393,7 +393,7 @@ describe("Cli", () => {
       inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.mock.ids = fooMocks;
+      coreInstance.mock.collections.ids = fooMocks;
       await cli._changeCurrentMock();
       expect(optionMock.value).toEqual(["foo1", "foo2"]);
     });
@@ -405,7 +405,7 @@ describe("Cli", () => {
       inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.mock.ids = fooMocks;
+      coreInstance.mock.collections.ids = fooMocks;
       await cli._changeCurrentMock();
       expect(optionMock.value).toEqual(["foo1", "foo2"]);
     });
@@ -646,13 +646,13 @@ describe("Cli", () => {
     });
 
     it("should print mocks in red if are equal to 0", async () => {
-      coreInstance.mock.plainMocks = [];
+      coreInstance.mock.collections.plain = [];
       await cli.start();
       expect(cli._header()[3]).toEqual(expect.stringContaining(chalk.red("0")));
     });
 
     it("should print mocks in green if are greater than 0", async () => {
-      coreInstance.mock.plainMocks = [{}, {}, {}, {}];
+      coreInstance.mock.collections.plain = [{}, {}, {}, {}];
       await cli.start();
       expect(cli._header()[3]).toEqual(expect.stringContaining(chalk.green("4")));
     });

@@ -264,7 +264,7 @@ class Cli {
     const watchEnabled = this._optionWatch.value;
 
     const currentMock = this._mock.collections.selected || "-";
-    const availableMocks = this._mock.plainMocks.length;
+    const availableMocks = this._mock.collections.plain.length;
     const availableRoutes = this._mock.routes.plain.length;
     const availableRoutesVariants = this._mock.routes.plainVariants.length;
 
@@ -325,7 +325,7 @@ class Cli {
   async _changeCurrentMock() {
     this._currentScreen = SCREENS.MOCK;
     this._cli.clearScreen();
-    const mocksIds = this._mock.ids;
+    const mocksIds = this._mock.collections.ids;
     if (!mocksIds.length) {
       return this._displayMainMenu();
     }

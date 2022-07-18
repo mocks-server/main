@@ -16,12 +16,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - feat: Use core v3.6 new options
 - feat: Use core.mock.restoreRouteVariants method
+- feat: Use core.mock.customRouteVariants getter
 - feat: Use core.server.restart method
 - feat: Use core.mock.onChange method
 - feat: Use core.mock.routes.plain getter
 - feat: Use core.mock.routes.plainVariants getter
 - feat: Use core.mock.collections.selected getter
-- feat: Use core.mock.customRouteVariants getter
+- feat: Use core.mock.collections.ids getter
+- feat: Use core.mock.collections.plain getter
 
 ## [3.1.0] - 2022-06-27
 ### Changed

@@ -110,6 +110,8 @@ class Mock {
       config: this._collectionsConfig,
       onChangeSelected: this._setCurrent.bind(this),
       getSelectedCollection: this._getSelectedCollection.bind(this),
+      getIds: this._getCollectionsIds.bind(this),
+      getPlainCollections: this._getPlainCollections.bind(this),
     });
 
     // Create collections loaders
@@ -386,14 +388,30 @@ class Mock {
     return this._getSelectedCollection();
   }
 
-  // Legacy, to be removed
-  get ids() {
+  _getCollectionsIds() {
     return [...this._mocksIds];
   }
 
   // Legacy, to be removed
-  get plainMocks() {
+  get ids() {
+    this._alertsDeprecation.set(
+      "ids",
+      "Usage of 'ids' getter is deprecated. Use 'mock.collections.ids' instead"
+    );
+    return this._getCollectionsIds();
+  }
+
+  _getPlainCollections() {
     return [...this._plainMocks];
+  }
+
+  // Legacy, to be removed
+  get plainMocks() {
+    this._alertsDeprecation.set(
+      "plainMocks",
+      "Usage of 'plainMocks' getter is deprecated. Use 'mock.collections.plain' instead"
+    );
+    return this._getPlainCollections();
   }
 
   _getPlainRoutes() {

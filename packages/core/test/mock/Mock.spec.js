@@ -130,6 +130,7 @@ describe("Mock", () => {
     it("should process loaded mocks", () => {
       mock.load();
       expect(mock.plainMocks).toEqual([]);
+      expect(mock.collections.plain).toEqual([]);
     });
 
     it("should process loaded routes", () => {
@@ -170,6 +171,11 @@ describe("Mock", () => {
       mock.load();
       expect(mock.ids).toEqual([]);
     });
+
+    it("should return empty array in collections ids", () => {
+      mock.load();
+      expect(mock.collections.ids).toEqual([]);
+    });
   });
 
   describe("routes", () => {
@@ -184,6 +190,15 @@ describe("Mock", () => {
       it("should return variants in plain format", () => {
         mock._plainVariants = ["foo", "foo-2"];
         expect(mock.routes.plainVariants).toEqual(["foo", "foo-2"]);
+      });
+    });
+  });
+
+  describe("collections", () => {
+    describe("plain", () => {
+      it("should return collections in plain format", () => {
+        mock._plainMocks = ["foo", "foo-2"];
+        expect(mock.collections.plain).toEqual(["foo", "foo-2"]);
       });
     });
   });

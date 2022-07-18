@@ -17,20 +17,25 @@ const {
 } = require("./support/helpers");
 
 describe("loadCollections and loadRoutes methods", () => {
-  let core, changeMockAndWait;
+  let core, changeMockAndWait, waitUntilCollectionChanged;
 
   beforeAll(async () => {
     core = await startCore();
-    changeMockAndWait = async (mockName) => {
-      core.config.namespace("mock").namespace("collections").option("selected").value = mockName;
+    waitUntilCollectionChanged = async (collectionId) => {
       await new Promise((resolve) => {
         const interval = setInterval(() => {
-          if (core.mock.collections.selected === mockName) {
+          if (core.mock.collections.selected === collectionId) {
             clearInterval(interval);
             resolve();
           }
         }, 200);
       });
+    };
+
+    changeMockAndWait = async (collectionId) => {
+      core.config.namespace("mock").namespace("collections").option("selected").value =
+        collectionId;
+      await waitUntilCollectionChanged(collectionId);
     };
     await waitForServer();
   });
@@ -50,8 +55,8 @@ describe("loadCollections and loadRoutes methods", () => {
     });
   });
 
-  describe("When routes and mocks are loaded using core methods", () => {
-    it("should have loaded new mocks and routes", async () => {
+  describe("When routes and collections are loaded using core methods", () => {
+    it("should have loaded new collections and routes", async () => {
       const { loadRoutes, loadCollections } = core.mock.createLoaders();
       loadRoutes([
         {
@@ -90,6 +95,13 @@ describe("loadCollections and loadRoutes methods", () => {
               },
             },
             {
+              id: "bradbury",
+              response: {
+                status: 200,
+                body: [{ id: 1, name: "Ray Bradbury" }],
+              },
+            },
+            {
               id: "error",
               response: {
                 status: 403,
@@ -112,6 +124,11 @@ describe("loadCollections and loadRoutes methods", () => {
           from: "users-and-library",
           routesVariants: ["get-authors:error"],
         },
+        {
+          id: "bradbury",
+          from: "users-and-library",
+          routesVariants: ["get-authors:bradbury"],
+        },
       ]);
       core.config.namespace("mock").namespace("collections").option("selected").value =
         "users-and-library";
@@ -130,7 +147,15 @@ describe("loadCollections and loadRoutes methods", () => {
       ]);
     });
 
-    it("should be able to change to a new mock", async () => {
+    it("should be able to change collection using select method", async () => {
+      core.mock.collections.select("bradbury");
+      await waitUntilCollectionChanged("bradbury");
+
+      const authors = await doFetch("/api/authors");
+      expect(authors.body).toEqual([{ id: 1, name: "Ray Bradbury" }]);
+    });
+
+    it("should be able to change to a new collection", async () => {
       await changeMockAndWait("authors-error");
       const books = await doFetch("/api/books");
       expect(books.body).toEqual([{ id: 1, title: "1984" }]);
@@ -145,7 +170,7 @@ describe("loadCollections and loadRoutes methods", () => {
       expect(authors.status).toEqual(403);
     });
 
-    it("should keep mocks loaded from files", async () => {
+    it("should keep collections loaded from files", async () => {
       await changeMockAndWait("base");
       const users = await doFetch("/api/users");
       expect(users.body).toEqual([

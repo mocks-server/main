@@ -278,6 +278,14 @@ describe("Mock", () => {
       });
     });
 
+    describe("when setting current collection using select method", () => {
+      it("should set selected collection option", () => {
+        mock.load();
+        mock.collections.select("foo-mock-id");
+        expect(mock._collections._selectedOption.value).toEqual("foo-mock-id");
+      });
+    });
+
     describe("when setting custom route variant", () => {
       it("should return customVariants", () => {
         mock.load();

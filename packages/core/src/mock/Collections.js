@@ -26,6 +26,10 @@ class Collections {
   get selected() {
     return this._getSelectedCollection();
   }
+
+  select(collection) {
+    this._selectedOption.value = collection;
+  }
 }
 
 module.exports = Collections;

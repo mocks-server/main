@@ -168,11 +168,11 @@ describe("files watcher", () => {
       );
       expect(mocks.currentScreen).toEqual(
         expect.stringContaining(
-          `${pathJoin("main", "fixtures", "temp", "mocks.js")}: foo is not defined`
+          `${pathJoin("main", "fixtures", "temp", "collections.js")}: foo is not defined`
         )
       );
       expect(mocks.currentScreen).toEqual(
-        expect.stringContaining(`${pathJoin("main", "fixtures", "temp", "mocks.js")}:11:18`)
+        expect.stringContaining(`${pathJoin("main", "fixtures", "temp", "collections.js")}:11:18`)
       );
     });
 

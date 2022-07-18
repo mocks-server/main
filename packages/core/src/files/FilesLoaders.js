@@ -66,6 +66,7 @@ class FilesLoaders {
     this._loadCollections = loadCollections;
     this._loadRoutes = loadRoutes;
     this._alerts = alerts;
+    this._deprecationAlerts = alerts.collection("deprecated");
     this._collectionsAlerts = alerts.collection("collections");
     this._routesAlerts = alerts.collection("routes");
     this._routesFilesAlerts = this._routesAlerts.collection("file");
@@ -204,7 +205,21 @@ class FilesLoaders {
       this._babelRegisterOption.value,
       this._babelRegisterOptionsOption.value
     );
+
     if (collectionsFile) {
+      const fileName = path.basename(collectionsFile);
+      // LEGACY, to be removed
+      if (fileName.startsWith("mocks")) {
+        this._deprecationAlerts.set(
+          "mocks",
+          `Defining collections in '${fileName}' file is deprecated. Please rename it to '${fileName.replace(
+            "mocks",
+            "collections"
+          )}'`
+        );
+      } else {
+        this._deprecationAlerts.remove("mocks");
+      }
       try {
         const collections = this._readFile(collectionsFile);
         const fileErrors = validateFileContent(collections);

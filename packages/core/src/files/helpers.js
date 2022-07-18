@@ -12,7 +12,9 @@ const fsExtra = require("fs-extra");
 const path = require("path");
 
 // **/*
-const COLLECTIONS_FILE_NAME = "mocks";
+const COLLECTIONS_FILE_NAME = "collections";
+// Legacy, to be removed
+const LEGACY_COLLECTIONS_FILE_NAME = "mocks";
 const DEFAULT_EXTENSIONS = [".json", ".js"];
 const BABEL_DEFAULT_EXTENSIONS = [".es6", ".es", ".jsx", ".js", ".mjs", ".ts"];
 
@@ -57,21 +59,44 @@ function babelRegisterDefaultOptions(collectionsFolder, babelRegisterOptions) {
   };
 }
 
-function collectionsFilePath(collectionsFolder, extension) {
-  return path.resolve(collectionsFolder, `${COLLECTIONS_FILE_NAME}${extension}`);
+function collectionsFilePath(collectionsFolder, extension, fileName) {
+  return path.resolve(collectionsFolder, `${fileName}${extension}`);
 }
 
-function collectionsFileToUse(collectionsFolder, babelRegister, babelRegisterOptions) {
+function collectionsFileNameToUse(
+  collectionsFolder,
+  babelRegister,
+  babelRegisterOptions,
+  fileName
+) {
   const extensions = getFilesExtensions(babelRegister, babelRegisterOptions);
 
   const existentExtension = extensions.find((extension) => {
-    return fsExtra.existsSync(collectionsFilePath(collectionsFolder, extension));
+    return fsExtra.existsSync(collectionsFilePath(collectionsFolder, extension, fileName));
   });
 
   if (existentExtension) {
-    return collectionsFilePath(collectionsFolder, existentExtension);
+    return collectionsFilePath(collectionsFolder, existentExtension, fileName);
   }
   return null;
+}
+
+function collectionsFileToUse(collectionsFolder, babelRegister, babelRegisterOptions) {
+  return (
+    collectionsFileNameToUse(
+      collectionsFolder,
+      babelRegister,
+      babelRegisterOptions,
+      COLLECTIONS_FILE_NAME
+    ) ||
+    // LEGACY, to be removed
+    collectionsFileNameToUse(
+      collectionsFolder,
+      babelRegister,
+      babelRegisterOptions,
+      LEGACY_COLLECTIONS_FILE_NAME
+    )
+  );
 }
 
 function validateFileContent(fileContent) {

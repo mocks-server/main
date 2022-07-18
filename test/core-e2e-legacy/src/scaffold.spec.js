@@ -45,7 +45,7 @@ describe("when nor config file nor mocks folder exists", () => {
     describe("when started for the first time", () => {
       it("should have created the mocks scaffold", async () => {
         expect(
-          fsExtra.existsSync(path.resolve(fixturesFolder("temp"), "mocks", "mocks.json"))
+          fsExtra.existsSync(path.resolve(fixturesFolder("temp"), "mocks", "collections.json"))
         ).toEqual(true);
       });
 
@@ -209,7 +209,7 @@ describe("when nor config file nor mocks folder exists", () => {
 
     it("should have created the mocks scaffold", async () => {
       expect(
-        fsExtra.existsSync(path.resolve(fixturesFolder("temp"), "mocks", "mocks.json"))
+        fsExtra.existsSync(path.resolve(fixturesFolder("temp"), "mocks", "collections.json"))
       ).toEqual(true);
     });
 

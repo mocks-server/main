@@ -219,7 +219,7 @@ describe("FilesLoaders", () => {
       expect(pluginMethods.loadCollections.callCount).toEqual(1);
     });
 
-    it("should try to load mocks.json when mock.js file does not exists", async () => {
+    it("should try to load collections.json when collections.js file does not exists", async () => {
       filesLoader = new FilesLoaders(pluginMethods, {
         requireCache,
         require: sandbox.spy,
@@ -233,6 +233,25 @@ describe("FilesLoaders", () => {
       libsMocks.stubs.fsExtra.existsSync.onCall(2).returns(true);
       await filesLoader.init();
       expect(libsMocks.stubs.fsExtra.existsSync.callCount).toEqual(3);
+    });
+
+    it("should add an alert when file name is mocks", async () => {
+      filesLoader = new FilesLoaders(pluginMethods, {
+        requireCache,
+        require: sandbox.spy,
+      });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
+      libsMocks.stubs.fsExtra.existsSync.onCall(0).returns(true);
+      libsMocks.stubs.fsExtra.existsSync.onCall(1).returns(false);
+      libsMocks.stubs.fsExtra.existsSync.onCall(2).returns(false);
+      libsMocks.stubs.fsExtra.existsSync.onCall(3).returns(true);
+      await filesLoader.init();
+      expect(alerts.flat[0].value.message).toEqual(
+        "Defining collections in 'mocks.json' file is deprecated. Please rename it to 'collections.json'"
+      );
     });
 
     it("should not throw and add an alert if there is an error in loadRoutesfiles method", async () => {

@@ -47,7 +47,9 @@ describe("path argument", () => {
 
     it("should have created scaffold folder", async () => {
       expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "routes"))).toEqual(true);
-      expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "mocks.json"))).toEqual(true);
+      expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "collections.json"))).toEqual(
+        true
+      );
     });
   });
 

@@ -14,8 +14,8 @@ const {
   compileRouteValidator,
   routeValidationErrors,
   variantValidationErrors,
-  mockValidationErrors,
-  mockRouteVariantsValidationErrors,
+  collectionValidationErrors,
+  collectionRouteVariantsValidationErrors,
 } = require("../../src/mock/validations");
 const DefaultRoutesHandler = require("../../src/variant-handlers/handlers/Default");
 const JsonRoutesHandler = require("../../src/variant-handlers/handlers/Json");
@@ -419,10 +419,10 @@ describe("mocks validations", () => {
     });
   });
 
-  describe("mockValidationErrors", () => {
-    it("should return null if mock is valid", () => {
+  describe("collectionValidationErrors", () => {
+    it("should return null if collection is valid", () => {
       expect(
-        mockValidationErrors({
+        collectionValidationErrors({
           id: "foo",
           from: "foo-base",
           routesVariants: [],
@@ -431,29 +431,29 @@ describe("mocks validations", () => {
     });
 
     it("should return error if mock has not id", () => {
-      const errors = mockValidationErrors({
+      const errors = collectionValidationErrors({
         routesVariants: [],
       });
       expect(errors.errors.length).toEqual(1);
-      expect(errors.message).toEqual("Mock is invalid:  must have required property 'id'");
+      expect(errors.message).toEqual("Collection is invalid:  must have required property 'id'");
     });
 
     it("should return error if mock has not routesVariants", () => {
-      const errors = mockValidationErrors({
+      const errors = collectionValidationErrors({
         id: "foo",
       });
       expect(errors.message).toEqual(
-        "Mock with id 'foo' is invalid:  must have required property 'routesVariants'"
+        "Collection with id 'foo' is invalid:  must have required property 'routesVariants'"
       );
     });
 
     it("should return all errors together", () => {
-      const errors = mockValidationErrors({
+      const errors = collectionValidationErrors({
         from: 5,
         foo: "foo",
       });
       expect(errors.message).toEqual(
-        "Mock is invalid:  must have required property 'routesVariants'. /from: type must be string"
+        "Collection is invalid:  must have required property 'routesVariants'. /from: type must be string"
       );
     });
   });
@@ -476,7 +476,7 @@ describe("mocks validations", () => {
 
     it("should return null if all routeVariants exist", () => {
       expect(
-        mockRouteVariantsValidationErrors(
+        collectionRouteVariantsValidationErrors(
           {
             id: "foo",
             from: "foo-base",
@@ -488,7 +488,7 @@ describe("mocks validations", () => {
     });
 
     it("should return error containing one message for each non existant routeVariant", () => {
-      const errors = mockRouteVariantsValidationErrors(
+      const errors = collectionRouteVariantsValidationErrors(
         {
           id: "foo",
           from: "foo-base",
@@ -497,12 +497,12 @@ describe("mocks validations", () => {
         ROUTE_VARIANTS
       );
       expect(errors.message).toEqual(
-        "Mock with id 'foo' is invalid: routeVariant with id 'foo:fake' was not found, use a valid 'routeId:variantId' identifier. routeVariant with id 'foo2:success' was not found, use a valid 'routeId:variantId' identifier"
+        "Collection with id 'foo' is invalid: routeVariant with id 'foo:fake' was not found, use a valid 'routeId:variantId' identifier. routeVariant with id 'foo2:success' was not found, use a valid 'routeId:variantId' identifier"
       );
     });
 
     it("should return error containing one message for each duplicated route in variants", () => {
-      const errors = mockRouteVariantsValidationErrors(
+      const errors = collectionRouteVariantsValidationErrors(
         {
           id: "foo",
           from: "foo-base",
@@ -511,12 +511,12 @@ describe("mocks validations", () => {
         ROUTE_VARIANTS
       );
       expect(errors.message).toEqual(
-        "Mock with id 'foo' is invalid: route with id 'foo' is used more than once in the same mock"
+        "Collection with id 'foo' is invalid: route with id 'foo' is used more than once in the same collection"
       );
     });
 
     it("should return all error messages together", () => {
-      const errors = mockRouteVariantsValidationErrors(
+      const errors = collectionRouteVariantsValidationErrors(
         {
           id: "foo",
           from: "foo-base",
@@ -525,12 +525,12 @@ describe("mocks validations", () => {
         ROUTE_VARIANTS
       );
       expect(errors.message).toEqual(
-        "Mock with id 'foo' is invalid: route with id 'foo' is used more than once in the same mock. routeVariant with id 'foo2:success' was not found, use a valid 'routeId:variantId' identifier"
+        "Collection with id 'foo' is invalid: route with id 'foo' is used more than once in the same collection. routeVariant with id 'foo2:success' was not found, use a valid 'routeId:variantId' identifier"
       );
     });
 
     it("should work when no routeVariants are provided in mock", () => {
-      const errors = mockRouteVariantsValidationErrors({
+      const errors = collectionRouteVariantsValidationErrors({
         id: "foo",
         from: "foo-base",
       });

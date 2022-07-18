@@ -89,10 +89,12 @@ describe("Core", () => {
     });
   });
 
-  describe("Plugins callbacks", () => {
-    describe("createMocksLoader", () => {
+  describe("Plugins parameters", () => {
+    describe("createCollectionsLoader", () => {
       it("should return a new loader", () => {
-        pluginsMocks.stubs.Constructor.mock.calls[0][0].createMocksLoader()("foo-collection");
+        pluginsMocks.stubs.Constructor.mock.calls[0][0].createCollectionsLoader()(
+          "foo-collection"
+        );
         expect(loadersMocks.loadCollections.callCount).toEqual(1);
         expect(loadersMocks.loadCollections.getCall(0).args[0]).toEqual("foo-collection");
       });

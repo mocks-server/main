@@ -16,59 +16,76 @@ const Collection = require("./Collection");
 const {
   variantValidationErrors,
   routeValidationErrors,
-  mockValidationErrors,
+  collectionValidationErrors,
   findRouteVariantByVariantId,
-  mockRouteVariantsValidationErrors,
+  collectionRouteVariantsValidationErrors,
 } = require("./validations");
 
 const DEFAULT_ROUTES_HANDLER = "default";
 
-function findEqualRouteVariant(routesVariants, routeVariantToFind) {
-  return routesVariants.find((routeVariant) => {
+function findEqualRouteVariant(routeVariants, routeVariantToFind) {
+  return routeVariants.find((routeVariant) => {
     return routeVariant.routeId === routeVariantToFind.routeId;
   });
 }
 
-function addMockRoutesVariants(mockRoutesVariants, routesVariantsToAdd) {
-  const replacedMocksRoutesVariants = mockRoutesVariants.reduce((result, mockRouteVariant) => {
-    const routesVariantToReplace = findEqualRouteVariant(routesVariantsToAdd, mockRouteVariant);
-    result.push(routesVariantToReplace || mockRouteVariant);
-    return result;
-  }, []);
+function addCollectionRouteVariants(collectionRouteVariants, routeVariantsToAdd) {
+  const replacedCollectionRouteVariants = collectionRouteVariants.reduce(
+    (result, collectionRouteVariant) => {
+      const routesVariantToReplace = findEqualRouteVariant(
+        routeVariantsToAdd,
+        collectionRouteVariant
+      );
+      result.push(routesVariantToReplace || collectionRouteVariant);
+      return result;
+    },
+    []
+  );
 
-  routesVariantsToAdd.forEach((routeVariantToAdd) => {
+  routeVariantsToAdd.forEach((routeVariantToAdd) => {
     const hasBeenReplaced = !!findEqualRouteVariant(
-      replacedMocksRoutesVariants,
+      replacedCollectionRouteVariants,
       routeVariantToAdd
     );
     if (!hasBeenReplaced) {
-      replacedMocksRoutesVariants.push(routeVariantToAdd);
+      replacedCollectionRouteVariants.push(routeVariantToAdd);
     }
   });
-  return replacedMocksRoutesVariants;
+  return replacedCollectionRouteVariants;
 }
 
-function getMockRoutesVariants(mock, mocks, routesVariants, alerts, routesVariantsToAdd = []) {
-  const mockRoutesVariants = compact(
-    mock.routesVariants.map((variantId) => {
-      return findRouteVariantByVariantId(routesVariants, variantId);
+function getCollectionRouteVariants(
+  collection,
+  collections,
+  routeVariants,
+  alerts,
+  routeVariantsToAdd = []
+) {
+  const collectionRouteVariants = compact(
+    collection.routesVariants.map((variantId) => {
+      return findRouteVariantByVariantId(routeVariants, variantId);
     })
   );
-  if (mock.from) {
-    const from = mocks.find((mockCandidate) => mockCandidate.id === mock.from);
+  if (collection.from) {
+    const from = collections.find(
+      (collectionCandidate) => collectionCandidate.id === collection.from
+    );
     if (from) {
-      return getMockRoutesVariants(
+      return getCollectionRouteVariants(
         from,
-        mocks,
-        routesVariants,
+        collections,
+        routeVariants,
         alerts,
-        addMockRoutesVariants(mockRoutesVariants, routesVariantsToAdd)
+        addCollectionRouteVariants(collectionRouteVariants, routeVariantsToAdd)
       );
     }
     // TODO, throw an error in strict validation mode
-    alerts.set("from", `Mock with invalid 'from' property detected, '${mock.from}' was not found`);
+    alerts.set(
+      "from",
+      `Collection with invalid 'from' property detected, '${collection.from}' was not found`
+    );
   }
-  return addMockRoutesVariants(mockRoutesVariants, routesVariantsToAdd);
+  return addCollectionRouteVariants(collectionRouteVariants, routeVariantsToAdd);
 }
 
 function getVariantId(routeId, variantId) {
@@ -78,19 +95,23 @@ function getVariantId(routeId, variantId) {
   return null;
 }
 
-function getPlainMocks(mocks, mocksDefinitions) {
-  return mocks.map((mock) => {
-    const mockDefinition = mocksDefinitions.find((mockCandidate) => mockCandidate.id === mock.id);
+function getPlainCollections(collections, collectionsDefinitions) {
+  return collections.map((collection) => {
+    const collectionDefinition = collectionsDefinitions.find(
+      (collectionCandidate) => collectionCandidate.id === collection.id
+    );
     return {
-      id: mock.id,
-      from: (mockDefinition && mockDefinition.from) || null,
-      routesVariants: mockDefinition && mockDefinition.routesVariants,
-      appliedRoutesVariants: mock.routesVariants.map((routeVariant) => routeVariant.variantId),
+      id: collection.id,
+      from: (collectionDefinition && collectionDefinition.from) || null,
+      routesVariants: collectionDefinition && collectionDefinition.routesVariants,
+      appliedRoutesVariants: collection.routesVariants.map(
+        (routeVariant) => routeVariant.variantId
+      ),
     };
   });
 }
 
-function getPlainRouteVariants(route, routesVariants) {
+function getRoutePlainRouteVariants(route, routeVariants) {
   if (!route.variants || !Array.isArray(route.variants)) {
     return [];
   }
@@ -100,7 +121,7 @@ function getPlainRouteVariants(route, routesVariants) {
         return null;
       }
       const variantId = getVariantId(route.id, variant.id);
-      const variantHandler = routesVariants.find(
+      const variantHandler = routeVariants.find(
         (routeVariant) => routeVariant.variantId === variantId
       );
       if (variantHandler) {
@@ -110,7 +131,7 @@ function getPlainRouteVariants(route, routesVariants) {
   );
 }
 
-function getPlainRoutes(routes, routesVariants) {
+function getPlainRoutes(routes, routeVariants) {
   let ids = [];
   return compact(
     routes.map((route) => {
@@ -118,7 +139,7 @@ function getPlainRoutes(routes, routesVariants) {
         !route ||
         !route.id ||
         ids.includes(route.id) ||
-        !routesVariants.find((routeVariant) => routeVariant.routeId === route.id)
+        !routeVariants.find((routeVariant) => routeVariant.routeId === route.id)
       ) {
         return null;
       }
@@ -128,14 +149,14 @@ function getPlainRoutes(routes, routesVariants) {
         url: route.url,
         method: route.method,
         delay: hasDelayProperty(route) ? route.delay : null,
-        variants: getPlainRouteVariants(route, routesVariants),
+        variants: getRoutePlainRouteVariants(route, routeVariants),
       };
     })
   );
 }
 
-function getPlainRoutesVariants(routesVariants) {
-  return routesVariants.map((routeVariant) => {
+function getPlainRouteVariants(routeVariants) {
+  return routeVariants.map((routeVariant) => {
     const preview = getPreview(routeVariant);
     return {
       id: routeVariant.variantId,
@@ -259,7 +280,7 @@ function getRouteVariants({
 }) {
   let routeIds = [];
   alerts.clean();
-  alertsRoutes.clean();
+
   return compact(
     flatten(
       routesDefinitions.map((route, index) => {
@@ -311,40 +332,45 @@ function getRouteVariants({
   );
 }
 
-function getMock({
-  mockDefinition,
-  mocksDefinitions,
+function getCollection({
+  collectionDefinition,
+  collectionsDefinitions,
   routeVariants,
   logger,
   loggerRoutes,
   getGlobalDelay,
   alerts,
 }) {
-  let mock = null;
+  let collection = null;
 
-  const mockRouteVariantsErrors = mockRouteVariantsValidationErrors(mockDefinition, routeVariants);
-  if (!!mockRouteVariantsErrors) {
-    alerts.set("variants", mockRouteVariantsErrors.message);
+  const collectionRouteVariantsErrors = collectionRouteVariantsValidationErrors(
+    collectionDefinition,
+    routeVariants
+  );
+  if (!!collectionRouteVariantsErrors) {
+    alerts.set("variants", collectionRouteVariantsErrors.message);
     logger.silly(
-      `Mock variants validation errors: ${JSON.stringify(mockRouteVariantsErrors.errors)}`
+      `Collection route variants validation errors: ${JSON.stringify(
+        collectionRouteVariantsErrors.errors
+      )}`
     );
     // TODO, add strict validation mode
     // return null;
   }
 
-  const mockErrors = mockValidationErrors(mockDefinition, routeVariants);
-  if (!!mockErrors) {
-    alerts.set("validation", mockErrors.message);
-    logger.silly(`Mock validation errors: ${JSON.stringify(mockErrors.errors)}`);
+  const collectionErrors = collectionValidationErrors(collectionDefinition, routeVariants);
+  if (!!collectionErrors) {
+    alerts.set("validation", collectionErrors.message);
+    logger.silly(`Collection validation errors: ${JSON.stringify(collectionErrors.errors)}`);
     return null;
   }
 
   try {
-    mock = new Collection({
-      id: mockDefinition.id,
-      routesVariants: getMockRoutesVariants(
-        mockDefinition,
-        mocksDefinitions,
+    collection = new Collection({
+      id: collectionDefinition.id,
+      routeVariants: getCollectionRouteVariants(
+        collectionDefinition,
+        collectionsDefinitions,
         routeVariants,
         alerts
       ),
@@ -352,13 +378,13 @@ function getMock({
       getDelay: getGlobalDelay,
     });
   } catch (error) {
-    alerts.set("process", "Error processing mock", error);
+    alerts.set("process", "Error processing collection", error);
   }
-  return mock;
+  return collection;
 }
 
-function getMocks({
-  mocksDefinitions,
+function getCollections({
+  collectionsDefinitions,
   alerts,
   logger,
   loggerRoutes,
@@ -368,54 +394,59 @@ function getMocks({
   alerts.clean();
   let errorsProcessing = 0;
   let ids = [];
-  const mocks = compact(
-    mocksDefinitions.map((mockDefinition, index) => {
-      const mockDefinitionId = mockDefinition && mockDefinition.id;
+  const collections = compact(
+    collectionsDefinitions.map((collectionDefinition, index) => {
+      const collectionDefinitionId = collectionDefinition && collectionDefinition.id;
       const alertsCollectionId =
-        !mockDefinitionId || ids.includes(mockDefinitionId) ? index : mockDefinitionId;
-      const alertsMock = alerts.collection(alertsCollectionId);
-      const mock = getMock({
-        mockDefinition,
-        mocksDefinitions,
+        !collectionDefinitionId || ids.includes(collectionDefinitionId)
+          ? index
+          : collectionDefinitionId;
+      const alertsCollection = alerts.collection(alertsCollectionId);
+      const collection = getCollection({
+        collectionDefinition,
+        collectionsDefinitions,
         routeVariants,
         getGlobalDelay,
         logger,
         loggerRoutes,
-        alerts: alertsMock,
+        alerts: alertsCollection,
       });
-      if (!mock) {
+      if (!collection) {
         errorsProcessing++;
         return null;
       }
-      if (ids.includes(mock.id)) {
-        alertsMock.set(
+      if (ids.includes(collection.id)) {
+        alertsCollection.set(
           "duplicated",
-          `Mock with duplicated id '${mock.id}' detected. It has been ignored`
+          `Collection with duplicated id '${collection.id}' detected. It has been ignored`
         );
         return null;
       }
 
-      ids.push(mock.id);
-      return mock;
+      ids.push(collection.id);
+      return collection;
     })
   );
   if (errorsProcessing > 0) {
-    alerts.set("critical-error", `Critical errors found while loading mocks: ${errorsProcessing}`);
+    alerts.set(
+      "critical-error",
+      `Critical errors found while loading collections: ${errorsProcessing}`
+    );
   }
-  return mocks;
+  return collections;
 }
 
 module.exports = {
-  getMockRoutesVariants,
+  getCollectionRouteVariants,
   getVariantId,
-  getPlainMocks,
+  getPlainCollections,
   getPlainRoutes,
-  getPlainRoutesVariants,
+  getPlainRouteVariants,
   addCustomVariant,
   getRouteHandlerDelay,
   getVariantHandler,
   getRouteVariants,
   hasDelayProperty,
-  getMock,
-  getMocks,
+  getCollection,
+  getCollections,
 };

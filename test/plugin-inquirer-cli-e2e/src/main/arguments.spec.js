@@ -59,7 +59,9 @@ describe("command line arguments", () => {
         mocks = mocksRunner(["--files.path=web-tutorial", "--mock.collections.selected=foo"]);
         await waitForServerAndCli();
         expect(mocks.currentScreen).toEqual(expect.stringContaining("ALERTS"));
-        expect(mocks.currentScreen).toEqual(expect.stringContaining("Mock 'foo' was not found"));
+        expect(mocks.currentScreen).toEqual(
+          expect.stringContaining("Collection 'foo' was not found")
+        );
       });
 
       it("should set as current behavior the first one found", async () => {
@@ -68,7 +70,9 @@ describe("command line arguments", () => {
         await waitForServerAndCli();
         const users = await doFetch("/api/users/2");
         expect(users.body).toEqual({ id: 1, name: "John Doe" });
-        expect(mocks.currentScreen).toEqual(expect.stringContaining("Using the first one found"));
+        expect(mocks.currentScreen).toEqual(
+          expect.stringContaining("Selecting the first one found")
+        );
         expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: base"));
       });
     });

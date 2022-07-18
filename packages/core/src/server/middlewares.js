@@ -42,7 +42,7 @@ const errorHandler =
     const stack = isBoom ? null : err && err.stack;
     const error = isBoom ? err : err && Boom.badImplementation(err);
     if (error) {
-      logger.error(`Sending Error "${error.message}" | ${req.id}`);
+      logger.error(`Sending Error '${error.message}' | ${req.id}`);
       if (stack) {
         logger.silly(stack.toString());
       }

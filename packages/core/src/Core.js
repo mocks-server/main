@@ -117,7 +117,7 @@ class Core {
 
     // LEGACY, to be removed
     const loaders = this._mock.createLoaders();
-    this._loadMocks = loaders.loadCollections;
+    this._loadCollections = loaders.loadCollections;
     this._loadRoutes = loaders.loadRoutes;
 
     // Create plugins
@@ -127,7 +127,7 @@ class Core {
         alerts: this._alerts.collection(Plugins.id),
         logger: this._logger.namespace(Plugins.id),
         // LEGACY, to be removed
-        createMocksLoader: () => {
+        createCollectionsLoader: () => {
           const { loadCollections } = this._mock.createLoaders();
           return (collections) => {
             this._deprecationAlerts.set(
@@ -173,7 +173,7 @@ class Core {
       config: this._configFilesLoaders,
       logger: this._logger.namespace(FilesLoaders.id),
       alerts: this._alerts.collection(FilesLoaders.id),
-      loadMocks: fileLoaders.loadCollections,
+      loadCollections: fileLoaders.loadCollections,
       loadRoutes: fileLoaders.loadRoutes,
     });
 
@@ -293,12 +293,12 @@ class Core {
   }
 
   // LEGACY, to be removed
-  loadMocks(mocks) {
+  loadMocks(collections) {
     this._deprecationAlerts.set(
       "loadMocks",
       "Usage of 'core.loadMocks' method is deprecated. Use 'core.mock.createLoaders' instead. https://www.mocks-server.org/docs/next/guides-migrating-from-v3#api"
     );
-    this._loadMocks(mocks);
+    this._loadCollections(collections);
   }
 
   // LEGACY, to be removed

@@ -37,7 +37,7 @@ class AlertsLegacy {
       "removeAlert",
       `Detected usage of deprecated method 'removeAlerts'. Use alerts instead: https://www.mocks-server.org/docs/api-mocks-server-api#alerts`
     );
-    this._logger.silly(`Removing alerts with context "${context}"`);
+    this._logger.silly(`Removing alerts with context '${context}'`);
     // Clean collection with whole context
     const collectionIds = context.split(":");
     const contextCollection = collectionIds.reduce((currentCollection, collectionId) => {
@@ -54,7 +54,7 @@ class AlertsLegacy {
   }
 
   rename(oldContext, newContext) {
-    this._logger.silly(`Renaming alerts with context "${oldContext}" to context "${newContext}"`);
+    this._logger.silly(`Renaming alerts with context '${oldContext}' to context '${newContext}'`);
     const collectionIds = oldContext.split(":");
     const newCollectionsIds = newContext.split(":");
     collectionIds.reduce((currentCollection, collectionId, currentIndex) => {

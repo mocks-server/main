@@ -42,21 +42,19 @@ const LEGACY_OPTIONS = [
 ];
 
 const {
-  getPlainMocks,
+  getPlainCollections,
   getPlainRoutes,
-  getPlainRoutesVariants,
+  getPlainRouteVariants,
   addCustomVariant,
   getRouteVariants,
-  getMocks,
-  getMock,
+  getCollections,
+  getCollection,
 } = require("./helpers");
 const { getIds, compileRouteValidator } = require("./validations");
 
-const SETTINGS_ALERT_ID = "settings";
+const SELECTED_COLLECTION_ID = "selected";
 const EMPTY_ALERT_ID = "empty";
-const LOAD_MOCKS_NAMESPACE = "loadMocks";
-const LOAD_ROUTES_NAMESPACE = "loadRoutes";
-const ROUTES_NAMESPACE = "routes";
+const LOAD_NAMESPACE = "load";
 
 class Mock {
   static get id() {
@@ -70,13 +68,11 @@ class Mock {
   constructor({ config, legacyConfig, logger, onChange, alerts }, core) {
     this._eventEmitter = new EventEmitter();
     this._logger = logger;
-    this._loggerLoadRoutes = logger.namespace(LOAD_ROUTES_NAMESPACE);
-    this._loggerLoadMocks = logger.namespace(LOAD_MOCKS_NAMESPACE);
 
     this._legacyConfig = legacyConfig;
-    [this._currentMockOptionLegacy, this._currentDelayOptionLegacy] =
+    [this._selectedCollectionOptionLegacy, this._currentDelayOptionLegacy] =
       this._legacyConfig.addOptions(LEGACY_OPTIONS);
-    this._currentMockOptionLegacy.onChange(this._setCurrentLegacy.bind(this));
+    this._selectedCollectionOptionLegacy.onChange(this._setCurrentLegacy.bind(this));
     this._currentDelayOptionLegacy.onChange(this._emitChange.bind(this));
 
     this._config = config;
@@ -86,12 +82,12 @@ class Mock {
 
     this._alerts = alerts;
     this._alertsDeprecation = alerts.collection("deprecated");
-    this._alertsLoadRoutes = alerts.collection(LOAD_ROUTES_NAMESPACE);
-    this._alertsMocks = alerts.collection(LOAD_MOCKS_NAMESPACE);
-    this._alertsRoutes = alerts.collection(ROUTES_NAMESPACE);
 
     this._routesConfig = this._config.addNamespace(Routes.id);
-    this._routesLogger = logger.namespace(ROUTES_NAMESPACE);
+    this._routesLogger = logger.namespace(Routes.id);
+    this._loggerLoadRoutes = this._routesLogger.namespace(LOAD_NAMESPACE);
+    this._alertsRoutes = alerts.collection(Routes.id);
+    this._alertsLoadRoutes = this._alertsRoutes.collection(LOAD_NAMESPACE);
 
     // TODO, move routes logic to Routes Class
     this._routes = new Routes({
@@ -105,7 +101,11 @@ class Mock {
     // TODO, move collections logic to Collections Class
     this._collectionsConfig = this._config.addNamespace(Collections.id);
     this._collectionsLogger = logger.namespace(Collections.id);
-    this._collections = new Collections({
+    this._loggerLoadCollections = this._collectionsLogger.namespace(LOAD_NAMESPACE);
+    this._alertsCollections = alerts.collection(Collections.id);
+    this._alertsLoadCollections = this._alertsCollections.collection(LOAD_NAMESPACE);
+
+    this._collectionsInstance = new Collections({
       logger: this._collectionsLogger,
       config: this._collectionsConfig,
       onChangeSelected: this._setCurrent.bind(this),
@@ -137,15 +137,15 @@ class Mock {
     });
 
     this._router = null;
-    this._mocksDefinitions = [];
-    this._mocks = [];
-    this._plainMocks = [];
+    this._collectionsDefinitions = [];
+    this._collections = [];
+    this._plainCollections = [];
     this._routesDefinitions = [];
     this._plainRoutes = [];
     this._plainVariants = [];
-    this._routesVariants = [];
+    this._routeVariants = [];
     this._customVariants = [];
-    this._customVariantsMock = null;
+    this._customVariantsCollection = null;
 
     this.router = this.router.bind(this);
     this._getDelay = this._getDelay.bind(this);
@@ -171,7 +171,7 @@ class Mock {
   }
 
   // LEGACY, to be removed
-  _addMocksSelectedOptionAlert() {
+  _addCollectionsSelectedOptionAlert() {
     this._alertsDeprecation.set(
       "mocks.selected",
       "Usage of 'mocks.selected' option is deprecated. Use 'mock.collections.selected' instead"
@@ -181,34 +181,34 @@ class Mock {
   // Temportal workaround to know selected collection in this class while it has a deprecated option setting the same value.
   // TODO, move to Collections class
   _getCollectionSelected() {
-    if (this._currentMockOptionLegacy.hasBeenSet) {
-      this._addMocksSelectedOptionAlert();
+    if (this._selectedCollectionOptionLegacy.hasBeenSet) {
+      this._addCollectionsSelectedOptionAlert();
     }
-    return this._collections._selectedOption.hasBeenSet
-      ? this._collections._selectedOption.value
-      : this._currentMockOptionLegacy.value;
+    return this._collectionsInstance._selectedOption.hasBeenSet
+      ? this._collectionsInstance._selectedOption.value
+      : this._selectedCollectionOptionLegacy.value;
   }
 
   _reloadRouter() {
-    if (this._customVariantsMock) {
-      this._router = this._customVariantsMock.router;
-    } else if (this._currentMock) {
-      this._router = this._currentMock.router;
+    if (this._customVariantsCollection) {
+      this._router = this._customVariantsCollection.router;
+    } else if (this._selectedCollection) {
+      this._router = this._selectedCollection.router;
     } else {
       this._router = express.Router();
     }
     this._emitChange();
   }
 
-  _processMocks() {
-    this._loggerLoadMocks.debug("Processing loaded mocks");
-    this._loggerLoadMocks.silly(JSON.stringify(this._mocksDefinitions));
-    this._mocks = getMocks({
-      mocksDefinitions: this._mocksDefinitions,
-      alerts: this._alertsMocks,
-      logger: this._loggerLoadMocks,
+  _processCollections() {
+    this._loggerLoadCollections.debug("Processing loaded collections");
+    this._loggerLoadCollections.silly(JSON.stringify(this._collectionsDefinitions));
+    this._collections = getCollections({
+      collectionsDefinitions: this._collectionsDefinitions,
+      alerts: this._alertsLoadCollections,
+      logger: this._loggerLoadCollections,
       loggerRoutes: this._routesLogger,
-      routeVariants: this._routesVariants,
+      routeVariants: this._routeVariants,
       getGlobalDelay: this._getDelay,
     });
   }
@@ -216,7 +216,7 @@ class Mock {
   _processRoutes() {
     this._loggerLoadRoutes.debug("Processing loaded routes");
     this._loggerLoadRoutes.silly(JSON.stringify(this._routesDefinitions));
-    this._routesVariants = getRouteVariants({
+    this._routeVariants = getRouteVariants({
       routesDefinitions: this._routesDefinitions,
       alerts: this._alertsLoadRoutes,
       alertsRoutes: this._alertsRoutes,
@@ -225,18 +225,18 @@ class Mock {
       routeHandlers: this._variantHandlers,
       core: this._core,
     });
-    this._loggerLoadRoutes.debug(`Processed ${this._routesVariants.length} route variants`);
+    this._loggerLoadRoutes.debug(`Processed ${this._routeVariants.length} route variants`);
   }
 
   load() {
     this._routesDefinitions = this._routesLoaders.contents;
-    this._mocksDefinitions = this._collectionsLoaders.contents;
+    this._collectionsDefinitions = this._collectionsLoaders.contents;
     this._processRoutes();
-    this._processMocks();
-    this._mocksIds = getIds(this._mocks);
-    this._plainRoutes = getPlainRoutes(this._routesDefinitions, this._routesVariants);
-    this._plainVariants = getPlainRoutesVariants(this._routesVariants);
-    this._plainMocks = getPlainMocks(this._mocks, this._mocksDefinitions);
+    this._processCollections();
+    this._collectionsIds = getIds(this._collections);
+    this._plainRoutes = getPlainRoutes(this._routesDefinitions, this._routeVariants);
+    this._plainVariants = getPlainRouteVariants(this._routeVariants);
+    this._plainCollections = getPlainCollections(this._collections, this._collectionsDefinitions);
     this._setCurrent(this._getCollectionSelected());
   }
 
@@ -250,46 +250,49 @@ class Mock {
   }
 
   _setCurrent(id) {
-    this._logger.verbose(`Trying to set current mock as "${id}"`);
-    let current;
-    this._alerts.remove(SETTINGS_ALERT_ID);
+    this._logger.verbose(`Trying to select collection '${id}'`);
+    let selected;
+    this._alertsCollections.remove(SELECTED_COLLECTION_ID);
     if (!id) {
-      current = this._mocks[0];
-      if (current) {
-        this._alerts.set(
-          SETTINGS_ALERT_ID,
-          "Option 'mock' was not defined. Using the first mock found"
+      selected = this._collections[0];
+      if (selected) {
+        this._alertsCollections.set(
+          SELECTED_COLLECTION_ID,
+          "Option 'mock.collections.selected' was not defined. Selecting the first collection found"
         );
       } else {
-        this._alerts.set(SETTINGS_ALERT_ID, "Option 'mock' was not defined");
+        this._alertsCollections.set(
+          SELECTED_COLLECTION_ID,
+          "Option 'mock.collections.selected' was not defined"
+        );
       }
     } else {
-      current = this._mocks.find((mock) => mock.id === id);
-      if (!current) {
-        current = this._mocks[0];
-        if (current) {
-          this._alerts.set(
-            SETTINGS_ALERT_ID,
-            `Mock '${id}' was not found. Using the first one found`
+      selected = this._collections.find((collection) => collection.id === id);
+      if (!selected) {
+        selected = this._collections[0];
+        if (selected) {
+          this._alertsCollections.set(
+            SELECTED_COLLECTION_ID,
+            `Collection '${id}' was not found. Selecting the first one found`
           );
         }
       }
     }
-    if (!current) {
-      this._alerts.set(EMPTY_ALERT_ID, "No mocks found");
+    if (!selected) {
+      this._alertsCollections.set(EMPTY_ALERT_ID, "No collections found");
     } else {
-      this._logger.info(`Current mock: "${current.id}"`);
-      this._alerts.remove(EMPTY_ALERT_ID);
+      this._logger.info(`Selected collection: '${selected.id}'`);
+      this._alertsCollections.remove(EMPTY_ALERT_ID);
     }
 
-    this._currentMock = current;
-    this._currentId = (current && current.id) || null;
+    this._selectedCollection = selected;
+    this._selectedId = (selected && selected.id) || null;
     this._stopUsingVariants();
     this._reloadRouter();
   }
 
   _setCurrentLegacy(id) {
-    this._addMocksSelectedOptionAlert();
+    this._addCollectionsSelectedOptionAlert();
     this._setCurrent(id);
   }
 
@@ -304,24 +307,24 @@ class Mock {
 
   _stopUsingVariants() {
     this._customVariants = [];
-    this._customVariantsMock = null;
+    this._customVariantsCollection = null;
   }
 
-  _createCustomMock() {
-    const currentMockId = this._currentId;
-    const alerts = this._alertsMocks.collection("custom");
+  _createCustomCollection() {
+    const selectedCollectionId = this._selectedId;
+    const alerts = this._alertsLoadCollections.collection("custom");
     alerts.clean();
-    this._customVariantsMock = getMock({
-      mockDefinition: {
-        id: `custom-variants:from:${currentMockId}`,
-        from: currentMockId,
+    this._customVariantsCollection = getCollection({
+      collectionDefinition: {
+        id: `custom-variants:from:${selectedCollectionId}`,
+        from: selectedCollectionId,
         routesVariants: this._customVariants,
       },
-      mocksDefinitions: this._mocksDefinitions,
-      routeVariants: this._routesVariants,
+      collectionsDefinitions: this._collectionsDefinitions,
+      routeVariants: this._routeVariants,
       getGlobalDelay: this._getDelay,
       alerts,
-      logger: this._loggerLoadMocks,
+      logger: this._loggerLoadCollections,
       loggerRoutes: this._routesLogger,
     });
   }
@@ -329,8 +332,8 @@ class Mock {
   // Legacy, to be removed
   restoreRoutesVariants() {
     this._alertsDeprecation.set(
-      "restoreRoutesVariants",
-      "Usage of 'restoreRoutesVariants()' method is deprecated. Use 'restoreRouteVariants()' instead"
+      "restorerouteVariants",
+      "Usage of 'restorerouteVariants()' method is deprecated. Use 'restoreRouteVariants()' instead"
     );
     this.restoreRouteVariants();
   }
@@ -343,7 +346,7 @@ class Mock {
   useRouteVariant(variantId) {
     // TODO, validate variantId
     this._customVariants = addCustomVariant(variantId, this._customVariants);
-    this._createCustomMock();
+    this._createCustomCollection();
     this._reloadRouter();
   }
 
@@ -369,14 +372,14 @@ class Mock {
   // Legacy, to be removed
   get customRoutesVariants() {
     this._alertsDeprecation.set(
-      "customRoutesVariants",
-      "Usage of 'customRoutesVariants' getter is deprecated. Use 'mock.plainCustomRouteVariants' instead"
+      "customrouteVariants",
+      "Usage of 'customrouteVariants' getter is deprecated. Use 'mock.plainCustomRouteVariants' instead"
     );
     return this._getPlainCustomRouteVariants();
   }
 
   _getSelectedCollection() {
-    return this._currentId;
+    return this._selectedId;
   }
 
   // Legacy, to be removed
@@ -389,7 +392,7 @@ class Mock {
   }
 
   _getCollectionsIds() {
-    return [...this._mocksIds];
+    return [...this._collectionsIds];
   }
 
   // Legacy, to be removed
@@ -402,7 +405,7 @@ class Mock {
   }
 
   _getPlainCollections() {
-    return [...this._plainMocks];
+    return [...this._plainCollections];
   }
 
   // Legacy, to be removed
@@ -434,8 +437,8 @@ class Mock {
   // Legacy, to be removed
   get plainRoutesVariants() {
     this._alertsDeprecation.set(
-      "plainRoutesVariants",
-      "Usage of 'plainRoutesVariants' getter is deprecated. Use 'mock.routes.plainVariants' instead"
+      "plainrouteVariants",
+      "Usage of 'plainrouteVariants' getter is deprecated. Use 'mock.routes.plainVariants' instead"
     );
     return this._getPlainVariants();
   }
@@ -445,7 +448,7 @@ class Mock {
   }
 
   get collections() {
-    return this._collections;
+    return this._collectionsInstance;
   }
 }
 

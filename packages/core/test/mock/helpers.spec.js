@@ -15,16 +15,16 @@ const { Logger } = require("@mocks-server/logger");
 const CoreMocks = require("../Core.mocks.js");
 const {
   getVariantId,
-  getMockRoutesVariants,
-  getPlainMocks,
+  getCollectionRouteVariants,
+  getPlainCollections,
   getPlainRoutes,
-  getPlainRoutesVariants,
+  getPlainRouteVariants,
   addCustomVariant,
   hasDelayProperty,
   getRouteHandlerDelay,
   getVariantHandler,
   getRouteVariants,
-  getMock,
+  getCollection,
 } = require("../../src/mock/helpers");
 const { compileRouteValidator } = require("../../src/mock/validations");
 const DefaultRoutesHandler = require("../../src/variant-handlers/handlers/Default");
@@ -140,7 +140,7 @@ describe("mocks helpers", () => {
     ];
 
     it("should return route variants of given mock", () => {
-      expect(getMockRoutesVariants(MOCKS[0], MOCKS, ROUTES_VARIANTS)).toEqual([
+      expect(getCollectionRouteVariants(MOCKS[0], MOCKS, ROUTES_VARIANTS)).toEqual([
         {
           variantId: "route-1:success",
           routeId: "route-1",
@@ -157,7 +157,7 @@ describe("mocks helpers", () => {
     });
 
     it("should return route variants of given mock when it extends from another", () => {
-      expect(getMockRoutesVariants(MOCKS[1], MOCKS, ROUTES_VARIANTS)).toEqual([
+      expect(getCollectionRouteVariants(MOCKS[1], MOCKS, ROUTES_VARIANTS)).toEqual([
         {
           variantId: "route-1:success",
           routeId: "route-1",
@@ -174,7 +174,7 @@ describe("mocks helpers", () => {
     });
 
     it("should return route variants of given mock when it extends recursively", () => {
-      expect(getMockRoutesVariants(MOCKS[2], MOCKS, ROUTES_VARIANTS)).toEqual([
+      expect(getCollectionRouteVariants(MOCKS[2], MOCKS, ROUTES_VARIANTS)).toEqual([
         {
           variantId: "route-1:success",
           routeId: "route-1",
@@ -191,7 +191,7 @@ describe("mocks helpers", () => {
     });
 
     it("should respect the order of routes defined in the base mocks when extending", () => {
-      expect(getMockRoutesVariants(MOCKS[3], MOCKS, ROUTES_VARIANTS)).toEqual([
+      expect(getCollectionRouteVariants(MOCKS[3], MOCKS, ROUTES_VARIANTS)).toEqual([
         {
           variantId: "route-1:error",
           routeId: "route-1",
@@ -211,7 +211,7 @@ describe("mocks helpers", () => {
   describe("getPlainMocks", () => {
     it("should return mocks ids and routeVariants ids", () => {
       expect(
-        getPlainMocks(
+        getPlainCollections(
           [
             {
               id: "mock-id-1",
@@ -468,7 +468,7 @@ describe("mocks helpers", () => {
   describe("getPlainRoutesVariants", () => {
     it("should return routes variants in plain format when using legacy plainResponsePreview property", () => {
       expect(
-        getPlainRoutesVariants([
+        getPlainRouteVariants([
           {
             variantId: "route-1:variant-1",
             routeId: "route-1",
@@ -506,7 +506,7 @@ describe("mocks helpers", () => {
 
     it("should return routes variants in plain format when constructor is v4", () => {
       expect(
-        getPlainRoutesVariants([
+        getPlainRouteVariants([
           {
             variantId: "route-1:variant-1",
             routeId: "route-1",
@@ -544,7 +544,7 @@ describe("mocks helpers", () => {
 
     it("should return null in response when no preview is defined", () => {
       expect(
-        getPlainRoutesVariants([
+        getPlainRouteVariants([
           {
             variantId: "route-1:variant-1",
             routeId: "route-1",
@@ -1043,14 +1043,14 @@ describe("mocks helpers", () => {
     });
   });
 
-  describe("getMock", () => {
+  describe("getCollection", () => {
     it("should add an alert if mock contains not valid routeVariants", () => {
-      const mock = getMock({
-        mockDefinition: {
+      const mock = getCollection({
+        collectionDefinition: {
           id: "foo-id",
           routesVariants: ["foo-route:foo-id"],
         },
-        mocksDefinitions: [],
+        collectionsDefinitions: [],
         routeVariants: [],
         getGlobalDelay: () => {
           //do nothing
@@ -1062,18 +1062,18 @@ describe("mocks helpers", () => {
 
       expect(alerts.flat[0].id).toEqual("variants");
       expect(alerts.flat[0].value.message).toEqual(
-        "Mock with id 'foo-id' is invalid: routeVariant with id 'foo-route:foo-id' was not found, use a valid 'routeId:variantId' identifier"
+        "Collection with id 'foo-id' is invalid: routeVariant with id 'foo-route:foo-id' was not found, use a valid 'routeId:variantId' identifier"
       );
     });
 
     it("should add an alert if instantiating Mock throws an error", () => {
-      sandbox.stub(express, "Router").throws(new Error("Error creating mock"));
-      const mock = getMock({
-        mockDefinition: {
+      sandbox.stub(express, "Router").throws(new Error("Error creating collection"));
+      const mock = getCollection({
+        collectionDefinition: {
           id: "foo-id",
           routesVariants: ["foo-route:foo-id"],
         },
-        mocksDefinitions: [],
+        collectionsDefinitions: [],
         routeVariants: [
           {
             id: "foo-route",
@@ -1089,7 +1089,7 @@ describe("mocks helpers", () => {
       expect(mock).toEqual(null);
 
       expect(alerts.flat[0].id).toEqual("process");
-      expect(alerts.flat[0].value.message).toEqual("Error processing mock");
+      expect(alerts.flat[0].value.message).toEqual("Error processing collection");
     });
   });
 });

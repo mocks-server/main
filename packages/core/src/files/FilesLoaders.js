@@ -16,7 +16,7 @@ const fsExtra = require("fs-extra");
 const { map, debounce, flatten } = require("lodash");
 
 const {
-  mocksFileToUse,
+  collectionsFileToUse,
   babelRegisterDefaultOptions,
   getFilesGlobule,
   validateFileContent,
@@ -27,7 +27,7 @@ const ROUTES_FOLDER = "routes";
 const OPTIONS = [
   {
     name: "path",
-    description: "Define folder from where to load mocks",
+    description: "Define folder from where to load collections and routes",
     type: "string",
     default: "mocks",
   },
@@ -61,12 +61,12 @@ class FilesLoaders {
     return "files";
   }
 
-  constructor({ config, loadMocks, logger, loadRoutes, alerts }, extraOptions = {}) {
+  constructor({ config, loadCollections, logger, loadRoutes, alerts }, extraOptions = {}) {
     this._logger = logger;
-    this._loadMocks = loadMocks;
+    this._loadCollections = loadCollections;
     this._loadRoutes = loadRoutes;
     this._alerts = alerts;
-    this._mocksAlerts = alerts.collection("mocks");
+    this._collectionsAlerts = alerts.collection("collections");
     this._routesAlerts = alerts.collection("routes");
     this._routesFilesAlerts = this._routesAlerts.collection("file");
     this._customRequireCache = extraOptions.requireCache;
@@ -143,7 +143,7 @@ class FilesLoaders {
 
   _ensurePath() {
     if (!fsExtra.existsSync(this._path)) {
-      this._alerts.set("folder", `Created folder "${this._path}"`);
+      this._alerts.set("folder", `Created folder '${this._path}'`);
       fsExtra.ensureDirSync(this._path);
     }
   }
@@ -159,7 +159,7 @@ class FilesLoaders {
     }
     this._cleanRequireCacheFolder();
     this._loadRoutesFiles();
-    this._loadMocksFile();
+    this._loadCollectionsFile();
   }
 
   _loadRoutesFiles() {
@@ -198,29 +198,33 @@ class FilesLoaders {
     }
   }
 
-  _loadMocksFile() {
-    let mocksFile = mocksFileToUse(
+  _loadCollectionsFile() {
+    let collectionsFile = collectionsFileToUse(
       this._path,
       this._babelRegisterOption.value,
       this._babelRegisterOptionsOption.value
     );
-    if (mocksFile) {
+    if (collectionsFile) {
       try {
-        const mocks = this._readFile(mocksFile);
-        const fileErrors = validateFileContent(mocks);
+        const collections = this._readFile(collectionsFile);
+        const fileErrors = validateFileContent(collections);
         if (!!fileErrors) {
           throw new Error(fileErrors);
         }
-        this._loadMocks(mocks);
-        this._logger.silly(`Loaded mocks from file ${mocksFile}`);
-        this._mocksAlerts.clean();
+        this._loadCollections(collections);
+        this._logger.silly(`Loaded collections from file ${collectionsFile}`);
+        this._collectionsAlerts.clean();
       } catch (error) {
-        this._loadMocks([]);
-        this._mocksAlerts.set("error", `Error loading mocks from file ${mocksFile}`, error);
+        this._loadCollections([]);
+        this._collectionsAlerts.set(
+          "error",
+          `Error loading collections from file ${collectionsFile}`,
+          error
+        );
       }
     } else {
-      this._loadMocks([]);
-      this._mocksAlerts.set("not-found", `No mocks file was found in ${this._path}`);
+      this._loadCollections([]);
+      this._collectionsAlerts.set("not-found", `No collections file was found in ${this._path}`);
     }
   }
 

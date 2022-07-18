@@ -20,13 +20,13 @@ describe("Collection", () => {
   let libsMocks;
   let collection;
   let getDelay;
-  let routesVariants;
+  let routeVariants;
   let middlewareMethodsStubs;
   let logger;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    routesVariants = [
+    routeVariants = [
       {
         method: "GET",
         url: "url-1",
@@ -59,7 +59,7 @@ describe("Collection", () => {
     getDelay = sandbox.stub();
     libsMocks = new LibsMocks();
     logger = new Logger();
-    collection = new Collection({ id: "mock-id", routesVariants, getDelay, logger });
+    collection = new Collection({ id: "mock-id", routeVariants, getDelay, logger });
   });
 
   afterEach(() => {
@@ -75,7 +75,7 @@ describe("Collection", () => {
 
   describe("routesVariants getter", () => {
     it("should return routesVariants", () => {
-      expect(collection.routesVariants).toEqual(routesVariants);
+      expect(collection.routesVariants).toEqual(routeVariants);
     });
   });
 

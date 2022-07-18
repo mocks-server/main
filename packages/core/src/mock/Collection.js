@@ -13,17 +13,17 @@ const express = require("express");
 const { HTTP_METHODS } = require("./validations");
 
 class Collection {
-  constructor({ id, routesVariants, getDelay, logger }) {
+  constructor({ id, routeVariants, getDelay, logger }) {
     this._logger = logger;
     this._id = id;
-    this._routesVariants = routesVariants;
+    this._routeVariants = routeVariants;
     this._getDelay = getDelay;
     this._initRouter();
   }
 
   _initRouter() {
     this._router = express.Router();
-    this._routesVariants.forEach((routeVariant) => {
+    this._routeVariants.forEach((routeVariant) => {
       const methods = Array.isArray(routeVariant.method)
         ? routeVariant.method
         : [routeVariant.method];
@@ -34,7 +34,7 @@ class Collection {
           this._logger.info(`Request ${req.method} => ${req.url} | req: ${req.id}`);
           const delay = routeVariant.delay !== null ? routeVariant.delay : this._getDelay();
           if (delay > 0) {
-            this._logger.verbose(`Applying delay of ${delay}ms to route variant "${this._id}"`);
+            this._logger.verbose(`Applying delay of ${delay}ms to route variant '${this._id}'`);
             setTimeout(() => {
               next();
             }, delay);
@@ -48,7 +48,7 @@ class Collection {
   }
 
   get routesVariants() {
-    return this._routesVariants;
+    return this._routeVariants;
   }
 
   get id() {

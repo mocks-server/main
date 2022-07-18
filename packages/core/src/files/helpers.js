@@ -12,7 +12,7 @@ const fsExtra = require("fs-extra");
 const path = require("path");
 
 // **/*
-const MOCKS_FILE_NAME = "mocks";
+const COLLECTIONS_FILE_NAME = "mocks";
 const DEFAULT_EXTENSIONS = [".json", ".js"];
 const BABEL_DEFAULT_EXTENSIONS = [".es6", ".es", ".jsx", ".js", ".mjs", ".ts"];
 
@@ -42,34 +42,34 @@ function getFilesGlobule(babelRegister, babelRegisterOptions) {
   return getGlobulePatterns(getFilesExtensions(babelRegister, babelRegisterOptions));
 }
 
-function babelRegisterOnlyFilter(mocksFolder) {
+function babelRegisterOnlyFilter(collectionsFolder) {
   return (filePath) => {
-    return filePath.indexOf(mocksFolder) === 0;
+    return filePath.indexOf(collectionsFolder) === 0;
   };
 }
 
-function babelRegisterDefaultOptions(mocksFolder, babelRegisterOptions) {
+function babelRegisterDefaultOptions(collectionsFolder, babelRegisterOptions) {
   return {
-    only: [babelRegisterOnlyFilter(mocksFolder)],
+    only: [babelRegisterOnlyFilter(collectionsFolder)],
     cache: false,
     extensions: BABEL_DEFAULT_EXTENSIONS,
     ...babelRegisterOptions,
   };
 }
 
-function mocksFilePath(mocksFolder, extension) {
-  return path.resolve(mocksFolder, `${MOCKS_FILE_NAME}${extension}`);
+function collectionsFilePath(collectionsFolder, extension) {
+  return path.resolve(collectionsFolder, `${COLLECTIONS_FILE_NAME}${extension}`);
 }
 
-function mocksFileToUse(mocksFolder, babelRegister, babelRegisterOptions) {
+function collectionsFileToUse(collectionsFolder, babelRegister, babelRegisterOptions) {
   const extensions = getFilesExtensions(babelRegister, babelRegisterOptions);
 
   const existentExtension = extensions.find((extension) => {
-    return fsExtra.existsSync(mocksFilePath(mocksFolder, extension));
+    return fsExtra.existsSync(collectionsFilePath(collectionsFolder, extension));
   });
 
   if (existentExtension) {
-    return mocksFilePath(mocksFolder, existentExtension);
+    return collectionsFilePath(collectionsFolder, existentExtension);
   }
   return null;
 }
@@ -82,7 +82,7 @@ function validateFileContent(fileContent) {
 }
 
 module.exports = {
-  mocksFileToUse,
+  collectionsFileToUse,
   babelRegisterDefaultOptions,
   getFilesGlobule,
   validateFileContent,

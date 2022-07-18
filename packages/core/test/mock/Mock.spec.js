@@ -197,7 +197,7 @@ describe("Mock", () => {
   describe("collections", () => {
     describe("plain", () => {
       it("should return collections in plain format", () => {
-        mock._plainMocks = ["foo", "foo-2"];
+        mock._plainCollections = ["foo", "foo-2"];
         expect(mock.collections.plain).toEqual(["foo", "foo-2"]);
       });
     });
@@ -249,17 +249,17 @@ describe("Mock", () => {
       });
 
       it("should set selected collection id using new option if it was set", () => {
-        mock._collections._selectedOption.hasBeenSet = true;
-        mock._collections._selectedOption.value = "mock-id";
+        mock._collectionsInstance._selectedOption.hasBeenSet = true;
+        mock._collectionsInstance._selectedOption.value = "mock-id";
         mock.load();
         expect(mock.current).toEqual("mock-id");
       });
 
       it("should set selected collection id using legacy option if new was not set", () => {
-        mock._collections._selectedOption.hasBeenSet = false;
-        mock._collections._selectedOption.value = "foo";
-        mock._currentMockOptionLegacy.hasBeenSet = true;
-        mock._currentMockOptionLegacy.value = "mock-id";
+        mock._collectionsInstance._selectedOption.hasBeenSet = false;
+        mock._collectionsInstance._selectedOption.value = "foo";
+        mock._selectedCollectionOptionLegacy.hasBeenSet = true;
+        mock._selectedCollectionOptionLegacy.value = "mock-id";
         mock.load();
         expect(mock.current).toEqual("mock-id");
       });
@@ -297,7 +297,7 @@ describe("Mock", () => {
       it("should set selected collection option", () => {
         mock.load();
         mock.collections.select("foo-mock-id");
-        expect(mock._collections._selectedOption.value).toEqual("foo-mock-id");
+        expect(mock._collectionsInstance._selectedOption.value).toEqual("foo-mock-id");
       });
     });
 
@@ -346,35 +346,41 @@ describe("Mock", () => {
         mock.load();
         expect(alerts.flat).toEqual([
           {
-            id: "settings",
-            value: { message: "Option 'mock' was not defined", error: undefined },
-            collection: "mocks",
+            id: "validation",
+            value: {
+              message: "Route is invalid: : type must be object",
+              error: undefined,
+            },
+            collection: "mocks:routes:load:0",
+          },
+          {
+            id: "selected",
+            value: {
+              message: "Option 'mock.collections.selected' was not defined",
+              error: undefined,
+            },
+            collection: "mocks:collections",
           },
           {
             id: "empty",
-            value: { message: "No mocks found", error: undefined },
-            collection: "mocks",
-          },
-          {
-            id: "validation",
-            value: { message: "Route is invalid: : type must be object", error: undefined },
-            collection: "mocks:loadRoutes:0",
+            value: { message: "No collections found", error: undefined },
+            collection: "mocks:collections",
           },
           {
             id: "critical-error",
             value: {
-              message: "Critical errors found while loading mocks: 1",
+              message: "Critical errors found while loading collections: 1",
               error: undefined,
             },
-            collection: "mocks:loadMocks",
+            collection: "mocks:collections:load",
           },
           {
             id: "validation",
             value: {
-              message: "Mock is invalid: : type must be object",
+              message: "Collection is invalid: : type must be object",
               error: undefined,
             },
-            collection: "mocks:loadMocks:0",
+            collection: "mocks:collections:load:0",
           },
         ]);
       });

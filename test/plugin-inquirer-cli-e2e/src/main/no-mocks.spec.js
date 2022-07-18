@@ -22,7 +22,7 @@ describe("with no behaviors", () => {
     await waitForServerAndCli();
     expect(mocks.currentScreen).toEqual(expect.stringContaining("ALERTS"));
     expect(mocks.currentScreen).toEqual(
-      expect.stringContaining("Warning: [mock:empty] No mocks found")
+      expect.stringContaining("Warning: [mock:collections:empty] No collections found")
     );
   });
 

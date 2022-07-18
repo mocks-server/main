@@ -96,7 +96,7 @@ describe("FilesLoaders", () => {
     pluginMethods = {
       core: coreInstance,
       loadRoutes: sandbox.stub(),
-      loadMocks: sandbox.stub(),
+      loadCollections: sandbox.stub(),
       alerts,
       config: configMock.stubs.namespace,
       logger,
@@ -206,7 +206,7 @@ describe("FilesLoaders", () => {
       expect(alerts.flat.length).toEqual(0);
     });
 
-    it("should call to loadMocks method when mocks file is loaded", async () => {
+    it("should call to loadCollections method when mocks file is loaded", async () => {
       filesLoader = new FilesLoaders(pluginMethods, {
         requireCache,
         require: () => [],
@@ -216,7 +216,7 @@ describe("FilesLoaders", () => {
       filesLoader._babelRegisterOption = babelRegisterOption;
       filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await filesLoader.init();
-      expect(pluginMethods.loadMocks.callCount).toEqual(1);
+      expect(pluginMethods.loadCollections.callCount).toEqual(1);
     });
 
     it("should try to load mocks.json when mock.js file does not exists", async () => {

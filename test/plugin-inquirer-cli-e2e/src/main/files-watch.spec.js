@@ -162,7 +162,9 @@ describe("files watcher", () => {
 
     it("should display an error", async () => {
       expect(mocks.currentScreen).toEqual(
-        expect.stringContaining("Error: [files:mocks:error] Error loading mocks from file")
+        expect.stringContaining(
+          "Error: [files:collections:error] Error loading collections from file"
+        )
       );
       expect(mocks.currentScreen).toEqual(
         expect.stringContaining(
@@ -210,7 +212,7 @@ describe("files watcher", () => {
       expect.assertions(2);
       expect(mocks.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
       expect(mocks.currentScreen).toEqual(
-        expect.stringContaining("Error loading mocks from file")
+        expect.stringContaining("Error loading collections from file")
       );
     });
 
@@ -220,7 +222,9 @@ describe("files watcher", () => {
       await wait(2000);
       expect(mocks.currentScreen).toEqual(expect.not.stringContaining("Displaying logs"));
       expect(mocks.currentScreen).toEqual(
-        expect.stringContaining("Error: [files:mocks:error] Error loading mocks from file")
+        expect.stringContaining(
+          "Error: [files:collections:error] Error loading collections from file"
+        )
       );
       expect(mocks.currentScreen).toEqual(expect.stringContaining("ALERTS"));
     });

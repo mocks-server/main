@@ -38,7 +38,7 @@ ajv.addKeyword({
   errors: false,
 });
 
-const mocksSchema = {
+const collectionsSchema = {
   type: "object",
   properties: {
     id: {
@@ -128,7 +128,7 @@ const routesSchema = {
   additionalProperties: false,
 };
 
-const mockValidator = ajv.compile(mocksSchema);
+const collectionValidator = ajv.compile(collectionsSchema);
 
 let routeValidator, routeSchema;
 
@@ -182,8 +182,8 @@ function routeValidationMessage(data, errors) {
   return validationSingleMessage(routeSchema, data, errors);
 }
 
-function mockValidationMessage(data, errors) {
-  return validationSingleMessage(mocksSchema, data, errors);
+function collectionValidationMessage(data, errors) {
+  return validationSingleMessage(collectionsSchema, data, errors);
 }
 
 function findRouteVariantByVariantId(routesVariants, variantId) {
@@ -204,11 +204,11 @@ function notFoundRouteVariantMessage(variantId) {
 
 function duplicatedRouteMessage(routeId) {
   return {
-    message: `route ${traceId(routeId)} is used more than once in the same mock`,
+    message: `route ${traceId(routeId)} is used more than once in the same collection`,
   };
 }
 
-function mockRouteVariantsErrors(variants, routeVariants) {
+function collectionRouteVariantsErrors(variants, routeVariants) {
   let routes = [];
   return compact(
     variants.map((variantId) => {
@@ -225,24 +225,26 @@ function mockRouteVariantsErrors(variants, routeVariants) {
   );
 }
 
-function mockInvalidRouteVariants(mock, routeVariants) {
+function collectionInvalidRouteVariants(collection, routeVariants) {
   const variants =
-    mock && mock.routesVariants && Array.isArray(mock.routesVariants) ? mock.routesVariants : [];
+    collection && collection.routesVariants && Array.isArray(collection.routesVariants)
+      ? collection.routesVariants
+      : [];
   return {
-    errors: mockRouteVariantsErrors(variants, routeVariants),
+    errors: collectionRouteVariantsErrors(variants, routeVariants),
   };
 }
 
-function mockErrorsMessagePrefix(mock) {
-  const idTrace = mock && mock.id ? `${traceId(mock.id)} ` : "";
-  return `Mock ${idTrace}is invalid:`;
+function collectionErrorsMessagePrefix(collection) {
+  const idTrace = collection && collection.id ? `${traceId(collection.id)} ` : "";
+  return `Collection ${idTrace}is invalid:`;
 }
 
-function mockRouteVariantsValidationErrors(mock, routeVariants) {
-  const invalidRouteVariants = mockInvalidRouteVariants(mock, routeVariants);
+function collectionRouteVariantsValidationErrors(collection, routeVariants) {
+  const invalidRouteVariants = collectionInvalidRouteVariants(collection, routeVariants);
   if (invalidRouteVariants.errors.length) {
     return {
-      message: `${mockErrorsMessagePrefix(mock)} ${customValidationSingleMessage(
+      message: `${collectionErrorsMessagePrefix(collection)} ${customValidationSingleMessage(
         invalidRouteVariants.errors
       )}`,
       errors: invalidRouteVariants.errors,
@@ -251,15 +253,15 @@ function mockRouteVariantsValidationErrors(mock, routeVariants) {
   return null;
 }
 
-function mockValidationErrors(mock) {
-  const isValid = mockValidator(mock);
+function collectionValidationErrors(collection) {
+  const isValid = collectionValidator(collection);
   if (!isValid) {
     return {
-      message: `${mockErrorsMessagePrefix(mock)} ${mockValidationMessage(
-        mock,
-        mockValidator.errors
+      message: `${collectionErrorsMessagePrefix(collection)} ${collectionValidationMessage(
+        collection,
+        collectionValidator.errors
       )}`,
-      errors: mockValidator.errors,
+      errors: collectionValidator.errors,
     };
   }
   return null;
@@ -313,12 +315,12 @@ function variantValidationErrors(route, variant, Handler) {
 module.exports = {
   HTTP_METHODS,
   getIds,
-  mockValidationErrors,
+  collectionValidationErrors,
   routeValidationErrors,
   variantValidationErrors,
   compileRouteValidator,
   validationSingleMessage,
   findRouteVariantByVariantId,
-  mockRouteVariantsValidationErrors,
+  collectionRouteVariantsValidationErrors,
   customValidationSingleMessage,
 };

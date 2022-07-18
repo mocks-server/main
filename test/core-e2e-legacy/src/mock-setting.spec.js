@@ -34,8 +34,8 @@ describe("mock setting", () => {
 
   describe("mock by default", () => {
     it("should have added an alert about mock was not defined", () => {
-      expect(findAlert("mock:settings", core.alerts).message).toEqual(
-        expect.stringContaining("Option 'mock' was not defined")
+      expect(findAlert("mock:collections:selected", core.alerts).message).toEqual(
+        expect.stringContaining("Option 'mock.collections.selected' was not defined")
       );
     });
 
@@ -67,7 +67,7 @@ describe("mock setting", () => {
     });
 
     it("should have removed alert", () => {
-      expect(findAlert("mock:settings", core.alerts)).toEqual(undefined);
+      expect(findAlert("mock:collections:selected", core.alerts)).toEqual(undefined);
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -130,8 +130,8 @@ describe("mock setting", () => {
     });
 
     it("should have added an alert", () => {
-      expect(findAlert("mock:settings", core.alerts).message).toEqual(
-        expect.stringContaining("Mock 'foo' was not found")
+      expect(findAlert("mock:collections:selected", core.alerts).message).toEqual(
+        expect.stringContaining("Collection 'foo' was not found")
       );
     });
 
@@ -164,7 +164,7 @@ describe("mock setting", () => {
     });
 
     it("should have removed alert", () => {
-      expect(findAlert("mock:settings", core.alerts)).toEqual(undefined);
+      expect(findAlert("mock:collections:selected", core.alerts)).toEqual(undefined);
     });
   });
 });

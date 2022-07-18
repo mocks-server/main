@@ -49,8 +49,8 @@ describe("when path not exists", () => {
     });
 
     it("should have added an alert about folder not found", async () => {
-      expect(findAlert("scaffold:mocks", core.alerts).message).toEqual(
-        expect.stringContaining("Mocks folder was not found")
+      expect(findAlert("scaffold:folder", core.alerts).message).toEqual(
+        expect.stringContaining("Mocks Server folder was not found")
       );
     });
 

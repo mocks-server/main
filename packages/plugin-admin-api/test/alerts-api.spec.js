@@ -35,11 +35,11 @@ describe("alerts api", () => {
     });
 
     it("should return specific alert when requested by id", async () => {
-      const response = await doFetch("/admin/alerts/mock%3Asettings");
+      const response = await doFetch("/admin/alerts/mock%3Acollections%3Aselected");
       expect(response.body).toEqual({
-        id: "mock:settings",
-        context: "mock:settings",
-        message: "Mock 'foo' was not found. Using the first one found",
+        id: "mock:collections:selected",
+        context: "mock:collections:selected",
+        message: "Collection 'foo' was not found. Selecting the first one found",
         error: null,
       });
     });
@@ -90,8 +90,8 @@ describe("alerts api", () => {
 
     it("should return alert containing error", async () => {
       const response = await doFetch("/admin/alerts");
-      expect(response.body.length).toEqual(4);
-      expect(response.body[3].error.message).toEqual(
+      expect(response.body.length).toEqual(5);
+      expect(response.body[4].error.message).toEqual(
         expect.stringContaining("Cannot find module '../db/users'")
       );
     });

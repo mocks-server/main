@@ -55,6 +55,8 @@ class Core {
     // Create logger
     this._logger = new Logger();
     this._configLogger = this._logger.namespace("config");
+
+    // LEGACY, to be removed
     this._logger.onChangeGlobalStore(() => {
       this._eventEmitter.emit(CHANGE_LOGS);
     });
@@ -372,6 +374,15 @@ class Core {
 
   // LEGACY, to be removed
   onChangeLogs(listener) {
+    this._deprecationAlerts.set(
+      "onChangeLogs",
+      deprecatedMessage(
+        "method",
+        "core.onChangeLogs",
+        "core.logger.onChangeGlobalStore",
+        "releases/migrating-from-v3#api"
+      )
+    );
     return addEventListener(listener, CHANGE_LOGS, this._eventEmitter);
   }
 
@@ -432,6 +443,10 @@ class Core {
 
   // LEGACY, to be removed
   get mocks() {
+    this._deprecationAlerts.set(
+      "mocks",
+      deprecatedMessage("getter", "core.mocks", "core.mock", "releases/migrating-from-v3#api")
+    );
     return this._mock;
   }
 

@@ -115,7 +115,7 @@ describe("events", () => {
 
     it("should have emitted event", async () => {
       option = core.config.namespace("mock").namespace("collections").option("selected");
-      removeSpy = core.alerts.onChange(spies.onChangeAlerts);
+      removeSpy = core.alertsApi.onChange(spies.onChangeAlerts);
       option.value = "unexistant";
       await wait(500);
       expect(spies.onChangeAlerts.callCount).toEqual(1);

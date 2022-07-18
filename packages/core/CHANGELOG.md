@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat(#334): Deprecate `core.mocks.plainMocks` getter. `core.mock.collections.plain` getter must be used instead.
 - feat(#334): Deprecate `core.onChangeAlerts` method. `core.alerts.onChange` method must be used instead.
 - feat(#334): Deprecate `core.logs` getter. `core.logger.globalStore` getter must be used instead.
+- feat(#334): Deprecate `core.onChangeLogs` method. `core.logger.onChangeGlobalStore` method must be used instead.
 
 ## [3.5.0] - 2022-07-05
 

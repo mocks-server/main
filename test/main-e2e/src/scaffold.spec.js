@@ -32,7 +32,7 @@ describe("scaffold", () => {
 
   describe("When started", () => {
     it("should have 3 mocks available", async () => {
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Mocks: 3"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 3"));
     });
 
     it("should not display behaviors", async () => {
@@ -174,7 +174,7 @@ describe("scaffold", () => {
       await mocks.pressEnter();
       await mocks.cursorDown(2);
       const newScreen = await mocks.pressEnter();
-      expect(newScreen).toEqual(expect.stringContaining("Current mock: user-real"));
+      expect(newScreen).toEqual(expect.stringContaining("Current collection: user-real"));
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -208,7 +208,9 @@ describe("scaffold", () => {
       await mocks.cursorDown(4);
       const newScreen = await mocks.pressEnter();
       expect(newScreen).toEqual(
-        expect.stringContaining("Current mock: user-real (custom variants: get-user:success)")
+        expect.stringContaining(
+          "Current collection: user-real (custom variants: get-user:success)"
+        )
       );
     });
 
@@ -240,7 +242,7 @@ describe("scaffold", () => {
     it("should display mock", async () => {
       await mocks.cursorDown(2);
       const newScreen = await mocks.pressEnter();
-      expect(newScreen).toEqual(expect.stringContaining("Current mock: user-real"));
+      expect(newScreen).toEqual(expect.stringContaining("Current collection: user-real"));
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -291,7 +293,7 @@ describe("scaffold", () => {
 
     it("should display new mock in CLI", async () => {
       await wait(500);
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: base"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current collection: base"));
     });
   });
 
@@ -308,7 +310,7 @@ describe("scaffold", () => {
     it("should display custom route variant in CLI", async () => {
       await wait(500);
       expect(mocks.currentScreen).toEqual(
-        expect.stringContaining("Current mock: base (custom variants: get-user:real)")
+        expect.stringContaining("Current collection: base (custom variants: get-user:real)")
       );
     });
 
@@ -342,7 +344,7 @@ describe("scaffold", () => {
 
     it("should not display custom route variant in CLI", async () => {
       await wait(500);
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: base"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current collection: base"));
       expect(mocks.currentScreen).toEqual(expect.not.stringContaining("(custom variants:"));
     });
 

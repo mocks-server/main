@@ -18,15 +18,15 @@ const { renderHeader, renderAlert, getCurrentMockMessageLevel } = require("./hel
 
 const MAIN_CHOICES = [
   {
-    name: "Change current mock",
-    value: "mock",
+    name: "Select collection",
+    value: "collection",
   },
   {
-    name: "Change route variant",
+    name: "Use route variant",
     value: "variant",
   },
   {
-    name: "Restore routes variants",
+    name: "Restore route variants",
     value: "restoreVariants",
   },
   {
@@ -46,7 +46,7 @@ const MAIN_CHOICES = [
     value: "watch",
   },
   {
-    name: "Display server logs",
+    name: "Display logs",
     value: "logs",
   },
 ];
@@ -64,10 +64,10 @@ const QUESTIONS = {
     name: "value",
     choices: ["silly", "debug", "verbose", "info", "warn", "error"],
   },
-  mock: {
+  collection: {
     type: "autocomplete",
     name: "value",
-    message: "Please choose mock",
+    message: "Please choose collection",
   },
   variant: {
     type: "autocomplete",
@@ -100,7 +100,7 @@ const getQuestions = () => {
 
 const SCREENS = {
   MAIN: "main",
-  MOCK: "mock",
+  COLLECTION: "collection",
   DELAY: "delay",
   LOG_LEVEL: "log-level",
   LOGS: "logs",
@@ -109,7 +109,7 @@ const SCREENS = {
 const OPTIONS = [
   {
     name: "enabled",
-    description: "Start interactive CLI plugin or not",
+    description: "Start interactive CLI or not",
     type: "boolean",
     default: true,
   },
@@ -145,11 +145,12 @@ class Cli {
     this._optionEmojis = this._config.addOption(OPTIONS[1]);
 
     this._optionLog = this._config.root.option("log");
-    this._optionMock = this._config.root
+    this._optionCollection = this._config.root
       .namespace("mock")
       .namespace("collections")
       .option("selected");
     this._optionDelay = this._config.root.namespace("mock").namespace("routes").option("delay");
+    // LEGACY, to be removed
     this._optionDelayLegacy = this._config.root.namespace("mocks").option("delay");
     this._optionPort = this._config.root.namespace("server").option("port");
     this._optionHost = this._config.root.namespace("server").option("host");
@@ -166,7 +167,7 @@ class Cli {
 
     this._optionCli.onChange(this._onChangeOptionCli);
     this._optionLog.onChange(this._onChangeOptionLog);
-    this._optionMock.onChange(this._refreshMenuIfStarted);
+    this._optionCollection.onChange(this._refreshMenuIfStarted);
     this._optionDelay.onChange(this._refreshMenuIfStarted);
     this._optionHost.onChange(this._refreshMenuIfStarted);
     this._optionWatch.onChange(this._refreshMenuIfStarted);
@@ -262,30 +263,26 @@ class Cli {
       : this._optionDelayLegacy.value;
     const watchEnabled = this._optionWatch.value;
 
-    const currentMock = this._mock.collections.selected || "-";
-    const availableMocks = this._mock.collections.plain.length;
+    const currentCollection = this._mock.collections.selected || "-";
+    const availableCollections = this._mock.collections.plain.length;
     const availableRoutes = this._mock.routes.plain.length;
     const availableRoutesVariants = this._mock.routes.plainVariants.length;
 
-    const currentMockMessage = this._mock.customRouteVariants.length
-      ? `${currentMock} (custom variants: ${this._mock.customRouteVariants.join(",")})`
-      : currentMock;
+    const currentCollectionMessage = this._mock.customRouteVariants.length
+      ? `${currentCollection} (custom variants: ${this._mock.customRouteVariants.join(",")})`
+      : currentCollection;
 
     return [
-      renderHeader(`Mocks server listening at`, this._serverUrl),
+      renderHeader(`Server listening at`, this._serverUrl),
       renderHeader(`Delay`, delay, delay > 0 ? 1 : 0),
       renderHeader(
-        `Current mock`,
-        currentMockMessage,
-        getCurrentMockMessageLevel(this._mock.customRouteVariants, currentMock)
+        `Current collection`,
+        currentCollectionMessage,
+        getCurrentMockMessageLevel(this._mock.customRouteVariants, currentCollection)
       ),
-      renderHeader(`Mocks`, availableMocks, availableMocks < 1 ? 2 : 0),
+      renderHeader(`Collections`, availableCollections, availableCollections < 1 ? 2 : 0),
       renderHeader(`Routes`, availableRoutes, availableRoutes < 1 ? 2 : 0),
-      renderHeader(
-        `Routes variants`,
-        availableRoutesVariants,
-        availableRoutesVariants < 1 ? 2 : 0
-      ),
+      renderHeader(`Route variants`, availableRoutesVariants, availableRoutesVariants < 1 ? 2 : 0),
       renderHeader(`Log level`, this._logLevel),
       renderHeader(`Watch enabled`, watchEnabled, !!watchEnabled ? 0 : 1),
     ];
@@ -302,8 +299,8 @@ class Cli {
     this._currentScreen = SCREENS.MAIN;
     const action = await this._cli.inquire("main");
     switch (action) {
-      case "mock":
-        return this._changeCurrentMock();
+      case "collection":
+        return this._changeCurrentCollection();
       case "variant":
         return this._changeRouteVariant();
       case "restoreVariants":
@@ -321,27 +318,29 @@ class Cli {
     }
   }
 
-  async _changeCurrentMock() {
-    this._currentScreen = SCREENS.MOCK;
+  async _changeCurrentCollection() {
+    this._currentScreen = SCREENS.COLLECTION;
     this._cli.clearScreen();
-    const mocksIds = this._mock.collections.ids;
-    if (!mocksIds.length) {
+    const collectionsIds = this._mock.collections.ids;
+    if (!collectionsIds.length) {
       return this._displayMainMenu();
     }
-    const mockId = await this._cli.inquire("mock", {
+    const collectionId = await this._cli.inquire("collection", {
       source: (_answers, input) => {
         if (!input || !input.length) {
-          return Promise.resolve(mocksIds);
+          return Promise.resolve(collectionsIds);
         }
-        return Promise.resolve(mocksIds.filter((currentMock) => currentMock.includes(input)));
+        return Promise.resolve(
+          collectionsIds.filter((currentCollection) => currentCollection.includes(input))
+        );
       },
     });
-    this._optionMock.value = mockId;
+    this._optionCollection.value = collectionId;
     return this._displayMainMenu();
   }
 
   async _changeRouteVariant() {
-    this._currentScreen = SCREENS.MOCK;
+    this._currentScreen = SCREENS.COLLECTION;
     this._cli.clearScreen();
     const routeVariantsIds = this._mock.routes.plainVariants.map((variant) => variant.id);
     if (!routeVariantsIds.length) {

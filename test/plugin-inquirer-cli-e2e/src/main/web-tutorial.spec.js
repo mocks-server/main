@@ -25,7 +25,7 @@ describe("web tutorial", () => {
 
   describe("When started", () => {
     it("should have 3 mocks available", async () => {
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Mocks: 3"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 3"));
     });
 
     it("should not display behaviors", async () => {
@@ -56,7 +56,7 @@ describe("web tutorial", () => {
       await mocks.pressEnter();
       await mocks.cursorDown();
       const newScreen = await mocks.pressEnter();
-      expect(newScreen).toEqual(expect.stringContaining("Current mock: user-2"));
+      expect(newScreen).toEqual(expect.stringContaining("Current collection: user-2"));
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -83,7 +83,7 @@ describe("web tutorial", () => {
       await mocks.pressEnter();
       await mocks.cursorDown(2);
       const newScreen = await mocks.pressEnter();
-      expect(newScreen).toEqual(expect.stringContaining("Current mock: user-real"));
+      expect(newScreen).toEqual(expect.stringContaining("Current collection: user-real"));
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -117,7 +117,7 @@ describe("web tutorial", () => {
       await mocks.cursorDown();
       const newScreen = await mocks.pressEnter();
       expect(newScreen).toEqual(
-        expect.stringContaining("Current mock: user-real (custom variants: get-user:2)")
+        expect.stringContaining("Current collection: user-real (custom variants: get-user:2)")
       );
     });
 
@@ -150,7 +150,7 @@ describe("web tutorial", () => {
       await mocks.cursorDown(2);
       await mocks.pressEnter();
       const newScreen = await mocks.pressEnter();
-      expect(newScreen).toEqual(expect.stringContaining("Current mock: user-real"));
+      expect(newScreen).toEqual(expect.stringContaining("Current collection: user-real"));
     });
 
     it("should serve users collection mock under the /api/users path", async () => {

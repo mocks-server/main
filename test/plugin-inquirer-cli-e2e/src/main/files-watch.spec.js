@@ -35,11 +35,11 @@ describe("files watcher", () => {
 
   describe("When started", () => {
     it("should display available mocks in CLI", async () => {
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Mocks: 3"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 3"));
     });
 
     it("should display current mock in CLI", async () => {
-      expect(mocks.logs).toEqual(expect.stringContaining("Current mock: base"));
+      expect(mocks.logs).toEqual(expect.stringContaining("Current collection: base"));
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -69,7 +69,7 @@ describe("files watcher", () => {
 
     describe("without changing current mock", () => {
       it("should display available mocks in CLI", async () => {
-        expect(mocks.currentScreen).toEqual(expect.stringContaining("Mocks: 4"));
+        expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 4"));
       });
 
       it("should serve users collection mock under the /api/users path", async () => {
@@ -100,7 +100,7 @@ describe("files watcher", () => {
 
       it("should display current collection in CLI", async () => {
         await wait(500);
-        expect(mocks.logs).toEqual(expect.stringContaining("Current mock: user-2"));
+        expect(mocks.logs).toEqual(expect.stringContaining("Current collection: user-2"));
       });
 
       it("should serve users collection under the /api/users path", async () => {
@@ -131,7 +131,7 @@ describe("files watcher", () => {
 
       it("should display current behavior in CLI", async () => {
         await wait(500);
-        expect(mocks.logs).toEqual(expect.stringContaining("Current mock: user-real"));
+        expect(mocks.logs).toEqual(expect.stringContaining("Current collection: user-real"));
       });
 
       it("should serve users collection mock under the /api/users path", async () => {
@@ -177,7 +177,7 @@ describe("files watcher", () => {
     });
 
     it("should have no mocks available", async () => {
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Mocks: 0"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 0"));
     });
 
     it("should not serve users collection mock under the /api/users path", async () => {

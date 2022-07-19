@@ -38,11 +38,11 @@ describe("interactive CLI", () => {
     });
 
     it("should have loaded first mock", async () => {
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: base"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current collection: base"));
     });
 
     it("should have 3 mocks available", async () => {
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Mocks: 3"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 3"));
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -69,7 +69,7 @@ describe("interactive CLI", () => {
       await mocks.pressEnter();
       await mocks.cursorDown(2);
       const newScreen = await mocks.pressEnter();
-      expect(newScreen).toEqual(expect.stringContaining("Current mock: user-real"));
+      expect(newScreen).toEqual(expect.stringContaining("Current collection: user-real"));
     });
 
     it("should have removed alert", async () => {

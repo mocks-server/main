@@ -27,7 +27,7 @@ describe("command line arguments", () => {
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
       ]);
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Mocks: 3"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 3"));
     });
   });
 
@@ -39,7 +39,7 @@ describe("command line arguments", () => {
         await waitForServerAndCli();
         const users = await doFetch("/api/users/2");
         expect(users.body).toEqual({ id: 1, name: "John Doe" });
-        expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: base"));
+        expect(mocks.currentScreen).toEqual(expect.stringContaining("Current collection: base"));
       });
     });
 
@@ -50,7 +50,7 @@ describe("command line arguments", () => {
         await waitForServerAndCli();
         const users = await doFetch("/api/users/2");
         expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
-        expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: user-2"));
+        expect(mocks.currentScreen).toEqual(expect.stringContaining("Current collection: user-2"));
       });
     });
 
@@ -73,7 +73,7 @@ describe("command line arguments", () => {
         expect(mocks.currentScreen).toEqual(
           expect.stringContaining("Selecting the first one found")
         );
-        expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: base"));
+        expect(mocks.currentScreen).toEqual(expect.stringContaining("Current collection: base"));
       });
     });
   });

@@ -32,7 +32,7 @@ describe("Cli", () => {
   let optionDelayLegacy;
   let optionHost;
   let optionWatch;
-  let optionMock;
+  let optionCollection;
   let mockOptions;
   let onChangeEmojis;
   let cliArgs;
@@ -41,7 +41,7 @@ describe("Cli", () => {
   let onChangeDelay;
   let onChangeHost;
   let onChangeWatch;
-  let onChangeMock;
+  let onChangeCollection;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
@@ -62,7 +62,7 @@ describe("Cli", () => {
     onChangeDelay = sandbox.stub();
     onChangeHost = sandbox.stub();
     onChangeWatch = sandbox.stub();
-    onChangeMock = sandbox.stub();
+    onChangeCollection = sandbox.stub();
     expect.assertions(1);
     mockOptions = () => {
       optionCli = { ...cli._optionCli, onChange: onChangeCli, value: true };
@@ -72,14 +72,14 @@ describe("Cli", () => {
       optionDelayLegacy = { ...cli._optionDelayLegacy, value: 0 };
       optionHost = { ...cli._optionHost, onChange: onChangeHost, value: "0.0.0.0" };
       optionWatch = { ...cli._optionWatch, onChange: onChangeWatch, value: true };
-      optionMock = { ...cli._optionMock, onChange: onChangeMock, value: "base" };
+      optionCollection = { ...cli._optionCollection, onChange: onChangeCollection, value: "base" };
       cli._optionEmojis = optionEmojis;
       cli._optionDelay = optionDelay;
       cli._optionCli = optionCli;
       cli._optionLog = optionLog;
       cli._optionHost = optionHost;
       cli._optionWatch = optionWatch;
-      cli._optionMock = optionMock;
+      cli._optionCollection = optionCollection;
       cli._optionDelayLegacy = optionDelayLegacy;
     };
     mockOptions();
@@ -153,9 +153,9 @@ describe("Cli", () => {
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
-    it("should not display main menu when mock is changed and current screen is not main menu", async () => {
+    it("should not display main menu when collection is changed and current screen is not main menu", async () => {
       cli._currentScreen = "FOO";
-      onChangeMock.getCall(0).args[0]("foo");
+      onChangeCollection.getCall(0).args[0]("foo");
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
     });
 
@@ -163,7 +163,7 @@ describe("Cli", () => {
       await cli.stop();
       inquirerMocks.reset();
       cli._currentScreen = "FOO";
-      onChangeMock.getCall(0).args[0]("foo");
+      onChangeCollection.getCall(0).args[0]("foo");
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(0);
     });
 
@@ -337,14 +337,14 @@ describe("Cli", () => {
     });
   });
 
-  describe('when user selects "Change current mock"', () => {
+  describe('when user selects "Select collection"', () => {
     const fooSelectedMock = "foo mock";
     let originalIds;
 
     beforeEach(() => {
       originalIds = coreInstance.mock.collections.ids;
       coreInstance.mock.collections.ids = ["foo-mock"];
-      inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("mock");
+      inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("collection");
       inquirerMocks.stubs.inquirer.inquire.onCall(1).resolves(fooSelectedMock);
     });
 
@@ -357,23 +357,23 @@ describe("Cli", () => {
       expect(inquirerMocks.stubs.inquirer.clearScreen.callCount).toEqual(3);
     });
 
-    it("should display main menu if there are no mocks", async () => {
+    it("should display main menu if there are no collections", async () => {
       coreInstance.mock.collections.ids = [];
       await cli.start();
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
-    it("should call to display mock menu", async () => {
+    it("should call to display collections menu", async () => {
       await cli.start();
-      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("mock");
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("collection");
     });
 
-    it("should set current selected mock", async () => {
+    it("should set current selected collection", async () => {
       await cli.start();
-      expect(optionMock.value).toEqual(fooSelectedMock);
+      expect(optionCollection.value).toEqual(fooSelectedMock);
     });
 
-    it("should not filter current mocks if there is no input", async () => {
+    it("should not filter current collections if there is no input", async () => {
       const fooMocks = ["foo1", "foo2"];
       inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
       inquirerMocks.stubs.inquirer.inquireFake.returns(null);
@@ -381,11 +381,11 @@ describe("Cli", () => {
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
       coreInstance.mock.collections.ids = fooMocks;
-      await cli._changeCurrentMock();
-      expect(optionMock.value).toEqual(["foo1", "foo2"]);
+      await cli._changeCurrentCollection();
+      expect(optionCollection.value).toEqual(["foo1", "foo2"]);
     });
 
-    it("should not filter current mocks if current input is empty", async () => {
+    it("should not filter current collections if current input is empty", async () => {
       const fooMocks = ["foo1", "foo2"];
       inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
       inquirerMocks.stubs.inquirer.inquireFake.returns([]);
@@ -393,11 +393,11 @@ describe("Cli", () => {
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
       coreInstance.mock.collections.ids = fooMocks;
-      await cli._changeCurrentMock();
-      expect(optionMock.value).toEqual(["foo1", "foo2"]);
+      await cli._changeCurrentCollection();
+      expect(optionCollection.value).toEqual(["foo1", "foo2"]);
     });
 
-    it("should filter current mocks and returns all that includes current input", async () => {
+    it("should filter current collections and returns all that includes current input", async () => {
       const fooMocks = ["foo1", "foo2", "not-included"];
       inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
       inquirerMocks.stubs.inquirer.inquireFake.returns("foo");
@@ -405,8 +405,8 @@ describe("Cli", () => {
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
       coreInstance.mock.collections.ids = fooMocks;
-      await cli._changeCurrentMock();
-      expect(optionMock.value).toEqual(["foo1", "foo2"]);
+      await cli._changeCurrentCollection();
+      expect(optionCollection.value).toEqual(["foo1", "foo2"]);
     });
   });
 
@@ -608,7 +608,7 @@ describe("Cli", () => {
   describe("when printing header", () => {
     it("should print server url as first element", async () => {
       await cli.start();
-      expect(cli._header()[0]).toEqual(expect.stringContaining("Mocks server listening"));
+      expect(cli._header()[0]).toEqual(expect.stringContaining("Server listening"));
     });
 
     it("should print localhost as host when it is 0.0.0.0", async () => {

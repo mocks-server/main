@@ -34,7 +34,7 @@ describe("scaffold", () => {
 
   describe("When started", () => {
     it("should have 2 mocks available", async () => {
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Mocks: 2"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 2"));
     });
 
     it("should not display alerts", async () => {
@@ -125,7 +125,7 @@ describe("scaffold", () => {
       await mocks.pressEnter();
       await mocks.cursorDown(1);
       const newScreen = await mocks.pressEnter();
-      expect(newScreen).toEqual(expect.stringContaining("Current mock: proxy-disabled"));
+      expect(newScreen).toEqual(expect.stringContaining("Current collection: proxy-disabled"));
     });
 
     it("should return not found for /api/users path", async () => {
@@ -147,7 +147,7 @@ describe("scaffold", () => {
       const newScreen = await mocks.pressEnter();
       expect(newScreen).toEqual(
         expect.stringContaining(
-          "Current mock: proxy-disabled (custom variants: proxy-all:enabled)"
+          "Current collection: proxy-disabled (custom variants: proxy-all:enabled)"
         )
       );
     });
@@ -175,7 +175,9 @@ describe("scaffold", () => {
 
     it("should not display custom route variant in CLI", async () => {
       await wait(500);
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: proxy-disabled"));
+      expect(mocks.currentScreen).toEqual(
+        expect.stringContaining("Current collection: proxy-disabled")
+      );
       expect(mocks.currentScreen).toEqual(expect.not.stringContaining("(custom variants:"));
     });
 
@@ -209,7 +211,7 @@ describe("scaffold", () => {
 
     it("should display new mock in CLI", async () => {
       await wait(500);
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: base"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current collection: base"));
     });
   });
 });

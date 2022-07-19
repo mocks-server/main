@@ -18,6 +18,14 @@ const ConfigMocks = require("../Config.mocks.js");
 
 const Cli = require("../../src/Cli");
 
+function wait(time = 250) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  });
+}
+
 describe("Cli", () => {
   let sandbox;
   let inquirerMocks;
@@ -128,6 +136,7 @@ describe("Cli", () => {
     it("should refresh main menu when delay option is changed and current screen is main menu", async () => {
       expect.assertions(2);
       optionDelay.onChange.getCall(0).args[0]("foo");
+      await wait();
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -135,6 +144,7 @@ describe("Cli", () => {
     it("should refresh main menu when host option is changed and current screen is main menu", async () => {
       expect.assertions(2);
       optionHost.onChange.getCall(0).args[0]("foo");
+      await wait();
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -142,6 +152,7 @@ describe("Cli", () => {
     it("should refresh main menu when log option is changed and current screen is main menu", async () => {
       expect.assertions(2);
       onChangeLog.getCall(0).args[0]("foo");
+      await wait();
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -149,6 +160,7 @@ describe("Cli", () => {
     it("should refresh main menu when watch option is changed and current screen is main menu", async () => {
       expect.assertions(2);
       onChangeWatch.getCall(0).args[0](false);
+      await wait();
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -239,6 +251,7 @@ describe("Cli", () => {
     it("should refresh main menu when emojis option is changed and current screen is main menu", async () => {
       expect.assertions(2);
       onChangeEmojis.getCall(0).args[0](false);
+      await wait();
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -258,6 +271,7 @@ describe("Cli", () => {
     it("should refresh main menu", async () => {
       expect.assertions(2);
       coreInstance.alerts.root.onChange.getCall(0).args[0]();
+      await wait();
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -774,6 +788,7 @@ describe("Cli", () => {
     });
 
     it("should exit logs mode", async () => {
+      await wait();
       expect(inquirerMocks.stubs.inquirer.exitLogsMode.callCount).toEqual(2);
     });
   });

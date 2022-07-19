@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-const { isNumber } = require("lodash");
+const { isNumber, debounce } = require("lodash");
 
 const inquirer = require("./Inquirer");
 const { renderHeader, renderAlert, getCurrentMockMessageLevel } = require("./helpers");
@@ -139,7 +139,9 @@ class Cli {
     this._onChangeOptionEmojis = this._onChangeOptionEmojis.bind(this);
     this._onChangeOptionCli = this._onChangeOptionCli.bind(this);
     this._onChangeOptionLog = this._onChangeOptionLog.bind(this);
-    this._refreshMenuIfStarted = this._refreshMenuIfStarted.bind(this);
+    this._refreshMenuIfStarted = debounce(this._refreshMenuIfStarted.bind(this), 200, {
+      maxWait: 1000,
+    });
 
     this._optionCli = this._config.addOption(OPTIONS[0]);
     this._optionEmojis = this._config.addOption(OPTIONS[1]);

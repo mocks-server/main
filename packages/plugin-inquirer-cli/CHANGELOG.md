@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 
+### Added
+- Add debounce to refresh menu function to avoid too much renders
+
 ### Changed
 - feat: Use core v3.6 new options
 - feat: Use core.mock.restoreRouteVariants method

@@ -432,6 +432,15 @@ class Core {
 
   // LEGACY, change by whole alerts object in next major version
   get alerts() {
+    this._deprecationAlerts.set(
+      "alerts",
+      deprecatedMessage(
+        "method",
+        "core.alerts",
+        "core.alertsApi",
+        "releases/migrating-from-v3#api"
+      )
+    );
     return this._alerts.customFlat;
   }
 

@@ -66,14 +66,16 @@ describe("loadCollections and loadRoutes methods", () => {
           variants: [
             {
               id: "success",
-              response: {
+              type: "json",
+              options: {
                 status: 200,
                 body: [{ id: 1, title: "1984" }],
               },
             },
             {
               id: "error",
-              response: {
+              type: "json",
+              options: {
                 status: 403,
                 body: {
                   message: "Bad data",
@@ -89,21 +91,24 @@ describe("loadCollections and loadRoutes methods", () => {
           variants: [
             {
               id: "success",
-              response: {
+              type: "json",
+              options: {
                 status: 200,
                 body: [{ id: 1, name: "George Orwell" }],
               },
             },
             {
               id: "bradbury",
-              response: {
+              type: "json",
+              options: {
                 status: 200,
                 body: [{ id: 1, name: "Ray Bradbury" }],
               },
             },
             {
               id: "error",
-              response: {
+              type: "json",
+              options: {
                 status: 403,
                 body: {
                   message: "Bad data",

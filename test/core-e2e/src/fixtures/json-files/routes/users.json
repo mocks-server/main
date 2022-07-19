@@ -6,8 +6,8 @@
     "variants": [
       {
         "id": "success",
-        "handler": "json",
-        "response": {
+        "type": "json",
+        "options": {
           "status": 200,
           "body": [
             {
@@ -23,8 +23,8 @@
       },
       {
         "id": "error",
-        "handler": "json",
-        "response": {
+        "type": "json",
+        "options": {
           "status": 403,
           "body": {
             "message": "Bad data"
@@ -40,8 +40,8 @@
     "variants": [
       {
         "id": "1",
-        "handler": "json",
-        "response": {
+        "type": "json",
+        "options": {
           "status": 200,
           "body": {
             "id": 1,
@@ -51,8 +51,8 @@
       },
       {
         "id": "2",
-        "handler": "json",
-        "response": {
+        "type": "json",
+        "options": {
           "status": 200,
           "body": {
             "id": 2,

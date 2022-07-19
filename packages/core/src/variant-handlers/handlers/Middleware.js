@@ -32,15 +32,15 @@ class Json {
     };
   }
 
-  constructor(response, core) {
-    this._response = response;
+  constructor(options, core) {
+    this._options = options;
     this._logger = core.logger;
     this._core = core;
   }
 
   middleware(req, res, next) {
     this._logger.verbose(`Executing middleware | req: ${req.id}`);
-    this._response.middleware(req, res, next, this._core);
+    this._options.middleware(req, res, next, this._core);
   }
 
   get preview() {

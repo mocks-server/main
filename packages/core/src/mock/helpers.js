@@ -162,6 +162,7 @@ function getPlainRouteVariants(routeVariants) {
     return {
       id: routeVariant.variantId,
       routeId: routeVariant.routeId,
+      // LEGACY, change by type and options
       handler: routeVariant.constructor.id,
       response: isUndefined(preview) ? null : preview,
       delay: routeVariant.delay,
@@ -203,6 +204,11 @@ function findRouteHandler(routeHandlers, handlerId) {
   return routeHandlers.find((routeHandlerCandidate) => routeHandlerCandidate.id === handlerId);
 }
 
+function getHandlerId(variant) {
+  // LEGACY, deprecate handler property and default handler
+  return variant.type || variant.handler || DEFAULT_ROUTES_HANDLER;
+}
+
 function getVariantHandler({
   route,
   variant,
@@ -216,7 +222,7 @@ function getVariantHandler({
 }) {
   let routeHandler = null;
   const variantId = getVariantId(route.id, variant.id);
-  const handlerId = variant.handler || DEFAULT_ROUTES_HANDLER;
+  const handlerId = getHandlerId(variant);
   const Handler = findRouteHandler(routeHandlers, handlerId);
   const variantErrors = variantValidationErrors(route, variant, Handler);
   const variantAlerts = alerts.collection(variant.id || variantIndex);

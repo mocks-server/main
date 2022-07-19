@@ -37,6 +37,7 @@ describe("loadCollections and loadRoutes methods", () => {
             variants: [
               {
                 id: "success",
+                handler: "json",
                 response: {
                   status: 200,
                   body: [{ id: 1, title: "1984" }],
@@ -44,6 +45,7 @@ describe("loadCollections and loadRoutes methods", () => {
               },
               {
                 id: "error",
+                handler: "json",
                 response: {
                   status: 403,
                   body: {
@@ -60,6 +62,7 @@ describe("loadCollections and loadRoutes methods", () => {
             variants: [
               {
                 id: "success",
+                handler: "json",
                 response: {
                   status: 200,
                   body: [{ id: 1, name: "George Orwell" }],
@@ -67,6 +70,7 @@ describe("loadCollections and loadRoutes methods", () => {
               },
               {
                 id: "error",
+                handler: "json",
                 response: {
                   status: 403,
                   body: {

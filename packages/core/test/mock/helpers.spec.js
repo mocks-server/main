@@ -773,7 +773,7 @@ describe("mocks helpers", () => {
           id: "validation",
           value: {
             message:
-              "Variant in route with id 'undefined' is invalid: Invalid 'response' property:: type must be object",
+              "Variant in route with id 'undefined' is invalid: Invalid 'options' property:: type must be object",
           },
         },
       ]);
@@ -799,7 +799,7 @@ describe("mocks helpers", () => {
           id: "validation",
           value: {
             message:
-              "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'response' property:: type must be object",
+              "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'options' property:: type must be object",
           },
         },
       ]);

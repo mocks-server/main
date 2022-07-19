@@ -103,7 +103,12 @@ const routesSchema = {
           id: {
             type: "string",
           },
+          // LEGACY, handler property
           handler: {
+            type: "string",
+            enum: [], // this enum is defined when validator is compiled
+          },
+          type: {
             type: "string",
             enum: [], // this enum is defined when validator is compiled
           },
@@ -119,7 +124,7 @@ const routesSchema = {
             ],
           },
         },
-        // TODO, require "response" in all variants to be an object, do not allow additionalProperties
+        // TODO, require "options" in all variants to be an object, do not allow additionalProperties. Deprecate "response"
         required: ["id"],
       },
     },
@@ -139,7 +144,9 @@ function getIds(objs) {
 function compileRouteValidator(variantHandlers) {
   const supportedRouteHandlersIds = getIds(variantHandlers);
   const schema = { ...routesSchema };
+  // LEGACY, handler property
   schema.properties.variants.items.properties.handler.enum = supportedRouteHandlersIds;
+  schema.properties.variants.items.properties.type.enum = supportedRouteHandlersIds;
   routeSchema = { ...schema };
   routeValidator = ajv.compile(schema);
 }
@@ -288,7 +295,7 @@ function variantValidationErrors(route, variant, Handler) {
   }
   const variantValidator = ajv.compile(Handler.validationSchema);
   const dataToCheck = getDataFromVariant(variant, Handler);
-  const dataMessage = isVersion4(Handler) ? "Invalid 'response' property:" : "";
+  const dataMessage = isVersion4(Handler) ? "Invalid 'options' property:" : "";
   const isValid = variantValidator(dataToCheck);
   if (!isValid) {
     let validationMessage;

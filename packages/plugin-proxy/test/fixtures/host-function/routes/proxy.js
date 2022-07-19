@@ -6,8 +6,8 @@ module.exports = [
     variants: [
       {
         id: "enabled",
-        handler: "proxy-v4",
-        response: {
+        type: "proxy-v4",
+        options: {
           host: () => {
             return "http://127.0.0.1:3200";
           },
@@ -16,7 +16,10 @@ module.exports = [
       },
       {
         id: "disabled",
-        response: (_req, _res, next) => next(),
+        type: "middleware",
+        options: {
+          middleware: (_req, _res, next) => next(),
+        },
       },
     ],
   },
@@ -27,8 +30,8 @@ module.exports = [
     variants: [
       {
         id: "enabled",
-        handler: "proxy-v4",
-        response: {
+        type: "proxy-v4",
+        options: {
           host: () => {
             return "http://127.0.0.1:3300";
           },

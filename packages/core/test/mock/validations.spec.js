@@ -322,7 +322,7 @@ describe("mocks validations", () => {
         JsonRoutesHandler
       );
       expect(errors.message).toEqual(
-        "Variant in route with id 'foo-route' is invalid: Invalid 'response' property:: type must be object"
+        "Variant in route with id 'foo-route' is invalid: Invalid 'options' property:: type must be object"
       );
     });
 
@@ -333,7 +333,7 @@ describe("mocks validations", () => {
         JsonRoutesHandler
       );
       expect(errors.message).toEqual(
-        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'response' property:: type must be object"
+        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'options' property:: type must be object"
       );
     });
 
@@ -349,7 +349,7 @@ describe("mocks validations", () => {
         JsonRoutesHandler
       );
       expect(errors.message).toEqual(
-        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'response' property: must have required property 'body'. /headers: type must be object"
+        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'options' property: must have required property 'body'. /headers: type must be object"
       );
     });
 
@@ -365,7 +365,7 @@ describe("mocks validations", () => {
         JsonRoutesHandler
       );
       expect(errors.message).toEqual(
-        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'response' property: Wrong type"
+        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'options' property: Wrong type"
       );
     });
   });
@@ -392,7 +392,7 @@ describe("mocks validations", () => {
         MiddlewareRoutesHandler
       );
       expect(errors.message).toEqual(
-        "Variant in route with id 'foo-route' is invalid: Invalid 'response' property:: type must be object"
+        "Variant in route with id 'foo-route' is invalid: Invalid 'options' property:: type must be object"
       );
     });
 
@@ -403,7 +403,7 @@ describe("mocks validations", () => {
         MiddlewareRoutesHandler
       );
       expect(errors.message).toEqual(
-        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'response' property:: type must be object"
+        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'options' property:: type must be object"
       );
     });
 
@@ -414,7 +414,7 @@ describe("mocks validations", () => {
         MiddlewareRoutesHandler
       );
       expect(errors.message).toEqual(
-        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'response' property: must have required property 'middleware'"
+        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'options' property: must have required property 'middleware'"
       );
     });
   });

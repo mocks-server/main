@@ -18,8 +18,8 @@ module.exports = [
     variants: [
       {
         id: "enabled",
-        handler: "middleware",
-        response: {
+        type: "middleware",
+        options: {
           middleware: (req, _res, next, core) => {
             core.tracer.info(
               `Middleware in request ${req.query.req} => ${req.method} => ${req.url}`
@@ -30,8 +30,8 @@ module.exports = [
       },
       {
         id: "disabled",
-        handler: "middleware",
-        response: {
+        type: "middleware",
+        options: {
           middleware:(_req, _res, next) => {
             next();
           },

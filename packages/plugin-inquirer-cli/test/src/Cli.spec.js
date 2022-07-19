@@ -716,7 +716,7 @@ describe("Cli", () => {
 
   describe("when displaying alerts", () => {
     it("should not display alerts if core alerts are empty", async () => {
-      coreInstance.alerts = [];
+      coreInstance.alerts.root.customFlat = [];
       await cli.start();
       expect(cli._alertsHeader().length).toEqual(0);
     });

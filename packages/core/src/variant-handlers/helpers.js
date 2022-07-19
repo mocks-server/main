@@ -4,7 +4,8 @@ function isVersion4(Handler) {
 
 function getDataFromVariant(variant, Handler) {
   if (isVersion4(Handler)) {
-    return variant.response;
+    // LEGACY, deprecate "response"
+    return variant.options || variant.response;
   }
   return variant;
 }

@@ -45,26 +45,26 @@ class Json {
     };
   }
 
-  constructor(response, core) {
-    this._response = response;
+  constructor(options, core) {
+    this._options = options;
     this._logger = core.logger;
     this._core = core;
   }
 
   middleware(req, res) {
-    if (this._response.headers) {
+    if (this._options.headers) {
       this._logger.debug(`Setting headers | req: ${req.id}`);
-      res.set(this._response.headers);
+      res.set(this._options.headers);
     }
-    res.status(this._response.status);
+    res.status(this._options.status);
     this._logger.verbose(`Sending response | req: ${req.id}`);
-    res.send(this._response.body);
+    res.send(this._options.body);
   }
 
   get preview() {
     return {
-      body: this._response.body,
-      status: this._response.status,
+      body: this._options.body,
+      status: this._options.status,
     };
   }
 }

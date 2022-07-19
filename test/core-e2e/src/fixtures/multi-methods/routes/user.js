@@ -18,16 +18,16 @@ module.exports = [
     variants: [
       {
         id: "1",
-        handler: "json",
-        response: {
+        type: "json",
+        options: {
           status: 200,
           body: USERS[0],
         },
       },
       {
         id: "2",
-        handler: "json",
-        response: {
+        type: "json",
+        options: {
           status: 200,
           body: USERS[1],
         },

@@ -76,7 +76,7 @@ describe("mocks and routes validations", () => {
         findAlert("mock:routes:load:get-user-variant-invalid:variants:2:validation", core.alerts)
           .message
       ).toEqual(
-        "Variant with id '2' in route with id 'get-user-variant-invalid' is invalid: Invalid 'response' property:: type must be object"
+        "Variant with id '2' in route with id 'get-user-variant-invalid' is invalid: Invalid 'options' property:: type must be object"
       );
     });
 

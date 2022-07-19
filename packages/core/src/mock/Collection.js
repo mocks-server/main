@@ -47,7 +47,7 @@ class Collection {
     });
   }
 
-  get routesVariants() {
+  get routeVariants() {
     return this._routeVariants;
   }
 

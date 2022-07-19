@@ -19,6 +19,7 @@ const {
   collectionValidationErrors,
   findRouteVariantByVariantId,
   collectionRouteVariantsValidationErrors,
+  getCollectionRouteVariantsProperty,
 } = require("./validations");
 
 const DEFAULT_ROUTES_HANDLER = "default";
@@ -59,10 +60,11 @@ function getCollectionRouteVariants(
   collections,
   routeVariants,
   alerts,
+  alertsCollections,
   routeVariantsToAdd = []
 ) {
   const collectionRouteVariants = compact(
-    collection.routesVariants.map((variantId) => {
+    getCollectionRouteVariantsProperty(collection, alertsCollections).map((variantId) => {
       return findRouteVariantByVariantId(routeVariants, variantId);
     })
   );
@@ -76,6 +78,7 @@ function getCollectionRouteVariants(
         collections,
         routeVariants,
         alerts,
+        alertsCollections,
         addCollectionRouteVariants(collectionRouteVariants, routeVariantsToAdd)
       );
     }
@@ -103,8 +106,9 @@ function getPlainCollections(collections, collectionsDefinitions) {
     return {
       id: collection.id,
       from: (collectionDefinition && collectionDefinition.from) || null,
-      routesVariants: collectionDefinition && collectionDefinition.routesVariants,
-      appliedRoutesVariants: collection.routesVariants.map(
+      routesVariants:
+        (collectionDefinition && getCollectionRouteVariantsProperty(collectionDefinition)) || [],
+      appliedRoutesVariants: collection.routeVariants.map(
         (routeVariant) => routeVariant.variantId
       ),
     };
@@ -339,6 +343,7 @@ function getCollection({
   loggerRoutes,
   getGlobalDelay,
   alerts,
+  alertsCollections,
 }) {
   let collection = null;
 
@@ -371,7 +376,8 @@ function getCollection({
         collectionDefinition,
         collectionsDefinitions,
         routeVariants,
-        alerts
+        alerts,
+        alertsCollections
       ),
       logger: loggerRoutes,
       getDelay: getGlobalDelay,
@@ -409,6 +415,7 @@ function getCollections({
         logger,
         loggerRoutes,
         alerts: alertsCollection,
+        alertsCollections: alerts,
       });
       if (!collection) {
         errorsProcessing++;

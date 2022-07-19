@@ -120,7 +120,7 @@ describe("mocks and routes validations", () => {
       expect(
         findAlert("mock:collections:load:invalid-mock:validation", core.alerts).message
       ).toEqual(
-        "Collection with id 'invalid-mock' is invalid:  must have required property 'routesVariants'"
+        "Collection with id 'invalid-mock' is invalid:  must have required property 'routes'"
       );
     });
 

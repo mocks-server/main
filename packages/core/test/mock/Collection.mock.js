@@ -21,6 +21,7 @@ class CollectionCollection {
     this._stubs = {
       id: "mock-id",
       routesVariants: [],
+      routeVariants: [],
       router: this._sandbox.stub(),
     };
 

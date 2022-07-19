@@ -432,18 +432,18 @@ describe("mocks validations", () => {
 
     it("should return error if mock has not id", () => {
       const errors = collectionValidationErrors({
-        routesVariants: [],
+        routes: [],
       });
-      expect(errors.errors.length).toEqual(1);
       expect(errors.message).toEqual("Collection is invalid:  must have required property 'id'");
+      expect(errors.errors.length).toEqual(8);
     });
 
-    it("should return error if mock has not routesVariants", () => {
+    it("should return error if mock has not routes", () => {
       const errors = collectionValidationErrors({
         id: "foo",
       });
       expect(errors.message).toEqual(
-        "Collection with id 'foo' is invalid:  must have required property 'routesVariants'"
+        "Collection with id 'foo' is invalid:  must have required property 'routes'"
       );
     });
 
@@ -453,7 +453,7 @@ describe("mocks validations", () => {
         foo: "foo",
       });
       expect(errors.message).toEqual(
-        "Collection is invalid:  must have required property 'routesVariants'. /from: type must be string"
+        "Collection is invalid:  must have required property 'routes'. /from: type must be string. /from: type must be string. /from: type must be string"
       );
     });
   });

@@ -334,7 +334,7 @@ class Mock {
       collectionDefinition: {
         id: `custom-variants:from:${selectedCollectionId}`,
         from: selectedCollectionId,
-        routesVariants: this._customVariants,
+        routes: this._customVariants,
       },
       collectionsDefinitions: this._collectionsDefinitions,
       routeVariants: this._routeVariants,

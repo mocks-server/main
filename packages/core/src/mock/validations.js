@@ -13,6 +13,7 @@ const { compact } = require("lodash");
 const betterAjvErrors = require("better-ajv-errors").default;
 
 const { getDataFromVariant, isVersion4 } = require("../variant-handlers/helpers");
+const { deprecatedMessage } = require("../common/helpers");
 
 const ajv = new Ajv({ allErrors: true });
 
@@ -39,24 +40,68 @@ ajv.addKeyword({
 });
 
 const collectionsSchema = {
-  type: "object",
-  properties: {
-    id: {
-      type: "string",
-    },
-    from: {
-      type: "string",
-    },
-    routesVariants: {
-      type: "array",
-      uniqueItems: true,
-      items: {
-        type: "string",
+  oneOf: [
+    {
+      type: "object",
+      properties: {
+        id: {
+          type: "string",
+        },
+        from: {
+          type: "string",
+        },
+        routesVariants: {
+          type: "array",
+          uniqueItems: true,
+          items: {
+            type: "string",
+          },
+        },
       },
+      required: ["id", "routesVariants"],
+      additionalProperties: false,
     },
-  },
-  required: ["id", "routesVariants"],
-  additionalProperties: false,
+    {
+      type: "object",
+      properties: {
+        id: {
+          type: "string",
+        },
+        from: {
+          type: "string",
+        },
+        routeVariants: {
+          type: "array",
+          uniqueItems: true,
+          items: {
+            type: "string",
+          },
+        },
+      },
+      required: ["id", "routeVariants"],
+      additionalProperties: false,
+    },
+    {
+      type: "object",
+      properties: {
+        id: {
+          type: "string",
+        },
+        from: {
+          type: "string",
+        },
+        routes: {
+          type: "array",
+          uniqueItems: true,
+          items: {
+            type: "string",
+          },
+        },
+      },
+      required: ["id", "routes"],
+      additionalProperties: false,
+    },
+  ],
 };
 
 const routesSchema = {
@@ -193,8 +238,8 @@ function collectionValidationMessage(data, errors) {
   return validationSingleMessage(collectionsSchema, data, errors);
 }
 
-function findRouteVariantByVariantId(routesVariants, variantId) {
-  return routesVariants.find((routeVariant) => routeVariant.variantId === variantId);
+function findRouteVariantByVariantId(routeVariants, variantId) {
+  return routeVariants.find((routeVariant) => routeVariant.variantId === variantId);
 }
 
 function traceId(id) {
@@ -232,11 +277,26 @@ function collectionRouteVariantsErrors(variants, routeVariants) {
   );
 }
 
+function getCollectionRouteVariantsProperty(collection, alertsCollections) {
+  if (alertsCollections && collection && collection.routesVariants) {
+    alertsCollections.set(
+      "routesVariants",
+      deprecatedMessage(
+        "property",
+        "collection.routesVariants",
+        "collection.routes",
+        "releases/migrating-from-v3#main-concepts"
+      )
+    );
+  }
+  // LEGACY, remove routesVariants support
+  return collection.routes || collection.routeVariants || collection.routesVariants;
+}
+
 function collectionInvalidRouteVariants(collection, routeVariants) {
+  const variantsInCollection = collection && getCollectionRouteVariantsProperty(collection);
   const variants =
-    collection && collection.routesVariants && Array.isArray(collection.routesVariants)
-      ? collection.routesVariants
-      : [];
+    variantsInCollection && Array.isArray(variantsInCollection) ? variantsInCollection : [];
   return {
     errors: collectionRouteVariantsErrors(variants, routeVariants),
   };
@@ -330,4 +390,5 @@ module.exports = {
   findRouteVariantByVariantId,
   collectionRouteVariantsValidationErrors,
   customValidationSingleMessage,
+  getCollectionRouteVariantsProperty,
 };

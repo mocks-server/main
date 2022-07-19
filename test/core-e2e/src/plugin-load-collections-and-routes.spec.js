@@ -85,12 +85,12 @@ describe("loadCollections and loadRoutes methods", () => {
           {
             id: "users-and-library",
             from: "base",
-            routesVariants: ["get-books:success", "get-authors:success"],
+            routes: ["get-books:success", "get-authors:success"],
           },
           {
             id: "authors-error",
             from: "users-and-library",
-            routesVariants: ["get-authors:error"],
+            routes: ["get-authors:error"],
           },
         ]);
       }

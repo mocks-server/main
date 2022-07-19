@@ -73,9 +73,9 @@ describe("Collection", () => {
     });
   });
 
-  describe("routesVariants getter", () => {
+  describe("routeVariants getter", () => {
     it("should return routesVariants", () => {
-      expect(collection.routesVariants).toEqual(routeVariants);
+      expect(collection.routeVariants).toEqual(routeVariants);
     });
   });
 

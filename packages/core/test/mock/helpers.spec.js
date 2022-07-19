@@ -208,14 +208,14 @@ describe("mocks helpers", () => {
     });
   });
 
-  describe("getPlainMocks", () => {
+  describe("getPlainCollections", () => {
     it("should return mocks ids and routeVariants ids", () => {
       expect(
         getPlainCollections(
           [
             {
               id: "mock-id-1",
-              routesVariants: [
+              routeVariants: [
                 {
                   variantId: "variant-id-1",
                 },
@@ -229,7 +229,7 @@ describe("mocks helpers", () => {
             },
             {
               id: "mock-id-2",
-              routesVariants: [
+              routeVariants: [
                 {
                   variantId: "variant-id-3",
                 },
@@ -239,12 +239,12 @@ describe("mocks helpers", () => {
           [
             {
               id: "mock-id-1",
-              routesVariants: ["variant-id-1"],
+              routes: ["variant-id-1"],
             },
             {
               id: "mock-id-2",
               from: "mock-id-1",
-              routesVariants: ["variant-id-3"],
+              routes: ["variant-id-3"],
             },
           ]
         )

@@ -379,7 +379,8 @@ describe("Mock", () => {
           {
             id: "validation",
             value: {
-              message: "Collection is invalid: : type must be object",
+              message:
+                "Collection is invalid: : type must be object. : type must be object. : type must be object. : oneOf must match exactly one schema in oneOf",
               error: undefined,
             },
             collection: "mocks:collections:load:0",

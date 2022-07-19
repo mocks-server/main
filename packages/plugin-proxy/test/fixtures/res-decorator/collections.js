@@ -1,6 +1,6 @@
 module.exports = [
   {
     id: "base",
-    routesVariants: ["proxy-all:enabled"],
+    routes: ["proxy-all:enabled"],
   },
 ];

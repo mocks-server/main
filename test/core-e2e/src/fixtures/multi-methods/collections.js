@@ -11,11 +11,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 module.exports = [
   {
     id: "base",
-    routesVariants: ["get-users:success", "get-user:1"],
+    routes: ["get-users:success", "get-user:1"],
   },
   {
     id: "user-2",
     from: "base",
-    routesVariants: ["get-user:2"],
+    routes: ["get-user:2"],
   },
 ];

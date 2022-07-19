@@ -120,7 +120,7 @@ describe("mocks and routes validations", () => {
       expect(
         findAlert("mock:collections:load:invalid-mock:validation", core.alerts).message
       ).toEqual(
-        "Collection with id 'invalid-mock' is invalid:  must have required property 'routesVariants'"
+        "Collection with id 'invalid-mock' is invalid:  must have required property 'routes'"
       );
     });
 
@@ -138,8 +138,16 @@ describe("mocks and routes validations", () => {
       );
     });
 
-    it("should have added an alert about errors processing mocks", () => {
+    it("should have added an alert about deprecated routesVariants property", () => {
       expect(filterAlerts("mock:collections:load", core.alerts)[0].message).toEqual(
+        expect.stringContaining(
+          "Usage of 'collection.routesVariants' property is deprecated. Use 'collection.routes' instead"
+        )
+      );
+    });
+
+    it("should have added an alert about errors processing mocks", () => {
+      expect(filterAlerts("mock:collections:load", core.alerts)[1].message).toEqual(
         "Critical errors found while loading collections: 1"
       );
     });

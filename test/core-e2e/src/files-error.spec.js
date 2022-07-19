@@ -77,25 +77,25 @@ describe("when there is an error loading files", () => {
       );
     });
 
-    it("mocks should not have routes variants", () => {
+    it("collections should not have routes", () => {
       expect(core.mock.collections.plain).toEqual([
         {
           id: "base",
           from: null,
-          routesVariants: ["get-users:success", "get-user:1"],
-          appliedRoutesVariants: [],
+          definedRoutes: ["get-users:success", "get-user:1"],
+          routes: [],
         },
         {
           id: "user-2",
           from: "base",
-          routesVariants: ["get-user:2"],
-          appliedRoutesVariants: [],
+          definedRoutes: ["get-user:2"],
+          routes: [],
         },
         {
           id: "user-real",
           from: "base",
-          routesVariants: ["get-user:real"],
-          appliedRoutesVariants: [],
+          definedRoutes: ["get-user:real"],
+          routes: [],
         },
       ]);
     });

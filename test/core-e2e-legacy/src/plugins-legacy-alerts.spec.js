@@ -187,7 +187,7 @@ describe("plugins using legacy alerts", () => {
           const deprecationAlerts = alerts.filter((alert) =>
             alert.context.startsWith("deprecated")
           );
-          expect(deprecationAlerts.length).toEqual(5);
+          expect(deprecationAlerts.length).toEqual(6);
         });
 
         it("should have removed all plugin alerts", async () => {

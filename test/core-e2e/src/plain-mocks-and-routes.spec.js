@@ -43,20 +43,20 @@ describe("mocks and routes", () => {
         {
           id: "base",
           from: null,
-          routesVariants: ["get-users:success", "get-user:1"],
-          appliedRoutesVariants: ["get-users:success", "get-user:1"],
+          definedRoutes: ["get-users:success", "get-user:1"],
+          routes: ["get-users:success", "get-user:1"],
         },
         {
           id: "user-2",
           from: "base",
-          routesVariants: ["get-user:2"],
-          appliedRoutesVariants: ["get-users:success", "get-user:2"],
+          definedRoutes: ["get-user:2"],
+          routes: ["get-users:success", "get-user:2"],
         },
         {
           id: "user-real",
           from: "base",
-          routesVariants: ["get-user:real"],
-          appliedRoutesVariants: ["get-users:success", "get-user:real"],
+          definedRoutes: ["get-user:real"],
+          routes: ["get-users:success", "get-user:real"],
         },
       ]);
     });
@@ -84,9 +84,9 @@ describe("mocks and routes", () => {
       expect(core.mock.routes.plainVariants).toEqual([
         {
           id: "get-user:1",
-          routeId: "get-user",
-          handler: "json",
-          response: {
+          route: "get-user",
+          type: "json",
+          preview: {
             body: {
               id: 1,
               name: "John Doe",
@@ -97,9 +97,9 @@ describe("mocks and routes", () => {
         },
         {
           id: "get-user:2",
-          routeId: "get-user",
-          handler: "json",
-          response: {
+          route: "get-user",
+          type: "json",
+          preview: {
             body: {
               id: 2,
               name: "Jane Doe",
@@ -110,16 +110,16 @@ describe("mocks and routes", () => {
         },
         {
           id: "get-user:real",
-          routeId: "get-user",
-          handler: "middleware",
-          response: null,
+          route: "get-user",
+          type: "middleware",
+          preview: null,
           delay: null,
         },
         {
           id: "get-users:success",
-          routeId: "get-users",
-          handler: "json",
-          response: {
+          route: "get-users",
+          type: "json",
+          preview: {
             body: [
               {
                 id: 1,
@@ -136,9 +136,9 @@ describe("mocks and routes", () => {
         },
         {
           id: "get-users:error",
-          routeId: "get-users",
-          handler: "json",
-          response: {
+          route: "get-users",
+          type: "json",
+          preview: {
             body: {
               message: "Bad data",
             },

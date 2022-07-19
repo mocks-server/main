@@ -16,6 +16,18 @@ const Loaders = require("./Loaders");
 const Collections = require("./Collections");
 const Routes = require("./Routes");
 const { deprecatedMessage } = require("../common/helpers");
+const {
+  getPlainCollections,
+  getPlainRoutes,
+  getPlainRouteVariants,
+  addCustomVariant,
+  getRouteVariants,
+  getCollections,
+  getCollection,
+  plainCollectionsToLegacy,
+  plainRouteVariantsToLegacy,
+} = require("./helpers");
+const { getIds, compileRouteValidator } = require("./validations");
 
 const LEGACY_OPTIONS = [
   // LEGACY, to be removed
@@ -41,17 +53,6 @@ const LEGACY_OPTIONS = [
     },
   },
 ];
-
-const {
-  getPlainCollections,
-  getPlainRoutes,
-  getPlainRouteVariants,
-  addCustomVariant,
-  getRouteVariants,
-  getCollections,
-  getCollection,
-} = require("./helpers");
-const { getIds, compileRouteValidator } = require("./validations");
 
 const SELECTED_COLLECTION_ID = "selected";
 const EMPTY_ALERT_ID = "empty";
@@ -455,7 +456,7 @@ class Mock {
         "releases/migrating-from-v3#api"
       )
     );
-    return this._getPlainCollections();
+    return plainCollectionsToLegacy(this._getPlainCollections());
   }
 
   _getPlainRoutes() {
@@ -491,7 +492,7 @@ class Mock {
         "releases/migrating-from-v3#api"
       )
     );
-    return this._getPlainVariants();
+    return plainRouteVariantsToLegacy(this._getPlainVariants());
   }
 
   get routes() {

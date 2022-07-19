@@ -25,6 +25,8 @@ const {
   getVariantHandler,
   getRouteVariants,
   getCollection,
+  plainCollectionsToLegacy,
+  plainRouteVariantsToLegacy,
 } = require("../../src/mock/helpers");
 const { compileRouteValidator } = require("../../src/mock/validations");
 const DefaultRoutesHandler = require("../../src/variant-handlers/handlers/Default");
@@ -208,6 +210,65 @@ describe("mocks helpers", () => {
     });
   });
 
+  describe("legacy getPlainCollections", () => {
+    it("should return mocks ids and routeVariants ids", () => {
+      expect(
+        plainCollectionsToLegacy(
+          getPlainCollections(
+            [
+              {
+                id: "mock-id-1",
+                routeVariants: [
+                  {
+                    variantId: "variant-id-1",
+                  },
+                  {
+                    variantId: "variant-id-2",
+                  },
+                  {
+                    variantId: "variant-id-3",
+                  },
+                ],
+              },
+              {
+                id: "mock-id-2",
+                routeVariants: [
+                  {
+                    variantId: "variant-id-3",
+                  },
+                ],
+              },
+            ],
+            [
+              {
+                id: "mock-id-1",
+                routes: ["variant-id-1"],
+              },
+              {
+                id: "mock-id-2",
+                from: "mock-id-1",
+                routes: ["variant-id-3"],
+              },
+            ]
+          )
+        )
+      ).toEqual([
+        {
+          id: "mock-id-1",
+          from: null,
+          routesVariants: ["variant-id-1"],
+          appliedRoutesVariants: ["variant-id-1", "variant-id-2", "variant-id-3"],
+        },
+        {
+          id: "mock-id-2",
+          from: "mock-id-1",
+          routesVariants: ["variant-id-3"],
+          appliedRoutesVariants: ["variant-id-3"],
+        },
+      ]);
+    });
+  });
+
   describe("getPlainCollections", () => {
     it("should return mocks ids and routeVariants ids", () => {
       expect(
@@ -252,14 +313,14 @@ describe("mocks helpers", () => {
         {
           id: "mock-id-1",
           from: null,
-          routesVariants: ["variant-id-1"],
-          appliedRoutesVariants: ["variant-id-1", "variant-id-2", "variant-id-3"],
+          definedRoutes: ["variant-id-1"],
+          routes: ["variant-id-1", "variant-id-2", "variant-id-3"],
         },
         {
           id: "mock-id-2",
           from: "mock-id-1",
-          routesVariants: ["variant-id-3"],
-          appliedRoutesVariants: ["variant-id-3"],
+          definedRoutes: ["variant-id-3"],
+          routes: ["variant-id-3"],
         },
       ]);
     });
@@ -465,6 +526,126 @@ describe("mocks helpers", () => {
     });
   });
 
+  describe("legacy getPlainRoutesVariants", () => {
+    it("should return routes variants in plain format when using legacy plainResponsePreview property", () => {
+      expect(
+        plainRouteVariantsToLegacy(
+          getPlainRouteVariants([
+            {
+              variantId: "route-1:variant-1",
+              routeId: "route-1",
+              constructor: { id: "handler-id-1" },
+              plainResponsePreview: "response-preview-1",
+              delay: "delay-1",
+              foo: "foo-1",
+            },
+            {
+              variantId: "route-2:variant-1",
+              routeId: "route-2",
+              constructor: { id: "handler-id-2" },
+              plainResponsePreview: "response-preview-2",
+              delay: "delay-2",
+              foo: "foo-2",
+            },
+          ])
+        )
+      ).toEqual([
+        {
+          id: "route-1:variant-1",
+          routeId: "route-1",
+          handler: "handler-id-1",
+          response: "response-preview-1",
+          delay: "delay-1",
+        },
+        {
+          id: "route-2:variant-1",
+          routeId: "route-2",
+          handler: "handler-id-2",
+          response: "response-preview-2",
+          delay: "delay-2",
+        },
+      ]);
+    });
+
+    it("should return routes variants in plain format when constructor is v4", () => {
+      expect(
+        plainRouteVariantsToLegacy(
+          getPlainRouteVariants([
+            {
+              variantId: "route-1:variant-1",
+              routeId: "route-1",
+              constructor: { id: "handler-id-1", version: "4" },
+              preview: "response-preview-1",
+              delay: "delay-1",
+              foo: "foo-1",
+            },
+            {
+              variantId: "route-2:variant-1",
+              routeId: "route-2",
+              constructor: { id: "handler-id-2", version: "4" },
+              preview: "response-preview-2",
+              delay: "delay-2",
+              foo: "foo-2",
+            },
+          ])
+        )
+      ).toEqual([
+        {
+          id: "route-1:variant-1",
+          routeId: "route-1",
+          handler: "handler-id-1",
+          response: "response-preview-1",
+          delay: "delay-1",
+        },
+        {
+          id: "route-2:variant-1",
+          routeId: "route-2",
+          handler: "handler-id-2",
+          response: "response-preview-2",
+          delay: "delay-2",
+        },
+      ]);
+    });
+
+    it("should return null in response when no preview is defined", () => {
+      expect(
+        plainRouteVariantsToLegacy(
+          getPlainRouteVariants([
+            {
+              variantId: "route-1:variant-1",
+              routeId: "route-1",
+              constructor: { id: "handler-id-1", version: "4" },
+              delay: "delay-1",
+              foo: "foo-1",
+            },
+            {
+              variantId: "route-2:variant-1",
+              routeId: "route-2",
+              constructor: { id: "handler-id-2", version: "4" },
+              delay: "delay-2",
+              foo: "foo-2",
+            },
+          ])
+        )
+      ).toEqual([
+        {
+          id: "route-1:variant-1",
+          routeId: "route-1",
+          handler: "handler-id-1",
+          response: null,
+          delay: "delay-1",
+        },
+        {
+          id: "route-2:variant-1",
+          routeId: "route-2",
+          handler: "handler-id-2",
+          response: null,
+          delay: "delay-2",
+        },
+      ]);
+    });
+  });
+
   describe("getPlainRoutesVariants", () => {
     it("should return routes variants in plain format when using legacy plainResponsePreview property", () => {
       expect(
@@ -489,16 +670,16 @@ describe("mocks helpers", () => {
       ).toEqual([
         {
           id: "route-1:variant-1",
-          routeId: "route-1",
-          handler: "handler-id-1",
-          response: "response-preview-1",
+          route: "route-1",
+          type: "handler-id-1",
+          preview: "response-preview-1",
           delay: "delay-1",
         },
         {
           id: "route-2:variant-1",
-          routeId: "route-2",
-          handler: "handler-id-2",
-          response: "response-preview-2",
+          route: "route-2",
+          type: "handler-id-2",
+          preview: "response-preview-2",
           delay: "delay-2",
         },
       ]);
@@ -527,16 +708,16 @@ describe("mocks helpers", () => {
       ).toEqual([
         {
           id: "route-1:variant-1",
-          routeId: "route-1",
-          handler: "handler-id-1",
-          response: "response-preview-1",
+          route: "route-1",
+          type: "handler-id-1",
+          preview: "response-preview-1",
           delay: "delay-1",
         },
         {
           id: "route-2:variant-1",
-          routeId: "route-2",
-          handler: "handler-id-2",
-          response: "response-preview-2",
+          route: "route-2",
+          type: "handler-id-2",
+          preview: "response-preview-2",
           delay: "delay-2",
         },
       ]);
@@ -563,16 +744,16 @@ describe("mocks helpers", () => {
       ).toEqual([
         {
           id: "route-1:variant-1",
-          routeId: "route-1",
-          handler: "handler-id-1",
-          response: null,
+          route: "route-1",
+          type: "handler-id-1",
+          preview: null,
           delay: "delay-1",
         },
         {
           id: "route-2:variant-1",
-          routeId: "route-2",
-          handler: "handler-id-2",
-          response: null,
+          route: "route-2",
+          type: "handler-id-2",
+          preview: null,
           delay: "delay-2",
         },
       ]);

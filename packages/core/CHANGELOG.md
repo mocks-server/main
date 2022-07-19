@@ -31,14 +31,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat(#334): Deprecate `core.loadMocks` method. `core.mock.createLoaders` method must be used instead.
 - feat(#334): Deprecate `core.loadRoutes` method. `core.mock.createLoaders` method must be used instead.
 - feat(#334): Deprecate `core.mocks.plainRoutes` getter. `core.mock.routes.plain` getter must be used instead.
-- feat(#334): Deprecate `core.mocks.plainRoutesVariants` getter. `core.mock.routes.plainVariants` getter must be used instead.
+- feat(#334): Deprecate `core.mocks.plainRoutesVariants` getter. `core.mock.routes.plainVariants` getter must be used instead. The format of items has changed in the new getter.
 - feat(#334): Deprecate `core.mocks.current` getter. `core.mock.collections.selected` getter must be used instead.
 - feat(#334): Deprecate `core.mocks.current` setter. `core.mock.collections.select` method must be used instead.
 - feat(#334): Deprecate `core.mocks.ids` getter. `core.mock.collections.ids` getter must be used instead.
-- feat(#334): Deprecate `core.mocks.plainMocks` getter. `core.mock.collections.plain` getter must be used instead.
+- feat(#334): Deprecate `core.mocks.plainMocks` getter. `core.mock.collections.plain` getter must be used instead. The format of items has changed in the new getter.
 - feat(#334): Deprecate `core.onChangeAlerts` method. `core.alerts.root.onChange` method must be used instead.
 - feat(#334): Deprecate `core.logs` getter. `core.logger.globalStore` getter must be used instead.
 - feat(#334): Deprecate `core.onChangeLogs` method. `core.logger.onChangeGlobalStore` method must be used instead.
+- feat(#334): Deprecate `core.alerts` when used out of plugins, because it is a getter returning a flat collection of alerts. In next major version, it will return the alerts API.
 
 ## [3.5.0] - 2022-07-05
 

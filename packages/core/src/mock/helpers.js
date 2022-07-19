@@ -106,11 +106,9 @@ function getPlainCollections(collections, collectionsDefinitions) {
     return {
       id: collection.id,
       from: (collectionDefinition && collectionDefinition.from) || null,
-      routesVariants:
+      definedRoutes:
         (collectionDefinition && getCollectionRouteVariantsProperty(collectionDefinition)) || [],
-      appliedRoutesVariants: collection.routeVariants.map(
-        (routeVariant) => routeVariant.variantId
-      ),
+      routes: collection.routeVariants.map((routeVariant) => routeVariant.variantId),
     };
   });
 }
@@ -164,10 +162,9 @@ function getPlainRouteVariants(routeVariants) {
     const preview = getPreview(routeVariant);
     return {
       id: routeVariant.variantId,
-      routeId: routeVariant.routeId,
-      // LEGACY, change by type and options
-      handler: routeVariant.constructor.id,
-      response: isUndefined(preview) ? null : preview,
+      route: routeVariant.routeId,
+      type: routeVariant.constructor.id,
+      preview: isUndefined(preview) ? null : preview,
       delay: routeVariant.delay,
     };
   });
@@ -442,6 +439,31 @@ function getCollections({
   return collections;
 }
 
+// LEGACY, to be removed
+function plainCollectionsToLegacy(plainCollections) {
+  return plainCollections.map((collection) => {
+    return {
+      id: collection.id,
+      from: collection.from,
+      routesVariants: collection.definedRoutes,
+      appliedRoutesVariants: collection.routes,
+    };
+  });
+}
+
+// LEGACY, to be removed
+function plainRouteVariantsToLegacy(plainRouteVariants) {
+  return plainRouteVariants.map((routeVariant) => {
+    return {
+      id: routeVariant.id,
+      routeId: routeVariant.route,
+      handler: routeVariant.type,
+      response: routeVariant.preview,
+      delay: routeVariant.delay,
+    };
+  });
+}
+
 module.exports = {
   getCollectionRouteVariants,
   getVariantId,
@@ -455,4 +477,6 @@ module.exports = {
   hasDelayProperty,
   getCollection,
   getCollections,
+  plainCollectionsToLegacy,
+  plainRouteVariantsToLegacy,
 };

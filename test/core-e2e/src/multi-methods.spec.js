@@ -49,14 +49,14 @@ describe("when method is defined as array", () => {
           {
             id: "base",
             from: null,
-            routesVariants: ["get-users:success", "get-user:1"],
-            appliedRoutesVariants: ["get-users:success", "get-user:1"],
+            definedRoutes: ["get-users:success", "get-user:1"],
+            routes: ["get-users:success", "get-user:1"],
           },
           {
             id: "user-2",
             from: "base",
-            routesVariants: ["get-user:2"],
-            appliedRoutesVariants: ["get-users:success", "get-user:2"],
+            definedRoutes: ["get-user:2"],
+            routes: ["get-users:success", "get-user:2"],
           },
         ]);
       });
@@ -84,9 +84,9 @@ describe("when method is defined as array", () => {
         expect(core.mock.routes.plainVariants).toEqual([
           {
             id: "get-user:1",
-            routeId: "get-user",
-            handler: "json",
-            response: {
+            route: "get-user",
+            type: "json",
+            preview: {
               body: {
                 id: 1,
                 name: "John Doe",
@@ -97,9 +97,9 @@ describe("when method is defined as array", () => {
           },
           {
             id: "get-user:2",
-            routeId: "get-user",
-            handler: "json",
-            response: {
+            route: "get-user",
+            type: "json",
+            preview: {
               body: {
                 id: 2,
                 name: "Jane Doe",
@@ -110,9 +110,9 @@ describe("when method is defined as array", () => {
           },
           {
             id: "get-users:success",
-            routeId: "get-users",
-            handler: "json",
-            response: {
+            route: "get-users",
+            type: "json",
+            preview: {
               body: [
                 {
                   id: 1,
@@ -129,9 +129,9 @@ describe("when method is defined as array", () => {
           },
           {
             id: "get-users:error",
-            routeId: "get-users",
-            handler: "json",
-            response: {
+            route: "get-users",
+            type: "json",
+            preview: {
               body: {
                 message: "Bad data",
               },

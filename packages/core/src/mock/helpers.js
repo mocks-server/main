@@ -20,7 +20,6 @@ const {
   findRouteVariantByVariantId,
   collectionRouteVariantsValidationErrors,
 } = require("./validations");
-const { docsUrl } = require("../common/helpers");
 
 const DEFAULT_ROUTES_HANDLER = "default";
 
@@ -205,7 +204,6 @@ function findRouteHandler(routeHandlers, handlerId) {
 }
 
 function getHandlerId(variant) {
-  // LEGACY, deprecate handler property and default handler
   return variant.type || variant.handler || DEFAULT_ROUTES_HANDLER;
 }
 
@@ -222,10 +220,10 @@ function getVariantHandler({
 }) {
   let routeHandler = null;
   const variantId = getVariantId(route.id, variant.id);
-  const handlerId = getHandlerId(variant);
+  const variantAlerts = alerts.collection(variant.id || variantIndex);
+  const handlerId = getHandlerId(variant, variantAlerts);
   const Handler = findRouteHandler(routeHandlers, handlerId);
   const variantErrors = variantValidationErrors(route, variant, Handler);
-  const variantAlerts = alerts.collection(variant.id || variantIndex);
 
   const variantNamespace = variantId || getVariantId(route.id, variantIndex);
   const routeVariantLogger = loggerRoutes.namespace(variantNamespace);
@@ -246,17 +244,7 @@ function getVariantHandler({
   }
 
   try {
-    const variantArgument = getDataFromVariant(variant, Handler);
-    if (Handler.deprecated) {
-      handlersAlerts.set(
-        Handler.id,
-        `Handler '${
-          Handler.id
-        }' is deprecated and will be removed in next major version. Consider using another handler. ${docsUrl(
-          "releases/migrating-from-v3#route-variants-handlers"
-        )}`
-      );
-    }
+    const variantArgument = getDataFromVariant(variant, Handler, handlersAlerts);
     routeHandler = new Handler(
       {
         ...variantArgument,

@@ -236,6 +236,7 @@ importers:
       is-promise: 4.0.0
       lodash: 4.17.21
       node-watch: 0.7.3
+      swagger-ui-dist: 4.13.0
       update-notifier: 5.1.0
       winston: 3.7.2
       winston-array-transport: 1.1.10
@@ -258,6 +259,7 @@ importers:
       is-promise: 4.0.0
       lodash: 4.17.21
       node-watch: 0.7.3
+      swagger-ui-dist: 4.13.0
       update-notifier: 5.1.0
       winston: 3.7.2
       winston-array-transport: 1.1.10
@@ -306,13 +308,17 @@ importers:
       '@hapi/boom': 9.1.4
       '@mocks-server/admin-api-paths': workspace:*
       '@mocks-server/core': workspace:*
+      body-parser: 1.20.0
       cors: 2.8.5
       express: 4.18.1
+      express-request-id: 1.4.1
     dependencies:
       '@hapi/boom': 9.1.4
       '@mocks-server/admin-api-paths': link:../admin-api-paths
+      body-parser: 1.20.0
       cors: 2.8.5
       express: 4.18.1
+      express-request-id: 1.4.1
     devDependencies:
       '@mocks-server/core': link:../core
 
@@ -15518,6 +15524,10 @@ packages:
       util.promisify: 1.0.1
     dev: true
 
+  /swagger-ui-dist/4.13.0:
+    resolution: {integrity: sha512-5yqhkUU9uV5oT/MTMBeSgDGI0Vx6eCOU43AszQBs88poI8OB1v+FoXEFHv+NaBbEfTkXCMWlAJrH6iWyDzLETQ==}
+    dev: false
+
   /symbol-tree/3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
     dev: true
@@ -16037,7 +16047,7 @@ packages:
     engines: {node: '>= 10.0.0'}
 
   /unpipe/1.0.0:
-    resolution: {integrity: sha1-sr9O6FFKrmFltIF4KdIbLvSZBOw=}
+    resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
 
   /unquote/1.1.1:

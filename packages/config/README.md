@@ -331,6 +331,9 @@ const config = new Config({ moduleName: "mocks", mergeArrays: false });
   * `configuration` _(Object)_: Object with configuration. Levels in the object correspond to namespaces names, and last level keys correspond to option names.
   * `options` _(Object)_: Object with extra options for validation:
     * `allowAdditionalProperties` _(Boolean)_: _Default `false`_. If true, additional properties in the configuration would not produce validation errors.
+* __`getValidationSchema(options)`__: Returns a validation schema compatible with AJV for validating the configuration of all nested namespaces.
+  * `options` _(Object)_: Object with extra options for validation:
+    * `allowAdditionalProperties` _(Boolean)_: _Default `false`_. If true, the validation schema will allow additional properties.
 * __`value`__: Getter returning the current values from all namespaces and options as an object. Levels in the object correspond to namespaces names, and last level keys correspond to option names. It can be also used as setter as an alias of the `set` method, with default options.
 * __`loadedFile`__: Getter returning the file path of the loaded configuration file. It returns `null` if no configuration file was loaded.
 * __`namespaces`__: Getter returning array with all root namespaces.

@@ -24,6 +24,7 @@ const UpdateNotifierMock = require("./update-notifier/UpdateNotifier.mock.js");
 const Core = require("../src/Core");
 const tracer = require("../src/common/legacyTracer");
 const Alerts = require("../src/alerts/Alerts");
+const { version } = require("../package.json");
 
 describe("Core", () => {
   let sandbox;
@@ -86,6 +87,13 @@ describe("Core", () => {
     it("should listen to change trace level when log option changes", async () => {
       core = new Core();
       expect(configMocks.stubs.option.onChange.getCall(1).args[0]).toEqual(tracer.set);
+    });
+  });
+
+  describe("version", () => {
+    it("should return current version", async () => {
+      core = new Core();
+      expect(core.version).toEqual(version);
     });
   });
 

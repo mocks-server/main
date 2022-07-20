@@ -306,6 +306,18 @@ describe("Plugins", () => {
       expect(coreInstance.variantHandlers.register.callCount).toEqual(1);
     });
 
+    it("should have core.version available", async () => {
+      let version;
+      const fooPlugin = {
+        register: ({ version: coreVersion }) => {
+          version = coreVersion;
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(version).toEqual("foo-version");
+    });
+
     it("should have core addRouter method available", async () => {
       const fooPlugin = {
         register: ({ addRouter }) => {

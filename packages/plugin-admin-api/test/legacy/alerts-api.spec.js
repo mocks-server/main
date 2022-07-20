@@ -10,12 +10,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const {
   startServer,
-  doFetch,
-  doApiFetch,
+  doLegacyFetch,
   waitForServer,
   wait,
   fixturesFolder,
-} = require("./support/helpers");
+} = require("../support/helpers");
 
 describe("alerts api", () => {
   let server;
@@ -26,7 +25,6 @@ describe("alerts api", () => {
           selected: "foo",
         },
       },
-      log: "silly",
     });
     await waitForServer();
   });
@@ -37,22 +35,23 @@ describe("alerts api", () => {
 
   describe("when started", () => {
     it("should return collection not found alert", async () => {
-      const response = await doApiFetch("/alerts");
+      const response = await doLegacyFetch("/admin/alerts");
       // one alert is caused by deprecated handler
-      expect(response.body.length).toEqual(2);
+      expect(response.body.length).toEqual(3);
     });
 
     it("should return specific alert when requested by id", async () => {
-      const response = await doApiFetch("/alerts/mock%3Acollections%3Aselected");
+      const response = await doLegacyFetch("/admin/alerts/mock%3Acollections%3Aselected");
       expect(response.body).toEqual({
         id: "mock:collections:selected",
+        context: "mock:collections:selected",
         message: "Collection 'foo' was not found. Selecting the first one found",
         error: null,
       });
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
-      const users = await doFetch("/api/users");
+      const users = await doLegacyFetch("/api/users");
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -60,9 +59,9 @@ describe("alerts api", () => {
     });
   });
 
-  describe("when collection is modified", () => {
+  describe("when mock is modified", () => {
     beforeAll(async () => {
-      await doApiFetch("/config", {
+      await doLegacyFetch("/admin/settings", {
         method: "PATCH",
         body: {
           mock: {
@@ -76,15 +75,15 @@ describe("alerts api", () => {
     }, 10000);
 
     it("should return no alerts", async () => {
-      const response = await doApiFetch("/alerts");
+      const response = await doLegacyFetch("/admin/alerts");
       // one alert is caused by deprecated handler
-      expect(response.body.length).toEqual(1);
+      expect(response.body.length).toEqual(2);
     });
   });
 
   describe("when there is an error loading files", () => {
     beforeAll(async () => {
-      await doApiFetch("/config", {
+      await doLegacyFetch("/admin/settings", {
         method: "PATCH",
         body: {
           files: {
@@ -96,9 +95,9 @@ describe("alerts api", () => {
     }, 10000);
 
     it("should return alert containing error", async () => {
-      const response = await doApiFetch("/alerts");
-      expect(response.body.length).toEqual(5);
-      expect(response.body[4].error.message).toEqual(
+      const response = await doLegacyFetch("/admin/alerts");
+      expect(response.body.length).toEqual(6);
+      expect(response.body[5].error.message).toEqual(
         expect.stringContaining("Cannot find module '../db/users'")
       );
     });

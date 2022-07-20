@@ -29,7 +29,8 @@ describe("react-admin-client methods used with node", () => {
     describe("when there are alerts", () => {
       it("should return alerts", async () => {
         const alerts = await readAlerts();
-        expect(alerts.length).toEqual(1);
+        // Usage of legacy API produces alerts
+        expect(alerts.length).toEqual(2);
       });
 
       it("should return alert about mock not defined", async () => {
@@ -48,7 +49,8 @@ describe("react-admin-client methods used with node", () => {
         });
         await wait(2000);
         const alerts = await readAlerts();
-        expect(alerts.length).toEqual(3);
+        // Usage of legacy API produces alerts
+        expect(alerts.length).toEqual(4);
       });
 
       it("alert about mocks settings should exist", async () => {
@@ -71,7 +73,8 @@ describe("react-admin-client methods used with node", () => {
 
       it("alert about files error should exist", async () => {
         const alerts = await readAlerts();
-        const alertId = alerts[2].id;
+        // Usage of legacy API produces alerts
+        const alertId = alerts[3].id;
         const alert = await readAlert(alertId);
         expect(alert.id).toEqual(alertId);
         expect(alert.message).toEqual(expect.stringContaining("Error loading collections"));
@@ -90,7 +93,8 @@ describe("react-admin-client methods used with node", () => {
         });
         await wait(2000);
         const alerts = await readAlerts();
-        expect(alerts.length).toEqual(0);
+        // Usage of legacy API produces alerts
+        expect(alerts.length).toEqual(1);
       });
     });
   });

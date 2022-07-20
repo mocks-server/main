@@ -27,6 +27,7 @@ const UpdateNotifier = require("./update-notifier/UpdateNotifier");
 const { scopedAlertsMethods } = require("./alerts/legacyHelpers");
 const { addEventListener, CHANGE_MOCK, CHANGE_ALERTS, CHANGE_LOGS } = require("./common/events");
 const { arrayMerge, deprecatedMessage } = require("./common/helpers");
+const { version } = require("../package.json");
 
 const MODULE_NAME = "mocks";
 
@@ -505,6 +506,10 @@ class Core {
 
   get variantHandlers() {
     return this._variantHandlers;
+  }
+
+  get version() {
+    return version;
   }
 }
 

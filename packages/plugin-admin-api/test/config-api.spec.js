@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -11,10 +11,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const {
   startServer,
   doFetch,
+  doApiFetch,
+  doLegacyFetch,
   fixturesFolder,
   TimeCounter,
   wait,
   waitForServer,
+  waitForServerUrl,
 } = require("./support/helpers");
 
 describe("settings api", () => {
@@ -29,8 +32,8 @@ describe("settings api", () => {
   });
 
   describe("get", () => {
-    it("should return current settings", async () => {
-      const settingsResponse = await doFetch("/admin/settings");
+    it("should return current config", async () => {
+      const settingsResponse = await doApiFetch("/config");
       expect(settingsResponse.body).toEqual({
         config: {
           allowUnknownArguments: true,
@@ -61,6 +64,8 @@ describe("settings api", () => {
           register: [null],
           adminApi: {
             path: "/admin",
+            host: "0.0.0.0",
+            port: 3101,
           },
         },
         log: "silent",
@@ -96,7 +101,7 @@ describe("settings api", () => {
     describe("when changing an unexistant option", () => {
       it("should response with a bad request containing errors", async () => {
         expect.assertions(4);
-        const settingsResponse = await doFetch("/admin/settings", {
+        const settingsResponse = await doApiFetch("/config", {
           method: "PATCH",
           body: {
             foo: "foo-value",
@@ -114,14 +119,14 @@ describe("settings api", () => {
 
       it("should not apply any change if request contains any error", async () => {
         expect.assertions(3);
-        const settingsUpdateResponse = await doFetch("/admin/settings", {
+        const settingsUpdateResponse = await doApiFetch("/config", {
           method: "PATCH",
           body: {
             foo: "foo-value",
             delay: 1000,
           },
         });
-        const settingsResponse = await doFetch("/admin/settings");
+        const settingsResponse = await doApiFetch("/config");
         expect(settingsUpdateResponse.status).toEqual(400);
         expect(settingsUpdateResponse.body.message).toEqual(expect.stringContaining("foo"));
         expect(settingsResponse.body.mock.routes.delay).toEqual(0);
@@ -138,7 +143,7 @@ describe("settings api", () => {
 
       it("should set delay option and have effect on server response time", async () => {
         const timeCounter = new TimeCounter();
-        await doFetch("/admin/settings", {
+        await doApiFetch("/config", {
           method: "PATCH",
           body: {
             mocks: {
@@ -153,7 +158,7 @@ describe("settings api", () => {
 
       it("should set delay option to 0 when using legacy option", async () => {
         const timeCounter = new TimeCounter();
-        await doFetch("/admin/settings", {
+        await doApiFetch("/config", {
           method: "PATCH",
           body: {
             mocks: {
@@ -167,7 +172,7 @@ describe("settings api", () => {
       });
 
       it("should set delay option to 1000", async () => {
-        await doFetch("/admin/settings", {
+        await doApiFetch("/config", {
           method: "PATCH",
           body: {
             mock: {
@@ -184,7 +189,7 @@ describe("settings api", () => {
       });
 
       it("should set delay option to 0", async () => {
-        await doFetch("/admin/settings", {
+        await doApiFetch("/config", {
           method: "PATCH",
           body: {
             mock: {
@@ -216,7 +221,7 @@ describe("settings api", () => {
 
       describe('changing it to "user-2"', () => {
         beforeAll(async () => {
-          await doFetch("/admin/settings", {
+          await doApiFetch("/config", {
             method: "PATCH",
             body: {
               mocks: {
@@ -227,7 +232,7 @@ describe("settings api", () => {
         });
 
         it("should return new mock when getting settings", async () => {
-          const settingsResponse = await doFetch("/admin/settings");
+          const settingsResponse = await doApiFetch("/config");
           expect(settingsResponse.body.mocks.selected).toEqual("user-2");
         });
 
@@ -245,7 +250,7 @@ describe("settings api", () => {
 
     describe("when changing path option", () => {
       beforeAll(async () => {
-        await doFetch("/admin/settings", {
+        await doApiFetch("/config", {
           method: "PATCH",
           body: {
             files: {
@@ -257,7 +262,7 @@ describe("settings api", () => {
       });
 
       afterAll(async () => {
-        await doFetch("/admin/settings", {
+        await doApiFetch("/config", {
           method: "PATCH",
           body: {
             files: {
@@ -269,7 +274,7 @@ describe("settings api", () => {
       });
 
       it("should return new path option when getting settings", async () => {
-        const settingsResponse = await doFetch("/admin/settings");
+        const settingsResponse = await doApiFetch("/config");
         expect(settingsResponse.body.files.path).toEqual(fixturesFolder("web-tutorial-modified"));
       });
 
@@ -284,20 +289,19 @@ describe("settings api", () => {
 
     describe("when changing port option", () => {
       beforeAll(async () => {
-        await doFetch("/admin/settings", {
+        await doApiFetch("/config", {
           method: "PATCH",
           body: {
             server: {
-              port: 3101,
+              port: 3200,
             },
           },
         });
-        await wait(1000);
+        await waitForServer(3200);
       });
 
       afterAll(async () => {
-        await doFetch("/admin/settings", {
-          port: 3101,
+        await doApiFetch("/config", {
           method: "PATCH",
           body: {
             server: {
@@ -305,19 +309,12 @@ describe("settings api", () => {
             },
           },
         });
-        await wait(1000);
-      });
-
-      it("should return new port option when getting settings, using new port", async () => {
-        const settingsResponse = await doFetch("/admin/settings", {
-          port: 3101,
-        });
-        expect(settingsResponse.body.server.port).toEqual(3101);
+        await waitForServer();
       });
 
       it("should serve user 2 under the /api/users/1 path using new port", async () => {
         const users = await doFetch("/api/users/1", {
-          port: 3101,
+          port: 3200,
         });
         expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
       });
@@ -325,7 +322,7 @@ describe("settings api", () => {
 
     describe("when changing adminApiPath option", () => {
       beforeAll(async () => {
-        await doFetch("/admin/settings", {
+        await doApiFetch("/config", {
           method: "PATCH",
           body: {
             plugins: {
@@ -335,11 +332,11 @@ describe("settings api", () => {
             },
           },
         });
-        await wait(1000);
+        await waitForServerUrl("/administration/about");
       });
 
       afterAll(async () => {
-        await doFetch("/administration/settings", {
+        await doApiFetch("/config", {
           method: "PATCH",
           body: {
             plugins: {
@@ -349,17 +346,12 @@ describe("settings api", () => {
             },
           },
         });
-        await wait(1000);
+        await waitForServerUrl("/admin/about");
       });
 
-      it("should return new port adminApiPath when getting settings, using new admin api path", async () => {
-        const settingsResponse = await doFetch("/administration/settings");
+      it("should return new port adminApiPath when getting legacy settings, using new admin api path", async () => {
+        const settingsResponse = await doLegacyFetch("/administration/settings");
         expect(settingsResponse.body.plugins.adminApi.path).toEqual("/administration");
-      });
-
-      it("should return not found adminApiPath when getting settings in old admin api path", async () => {
-        const settingsResponse = await doFetch("/admin/settings");
-        expect(settingsResponse.status).toEqual(404);
       });
     });
   });

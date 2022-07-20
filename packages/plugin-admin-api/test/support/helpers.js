@@ -18,6 +18,7 @@ const Core = require("@mocks-server/core");
 const AdminApiPlugin = require("../../index");
 
 const SERVER_PORT = 3100;
+const API_SERVER_PORT = 3101;
 
 const defaultOptions = {
   server: {
@@ -30,7 +31,7 @@ const defaultOptions = {
 };
 
 const defaultRequestOptions = {
-  method: "GET",
+  method: "get",
   headers: {
     "Content-Type": "application/json",
   },
@@ -101,10 +102,29 @@ const doFetch = (uri, options = {}) => {
         body: processedRes,
         status: res.status,
         headers: res.headers,
+        url: res.url,
       }))
       .catch(() => {
-        return { status: res.status, headers: res.headers };
+        return { status: res.status, headers: res.headers, url: res.url };
       });
+  });
+};
+
+const doServerFetch = (uri, options = {}) => {
+  return doFetch(`${uri}`, {
+    port: API_SERVER_PORT,
+    ...options,
+  });
+};
+
+const doApiFetch = (uri, options) => {
+  return doServerFetch(`/api${uri}`, options);
+};
+
+const doLegacyFetch = (uri, options = {}) => {
+  return doFetch(uri, {
+    port: 3100,
+    ...options,
   });
 };
 
@@ -155,7 +175,10 @@ module.exports = {
   createCore,
   startExistingCore,
   startServer,
+  doLegacyFetch,
   doFetch,
+  doServerFetch,
+  doApiFetch,
   TimeCounter,
   wait,
   waitForServer,

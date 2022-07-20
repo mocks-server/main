@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 
+### Added
+- feat(#364): Start API in a different server. Change urls and models.
+- feat(#360): Add Swagger-ui
+
 ### Changed
 - feat: Use new core.server API
 - feat: Use core.mock.restoreRouteVariants

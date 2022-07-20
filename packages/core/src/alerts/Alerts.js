@@ -32,9 +32,9 @@ class Alerts extends NestedCollections {
     return super.remove(id);
   }
 
-  // LEGACY, to be removed in next major version
+  // LEGACY, to be changed by flat in next major version
   get customFlat() {
-    return this.flat.map((item) => {
+    return this._flat.map((item) => {
       let context = item.collection;
       let sep = ":";
       if (context.startsWith("alerts:")) {
@@ -44,9 +44,12 @@ class Alerts extends NestedCollections {
         sep = "";
       }
 
+      const id = `${context}${sep}${item.id}`;
+
       return {
         ...item.value,
-        context: `${context}${sep}${item.id}`,
+        id,
+        context: id,
       };
     });
   }

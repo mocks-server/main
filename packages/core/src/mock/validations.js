@@ -148,7 +148,6 @@ const routesSchema = {
           id: {
             type: "string",
           },
-          // LEGACY, handler property
           handler: {
             type: "string",
             enum: [], // this enum is defined when validator is compiled

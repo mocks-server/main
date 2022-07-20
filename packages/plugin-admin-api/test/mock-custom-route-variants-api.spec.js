@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startServer, doFetch, waitForServer } = require("./support/helpers");
+const { startServer, doFetch, doApiFetch, waitForServer } = require("./support/helpers");
 
 describe("mock custom routes variants api", () => {
   let server;
@@ -26,20 +26,20 @@ describe("mock custom routes variants api", () => {
 
   describe("get /", () => {
     it("should return mock custom routes variants", async () => {
-      const response = await doFetch("/admin/mock-custom-routes-variants");
+      const response = await doApiFetch("/mock/custom-route-variants");
       expect(response.body).toEqual([]);
     });
   });
 
   describe("post /", () => {
     it("should add mock custom route variant", async () => {
-      await doFetch("/admin/mock-custom-routes-variants", {
+      await doApiFetch("/mock/custom-route-variants", {
         method: "POST",
         body: {
           id: "get-user:2",
         },
       });
-      const response = await doFetch("/admin/mock-custom-routes-variants");
+      const response = await doApiFetch("/mock/custom-route-variants");
       expect(response.body).toEqual(["get-user:2"]);
     });
 
@@ -51,10 +51,10 @@ describe("mock custom routes variants api", () => {
 
   describe("delete /", () => {
     it("should restore mock routes variants", async () => {
-      await doFetch("/admin/mock-custom-routes-variants", {
+      await doApiFetch("/mock/custom-route-variants", {
         method: "DELETE",
       });
-      const response = await doFetch("/admin/mock-custom-routes-variants");
+      const response = await doApiFetch("/mock/custom-route-variants");
       expect(response.body).toEqual([]);
     });
 
@@ -66,13 +66,13 @@ describe("mock custom routes variants api", () => {
 
   describe("when trying to set an unexistent route variant", () => {
     it("should not add mock custom route variant", async () => {
-      await doFetch("/admin/mock-custom-routes-variants", {
+      await doApiFetch("/mock/custom-route-variants", {
         method: "POST",
         body: {
           id: "foo",
         },
       });
-      const response = await doFetch("/admin/mock-custom-routes-variants");
+      const response = await doApiFetch("/mock/custom-route-variants");
       expect(response.body).toEqual([]);
     });
 

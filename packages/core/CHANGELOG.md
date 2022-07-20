@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat(#334): Add new option `mock.collections.selected`. Deprecate `mocks.selected`
 - feat(#334): Support `type` and `options` properties in variants
 - feat(#334): Support `routes` and `routeVariants` properties in collections. Deprecate `routesVariants`
+- feat: Add `core.version` getter
 
 ### Changed
 - refactor(#334): Reorganize files and folders

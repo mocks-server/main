@@ -51,6 +51,7 @@ describe("Alerts Legacy", () => {
       expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
+          id: "foo",
           message: "Foo message",
         },
       ]);
@@ -63,6 +64,7 @@ describe("Alerts Legacy", () => {
       expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
+          id: "foo",
           message: "Foo message 3",
         },
       ]);
@@ -74,10 +76,12 @@ describe("Alerts Legacy", () => {
       expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo1",
+          id: "foo1",
           message: "Foo message 1",
         },
         {
           context: "foo2",
+          id: "foo2",
           message: "Foo message 2",
         },
       ]);
@@ -97,14 +101,17 @@ describe("Alerts Legacy", () => {
       expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
+          id: "foo",
           message: "Foo message",
         },
         {
           context: "foo-alert",
+          id: "foo-alert",
           message: "Foo message 2",
         },
         {
           context: "foo-collection:foo-alert-2",
+          id: "foo-collection:foo-alert-2",
           message: "Foo message 3",
         },
       ]);
@@ -120,14 +127,17 @@ describe("Alerts Legacy", () => {
       expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
+          id: "foo",
           message: "Foo message 1",
         },
         {
           context: "var",
+          id: "var",
           message: "Var message 1",
         },
         {
           context: "foo:2",
+          id: "foo:2",
           message: "Foo message 2",
         },
       ]);
@@ -135,6 +145,7 @@ describe("Alerts Legacy", () => {
       expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "var",
+          id: "var",
           message: "Var message 1",
         },
       ]);
@@ -148,14 +159,17 @@ describe("Alerts Legacy", () => {
       expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
+          id: "foo",
           message: "Foo message 1",
         },
         {
           context: "var",
+          id: "var",
           message: "Var message 1",
         },
         {
           context: "foo:2",
+          id: "foo:2",
           message: "Foo message 2",
         },
       ]);
@@ -163,10 +177,12 @@ describe("Alerts Legacy", () => {
       expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
+          id: "foo",
           message: "Foo message 1",
         },
         {
           context: "var",
+          id: "var",
           message: "Var message 1",
         },
       ]);
@@ -182,14 +198,17 @@ describe("Alerts Legacy", () => {
       expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
+          id: "foo",
           message: "Foo message 1",
         },
         {
           context: "var",
+          id: "var",
           message: "Var message 1",
         },
         {
           context: "foo:2",
+          id: "foo:2",
           message: "Foo message 2",
         },
       ]);
@@ -197,14 +216,17 @@ describe("Alerts Legacy", () => {
       expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "var",
+          id: "var",
           message: "Var message 1",
         },
         {
           context: "testing",
+          id: "testing",
           message: "Foo message 1",
         },
         {
           context: "testing:2",
+          id: "testing:2",
           message: "Foo message 2",
         },
       ]);
@@ -218,14 +240,17 @@ describe("Alerts Legacy", () => {
       expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo:var",
+          id: "foo:var",
           message: "Foo message 1",
         },
         {
           context: "foo:var:2",
+          id: "foo:var:2",
           message: "Foo message 2",
         },
         {
           context: "foo:var:x",
+          id: "foo:var:x",
           message: "Var message 1",
         },
       ]);
@@ -233,14 +258,17 @@ describe("Alerts Legacy", () => {
       expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "testing:var",
+          id: "testing:var",
           message: "Foo message 1",
         },
         {
           context: "testing:var:2",
+          id: "testing:var:2",
           message: "Foo message 2",
         },
         {
           context: "testing:var:x",
+          id: "testing:var:x",
           message: "Var message 1",
         },
       ]);
@@ -254,14 +282,17 @@ describe("Alerts Legacy", () => {
       expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
+          id: "foo",
           message: "Foo message 1",
         },
         {
           context: "var",
+          id: "var",
           message: "Var message 1",
         },
         {
           context: "foo:2",
+          id: "foo:2",
           message: "Foo message 2",
         },
       ]);
@@ -269,14 +300,17 @@ describe("Alerts Legacy", () => {
       expect(removeDeprecatedAlerts(alertsLegacy.values)).toEqual([
         {
           context: "foo",
+          id: "foo",
           message: "Foo message 1",
         },
         {
           context: "var",
+          id: "var",
           message: "Var message 1",
         },
         {
           context: "foo:3",
+          id: "foo:3",
           message: "Foo message 2",
         },
       ]);

@@ -73,6 +73,7 @@ class CoreMock {
       variantHandlers: {
         register: this._sandbox.stub(),
       },
+      version: "foo-version",
     };
 
     Core.mockImplementation(() => this._stubs);

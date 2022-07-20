@@ -8,7 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startServer, doApiFetch, waitForServer } = require("./support/helpers");
+const { startServer, doLegacyFetch, waitForServer } = require("../support/helpers");
 
 describe("routes api", () => {
   let server;
@@ -24,20 +24,20 @@ describe("routes api", () => {
 
   describe("get /", () => {
     it("should return current routes", async () => {
-      const response = await doApiFetch("/mock/routes");
+      const response = await doLegacyFetch("/admin/routes");
       expect(response.body).toEqual([
         {
           id: "get-user",
           delay: null,
           url: "/api/users/:id",
-          method: "get",
+          method: "GET",
           variants: ["get-user:1", "get-user:2", "get-user:real"],
         },
         {
           id: "get-users",
           delay: null,
           url: "/api/users",
-          method: "get",
+          method: "GET",
           variants: ["get-users:success", "get-users:error"],
         },
       ]);
@@ -46,12 +46,12 @@ describe("routes api", () => {
 
   describe("get /get-user", () => {
     it("should return route with id get-user", async () => {
-      const response = await doApiFetch("/mock/routes/get-user");
+      const response = await doLegacyFetch("/admin/routes/get-user");
       expect(response.body).toEqual({
         id: "get-user",
         delay: null,
         url: "/api/users/:id",
-        method: "get",
+        method: "GET",
         variants: ["get-user:1", "get-user:2", "get-user:real"],
       });
     });
@@ -59,12 +59,12 @@ describe("routes api", () => {
 
   describe("get /get-users", () => {
     it("should return route with id get-users", async () => {
-      const response = await doApiFetch("/mock/routes/get-users");
+      const response = await doLegacyFetch("/admin/routes/get-users");
       expect(response.body).toEqual({
         id: "get-users",
         delay: null,
         url: "/api/users",
-        method: "get",
+        method: "GET",
         variants: ["get-users:success", "get-users:error"],
       });
     });
@@ -72,9 +72,9 @@ describe("routes api", () => {
 
   describe("get unexistant route", () => {
     it("should return a not found error", async () => {
-      const response = await doApiFetch("/mock/routes/foo");
+      const response = await doLegacyFetch("/admin/routes/foo");
       expect(response.status).toEqual(404);
-      expect(response.body.message).toEqual('Route with id "foo" was not found');
+      expect(response.body.message).toEqual('Legacy route with id "foo" was not found');
     });
   });
 });

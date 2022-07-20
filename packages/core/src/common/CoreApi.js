@@ -117,6 +117,10 @@ class CoreApi {
   get variantHandlers() {
     return this._core.variantHandlers;
   }
+
+  get version() {
+    return this._core.version;
+  }
 }
 
 module.exports = CoreApi;

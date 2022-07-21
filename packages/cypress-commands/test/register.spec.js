@@ -15,28 +15,28 @@ describe("register", () => {
   });
 
   describe("commands", () => {
-    it("should register mocksConfig command", () => {
-      expect(cypressMock.stubs.Commands.add.calledWith("mocksConfig")).toBe(true);
+    it("should register mocksConfigAdminApiClient command", () => {
+      expect(cypressMock.stubs.Commands.add.calledWith("mocksConfigAdminApiClient")).toBe(true);
     });
 
-    it("should register mocksSetMock command", () => {
-      expect(cypressMock.stubs.Commands.add.calledWith("mocksSetMock")).toBe(true);
+    it("should register mocksSetCollection command", () => {
+      expect(cypressMock.stubs.Commands.add.calledWith("mocksSetCollection")).toBe(true);
     });
 
     it("should register mocksSetDelay command", () => {
       expect(cypressMock.stubs.Commands.add.calledWith("mocksSetDelay")).toBe(true);
     });
 
-    it("should register mocksSetSettings command", () => {
-      expect(cypressMock.stubs.Commands.add.calledWith("mocksSetSettings")).toBe(true);
+    it("should register mocksSetConfig command", () => {
+      expect(cypressMock.stubs.Commands.add.calledWith("mocksSetConfig")).toBe(true);
     });
 
     it("should register mocksUseRouteVariant command", () => {
       expect(cypressMock.stubs.Commands.add.calledWith("mocksUseRouteVariant")).toBe(true);
     });
 
-    it("should register mocksRestoreRoutesVariants command", () => {
-      expect(cypressMock.stubs.Commands.add.calledWith("mocksRestoreRoutesVariants")).toBe(true);
+    it("should register mocksRestoreRouteVariants command", () => {
+      expect(cypressMock.stubs.Commands.add.calledWith("mocksRestoreRouteVariants")).toBe(true);
     });
   });
 });

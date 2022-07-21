@@ -11,6 +11,16 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 
+const {
+  ABOUT,
+  CONFIG,
+  ALERTS,
+  COLLECTIONS,
+  ROUTES,
+  VARIANTS,
+  CUSTOM_ROUTE_VARIANTS,
+} = require("@mocks-server/admin-api-paths");
+
 const About = require("./About");
 const Settings = require("./Settings");
 const Alerts = require("./Alerts");
@@ -90,13 +100,13 @@ class Api {
       logger: this._logger.namespace("routeVariants"),
     });
 
-    this._router.use("/about", this._aboutApi.router);
-    this._router.use("/config", this._configApi.router);
-    this._router.use("/alerts", this._alertsApi.router);
-    this._router.use("/mock/collections", this._collectionsApi);
-    this._router.use("/mock/routes", this._routesApi);
-    this._router.use("/mock/variants", this._routeVariantsApi);
-    this._router.use("/mock/custom-route-variants", this._customRoutesVariantsApi.router);
+    this._router.use(ABOUT, this._aboutApi.router);
+    this._router.use(CONFIG, this._configApi.router);
+    this._router.use(ALERTS, this._alertsApi.router);
+    this._router.use(COLLECTIONS, this._collectionsApi);
+    this._router.use(ROUTES, this._routesApi);
+    this._router.use(VARIANTS, this._routeVariantsApi);
+    this._router.use(CUSTOM_ROUTE_VARIANTS, this._customRoutesVariantsApi.router);
   }
 
   get router() {

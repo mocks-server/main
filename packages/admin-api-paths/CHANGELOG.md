@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+- feat: BREAKING CHANGE. Add `LEGACY_` prefix to all previous paths.
+- feat: Add new paths.
+
 ## [3.0.1] - 2022-06-03
 
 ### Changed

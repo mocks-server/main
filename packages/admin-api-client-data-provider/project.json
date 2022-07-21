@@ -1,5 +1,6 @@
 {
   "root": "packages/admin-api-client-data-provider/",
   "projectType": "library",
+  "implicitDependencies": ["admin-api-paths"],
   "tags": ["type:lib"]
 }

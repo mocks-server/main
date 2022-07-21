@@ -45,31 +45,31 @@ describe("swagger", () => {
   describe("when host is changed", () => {
     it("should return current API url", async () => {
       hostOption.value = "127.0.0.1";
-      portOption.value = 3101;
+      portOption.value = 3110;
       await wait(1000);
       const response = await doServerFetch("/docs/openapi.json");
-      expect(response.body.servers[0].url).toEqual(`http://127.0.0.1:3101/api`);
+      expect(response.body.servers[0].url).toEqual(`http://127.0.0.1:3110/api`);
     });
   });
 
   describe("when root url is loaded", () => {
     it("should redirect to swagger", async () => {
       const response = await doServerFetch("/");
-      expect(response.url).toEqual("http://127.0.0.1:3101/docs/");
+      expect(response.url).toEqual("http://127.0.0.1:3110/docs/");
     });
   });
 
   describe("when root index.html url is loaded", () => {
     it("should redirect to swagger", async () => {
       const response = await doServerFetch("/index.html");
-      expect(response.url).toEqual("http://127.0.0.1:3101/docs/");
+      expect(response.url).toEqual("http://127.0.0.1:3110/docs/");
     });
   });
 
   describe("when root index.htm url is loaded", () => {
     it("should redirect to swagger", async () => {
       const response = await doServerFetch("/index.htm");
-      expect(response.url).toEqual("http://127.0.0.1:3101/docs/");
+      expect(response.url).toEqual("http://127.0.0.1:3110/docs/");
     });
   });
 });

@@ -65,7 +65,7 @@ describe("settings api", () => {
           adminApi: {
             path: "/admin",
             host: "0.0.0.0",
-            port: 3101,
+            port: 3110,
           },
         },
         log: "silent",

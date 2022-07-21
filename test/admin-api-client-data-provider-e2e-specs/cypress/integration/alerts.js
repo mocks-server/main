@@ -8,7 +8,6 @@ describe("alerts", () => {
   });
 
   it("should display alerts collection", () => {
-    // Using legacy API produces alerts
-    cy.get(SELECTORS.ALERTS_COLLECTION_ITEM).should("have.length", 5);
+    cy.get(SELECTORS.ALERTS_COLLECTION_ITEM).should("have.length", 1);
   });
 });

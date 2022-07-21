@@ -1,10 +1,10 @@
 describe("Settings section", () => {
   const SELECTORS = {
-    CONFIG: "settings-config",
-    PLUGINS: "settings-plugins",
-    FILES: "settings-files",
-    SERVER: "settings-server",
-    MOCKS: "settings-mocks",
+    CONFIG: "config-config",
+    PLUGINS: "config-plugins",
+    FILES: "config-files",
+    SERVER: "config-server",
+    MOCK: "config-mock",
   };
 
   before(() => {
@@ -16,6 +16,6 @@ describe("Settings section", () => {
   });
 
   it("should display current delay", () => {
-    cy.findByTestId(SELECTORS.MOCKS).should("contain.text", '"delay":0');
+    cy.findByTestId(SELECTORS.MOCK).should("contain.text", '"delay":0');
   });
 });

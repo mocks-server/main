@@ -12,14 +12,16 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const express = require("express");
 
 const {
-  DEFAULT_BASE_PATH,
-  SETTINGS,
-  MOCKS,
-  ABOUT,
-  ROUTES,
-  ROUTES_VARIANTS,
-  MOCK_CUSTOM_ROUTES_VARIANTS,
-  ALERTS,
+  BASE_PATH,
+  // Legacy, to be removed
+  LEGACY_DEFAULT_BASE_PATH,
+  LEGACY_SETTINGS,
+  LEGACY_MOCKS,
+  LEGACY_ABOUT,
+  LEGACY_ROUTES,
+  LEGACY_ROUTES_VARIANTS,
+  LEGACY_MOCK_CUSTOM_ROUTES_VARIANTS,
+  LEGACY_ALERTS,
 } = require("@mocks-server/admin-api-paths");
 
 const About = require("./About");
@@ -40,7 +42,7 @@ const OPTION = {
   name: "path",
   description: `Legacy root path for admin routes`,
   type: "string",
-  default: DEFAULT_BASE_PATH,
+  default: LEGACY_DEFAULT_BASE_PATH,
 };
 
 const OPTION_ALERT_ID = "path-option";
@@ -144,7 +146,7 @@ class Plugin {
       coreVersion,
     });
 
-    this._adminServer.addRouter({ path: "/api", router: this._apiRouter.router });
+    this._adminServer.addRouter({ path: BASE_PATH, router: this._apiRouter.router });
     this._adminServer.addRouter({ path: "/docs", router: this._swagger.router });
     this._adminServer.addRouter({ path: "/", router: this._root.router });
 
@@ -178,14 +180,17 @@ class Plugin {
     this._router.use(enableCors());
     this._router.use(addLegacyApiAlert(this._alerts));
     // LEGACY APIs
-    this._router.use(ABOUT, this._aboutApiLegacy.router);
-    this._router.use(SETTINGS, this._settingsApiLegacy.router); // TODO, add config route. deprecate settings
-    this._router.use(ALERTS, this._alertsApiLegacy.router);
+    this._router.use(LEGACY_ABOUT, this._aboutApiLegacy.router);
+    this._router.use(LEGACY_SETTINGS, this._settingsApiLegacy.router); // TODO, add config route. deprecate settings
+    this._router.use(LEGACY_ALERTS, this._alertsApiLegacy.router);
 
-    this._router.use(MOCKS, this._mocksApiLegacy);
-    this._router.use(ROUTES, this._routesApiLegacy);
-    this._router.use(ROUTES_VARIANTS, this._routesVariantsApiLegacy);
-    this._router.use(MOCK_CUSTOM_ROUTES_VARIANTS, this._customRoutesVariantsApiLegacy.router);
+    this._router.use(LEGACY_MOCKS, this._mocksApiLegacy);
+    this._router.use(LEGACY_ROUTES, this._routesApiLegacy);
+    this._router.use(LEGACY_ROUTES_VARIANTS, this._routesVariantsApiLegacy);
+    this._router.use(
+      LEGACY_MOCK_CUSTOM_ROUTES_VARIANTS,
+      this._customRoutesVariantsApiLegacy.router
+    );
   }
 
   _addRouter() {

@@ -18,7 +18,7 @@ const Core = require("@mocks-server/core");
 const AdminApiPlugin = require("../../index");
 
 const SERVER_PORT = 3100;
-const API_SERVER_PORT = 3101;
+const API_SERVER_PORT = 3110;
 
 const defaultOptions = {
   server: {

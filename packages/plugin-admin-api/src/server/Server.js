@@ -32,7 +32,7 @@ const OPTIONS = [
     description: "Port number for the admin API server to be listening at",
     name: "port",
     type: "number",
-    default: 3101,
+    default: 3110,
   },
   {
     description: "Host for the admin API server",

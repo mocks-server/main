@@ -1,27 +1,27 @@
 import {
   about,
-  settings,
+  config,
   alerts,
   alert,
-  mocks,
-  mock,
+  collections,
+  collection,
   routes,
   route,
-  routesVariants,
-  routeVariant,
-  mockCustomRoutesVariants,
+  variants,
+  variant,
+  customRouteVariants,
 } from "./entities";
 
 export function readAbout() {
   return about.read();
 }
 
-export function readSettings() {
-  return settings.read();
+export function readConfig() {
+  return config.read();
 }
 
-export function updateSettings(newSettings) {
-  return settings.update(newSettings);
+export function updateConfig(newConfig) {
+  return config.update(newConfig);
 }
 
 export function readAlerts() {
@@ -32,12 +32,12 @@ export function readAlert(id) {
   return alert(id).read();
 }
 
-export function readMocks() {
-  return mocks.read();
+export function readCollections() {
+  return collections.read();
 }
 
-export function readMock(id) {
-  return mock(id).read();
+export function readCollection(id) {
+  return collection(id).read();
 }
 
 export function readRoutes() {
@@ -48,24 +48,24 @@ export function readRoute(id) {
   return route(id).read();
 }
 
-export function readRoutesVariants() {
-  return routesVariants.read();
+export function readVariants() {
+  return variants.read();
 }
 
-export function readRouteVariant(id) {
-  return routeVariant(id).read();
+export function readVariant(id) {
+  return variant(id).read();
 }
 
-export function readCustomRoutesVariants() {
-  return mockCustomRoutesVariants.read();
+export function readCustomRouteVariants() {
+  return customRouteVariants.read();
 }
 
 export function useRouteVariant(id) {
-  return mockCustomRoutesVariants.create({
+  return customRouteVariants.create({
     id,
   });
 }
 
-export function restoreRoutesVariants() {
-  return mockCustomRoutesVariants.delete();
+export function restoreRouteVariants() {
+  return customRouteVariants.delete();
 }

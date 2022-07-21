@@ -1,3 +1,13 @@
+const {
+  ABOUT,
+  CONFIG,
+  ALERTS,
+  COLLECTIONS,
+  ROUTES,
+  VARIANTS,
+  CUSTOM_ROUTE_VARIANTS,
+} = require("@mocks-server/admin-api-paths");
+
 module.exports = {
   openapi: "3.0.1",
   info: {
@@ -15,7 +25,7 @@ module.exports = {
   },
   externalDocs: {
     description: "Find out more about Mocks Server administration API",
-    url: "https://www.mocks-server.org/integrations/rest-api",
+    url: "https://www.mocks-server.org/docs/integrations/rest-api",
   },
   servers: [
     {
@@ -32,7 +42,7 @@ module.exports = {
       description: "Access to Mocks Server configuration",
       externalDocs: {
         description: "Find out more",
-        url: "https://www.mocks-server.org/configuration/options",
+        url: "https://www.mocks-server.org/docs/configuration/options",
       },
     },
     {
@@ -40,7 +50,7 @@ module.exports = {
       description: "Access to Mocks Server alerts",
       externalDocs: {
         description: "Find out more",
-        url: "https://www.mocks-server.org/api/core/alerts",
+        url: "https://www.mocks-server.org/docs/api/core/alerts",
       },
     },
     {
@@ -48,12 +58,12 @@ module.exports = {
       description: "Operations about the API mock",
       externalDocs: {
         description: "Find out more",
-        url: "https://www.mocks-server.org/usage/basics",
+        url: "https://www.mocks-server.org/docs/usage/basics",
       },
     },
   ],
   paths: {
-    "/about": {
+    [ABOUT]: {
       get: {
         tags: ["about"],
         summary: "Returns info about server and plugins",
@@ -72,7 +82,7 @@ module.exports = {
         },
       },
     },
-    "/config": {
+    [CONFIG]: {
       get: {
         tags: ["config"],
         summary: "Returns current configuration",
@@ -149,7 +159,7 @@ module.exports = {
         },
       },
     },
-    "/alerts": {
+    [ALERTS]: {
       get: {
         tags: ["alerts"],
         summary: "Returns current alerts",
@@ -197,7 +207,7 @@ module.exports = {
         },
       },
     },
-    "/alerts/{alertId}": {
+    [`${ALERTS}/{alertId}`]: {
       get: {
         tags: ["alerts"],
         summary: "Find alert by ID",
@@ -262,7 +272,7 @@ module.exports = {
         },
       },
     },
-    "/mock/routes": {
+    [ROUTES]: {
       get: {
         tags: ["mock"],
         summary: "Returns routes",
@@ -296,7 +306,7 @@ module.exports = {
         },
       },
     },
-    "/mock/routes/{routeId}": {
+    [`${ROUTES}/{routeId}`]: {
       get: {
         tags: ["mock"],
         summary: "Find collection by ID",
@@ -348,7 +358,7 @@ module.exports = {
         },
       },
     },
-    "/mock/variants": {
+    [VARIANTS]: {
       get: {
         tags: ["mock"],
         summary: "Returns route variants",
@@ -399,7 +409,7 @@ module.exports = {
         },
       },
     },
-    "/mock/variants/{variantId}": {
+    [`${VARIANTS}/{variantId}`]: {
       get: {
         tags: ["mock"],
         summary: "Find route variant by ID",
@@ -457,7 +467,7 @@ module.exports = {
         },
       },
     },
-    "/mock/collections": {
+    [COLLECTIONS]: {
       get: {
         tags: ["mock"],
         summary: "Returns route variants collections",
@@ -496,7 +506,7 @@ module.exports = {
         },
       },
     },
-    "/mock/collections/{collectionId}": {
+    [`${COLLECTIONS}/{collectionId}`]: {
       get: {
         tags: ["mock"],
         summary: "Find collection by ID",
@@ -548,12 +558,12 @@ module.exports = {
         },
       },
     },
-    "/mock/custom-route-variants": {
+    [CUSTOM_ROUTE_VARIANTS]: {
       get: {
         tags: ["mock"],
         summary: "Returns current custom route variants",
         description:
-          "Returns [current route variant ids that are currently used instead of those defined in the current collection](https://www.mocks-server.org/docs/usage/collections#custom-route-variants)",
+          "Returns [current route variant ids that are currently used instead of those defined in the current collection](https://www.mocks-server.org/docs/usage/collections#defining-custom-route-variants)",
         responses: {
           "200": {
             description: "successful operation",
@@ -577,7 +587,7 @@ module.exports = {
         tags: ["mock"],
         summary: "Adds a custom route variant",
         description:
-          "Defines a [route variant to be used instead of the one defined in the current collection](https://www.mocks-server.org/docs/usage/collections#custom-route-variants)",
+          "Defines a [route variant to be used instead of the one defined in the current collection](https://www.mocks-server.org/docs/usage/collections#defining-custom-route-variants)",
         requestBody: {
           content: {
             "application/json": {

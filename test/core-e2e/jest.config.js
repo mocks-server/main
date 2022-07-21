@@ -6,7 +6,7 @@ module.exports = {
   clearMocks: true,
 
   testMatch: ["<rootDir>/src/**/*.spec.js"],
-  // testMatch: ["<rootDir>/src/**/plain-mocks-and-routes.spec.js"],
+  // testMatch: ["<rootDir>/src/**/files-disabled.spec.js"],
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: false,

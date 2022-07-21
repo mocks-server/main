@@ -236,7 +236,6 @@ importers:
       is-promise: 4.0.0
       lodash: 4.17.21
       node-watch: 0.7.3
-      swagger-ui-dist: 4.13.0
       update-notifier: 5.1.0
       winston: 3.7.2
       winston-array-transport: 1.1.10
@@ -259,7 +258,6 @@ importers:
       is-promise: 4.0.0
       lodash: 4.17.21
       node-watch: 0.7.3
-      swagger-ui-dist: 4.13.0
       update-notifier: 5.1.0
       winston: 3.7.2
       winston-array-transport: 1.1.10
@@ -293,12 +291,14 @@ importers:
       '@mocks-server/plugin-admin-api': workspace:*
       '@mocks-server/plugin-inquirer-cli': workspace:*
       '@mocks-server/plugin-proxy': workspace:*
+      deepmerge: 4.2.2
     dependencies:
       '@babel/core': 7.17.10
       '@mocks-server/core': link:../core
       '@mocks-server/plugin-admin-api': link:../plugin-admin-api
       '@mocks-server/plugin-inquirer-cli': link:../plugin-inquirer-cli
       '@mocks-server/plugin-proxy': link:../plugin-proxy
+      deepmerge: 4.2.2
 
   packages/nested-collections:
     specifiers: {}
@@ -312,6 +312,7 @@ importers:
       cors: 2.8.5
       express: 4.18.1
       express-request-id: 1.4.1
+      swagger-ui-dist: 4.13.0
     dependencies:
       '@hapi/boom': 9.1.4
       '@mocks-server/admin-api-paths': link:../admin-api-paths
@@ -319,6 +320,7 @@ importers:
       cors: 2.8.5
       express: 4.18.1
       express-request-id: 1.4.1
+      swagger-ui-dist: 4.13.0
     devDependencies:
       '@mocks-server/core': link:../core
 

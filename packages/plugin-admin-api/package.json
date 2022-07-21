@@ -37,6 +37,7 @@
   "dependencies": {
     "@hapi/boom": "9.1.4",
     "@mocks-server/admin-api-paths": "workspace:*",
+    "swagger-ui-dist": "4.13.0",
     "body-parser": "1.20.0",
     "cors": "2.8.5",
     "express": "4.18.1",

@@ -27,6 +27,7 @@ const defaultRequestOptions = {
   },
 };
 
+const rootFolder = path.resolve(__dirname, "..", "..");
 const baseFixturesFolder = path.resolve(__dirname, "..", "fixtures");
 
 const fixturesFolder = (folderName) => {
@@ -42,6 +43,10 @@ const defaultMocksRunnerOptions = {
 const cleanScaffold = async () => {
   await fsExtra.remove(path.resolve(scaffoldFolder, "mocks"));
   await fsExtra.remove(path.resolve(scaffoldFolder, "mocks.config.js"));
+};
+
+const cleanRootScaffold = async () => {
+  await fsExtra.remove(path.resolve(rootFolder, "mocks"));
 };
 
 const serverUrl = (port) => {
@@ -131,4 +136,5 @@ module.exports = {
   waitForServerAndCli,
   fixturesFolder,
   cleanScaffold,
+  cleanRootScaffold,
 };

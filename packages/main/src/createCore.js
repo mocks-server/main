@@ -12,7 +12,26 @@ Unless required by applicable law or agreed to in writing, software distributed 
 "use strict";
 
 const Core = require("@mocks-server/core");
-const { createCore } = require("./src/createCore");
+const PluginProxy = require("@mocks-server/plugin-proxy");
+const AdminApi = require("@mocks-server/plugin-admin-api");
+const InquirerCli = require("@mocks-server/plugin-inquirer-cli");
+const deepMerge = require("deepmerge");
 
-module.exports = Core;
-module.exports.createServer = createCore;
+const pkg = require("../package.json");
+
+const DEFAULT_CONFIG = {
+  plugins: {
+    register: [PluginProxy, AdminApi, InquirerCli],
+  },
+};
+
+const createCore = (userConfig) => {
+  const config = userConfig ? deepMerge(DEFAULT_CONFIG, userConfig) : DEFAULT_CONFIG;
+  return new Core(config, {
+    pkg,
+  });
+};
+
+module.exports = {
+  createCore,
+};

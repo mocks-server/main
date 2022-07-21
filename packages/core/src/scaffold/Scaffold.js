@@ -109,6 +109,7 @@ class Scaffold {
     this._logger = logger;
     this._config = config;
     this._readConfigFileOption = this._config.namespace("config").option("readFile");
+    this._filesEnabledOption = this._config.namespace("files").option("enabled");
     this._collectionSelectedOption = this._config
       .namespace("mock")
       .namespace("collections")
@@ -161,7 +162,7 @@ class Scaffold {
   }
 
   _checkAndCreateFolderScaffold(filesLoaderPath) {
-    if (!fsExtra.existsSync(filesLoaderPath)) {
+    if (this._filesEnabledOption.value && !fsExtra.existsSync(filesLoaderPath)) {
       this._alerts.set("folder", "Mocks Server folder was not found. A scaffold was created");
       return this._createFolder(filesLoaderPath);
     }

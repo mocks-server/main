@@ -20,8 +20,19 @@ const deepMerge = require("deepmerge");
 const pkg = require("../package.json");
 
 const DEFAULT_CONFIG = {
+  config: {
+    readArguments: false,
+    readEnvironment: false,
+    readFile: false,
+  },
   plugins: {
     register: [PluginProxy, AdminApi, InquirerCli],
+    inquirerCli: {
+      enabled: false,
+    },
+  },
+  files: {
+    enabled: false,
   },
 };
 

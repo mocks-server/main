@@ -70,6 +70,7 @@ describe("FilesLoaders", () => {
   let pluginMethods;
   let pathOption;
   let watchOption;
+  let enabledOption;
   let babelRegisterOption;
   let babelRegisterOptionsOption;
   let alerts;
@@ -113,7 +114,9 @@ describe("FilesLoaders", () => {
     watchOption = { value: true };
     babelRegisterOption = { value: false };
     babelRegisterOptionsOption = { value: {} };
+    enabledOption = { value: true };
 
+    filesLoader._enabledOption = enabledOption;
     filesLoader._pathOption = pathOption;
     filesLoader._watchOption = watchOption;
     filesLoader._babelRegisterOption = babelRegisterOption;
@@ -141,6 +144,12 @@ describe("FilesLoaders", () => {
   });
 
   describe("when initialized", () => {
+    it("should not require files from mocks folders if it is disabled", async () => {
+      enabledOption.value = false;
+      await filesLoader.init();
+      expect(libsMocks.stubs.fsExtra.ensureDirSync.callCount).toEqual(0);
+    });
+
     it("should require all files from mocks folders calculating it from cwd if path is not absolute", async () => {
       path.isAbsolute.returns(false);
       libsMocks.stubs.fsExtra.existsSync.returns(false);
@@ -327,6 +336,13 @@ describe("FilesLoaders", () => {
 
   describe("start method", () => {
     describe("when starting files watch", () => {
+      it("should do nothing if files was not enabled", async () => {
+        filesLoader._enabledOption.value = false;
+        await filesLoader.init();
+        await filesLoader.start();
+        expect(libsMocks.stubs.watch.callCount).toEqual(0);
+      });
+
       it("should do nothing if watch was not enabled", async () => {
         filesLoader._watchOption.value = false;
         await filesLoader.init();

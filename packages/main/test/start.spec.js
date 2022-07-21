@@ -33,12 +33,15 @@ describe("start method", () => {
     coreMocks.restore();
   });
 
-  it("should create a new Core, passing to it Proxy, AdminApi and CLI plugins", async () => {
+  it("should create a new Core, passing to it options for CLI", async () => {
     await start();
     expect(coreMocks.stubs.Constructor.mock.calls[0][0]).toEqual({
+      config: { readArguments: true, readEnvironment: true, readFile: true },
       plugins: {
         register: [PluginProxy, AdminApi, InquirerCli],
+        inquirerCli: { enabled: true },
       },
+      files: { enabled: true },
     });
   });
 

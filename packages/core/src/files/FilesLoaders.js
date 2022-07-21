@@ -26,6 +26,12 @@ const ROUTES_FOLDER = "routes";
 
 const OPTIONS = [
   {
+    name: "enabled",
+    description: "Allows to disable files load",
+    type: "boolean",
+    default: true,
+  },
+  {
     name: "path",
     description: "Define folder from where to load collections and routes",
     type: "string",
@@ -74,7 +80,7 @@ class FilesLoaders {
     this._require = extraOptions.require || require;
     this._config = config;
 
-    [this._pathOption, this._watchOption] = this._config.addOptions(OPTIONS);
+    [this._enabledOption, this._pathOption, this._watchOption] = this._config.addOptions(OPTIONS);
     [this._babelRegisterOption, this._babelRegisterOptionsOption] = this._config
       .addNamespace(BABEL_REGISTER_NAMESPACE)
       .addOptions(BABEL_REGISTER_OPTIONS);
@@ -83,8 +89,11 @@ class FilesLoaders {
   }
 
   init() {
+    this._enabled = this._enabledOption.value;
     try {
-      this._loadFiles();
+      if (this._enabled) {
+        this._loadFiles();
+      }
       return Promise.resolve();
     } catch (err) {
       return Promise.reject(err);
@@ -92,11 +101,13 @@ class FilesLoaders {
   }
 
   start() {
-    this._switchWatch();
+    if (this._enabled) {
+      this._switchWatch();
+    }
   }
 
   stop() {
-    if (this._watcher) {
+    if (this._enabled && this._watcher) {
       this._logger.debug("Stopping files watch");
       this._watcher.close();
     }

@@ -19,14 +19,8 @@ describe("createServer", () => {
   beforeAll(async () => {
     await cleanRootScaffold();
     server = createServer({
-      config: {
-        allowUnknownArguments: true,
-        readFile: false,
-      },
-      plugins: {
-        inquirerCli: {
-          enabled: false,
-        },
+      files: {
+        enabled: true,
       },
     });
     await server.start();

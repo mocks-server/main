@@ -33,11 +33,22 @@ describe("createCore method", () => {
     coreMocks.restore();
   });
 
-  it("should create a new Core, passing to it Proxy, AdminApi and CLI plugins", async () => {
+  it("should create a new Core, passing to it default options", async () => {
     createCore();
     expect(coreMocks.stubs.Constructor.mock.calls[0][0]).toEqual({
+      config: {
+        readArguments: false,
+        readEnvironment: false,
+        readFile: false,
+      },
       plugins: {
         register: [PluginProxy, AdminApi, InquirerCli],
+        inquirerCli: {
+          enabled: false,
+        },
+      },
+      files: {
+        enabled: false,
       },
     });
   });
@@ -48,6 +59,9 @@ describe("createCore method", () => {
       plugins: {
         register: [FooPlugin],
       },
+      files: {
+        enabled: true,
+      },
       mock: {
         collections: {
           selected: "foo",
@@ -55,8 +69,19 @@ describe("createCore method", () => {
       },
     });
     expect(coreMocks.stubs.Constructor.mock.calls[0][0]).toEqual({
+      config: {
+        readArguments: false,
+        readEnvironment: false,
+        readFile: false,
+      },
       plugins: {
         register: [PluginProxy, AdminApi, InquirerCli, FooPlugin],
+        inquirerCli: {
+          enabled: false,
+        },
+      },
+      files: {
+        enabled: true,
       },
       mock: {
         collections: {

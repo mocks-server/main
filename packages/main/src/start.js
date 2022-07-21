@@ -20,7 +20,21 @@ const handleError = (error) => {
 
 const start = () => {
   try {
-    const mocksServer = createCore();
+    const mocksServer = createCore({
+      config: {
+        readArguments: true,
+        readEnvironment: true,
+        readFile: true,
+      },
+      plugins: {
+        inquirerCli: {
+          enabled: true,
+        },
+      },
+      files: {
+        enabled: true,
+      },
+    });
     return mocksServer.start().catch(handleError);
   } catch (error) {
     return handleError(error);

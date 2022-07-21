@@ -53,6 +53,7 @@ describe("settings api", () => {
           },
         },
         files: {
+          enabled: true,
           babelRegister: {
             enabled: false,
             options: {},

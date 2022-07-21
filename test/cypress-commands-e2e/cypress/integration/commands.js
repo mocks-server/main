@@ -24,9 +24,9 @@ describe("Mocks server responses", () => {
     });
   });
 
-  describe("when mock is changed to custom", () => {
+  describe("when collection is changed to custom", () => {
     before(() => {
-      cy.mocksSetMock("custom");
+      cy.mocksSetCollection("custom");
       cy.visit("/");
     });
 
@@ -62,9 +62,9 @@ describe("Mocks server responses", () => {
     });
   });
 
-  describe("when settings are changed", () => {
+  describe("when config is changed", () => {
     before(() => {
-      cy.mocksSetSettings({
+      cy.mocksSetConfig({
         mock: {
           collections: {
             selected: "standard",
@@ -103,7 +103,7 @@ describe("Mocks server responses", () => {
 
   describe("when route variants are restored", () => {
     before(() => {
-      cy.mocksRestoreRoutesVariants();
+      cy.mocksRestoreRouteVariants();
       cy.visit("/");
     });
 

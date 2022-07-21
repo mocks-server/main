@@ -31,8 +31,8 @@ describe("scaffold", () => {
   });
 
   describe("When started", () => {
-    it("should have 3 mocks available", async () => {
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 3"));
+    it("should have 4 mocks available", async () => {
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 4"));
     });
 
     it("should not display behaviors", async () => {
@@ -75,6 +75,12 @@ describe("scaffold", () => {
           appliedRoutesVariants: ["add-headers:disabled", "get-users:success", "get-user:success"],
         },
         {
+          id: "all-users",
+          from: "base",
+          routesVariants: ["get-users:all", "get-user:id-3"],
+          appliedRoutesVariants: ["add-headers:enabled", "get-users:all", "get-user:id-3"],
+        },
+        {
           id: "user-real",
           from: "no-headers",
           routesVariants: ["get-user:real"],
@@ -91,23 +97,23 @@ describe("scaffold", () => {
         {
           id: "add-headers",
           url: "*",
+          method: ["GET", "POST", "PUT", "PATCH"],
           delay: null,
-          method: "GET",
           variants: ["add-headers:enabled", "add-headers:disabled"],
         },
         {
           id: "get-users",
           url: "/api/users",
-          delay: null,
           method: "GET",
-          variants: ["get-users:success", "get-users:error"],
+          delay: null,
+          variants: ["get-users:success", "get-users:all", "get-users:error"],
         },
         {
           id: "get-user",
           url: "/api/users/:id",
-          delay: null,
           method: "GET",
-          variants: ["get-user:success", "get-user:real"],
+          delay: null,
+          variants: ["get-user:success", "get-user:id-3", "get-user:real"],
         },
       ]);
     });
@@ -145,6 +151,21 @@ describe("scaffold", () => {
           delay: null,
         },
         {
+          id: "get-users:all",
+          routeId: "get-users",
+          handler: "json",
+          response: {
+            body: [
+              { id: 1, name: "John Doe" },
+              { id: 2, name: "Jane Doe" },
+              { id: 3, name: "Tommy" },
+              { id: 4, name: "Timmy" },
+            ],
+            status: 200,
+          },
+          delay: null,
+        },
+        {
           id: "get-users:error",
           routeId: "get-users",
           handler: "json",
@@ -156,6 +177,13 @@ describe("scaffold", () => {
           routeId: "get-user",
           handler: "json",
           response: { body: { id: 1, name: "John Doe" }, status: 200 },
+          delay: null,
+        },
+        {
+          id: "get-user:id-3",
+          routeId: "get-user",
+          handler: "json",
+          response: { body: { id: 3, name: "Tommy" }, status: 200 },
           delay: null,
         },
         {
@@ -172,7 +200,7 @@ describe("scaffold", () => {
   describe('When changing current collection to "user-real"', () => {
     it("should display new selected mock", async () => {
       await mocks.pressEnter();
-      await mocks.cursorDown(2);
+      await mocks.cursorDown(3);
       const newScreen = await mocks.pressEnter();
       expect(newScreen).toEqual(expect.stringContaining("Current collection: user-real"));
     });
@@ -205,7 +233,7 @@ describe("scaffold", () => {
     it("should display custom route variant", async () => {
       await mocks.cursorDown();
       await mocks.pressEnter();
-      await mocks.cursorDown(4);
+      await mocks.cursorDown(5);
       const newScreen = await mocks.pressEnter();
       expect(newScreen).toEqual(
         expect.stringContaining(

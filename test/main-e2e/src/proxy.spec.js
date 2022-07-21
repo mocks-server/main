@@ -1,5 +1,5 @@
 /*
-Copyright 2021-present Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -21,7 +21,7 @@ describe("scaffold", () => {
   let mocks, host;
 
   beforeAll(async () => {
-    host = mocksRunner(["--server.port=3200"]);
+    host = mocksRunner(["--server.port=3200", "--plugins.adminApi.port=3210"]);
     mocks = mocksRunner(["--server.port=3100"], { cwd: fixturesFolder("proxy") });
     await waitForServerAndCli();
     await waitForServerAndCli(3200);
@@ -38,7 +38,6 @@ describe("scaffold", () => {
     });
 
     it("should not display alerts", async () => {
-      console.log(mocks.currentScreen);
       expect(mocks.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
     });
 

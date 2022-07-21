@@ -68,6 +68,12 @@ describe("createServer", () => {
           appliedRoutesVariants: ["add-headers:disabled", "get-users:success", "get-user:success"],
         },
         {
+          id: "all-users",
+          from: "base",
+          routesVariants: ["get-users:all", "get-user:id-3"],
+          appliedRoutesVariants: ["add-headers:enabled", "get-users:all", "get-user:id-3"],
+        },
+        {
           id: "user-real",
           from: "no-headers",
           routesVariants: ["get-user:real"],
@@ -84,23 +90,23 @@ describe("createServer", () => {
         {
           id: "add-headers",
           url: "*",
+          method: ["GET", "POST", "PUT", "PATCH"],
           delay: null,
-          method: "GET",
           variants: ["add-headers:enabled", "add-headers:disabled"],
         },
         {
           id: "get-users",
           url: "/api/users",
-          delay: null,
           method: "GET",
-          variants: ["get-users:success", "get-users:error"],
+          delay: null,
+          variants: ["get-users:success", "get-users:all", "get-users:error"],
         },
         {
           id: "get-user",
           url: "/api/users/:id",
-          delay: null,
           method: "GET",
-          variants: ["get-user:success", "get-user:real"],
+          delay: null,
+          variants: ["get-user:success", "get-user:id-3", "get-user:real"],
         },
       ]);
     });
@@ -138,6 +144,21 @@ describe("createServer", () => {
           delay: null,
         },
         {
+          id: "get-users:all",
+          routeId: "get-users",
+          handler: "json",
+          response: {
+            body: [
+              { id: 1, name: "John Doe" },
+              { id: 2, name: "Jane Doe" },
+              { id: 3, name: "Tommy" },
+              { id: 4, name: "Timmy" },
+            ],
+            status: 200,
+          },
+          delay: null,
+        },
+        {
           id: "get-users:error",
           routeId: "get-users",
           handler: "json",
@@ -149,6 +170,13 @@ describe("createServer", () => {
           routeId: "get-user",
           handler: "json",
           response: { body: { id: 1, name: "John Doe" }, status: 200 },
+          delay: null,
+        },
+        {
+          id: "get-user:id-3",
+          routeId: "get-user",
+          handler: "json",
+          response: { body: { id: 3, name: "Tommy" }, status: 200 },
           delay: null,
         },
         {

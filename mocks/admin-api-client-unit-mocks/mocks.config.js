@@ -1,6 +1,11 @@
 module.exports = {
   log: "debug",
+  mock: {
+    collections: {
+      selected: "base",
+    },
+  },
   server: {
-    port: 3200,
+    port: 3100,
   },
 };

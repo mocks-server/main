@@ -413,6 +413,12 @@ importers:
       '@mocks-server/inquirer-cli-runner': link:../../packages/inquirer-cli-runner
       '@mocks-server/main': link:../../packages/main
 
+  test/plugin-admin-api-swagger-e2e:
+    specifiers:
+      '@mocks-server/main': workspace:*
+    dependencies:
+      '@mocks-server/main': link:../../packages/main
+
   test/plugin-inquirer-cli-e2e:
     specifiers:
       '@mocks-server/cli-runner': workspace:*

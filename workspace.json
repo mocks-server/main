@@ -28,6 +28,7 @@
     "main-e2e": "test/main-e2e",
     "nested-collections": "packages/nested-collections",
     "plugin-admin-api": "packages/plugin-admin-api",
+    "plugin-admin-api-swagger-e2e": "test/plugin-admin-api-swagger-e2e",
     "plugin-inquirer-cli": "packages/plugin-inquirer-cli",
     "plugin-inquirer-cli-e2e": "test/plugin-inquirer-cli-e2e",
     "plugin-proxy": "packages/plugin-proxy"

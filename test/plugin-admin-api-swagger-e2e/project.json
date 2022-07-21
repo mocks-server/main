@@ -1,5 +1,5 @@
 {
-  "root": "test/admin-api-client-nodejs-e2e/",
+  "root": "test/plugin-admin-api-swagger-e2e",
   "projectType": "application",
   "implicitDependencies": [
     "admin-api-client-unit-mocks"

@@ -1,21 +1,22 @@
 import { providers } from "@data-provider/core";
-import { DEFAULT_BASE_PATH } from "@mocks-server/admin-api-paths";
+import { BASE_PATH } from "@mocks-server/admin-api-paths";
+
 import TAG from "./tag";
 
 const DEFAULT_OPTIONS = {
-  apiPath: DEFAULT_BASE_PATH,
-  baseUrl: "http://127.0.0.1:3100",
+  port: 3110,
+  host: "127.0.0.1",
 };
 
-export const config = (options) => {
+export const configClient = (options) => {
   const finalOptions = {
     ...DEFAULT_OPTIONS,
     ...options,
   };
 
   providers.getByTag(TAG).config({
-    baseUrl: `${finalOptions.baseUrl}${finalOptions.apiPath}`,
+    baseUrl: `http://${finalOptions.host}:${finalOptions.port}${BASE_PATH}`,
   });
 };
 
-config();
+configClient();

@@ -26,7 +26,7 @@ describe("when using custom router", () => {
   describe("and registering it before initializating the server", () => {
     beforeAll(async () => {
       core = new Core();
-      core.addRouter("/api/custom", customRouter);
+      core.server.addRouter("/api/custom", customRouter);
       await core.init({
         config: {
           readFile: false,
@@ -62,7 +62,7 @@ describe("when using custom router", () => {
     });
 
     it("custom router should stop listening when is removed", async () => {
-      await core.removeRouter("/api/custom", customRouter);
+      await core.server.removeRouter("/api/custom", customRouter);
       const response = await doFetch("/api/custom");
       expect(response.status).toEqual(404);
     });
@@ -85,7 +85,7 @@ describe("when using custom router", () => {
       });
       await core.start();
       await waitForServer();
-      await core.addRouter("/api/custom", customRouter);
+      await core.server.addRouter("/api/custom", customRouter);
     });
 
     afterAll(async () => {
@@ -106,7 +106,7 @@ describe("when using custom router", () => {
     });
 
     it("custom router should stop listening when is removed", async () => {
-      await core.removeRouter("/api/custom", customRouter);
+      await core.server.removeRouter("/api/custom", customRouter);
       const response = await doFetch("/api/custom");
       expect(response.status).toEqual(404);
     });

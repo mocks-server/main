@@ -58,7 +58,7 @@
     "node-watch": "0.7.3",
     "update-notifier": "5.1.0",
     "winston": "3.7.2",
-    "winston-array-transport": "1.1.9"
+    "winston-array-transport": "1.1.10"
   },
   "engines": {
     "node": ">=14.x"

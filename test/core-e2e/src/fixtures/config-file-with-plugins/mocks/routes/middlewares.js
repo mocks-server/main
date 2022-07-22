@@ -10,8 +10,8 @@ module.exports = [
     variants: [
       {
         id: "enabled",
-        handler: "middleware",
-        response: {
+        type: "middleware",
+        options: {
           middleware: (_req, res, next, mocksServer) => {
             res.set("x-mocks-server-example", "some-value");
             mocksServer.tracer.info(
@@ -23,8 +23,8 @@ module.exports = [
       },
       {
         id: "disabled",
-        handler: "middleware",
-        response: {
+        type: "middleware",
+        options: {
           middleware: (_req, _res, next) => next(),
         },
       },

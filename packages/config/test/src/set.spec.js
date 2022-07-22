@@ -83,6 +83,67 @@ describe("set method", () => {
       ]);
     });
 
+    it("should set only defined options", async () => {
+      config = new Config();
+      config.addOptions([
+        {
+          name: "fooOption",
+          type: "string",
+          default: "default-str",
+        },
+        {
+          name: "fooOption2",
+          type: "number",
+          default: 2,
+        },
+      ]);
+      namespace = config.addNamespace("fooNamespace");
+      namespace.addOption({
+        name: "foo",
+        type: "boolean",
+        default: false,
+      });
+      namespace.addOption({
+        name: "foo2",
+        type: "boolean",
+        default: true,
+      });
+      await config.init();
+      config.set({
+        config: {
+          allowUnknownArguments: false,
+        },
+        fooOption: "foo",
+        fooNamespace: {
+          foo: true,
+        },
+      });
+      expect(config.value).toEqual({
+        config: {
+          allowUnknownArguments: false,
+          fileSearchPlaces: undefined,
+          readArguments: true,
+          readEnvironment: true,
+          readFile: true,
+        },
+        fooOption: "foo",
+        fooOption2: 2,
+        fooNamespace: {
+          foo: true,
+          foo2: true,
+        },
+      });
+
+      expect(config.option("fooOption").value).toEqual("foo");
+      expect(config.option("fooOption").hasBeenSet).toEqual(true);
+      expect(config.option("fooOption2").value).toEqual(2);
+      expect(config.option("fooOption2").hasBeenSet).toEqual(false);
+      expect(config.namespace("fooNamespace").option("foo").value).toEqual(true);
+      expect(config.namespace("fooNamespace").option("foo").hasBeenSet).toEqual(true);
+      expect(config.namespace("fooNamespace").option("foo2").value).toEqual(true);
+      expect(config.namespace("fooNamespace").option("foo2").hasBeenSet).toEqual(false);
+    });
+
     it("should change namespaces and options values when using value setter", async () => {
       config = new Config();
       config.addOptions([

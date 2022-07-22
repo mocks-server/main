@@ -18,17 +18,17 @@ module.exports = [
     variants: [
       {
         id: "success",
-        handler: "json",
-        response: {
+        type: "json",
+        options: {
           status: 200,
           body: USERS,
         },
       },
       {
         id: "delayed",
-        handler: "json",
+        type: "json",
         delay: 2000,
-        response: {
+        options: {
           status: 200,
           body: USERS,
         },

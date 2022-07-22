@@ -1,7 +1,7 @@
-const { config } = require("@mocks-server/admin-api-client");
+const { configClient } = require("@mocks-server/admin-api-client");
 
-config({
-  baseUrl: "http://127.0.0.1:3200",
+configClient({
+  port: 3110,
 });
 
 const wait = (time = 1000) => {

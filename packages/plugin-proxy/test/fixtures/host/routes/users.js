@@ -8,7 +8,8 @@ module.exports = [
     variants: [
       {
         id: "success",
-        response: {
+        type: "json",
+        options: {
           status: 200,
           body: USERS,
         },

@@ -31,12 +31,12 @@ class ProxyRoutesHandler {
     };
   }
 
-  constructor(response, core) {
-    this._response = response;
+  constructor(options, core) {
+    this._options = options;
     this._core = core;
-    this._host = this._response.host;
-    this._options = this._response.options;
-    this.middleware = httpProxy(this._host, this._options);
+    this._host = this._options.host;
+    this._optionsProxy = this._options.options;
+    this.middleware = httpProxy(this._host, this._optionsProxy);
   }
 
   get preview() {

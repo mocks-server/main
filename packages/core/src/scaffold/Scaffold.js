@@ -18,7 +18,7 @@ const READ_WRITE_FILE_OPTIONS = {
   encoding: "utf8",
 };
 
-const MOCKS_SCAFFOLD_PATH = path.resolve(__dirname, "mocks");
+const FILES_SCAFFOLD_PATH = path.resolve(__dirname, "mocks");
 const DEFAULT_CONFIG_FILE = "mocks.config.js";
 
 function readTemplate(fileName) {
@@ -109,7 +109,11 @@ class Scaffold {
     this._logger = logger;
     this._config = config;
     this._readConfigFileOption = this._config.namespace("config").option("readFile");
-    this._mockSelectedOption = this._config.namespace("mocks").option("selected");
+    this._filesEnabledOption = this._config.namespace("files").option("enabled");
+    this._collectionSelectedOption = this._config
+      .namespace("mock")
+      .namespace("collections")
+      .option("selected");
     this._alerts = alerts;
   }
 
@@ -136,9 +140,9 @@ class Scaffold {
     );
   }
 
-  _createMocks(destPath) {
-    this._logger.info("Creating mocks folder");
-    return fsExtra.copy(MOCKS_SCAFFOLD_PATH, destPath);
+  _createFolder(destPath) {
+    this._logger.info("Creating scaffold folder");
+    return fsExtra.copy(FILES_SCAFFOLD_PATH, destPath);
   }
 
   _checkAndCreateConfigScaffold() {
@@ -146,27 +150,28 @@ class Scaffold {
 
     if (this._readConfigFileOption.value && !configFileLoaded) {
       this._alerts.set("config", "Configuration file was not found. A scaffold was created");
-      // Set base mock, which is the one created in the scaffold
-      if (!this._mockSelectedOption.value) {
-        this._mockSelectedOption.value = "base";
-      }
+      // Set base collection, which is the one created in the scaffold
+      // LEGACY, enable again when selected collection is not defined in the option. (when legacy option is removed)
+      /* if (!this._collectionSelectedOption.value) {
+        this._collectionSelectedOption.value = "base";
+      } */
 
       return this._createConfig();
     }
     return Promise.resolve();
   }
 
-  _checkAndCreateMocksScaffold(filesLoaderPath) {
-    if (!fsExtra.existsSync(filesLoaderPath)) {
-      this._alerts.set("mocks", "Mocks folder was not found. A scaffold was created");
-      return this._createMocks(filesLoaderPath);
+  _checkAndCreateFolderScaffold(filesLoaderPath) {
+    if (this._filesEnabledOption.value && !fsExtra.existsSync(filesLoaderPath)) {
+      this._alerts.set("folder", "Mocks Server folder was not found. A scaffold was created");
+      return this._createFolder(filesLoaderPath);
     }
     return Promise.resolve();
   }
 
   init({ filesLoaderPath }) {
     return Promise.all([
-      this._checkAndCreateMocksScaffold(filesLoaderPath),
+      this._checkAndCreateFolderScaffold(filesLoaderPath),
       this._checkAndCreateConfigScaffold(),
     ]);
   }

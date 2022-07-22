@@ -8,18 +8,17 @@ const commands = require("../src/commands");
 describe("commands", () => {
   let sandbox;
   let cypressMock;
-  let setMock, setDelay, setSettings, useRouteVariant, restoreRoutesVariants, config;
+  let setCollection, setDelay, setConfig, useRouteVariant, restoreRouteVariants, configClient;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    sandbox.stub(apiClient, "updateSettings");
+    sandbox.stub(apiClient, "updateConfig");
     sandbox.stub(apiClient, "useRouteVariant");
-    sandbox.stub(apiClient, "restoreRoutesVariants");
-    sandbox.stub(apiClient, "config");
+    sandbox.stub(apiClient, "restoreRouteVariants");
+    sandbox.stub(apiClient, "configClient");
     cypressMock = new CypressMock();
-    ({ setMock, setDelay, setSettings, useRouteVariant, restoreRoutesVariants, config } = commands(
-      cypressMock.stubs
-    ));
+    ({ setCollection, setDelay, setConfig, useRouteVariant, restoreRouteVariants, configClient } =
+      commands(cypressMock.stubs));
   });
 
   afterEach(() => {
@@ -27,34 +26,36 @@ describe("commands", () => {
   });
 
   describe("when initializing", () => {
-    it("should call to set adminApiPath config if env var is defined", () => {
-      cypressMock.stubs.env.withArgs("MOCKS_SERVER_ADMIN_API_PATH").returns("foo");
+    it("should call to set port config if env var is defined", () => {
+      cypressMock.stubs.env.withArgs("MOCKS_SERVER_ADMIN_API_PORT").returns("foo");
       commands(cypressMock.stubs);
       expect(
-        apiClient.config.calledWith({
-          adminApiPath: "foo",
+        apiClient.configClient.calledWith({
+          port: "foo",
         })
       ).toBe(true);
     });
 
     it("should call to set baseUrl config if env var is defined", () => {
-      cypressMock.stubs.env.withArgs("MOCKS_SERVER_BASE_URL").returns("foo");
+      cypressMock.stubs.env.withArgs("MOCKS_SERVER_ADMIN_API_HOST").returns("foo");
       commands(cypressMock.stubs);
       expect(
-        apiClient.config.calledWith({
-          baseUrl: "foo",
+        apiClient.configClient.calledWith({
+          host: "foo",
         })
       ).toBe(true);
     });
   });
 
-  describe("setMock command", () => {
-    it("should call to update delay", () => {
-      setMock("foo");
+  describe("setCollection command", () => {
+    it("should call to set current collection", () => {
+      setCollection("foo");
       expect(
-        apiClient.updateSettings.calledWith({
-          mocks: {
-            selected: "foo",
+        apiClient.updateConfig.calledWith({
+          mock: {
+            collections: {
+              selected: "foo",
+            },
           },
         })
       ).toBe(true);
@@ -62,8 +63,8 @@ describe("commands", () => {
 
     it("should do nothing if plugin is disabled", () => {
       cypressMock.stubs.env.returns("false");
-      setMock("foo");
-      expect(apiClient.updateSettings.callCount).toEqual(0);
+      setCollection("foo");
+      expect(apiClient.updateConfig.callCount).toEqual(0);
     });
   });
 
@@ -71,9 +72,11 @@ describe("commands", () => {
     it("should call to update delay", () => {
       setDelay(3000);
       expect(
-        apiClient.updateSettings.calledWith({
-          mocks: {
-            delay: 3000,
+        apiClient.updateConfig.calledWith({
+          mock: {
+            routes: {
+              delay: 3000,
+            },
           },
         })
       ).toBe(true);
@@ -82,20 +85,20 @@ describe("commands", () => {
     it("should do nothing if plugin is disabled", () => {
       cypressMock.stubs.env.returns("false");
       setDelay("foo");
-      expect(apiClient.updateSettings.callCount).toEqual(0);
+      expect(apiClient.updateConfig.callCount).toEqual(0);
     });
   });
 
-  describe("setSettings command", () => {
-    it("should call to update delay", () => {
-      setSettings("foo");
-      expect(apiClient.updateSettings.calledWith("foo")).toBe(true);
+  describe("setConfig command", () => {
+    it("should call to update config", () => {
+      setConfig("foo");
+      expect(apiClient.updateConfig.calledWith("foo")).toBe(true);
     });
 
     it("should do nothing if plugin is disabled", () => {
       cypressMock.stubs.env.returns("0");
-      setSettings("foo");
-      expect(apiClient.updateSettings.callCount).toEqual(0);
+      setConfig("foo");
+      expect(apiClient.updateConfig.callCount).toEqual(0);
     });
   });
 
@@ -112,38 +115,40 @@ describe("commands", () => {
     });
   });
 
-  describe("restoreRoutesVariants command", () => {
+  describe("restoreRouteVariants command", () => {
     it("should call to useRoute variant", () => {
-      restoreRoutesVariants();
-      expect(apiClient.restoreRoutesVariants.callCount).toEqual(1);
+      restoreRouteVariants();
+      expect(apiClient.restoreRouteVariants.callCount).toEqual(1);
     });
 
     it("should do nothing if plugin is disabled", () => {
       cypressMock.stubs.env.returns(false);
-      restoreRoutesVariants();
-      expect(apiClient.restoreRoutesVariants.callCount).toEqual(0);
+      restoreRouteVariants();
+      expect(apiClient.restoreRouteVariants.callCount).toEqual(0);
     });
   });
 
-  describe("config method", () => {
-    it("should call to config admin-api-client baseUrl", () => {
-      config({
-        baseUrl: "foo",
+  describe("configClient method", () => {
+    it("should call to config admin-api-client host", () => {
+      configClient({
+        host: "foo",
       });
       expect(
-        apiClient.config.calledWith({
-          baseUrl: "foo",
+        apiClient.configClient.calledWith({
+          host: "foo",
         })
       ).toBe(true);
     });
 
-    it("should call to config admin-api-client apiPath with adminApiPath value", () => {
-      config({
-        adminApiPath: "foo",
+    it("should call to config admin-api-client apiPath port and host", () => {
+      configClient({
+        host: "foo",
+        port: "foo-2",
       });
       expect(
-        apiClient.config.calledWith({
-          adminApiPath: "foo",
+        apiClient.configClient.calledWith({
+          host: "foo",
+          port: "foo-2",
         })
       ).toBe(true);
     });

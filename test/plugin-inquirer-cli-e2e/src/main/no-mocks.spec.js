@@ -18,24 +18,24 @@ describe("with no behaviors", () => {
   });
 
   it("should display alerts", async () => {
-    mocks = mocksRunner(["--files.path=no-mocks", "--mocks.selected=foo"]);
+    mocks = mocksRunner(["--files.path=no-mocks", "--mock.collections.selected=foo"]);
     await waitForServerAndCli();
     expect(mocks.currentScreen).toEqual(expect.stringContaining("ALERTS"));
     expect(mocks.currentScreen).toEqual(
-      expect.stringContaining("Warning: [mocks:empty] No mocks found")
+      expect.stringContaining("Warning: [mock:collections:empty] No collections found")
     );
   });
 
   it("should print a dash as current behavior", async () => {
     mocks = mocksRunner(["--files.path=no-mocks"]);
     await waitForServerAndCli();
-    expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: -"));
+    expect(mocks.currentScreen).toEqual(expect.stringContaining("Current collection: -"));
   });
 
   it("should print mocks as 0", async () => {
     mocks = mocksRunner(["--files.path=no-mocks"]);
     await waitForServerAndCli();
-    expect(mocks.currentScreen).toEqual(expect.stringContaining("Mocks: 0"));
+    expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 0"));
   });
 
   it("should print current routes as 0", async () => {

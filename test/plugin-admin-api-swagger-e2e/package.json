@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "scripts": {
+    "mocks:ci": "pnpm -w run nx start admin-api-client-unit-mocks",
+    "test": "cypress run",
+    "test:e2e": "start-server-and-test mocks:ci http-get://127.0.0.1:3110/api/about test",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
+  },
+  "dependencies": {
+    "@mocks-server/main": "workspace:*"
+  }
+}

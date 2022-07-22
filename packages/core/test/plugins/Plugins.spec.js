@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2019-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -12,11 +12,11 @@ const sinon = require("sinon");
 const { Logger } = require("@mocks-server/logger");
 
 const CoreMocks = require("../Core.mocks.js");
-const ConfigMocks = require("../Config.mocks.js");
-const LibsMocks = require("../Libs.mocks.js");
+const ConfigMocks = require("../common/Config.mocks.js");
+const LibsMocks = require("../common/Libs.mocks");
 
 const Plugins = require("../../src/plugins/Plugins");
-const Alerts = require("../../src/Alerts.js");
+const Alerts = require("../../src/alerts/Alerts");
 
 const NATIVE_PLUGINS_QUANTITY = 0;
 
@@ -73,7 +73,7 @@ describe("Plugins", () => {
       addAlert: sandbox.stub(),
       removeAlerts: sandbox.stub(),
       renameAlerts: sandbox.stub(),
-      createMocksLoader: sandbox.stub().returns(loadMocks),
+      createCollectionsLoader: sandbox.stub().returns(loadMocks),
       createRoutesLoader: sandbox.stub().returns(loadRoutes),
     };
     plugins = new Plugins(callbacks, coreInstance);
@@ -273,6 +273,51 @@ describe("Plugins", () => {
       expect(coreInstance.restartServer.callCount).toEqual(1);
     });
 
+    it("should have core.server available", async () => {
+      const fooPlugin = {
+        register: ({ server }) => {
+          server.restart();
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(coreInstance.server.restart.callCount).toEqual(1);
+    });
+
+    it("should have core.mock available", async () => {
+      const fooPlugin = {
+        register: ({ mock }) => {
+          mock.onChange();
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(coreInstance.mock.onChange.callCount).toEqual(1);
+    });
+
+    it("should have core.variantHandlers available", async () => {
+      const fooPlugin = {
+        register: ({ variantHandlers }) => {
+          variantHandlers.register();
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(coreInstance.variantHandlers.register.callCount).toEqual(1);
+    });
+
+    it("should have core.version available", async () => {
+      let version;
+      const fooPlugin = {
+        register: ({ version: coreVersion }) => {
+          version = coreVersion;
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(version).toEqual("foo-version");
+    });
+
     it("should have core addRouter method available", async () => {
       const fooPlugin = {
         register: ({ addRouter }) => {
@@ -397,7 +442,7 @@ describe("Plugins", () => {
     it("should not register strings as plugins", async () => {
       pluginsOption.value = ["foo"];
       await plugins.register();
-      expect(alerts.flat[0].value.message).toEqual('Error registering plugin "0"');
+      expect(alerts.flat[0].value.message).toEqual("Error registering plugin '0'");
       expect(alerts.flat[0].collection).toEqual("plugins:register");
       expect(logger.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
@@ -405,7 +450,7 @@ describe("Plugins", () => {
     it("should not register booleans as plugins", async () => {
       pluginsOption.value = [true];
       await plugins.register();
-      expect(alerts.flat[0].value.message).toEqual('Error registering plugin "0"');
+      expect(alerts.flat[0].value.message).toEqual("Error registering plugin '0'");
       expect(alerts.flat[0].collection).toEqual("plugins:register");
       expect(logger.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
@@ -549,7 +594,7 @@ describe("Plugins", () => {
       }
       pluginsOption.value = [FooPlugin];
       await plugins.register();
-      expect(alerts.flat[0].value.message).toEqual('Error registering plugin "0"');
+      expect(alerts.flat[0].value.message).toEqual("Error registering plugin '0'");
       expect(alerts.flat[0].collection).toEqual("plugins:register");
       expect(logger.verbose.calledWith(pluginsTraceAddingNative(METHOD, 0))).toEqual(true);
     });
@@ -609,10 +654,10 @@ describe("Plugins", () => {
       ];
       await plugins.register();
       expect(alerts.flat.length).toEqual(6);
-      expect(alerts.flat[0].value.message).toEqual('Error registering plugin "0"');
-      expect(alerts.flat[1].value.message).toEqual('Error registering plugin "3"');
-      expect(alerts.flat[2].value.message).toEqual('Error registering plugin "4"');
-      expect(alerts.flat[3].value.message).toEqual('Error registering plugin "5"');
+      expect(alerts.flat[0].value.message).toEqual("Error registering plugin '0'");
+      expect(alerts.flat[1].value.message).toEqual("Error registering plugin '3'");
+      expect(alerts.flat[2].value.message).toEqual("Error registering plugin '4'");
+      expect(alerts.flat[3].value.message).toEqual("Error registering plugin '5'");
       expect(logger.verbose.calledWith(pluginsTraceAddingNative(METHOD, 3))).toEqual(true);
     });
   });
@@ -646,7 +691,7 @@ describe("Plugins", () => {
       pluginsOption.value = [fooPlugin];
       await plugins.register();
       await plugins.init();
-      expect(logger.debug.calledWith('Initializing plugin "foo-plugin"')).toEqual(true);
+      expect(logger.debug.calledWith("Initializing plugin 'foo-plugin'")).toEqual(true);
     });
 
     it("should trace the plugin id when it is a static property in the class", async () => {
@@ -662,7 +707,7 @@ describe("Plugins", () => {
       await plugins.register();
       await plugins.init();
       expect(plugins._pluginId(0)).toEqual("foo-plugin");
-      expect(logger.debug.calledWith('Initializing plugin "foo-plugin"')).toEqual(true);
+      expect(logger.debug.calledWith("Initializing plugin 'foo-plugin'")).toEqual(true);
     });
 
     it("should accept init methods non returning a Promise", async () => {
@@ -695,7 +740,7 @@ describe("Plugins", () => {
       await plugins.register();
       await plugins.init();
       expect(alerts.flat.length).toEqual(4);
-      expect(alerts.flat[0].value.message).toEqual('Error initializating plugin "0"');
+      expect(alerts.flat[0].value.message).toEqual("Error initializating plugin '0'");
       expect(logger.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
 
@@ -813,7 +858,7 @@ describe("Plugins", () => {
       pluginsOption.value = [fooPlugin];
       await plugins.register();
       await plugins.start();
-      expect(logger.debug.calledWith('Starting plugin "foo-plugin"')).toEqual(true);
+      expect(logger.debug.calledWith("Starting plugin 'foo-plugin'")).toEqual(true);
     });
 
     it("should accept start methods non returning a Promise", async () => {
@@ -846,7 +891,7 @@ describe("Plugins", () => {
       await plugins.register();
       await plugins.start();
       expect(alerts.flat.length).toEqual(4);
-      expect(alerts.flat[0].value.message).toEqual('Error starting plugin "0"');
+      expect(alerts.flat[0].value.message).toEqual("Error starting plugin '0'");
       expect(logger.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
 
@@ -949,7 +994,7 @@ describe("Plugins", () => {
       pluginsOption.value = [fooPlugin];
       await plugins.register();
       await plugins.stop();
-      expect(logger.debug.calledWith('Stopping plugin "foo-plugin"')).toEqual(true);
+      expect(logger.debug.calledWith("Stopping plugin 'foo-plugin'")).toEqual(true);
     });
 
     it("should accept stop methods non returning a Promise", async () => {
@@ -983,7 +1028,7 @@ describe("Plugins", () => {
       await plugins.register();
       await plugins.stop();
       expect(alerts.flat.length).toEqual(4);
-      expect(alerts.flat[0].value.message).toEqual('Error stopping plugin "0"');
+      expect(alerts.flat[0].value.message).toEqual("Error stopping plugin '0'");
       expect(logger.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
 

@@ -13,8 +13,10 @@ describe("when using delay option in server", () => {
   beforeAll(async () => {
     host = await startHost();
     server = await startServer("docs-example", {
-      mocks: {
-        delay: 1000,
+      mock: {
+        routes: {
+          delay: 1000,
+        },
       },
     });
     await waitForHost();

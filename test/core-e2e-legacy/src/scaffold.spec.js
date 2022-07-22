@@ -45,17 +45,12 @@ describe("when nor config file nor mocks folder exists", () => {
     describe("when started for the first time", () => {
       it("should have created the mocks scaffold", async () => {
         expect(
-          fsExtra.existsSync(path.resolve(fixturesFolder("temp"), "mocks", "mocks.json"))
+          fsExtra.existsSync(path.resolve(fixturesFolder("temp"), "mocks", "collections.json"))
         ).toEqual(true);
       });
 
       it("should have created the config file", async () => {
         expect(fsExtra.existsSync(configFile)).toEqual(true);
-      });
-
-      it("should have base as selected mock in config file", async () => {
-        const config = require(configFile);
-        expect(config.mocks.selected).toEqual("base");
       });
 
       it("should serve users under the /api/users path", async () => {
@@ -88,11 +83,6 @@ describe("when nor config file nor mocks folder exists", () => {
           cwd: fixturesFolder("temp"),
         });
         await waitForServer();
-      });
-
-      it("should have base as selected mock in config file", async () => {
-        const config = require(configFile);
-        expect(config.mocks.selected).toEqual("base");
       });
 
       it("should serve users under the /api/users path", async () => {
@@ -144,7 +134,9 @@ describe("when nor config file nor mocks folder exists", () => {
     });
 
     it("should have tried to load provided mocks", async () => {
-      expect(mocks.logs.all).toEqual(expect.stringContaining("Mock with id 'user-2' is invalid"));
+      expect(mocks.logs.all).toEqual(
+        expect.stringContaining("Collection with id 'user-2' is invalid")
+      );
     });
   });
 
@@ -217,7 +209,7 @@ describe("when nor config file nor mocks folder exists", () => {
 
     it("should have created the mocks scaffold", async () => {
       expect(
-        fsExtra.existsSync(path.resolve(fixturesFolder("temp"), "mocks", "mocks.json"))
+        fsExtra.existsSync(path.resolve(fixturesFolder("temp"), "mocks", "collections.json"))
       ).toEqual(true);
     });
 

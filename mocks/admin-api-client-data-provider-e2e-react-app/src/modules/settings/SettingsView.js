@@ -10,15 +10,15 @@ const format = (value) => {
   return value;
 };
 
-const SettingsView = ({ settings }) => {
+const SettingsView = ({ config }) => {
   return (
     <div className="content">
-      <p className="content__title">Current Settings</p>
+      <p className="content__title">Current Config</p>
       <ul>
-        {Object.keys(settings).map((key) => {
+        {Object.keys(config).map((key) => {
           return (
             <li key={key}>
-              <b>{key}</b>: <span data-testid={`settings-${key}`}>{format(settings[key])}</span>
+              <b>{key}</b>: <span data-testid={`config-${key}`}>{format(config[key])}</span>
             </li>
           );
         })}
@@ -28,7 +28,7 @@ const SettingsView = ({ settings }) => {
 };
 
 SettingsView.propTypes = {
-  settings: PropTypes.object,
+  config: PropTypes.object,
 };
 
 export default SettingsView;

@@ -5,7 +5,7 @@ const Environment = require("./Environment");
 const Files = require("./Files");
 const Namespace = require("./Namespace");
 const { types, avoidArraysMerge } = require("./types");
-const { validateConfigAndThrow, validateConfig } = require("./validation");
+const { validateConfigAndThrow, validateConfig, getValidationSchema } = require("./validation");
 const { checkNamespaceName, findObjectWithName, getNamespacesValues } = require("./namespaces");
 
 const CONFIG_NAMESPACE = "config";
@@ -110,6 +110,13 @@ class Config {
 
   validate(config, { allowAdditionalProperties = false } = {}) {
     return validateConfig(config, {
+      namespaces: this._namespaces,
+      allowAdditionalProperties,
+    });
+  }
+
+  getValidationSchema({ allowAdditionalProperties = false } = {}) {
+    return getValidationSchema({
       namespaces: this._namespaces,
       allowAdditionalProperties,
     });

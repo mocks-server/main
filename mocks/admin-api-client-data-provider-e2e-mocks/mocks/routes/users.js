@@ -6,16 +6,16 @@ module.exports = [
     variants: [
       {
         id: "1",
-        handler: "json",
-        response: {
+        type: "json",
+        options: {
           status: 200,
           body: [{ email: "foo@foo.com" }],
         },
       },
       {
         id: "2",
-        handler: "json",
-        response: {
+        type: "json",
+        options: {
           status: 200,
           body: [{ email: "foo2@foo2.com" }],
         },

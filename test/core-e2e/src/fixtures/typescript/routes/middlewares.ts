@@ -18,15 +18,15 @@ const middlewares = [
     variants: [
       {
         id: "enabled",
-        handler: "middleware",
-        response: {
+        type: "middleware",
+        options: {
           middleware
         },
       },
       {
         id: "disabled",
-        handler: "middleware",
-        response: {
+        type: "middleware",
+        options: {
           middleware: (req, res, next) => next(),
         }
       },

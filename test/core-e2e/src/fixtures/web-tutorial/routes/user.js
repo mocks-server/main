@@ -18,24 +18,24 @@ module.exports = [
     variants: [
       {
         id: "1",
-        handler: "json",
-        response: {
+        type: "json",
+        options: {
           status: 200,
           body: USERS[0],
         },
       },
       {
         id: "2",
-        handler: "json",
-        response: {
+        type: "json",
+        options: {
           status: 200,
           body: USERS[1],
         },
       },
       {
         id: "real",
-        handler: "middleware",
-        response: {
+        type: "middleware",
+        options: {
           middleware: (req, res) => {
             const userId = req.params.id;
             const user = USERS.find((userData) => userData.id === Number(userId));

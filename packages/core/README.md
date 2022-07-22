@@ -15,18 +15,16 @@
 
 This package provides the plugabble core of the [Mocks Server][website-url] project.
 
-Use it if you want to start Mocks Server programmatically by your own, or even create your own Mocks Server distribution with the plugins of your choice. If this is not the case, you would probably prefer using the [main distribution of the Mocks Server project][main-url].
+Use it if you want to [start Mocks Server programmatically by yourself](https://www.mocks-server.org/docs/api/javascript), or even [create your own Mocks Server distribution](https://www.mocks-server.org/docs/integrations/javascript) with the plugins of your choice. If this is not the case, you would probably prefer using the [main distribution of the Mocks Server project][main-url].
 
 ## Documentation
 
 Please refer to the [project documentation website][website-url]:
 
-* [Get started](https://www.mocks-server.org/docs/get-started-intro)
-* [Guides](https://www.mocks-server.org/docs/guides-organizing-files)
-* [Configuration](https://www.mocks-server.org/docs/configuration-options)
-* [Plugins](https://www.mocks-server.org/docs/plugins-adding-plugins)
-* [Integrations](https://www.mocks-server.org/docs/integrations-cypress)
-* [API](https://www.mocks-server.org/docs/api-mocks-server-api)
+* [Overview](https://www.mocks-server.org/docs/overview)
+* [Usage](https://www.mocks-server.org/docs/usage/basics)
+* [Configuration](https://www.mocks-server.org/docs/configuration/how-to-change-settings)
+* [API](https://www.mocks-server.org/docs/api/javascript)
 
 [website-url]: https://www.mocks-server.org
 [logo-url]: https://www.mocks-server.org/img/logo_120.png

@@ -10,6 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed
 
+## [Unreleased]
+
+### Added
+- feat: Add `hasBeenSet` property to option
+- feat: Add `getValidationSchema` method to root config object. It returns a validation schema for all namespaces.
+
+### Fixed
+- fix: Remove unused folder
+
 ## [1.1.0] - 2022-06-27
 
 ### Added

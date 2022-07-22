@@ -1,11 +1,11 @@
 const {
   about,
-  mocks,
-  mock,
+  collections,
+  collection,
   routes,
   route,
-  routeVariant,
-  settings,
+  variant,
+  config,
   alerts,
   alert,
 } = require("@mocks-server/admin-api-client-data-provider/dist/index.cjs");
@@ -14,12 +14,12 @@ const readAbout = () => {
   return about.read();
 };
 
-const readMocks = () => {
-  return mocks.read();
+const readCollections = () => {
+  return collections.read();
 };
 
-const readMock = (name) => {
-  return mock(name).read();
+const readCollection = (name) => {
+  return collection.queries.byId(name).read();
 };
 
 const readRoutes = () => {
@@ -27,15 +27,15 @@ const readRoutes = () => {
 };
 
 const readRoute = (id) => {
-  return route(id).read();
+  return route.queries.byId(id).read();
 };
 
-const readSettings = () => {
-  return settings.read();
+const readConfig = () => {
+  return config.read();
 };
 
-const updateSettings = (newSettings) => {
-  return settings.update(newSettings);
+const updateConfig = (newConfig) => {
+  return config.update(newConfig);
 };
 
 const readAlerts = () => {
@@ -43,22 +43,22 @@ const readAlerts = () => {
 };
 
 const readAlert = (id) => {
-  return alert(id).read();
+  return alert.queries.byId(id).read();
 };
 
-const readRouteVariant = (id) => {
-  return routeVariant(id).read();
+const readVariant = (id) => {
+  return variant.queries.byId(id).read();
 };
 
 module.exports = {
   readAbout,
-  readMocks,
-  readMock,
+  readCollections,
+  readCollection,
   readRoutes,
   readRoute,
-  readSettings,
-  updateSettings,
+  readConfig,
+  updateConfig,
   readAlerts,
   readAlert,
-  readRouteVariant,
+  readVariant,
 };

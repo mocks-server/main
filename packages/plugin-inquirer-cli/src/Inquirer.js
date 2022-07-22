@@ -41,7 +41,7 @@ const QUIT_QUESTION = {
 
 const exitProcess = () => process.exit();
 
-require("events").EventEmitter.defaultMaxListeners = 100;
+require("events").EventEmitter.defaultMaxListeners = 1000;
 
 const Inquirer = class Inquirer {
   constructor(header, alerts, options = {}) {

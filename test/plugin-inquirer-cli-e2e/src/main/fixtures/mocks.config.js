@@ -11,6 +11,10 @@ module.exports = {
     // Allow unknown arguments
     //allowUnknownArguments: false,
   },
+  variantHandlers: {
+    // Variant Handlers to be registered
+    //register: [],
+  },
   plugins: {
     // Plugins to be registered
     //register: [null],
@@ -19,11 +23,15 @@ module.exports = {
       //enabled: true,
     },
   },
-  mocks: {
+  mock: {
     // Selected mock
-    selected: "base",
-    // Global delay to apply to routes
-    //delay: 0,
+    collections: {
+      //selected: "base",
+    },
+    routes: {
+      // Global delay to apply to routes
+      //delay: 0,
+    },
   },
   server: {
     // Port number for the server to be listening at

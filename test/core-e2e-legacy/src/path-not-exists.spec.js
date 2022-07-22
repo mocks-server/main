@@ -45,25 +45,27 @@ describe("when path not exists", () => {
 
     it("should have created scaffold folder", async () => {
       expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "routes"))).toEqual(true);
-      expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "mocks.json"))).toEqual(true);
-    });
-
-    it("should have added an alert about folder not found", async () => {
-      expect(findAlert("scaffold:mocks", core.alerts).message).toEqual(
-        expect.stringContaining("Mocks folder was not found")
+      expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "collections.json"))).toEqual(
+        true
       );
     });
 
-    it("should have three mocks", async () => {
-      expect(core.mocks.plainMocks.length).toEqual(3);
+    it("should have added an alert about folder not found", async () => {
+      expect(findAlert("scaffold:folder", core.alerts).message).toEqual(
+        expect.stringContaining("Mocks Server folder was not found")
+      );
     });
 
-    it("should have three routes", async () => {
+    it("should have 4 mocks", async () => {
+      expect(core.mocks.plainMocks.length).toEqual(4);
+    });
+
+    it("should have 3 routes", async () => {
       expect(core.mocks.plainRoutes.length).toEqual(3);
     });
 
-    it("should have six routes", async () => {
-      expect(core.mocks.plainRoutesVariants.length).toEqual(6);
+    it("should have 8 routes variants", async () => {
+      expect(core.mocks.plainRoutesVariants.length).toEqual(8);
     });
   });
 

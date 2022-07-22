@@ -13,21 +13,18 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 
-const { version } = require("../package.json");
-
 class AboutApi {
-  constructor({ logger }) {
+  constructor({ logger, getResponse }) {
     this._logger = logger;
     this._router = express.Router();
     this._router.get("/", this.getAbout.bind(this));
+    this._getResponse = getResponse;
   }
 
   getAbout(req, res) {
     this._logger.verbose(`Sending about | ${req.id}`);
     res.status(200);
-    res.send({
-      version,
-    });
+    res.send(this._getResponse());
   }
 
   get router() {

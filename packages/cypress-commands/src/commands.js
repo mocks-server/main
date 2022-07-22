@@ -3,8 +3,8 @@ const apiClient = require("@mocks-server/admin-api-client");
 const {
   isFalsy,
   ENABLED_ENVIRONMENT_VAR,
-  BASE_URL_ENVIRONMENT_VAR,
-  ADMIN_API_PATH_ENVIRONMENT_VAR,
+  ADMIN_API_PORT_ENVIRONMENT_VAR,
+  ADMIN_API_HOST_ENVIRONMENT_VAR,
 } = require("./helpers");
 
 function commands(Cypress) {
@@ -16,12 +16,14 @@ function commands(Cypress) {
     return Promise.resolve();
   };
 
-  const setMock = (id) => {
+  const setCollection = (id) => {
     if (isDisabled()) {
       return doNothing();
     }
-    return apiClient.updateSettings({
-      mocks: { selected: id },
+    return apiClient.updateConfig({
+      mock: {
+        collections: { selected: id },
+      },
     });
   };
 
@@ -29,16 +31,18 @@ function commands(Cypress) {
     if (isDisabled()) {
       return doNothing();
     }
-    return apiClient.updateSettings({
-      mocks: { delay },
+    return apiClient.updateConfig({
+      mock: {
+        routes: { delay },
+      },
     });
   };
 
-  const setSettings = (newSettings) => {
+  const setConfig = (newConfig) => {
     if (isDisabled()) {
       return doNothing();
     }
-    return apiClient.updateSettings(newSettings);
+    return apiClient.updateConfig(newConfig);
   };
 
   const useRouteVariant = (id) => {
@@ -48,31 +52,31 @@ function commands(Cypress) {
     return apiClient.useRouteVariant(id);
   };
 
-  const restoreRoutesVariants = () => {
+  const restoreRouteVariants = () => {
     if (isDisabled()) {
       return doNothing();
     }
-    return apiClient.restoreRoutesVariants();
+    return apiClient.restoreRouteVariants();
   };
 
-  const config = (customConfig) => {
-    return apiClient.config(customConfig);
+  const configClient = (customConfig) => {
+    return apiClient.configClient(customConfig);
   };
 
-  if (Cypress.env(ADMIN_API_PATH_ENVIRONMENT_VAR)) {
-    config({ adminApiPath: Cypress.env(ADMIN_API_PATH_ENVIRONMENT_VAR) });
+  if (Cypress.env(ADMIN_API_PORT_ENVIRONMENT_VAR)) {
+    configClient({ port: Cypress.env(ADMIN_API_PORT_ENVIRONMENT_VAR) });
   }
-  if (Cypress.env(BASE_URL_ENVIRONMENT_VAR)) {
-    config({ baseUrl: Cypress.env(BASE_URL_ENVIRONMENT_VAR) });
+  if (Cypress.env(ADMIN_API_HOST_ENVIRONMENT_VAR)) {
+    configClient({ host: Cypress.env(ADMIN_API_HOST_ENVIRONMENT_VAR) });
   }
 
   return {
-    setMock,
+    setCollection,
     setDelay,
-    setSettings,
-    config,
+    setConfig,
     useRouteVariant,
-    restoreRoutesVariants,
+    restoreRouteVariants,
+    configClient,
   };
 }
 

@@ -13,7 +13,7 @@
 
 # Mocks Server Cypress commands
 
-Extends Cypress' cy commands with methods for easily changing [Mocks Server settings][mocks-server-options-url], such as current mock, route variants, delay time, etc.
+Extends Cypress' cy commands with methods for easily changing [Mocks Server configuration][mocks-server-options-url] while it is running, such as current collection, custom route variants, delay time, etc.
 
 ## Installation
 
@@ -37,48 +37,48 @@ You can now use all next commands:
 
 ### Commands
 
-##### `cy.mocksSetMock("users-error")`
+#### `cy.mocksSetCollection("users-error")`
 
-Set current mock.
+Set current collection.
 
-##### `cy.mocksUseRouteVariant("users:success")`
+#### `cy.mocksUseRouteVariant("users:success")`
 
-Set a specific route variant to be used by current mock.
+Set a specific route variant to be used by the current collection.
 
-##### `cy.mocksRestoreRoutesVariants()`
+#### `cy.mocksRestoreRouteVariants()`
 
-Restore routes variants to those defined in current mock.
+Restore route variants to those defined in the current collection.
 
-##### `cy.mocksSetDelay(2000)`
+#### `cy.mocksSetDelay(2000)`
 
-Set routes delay.
+Set routes default delay.
 
-##### `cy.mocksSetSettings({ files: { watch: false}, mocks: { delay: 0 }})`
+#### `cy.mocksSetConfig({ files: { watch: false}, mock: { routes: { delay: 0 }}})`
 
 Set any [Mocks Server setting][mocks-server-options-url].
 
-##### `cy.mocksConfig({ adminApiPath: "/foo", baseUrl: "http://localhost:3000" })`
+#### `cy.mocksConfigAdminApiClient({ port: 3110, host: "127.0.0.1" })`
 
-Configures the [Mocks Server administration API client](https://github.com/mocks-server/admin-api-client), used under the hood.
+Configures the [Mocks Server administration API client](https://github.com/mocks-server/admin-api-client), used under the hood to communicate with the administration REST API. Use this command only if you changed the administration API configuration and you need to configure the client properly.
 
 ## Configuration
 
-By default, the API client is configured to request to `http://127.0.0.1:3100/admin`, based in the [default Mocks Server options][mocks-server-options-url]
+By default, the API client is configured to request to `http://127.0.0.1:3110/api`, based in the [default Mocks Server options][mocks-server-options-url]
 
-You can change both the base url of Mocks Server, and the api path of the administration API using the `cy.mocksConfig` command mentioned above, or the plugin environment variables:
+You can change both the host and port of the administration API using the `cy.mocksConfigAdminApiClient` command mentioned above, or the plugin environment variables:
 
-* __`MOCKS_SERVER_BASE_URL`__: Modifies the base url of Mocks Server. Default is `http://127.0.0.1:3100`.
-* __`MOCKS_SERVER_ADMIN_API_PATH`__: Modifies the path of the Mocks Server administration API. Default is `/admin`.
-* __`MOCKS_SERVER_ENABLED`__: Disables requests to Mocks Server, so the commands will not fail even when Mocks Server is not running. This is useful to reuse same tests with mocks and a real API, because commands to change Mocks Server settings will be ignored.
+* __`MOCKS_SERVER_ADMIN_API_PORT`__: Modifies the admin API client port. Default is `3110`.
+* __`MOCKS_SERVER_ADMIN_API_HOST`__: Modifies the admin API client host. Default is `127.0.0.1`.
+* __`MOCKS_SERVER_ENABLED`__: Disables requests to the Mocks Server admin API, so the commands will not fail even when Mocks Server is not running. This is useful to reuse same tests with a mocked API and a real API, because commands to change Mocks Server configuration will be ignored.
 
 ### Using commands
 
-You should usually change Mocks Server settings in a `before` statement:
+You should usually change Mocks Server configuration in a `before` statement:
 
 ```js
 describe("user with default role", () => {
   before(() => {
-    cy.mocksSetMock("normal-user");
+    cy.mocksSetCollection("normal-user");
     cy.visit("/");
   });
 
@@ -89,7 +89,7 @@ describe("user with default role", () => {
 
 describe("user with admin role", () => {
   before(() => {
-    cy.mocksSetMock("admin-user");
+    cy.mocksSetCollection("admin-user");
     cy.visit("/");
   });
 
@@ -99,9 +99,13 @@ describe("user with admin role", () => {
 });
 ```
 
+## Release notes
+
+Current major release (`5.x`) is compatible only with `@mocks-server/main` versions upper or equal than `3.6`. Use prior releases for lower versions. If you don't want to update to the latest major version of this package yet but you want to update `@mocks-server/main`, you can also use any `4.x` version of this package with any `@mocks-server/main@3.x` version.
+
 ## License
 
 MIT, see [LICENSE](./LICENSE) for details.
 
 [mocks-server-url]: https://www.mocks-server.org
-[mocks-server-options-url]: https://www.mocks-server.org/docs/configuration-options
+[mocks-server-options-url]: https://www.mocks-server.org/docs/configuration/options

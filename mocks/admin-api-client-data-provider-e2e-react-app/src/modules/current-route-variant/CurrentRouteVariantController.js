@@ -1,19 +1,21 @@
 import { Selector } from "@data-provider/core";
 import { withData } from "@data-provider/react";
 import {
-  settings,
-  mocksModel,
-  mocks,
-  routesVariantsModel,
+  config,
+  collection,
+  collections,
+  variant,
 } from "@mocks-server/admin-api-client-data-provider";
 
 import CurrentRouteVariantView from "./CurrentRouteVariantView";
 
-const currentMock = new Selector(
-  settings,
-  mocks,
-  (_query, settingsResults, mocksResults) => {
-    return mocksModel.queries.byId(settingsResults.mocks.selected || mocksResults[0].id);
+const currentCollection = new Selector(
+  config,
+  collections,
+  (_query, configResults, collectionsResults) => {
+    return collection.queries.byId(
+      configResults.mock.collections.selected || collectionsResults[0].id
+    );
   },
   {
     initialState: {
@@ -23,9 +25,9 @@ const currentMock = new Selector(
 );
 
 const currentRouteVariant = new Selector(
-  currentMock,
+  currentCollection,
   (_query, mockResults) => {
-    return routesVariantsModel.queries.byId(mockResults.routesVariants[0]);
+    return variant.queries.byId(mockResults.routes[0]);
   },
   {
     initialState: {
@@ -36,7 +38,7 @@ const currentRouteVariant = new Selector(
 
 const CurrentRouteVariantController = withData(
   currentRouteVariant,
-  "routeVariant"
-)(withData(currentMock, "mock")(CurrentRouteVariantView));
+  "variant"
+)(withData(currentCollection, "collection")(CurrentRouteVariantView));
 
 export default CurrentRouteVariantController;

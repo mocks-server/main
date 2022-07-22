@@ -93,19 +93,19 @@ describe("events", () => {
   describe("When alerts are added", () => {
     let option, removeSpy;
 
-    it("should have emitted event", async () => {
+    it("should have emitted events", async () => {
       option = core.config.namespace("mocks").option("selected");
       removeSpy = core.onChangeAlerts(spies.onChangeAlerts);
       option.value = "unexistant";
       await wait(500);
-      expect(spies.onChangeAlerts.callCount).toEqual(1);
+      expect(spies.onChangeAlerts.callCount).toEqual(2);
     });
 
     it("should not execute callback when event listener is removed", async () => {
       removeSpy();
       option.value = "unexistant2";
       await wait(500);
-      expect(spies.onChangeAlerts.callCount).toEqual(1);
+      expect(spies.onChangeAlerts.callCount).toEqual(2);
     });
   });
 });

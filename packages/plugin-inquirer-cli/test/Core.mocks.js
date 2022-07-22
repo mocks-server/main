@@ -30,23 +30,37 @@ class CoreMock {
       stop: this._sandbox.stub().resolves(),
       restartServer: this._sandbox.stub().resolves(),
       onChangeAlerts: this._sandbox.stub().returns(doNothing),
-      onChangeMocks: this._sandbox.stub().returns(doNothing),
       addRouter: this._sandbox.stub(),
       addSetting: this._sandbox.stub(),
-      mocks: {
+      mock: {
         current: "foo-current",
         plainMocks: [],
         plainRoutes: [],
         plainRoutesVariants: [],
         customRoutesVariants: [],
+        customRouteVariants: [],
         ids: [],
         useRouteVariant: this._sandbox.stub(),
-        restoreRoutesVariants: this._sandbox.stub(),
+        restoreRouteVariants: this._sandbox.stub(),
+        onChange: this._sandbox.stub().returns(doNothing),
+        routes: {
+          plain: [],
+          plainVariants: [],
+        },
+        collections: {
+          selected: "foo-current",
+          ids: [],
+          plain: [],
+        },
+      },
+      server: {
+        restart: this._sandbox.stub(),
       },
       config: new ConfigMock().stubs.instance,
       alerts: {
         root: {
           customFlat: [],
+          onChange: this._sandbox.stub().returns(doNothing),
         },
       },
       serverError: null,

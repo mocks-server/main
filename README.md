@@ -1,4 +1,4 @@
-<p align="center"><a href="https://mocks-server.org" target="_blank" rel="noopener noreferrer"><img width="120" src="https://www.mocks-server.org/img/logo_120.png" alt="Mocks Server logo"></a></p>
+<p align="center"><a href="https://www.mocks-server.org" target="_blank" rel="noopener noreferrer"><img width="120" src="https://www.mocks-server.org/img/logo_120.png" alt="Mocks Server logo"></a></p>
 
 <p align="center">
   <a href="https://github.com/mocks-server/main/actions?query=workflow%3Abuild+branch%3Amaster"><img src="https://github.com/mocks-server/main/workflows/build/badge.svg?branch=master" alt="Build Status"></a>
@@ -15,17 +15,27 @@
 
 ## Introduction
 
-This project provides a mock server that can simulate multiple responses for the same API routes. It can be added as a dependency of your project, and started simply running an NPM command.
+Node.js mock server running live, interactive mocks in place of real APIs. __It makes able to define many different responses for a same route__, so, you can change the whole mocked API behavior by simply changing the response of one or many routes while the server is running.
 
-It is easy to use both for development and testing because the responses of the mocked API and other configuration options can be changed while the server is running using:
+## Usage
 
-* Interactive command line user interface
-* REST API client
-* Other integration tools, such as [Cypress][cypress] commands
+Define your mocked API routes in JSON, JavaScript or TypeScript files. Mocks Server loads them automatically and watches for changes. Defining routes using any of the available APIs is also possible.
+
+Routes can be defined in many ways, from plain objects to Express middlewares, and they can act in different ways also, from sending a response to proxy the request to another host.
+
+## Configuration
+
+Configure the server simply modifying the configuration file at the root folder of your project, or use command line arguments, or even environment variables.
+
+For changing options while it is running, you can also use any of the available integrations tools that enable live interactions with Mocks Server.
+
+## Integrations
+
+Providing a Javascript API, an interactive command line interface and a REST API for __changing the responses of the mocked API while it is running, it is easy to use both for development and testing__. Tools providing integrations with other ecosystems are also available, such as Cypress commands.
 
 ## Documentation
 
-To check out docs, visit [mocks-server.org][website-url].
+To check out docs, visit [www.mocks-server.org][website-url].
 
 ## Ecosystem
 

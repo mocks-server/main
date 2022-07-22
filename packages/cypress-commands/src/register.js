@@ -1,15 +1,22 @@
 const commands = require("./commands");
 
 const register = (Cypress) => {
-  const { config, setMock, setDelay, setSettings, useRouteVariant, restoreRoutesVariants } =
-    commands(Cypress);
+  const {
+    configClient,
+    setCollection,
+    setDelay,
+    setConfig,
+    useRouteVariant,
+    restoreRouteVariants,
+  } = commands(Cypress);
 
-  Cypress.Commands.add("mocksConfig", config);
-  Cypress.Commands.add("mocksSetMock", setMock);
+  Cypress.Commands.add("mocksSetCollection", setCollection);
   Cypress.Commands.add("mocksSetDelay", setDelay);
-  Cypress.Commands.add("mocksSetSettings", setSettings);
+  Cypress.Commands.add("mocksSetConfig", setConfig);
   Cypress.Commands.add("mocksUseRouteVariant", useRouteVariant);
-  Cypress.Commands.add("mocksRestoreRoutesVariants", restoreRoutesVariants);
+  Cypress.Commands.add("mocksRestoreRouteVariants", restoreRouteVariants);
+
+  Cypress.Commands.add("mocksConfigAdminApiClient", configClient);
 };
 
 module.exports = register;

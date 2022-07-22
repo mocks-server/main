@@ -2,23 +2,23 @@ var $ = window.$;
 var adminApiClient = window.mocksServerAdminApiClientDataProvider;
 var dataProvider = window.dataProvider;
 
-var $mocksContainer;
+var $collectionsContainer;
 var $routesContainer;
 var $aboutContainer;
-var $settingsContainer;
-var $currentMockNameContainer;
-var $currentMockContainer;
-var $currentRouteVariantIdContainer;
-var $currentRouteVariantContainer;
-var $setMockBaseButton;
-var $setMockUser2Button;
+var $configContainer;
+var $currentCollectionNameContainer;
+var $currentCollectionContainer;
+var $currentVariantIdContainer;
+var $currentVariantContainer;
+var $setCollectionBaseButton;
+var $setCollectionUser2Button;
 var $alertsContainer;
 
-var currentMock = new dataProvider.Selector(
-  adminApiClient.settings,
-  adminApiClient.mocks,
-  function (_query, settingsResults, mocksResults) {
-    return adminApiClient.mocksModel.queries.byId(settingsResults.mocks.selected || mocksResults[0].id);
+var currentCollection = new dataProvider.Selector(
+  adminApiClient.config,
+  adminApiClient.collections,
+  function (_query, configResults, collectionsResults) {
+    return adminApiClient.collection.queries.byId(configResults.mock.collections.selected || collectionsResults[0].id);
   },
   {
     initialState: {
@@ -27,10 +27,10 @@ var currentMock = new dataProvider.Selector(
   }
 );
 
-var currentRouteVariant = new dataProvider.Selector(
-  currentMock,
-  function (_query, mockResults) {
-    return adminApiClient.routesVariantsModel.queries.byId(mockResults.routesVariants[0]);
+var currentVariant = new dataProvider.Selector(
+  currentCollection,
+  function (_query, collectionResults) {
+    return adminApiClient.variant.queries.byId(collectionResults.definedRoutes[0]);
   },
   {
     initialState: {
@@ -42,42 +42,42 @@ var currentRouteVariant = new dataProvider.Selector(
 var loadAbout = function () {
   return adminApiClient.about.read().then(function (about) {
     $aboutContainer.empty();
-    Object.keys(about).forEach(function (key) {
+    Object.keys(about.versions).forEach(function (key) {
       $aboutContainer.append(
-        `<li><b>version</b>:&nbsp;<span data-testid="about-${key}" id="about-${key}">${about[key]}</span></li>`
+        `<li><b>version</b>:&nbsp;<span data-testid="about-version-${key}" id="about-version-${key}">${about.versions[key]}</span></li>`
       );
     });
   });
 };
 
-var formatSettings = function(settings) {
-  if(typeof settings === "boolean") {
-    return settings.toString();
+var formatConfig = function(config) {
+  if(typeof config === "boolean") {
+    return config.toString();
   }
-  if(typeof settings === "object") {
-    return JSON.stringify(settings);
+  if(typeof config === "object") {
+    return JSON.stringify(config);
   }
-  return settings;
+  return config;
 }
 
-var loadSettings = function () {
-  return adminApiClient.settings.read().then(function (settings) {
-    $settingsContainer.empty();
-    Object.keys(settings).forEach(function (key) {
-      $settingsContainer.append(
-        `<li><b>${key}</b>:&nbsp;<span data-testid="settings-${key}">${formatSettings(settings[key])}</span></li>`
+var loadConfig = function () {
+  return adminApiClient.config.read().then(function (config) {
+    $configContainer.empty();
+    Object.keys(config).forEach(function (key) {
+      $configContainer.append(
+        `<li><b>${key}</b>:&nbsp;<span data-testid="config-${key}">${formatConfig(config[key])}</span></li>`
       );
     });
   });
 };
 
-var loadMocks = function () {
-  return adminApiClient.mocks.read().then(function (mocksCollection) {
-    $mocksContainer.empty();
-    mocksCollection.forEach(function (mock) {
-      $mocksContainer.append(
-        `<li data-testid="mock-${mock.id}" class="mocks-collection-item">${JSON.stringify(
-          mock
+var loadCollections = function () {
+  return adminApiClient.collections.read().then(function (collectionsCollection) {
+    $collectionsContainer.empty();
+    collectionsCollection.forEach(function (collection) {
+      $collectionsContainer.append(
+        `<li data-testid="collection-${collection.id}" class="collections-collection-item">${JSON.stringify(
+          collection
         )}</li>`
       );
     });
@@ -110,63 +110,67 @@ var loadAlerts = function () {
   });
 };
 
-var loadCurrentMock = function () {
-  return currentMock.read().then(function (currentMockResult) {
-    $currentMockNameContainer.text(currentMockResult.id);
-    $currentMockContainer.text(JSON.stringify(currentMockResult));
+var loadCurrentCollection = function () {
+  return currentCollection.read().then(function (currentCollectionResult) {
+    $currentCollectionNameContainer.text(currentCollectionResult.id);
+    $currentCollectionContainer.text(JSON.stringify(currentCollectionResult));
   });
 };
 
-var loadCurrentRouteVariant = function () {
-  return currentRouteVariant.read().then(function (currentRouteVariantResult) {
-    $currentRouteVariantIdContainer.text(currentRouteVariantResult.id);
-    $currentRouteVariantContainer.text(JSON.stringify(currentRouteVariantResult));
+var loadCurrentVariant = function () {
+  return currentVariant.read().then(function (currentVariantResult) {
+    $currentVariantIdContainer.text(currentVariantResult.id);
+    $currentVariantContainer.text(JSON.stringify(currentVariantResult));
   });
 };
 
 $.when($.ready).then(function () {
-  $mocksContainer = $("#mocks-container");
+  $collectionsContainer = $("#collections-container");
   $routesContainer = $("#routes-container");
   $alertsContainer = $("#alerts-container");
   $aboutContainer = $("#about-container");
-  $settingsContainer = $("#settings-container");
-  $currentMockNameContainer = $("#current-mock-id");
-  $currentMockContainer = $("#current-mock");
-  $currentRouteVariantIdContainer = $("#current-route-variant-id");
-  $currentRouteVariantContainer = $("#current-route-variant");
-  $setMockBaseButton = $("#set-mock-base");
-  $setMockUser2Button = $("#set-mock-user2");
+  $configContainer = $("#config-container");
+  $currentCollectionNameContainer = $("#current-collection-id");
+  $currentCollectionContainer = $("#current-collection");
+  $currentVariantIdContainer = $("#current-variant-id");
+  $currentVariantContainer = $("#current-variant");
+  $setCollectionBaseButton = $("#set-collection-base");
+  $setCollectionUser2Button = $("#set-collection-user2");
 
-  $setMockBaseButton.click(function () {
-    adminApiClient.settings.update({
-      mocks: { selected: "base" },
+  $setCollectionBaseButton.click(function () {
+    adminApiClient.config.update({
+      mock: {
+        collections: { selected: "base" },
+      }
     });
   });
-  $setMockUser2Button.click(function () {
-    adminApiClient.settings.update({
-      mocks: { selected: "user2" },
+  $setCollectionUser2Button.click(function () {
+    adminApiClient.config.update({
+      mock: {
+        collections: { selected: "user2" },
+      } 
     });
   });
 
-  adminApiClient.settings.on("cleanCache", function () {
-    loadSettings();
+  adminApiClient.config.on("cleanCache", function () {
+    loadConfig();
   });
 
-  currentMock.on("cleanCache", function () {
-    loadCurrentMock();
+  currentCollection.on("cleanCache", function () {
+    loadCurrentCollection();
   });
 
-  currentRouteVariant.on("cleanCache", function () {
-    loadCurrentRouteVariant();
+  currentVariant.on("cleanCache", function () {
+    loadCurrentVariant();
   });
 
   Promise.all([
-    loadMocks(),
+    loadCollections(),
     loadRoutes(),
     loadAbout(),
-    loadSettings(),
-    loadCurrentMock(),
-    loadCurrentRouteVariant(),
+    loadConfig(),
+    loadCurrentCollection(),
+    loadCurrentVariant(),
     loadAlerts(),
   ]);
 });

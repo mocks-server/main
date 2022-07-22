@@ -19,15 +19,15 @@ const {
 
 const RouteHandler = require("./fixtures/config-file-with-routes-handler/CustomRoutesHandler");
 
-describe("when adding route handlers", () => {
+describe("when registering route handlers", () => {
   describe("When started", () => {
     let core;
 
     beforeAll(async () => {
       core = createCore();
-      core.addRoutesHandler(RouteHandler);
+      core.variantHandlers.register([RouteHandler]);
       await startExistingCore(core, fixturesFolder("custom-routes-handler"), {
-        mocks: { selected: "custom-users" },
+        mock: { collections: { selected: "custom-users" } },
       });
       core.logger.setLevel("debug", { transport: "store" });
     });

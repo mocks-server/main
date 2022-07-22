@@ -238,7 +238,7 @@ importers:
       node-watch: 0.7.3
       update-notifier: 5.1.0
       winston: 3.7.2
-      winston-array-transport: 1.1.9
+      winston-array-transport: 1.1.10
     dependencies:
       '@babel/register': 7.17.7_@babel+core@7.17.10
       '@hapi/boom': 9.1.4
@@ -260,7 +260,7 @@ importers:
       node-watch: 0.7.3
       update-notifier: 5.1.0
       winston: 3.7.2
-      winston-array-transport: 1.1.9
+      winston-array-transport: 1.1.10
 
   packages/cypress-commands:
     specifiers:
@@ -291,12 +291,14 @@ importers:
       '@mocks-server/plugin-admin-api': workspace:*
       '@mocks-server/plugin-inquirer-cli': workspace:*
       '@mocks-server/plugin-proxy': workspace:*
+      deepmerge: 4.2.2
     dependencies:
       '@babel/core': 7.17.10
       '@mocks-server/core': link:../core
       '@mocks-server/plugin-admin-api': link:../plugin-admin-api
       '@mocks-server/plugin-inquirer-cli': link:../plugin-inquirer-cli
       '@mocks-server/plugin-proxy': link:../plugin-proxy
+      deepmerge: 4.2.2
 
   packages/nested-collections:
     specifiers: {}
@@ -306,13 +308,19 @@ importers:
       '@hapi/boom': 9.1.4
       '@mocks-server/admin-api-paths': workspace:*
       '@mocks-server/core': workspace:*
+      body-parser: 1.20.0
       cors: 2.8.5
       express: 4.18.1
+      express-request-id: 1.4.1
+      swagger-ui-dist: 4.13.0
     dependencies:
       '@hapi/boom': 9.1.4
       '@mocks-server/admin-api-paths': link:../admin-api-paths
+      body-parser: 1.20.0
       cors: 2.8.5
       express: 4.18.1
+      express-request-id: 1.4.1
+      swagger-ui-dist: 4.13.0
     devDependencies:
       '@mocks-server/core': link:../core
 
@@ -403,6 +411,12 @@ importers:
       '@mocks-server/main': workspace:*
     dependencies:
       '@mocks-server/inquirer-cli-runner': link:../../packages/inquirer-cli-runner
+      '@mocks-server/main': link:../../packages/main
+
+  test/plugin-admin-api-swagger-e2e:
+    specifiers:
+      '@mocks-server/main': workspace:*
+    dependencies:
       '@mocks-server/main': link:../../packages/main
 
   test/plugin-inquirer-cli-e2e:
@@ -15518,6 +15532,10 @@ packages:
       util.promisify: 1.0.1
     dev: true
 
+  /swagger-ui-dist/4.13.0:
+    resolution: {integrity: sha512-5yqhkUU9uV5oT/MTMBeSgDGI0Vx6eCOU43AszQBs88poI8OB1v+FoXEFHv+NaBbEfTkXCMWlAJrH6iWyDzLETQ==}
+    dev: false
+
   /symbol-tree/3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
     dev: true
@@ -16037,7 +16055,7 @@ packages:
     engines: {node: '>= 10.0.0'}
 
   /unpipe/1.0.0:
-    resolution: {integrity: sha1-sr9O6FFKrmFltIF4KdIbLvSZBOw=}
+    resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
 
   /unquote/1.1.1:
@@ -16599,13 +16617,6 @@ packages:
 
   /winston-array-transport/1.1.10:
     resolution: {integrity: sha512-9VQ4NWDWG9MPGh9qdz7hkRVONwp6td2UihpRQlScFdHRp/XrfcgbuhMGS7ddxRVAB3bhVNnyHIi6+XDSaU1ulQ==}
-    engines: {node: '>=10'}
-    dependencies:
-      winston-transport: 4.5.0
-    dev: false
-
-  /winston-array-transport/1.1.9:
-    resolution: {integrity: sha512-KBh1dlSuP8N3Whq5XQDO1eC9SsUbsukPLsL2rcJx3qFK2fKiQba2PFxoHPhGn1mvrVxAoW8SM3nbEvADj32c6A==}
     engines: {node: '>=10'}
     dependencies:
       winston-transport: 4.5.0

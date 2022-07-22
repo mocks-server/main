@@ -21,12 +21,10 @@ Use it if you want to start Mocks Server programmatically by your own, or even c
 
 Please refer to the [project documentation website][website-url]:
 
-* [Get started](https://www.mocks-server.org/docs/get-started-intro)
-* [Guides](https://www.mocks-server.org/docs/guides-organizing-files)
-* [Configuration](https://www.mocks-server.org/docs/configuration-options)
-* [Plugins](https://www.mocks-server.org/docs/plugins-adding-plugins)
-* [Integrations](https://www.mocks-server.org/docs/integrations-cypress)
-* [API](https://www.mocks-server.org/docs/api-mocks-server-api)
+* [Overview](https://www.mocks-server.org/docs/overview)
+* [Usage](https://www.mocks-server.org/docs/usage/basics)
+* [Configuration](https://www.mocks-server.org/docs/configuration/how-to-change-settings)
+* [API](https://www.mocks-server.org/docs/api/javascript)
 
 [website-url]: https://www.mocks-server.org
 [logo-url]: https://www.mocks-server.org/img/logo_120.png

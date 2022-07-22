@@ -98,4 +98,4 @@ Current major release is compatible only with `@mocks-server/main` versions uppe
 Contributors are welcome.
 Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of conduct](.github/CODE_OF_CONDUCT.md).
 
-[plugin-admin-api-url]: https://github.com/mocks-server/plugin-admin-api
+[plugin-admin-api-url]: https://github.com/mocks-server/main/blob/master/packages/admin-api-client

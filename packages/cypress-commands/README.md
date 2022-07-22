@@ -13,7 +13,7 @@
 
 # Mocks Server Cypress commands
 
-Extends Cypress' cy commands with methods for easily changing [Mocks Server settings][mocks-server-options-url], such as current collection, custom route variants, delay time, etc.
+Extends Cypress' cy commands with methods for easily changing [Mocks Server configuration][mocks-server-options-url] while it is running, such as current collection, custom route variants, delay time, etc.
 
 ## Installation
 
@@ -108,4 +108,4 @@ Current major release (`5.x`) is compatible only with `@mocks-server/main` versi
 MIT, see [LICENSE](./LICENSE) for details.
 
 [mocks-server-url]: https://www.mocks-server.org
-[mocks-server-options-url]: https://www.mocks-server.org/docs/configuration-options
+[mocks-server-options-url]: https://www.mocks-server.org/docs/configuration/options

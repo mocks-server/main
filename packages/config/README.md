@@ -391,4 +391,3 @@ const rootOption = config.addOption("name2");
 
 [website-url]: https://www.mocks-server.org
 [logo-url]: https://www.mocks-server.org/img/logo_120.png
-[main-url]: https://www.npmjs.com/package/@mocks-server/main

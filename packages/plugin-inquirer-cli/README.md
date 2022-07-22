@@ -17,14 +17,14 @@
 
 ## Usage
 
-This plugin is pre-installed in the [main distribution of the Mocks Server project][main-distribution-url]. _If you want ot install it by yourself, you can refer to the [plugins documentation][plugins-url]._
+This plugin is pre-installed in the [main distribution of the Mocks Server project][main-distribution-url]. _If you want to install it by yourself, you can refer to the [plugins documentation][plugins-url]._
 
 ![Interactive CLI][animated-image-url]
 
 ## Main features
 
 * __Displays current [configuration][settings-url].__ _Settings will be refreshed automatically even when changed using other plugins, as the REST API, etc._
-* __Allows to change [configuration][settings-url].__
+* __Allows to change some [settings][settings-url].__
 * __Displays current alerts.__ _Alerts include errors when loading mock files, wrong options, etc._
 * __Displays logs.__ _Mocks-server logs are displayed in real time._
 
@@ -33,7 +33,7 @@ This plugin is pre-installed in the [main distribution of the Mocks Server proje
 * `enabled`: `<boolean>` Start the interactive CLI or not. Default is `true`. Use `false` to disable it _(`--no-plugins.inquirerCli.enabled`) when using command line arguments)_
 * `emojis`: `<boolean>` Render emojis or not. Default is `true`.
 
-Read more about [how to set options in Mocks Server here](https://www.mocks-server.org/docs/configuration/options).
+Read more about [how to set options in Mocks Server here][settings-url].
 
 ## Support
 

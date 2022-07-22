@@ -34,7 +34,7 @@ The UMD build is also available on unpkg. When UMD package is loaded, it creates
 
 ## Usage
 
-All methods described in the [Api](#api) (except the `config` method) return Promises when executed:
+All methods described in the [Api](#api) return Promises when executed (except the `configClient` method):
 
 ```js
 import { readAbout, readConfig, updateConfig } from "@mocks-server/admin-api-client";

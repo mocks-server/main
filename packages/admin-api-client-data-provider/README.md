@@ -13,7 +13,7 @@
 
 # Mocks-server administration api client built with @data-provider
 
-This package provides an API client for administrating Mocks Server _(it performs requests to the [Admin API plugin][plugin-admin-api-url] under the hood)_.
+This package provides an API client for administrating Mocks Server through HTTP requests to the [Admin API plugin][plugin-admin-api-url].
 
 Built using [`data-provider`](https://github.com/data-provider), it can be used in Node.js, browsers, and it is also compatible with other `data-provider` packages, such as [`@data-provider/react`](https://github.com/data-provider/react), so it can be easily integrated in other ecosystems.
 
@@ -25,7 +25,7 @@ npm i --save redux @data-provider/core @data-provider/axios @mocks-server/admin-
 
 ## Usage with promises
 
-All methods described in the [Api](#api) (except the `configClient` method) return Promises when executed:
+All methods described in the [Api](#api) return Promises when executed (except the `configClient` method):
 
 ```js
 import { about, config } from "@mocks-server/admin-api-client-data-provider";
@@ -63,7 +63,7 @@ All exported properties are [`@data-provider/axios`](https://github.com/data-pro
 * `config.read()` - Returns current Mocks Server config.
 * `config.update(configObject)` - Updates Mocks Server config. A configuration object has to be provided. Read the [Mocks Server configuration documentation](https://www.mocks-server.org/docs/configuration/options) for further info.
 * `alerts.read()` - Returns current alerts.
-* `alertModel.queries.byId(id).read()` - Returns an alert by ID.
+* `alert.queries.byId(id).read()` - Returns an alert by ID.
 * `collections.read()` - Returns available collections.
 * `collection.queries.byId(mockId).read()` - Returns a specific mock.
 * `routes.read()` - Returns available routes.

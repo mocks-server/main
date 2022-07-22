@@ -15,7 +15,7 @@
 
 Plugin for [Mocks Server][website-url] that provides a REST API allowing to interact with the server while it is running.
 
-This is __very useful when running acceptance tests, as you can change the responses of the API mock__ simply with a HTTP request in the `before` method of your tests, for example.
+This is __very useful when running E2E tests, because you can change the responses of the API mock__ simply with a HTTP request in the `before` method of your tests, for example.
 
 A __client for the administration api__ is also distributed as a separated package: [@mocks-server/admin-api-client](https://www.npmjs.com/package/@mocks-server/admin-api-client).
 

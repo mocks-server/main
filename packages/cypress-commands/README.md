@@ -37,27 +37,27 @@ You can now use all next commands:
 
 ### Commands
 
-##### `cy.mocksSetCollection("users-error")`
+#### `cy.mocksSetCollection("users-error")`
 
 Set current collection.
 
-##### `cy.mocksUseRouteVariant("users:success")`
+#### `cy.mocksUseRouteVariant("users:success")`
 
 Set a specific route variant to be used by the current collection.
 
-##### `cy.mocksRestoreRouteVariants()`
+#### `cy.mocksRestoreRouteVariants()`
 
 Restore route variants to those defined in the current collection.
 
-##### `cy.mocksSetDelay(2000)`
+#### `cy.mocksSetDelay(2000)`
 
 Set routes default delay.
 
-##### `cy.mocksSetConfig({ files: { watch: false}, mock: { routes: { delay: 0 }}})`
+#### `cy.mocksSetConfig({ files: { watch: false}, mock: { routes: { delay: 0 }}})`
 
 Set any [Mocks Server setting][mocks-server-options-url].
 
-##### `cy.mocksConfigAdminApiClient({ port: 3110, host: "127.0.0.1" })`
+#### `cy.mocksConfigAdminApiClient({ port: 3110, host: "127.0.0.1" })`
 
 Configures the [Mocks Server administration API client](https://github.com/mocks-server/admin-api-client), used under the hood to communicate with the administration REST API. Use this command only if you changed the administration API configuration and you need to configure the client properly.
 

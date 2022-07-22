@@ -13,7 +13,7 @@
 
 # Mocks Server Plugin Proxy
 
-Plugin for [Mocks Server][website-url] that provides a [route handler](https://www.mocks-server.org/docs/variant-handlers/intro) that proxy requests to another host and pass response back to original caller.
+Plugin for [Mocks Server][website-url] that provides a [variant handler](https://www.mocks-server.org/docs/variant-handlers/intro) that proxy requests to another host and pass response back to original caller.
 
 It uses the [express-http-proxy](https://github.com/villadora/express-http-proxy) package under the hood, and supports all of its options.
 
@@ -49,7 +49,7 @@ module.exports = [
 
 ### Options
 
-Here are listed the specific properties that can be defined in a `proxy-v4` route variant. They must be defined in the `response` property of the variant:
+Here are listed the specific properties that can be defined in a `proxy-v4` route variant. They must be defined in the `options` property of the variant:
 
 * __`host`__ _(String|Function)_: The proxy host. Equivalent to the [`express-http-proxy` `host` option](https://github.com/villadora/express-http-proxy#host), so it can also be a function.
 * __`options`__ _(Object)_: Object containing any of the [options supported by the `express-http-proxy` package](https://github.com/villadora/express-http-proxy#options). Some of them are:

@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGES
 
+## [unreleased]
+
+### Changed
+
+- feat: BREAKING CHANGE. Modify methods to adapt them to the new plugin-admin-api@3.2.0 REST API
+
 ## [5.0.1] - 2022-06-03
 
 ### Changed

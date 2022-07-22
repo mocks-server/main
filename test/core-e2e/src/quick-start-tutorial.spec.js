@@ -17,17 +17,25 @@ const {
   waitForServer,
   findAlert,
   removeConfigFile,
+  wait,
 } = require("./support/helpers");
 
-describe("when path not exists", () => {
+describe("Quick start tutorial", () => {
   const FOLDER = "unexistant";
-  let core, changeMock;
+  const quickStartModified = fixturesFolder("quick-start-modified");
+  let core, changeCollection, useRouteVariant, changeFilesPath;
 
   beforeAll(async () => {
     await fsExtra.remove(fixturesFolder(FOLDER));
     core = await startCore(FOLDER);
-    changeMock = (name) => {
-      core.config.namespace("mock").namespace("collections").option("selected").value = name;
+    changeCollection = (name) => {
+      core.mock.collections.select(name);
+    };
+    useRouteVariant = (name) => {
+      core.mock.useRouteVariant(name);
+    };
+    changeFilesPath = (folder) => {
+      core.config.namespace("files").option("path").value = folder;
     };
     await waitForServer();
   });
@@ -38,13 +46,19 @@ describe("when path not exists", () => {
     await core.stop();
   });
 
-  describe("scaffold", () => {
+  describe("when started", () => {
     it("should have created folder", async () => {
       expect(fsExtra.existsSync(fixturesFolder(FOLDER))).toEqual(true);
     });
 
-    it("should have created scaffold folder", async () => {
+    it("should have created routes folder", async () => {
       expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "routes"))).toEqual(true);
+      expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "collections.json"))).toEqual(
+        true
+      );
+    });
+
+    it("should have created config file", async () => {
       expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "collections.json"))).toEqual(
         true
       );
@@ -70,7 +84,7 @@ describe("when path not exists", () => {
   });
 
   describe("base mock", () => {
-    it("should serve users under the /api/users path", async () => {
+    it("should serve 2 users under the /api/users path", async () => {
       const users = await doFetch("/api/users");
       expect(users.status).toEqual(200);
       expect(users.headers.get("x-mocks-server-example")).toEqual("some-value");
@@ -95,55 +109,119 @@ describe("when path not exists", () => {
     });
   });
 
-  describe("no-headers mock", () => {
-    it("should not add headers to /api/users", async () => {
-      changeMock("no-headers");
+  describe("when selecting all-users collection", () => {
+    beforeAll(() => {
+      changeCollection("all-users");
+    });
+
+    it("should serve 4 users under the /api/users path", async () => {
       const users = await doFetch("/api/users");
       expect(users.status).toEqual(200);
-      expect(users.headers.get("x-mocks-server-example")).toEqual(null);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
+        { id: 3, name: "Tommy" },
+        { id: 4, name: "Timmy" },
       ]);
     });
 
-    it("should not add headers to /api/users/1 path", async () => {
+    it("should serve user 3 under the /api/users/1 path", async () => {
       const users = await doFetch("/api/users/1");
-      expect(users.headers.get("x-mocks-server-example")).toEqual(null);
       expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 1, name: "John Doe" });
+      expect(users.body).toEqual({ id: 3, name: "Tommy" });
     });
 
-    it("should not add headers to /api/users/2 path", async () => {
+    it("should serve user 3 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/2");
-      expect(users.headers.get("x-mocks-server-example")).toEqual(null);
       expect(users.status).toEqual(200);
-      expect(users.body).toEqual({ id: 1, name: "John Doe" });
+      expect(users.body).toEqual({ id: 3, name: "Tommy" });
     });
   });
 
-  describe("user-real mock", () => {
-    it("should serve users under the /api/users path", async () => {
-      changeMock("user-real");
+  describe("when using get-user:success route variant", () => {
+    beforeAll(() => {
+      useRouteVariant("get-user:success");
+    });
+
+    it("should serve 4 users under the /api/users path", async () => {
       const users = await doFetch("/api/users");
       expect(users.status).toEqual(200);
-      expect(users.headers.get("x-mocks-server-example")).toEqual(null);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
+        { id: 3, name: "Tommy" },
+        { id: 4, name: "Timmy" },
       ]);
     });
 
-    it("should serve user 1 under the /api/users/1 path", async () => {
+    it("should serve user 2 under the /api/users/1 path", async () => {
       const users = await doFetch("/api/users/1");
-      expect(users.headers.get("x-mocks-server-example")).toEqual(null);
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/2");
-      expect(users.headers.get("x-mocks-server-example")).toEqual(null);
+      expect(users.status).toEqual(200);
+      expect(users.body).toEqual({ id: 1, name: "John Doe" });
+    });
+  });
+
+  describe("when adding a route variant", () => {
+    beforeAll(async () => {
+      changeFilesPath(quickStartModified);
+      await wait(3000);
+      useRouteVariant("get-user:id-2");
+    });
+
+    it("should serve 4 users under the /api/users path", async () => {
+      const users = await doFetch("/api/users");
+      expect(users.status).toEqual(200);
+      expect(users.body).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" },
+        { id: 3, name: "Tommy" },
+        { id: 4, name: "Timmy" },
+      ]);
+    });
+
+    it("should serve user 2 under the /api/users/1 path", async () => {
+      const users = await doFetch("/api/users/1");
+      expect(users.status).toEqual(200);
+      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
+    });
+
+    it("should serve user 2 under the /api/users/2 path", async () => {
+      const users = await doFetch("/api/users/2");
+      expect(users.status).toEqual(200);
+      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
+    });
+  });
+
+  describe("when adding a collection", () => {
+    beforeAll(async () => {
+      changeCollection("all-users-user-2");
+    });
+
+    it("should serve 4 users under the /api/users path", async () => {
+      const users = await doFetch("/api/users");
+      expect(users.status).toEqual(200);
+      expect(users.body).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" },
+        { id: 3, name: "Tommy" },
+        { id: 4, name: "Timmy" },
+      ]);
+    });
+
+    it("should serve user 2 under the /api/users/1 path", async () => {
+      const users = await doFetch("/api/users/1");
+      expect(users.status).toEqual(200);
+      expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
+    });
+
+    it("should serve user 2 under the /api/users/2 path", async () => {
+      const users = await doFetch("/api/users/2");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });

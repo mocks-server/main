@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGE
 
-## [unreleased]
+## [3.2.0] - 2022-07-22
 
 ### Added
 - Add debounce to refresh menu function to avoid too much renders

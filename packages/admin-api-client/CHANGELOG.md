@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
-## [unreleased]
+## [6.0.0] - 2022-07-22
 
 ### Changed
 

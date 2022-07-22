@@ -1,7 +1,7 @@
 {
   "name": "@mocks-server/plugin-proxy",
-  "version": "3.0.0",
-  "description": "Mocks Server plugin providing http-proxy route handler",
+  "version": "3.1.0",
+  "description": "Mocks Server plugin providing proxy variant handler",
   "keywords": [
     "mocks-server-plugin",
     "proxy",

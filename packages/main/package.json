@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/main",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "description": "Mock Server supporting multiple route variants and mocks",
   "keywords": [
     "mock",
@@ -45,7 +45,8 @@
     "@mocks-server/core": "workspace:*",
     "@mocks-server/plugin-admin-api": "workspace:*",
     "@mocks-server/plugin-inquirer-cli": "workspace:*",
-    "@mocks-server/plugin-proxy": "workspace:*"
+    "@mocks-server/plugin-proxy": "workspace:*",
+    "deepmerge": "4.2.2"
   },
   "engines": {
     "node": ">=14.0.0"

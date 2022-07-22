@@ -1,5 +1,5 @@
 /*
-Copyright 2021-present Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -21,7 +21,7 @@ describe("scaffold", () => {
   let mocks, host;
 
   beforeAll(async () => {
-    host = mocksRunner(["--server.port=3200"]);
+    host = mocksRunner(["--server.port=3200", "--plugins.adminApi.port=3210"]);
     mocks = mocksRunner(["--server.port=3100"], { cwd: fixturesFolder("proxy") });
     await waitForServerAndCli();
     await waitForServerAndCli(3200);
@@ -34,11 +34,10 @@ describe("scaffold", () => {
 
   describe("When started", () => {
     it("should have 2 mocks available", async () => {
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Mocks: 2"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 2"));
     });
 
     it("should not display alerts", async () => {
-      console.log(mocks.currentScreen);
       expect(mocks.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
     });
 
@@ -125,7 +124,7 @@ describe("scaffold", () => {
       await mocks.pressEnter();
       await mocks.cursorDown(1);
       const newScreen = await mocks.pressEnter();
-      expect(newScreen).toEqual(expect.stringContaining("Current mock: proxy-disabled"));
+      expect(newScreen).toEqual(expect.stringContaining("Current collection: proxy-disabled"));
     });
 
     it("should return not found for /api/users path", async () => {
@@ -147,7 +146,7 @@ describe("scaffold", () => {
       const newScreen = await mocks.pressEnter();
       expect(newScreen).toEqual(
         expect.stringContaining(
-          "Current mock: proxy-disabled (custom variants: proxy-all:enabled)"
+          "Current collection: proxy-disabled (custom variants: proxy-all:enabled)"
         )
       );
     });
@@ -175,7 +174,9 @@ describe("scaffold", () => {
 
     it("should not display custom route variant in CLI", async () => {
       await wait(500);
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: proxy-disabled"));
+      expect(mocks.currentScreen).toEqual(
+        expect.stringContaining("Current collection: proxy-disabled")
+      );
       expect(mocks.currentScreen).toEqual(expect.not.stringContaining("(custom variants:"));
     });
 
@@ -209,7 +210,7 @@ describe("scaffold", () => {
 
     it("should display new mock in CLI", async () => {
       await wait(500);
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: base"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current collection: base"));
     });
   });
 });

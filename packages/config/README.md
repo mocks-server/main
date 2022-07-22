@@ -331,6 +331,9 @@ const config = new Config({ moduleName: "mocks", mergeArrays: false });
   * `configuration` _(Object)_: Object with configuration. Levels in the object correspond to namespaces names, and last level keys correspond to option names.
   * `options` _(Object)_: Object with extra options for validation:
     * `allowAdditionalProperties` _(Boolean)_: _Default `false`_. If true, additional properties in the configuration would not produce validation errors.
+* __`getValidationSchema(options)`__: Returns a validation schema compatible with AJV for validating the configuration of all nested namespaces.
+  * `options` _(Object)_: Object with extra options for validation:
+    * `allowAdditionalProperties` _(Boolean)_: _Default `false`_. If true, the validation schema will allow additional properties.
 * __`value`__: Getter returning the current values from all namespaces and options as an object. Levels in the object correspond to namespaces names, and last level keys correspond to option names. It can be also used as setter as an alias of the `set` method, with default options.
 * __`loadedFile`__: Getter returning the file path of the loaded configuration file. It returns `null` if no configuration file was loaded.
 * __`namespaces`__: Getter returning array with all root namespaces.
@@ -384,7 +387,7 @@ const rootOption = config.addOption("name2");
 * __`description`__: Getter returning the option description.
 * __`extraData`__: Getter returning the option extra data.
 * __`default`__: Getter returning the option default value.
+* __`hasBeenSet`__: Returns true if the option value has been actively set, no matter the source or method used to set it. Otherwise returns false.
 
 [website-url]: https://www.mocks-server.org
 [logo-url]: https://www.mocks-server.org/img/logo_120.png
-[main-url]: https://www.npmjs.com/package/@mocks-server/main

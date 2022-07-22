@@ -17,13 +17,13 @@ const {
 } = require("./support/helpers");
 
 describe("json files", () => {
-  let core, changeMock;
+  let core, changeCollection;
 
   beforeAll(async () => {
     core = await startCore("json-files");
     await waitForServer();
-    changeMock = (name) => {
-      core.config.namespace("mocks").option("selected").value = name;
+    changeCollection = (name) => {
+      core.config.namespace("mock").namespace("collections").option("selected").value = name;
     };
   });
 
@@ -32,10 +32,10 @@ describe("json files", () => {
     await core.stop();
   });
 
-  describe("mock by default", () => {
-    it("should have added an alert about mock was not defined", () => {
-      expect(findAlert("mocks:settings", core.alerts).message).toEqual(
-        expect.stringContaining("Option 'mock' was not defined")
+  describe("collection by default", () => {
+    it("should have added an alert about collection was not defined", () => {
+      expect(findAlert("mock:collections:selected", core.alerts).message).toEqual(
+        expect.stringContaining("Option 'mock.collections.selected' was not defined")
       );
     });
 
@@ -61,16 +61,16 @@ describe("json files", () => {
     });
   });
 
-  describe('when changing mock to "user-2"', () => {
+  describe('when changing collection to "user-2"', () => {
     beforeAll(() => {
-      changeMock("user-2");
+      changeCollection("user-2");
     });
 
     it("should have removed alert", () => {
-      expect(findAlert("mocks:settings", core.alerts)).toEqual(undefined);
+      expect(findAlert("mock:collections:selected", core.alerts)).toEqual(undefined);
     });
 
-    it("should serve users collection mock under the /api/users path", async () => {
+    it("should serve users collection under the /api/users path", async () => {
       const users = await doFetch("/api/users");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
@@ -92,18 +92,18 @@ describe("json files", () => {
     });
   });
 
-  describe('when changing mock to "foo"', () => {
+  describe('when changing collection to "foo"', () => {
     beforeAll(() => {
-      changeMock("foo");
+      changeCollection("foo");
     });
 
     it("should have added an alert", () => {
-      expect(findAlert("mocks:settings", core.alerts).message).toEqual(
-        expect.stringContaining("Mock 'foo' was not found")
+      expect(findAlert("mock:collections:selected", core.alerts).message).toEqual(
+        expect.stringContaining("Collection 'foo' was not found")
       );
     });
 
-    // if mock not exists, it uses the first one found
+    // if collection not exists, it uses the first one found
     it("should serve users under the /api/users path", async () => {
       const users = await doFetch("/api/users");
       expect(users.status).toEqual(200);

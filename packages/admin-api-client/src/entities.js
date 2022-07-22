@@ -1,22 +1,22 @@
 import crossFetch from "cross-fetch";
 
 import {
-  DEFAULT_BASE_PATH,
-  SETTINGS,
+  BASE_PATH,
+  CONFIG,
   ABOUT,
   ALERTS,
-  MOCKS,
+  COLLECTIONS,
   ROUTES,
-  ROUTES_VARIANTS,
-  MOCK_CUSTOM_ROUTES_VARIANTS,
+  VARIANTS,
+  CUSTOM_ROUTE_VARIANTS,
 } from "@mocks-server/admin-api-paths";
 
 const DEFAULT_OPTIONS = {
-  adminApiPath: DEFAULT_BASE_PATH,
-  baseUrl: "http://127.0.0.1:3100",
+  port: 3110,
+  host: "127.0.0.1",
 };
 
-let configuration = {
+let clientConfiguration = {
   ...DEFAULT_OPTIONS,
 };
 
@@ -29,9 +29,9 @@ function handleResponse(res) {
   });
 }
 
-export function config(options) {
-  configuration = {
-    ...configuration,
+export function configClient(options) {
+  clientConfiguration = {
+    ...clientConfiguration,
     ...options,
   };
 }
@@ -43,7 +43,7 @@ class Fetcher {
   }
 
   get url() {
-    return `${configuration.baseUrl}${configuration.adminApiPath}${this._url}${this._id}`;
+    return `http://${clientConfiguration.host}:${clientConfiguration.port}${BASE_PATH}${this._url}${this._id}`;
   }
 
   _read() {
@@ -95,7 +95,7 @@ class Fetcher {
 
 export const about = new Fetcher(ABOUT);
 
-export const settings = new Fetcher(SETTINGS);
+export const config = new Fetcher(CONFIG);
 
 export const alerts = new Fetcher(ALERTS);
 
@@ -103,10 +103,10 @@ export const alert = (id) => {
   return new Fetcher(ALERTS, id);
 };
 
-export const mocks = new Fetcher(MOCKS);
+export const collections = new Fetcher(COLLECTIONS);
 
-export const mock = (id) => {
-  return new Fetcher(MOCKS, id);
+export const collection = (id) => {
+  return new Fetcher(COLLECTIONS, id);
 };
 
 export const routes = new Fetcher(ROUTES);
@@ -115,10 +115,10 @@ export const route = (id) => {
   return new Fetcher(ROUTES, id);
 };
 
-export const routesVariants = new Fetcher(ROUTES_VARIANTS);
+export const variants = new Fetcher(VARIANTS);
 
-export const routeVariant = (id) => {
-  return new Fetcher(ROUTES_VARIANTS, id);
+export const variant = (id) => {
+  return new Fetcher(VARIANTS, id);
 };
 
-export const mockCustomRoutesVariants = new Fetcher(MOCK_CUSTOM_ROUTES_VARIANTS);
+export const customRouteVariants = new Fetcher(CUSTOM_ROUTE_VARIANTS);

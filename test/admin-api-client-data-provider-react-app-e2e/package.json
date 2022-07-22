@@ -4,7 +4,7 @@
     "mocks:ci": "pnpm -w run nx start admin-api-client-data-provider-e2e-mocks",
     "cypress:run": "pnpm -w run nx cypress:run admin-api-client-data-provider-e2e-specs",
     "start:app": "pnpm -w run nx serve admin-api-client-data-provider-e2e-react-app",
-    "mocks:ci-and-start:app": "start-server-and-test mocks:ci http-get://127.0.0.1:3100/admin/about start:app",
+    "mocks:ci-and-start:app": "start-server-and-test mocks:ci http-get://127.0.0.1:3110/api/about start:app",
     "test:e2e": "start-server-and-test mocks:ci-and-start:app http-get://127.0.0.1:3000 cypress:run"
   }
 }

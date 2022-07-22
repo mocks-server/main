@@ -21,7 +21,7 @@ describe("interactive CLI", () => {
   let mocks;
 
   beforeAll(async () => {
-    mocks = mocksRunner(["--files.path=web-tutorial", "--mocks.selected=foo"]);
+    mocks = mocksRunner(["--files.path=web-tutorial", "--mock.collections.selected=foo"]);
     await waitForServerAndCli();
   });
 
@@ -31,16 +31,18 @@ describe("interactive CLI", () => {
 
   describe("When started", () => {
     it("should display an alert because chosen mock does not exist", async () => {
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Mock 'foo' was not found."));
+      expect(mocks.currentScreen).toEqual(
+        expect.stringContaining("Collection 'foo' was not found.")
+      );
       expect(mocks.currentScreen).toEqual(expect.stringContaining("ALERTS"));
     });
 
     it("should have loaded first mock", async () => {
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: base"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current collection: base"));
     });
 
     it("should have 3 mocks available", async () => {
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Mocks: 3"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 3"));
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -67,7 +69,7 @@ describe("interactive CLI", () => {
       await mocks.pressEnter();
       await mocks.cursorDown(2);
       const newScreen = await mocks.pressEnter();
-      expect(newScreen).toEqual(expect.stringContaining("Current mock: user-real"));
+      expect(newScreen).toEqual(expect.stringContaining("Current collection: user-real"));
     });
 
     it("should have removed alert", async () => {
@@ -118,7 +120,7 @@ describe("interactive CLI", () => {
       await wait(1000);
       expect(mocks.currentScreen).toEqual(expect.stringContaining("Displaying logs"));
       expect(mocks.currentScreen).toEqual(
-        expect.stringContaining("[verbose][mocks:routes:get-users:success] Sending response")
+        expect.stringContaining("[verbose][mock:routes:get-users:success] Sending response")
       );
       await mocks.pressEnter();
     });

@@ -10,6 +10,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [5.0.0] - 2022-07-22
+
+### Changed
+- feat: BREAKING CHANGE. Rename command `mocksSetMock` to `setCollection`
+- feat: BREAKING CHANGE. Rename command `mocksSetSettings` to `mocksSetConfig`
+- feat: BREAKING CHANGE. Rename command `mocksRestoreRoutesVariants` to `mocksRestoreRouteVariants`
+- feat: BREAKING CHANGE. Rename command `mocksConfig` to `mocksConfigAdminApiClient`
+
+### Removed
+- feat: BREAKING CHANGE. Remove environment variable `MOCKS_SERVER_BASE_URL`
+- feat: BREAKING CHANGE. Remove environment variable `MOCKS_SERVER_ADMIN_API_PATH`
+
+### Added
+- feat: Add environment variable `MOCKS_SERVER_ADMIN_API_PORT`
+- feat: Add environment variable `MOCKS_SERVER_ADMIN_API_HOST`
+
 ## [4.0.2] - 2022-07-05
 
 ### Changed

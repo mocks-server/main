@@ -18,6 +18,14 @@ const ConfigMocks = require("../Config.mocks.js");
 
 const Cli = require("../../src/Cli");
 
+function wait(time = 250) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  });
+}
+
 describe("Cli", () => {
   let sandbox;
   let inquirerMocks;
@@ -29,9 +37,10 @@ describe("Cli", () => {
   let optionEmojis;
   let optionLog;
   let optionDelay;
+  let optionDelayLegacy;
   let optionHost;
   let optionWatch;
-  let optionMock;
+  let optionCollection;
   let mockOptions;
   let onChangeEmojis;
   let cliArgs;
@@ -40,7 +49,7 @@ describe("Cli", () => {
   let onChangeDelay;
   let onChangeHost;
   let onChangeWatch;
-  let onChangeMock;
+  let onChangeCollection;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
@@ -50,10 +59,8 @@ describe("Cli", () => {
     coreInstance = coreMocks.stubs.instance;
     cliArgs = {
       alerts: coreMocks.stubs.instance.alerts,
-      mocks: coreMocks.stubs.instance.mocks,
-      onChangeAlerts: coreMocks.stubs.instance.onChangeAlerts,
-      onChangeMocks: coreMocks.stubs.instance.onChangeMocks,
-      restartServer: coreMocks.stubs.instance.restartServer,
+      mock: coreMocks.stubs.instance.mock,
+      server: coreMocks.stubs.instance.server,
       config: configMock.stubs.namespace,
     };
     cli = new Cli(cliArgs);
@@ -63,23 +70,25 @@ describe("Cli", () => {
     onChangeDelay = sandbox.stub();
     onChangeHost = sandbox.stub();
     onChangeWatch = sandbox.stub();
-    onChangeMock = sandbox.stub();
+    onChangeCollection = sandbox.stub();
     expect.assertions(1);
     mockOptions = () => {
       optionCli = { ...cli._optionCli, onChange: onChangeCli, value: true };
       optionEmojis = { ...cli._optionEmojis, onChange: onChangeEmojis, value: true };
       optionLog = { ...cli._optionLog, onChange: onChangeLog, value: "info" };
       optionDelay = { ...cli._optionDelay, onChange: onChangeDelay, value: 0 };
+      optionDelayLegacy = { ...cli._optionDelayLegacy, value: 0 };
       optionHost = { ...cli._optionHost, onChange: onChangeHost, value: "0.0.0.0" };
       optionWatch = { ...cli._optionWatch, onChange: onChangeWatch, value: true };
-      optionMock = { ...cli._optionMock, onChange: onChangeMock, value: "base" };
+      optionCollection = { ...cli._optionCollection, onChange: onChangeCollection, value: "base" };
       cli._optionEmojis = optionEmojis;
       cli._optionDelay = optionDelay;
       cli._optionCli = optionCli;
       cli._optionLog = optionLog;
       cli._optionHost = optionHost;
       cli._optionWatch = optionWatch;
-      cli._optionMock = optionMock;
+      cli._optionCollection = optionCollection;
+      cli._optionDelayLegacy = optionDelayLegacy;
     };
     mockOptions();
     await cli.init();
@@ -127,6 +136,7 @@ describe("Cli", () => {
     it("should refresh main menu when delay option is changed and current screen is main menu", async () => {
       expect.assertions(2);
       optionDelay.onChange.getCall(0).args[0]("foo");
+      await wait();
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -134,6 +144,7 @@ describe("Cli", () => {
     it("should refresh main menu when host option is changed and current screen is main menu", async () => {
       expect.assertions(2);
       optionHost.onChange.getCall(0).args[0]("foo");
+      await wait();
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -141,6 +152,7 @@ describe("Cli", () => {
     it("should refresh main menu when log option is changed and current screen is main menu", async () => {
       expect.assertions(2);
       onChangeLog.getCall(0).args[0]("foo");
+      await wait();
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -148,13 +160,14 @@ describe("Cli", () => {
     it("should refresh main menu when watch option is changed and current screen is main menu", async () => {
       expect.assertions(2);
       onChangeWatch.getCall(0).args[0](false);
+      await wait();
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
-    it("should not display main menu when mock is changed and current screen is not main menu", async () => {
+    it("should not display main menu when collection is changed and current screen is not main menu", async () => {
       cli._currentScreen = "FOO";
-      onChangeMock.getCall(0).args[0]("foo");
+      onChangeCollection.getCall(0).args[0]("foo");
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
     });
 
@@ -162,7 +175,7 @@ describe("Cli", () => {
       await cli.stop();
       inquirerMocks.reset();
       cli._currentScreen = "FOO";
-      onChangeMock.getCall(0).args[0]("foo");
+      onChangeCollection.getCall(0).args[0]("foo");
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(0);
     });
 
@@ -238,6 +251,7 @@ describe("Cli", () => {
     it("should refresh main menu when emojis option is changed and current screen is main menu", async () => {
       expect.assertions(2);
       onChangeEmojis.getCall(0).args[0](false);
+      await wait();
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -256,7 +270,8 @@ describe("Cli", () => {
 
     it("should refresh main menu", async () => {
       expect.assertions(2);
-      coreInstance.onChangeAlerts.getCall(0).args[0]();
+      coreInstance.alerts.root.onChange.getCall(0).args[0]();
+      await wait();
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -306,8 +321,8 @@ describe("Cli", () => {
     beforeEach(async () => {
       removeChangeMocksSpy = sinon.spy();
       removeChangeAlertsSpy = sinon.spy();
-      coreInstance.onChangeAlerts.returns(removeChangeAlertsSpy);
-      coreInstance.onChangeMocks.returns(removeChangeMocksSpy);
+      coreInstance.alerts.root.onChange.returns(removeChangeAlertsSpy);
+      coreInstance.mock.onChange.returns(removeChangeMocksSpy);
       await cli.start();
     });
 
@@ -336,19 +351,19 @@ describe("Cli", () => {
     });
   });
 
-  describe('when user selects "Change current mock"', () => {
+  describe('when user selects "Select collection"', () => {
     const fooSelectedMock = "foo mock";
     let originalIds;
 
     beforeEach(() => {
-      originalIds = coreInstance.mocks.ids;
-      coreInstance.mocks.ids = ["foo-mock"];
-      inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("mock");
+      originalIds = coreInstance.mock.collections.ids;
+      coreInstance.mock.collections.ids = ["foo-mock"];
+      inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("collection");
       inquirerMocks.stubs.inquirer.inquire.onCall(1).resolves(fooSelectedMock);
     });
 
     afterEach(() => {
-      coreInstance.mocks.ids = originalIds;
+      coreInstance.mock.collections.ids = originalIds;
     });
 
     it("should call to clear screen", async () => {
@@ -356,56 +371,56 @@ describe("Cli", () => {
       expect(inquirerMocks.stubs.inquirer.clearScreen.callCount).toEqual(3);
     });
 
-    it("should display main menu if there are no mocks", async () => {
-      coreInstance.mocks.ids = [];
+    it("should display main menu if there are no collections", async () => {
+      coreInstance.mock.collections.ids = [];
       await cli.start();
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
-    it("should call to display mock menu", async () => {
+    it("should call to display collections menu", async () => {
       await cli.start();
-      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("mock");
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("collection");
     });
 
-    it("should set current selected mock", async () => {
+    it("should set current selected collection", async () => {
       await cli.start();
-      expect(optionMock.value).toEqual(fooSelectedMock);
+      expect(optionCollection.value).toEqual(fooSelectedMock);
     });
 
-    it("should not filter current mocks if there is no input", async () => {
+    it("should not filter current collections if there is no input", async () => {
       const fooMocks = ["foo1", "foo2"];
       inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
       inquirerMocks.stubs.inquirer.inquireFake.returns(null);
       inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.mocks.ids = fooMocks;
-      await cli._changeCurrentMock();
-      expect(optionMock.value).toEqual(["foo1", "foo2"]);
+      coreInstance.mock.collections.ids = fooMocks;
+      await cli._changeCurrentCollection();
+      expect(optionCollection.value).toEqual(["foo1", "foo2"]);
     });
 
-    it("should not filter current mocks if current input is empty", async () => {
+    it("should not filter current collections if current input is empty", async () => {
       const fooMocks = ["foo1", "foo2"];
       inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
       inquirerMocks.stubs.inquirer.inquireFake.returns([]);
       inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.mocks.ids = fooMocks;
-      await cli._changeCurrentMock();
-      expect(optionMock.value).toEqual(["foo1", "foo2"]);
+      coreInstance.mock.collections.ids = fooMocks;
+      await cli._changeCurrentCollection();
+      expect(optionCollection.value).toEqual(["foo1", "foo2"]);
     });
 
-    it("should filter current mocks and returns all that includes current input", async () => {
+    it("should filter current collections and returns all that includes current input", async () => {
       const fooMocks = ["foo1", "foo2", "not-included"];
       inquirerMocks.stubs.inquirer.inquireFake.executeCb(true);
       inquirerMocks.stubs.inquirer.inquireFake.returns("foo");
       inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.mocks.ids = fooMocks;
-      await cli._changeCurrentMock();
-      expect(optionMock.value).toEqual(["foo1", "foo2"]);
+      coreInstance.mock.collections.ids = fooMocks;
+      await cli._changeCurrentCollection();
+      expect(optionCollection.value).toEqual(["foo1", "foo2"]);
     });
   });
 
@@ -414,14 +429,14 @@ describe("Cli", () => {
     let originalVariants;
 
     beforeEach(() => {
-      originalVariants = coreInstance.mocks.plainRoutesVariants;
-      coreInstance.mocks.plainRoutesVariants = [{ id: "foo-variant" }];
+      originalVariants = coreInstance.mock.routes.plainVariants;
+      coreInstance.mock.routes.plainVariants = [{ id: "foo-variant" }];
       inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("variant");
       inquirerMocks.stubs.inquirer.inquire.onCall(1).resolves(fooSelectedVariant);
     });
 
     afterEach(() => {
-      coreInstance.mocks.plainRoutesVariants = originalVariants;
+      coreInstance.mock.routes.plainVariants = originalVariants;
     });
 
     it("should call to clear screen", async () => {
@@ -430,7 +445,7 @@ describe("Cli", () => {
     });
 
     it("should display main menu if there are no routes variants", async () => {
-      coreInstance.mocks.plainRoutesVariants = [];
+      coreInstance.mock.routes.plainVariants = [];
       await cli.start();
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -442,7 +457,7 @@ describe("Cli", () => {
 
     it("should set current selected route variant", async () => {
       await cli.start();
-      expect(coreInstance.mocks.useRouteVariant.getCall(0).args).toEqual([fooSelectedVariant]);
+      expect(coreInstance.mock.useRouteVariant.getCall(0).args).toEqual([fooSelectedVariant]);
     });
 
     it("should not filter current routes variants if there is no input", async () => {
@@ -452,9 +467,9 @@ describe("Cli", () => {
       inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.mocks.plainRoutesVariants = fooVariants;
+      coreInstance.mock.routes.plainVariants = fooVariants;
       await cli._changeRouteVariant();
-      expect(coreInstance.mocks.useRouteVariant.getCall(0).args).toEqual([["foo1", "foo2"]]);
+      expect(coreInstance.mock.useRouteVariant.getCall(0).args).toEqual([["foo1", "foo2"]]);
     });
 
     it("should not filter current routes variants if current input is empty", async () => {
@@ -464,9 +479,9 @@ describe("Cli", () => {
       inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.mocks.plainRoutesVariants = fooVariants;
+      coreInstance.mock.routes.plainVariants = fooVariants;
       await cli._changeRouteVariant();
-      expect(coreInstance.mocks.useRouteVariant.getCall(0).args).toEqual([["foo1", "foo2"]]);
+      expect(coreInstance.mock.useRouteVariant.getCall(0).args).toEqual([["foo1", "foo2"]]);
     });
 
     it("should filter current variants and returns all that includes current input", async () => {
@@ -476,9 +491,9 @@ describe("Cli", () => {
       inquirerMocks.stubs.inquirer.inquire
         .onCall(0)
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
-      coreInstance.mocks.plainRoutesVariants = fooVariants;
+      coreInstance.mock.routes.plainVariants = fooVariants;
       await cli._changeRouteVariant();
-      expect(coreInstance.mocks.useRouteVariant.getCall(0).args).toEqual([["foo1", "foo2"]]);
+      expect(coreInstance.mock.useRouteVariant.getCall(0).args).toEqual([["foo1", "foo2"]]);
     });
   });
 
@@ -526,7 +541,7 @@ describe("Cli", () => {
 
     it("should call to restart server", async () => {
       await cli.start();
-      expect(coreInstance.restartServer.callCount).toEqual(1);
+      expect(coreInstance.server.restart.callCount).toEqual(1);
     });
   });
 
@@ -537,7 +552,7 @@ describe("Cli", () => {
 
     it("should call to restore variants", async () => {
       await cli.start();
-      expect(coreInstance.mocks.restoreRoutesVariants.callCount).toEqual(1);
+      expect(coreInstance.mock.restoreRouteVariants.callCount).toEqual(1);
     });
   });
 
@@ -607,7 +622,7 @@ describe("Cli", () => {
   describe("when printing header", () => {
     it("should print server url as first element", async () => {
       await cli.start();
-      expect(cli._header()[0]).toEqual(expect.stringContaining("Mocks server listening"));
+      expect(cli._header()[0]).toEqual(expect.stringContaining("Server listening"));
     });
 
     it("should print localhost as host when it is 0.0.0.0", async () => {
@@ -623,44 +638,53 @@ describe("Cli", () => {
     });
 
     it("should print delay in yellow if is greater than 0", async () => {
+      optionDelay.hasBeenSet = true;
       optionDelay.value = 1000;
       await cli.start();
       expect(cli._header()[1]).toEqual(expect.stringContaining(chalk.yellow("1000")));
     });
 
+    it("should print legacy delay in yellow if is greater than 0", async () => {
+      optionDelay.hasBeenSet = false;
+      optionDelayLegacy.value = 1000;
+      await cli.start();
+      expect(cli._header()[1]).toEqual(expect.stringContaining(chalk.yellow("1000")));
+    });
+
     it("should print delay in green if is equal to 0", async () => {
+      optionDelay.hasBeenSet = true;
       optionDelay.value = 0;
       await cli.start();
       expect(cli._header()[1]).toEqual(expect.stringContaining(chalk.green("0")));
     });
 
     it("should print mocks in red if are equal to 0", async () => {
-      coreInstance.mocks.plainMocks = [];
+      coreInstance.mock.collections.plain = [];
       await cli.start();
       expect(cli._header()[3]).toEqual(expect.stringContaining(chalk.red("0")));
     });
 
     it("should print mocks in green if are greater than 0", async () => {
-      coreInstance.mocks.plainMocks = [{}, {}, {}, {}];
+      coreInstance.mock.collections.plain = [{}, {}, {}, {}];
       await cli.start();
       expect(cli._header()[3]).toEqual(expect.stringContaining(chalk.green("4")));
     });
 
     it("should print current mock in red if it is null", async () => {
-      coreInstance.mocks.current = null;
+      coreInstance.mock.collections.selected = null;
       await cli.start();
       expect(cli._header()[2]).toEqual(expect.stringContaining(chalk.red("-")));
     });
 
     it("should print current mock in green if it is defined", async () => {
-      coreInstance.mocks.current = "foo";
+      coreInstance.mock.collections.selected = "foo";
       await cli.start();
       expect(cli._header()[2]).toEqual(expect.stringContaining(chalk.green("foo")));
     });
 
     it("should print current mock in yellow if there are custom routes variants", async () => {
-      coreInstance.mocks.current = "foo";
-      coreInstance.mocks.customRoutesVariants = ["foo-variant", "foo-variant-2"];
+      coreInstance.mock.collections.selected = "foo";
+      coreInstance.mock.customRouteVariants = ["foo-variant", "foo-variant-2"];
       await cli.start();
       expect(cli._header()[2]).toEqual(
         expect.stringContaining(chalk.yellow("foo (custom variants: foo-variant,foo-variant-2)"))
@@ -668,25 +692,25 @@ describe("Cli", () => {
     });
 
     it("should print current routes in red if there are less than 1", async () => {
-      coreInstance.mocks.plainRoutes = [];
+      coreInstance.mock.routes.plain = [];
       await cli.start();
       expect(cli._header()[4]).toEqual(expect.stringContaining(chalk.red("0")));
     });
 
     it("should print current routes in green if there are less than 1", async () => {
-      coreInstance.mocks.plainRoutes = [{}, {}];
+      coreInstance.mock.routes.plain = [{}, {}];
       await cli.start();
       expect(cli._header()[4]).toEqual(expect.stringContaining(chalk.green("2")));
     });
 
     it("should print current routes variants in red if there are less than 1", async () => {
-      coreInstance.mocks.plainRoutesVariants = [];
+      coreInstance.mock.routes.plainVariants = [];
       await cli.start();
       expect(cli._header()[5]).toEqual(expect.stringContaining(chalk.red("0")));
     });
 
     it("should not print current routes in green if there are more than 1", async () => {
-      coreInstance.mocks.plainRoutesVariants = [{}, {}];
+      coreInstance.mock.routes.plainVariants = [{}, {}];
       await cli.start();
       expect(cli._header()[5]).toEqual(expect.stringContaining(chalk.green("2")));
     });
@@ -706,7 +730,7 @@ describe("Cli", () => {
 
   describe("when displaying alerts", () => {
     it("should not display alerts if core alerts are empty", async () => {
-      coreInstance.alerts = [];
+      coreInstance.alerts.root.customFlat = [];
       await cli.start();
       expect(cli._alertsHeader().length).toEqual(0);
     });
@@ -757,13 +781,14 @@ describe("Cli", () => {
     });
   });
 
-  describe("when server emits change:mocks event", () => {
+  describe("when server emits change:mock event", () => {
     beforeEach(async () => {
       await cli.start();
-      coreInstance.onChangeMocks.getCall(0).args[0]();
+      coreInstance.mock.onChange.getCall(0).args[0]();
     });
 
     it("should exit logs mode", async () => {
+      await wait();
       expect(inquirerMocks.stubs.inquirer.exitLogsMode.callCount).toEqual(2);
     });
   });

@@ -24,6 +24,13 @@ describe("arguments", () => {
       expect(option.value).toEqual("foo-from-arg");
     });
 
+    it("hasBeenSet property should be true", async () => {
+      commander.Command.prototype.opts.returns({ "fooNamespace.fooOption": "foo-from-arg" });
+      ({ config, namespace, option } = createConfig({ moduleName: "testD" }));
+      await config.init();
+      expect(option.hasBeenSet).toEqual(true);
+    });
+
     it("should return value from arguments in argsLoadedValues getter", async () => {
       commander.Command.prototype.opts.returns({ "fooNamespace.fooOption": "foo-from-arg" });
       ({ config, namespace, option } = createConfig({ moduleName: "testD" }));

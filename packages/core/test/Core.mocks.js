@@ -40,6 +40,7 @@ class CoreMock {
       mocks: {
         useRouteVariant: this._sandbox.stub(),
         restoreRoutesVariants: this._sandbox.stub(),
+        restoreRouteVariants: this._sandbox.stub(),
       },
       logs: ["foo", "foo2"],
       logger: {
@@ -55,6 +56,24 @@ class CoreMock {
       _deprecationAlerts: {
         set: this._sandbox.stub(),
       },
+      server: {
+        restart: this._sandbox.stub(),
+        addRouter: this._sandbox.stub(),
+        removeRouter: this._sandbox.stub(),
+      },
+      mock: {
+        onChange: this._sandbox.stub(),
+        useRouteVariant: this._sandbox.stub(),
+        restoreRouteVariants: this._sandbox.stub(),
+        createLoaders: this._sandbox.stub().returns({
+          loadCollections: this._sandbox.stub(),
+          loadRoutes: this._sandbox.stub(),
+        }),
+      },
+      variantHandlers: {
+        register: this._sandbox.stub(),
+      },
+      version: "foo-version",
     };
 
     Core.mockImplementation(() => this._stubs);

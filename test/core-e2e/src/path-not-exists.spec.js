@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -27,7 +27,7 @@ describe("when path not exists", () => {
     await fsExtra.remove(fixturesFolder(FOLDER));
     core = await startCore(FOLDER);
     changeMock = (name) => {
-      core.config.namespace("mocks").option("selected").value = name;
+      core.config.namespace("mock").namespace("collections").option("selected").value = name;
     };
     await waitForServer();
   });
@@ -45,25 +45,27 @@ describe("when path not exists", () => {
 
     it("should have created scaffold folder", async () => {
       expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "routes"))).toEqual(true);
-      expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "mocks.json"))).toEqual(true);
-    });
-
-    it("should have added an alert about folder not found", async () => {
-      expect(findAlert("scaffold:mocks", core.alerts).message).toEqual(
-        expect.stringContaining("Mocks folder was not found")
+      expect(fsExtra.existsSync(path.resolve(fixturesFolder(FOLDER), "collections.json"))).toEqual(
+        true
       );
     });
 
-    it("should have three mocks", async () => {
-      expect(core.mocks.plainMocks.length).toEqual(3);
+    it("should have added an alert about folder not found", async () => {
+      expect(findAlert("scaffold:folder", core.alerts).message).toEqual(
+        expect.stringContaining("Mocks Server folder was not found")
+      );
+    });
+
+    it("should have four collections", async () => {
+      expect(core.mock.collections.plain.length).toEqual(4);
     });
 
     it("should have three routes", async () => {
-      expect(core.mocks.plainRoutes.length).toEqual(3);
+      expect(core.mock.routes.plain.length).toEqual(3);
     });
 
-    it("should have six routes", async () => {
-      expect(core.mocks.plainRoutesVariants.length).toEqual(6);
+    it("should have 8 variants", async () => {
+      expect(core.mock.routes.plainVariants.length).toEqual(8);
     });
   });
 

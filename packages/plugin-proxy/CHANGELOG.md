@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [3.1.0] - 2022-07-22
+
+### Changed
+
+- refactor: Use new core method `variantHandlers.register` instead of the deprecated `addRoutesHandler`
+
 ## [3.0.0] - 2022-07-05
 
 ### Changed

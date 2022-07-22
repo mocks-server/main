@@ -1,5 +1,5 @@
 /*
-Copyright 2021-present Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -31,8 +31,8 @@ describe("scaffold", () => {
   });
 
   describe("When started", () => {
-    it("should have 3 mocks available", async () => {
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Mocks: 3"));
+    it("should have 4 mocks available", async () => {
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 4"));
     });
 
     it("should not display behaviors", async () => {
@@ -75,6 +75,12 @@ describe("scaffold", () => {
           appliedRoutesVariants: ["add-headers:disabled", "get-users:success", "get-user:success"],
         },
         {
+          id: "all-users",
+          from: "base",
+          routesVariants: ["get-users:all", "get-user:id-3"],
+          appliedRoutesVariants: ["add-headers:enabled", "get-users:all", "get-user:id-3"],
+        },
+        {
           id: "user-real",
           from: "no-headers",
           routesVariants: ["get-user:real"],
@@ -91,23 +97,23 @@ describe("scaffold", () => {
         {
           id: "add-headers",
           url: "*",
+          method: ["GET", "POST", "PUT", "PATCH"],
           delay: null,
-          method: "GET",
           variants: ["add-headers:enabled", "add-headers:disabled"],
         },
         {
           id: "get-users",
           url: "/api/users",
-          delay: null,
           method: "GET",
-          variants: ["get-users:success", "get-users:error"],
+          delay: null,
+          variants: ["get-users:success", "get-users:all", "get-users:error"],
         },
         {
           id: "get-user",
           url: "/api/users/:id",
-          delay: null,
           method: "GET",
-          variants: ["get-user:success", "get-user:real"],
+          delay: null,
+          variants: ["get-user:success", "get-user:id-3", "get-user:real"],
         },
       ]);
     });
@@ -145,6 +151,21 @@ describe("scaffold", () => {
           delay: null,
         },
         {
+          id: "get-users:all",
+          routeId: "get-users",
+          handler: "json",
+          response: {
+            body: [
+              { id: 1, name: "John Doe" },
+              { id: 2, name: "Jane Doe" },
+              { id: 3, name: "Tommy" },
+              { id: 4, name: "Timmy" },
+            ],
+            status: 200,
+          },
+          delay: null,
+        },
+        {
           id: "get-users:error",
           routeId: "get-users",
           handler: "json",
@@ -159,6 +180,13 @@ describe("scaffold", () => {
           delay: null,
         },
         {
+          id: "get-user:id-3",
+          routeId: "get-user",
+          handler: "json",
+          response: { body: { id: 3, name: "Tommy" }, status: 200 },
+          delay: null,
+        },
+        {
           id: "get-user:real",
           routeId: "get-user",
           handler: "middleware",
@@ -169,12 +197,12 @@ describe("scaffold", () => {
     });
   });
 
-  describe('When changing current mock to "user-real"', () => {
+  describe('When changing current collection to "user-real"', () => {
     it("should display new selected mock", async () => {
       await mocks.pressEnter();
-      await mocks.cursorDown(2);
+      await mocks.cursorDown(3);
       const newScreen = await mocks.pressEnter();
-      expect(newScreen).toEqual(expect.stringContaining("Current mock: user-real"));
+      expect(newScreen).toEqual(expect.stringContaining("Current collection: user-real"));
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -205,10 +233,12 @@ describe("scaffold", () => {
     it("should display custom route variant", async () => {
       await mocks.cursorDown();
       await mocks.pressEnter();
-      await mocks.cursorDown(4);
+      await mocks.cursorDown(5);
       const newScreen = await mocks.pressEnter();
       expect(newScreen).toEqual(
-        expect.stringContaining("Current mock: user-real (custom variants: get-user:success)")
+        expect.stringContaining(
+          "Current collection: user-real (custom variants: get-user:success)"
+        )
       );
     });
 
@@ -240,7 +270,7 @@ describe("scaffold", () => {
     it("should display mock", async () => {
       await mocks.cursorDown(2);
       const newScreen = await mocks.pressEnter();
-      expect(newScreen).toEqual(expect.stringContaining("Current mock: user-real"));
+      expect(newScreen).toEqual(expect.stringContaining("Current collection: user-real"));
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -291,7 +321,7 @@ describe("scaffold", () => {
 
     it("should display new mock in CLI", async () => {
       await wait(500);
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: base"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current collection: base"));
     });
   });
 
@@ -308,7 +338,7 @@ describe("scaffold", () => {
     it("should display custom route variant in CLI", async () => {
       await wait(500);
       expect(mocks.currentScreen).toEqual(
-        expect.stringContaining("Current mock: base (custom variants: get-user:real)")
+        expect.stringContaining("Current collection: base (custom variants: get-user:real)")
       );
     });
 
@@ -342,7 +372,7 @@ describe("scaffold", () => {
 
     it("should not display custom route variant in CLI", async () => {
       await wait(500);
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current mock: base"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Current collection: base"));
       expect(mocks.currentScreen).toEqual(expect.not.stringContaining("(custom variants:"));
     });
 

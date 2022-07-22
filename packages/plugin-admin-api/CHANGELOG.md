@@ -12,6 +12,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [3.2.0] - 2022-07-22
+
+### Added
+- feat(#364): Start API in a different server. Change urls and models.
+- feat(#360): Add Swagger-ui
+
+### Changed
+- feat: Use new core.server API
+- feat: Use core.mock.restoreRouteVariants
+- feat: Use core.mock.routes.plain getter
+- feat: Use core.mock.routes.plainVariants getter
+- feat: Use core.mock.customRouteVariants getter
+- feat: Use core.mock.collections.plain getter
+
 ## [3.1.0] - 2022-06-27
 
 ### Changed

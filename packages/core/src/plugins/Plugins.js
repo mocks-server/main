@@ -11,8 +11,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const isPromise = require("is-promise");
 const { isObject, isFunction } = require("lodash");
 
-const { scopedAlertsMethods } = require("../support/helpers");
-const CustomCore = require("../CustomCore");
+const { scopedAlertsMethods } = require("../alerts/legacyHelpers");
+const CoreApi = require("../common/CoreApi");
+const { docsUrl } = require("../common/helpers");
 
 const OPTIONS = [
   {
@@ -29,7 +30,9 @@ const OPTIONS = [
 ];
 
 function formatDeprecatedMessage(format) {
-  return `Defining Plugins as ${format} is deprecated and it won't be supported in next major version. Consider migrating it to a Class Plugin: https://www.mocks-server.org/docs/plugins-developing-plugins`;
+  return `Defining Plugins as ${format} is deprecated and it won't be supported in next major version. Consider migrating it to a Class Plugin: ${docsUrl(
+    "plugins/development"
+  )}`;
 }
 
 class Plugins {
@@ -45,7 +48,7 @@ class Plugins {
       addAlert,
       removeAlerts,
       renameAlerts,
-      createMocksLoader,
+      createCollectionsLoader,
       createRoutesLoader,
     },
     core
@@ -66,7 +69,7 @@ class Plugins {
     this._addAlert = addAlert;
     this._removeAlerts = removeAlerts;
     this._renameAlerts = renameAlerts;
-    this._createMocksLoader = createMocksLoader;
+    this._createCollectionsLoader = createCollectionsLoader;
     this._createRoutesLoader = createRoutesLoader;
     this._core = core;
     this._pluginsInstances = [];
@@ -124,7 +127,7 @@ class Plugins {
 
   _catchRegisterError(error, index) {
     const pluginId = this._pluginId(index);
-    this._alertsRegister.set(pluginId, `Error registering plugin "${pluginId}"`, error);
+    this._alertsRegister.set(pluginId, `Error registering plugin '${pluginId}'`, error);
     return {};
   }
 
@@ -136,7 +139,7 @@ class Plugins {
       pluginAlerts,
       pluginLogger,
       optionsAdded = false,
-      customCore;
+      coreApi;
     const pluginOptions = { core: this._core, ...pluginMethods };
     if (isObject(Plugin) && !isFunction(Plugin)) {
       pluginInstance = Plugin;
@@ -156,9 +159,9 @@ class Plugins {
           alerts: pluginAlerts,
           logger: pluginLogger,
         };
-        customCore = new CustomCore(pluginFinalOptions);
-        pluginInstance = new Plugin(customCore);
-        this._pluginsOptions.push(customCore);
+        coreApi = new CoreApi(pluginFinalOptions);
+        pluginInstance = new Plugin(coreApi);
+        this._pluginsOptions.push(coreApi);
         optionsAdded = true;
         this._pluginsInstances.push(pluginInstance);
         this._pluginsRegistered++;
@@ -166,7 +169,7 @@ class Plugins {
         if (error.message.includes("is not a constructor")) {
           try {
             const pluginFunc = Plugin;
-            pluginInstance = pluginFunc(new CustomCore(pluginOptions)) || {};
+            pluginInstance = pluginFunc(new CoreApi(pluginOptions)) || {};
             this._pluginsInstances.push(pluginInstance);
             this._pluginsRegistered++;
             formatIsFunction = true;
@@ -200,20 +203,20 @@ class Plugins {
           alerts: pluginAlerts,
           logger: pluginLogger,
         };
-        customCore = new CustomCore(pluginFinalOptions);
+        coreApi = new CoreApi(pluginFinalOptions);
         if (optionsAdded) {
           this._pluginsOptions.pop();
         }
-        this._pluginsOptions.push(customCore);
+        this._pluginsOptions.push(coreApi);
       } else {
-        if (!customCore) {
-          customCore = new CustomCore(pluginFinalOptions);
+        if (!coreApi) {
+          coreApi = new CoreApi(pluginFinalOptions);
         }
-        this._pluginsOptions.push(customCore);
+        this._pluginsOptions.push(coreApi);
       }
       if (isFunction(pluginInstance.register)) {
         try {
-          pluginInstance.register(customCore);
+          pluginInstance.register(coreApi);
         } catch (error) {
           this._catchRegisterError(error, pluginIndex);
           this._pluginsRegistered = this._pluginsRegistered - 1;
@@ -233,7 +236,7 @@ class Plugins {
     if (pluginIndex === this._plugins.length) {
       return Promise.resolve();
     }
-    const loadMocks = this._createMocksLoader();
+    const loadMocks = this._createCollectionsLoader();
     const loadRoutes = this._createRoutesLoader();
     const pluginMethods = {
       loadMocks,
@@ -255,7 +258,7 @@ class Plugins {
   _catchInitError(error, index) {
     this._pluginsInitialized = this._pluginsInitialized - 1;
     const pluginId = this._pluginId(index);
-    this._alertsInit.set(pluginId, `Error initializating plugin "${pluginId}"`, error);
+    this._alertsInit.set(pluginId, `Error initializating plugin '${pluginId}'`, error);
     this._logger.debug(error.toString());
     return Promise.resolve();
   }
@@ -273,7 +276,7 @@ class Plugins {
       this._pluginsInitialized = this._pluginsInitialized - 1;
       return initNextPlugin();
     }
-    this._logger.debug(`Initializing plugin "${pluginId}"`);
+    this._logger.debug(`Initializing plugin '${pluginId}'`);
     let pluginInit;
     try {
       pluginInit = this._pluginsInstances[pluginIndex].init(this._pluginsOptions[pluginIndex]);
@@ -294,7 +297,7 @@ class Plugins {
   _catchStartError(error, index) {
     this._pluginsStarted = this._pluginsStarted - 1;
     const pluginId = this._pluginId(index);
-    this._alertsStart.set(pluginId, `Error starting plugin "${pluginId}"`, error);
+    this._alertsStart.set(pluginId, `Error starting plugin '${pluginId}'`, error);
     this._logger.debug(error.toString());
     return Promise.resolve();
   }
@@ -312,7 +315,7 @@ class Plugins {
       this._pluginsStarted = this._pluginsStarted - 1;
       return startNextPlugin();
     }
-    this._logger.debug(`Starting plugin "${pluginId}"`);
+    this._logger.debug(`Starting plugin '${pluginId}'`);
     let pluginStart;
     try {
       pluginStart = this._pluginsInstances[pluginIndex].start(this._pluginsOptions[pluginIndex]);
@@ -333,7 +336,7 @@ class Plugins {
   _catchStopError(error, index) {
     this._pluginsStopped = this._pluginsStopped - 1;
     const pluginId = this._pluginId(index);
-    this._alertsStop.set(pluginId, `Error stopping plugin "${pluginId}"`, error);
+    this._alertsStop.set(pluginId, `Error stopping plugin '${pluginId}'`, error);
     this._logger.debug(error.toString());
     return Promise.resolve();
   }
@@ -352,7 +355,7 @@ class Plugins {
       this._pluginsStopped = this._pluginsStopped - 1;
       return stopNextPlugin();
     }
-    this._logger.debug(`Stopping plugin "${pluginId}"`);
+    this._logger.debug(`Stopping plugin '${pluginId}'`);
     let pluginStop;
     try {
       pluginStop = this._pluginsInstances[pluginIndex].stop(this._pluginsOptions[pluginIndex]);

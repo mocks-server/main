@@ -1,7 +1,7 @@
-import { config } from "../../index";
+import { configClient } from "../../index";
 
-config({
-  baseUrl: "http://127.0.0.1:3200",
+configClient({
+  port: 3110,
 });
 
 const wait = (time = 1000) => {

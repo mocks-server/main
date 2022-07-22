@@ -13,7 +13,7 @@
 
 # Mocks Server Plugin Proxy
 
-Plugin for [Mocks Server][website-url] that provides a [route handler](https://www.mocks-server.org/docs/api-routes-handler) that proxy requests to another host and pass response back to original caller.
+Plugin for [Mocks Server][website-url] that provides a [variant handler](https://www.mocks-server.org/docs/variant-handlers/intro) that proxy requests to another host and pass response back to original caller.
 
 It uses the [express-http-proxy](https://github.com/villadora/express-http-proxy) package under the hood, and supports all of its options.
 
@@ -25,7 +25,7 @@ This plugin is included in the [main distribution of the Mocks Server project][m
 
 ### Proxy routes
 
-If you want a [route variant](https://www.mocks-server.org/docs/get-started-routes) to use the `proxy-v4` handler, define its `handler` property as "proxy-v4". Use the `host` property to set the host for the route, and the `options` property to set any of the [express-http-proxy](https://github.com/villadora/express-http-proxy) options.
+If you want a [route variant](https://www.mocks-server.org/docs/usage/variants) to use the `proxy-v4` handler, define its `handler` property as "proxy-v4". Use the `host` property to set the host for the route, and the `options` property to set any of the [express-http-proxy](https://github.com/villadora/express-http-proxy) options.
 
 ```js
 module.exports = [
@@ -36,8 +36,8 @@ module.exports = [
     variants: [
       {
         id: "proxy-to-google",
-        handler: "proxy-v4", // This route variant will use the "proxy" handler from this plugin
-        response: {
+        type: "proxy-v4", // This route variant will use the "proxy" handler from this plugin
+        options: {
           host: "https://www.google.com", // proxy host
           options: {}, // Options for express-http-proxy
         },
@@ -49,7 +49,7 @@ module.exports = [
 
 ### Options
 
-Here are listed the specific properties that can be defined in a `proxy-v4` route variant. They must be defined in the `response` property of the variant:
+Here are listed the specific properties that can be defined in a `proxy-v4` route variant. They must be defined in the `options` property of the variant:
 
 * __`host`__ _(String|Function)_: The proxy host. Equivalent to the [`express-http-proxy` `host` option](https://github.com/villadora/express-http-proxy#host), so it can also be a function.
 * __`options`__ _(Object)_: Object containing any of the [options supported by the `express-http-proxy` package](https://github.com/villadora/express-http-proxy#options). Some of them are:
@@ -63,7 +63,7 @@ Here are listed the specific properties that can be defined in a `proxy-v4` rout
 
 ### Proxy routes
 
-If you want a Mocks Server v3 [route variant](https://www.mocks-server.org/docs/get-started-routes) to use the `proxy` handler, define its `handler` property as "proxy". Use the `host` property to set the host for the route, and the `options` property to set any of the [express-http-proxy](https://github.com/villadora/express-http-proxy) options.
+If you want a Mocks Server v3 [route variant](https://www.mocks-server.org/docs/usage/variants) to use the `proxy` handler, define its `type` property as "proxy". Use the `host` property to set the host for the route, and the `options` property to set any of the [express-http-proxy](https://github.com/villadora/express-http-proxy) options.
 
 ```js
 module.exports = [
@@ -74,7 +74,7 @@ module.exports = [
     variants: [
       {
         id: "proxy-to-google",
-        handler: "proxy", // This route variant will use the "proxy" handler from this plugin
+        type: "proxy", // This route variant will use the "proxy" handler from this plugin
         host: "https://www.google.com", // proxy host
         options: {}, // Options for express-http-proxy
       },
@@ -87,9 +87,6 @@ module.exports = [
 
 Mocks server common properties to all route handlers are in _cursive_. Specific properties of this plugin are in __bold__:
 
-* _`id`_ _(String)_: Id of the route variant.
-* _`handler`_ _(String)_: Must be "proxy" to let this plugin handle the route.
-* _`delay`_ _(Number|null)_: Milliseconds of delay for this variant.
 * __`host`__ _(String|Function)_: The proxy host. Equivalent to the [`express-http-proxy` `host` option](https://github.com/villadora/express-http-proxy#host), so it can also be a function.
 * __`options`__ _(Object)_: Object containing any of the [options supported by the `express-http-proxy` package](https://github.com/villadora/express-http-proxy#options). Some of them are:
   * __filter__ _(Function)_: [`filter` option](https://github.com/villadora/express-http-proxy#filter-supports-promises) for `express-http-proxy`.
@@ -100,4 +97,4 @@ Mocks server common properties to all route handlers are in _cursive_. Specific 
 
 [website-url]: https://www.mocks-server.org
 [main-distribution-url]: https://www.npmjs.com/package/@mocks-server/main
-[options-url]: https://www.mocks-server.org/docs/configuration-options
+[options-url]: https://www.mocks-server.org/docs/configuration/options

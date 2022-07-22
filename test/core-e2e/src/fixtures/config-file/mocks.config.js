@@ -2,8 +2,10 @@ const path = require("path");
 
 module.exports = {
   log: "silly",
-  mocks: {
-    selected: "user-2",
+  mock: {
+    collections: {
+      selected: "user-2",
+    }
   },
   files: {
     path: path.resolve(__dirname, "..", "temp"),

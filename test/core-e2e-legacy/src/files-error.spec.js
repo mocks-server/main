@@ -37,12 +37,14 @@ describe("when there is an error loading files", () => {
     });
 
     it("should have added an alert about not mock found", async () => {
-      expect(findAlert("mocks:empty", core.alerts).message).toEqual("No mocks found");
+      expect(findAlert("mock:collections:empty", core.alerts).message).toEqual(
+        "No collections found"
+      );
     });
 
-    it("should have added an alert about error loading mocks", async () => {
-      expect(findAlert("files:mocks", core.alerts).message).toEqual(
-        expect.stringContaining("Error loading mocks from file")
+    it("should have added an alert about error loading collections", async () => {
+      expect(findAlert("files:collections", core.alerts).message).toEqual(
+        expect.stringContaining("Error loading collections from file")
       );
     });
   });

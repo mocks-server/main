@@ -1,5 +1,5 @@
 /*
-Copyright 2019-present Javier Brea
+Copyright 2019-2022 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -10,11 +10,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 "use strict";
-const Core = require("@mocks-server/core");
-const PluginProxy = require("@mocks-server/plugin-proxy");
-const AdminApi = require("@mocks-server/plugin-admin-api");
-const InquirerCli = require("@mocks-server/plugin-inquirer-cli");
-const pkg = require("../package.json");
+
+const { createCore } = require("./createCore");
 
 const handleError = (error) => {
   console.error(`Error: ${error.message}`);
@@ -23,16 +20,21 @@ const handleError = (error) => {
 
 const start = () => {
   try {
-    const mocksServer = new Core(
-      {
-        plugins: {
-          register: [PluginProxy, AdminApi, InquirerCli],
+    const mocksServer = createCore({
+      config: {
+        readArguments: true,
+        readEnvironment: true,
+        readFile: true,
+      },
+      plugins: {
+        inquirerCli: {
+          enabled: true,
         },
       },
-      {
-        pkg,
-      }
-    );
+      files: {
+        enabled: true,
+      },
+    });
     return mocksServer.start().catch(handleError);
   } catch (error) {
     return handleError(error);

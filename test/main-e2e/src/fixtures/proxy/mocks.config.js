@@ -1,5 +1,7 @@
 module.exports = {
-  mocks: {
-    selected: "base",
+  mock: {
+    collections: {
+      selected: "base",
+    },
   },
 };

@@ -96,7 +96,8 @@ describe("plugins", () => {
 
         it("should have executed logger in register method", () => {
           expect(
-            filterLogs(core.logs, "[plugins:test-plugin] Log from register method").length
+            filterLogs(core.logger.globalStore, "[plugins:test-plugin] Log from register method")
+              .length
           ).toEqual(1);
         });
 
@@ -106,7 +107,8 @@ describe("plugins", () => {
 
         it("should have executed logger in init method", () => {
           expect(
-            filterLogs(core.logs, "[plugins:test-plugin] Log from init method").length
+            filterLogs(core.logger.globalStore, "[plugins:test-plugin] Log from init method")
+              .length
           ).toEqual(1);
         });
 
@@ -122,7 +124,8 @@ describe("plugins", () => {
 
         it("should have executed logger in start method", () => {
           expect(
-            filterLogs(core.logs, "[plugins:test-plugin] Log from start method").length
+            filterLogs(core.logger.globalStore, "[plugins:test-plugin] Log from start method")
+              .length
           ).toEqual(1);
         });
 
@@ -168,7 +171,8 @@ describe("plugins", () => {
 
         it("should have executed logger in stop method", () => {
           expect(
-            filterLogs(core.logs, "[plugins:test-plugin] Log from stop method").length
+            filterLogs(core.logger.globalStore, "[plugins:test-plugin] Log from stop method")
+              .length
           ).toEqual(1);
         });
       });
@@ -209,11 +213,13 @@ describe("plugins", () => {
               // Plugin id is still not available in register method
               // It should have been renamed when start alert is received using a different context
               context: "plugins:test-plugin:test-register",
+              id: "plugins:test-plugin:test-register",
               message: "Warning registering plugin",
               error: undefined,
             },
             {
               context: "plugins:test-plugin:test-start",
+              id: "plugins:test-plugin:test-start",
               message: "Warning starting plugin",
               error: undefined,
             },
@@ -230,23 +236,23 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      constructor({ addRouter, alerts, config, logger }) {
+      constructor({ server, alerts, config, logger }) {
         logger.info("Log from register method");
-        addRouter("/foo-path", customRouter);
+        server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy();
         configSpy(config);
       }
-      init({ onChangeAlerts, onChangeMocks, logger, config }) {
+      init({ alerts, mock, logger, config }) {
         logger.info("Log from init method");
         initSpy(
           config.root.namespace("files").option("path").value,
           config.root.namespace("server").option("port").value,
-          config.root.namespace("mocks").option("delay").value
+          config.root.namespace("mock").namespace("routes").option("delay").value
         );
         config.root.option("log").value = "silly";
-        onChangeAlerts(changeAlertsSpy);
-        onChangeMocks(mocksLoadedSpy);
+        alerts.onChange(changeAlertsSpy);
+        mock.onChange(mocksLoadedSpy);
       }
       start({ alerts, logger }) {
         logger.info("Log from start method");
@@ -267,23 +273,23 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      register({ addRouter, alerts, config, logger }) {
+      register({ server, alerts, config, logger }) {
         logger.info("Log from register method");
-        addRouter("/foo-path", customRouter);
+        server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy();
         configSpy(config);
       }
-      init({ logger, config, onChangeAlerts, onChangeMocks }) {
+      init({ logger, config, alerts, mock }) {
         logger.info("Log from init method");
         initSpy(
           config.root.namespace("files").option("path").value,
           config.root.namespace("server").option("port").value,
-          config.root.namespace("mocks").option("delay").value
+          config.root.namespace("mock").namespace("routes").option("delay").value
         );
         config.root.option("log").value = "silly";
-        onChangeAlerts(changeAlertsSpy);
-        onChangeMocks(mocksLoadedSpy);
+        alerts.onChange(changeAlertsSpy);
+        mock.onChange(mocksLoadedSpy);
       }
       start({ alerts, logger }) {
         logger.info("Log from start method");
@@ -300,23 +306,23 @@ describe("plugins", () => {
   testPlugin(
     "created as a Class with register method and without static id",
     class Plugin {
-      register({ addRouter, alerts, config, logger }) {
+      register({ server, alerts, config, logger }) {
         logger.info("Log from register method");
-        addRouter("/foo-path", customRouter);
+        server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy();
         configSpy(config);
       }
-      init({ logger, config, onChangeAlerts, onChangeMocks }) {
+      init({ logger, config, alerts, mock }) {
         logger.info("Log from init method");
         initSpy(
           config.root.namespace("files").option("path").value,
           config.root.namespace("server").option("port").value,
-          config.root.namespace("mocks").option("delay").value
+          config.root.namespace("mock").namespace("routes").option("delay").value
         );
         config.root.option("log").value = "silly";
-        onChangeAlerts(changeAlertsSpy);
-        onChangeMocks(mocksLoadedSpy);
+        alerts.onChange(changeAlertsSpy);
+        mock.onChange(mocksLoadedSpy);
       }
       start({ alerts, logger }) {
         logger.info("Log from start method");
@@ -340,8 +346,8 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      register({ addRouter, alerts, config }) {
-        addRouter("/foo-path", customRouter);
+      register({ server, alerts, config }) {
+        server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy();
         configSpy(config);

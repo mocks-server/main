@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Javier Brea
+Copyright 2020-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -8,15 +8,25 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { startServer, doFetch, waitForServer, wait, fixturesFolder } = require("./support/helpers");
+const {
+  startServer,
+  doFetch,
+  doApiFetch,
+  waitForServer,
+  wait,
+  fixturesFolder,
+} = require("./support/helpers");
 
 describe("alerts api", () => {
   let server;
   beforeAll(async () => {
     server = await startServer("web-tutorial", {
-      mocks: {
-        selected: "foo",
+      mock: {
+        collections: {
+          selected: "foo",
+        },
       },
+      log: "silly",
     });
     await waitForServer();
   });
@@ -26,18 +36,17 @@ describe("alerts api", () => {
   });
 
   describe("when started", () => {
-    it("should return mock not found alert", async () => {
-      const response = await doFetch("/admin/alerts");
+    it("should return collection not found alert", async () => {
+      const response = await doApiFetch("/alerts");
       // one alert is caused by deprecated handler
       expect(response.body.length).toEqual(2);
     });
 
     it("should return specific alert when requested by id", async () => {
-      const response = await doFetch("/admin/alerts/mocks%3Asettings");
+      const response = await doApiFetch("/alerts/mock%3Acollections%3Aselected");
       expect(response.body).toEqual({
-        id: "mocks:settings",
-        context: "mocks:settings",
-        message: "Mock 'foo' was not found. Using the first one found",
+        id: "mock:collections:selected",
+        message: "Collection 'foo' was not found. Selecting the first one found",
         error: null,
       });
     });
@@ -51,13 +60,15 @@ describe("alerts api", () => {
     });
   });
 
-  describe("when mock is modified", () => {
+  describe("when collection is modified", () => {
     beforeAll(async () => {
-      await doFetch("/admin/settings", {
+      await doApiFetch("/config", {
         method: "PATCH",
         body: {
-          mocks: {
-            selected: "base",
+          mock: {
+            collections: {
+              selected: "base",
+            },
           },
         },
       });
@@ -65,7 +76,7 @@ describe("alerts api", () => {
     }, 10000);
 
     it("should return no alerts", async () => {
-      const response = await doFetch("/admin/alerts");
+      const response = await doApiFetch("/alerts");
       // one alert is caused by deprecated handler
       expect(response.body.length).toEqual(1);
     });
@@ -73,7 +84,7 @@ describe("alerts api", () => {
 
   describe("when there is an error loading files", () => {
     beforeAll(async () => {
-      await doFetch("/admin/settings", {
+      await doApiFetch("/config", {
         method: "PATCH",
         body: {
           files: {
@@ -85,9 +96,9 @@ describe("alerts api", () => {
     }, 10000);
 
     it("should return alert containing error", async () => {
-      const response = await doFetch("/admin/alerts");
-      expect(response.body.length).toEqual(4);
-      expect(response.body[3].error.message).toEqual(
+      const response = await doApiFetch("/alerts");
+      expect(response.body.length).toEqual(5);
+      expect(response.body[4].error.message).toEqual(
         expect.stringContaining("Cannot find module '../db/users'")
       );
     });

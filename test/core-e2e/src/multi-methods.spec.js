@@ -28,41 +28,41 @@ describe("when method is defined as array", () => {
     await core.stop();
   });
 
-  describe("plain mocks and routes", () => {
+  describe("plain collections and routes", () => {
     describe("amounts", () => {
-      it("should have two mocks", async () => {
-        expect(core.mocks.plainMocks.length).toEqual(2);
+      it("should have two collections", async () => {
+        expect(core.mock.collections.plain.length).toEqual(2);
       });
 
       it("should have two routes", async () => {
-        expect(core.mocks.plainRoutes.length).toEqual(2);
+        expect(core.mock.routes.plain.length).toEqual(2);
       });
 
       it("should have four route variants", async () => {
-        expect(core.mocks.plainRoutesVariants.length).toEqual(4);
+        expect(core.mock.routes.plainVariants.length).toEqual(4);
       });
     });
 
-    describe("plainMocks", () => {
-      it("should return plain mocks", async () => {
-        expect(core.mocks.plainMocks).toEqual([
+    describe("collections.plain", () => {
+      it("should return plain collections", async () => {
+        expect(core.mock.collections.plain).toEqual([
           {
             id: "base",
             from: null,
-            routesVariants: ["get-users:success", "get-user:1"],
-            appliedRoutesVariants: ["get-users:success", "get-user:1"],
+            definedRoutes: ["get-users:success", "get-user:1"],
+            routes: ["get-users:success", "get-user:1"],
           },
           {
             id: "user-2",
             from: "base",
-            routesVariants: ["get-user:2"],
-            appliedRoutesVariants: ["get-users:success", "get-user:2"],
+            definedRoutes: ["get-user:2"],
+            routes: ["get-users:success", "get-user:2"],
           },
         ]);
       });
 
       it("should return plain routes", async () => {
-        expect(core.mocks.plainRoutes).toEqual([
+        expect(core.mock.routes.plain).toEqual([
           {
             id: "get-user",
             url: "/api/users/:id",
@@ -81,12 +81,12 @@ describe("when method is defined as array", () => {
       });
 
       it("should return plain routesVariants", async () => {
-        expect(core.mocks.plainRoutesVariants).toEqual([
+        expect(core.mock.routes.plainVariants).toEqual([
           {
             id: "get-user:1",
-            routeId: "get-user",
-            handler: "json",
-            response: {
+            route: "get-user",
+            type: "json",
+            preview: {
               body: {
                 id: 1,
                 name: "John Doe",
@@ -97,9 +97,9 @@ describe("when method is defined as array", () => {
           },
           {
             id: "get-user:2",
-            routeId: "get-user",
-            handler: "json",
-            response: {
+            route: "get-user",
+            type: "json",
+            preview: {
               body: {
                 id: 2,
                 name: "Jane Doe",
@@ -110,9 +110,9 @@ describe("when method is defined as array", () => {
           },
           {
             id: "get-users:success",
-            routeId: "get-users",
-            handler: "json",
-            response: {
+            route: "get-users",
+            type: "json",
+            preview: {
               body: [
                 {
                   id: 1,
@@ -129,9 +129,9 @@ describe("when method is defined as array", () => {
           },
           {
             id: "get-users:error",
-            routeId: "get-users",
-            handler: "json",
-            response: {
+            route: "get-users",
+            type: "json",
+            preview: {
               body: {
                 message: "Bad data",
               },
@@ -185,7 +185,7 @@ describe("when method is defined as array", () => {
 
   describe('when using route variant "get-user:2"', () => {
     it("should serve users under the /api/users path", async () => {
-      core.mocks.useRouteVariant("get-user:2");
+      core.mock.useRouteVariant("get-user:2");
       const users = await doFetch("/api/users?req=10");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([

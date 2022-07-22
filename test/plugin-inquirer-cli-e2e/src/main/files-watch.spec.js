@@ -35,11 +35,11 @@ describe("files watcher", () => {
 
   describe("When started", () => {
     it("should display available mocks in CLI", async () => {
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Mocks: 3"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 3"));
     });
 
     it("should display current mock in CLI", async () => {
-      expect(mocks.logs).toEqual(expect.stringContaining("Current mock: base"));
+      expect(mocks.logs).toEqual(expect.stringContaining("Current collection: base"));
     });
 
     it("should serve users collection mock under the /api/users path", async () => {
@@ -69,7 +69,7 @@ describe("files watcher", () => {
 
     describe("without changing current mock", () => {
       it("should display available mocks in CLI", async () => {
-        expect(mocks.currentScreen).toEqual(expect.stringContaining("Mocks: 4"));
+        expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 4"));
       });
 
       it("should serve users collection mock under the /api/users path", async () => {
@@ -91,19 +91,19 @@ describe("files watcher", () => {
       });
     });
 
-    describe('When changing current mock to "user-2"', () => {
+    describe('When changing current collection to "user-2"', () => {
       beforeAll(async () => {
         await mocks.pressEnter();
         await mocks.cursorDown();
         await mocks.pressEnter();
       });
 
-      it("should display current mock in CLI", async () => {
+      it("should display current collection in CLI", async () => {
         await wait(500);
-        expect(mocks.logs).toEqual(expect.stringContaining("Current mock: user-2"));
+        expect(mocks.logs).toEqual(expect.stringContaining("Current collection: user-2"));
       });
 
-      it("should serve users collection mock under the /api/users path", async () => {
+      it("should serve users collection under the /api/users path", async () => {
         const users = await doFetch("/api/users");
         expect(users.body).toEqual([
           { id: 1, name: "John Doe modified" },
@@ -131,7 +131,7 @@ describe("files watcher", () => {
 
       it("should display current behavior in CLI", async () => {
         await wait(500);
-        expect(mocks.logs).toEqual(expect.stringContaining("Current mock: user-real"));
+        expect(mocks.logs).toEqual(expect.stringContaining("Current collection: user-real"));
       });
 
       it("should serve users collection mock under the /api/users path", async () => {
@@ -157,25 +157,27 @@ describe("files watcher", () => {
   describe("When files are modified and contain an error", () => {
     beforeAll(async () => {
       fsExtra.copySync(fixturesFolder("files-error-mock"), fixturesFolder("temp"));
-      await wait(2000);
+      await wait(3000);
     });
 
     it("should display an error", async () => {
       expect(mocks.currentScreen).toEqual(
-        expect.stringContaining("Error: [files:mocks:error] Error loading mocks from file")
-      );
-      expect(mocks.currentScreen).toEqual(
         expect.stringContaining(
-          `${pathJoin("main", "fixtures", "temp", "mocks.js")}: foo is not defined`
+          "Error: [files:collections:error] Error loading collections from file"
         )
       );
       expect(mocks.currentScreen).toEqual(
-        expect.stringContaining(`${pathJoin("main", "fixtures", "temp", "mocks.js")}:11:18`)
+        expect.stringContaining(
+          `${pathJoin("main", "fixtures", "temp", "collections.js")}: foo is not defined`
+        )
+      );
+      expect(mocks.currentScreen).toEqual(
+        expect.stringContaining(`${pathJoin("main", "fixtures", "temp", "collections.js")}:11:18`)
       );
     });
 
     it("should have no mocks available", async () => {
-      expect(mocks.currentScreen).toEqual(expect.stringContaining("Mocks: 0"));
+      expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 0"));
     });
 
     it("should not serve users collection mock under the /api/users path", async () => {
@@ -210,7 +212,7 @@ describe("files watcher", () => {
       expect.assertions(2);
       expect(mocks.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
       expect(mocks.currentScreen).toEqual(
-        expect.stringContaining("Error loading mocks from file")
+        expect.stringContaining("Error loading collections from file")
       );
     });
 
@@ -220,7 +222,9 @@ describe("files watcher", () => {
       await wait(2000);
       expect(mocks.currentScreen).toEqual(expect.not.stringContaining("Displaying logs"));
       expect(mocks.currentScreen).toEqual(
-        expect.stringContaining("Error: [files:mocks:error] Error loading mocks from file")
+        expect.stringContaining(
+          "Error: [files:collections:error] Error loading collections from file"
+        )
       );
       expect(mocks.currentScreen).toEqual(expect.stringContaining("ALERTS"));
     });

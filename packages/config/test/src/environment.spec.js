@@ -24,6 +24,13 @@ describe("environment", () => {
       expect(option.value).toEqual("foo-from-env");
     });
 
+    it("hasBeenSet property should be true", async () => {
+      ({ config, namespace, option } = createConfig({ moduleName: "testA" }));
+      process.env["TEST_A_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
+      await config.init();
+      expect(option.hasBeenSet).toEqual(true);
+    });
+
     it("should return value from environment in envLoadedValues getter", async () => {
       ({ config, namespace, option } = createConfig({ moduleName: "testA" }));
       process.env["TEST_A_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";

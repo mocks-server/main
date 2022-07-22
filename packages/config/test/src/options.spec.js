@@ -67,6 +67,39 @@ describe("options", () => {
     });
   });
 
+  describe("hasBeenSet property", () => {
+    it("should have hasBeenSet as false if value is not actively set", async () => {
+      config = new Config();
+      option = config.addOption({
+        name: "fooOption",
+        type: "string",
+        default: "default-str",
+      });
+      expect(option.hasBeenSet).toEqual(false);
+      await config.load();
+      expect(option.hasBeenSet).toEqual(false);
+      expect(option.value).toEqual("default-str");
+      option.set("foo");
+      expect(option.hasBeenSet).toEqual(true);
+      expect(option.value).toEqual("foo");
+    });
+
+    it("should have hasBeenSet as true if value is actively set", async () => {
+      config = new Config();
+      option = config.addOption({
+        name: "fooOption",
+        type: "string",
+        default: "default-str",
+      });
+      expect(option.hasBeenSet).toEqual(false);
+      await config.load({
+        fooOption: "new-str",
+      });
+      expect(option.hasBeenSet).toEqual(true);
+      expect(option.value).toEqual("new-str");
+    });
+  });
+
   describe("config value getter", () => {
     it("should return namespaces and options values", async () => {
       config = new Config();

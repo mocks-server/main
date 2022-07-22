@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [3.6.0] - 2022-07-22
+
+### Added
+- feat: Export createServer function returning a core instance with preinstalled plugins
+
 ## [3.5.0] - 2022-07-05
 
 ### Changed

@@ -38,9 +38,9 @@ describe("command line arguments with cli disabled", () => {
     });
   });
 
-  describe("behavior option", () => {
+  describe("collection option", () => {
     describe("when not provided", () => {
-      it("should set as current behavior the first one found", async () => {
+      it("should set as current collection the first one found", async () => {
         mocks = mocksRunner(["--files.path=web-tutorial", "--no-plugins.inquirerCli.enabled"]);
         await waitForServer();
         const users = await doFetch("/api/users/2");
@@ -48,8 +48,8 @@ describe("command line arguments with cli disabled", () => {
       });
     });
 
-    describe("when provided and exists", () => {
-      it("should set current behavior", async () => {
+    describe("when legacy is provided and exists", () => {
+      it("should set current collection", async () => {
         mocks = mocksRunner([
           "--files.path=web-tutorial",
           "--no-plugins.inquirerCli.enabled",
@@ -60,15 +60,48 @@ describe("command line arguments with cli disabled", () => {
         expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
       });
     });
+
+    describe("when is provided and exists", () => {
+      it("should set current collection", async () => {
+        mocks = mocksRunner([
+          "--files.path=web-tutorial",
+          "--no-plugins.inquirerCli.enabled",
+          "--mock.collections.selected=user-2",
+        ]);
+        await waitForServer();
+        const users = await doFetch("/api/users/2");
+        expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
+      });
+    });
   });
 
-  describe("delay option", () => {
+  describe("legacy delay option", () => {
     it("should set delay", async () => {
       expect.assertions(2);
       mocks = mocksRunner([
         "--files.path=web-tutorial",
         "--no-plugins.inquirerCli.enabled",
         "--mocks.delay=2000",
+      ]);
+      await waitForServer();
+      const timeCounter = new TimeCounter();
+      const users = await doFetch("/api/users");
+      timeCounter.stop();
+      expect(users.body).toEqual([
+        { id: 1, name: "John Doe" },
+        { id: 2, name: "Jane Doe" },
+      ]);
+      expect(timeCounter.total).toBeGreaterThan(1999);
+    });
+  });
+
+  describe("legacy option", () => {
+    it("should set delay", async () => {
+      expect.assertions(2);
+      mocks = mocksRunner([
+        "--files.path=web-tutorial",
+        "--no-plugins.inquirerCli.enabled",
+        "--mock.routes.delay=2000",
       ]);
       await waitForServer();
       const timeCounter = new TimeCounter();

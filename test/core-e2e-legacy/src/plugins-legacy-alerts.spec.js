@@ -146,7 +146,9 @@ describe("plugins using legacy alerts", () => {
           const alerts = core.alerts;
           const deprecationAlert = alerts.find((alert) => alert.context === "deprecated:addAlert");
           expect(deprecationAlert.message).toEqual(
-            expect.stringContaining("Detected usage of deprecated method 'addAlert'")
+            expect.stringContaining(
+              "Usage of 'addAlert' method is deprecated. Use 'alerts' instead"
+            )
           );
         });
       });
@@ -174,7 +176,9 @@ describe("plugins using legacy alerts", () => {
             (alert) => alert.context === "deprecated:removeAlert"
           );
           expect(deprecationAlert.message).toEqual(
-            expect.stringContaining("Detected usage of deprecated method 'removeAlerts'")
+            expect.stringContaining(
+              "Usage of 'removeAlert' method is deprecated. Use 'alerts' instead"
+            )
           );
         });
 
@@ -183,7 +187,7 @@ describe("plugins using legacy alerts", () => {
           const deprecationAlerts = alerts.filter((alert) =>
             alert.context.startsWith("deprecated")
           );
-          expect(deprecationAlerts.length).toEqual(2);
+          expect(deprecationAlerts.length).toEqual(6);
         });
 
         it("should have removed all plugin alerts", async () => {
@@ -227,19 +231,22 @@ describe("plugins using legacy alerts", () => {
               // Plugin id is still not available in register method
               // It should have been renamed when start alert is received using a different context
               context: "plugins:test-plugin:test-register",
+              id: "plugins:test-plugin:test-register",
               message: "Warning registering plugin",
               error: undefined,
             },
             {
               context: "plugins:test-plugin:test-start",
+              id: "plugins:test-plugin:test-start",
               message: "Warning starting plugin",
               error: undefined,
             },
             {
               context: "plugins:test-plugin:deprecated:core",
+              id: "plugins:test-plugin:deprecated:core",
               error: undefined,
               message:
-                "Usage of core property is deprecated. Use properties at first level instead: https://www.mocks-server.org/docs/next/guides-migrating-from-v3#plugins",
+                "Usage of core property is deprecated. Use properties at first level instead: https://www.mocks-server.org/docs/releases/migrating-from-v3#plugins",
             },
           ]);
         });

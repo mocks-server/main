@@ -8,25 +8,26 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const deepMerge = require("deepmerge");
 const EventEmitter = require("events");
 
+const deepMerge = require("deepmerge");
 const Config = require("@mocks-server/config");
 const { Logger } = require("@mocks-server/logger");
 
-const { CHANGE_MOCKS, CHANGE_ALERTS, CHANGE_LOGS } = require("./eventNames");
-const tracer = require("./tracer");
-const Loaders = require("./Loaders");
-const AlertsLegacy = require("./AlertsLegacy");
-const RoutesHandlers = require("./routes-handlers/RoutesHandlers");
-const Mocks = require("./mocks/Mocks");
+const tracer = require("./common/legacyTracer");
+const AlertsLegacy = require("./alerts/AlertsLegacy");
+const VariantHandlers = require("./variant-handlers/VariantHandlers");
+const Mock = require("./mock/Mock");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
-const FilesLoader = require("./files-loader/FilesLoader");
+const FilesLoaders = require("./files/FilesLoaders");
 const Scaffold = require("./scaffold/Scaffold");
-const Alerts = require("./Alerts");
-const UpdateNotifier = require("./UpdateNotifier");
-const { scopedAlertsMethods, addEventListener, arrayMerge } = require("./support/helpers");
+const Alerts = require("./alerts/Alerts");
+const UpdateNotifier = require("./update-notifier/UpdateNotifier");
+const { scopedAlertsMethods } = require("./alerts/legacyHelpers");
+const { addEventListener, CHANGE_MOCK, CHANGE_ALERTS, CHANGE_LOGS } = require("./common/events");
+const { arrayMerge, deprecatedMessage } = require("./common/helpers");
+const { version } = require("../package.json");
 
 const MODULE_NAME = "mocks";
 
@@ -38,7 +39,7 @@ const ROOT_OPTIONS = [
     default: "info",
   },
   {
-    description: "Array of RouteHandlers to be added",
+    description: "Array of VariantHandlers to be added. Legacy",
     name: "routesHandlers",
     type: "array",
     default: [],
@@ -55,6 +56,8 @@ class Core {
     // Create logger
     this._logger = new Logger();
     this._configLogger = this._logger.namespace("config");
+
+    // LEGACY, to be removed
     this._logger.onChangeGlobalStore(() => {
       this._eventEmitter.emit(CHANGE_LOGS);
     });
@@ -62,11 +65,14 @@ class Core {
     // Create config
     this._config = new Config({ moduleName: MODULE_NAME });
     this._configPlugins = this._config.addNamespace(Plugins.id);
-    this._configMocks = this._config.addNamespace(Mocks.id);
+    this._configMock = this._config.addNamespace(Mock.id);
     this._configServer = this._config.addNamespace(Server.id);
-    this._configFilesLoader = this._config.addNamespace(FilesLoader.id);
+    this._configFilesLoaders = this._config.addNamespace(FilesLoaders.id);
 
-    [this._logOption, this._routesHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
+    // LEGACY, to be removed
+    this._configMocksLegacy = this._config.addNamespace(Mock.legacyId);
+
+    [this._logOption, this._variantHandlersOption] = this._config.addOptions(ROOT_OPTIONS);
     this._logOption.onChange((level) => {
       this._logger.setLevel(level);
     });
@@ -93,28 +99,29 @@ class Core {
       pkg: advancedOptions.pkg,
     });
 
-    // Create mocks loaders
-    this._mocksLoaders = new Loaders({
-      onLoad: () => {
-        this._loadedMocks = true;
-        if (this._loadedRoutes) {
-          this._mocks.load();
-        }
-      },
+    // Create variant handlers
+    this._variantHandlers = new VariantHandlers({
+      logger: this._logger.namespace(VariantHandlers.id),
+      config: this._config.addNamespace(VariantHandlers.id),
     });
 
-    // Create routes loaders
-    this._routesLoaders = new Loaders({
-      onLoad: () => {
-        this._loadedRoutes = true;
-        if (this._loadedMocks) {
-          this._mocks.load();
-        }
+    // Create mock
+    this._mock = new Mock(
+      {
+        config: this._configMock,
+        alerts: this._alerts.collection(Mock.id),
+        logger: this._logger.namespace(Mock.id),
+        // LEGACY, to be removed
+        legacyConfig: this._configMocksLegacy,
+        onChange: () => this._eventEmitter.emit(CHANGE_MOCK),
       },
-    });
+      this // To be used only by routeHandlers
+    );
 
-    this._loadMocks = this._mocksLoaders.new();
-    this._loadRoutes = this._routesLoaders.new();
+    // LEGACY, to be removed
+    const loaders = this._mock.createLoaders();
+    this._loadCollections = loaders.loadCollections;
+    this._loadRoutes = loaders.loadRoutes;
 
     // Create plugins
     this._plugins = new Plugins(
@@ -122,11 +129,36 @@ class Core {
         config: this._configPlugins,
         alerts: this._alerts.collection(Plugins.id),
         logger: this._logger.namespace(Plugins.id),
-        createMocksLoader: () => {
-          return this._mocksLoaders.new();
+        // LEGACY, to be removed
+        createCollectionsLoader: () => {
+          const { loadCollections } = this._mock.createLoaders();
+          return (collections) => {
+            this._deprecationAlerts.set(
+              "loadMocks",
+              deprecatedMessage(
+                "method",
+                "core.loadMocks",
+                "core.mock.createLoaders",
+                "releases/migrating-from-v3#api"
+              )
+            );
+            return loadCollections(collections);
+          };
         },
         createRoutesLoader: () => {
-          return this._routesLoaders.new();
+          const { loadRoutes } = this._mock.createLoaders();
+          return (routes) => {
+            this._deprecationAlerts.set(
+              "loadRoutes",
+              deprecatedMessage(
+                "method",
+                "core.loadRoutes",
+                "core.mock.createLoaders",
+                "releases/migrating-from-v3#api"
+              )
+            );
+            return loadRoutes(routes);
+          };
         },
         // LEGACY, remove when legacy alerts are removed
         ...scopedAlertsMethods(
@@ -139,39 +171,23 @@ class Core {
       this //To be used only by plugins
     );
 
-    // Create routes handlers
-    this._routesHandlers = new RoutesHandlers({
-      logger: this._logger.namespace("routesHandlers"),
-    });
-
-    // Create mocks
-    this._mocks = new Mocks(
-      {
-        config: this._configMocks,
-        alerts: this._alerts.collection(Mocks.id),
-        logger: this._logger.namespace(Mocks.id),
-        getLoadedMocks: () => this._mocksLoaders.contents,
-        getLoadedRoutes: () => this._routesLoaders.contents,
-        onChange: () => this._eventEmitter.emit(CHANGE_MOCKS),
-      },
-      this // To be used only by routeHandlers
-    );
-
     // Create server
     this._server = new Server({
       config: this._configServer,
       logger: this._logger.namespace(Server.id),
       alerts: this._alerts.collection(Server.id),
-      mocksRouter: this._mocks.router,
+      routesRouter: this._mock.router,
     });
 
+    const fileLoaders = this._mock.createLoaders();
+
     // Create files loaders
-    this._filesLoader = new FilesLoader({
-      config: this._configFilesLoader,
-      logger: this._logger.namespace(FilesLoader.id),
-      alerts: this._alerts.collection(FilesLoader.id),
-      loadMocks: this._mocksLoaders.new(),
-      loadRoutes: this._routesLoaders.new(),
+    this._filesLoader = new FilesLoaders({
+      config: this._configFilesLoaders,
+      logger: this._logger.namespace(FilesLoaders.id),
+      alerts: this._alerts.collection(FilesLoaders.id),
+      loadCollections: fileLoaders.loadCollections,
+      loadRoutes: fileLoaders.loadRoutes,
     });
 
     // Create scaffold
@@ -245,8 +261,19 @@ class Core {
     // Register plugins, let them add their custom config
     await this._plugins.register();
 
-    // Register routes handlers
-    await this._routesHandlers.register(this._routesHandlersOption.value);
+    if (this._variantHandlersOption.hasBeenSet) {
+      this._deprecationAlerts.set(
+        "routesHandlers",
+        deprecatedMessage(
+          "option",
+          "routesHandlers",
+          "variantHandlers.register",
+          "configuration/migrating-from-v3#options"
+        )
+      );
+    }
+
+    await this._variantHandlers.registerConfig(this._variantHandlersOption.value);
 
     await this._scaffold.init({
       filesLoaderPath: this._filesLoader.path,
@@ -255,7 +282,7 @@ class Core {
     await this._loadConfig();
 
     // Config is ready, init all
-    this._mocks.init(this._routesHandlers.handlers);
+    this._mock.init(this._variantHandlers.handlers);
     await this._server.init();
     await this._filesLoader.init();
     return this._plugins.init();
@@ -274,72 +301,190 @@ class Core {
     return this._stopPlugins();
   }
 
-  addRoutesHandler(RoutesHandler) {
-    this._routesHandlers.add(RoutesHandler);
+  // LEGACY, to be removed
+  addRoutesHandler(VariantHandler) {
+    this._deprecationAlerts.set(
+      "addRoutesHandler",
+      deprecatedMessage(
+        "method",
+        "core.addRoutesHandler",
+        "core.variantHandlers.register",
+        "releases/migrating-from-v3#api"
+      )
+    );
+    this._variantHandlers.register([VariantHandler]);
   }
 
-  loadMocks(mocks) {
-    this._loadMocks(mocks);
+  // LEGACY, to be removed
+  loadMocks(collections) {
+    this._deprecationAlerts.set(
+      "loadMocks",
+      deprecatedMessage(
+        "method",
+        "core.loadMocks",
+        "core.mock.createLoaders",
+        "releases/migrating-from-v3#api"
+      )
+    );
+    this._loadCollections(collections);
   }
 
+  // LEGACY, to be removed
   loadRoutes(routes) {
+    this._deprecationAlerts.set(
+      "loadRoutes",
+      deprecatedMessage(
+        "method",
+        "core.loadRoutes",
+        "core.mock.createLoaders",
+        "releases/migrating-from-v3#api"
+      )
+    );
     this._loadRoutes(routes);
   }
 
   // Listeners
 
+  // LEGACY, to be removed
   onChangeMocks(listener) {
-    return addEventListener(listener, CHANGE_MOCKS, this._eventEmitter);
+    this._deprecationAlerts.set(
+      "onChangeMocks",
+      deprecatedMessage(
+        "method",
+        "core.onChangeMocks",
+        "core.mock.onChange",
+        "releases/migrating-from-v3#api"
+      )
+    );
+    return addEventListener(listener, CHANGE_MOCK, this._eventEmitter);
   }
 
+  // LEGACY, to be removed
   onChangeAlerts(listener) {
+    this._deprecationAlerts.set(
+      "onChangeAlerts",
+      deprecatedMessage(
+        "method",
+        "core.onChangeAlerts",
+        "core.alerts.root.onChange",
+        "releases/migrating-from-v3#api"
+      )
+    );
     return addEventListener(listener, CHANGE_ALERTS, this._eventEmitter);
   }
 
+  // LEGACY, to be removed
   onChangeLogs(listener) {
+    this._deprecationAlerts.set(
+      "onChangeLogs",
+      deprecatedMessage(
+        "method",
+        "core.onChangeLogs",
+        "core.logger.onChangeGlobalStore",
+        "releases/migrating-from-v3#api"
+      )
+    );
     return addEventListener(listener, CHANGE_LOGS, this._eventEmitter);
   }
 
   // Expose Server methods and getters
 
+  // LEGACY, to be removed
   restartServer() {
+    this._deprecationAlerts.set(
+      "restartServer",
+      deprecatedMessage(
+        "method",
+        "core.restartServer",
+        "core.server.restart",
+        "releases/migrating-from-v3#api"
+      )
+    );
     return this._server.restart();
   }
 
+  // LEGACY, to be removed
   addRouter(path, router) {
-    return this._server.addCustomRouter(path, router);
+    this._deprecationAlerts.set(
+      "addRouter",
+      deprecatedMessage(
+        "method",
+        "core.addRouter",
+        "core.server.addRouter",
+        "releases/migrating-from-v3#api"
+      )
+    );
+    return this._server.addRouter(path, router);
   }
 
+  // LEGACY, to be removed
   removeRouter(path, router) {
-    return this._server.removeCustomRouter(path, router);
+    this._deprecationAlerts.set(
+      "removeRouter",
+      deprecatedMessage(
+        "method",
+        "core.removeRouter",
+        "core.server.removeRouter",
+        "releases/migrating-from-v3#api"
+      )
+    );
+    return this._server.removeRouter(path, router);
   }
-
-  // Expose child objects
 
   // LEGACY, change by whole alerts object in next major version
   get alerts() {
+    this._deprecationAlerts.set(
+      "alerts",
+      deprecatedMessage(
+        "method",
+        "core.alerts",
+        "core.alertsApi",
+        "releases/migrating-from-v3#api"
+      )
+    );
     return this._alerts.customFlat;
   }
 
   // Provides access to alerts API while alerts legacy is maintained
+  // LEGACY, to be removed
   get alertsApi() {
     return this._alerts;
   }
 
+  // LEGACY, to be removed
   get mocks() {
-    return this._mocks;
+    this._deprecationAlerts.set(
+      "mocks",
+      deprecatedMessage("getter", "core.mocks", "core.mock", "releases/migrating-from-v3#api")
+    );
+    return this._mock;
   }
 
   // LEGACY, to be removed
   get tracer() {
     this._deprecationAlerts.set(
       "tracer",
-      "Usage of tracer is deprecated. Use logger instead: https://www.mocks-server.org/docs/next/guides-migrating-from-v3#logger"
+      deprecatedMessage(
+        "object",
+        "core.tracer",
+        "core.logger",
+        "releases/migrating-from-v3#logger"
+      )
     );
     return tracer;
   }
 
+  // LEGACY, to be removed
   get logs() {
+    this._deprecationAlerts.set(
+      "logs",
+      deprecatedMessage(
+        "getter",
+        "core.logs",
+        "core.logger.globalStore",
+        "releases/migrating-from-v3#logger"
+      )
+    );
     return this._logger.globalStore;
   }
 
@@ -349,6 +494,22 @@ class Core {
 
   get config() {
     return this._config;
+  }
+
+  get server() {
+    return this._server;
+  }
+
+  get mock() {
+    return this._mock;
+  }
+
+  get variantHandlers() {
+    return this._variantHandlers;
+  }
+
+  get version() {
+    return version;
   }
 }
 

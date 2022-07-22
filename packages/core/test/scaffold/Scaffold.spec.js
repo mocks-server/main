@@ -14,8 +14,8 @@ const fsExtra = require("fs-extra");
 const sinon = require("sinon");
 const { Logger } = require("@mocks-server/logger");
 
-const LibsMocks = require("../Libs.mocks");
-const ConfigMock = require("../Config.mocks");
+const LibsMocks = require("../common/Libs.mocks");
+const ConfigMock = require("../common/Config.mocks");
 
 const Scaffold = require("../../src/scaffold/Scaffold");
 
@@ -103,7 +103,8 @@ describe("Scaffold", () => {
       expect(libsMocks.stubs.fsExtra.writeFile.callCount).toEqual(0);
     });
 
-    it("should set the selected mock value if it has not value before creating config", async () => {
+    // LEGACY, enable test when legacy mocks.selected option is removed
+    it.skip("should set the selected mock value if it has not value before creating config", async () => {
       scaffold._mockSelectedOption.value = null;
       await scaffold.init({ filesLoaderPath: "foo" });
       expect(scaffold._mockSelectedOption.value).toEqual("base");

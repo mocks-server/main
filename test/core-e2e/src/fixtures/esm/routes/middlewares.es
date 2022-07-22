@@ -10,8 +10,8 @@ const middlewares = [
     variants: [
       {
         id: "enabled",
-        handler: "middleware",
-        response: {
+        type: "middleware",
+        options: {
           middleware: (req, res, next, mocksServer) => {
             res.set("x-mocks-server-example", "custom-header");
             mocksServer.tracer.info(
@@ -23,8 +23,8 @@ const middlewares = [
       },
       {
         id: "disabled",
-        handler: "middleware",
-        response: {
+        type: "middleware",
+        options: {
           middleware: (req, res, next) => next(),
         }
       },

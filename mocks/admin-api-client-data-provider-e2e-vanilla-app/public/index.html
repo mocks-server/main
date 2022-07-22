@@ -36,7 +36,7 @@
         ].join('|'), 'g')
     </script>
     <script src="https://unpkg.com/@data-provider/axios@3.0.2/dist/index.umd.js"></script>
-    <script src="https://unpkg.com/@mocks-server/admin-api-paths@2.1.0/dist/index.umd.js"></script>
+    <script src="js/admin-api-paths.js"></script>
     <script src="js/admin-api-client.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
     <script src="main.js"></script>
@@ -53,22 +53,22 @@
                     </ul>
                 </div>
                 <div class="content">
-                    <p class="content__title">Current Settings</p>
-                    <ul id="settings-container">
+                    <p class="content__title">Current Config</p>
+                    <ul id="config-container">
                     </ul>
                 </div>
                 <div class="content">
-                    <p class="content__title">Mocks</p>
-                    <ul id="mocks-container">
+                    <p class="content__title">collections</p>
+                    <ul id="collections-container">
                     </ul>
                 </div>
                 <div class="content">
-                    <p class="content__title">Current Mock: <span data-testid="current-mock-id" id="current-mock-id"></span></p>
-                    <p data-testid="current-mock" id="current-mock"></p>
-                    <p class="content__title">Current Route Variant: <span data-testid="current-route-variant-id" id="current-route-variant-id"></span></p>
-                    <p data-testid="current-route-variant" id="current-route-variant"></p>
-                    <button data-testid="set-mock-base" id="set-mock-base">Set mock base</button>
-                    <button data-testid="set-mock-user2" id="set-mock-user2">Set mock user2</button>
+                    <p class="content__title">Current collection: <span data-testid="current-collection-id" id="current-collection-id"></span></p>
+                    <p data-testid="current-collection" id="current-collection"></p>
+                    <p class="content__title">Current Route Variant: <span data-testid="current-variant-id" id="current-variant-id"></span></p>
+                    <p data-testid="current-variant" id="current-variant"></p>
+                    <button data-testid="set-collection-base" id="set-collection-base">Set collection base</button>
+                    <button data-testid="set-collection-user2" id="set-collection-user2">Set collection user2</button>
                 </div>
                 <div class="content">
                     <p class="content__title">Routes</p>

@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import PropTypes from "prop-types";
 
 const format = (value) => {
@@ -5,15 +7,19 @@ const format = (value) => {
 };
 
 const AboutView = ({ about }) => {
-  console.log(about);
+  const versions = useMemo(() => {
+    return (about && about.versions) || {};
+  }, [about]);
+
   return (
     <div className="content">
       <p className="content__title">About</p>
       <ul>
-        {Object.keys(about).map((key) => {
+        {Object.keys(versions).map((key) => {
           return (
             <li key={key}>
-              <b>{key}</b>: <span data-testid={`about-${key}`}>{format(about[key])}</span>
+              <b>{key}</b>:
+              <span data-testid={`about-version-${key}`}>{format(versions[key])}</span>
             </li>
           );
         })}

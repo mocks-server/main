@@ -105,7 +105,7 @@ class Server {
     return "server";
   }
 
-  constructor({ config, alerts, mocksRouter, logger }) {
+  constructor({ config, alerts, routesRouter, logger }) {
     this._logger = logger;
     this._config = config;
     const corsConfigNamespace = this._config.addNamespace(CORS_NAMESPACE);
@@ -136,7 +136,7 @@ class Server {
     this._urlEncodedBodyParserEnabledOption.onChange(this.restart);
     this._urlEncodedBodyParserOptionsOption.onChange(this.restart);
 
-    this._mocksRouter = mocksRouter;
+    this._routesRouter = routesRouter;
     this._customRouters = [];
     this._error = null;
     this._alerts = alerts;
@@ -180,7 +180,7 @@ class Server {
     // TODO, move to variants router. Add options to routes to configure it
     this._express.use(logRequest({ logger: this._logger }));
     this._registerCustomRouters();
-    this._express.use(this._mocksRouter);
+    this._express.use(this._routesRouter);
 
     // TODO, Add options to allow to disable or configure it
     this._express.use(notFound({ logger: this._logger }));
@@ -293,7 +293,7 @@ class Server {
     return routerIndex;
   }
 
-  addCustomRouter(path, router) {
+  addRouter(path, router) {
     this._logger.info(`Adding custom router with path ${path}`);
     this._customRouters.push({
       path,
@@ -302,7 +302,7 @@ class Server {
     return this._reinitServer();
   }
 
-  removeCustomRouter(path, router) {
+  removeRouter(path, router) {
     this._logger.info(`Removing custom router with path ${path}`);
     let indexToRemove = this._getCustomRouterIndex(path, router);
     if (indexToRemove !== null) {
@@ -317,6 +317,7 @@ class Server {
     return this.start();
   }
 
+  // LEGACY, to be removed
   get error() {
     return this._error;
   }

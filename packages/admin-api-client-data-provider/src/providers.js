@@ -1,11 +1,11 @@
 import {
-  SETTINGS,
+  CONFIG,
   ABOUT,
   ALERTS,
-  MOCKS,
+  COLLECTIONS,
   ROUTES,
-  ROUTES_VARIANTS,
-  MOCK_CUSTOM_ROUTES_VARIANTS,
+  VARIANTS,
+  CUSTOM_ROUTE_VARIANTS,
 } from "@mocks-server/admin-api-paths";
 import { Axios } from "@data-provider/axios";
 
@@ -57,13 +57,6 @@ function createModelOrigin({ id, baseUrl, modelId }) {
   });
 }
 
-function modelGetter(modelOrigin, methodName) {
-  const method = getModelMethod(methodName);
-  return (modelId) => {
-    return modelOrigin.queries[method](modelId);
-  };
-}
-
 function createRestEntityOrigins({ id, baseUrl, modelId, modelGetterMethod, modelGetterParam }) {
   const collectionOrigin = createCollectionOrigin({
     id,
@@ -77,7 +70,7 @@ function createRestEntityOrigins({ id, baseUrl, modelId, modelGetterMethod, mode
   });
 
   addModelQuery(modelOrigin, modelGetterMethod, modelGetterParam);
-  return [collectionOrigin, modelOrigin, modelGetter(modelOrigin, modelGetterMethod)];
+  return [collectionOrigin, modelOrigin];
 }
 
 export const about = new Axios({
@@ -87,9 +80,9 @@ export const about = new Axios({
   ...initialState({}),
 });
 
-export const settings = new Axios({
-  id: "settings",
-  url: SETTINGS,
+export const config = new Axios({
+  id: "config",
+  url: CONFIG,
   updateMethod: "patch",
   tags: [TAG],
   ...initialState({}),
@@ -97,28 +90,24 @@ export const settings = new Axios({
 
 const alertsOrigins = createRestEntityOrigins({ id: "alerts", baseUrl: ALERTS });
 export const alerts = alertsOrigins[0];
-export const alertsModel = alertsOrigins[1];
-export const alert = alertsOrigins[2];
+export const alert = alertsOrigins[1];
 
-const mocksOrigins = createRestEntityOrigins({ id: "mocks", baseUrl: MOCKS });
-export const mocks = mocksOrigins[0];
-export const mocksModel = mocksOrigins[1];
-export const mock = mocksOrigins[2];
+const collectionsOrigins = createRestEntityOrigins({ id: "collections", baseUrl: COLLECTIONS });
+export const collections = collectionsOrigins[0];
+export const collection = collectionsOrigins[1];
 
 const routesOrigins = createRestEntityOrigins({ id: "routes", baseUrl: ROUTES });
 export const routes = routesOrigins[0];
-export const routesModel = routesOrigins[1];
-export const route = routesOrigins[2];
+export const route = routesOrigins[1];
 
-const routesVariantsOrigins = createRestEntityOrigins({
-  id: "routes-variants",
-  baseUrl: ROUTES_VARIANTS,
+const variantsOrigins = createRestEntityOrigins({
+  id: "route-variants",
+  baseUrl: VARIANTS,
 });
-export const routesVariants = routesVariantsOrigins[0];
-export const routesVariantsModel = routesVariantsOrigins[1];
-export const routeVariant = routesVariantsOrigins[2];
+export const variants = variantsOrigins[0];
+export const variant = variantsOrigins[1];
 
-export const customRoutesVariants = createCollectionOrigin({
+export const customRouteVariants = createCollectionOrigin({
   id: "custom-routes-variants",
-  url: MOCK_CUSTOM_ROUTES_VARIANTS,
+  url: CUSTOM_ROUTE_VARIANTS,
 });

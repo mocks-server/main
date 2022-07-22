@@ -13,7 +13,7 @@
 
 # Mocks-server administration api client
 
-This package provides an API client for administrating Mocks Server _(it performs requests to the [Admin API plugin][plugin-admin-api-url] under the hood)_.
+This package provides an API client for administrating Mocks Server through HTTP requests to the [Admin API plugin][plugin-admin-api-url].
 
 Requests to the Mocks Server administration API are made using [`cross-fetch`](https://www.npmjs.com/package/cross-fetch), which makes this package compatible with browsers and Node.js environments, but, if you are going to build a browser application, you'll probably prefer to use the [`@mocks-server/admin-api-client-data-provider` package](https://www.npmjs.com/package/@mocks-server/admin-api-client-data-provider), which uses [Data Provider](https://www.data-provider.org), and works well with Redux, React, etc.
 
@@ -34,23 +34,29 @@ The UMD build is also available on unpkg. When UMD package is loaded, it creates
 
 ## Usage
 
-All methods described in the [Api](#api) (except the `config` method) return Promises when executed:
+All methods described in the [Api](#api) return Promises when executed (except the `configClient` method):
 
 ```js
-import { readAbout, readSettings, updateSettings } from "@mocks-server/admin-api-client";
+import { readAbout, readConfig, updateConfig } from "@mocks-server/admin-api-client";
 
 const example = async () => {
   const { version } = await readAbout();
-  console.log(`Current Admin API plugin version is ${version}`);
+  console.log(`Current Admin API plugin version is ${versions.adminApi}`);
 
-  const currentSettings = await readSettings();
-  console.log("Current Mocks Server settings are", currentSettings);
+  const currentConfig = await readConfig();
+  console.log("Current Mocks Server config is", JSON.stringify(currentConfig));
 
-  await updateSettings({
-    mock: "user-super-admin",
-    delay: 1000
+  await updateConfig({
+    mock: {
+      collections: {
+        selected: "user-super-admin"
+      },
+      routes: {
+        delay: 1000
+      },
+    },
   });
-  console.log("Mock and delay changed");
+  console.log("Collection and delay changed");
 };
 
 example();
@@ -59,38 +65,42 @@ example();
 ## Api
 
 * `readAbout()` - Returns info about the Admin API plugin, such as current version.
-* `readSettings()` - Returns current Mocks Server settings.
-* `updateSettings(settingsObject)` - Updates Mocks Server settings. A settings object has to be provided. Read the [Mocks Server configuration docs](https://www.mocks-server.org/docs/configuration-options) for further info.
+* `readConfig()` - Returns current configuration.
+* `updateConfig(configObject)` - Updates Mocks Server configuration. A configuration object has to be provided. Read the [Mocks Server configuration docs](https://www.mocks-server.org/docs/configuration/options) for further info.
 * `readAlerts()` - Returns array of current alerts.
 * `readAlert(alertId)` - Returns an specific alert.
-* `readMocks()` - Returns available mocks.
-* `readMock(id)` - Returns data of a specific mock.
+* `readCollections()` - Returns available collections.
+* `readCollection(id)` - Returns a collection by ID.
 * `readRoutes()` - Returns available routes.
-* `readRoute(id)` - Returns data of a specific route.
-* `readRoutesVariants()` - Returns available routes variants.
-* `readRouteVariant(id)` - Returns data of a specific route variant.
-* `readCustomRoutesVariants()` - Returns current routes variants manually added to current mock.
-* `useRouteVariant(id)` - Sets a specific route variant to be used by current mock.
-* `restoreRoutesVariants()` - Restore routes variants to those defined in current mock.
+* `readRoute(id)` - Returns a route by ID.
+* `readVariants()` - Returns available route variants.
+* `readVariant(id)` - Returns a route variant by ID.
+* `readCustomRouteVariants()` - Returns current custom route variants of the current collection.
+* `useRouteVariant(id)` - Sets a custom route variant to be used by current collection.
+* `restoreRouteVariants()` - Restore route variants to those defined in current collection.
 
 ## Configuration
 
-By default, the client is configured to request to `http://127.0.0.1:3100/admin`, based in the [default options of Mocks Server](https://www.mocks-server.org/docs/configuration-options)
+By default, the client is configured to request to `http://127.0.0.1:3110/api`, based in the [default options of Mocks Server](https://www.mocks-server.org/docs/configuration/options)
 
-You can change both the base url of Mocks Server, and the path of the [Admin API plugin][plugin-admin-api-url] using the `config` method:
+You can change both the the host and port of the administration API:
 
 ```js
-import { config } from "@mocks-server/admin-api-client";
+import { configClient } from "@mocks-server/admin-api-client";
 
-config({
-  adminApiPath: "/foo-admin",
-  baseUrl: "http://my-mocks-server:3000"
+configClient({
+  host: "localhost",
+  port: 3500
 });
 ```
+
+## Release notes
+
+Current major release is compatible only with `@mocks-server/main` versions upper or equal than `3.6`. Use prior releases for lower versions. If you don't want to update to the latest major version of this package yet but you want to update `@mocks-server/main`, you can also use any `5.x` version of this package with any `@mocks-server/main@3.x` version.
 
 ## Contributing
 
 Contributors are welcome.
 Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of conduct](.github/CODE_OF_CONDUCT.md).
 
-[plugin-admin-api-url]: https://github.com/mocks-server/plugin-admin-api
+[plugin-admin-api-url]: https://github.com/mocks-server/main/blob/master/packages/admin-api-client

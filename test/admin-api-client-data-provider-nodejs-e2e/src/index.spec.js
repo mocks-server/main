@@ -1,21 +1,21 @@
 const {
   readAbout,
-  readMocks,
-  readMock,
+  readCollections,
+  readCollection,
   readRoutes,
   readRoute,
-  readRouteVariant,
-  readSettings,
-  updateSettings,
+  readVariant,
+  readConfig,
+  updateConfig,
   readAlerts,
   readAlert,
 } = require("./index");
 
-describe("react-admin-client methods used through node", () => {
+describe("data provider methods used through node", () => {
   describe("when reading about", () => {
-    it("should return current version", async () => {
+    it("should return current versions", async () => {
       const about = await readAbout();
-      expect(about.version).toBeDefined();
+      expect(about.versions).toBeDefined();
     });
   });
 
@@ -47,73 +47,85 @@ describe("react-admin-client methods used through node", () => {
     });
   });
 
-  describe("when reading mocks", () => {
-    it("should return mocks collection", async () => {
-      const mocks = await readMocks();
-      expect(mocks.length).toEqual(2);
+  describe("when reading collections", () => {
+    it("should return collections", async () => {
+      const collections = await readCollections();
+      expect(collections.length).toEqual(2);
     });
 
-    it("first mock model should exist", async () => {
-      const mocks = await readMocks();
-      const mockId = mocks[0].id;
-      const mock = await readMock(mockId);
-      expect(mock.id).toEqual(mockId);
+    it("first collections model should exist", async () => {
+      const collections = await readCollections();
+      const collectionId = collections[0].id;
+      const collection = await readCollection(collectionId);
+      expect(collection.id).toEqual(collectionId);
     });
 
-    it("second mock model should exist", async () => {
-      const mocks = await readMocks();
-      const mockId = mocks[1].id;
-      const mock = await readMock(mockId);
-      expect(mock.id).toEqual(mockId);
+    it("second collection model should exist", async () => {
+      const collections = await readCollections();
+      const collectionId = collections[1].id;
+      const mock = await readCollection(collectionId);
+      expect(mock.id).toEqual(collectionId);
     });
 
-    it("route variant of mock base should exist", async () => {
-      const mocks = await readMocks();
-      const routeVariantId = mocks[0].routesVariants[0];
-      const routeVariant = await readRouteVariant(routeVariantId);
+    it("route route variant of collection base should exist", async () => {
+      const collections = await readCollections();
+      const routeVariantId = collections[0].routes[0];
+      const routeVariant = await readVariant(routeVariantId);
       expect(routeVariant.id).toEqual(routeVariantId);
     });
 
-    it("first routeVariant of mock user2 should exist", async () => {
-      const mocks = await readMocks();
-      const routeVariantId = mocks[1].routesVariants[0];
-      const routeVariant = await readRouteVariant(routeVariantId);
+    it("first route variant of collection user2 should exist", async () => {
+      const collections = await readCollections();
+      const routeVariantId = collections[1].routes[0];
+      const routeVariant = await readVariant(routeVariantId);
       expect(routeVariant.id).toEqual(routeVariantId);
     });
   });
 
-  describe("when reading settings", () => {
-    it("should return current mock", async () => {
-      const settings = await readSettings();
-      expect(settings.mocks.selected).toEqual(undefined);
+  describe("when reading config", () => {
+    it("should return current collection", async () => {
+      const config = await readConfig();
+      expect(config.mocks.selected).toEqual(undefined);
     });
   });
 
-  describe("when updating settings", () => {
-    it("should update current mock", async () => {
-      await updateSettings({
+  describe("when updating config", () => {
+    it("should update current collection", async () => {
+      await updateConfig({
         mocks: { selected: "user2" },
       });
-      const settings = await readSettings();
-      expect(settings.mocks.selected).toEqual("user2");
+      const config = await readConfig();
+      expect(config.mocks.selected).toEqual("user2");
     });
 
-    it("should update current delay", async () => {
-      await updateSettings({
+    it("should update current delay using legacy option", async () => {
+      await updateConfig({
         mocks: {
           delay: 1000,
         },
       });
-      const settings = await readSettings();
-      expect(settings.mocks.delay).toEqual(1000);
+      const config = await readConfig();
+      expect(config.mocks.delay).toEqual(1000);
     });
 
-    it("should update current mock again", async () => {
-      await updateSettings({
-        mocks: { selected: "base" },
+    it("should update current delay", async () => {
+      await updateConfig({
+        mock: {
+          routes: {
+            delay: 1000,
+          },
+        },
       });
-      const settings = await readSettings();
-      expect(settings.mocks.selected).toEqual("base");
+      const config = await readConfig();
+      expect(config.mock.routes.delay).toEqual(1000);
+    });
+
+    it("should update current collection again", async () => {
+      await updateConfig({
+        mock: { collections: { selected: "base" } },
+      });
+      const config = await readConfig();
+      expect(config.mock.collections.selected).toEqual("base");
     });
   });
 });

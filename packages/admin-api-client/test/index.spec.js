@@ -2,26 +2,26 @@ import { wait } from "./support/helpers";
 
 import {
   readAbout,
-  readSettings,
-  updateSettings,
+  readConfig,
+  updateConfig,
   readAlerts,
   readAlert,
-  readMocks,
-  readMock,
+  readCollections,
+  readCollection,
   readRoutes,
   readRoute,
-  readRoutesVariants,
-  readRouteVariant,
-  readCustomRoutesVariants,
+  readVariants,
+  readVariant,
+  readCustomRouteVariants,
   useRouteVariant,
-  restoreRoutesVariants,
+  restoreRouteVariants,
 } from "../index";
 
-describe("react-admin-client methods used with node", () => {
+describe("admin api client methods", () => {
   describe("when reading about", () => {
     it("should return current version", async () => {
       const about = await readAbout();
-      expect(about.version).toBeDefined();
+      expect(about.versions.adminApi).toBeDefined();
     });
   });
 
@@ -32,10 +32,10 @@ describe("react-admin-client methods used with node", () => {
         expect(alerts.length).toEqual(1);
       });
 
-      it("should return alert about mock not defined", async () => {
+      it("should return alert about collection not defined", async () => {
         const alerts = await readAlerts();
         expect(alerts[0].message).toEqual(
-          expect.stringContaining("Option 'mock' was not defined")
+          expect.stringContaining("Option 'mock.collections.selected' was not defined")
         );
       });
     });
@@ -43,7 +43,7 @@ describe("react-admin-client methods used with node", () => {
     describe("when there are alerts about files with error", () => {
       it("should return 3 alerts", async () => {
         expect.assertions(1);
-        await updateSettings({
+        await updateConfig({
           files: { path: "mocks-with-error" },
         });
         await wait(2000);
@@ -51,20 +51,22 @@ describe("react-admin-client methods used with node", () => {
         expect(alerts.length).toEqual(3);
       });
 
-      it("alert about mocks settings should exist", async () => {
+      it("alert about config should exist", async () => {
         const alerts = await readAlerts();
         const alertId = alerts[0].id;
         const alert = await readAlert(alertId);
         expect(alert.id).toEqual(alertId);
-        expect(alert.message).toEqual(expect.stringContaining("Option 'mock' was not defined"));
+        expect(alert.message).toEqual(
+          expect.stringContaining("Option 'mock.collections.selected' was not defined")
+        );
       });
 
-      it("alert about no mocks should exist", async () => {
+      it("alert about empty collections should exist", async () => {
         const alerts = await readAlerts();
         const alertId = alerts[1].id;
         const alert = await readAlert(alertId);
         expect(alert.id).toEqual(alertId);
-        expect(alert.message).toEqual(expect.stringContaining("No mocks found"));
+        expect(alert.message).toEqual(expect.stringContaining("No collections found"));
       });
 
       it("alert about files error should exist", async () => {
@@ -72,16 +74,18 @@ describe("react-admin-client methods used with node", () => {
         const alertId = alerts[2].id;
         const alert = await readAlert(alertId);
         expect(alert.id).toEqual(alertId);
-        expect(alert.message).toEqual(expect.stringContaining("Error loading mocks"));
+        expect(alert.message).toEqual(expect.stringContaining("Error loading collections"));
       });
     });
 
     describe("when alerts are removed", () => {
       it("should return no alerts", async () => {
-        await updateSettings({
+        await updateConfig({
           files: { path: "mocks" },
-          mocks: {
-            selected: "base",
+          mock: {
+            collections: {
+              selected: "base",
+            },
           },
         });
         await wait(2000);
@@ -91,46 +95,58 @@ describe("react-admin-client methods used with node", () => {
     });
   });
 
-  describe("when updating settings", () => {
-    it("should update current delay", async () => {
-      await updateSettings({
+  describe("when updating config", () => {
+    it("should update current delay using legacy option", async () => {
+      await updateConfig({
         mocks: {
           delay: 1000,
         },
       });
-      const settings = await readSettings();
+      const settings = await readConfig();
       expect(settings.mocks.delay).toEqual(1000);
+    });
+
+    it("should update current delay", async () => {
+      await updateConfig({
+        mock: {
+          routes: {
+            delay: 2000,
+          },
+        },
+      });
+      const settings = await readConfig();
+      expect(settings.mock.routes.delay).toEqual(2000);
     });
   });
 
-  describe("when reading mocks", () => {
-    it("should return mocks", async () => {
-      const mocks = await readMocks();
-      expect(mocks).toEqual([
+  describe("when reading collections", () => {
+    it("should return collections", async () => {
+      const collections = await readCollections();
+      expect(collections).toEqual([
         {
           id: "base",
           from: null,
-          routesVariants: ["get-user:1"],
-          appliedRoutesVariants: ["get-user:1"],
+          definedRoutes: ["get-user:1"],
+          routes: ["get-user:1"],
         },
         {
           id: "user2",
           from: null,
-          routesVariants: ["get-user:2"],
-          appliedRoutesVariants: ["get-user:2"],
+          definedRoutes: ["get-user:2"],
+          routes: ["get-user:2"],
         },
       ]);
     });
   });
 
-  describe("when reading mock", () => {
-    it("should return mock data", async () => {
-      const mock = await readMock("base");
-      expect(mock).toEqual({
+  describe("when reading collection", () => {
+    it("should return collection data", async () => {
+      const collection = await readCollection("base");
+      expect(collection).toEqual({
         id: "base",
         from: null,
-        routesVariants: ["get-user:1"],
-        appliedRoutesVariants: ["get-user:1"],
+        definedRoutes: ["get-user:1"],
+        routes: ["get-user:1"],
       });
     });
   });
@@ -143,7 +159,7 @@ describe("react-admin-client methods used with node", () => {
           id: "get-user",
           delay: null,
           url: "/api/user",
-          method: "GET",
+          method: "get",
           variants: ["get-user:1", "get-user:2"],
         },
       ]);
@@ -152,61 +168,61 @@ describe("react-admin-client methods used with node", () => {
 
   describe("when reading route", () => {
     it("should return route data", async () => {
-      const mock = await readRoute("get-user");
-      expect(mock).toEqual({
+      const data = await readRoute("get-user");
+      expect(data).toEqual({
         id: "get-user",
         delay: null,
         url: "/api/user",
-        method: "GET",
+        method: "get",
         variants: ["get-user:1", "get-user:2"],
       });
     });
   });
 
-  describe("when reading routes variants", () => {
-    it("should return routes variants", async () => {
-      const data = await readRoutesVariants();
+  describe("when reading variants", () => {
+    it("should return route variants", async () => {
+      const data = await readVariants();
       expect(data).toEqual([
         {
           id: "get-user:1",
-          routeId: "get-user",
-          handler: "json",
-          response: { body: [{ email: "foo@foo.com" }], status: 200 },
+          route: "get-user",
+          type: "json",
+          preview: { body: [{ email: "foo@foo.com" }], status: 200 },
           delay: null,
         },
         {
           id: "get-user:2",
-          routeId: "get-user",
-          handler: "json",
-          response: { body: [{ email: "foo2@foo2.com" }], status: 200 },
+          route: "get-user",
+          type: "json",
+          preview: { body: [{ email: "foo2@foo2.com" }], status: 200 },
           delay: null,
         },
       ]);
     });
   });
 
-  describe("when reading route variant", () => {
-    it("should return route variant data", async () => {
-      const data = await readRouteVariant("get-user:2");
+  describe("when reading variant", () => {
+    it("should return variant data", async () => {
+      const data = await readVariant("get-user:2");
       expect(data).toEqual({
         id: "get-user:2",
-        routeId: "get-user",
-        handler: "json",
-        response: { body: [{ email: "foo2@foo2.com" }], status: 200 },
+        route: "get-user",
+        type: "json",
+        preview: { body: [{ email: "foo2@foo2.com" }], status: 200 },
         delay: null,
       });
     });
   });
 
-  describe("mock custom route variants", () => {
+  describe("custom route variants", () => {
     it("should be empty", async () => {
-      const data = await readCustomRoutesVariants();
+      const data = await readCustomRouteVariants();
       expect(data).toEqual([]);
     });
 
     it("should be able to add one", async () => {
       await useRouteVariant("get-user:2");
-      const data = await readCustomRoutesVariants();
+      const data = await readCustomRouteVariants();
       expect(data).toEqual(["get-user:2"]);
     });
 
@@ -217,9 +233,9 @@ describe("react-admin-client methods used with node", () => {
       });
     });
 
-    it("should be empty after restoring them to the mock defaults", async () => {
-      await restoreRoutesVariants();
-      const data = await readCustomRoutesVariants();
+    it("should be empty after restoring them to the collection defaults", async () => {
+      await restoreRouteVariants();
+      const data = await readCustomRouteVariants();
       expect(data).toEqual([]);
     });
   });

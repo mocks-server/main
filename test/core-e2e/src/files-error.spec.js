@@ -25,24 +25,26 @@ describe("when there is an error loading files", () => {
     });
 
     it("should have two routes", async () => {
-      expect(core.mocks.plainRoutes.length).toEqual(2);
+      expect(core.mock.routes.plain.length).toEqual(2);
     });
 
     it("should have four route variants", async () => {
-      expect(core.mocks.plainRoutesVariants.length).toEqual(5);
+      expect(core.mock.routes.plainVariants.length).toEqual(5);
     });
 
-    it("should have no mocks", async () => {
-      expect(core.mocks.plainMocks.length).toEqual(0);
+    it("should have no collections", async () => {
+      expect(core.mock.collections.plain.length).toEqual(0);
     });
 
     it("should have added an alert about not mock found", async () => {
-      expect(findAlert("mocks:empty", core.alerts).message).toEqual("No mocks found");
+      expect(findAlert("mock:collections:empty", core.alerts).message).toEqual(
+        "No collections found"
+      );
     });
 
-    it("should have added an alert about error loading mocks", async () => {
-      expect(findAlert("files:mocks", core.alerts).message).toEqual(
-        expect.stringContaining("Error loading mocks from file")
+    it("should have added an alert about error loading collections", async () => {
+      expect(findAlert("files:collections", core.alerts).message).toEqual(
+        expect.stringContaining("Error loading collections from file")
       );
     });
   });
@@ -58,15 +60,15 @@ describe("when there is an error loading files", () => {
     });
 
     it("should have three mocks", async () => {
-      expect(core.mocks.plainMocks.length).toEqual(3);
+      expect(core.mock.collections.plain.length).toEqual(3);
     });
 
     it("should have zero routes", async () => {
-      expect(core.mocks.plainRoutes.length).toEqual(0);
+      expect(core.mock.routes.plain.length).toEqual(0);
     });
 
     it("should have zero route variants", async () => {
-      expect(core.mocks.plainRoutesVariants.length).toEqual(0);
+      expect(core.mock.routes.plainVariants.length).toEqual(0);
     });
 
     it("should have added an alert about error loading routes", async () => {
@@ -75,25 +77,25 @@ describe("when there is an error loading files", () => {
       );
     });
 
-    it("mocks should not have routes variants", () => {
-      expect(core.mocks.plainMocks).toEqual([
+    it("collections should not have routes", () => {
+      expect(core.mock.collections.plain).toEqual([
         {
           id: "base",
           from: null,
-          routesVariants: ["get-users:success", "get-user:1"],
-          appliedRoutesVariants: [],
+          definedRoutes: ["get-users:success", "get-user:1"],
+          routes: [],
         },
         {
           id: "user-2",
           from: "base",
-          routesVariants: ["get-user:2"],
-          appliedRoutesVariants: [],
+          definedRoutes: ["get-user:2"],
+          routes: [],
         },
         {
           id: "user-real",
           from: "base",
-          routesVariants: ["get-user:real"],
-          appliedRoutesVariants: [],
+          definedRoutes: ["get-user:real"],
+          routes: [],
         },
       ]);
     });

@@ -22,16 +22,16 @@ module.exports = [
     variants: [
       {
         id: "success", // id of the variant
-        handler: "json",
-        response: {
+        type: "json",
+        options: {
           status: 200, // status to send
           body: USERS, // body to send
         },
       },
       {
         id: "error", // id of the variant
-        handler: "json",
-        response: {
+        type: "json",
+        options: {
           status: 400, // status to send
           body: {
             // body to send
@@ -48,16 +48,16 @@ module.exports = [
     variants: [
       {
         id: "success", // id of the variant
-        handler: "json",
-        response: {
+        type: "json",
+        options: {
           status: 200, // status to send
           body: USERS[0], // body to send
         },
       },
       {
         id: "real", // id of the variant
-        handler: "middleware",
-        response: {
+        type: "middleware",
+        options: {
           middleware:(req, res) => {
             const userId = req.params.id;
             const user = USERS.find((userData) => userData.id === Number(userId));

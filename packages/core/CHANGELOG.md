@@ -10,6 +10,39 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [3.6.0] - 2022-07-22
+
+### Added
+
+- feat(#334): Expose new `core.mock` API
+- feat(#334): Add new option `mock.routes.delay`. Deprecate `mocks.delay`
+- feat(#334): Add new option `mock.collections.selected`. Deprecate `mocks.selected`
+- feat(#334): Support `type` and `options` properties in variants
+- feat(#334): Support `routes` and `routeVariants` properties in collections. Deprecate `routesVariants`
+- feat: Add `core.version` getter
+- feat: Add `files.enabled` option
+
+### Changed
+- refactor(#334): Reorganize files and folders
+- feat(#334): Deprecate `core.restartServer`, `core.addRouter` and `core.removeRouter` methods. Add alerts when used. `core.server` methods must be used instead.
+- feat(#334): Deprecate `core.addRoutesHandler` method. Add alerts when used. `core.variantHandlers.register` method must be used instead.
+- feat(#334): Deprecate `routesHandlers` option. `variantHandlers.register` option must be used instead.
+- feat(#334): Deprecate `core.mocks.restoreRoutesVariants` method. `core.mock.restoreRouteVariants` method must be used instead.
+- feat(#334): Deprecate `core.mocks.customRoutesVariants` method. `core.mock.customRouteVariants` method must be used instead.
+- feat(#334): Deprecate `core.onChangeMocks` method. `core.mock.onChange` method must be used instead.
+- feat(#334): Deprecate `core.loadMocks` method. `core.mock.createLoaders` method must be used instead.
+- feat(#334): Deprecate `core.loadRoutes` method. `core.mock.createLoaders` method must be used instead.
+- feat(#334): Deprecate `core.mocks.plainRoutes` getter. `core.mock.routes.plain` getter must be used instead.
+- feat(#334): Deprecate `core.mocks.plainRoutesVariants` getter. `core.mock.routes.plainVariants` getter must be used instead. The format of items has changed in the new getter.
+- feat(#334): Deprecate `core.mocks.current` getter. `core.mock.collections.selected` getter must be used instead.
+- feat(#334): Deprecate `core.mocks.current` setter. `core.mock.collections.select` method must be used instead.
+- feat(#334): Deprecate `core.mocks.ids` getter. `core.mock.collections.ids` getter must be used instead.
+- feat(#334): Deprecate `core.mocks.plainMocks` getter. `core.mock.collections.plain` getter must be used instead. The format of items has changed in the new getter.
+- feat(#334): Deprecate `core.onChangeAlerts` method. `core.alerts.root.onChange` method must be used instead.
+- feat(#334): Deprecate `core.logs` getter. `core.logger.globalStore` getter must be used instead.
+- feat(#334): Deprecate `core.onChangeLogs` method. `core.logger.onChangeGlobalStore` method must be used instead.
+- feat(#334): Deprecate `core.alerts` when used out of plugins, because it is a getter returning a flat collection of alerts. In next major version, it will return the alerts API.
+
 ## [3.5.0] - 2022-07-05
 
 ### Added

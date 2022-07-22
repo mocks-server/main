@@ -222,7 +222,7 @@ function getVariantHandler({
   let routeHandler = null;
   const variantId = getVariantId(route.id, variant.id);
   const variantAlerts = alerts.collection(variant.id || variantIndex);
-  const handlerId = getHandlerId(variant, variantAlerts);
+  const handlerId = getHandlerId(variant);
   const Handler = findRouteHandler(routeHandlers, handlerId);
   const variantErrors = variantValidationErrors(route, variant, Handler);
 

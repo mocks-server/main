@@ -150,12 +150,8 @@ class Scaffold {
 
     if (this._readConfigFileOption.value && !configFileLoaded) {
       this._alerts.set("config", "Configuration file was not found. A scaffold was created");
-      // Set base collection, which is the one created in the scaffold
-      // LEGACY, enable again when selected collection is not defined in the option. (when legacy option is removed)
-      /* if (!this._collectionSelectedOption.value) {
-        this._collectionSelectedOption.value = "base";
-      } */
-
+      // LEGACY, Set base collection, which is the one created in the scaffold, when selected collection is not defined in the option. (when legacy option is removed)
+      // If the collection selected option value is not set, it should be set as "base"
       return this._createConfig();
     }
     return Promise.resolve();

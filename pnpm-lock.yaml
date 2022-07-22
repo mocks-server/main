@@ -9,7 +9,7 @@ importers:
       '@babel/preset-env': 7.17.10
       '@babel/preset-react': 7.16.7
       '@babel/preset-typescript': 7.16.7
-      '@cypress/webpack-preprocessor': 5.11.1
+      '@cypress/webpack-preprocessor': 5.12.0
       '@nrwl/cli': 13.8.3
       '@nrwl/eslint-plugin-nx': 13.8.3
       '@nrwl/tao': 13.8.3
@@ -67,7 +67,7 @@ importers:
       '@babel/preset-env': 7.17.10_@babel+core@7.17.10
       '@babel/preset-react': 7.16.7_@babel+core@7.17.10
       '@babel/preset-typescript': 7.16.7_@babel+core@7.17.10
-      '@cypress/webpack-preprocessor': 5.11.1_2b030c791a152f30c4d5c7cb2c1233d2
+      '@cypress/webpack-preprocessor': 5.12.0_2b030c791a152f30c4d5c7cb2c1233d2
       '@nrwl/cli': 13.8.3
       '@nrwl/eslint-plugin-nx': 13.8.3_f39a8c661f5e30fe878d73f8dec389c9
       '@nrwl/tao': 13.8.3
@@ -2005,8 +2005,8 @@ packages:
       uuid: 8.3.2
     dev: true
 
-  /@cypress/webpack-preprocessor/5.11.1_2b030c791a152f30c4d5c7cb2c1233d2:
-    resolution: {integrity: sha512-kfdF+W/Tns81rFplnqlgZ+t6V+FJ7vegeQCYolLyhh0nJ8eG3s5HvV/ak/zSlbQnaOmAuYiZIChJFVZLUWuNOA==}
+  /@cypress/webpack-preprocessor/5.12.0_2b030c791a152f30c4d5c7cb2c1233d2:
+    resolution: {integrity: sha512-D/eLKKlgx6c/307FaCmjZGjFA64G29aA8KcCy6WqpNK/bSnRdPquMW2plemIsT/B80TK2DDKzZX/H3FcS41ZDA==}
     peerDependencies:
       '@babel/core': ^7.0.1
       '@babel/preset-env': ^7.0.0
@@ -2017,7 +2017,7 @@ packages:
       '@babel/preset-env': 7.17.10_@babel+core@7.17.10
       babel-loader: 8.2.5_b1389f604d9ba7860f667cc6c5a95a2a
       bluebird: 3.7.1
-      debug: 4.3.3
+      debug: 4.3.4
       lodash: 4.17.21
       webpack: 5.72.1
     transitivePeerDependencies:

@@ -34,7 +34,7 @@ importers:
       deepmerge: 4.2.2
       eslint: 8.20.0
       eslint-config-prettier: 8.5.0
-      eslint-plugin-jest: 26.4.6
+      eslint-plugin-jest: 26.6.0
       eslint-plugin-no-only-tests: 2.6.0
       eslint-plugin-prettier: 4.0.0
       fs-extra: 10.1.0
@@ -92,7 +92,7 @@ importers:
       deepmerge: 4.2.2
       eslint: 8.20.0
       eslint-config-prettier: 8.5.0_eslint@8.20.0
-      eslint-plugin-jest: 26.4.6_8c3eb5e8931d5f7c1105143232410396
+      eslint-plugin-jest: 26.6.0_8c3eb5e8931d5f7c1105143232410396
       eslint-plugin-no-only-tests: 2.6.0
       eslint-plugin-prettier: 4.0.0_2b0e0b01b1e3f2b77264fbc05797f122
       fs-extra: 10.1.0
@@ -7533,8 +7533,8 @@ packages:
       - typescript
     dev: true
 
-  /eslint-plugin-jest/26.4.6_8c3eb5e8931d5f7c1105143232410396:
-    resolution: {integrity: sha512-R3mq1IepnhtsukHQsWxdyKra3OVwYB+N4k8i45ndqSfr8p9KZV6G+EIUt1Z7hzAh4KlsbXG+nCTlNeGFLFLNvA==}
+  /eslint-plugin-jest/26.6.0_8c3eb5e8931d5f7c1105143232410396:
+    resolution: {integrity: sha512-f8n46/97ZFdU4KqeQYqO8AEVGIhHWvkpgNBWHH3jrM28/y8llnbf3IjfIKv6p2pZIMinK1PCqbbROxs9Eud02Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       '@typescript-eslint/eslint-plugin': ^5.0.0

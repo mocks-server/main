@@ -152,6 +152,11 @@ describe("loadCollections and loadRoutes methods", () => {
       ]);
     });
 
+    it("should send content-type header as json", async () => {
+      const response = await doFetch("/api/books");
+      expect(response.headers.get("Content-Type")).toEqual("application/json; charset=utf-8");
+    });
+
     it("should be able to change collection using select method", async () => {
       core.mock.collections.select("bradbury");
       await waitUntilCollectionChanged("bradbury");

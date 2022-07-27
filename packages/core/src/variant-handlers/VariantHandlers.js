@@ -10,11 +10,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const DefaultVariantHandler = require("./handlers/Default");
 const Json = require("./handlers/Json");
+const Text = require("./handlers/Text");
 const Middleware = require("./handlers/Middleware");
 
 const OPTIONS = [
   {
-    description: "VariantHandlers to be registered",
+    description: "Variant Handlers to be registered",
     name: "register",
     type: "array",
     default: [],
@@ -29,7 +30,7 @@ class VariantHandlers {
   constructor({ logger, config }) {
     this._logger = logger;
     this._registeredVariantHandlers = [];
-    this._coreVariantHandlers = [DefaultVariantHandler, Json, Middleware];
+    this._coreVariantHandlers = [DefaultVariantHandler, Json, Text, Middleware];
     this._config = config;
 
     [this._registerOption] = this._config.addOptions(OPTIONS);

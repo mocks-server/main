@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [3.7.0] - 2022-07-22
+
+### Added
+
+- feat(#366): Add "text" Variants Handler
+
 ## [3.6.0] - 2022-07-22
 
 ### Added

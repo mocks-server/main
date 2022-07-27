@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const { startCore, doTextFetch, waitForServer, waitForServerUrl } = require("./support/helpers");
 
 describe("text variant handler", () => {
-  let core, changeMockAndWait, waitUntilCollectionChanged;
+  let core, changeMockAndWait;
 
   beforeAll(async () => {
     core = await startCore(null, {
@@ -21,20 +21,8 @@ describe("text variant handler", () => {
       log: "silly",
     });
 
-    waitUntilCollectionChanged = async (collectionId) => {
-      await new Promise((resolve) => {
-        const interval = setInterval(() => {
-          if (core.mock.collections.selected === collectionId) {
-            clearInterval(interval);
-            resolve();
-          }
-        }, 200);
-      });
-    };
-
     changeMockAndWait = async (collectionId) => {
-      core.mock.collections.select(collectionId);
-      await waitUntilCollectionChanged(collectionId);
+      await core.mock.collections.select(collectionId);
     };
     await waitForServer();
   });

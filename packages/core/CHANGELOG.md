@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - feat(#366): Add "text" Variants Handler
+- feat: Add `check` option to collections.select method. When set to `true`, the method returns a promise that is resolved when the collection exists and it is used by the mock. Otherwise the promise is rejected. It has been implemented with an option to avoid breaking changes.
 
 ## [3.6.0] - 2022-07-22
 

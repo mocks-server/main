@@ -12,6 +12,17 @@ const express = require("express");
 
 const { HTTP_METHODS } = require("./validations");
 
+function getRouteMethods(route) {
+  const methods = route.method;
+  if (!methods) {
+    return [HTTP_METHODS.ALL];
+  }
+  if (Array.isArray(methods)) {
+    return methods;
+  }
+  return [methods];
+}
+
 class Collection {
   constructor({ id, routeVariants, getDelay, logger }) {
     this._logger = logger;
@@ -24,26 +35,38 @@ class Collection {
   _initRouter() {
     this._router = express.Router();
     this._routeVariants.forEach((routeVariant) => {
-      const methods = Array.isArray(routeVariant.method)
-        ? routeVariant.method
-        : [routeVariant.method];
-      methods.forEach((method) => {
-        const httpMethod = HTTP_METHODS[method.toUpperCase()];
-        // TODO, add methods matcher
-        this._router[httpMethod](routeVariant.url, (req, _res, next) => {
-          this._logger.info(`Request ${req.method} => ${req.url} | req: ${req.id}`);
-          const delay = routeVariant.delay !== null ? routeVariant.delay : this._getDelay();
-          if (delay > 0) {
-            this._logger.verbose(`Applying delay of ${delay}ms to route variant '${this._id}'`);
-            setTimeout(() => {
-              next();
-            }, delay);
-          } else {
+      const logAndApplyDelay = (req, _res, next) => {
+        this._logger.info(`Request ${req.method} => ${req.url} | req: ${req.id}`);
+        const delay = routeVariant.delay !== null ? routeVariant.delay : this._getDelay();
+        if (delay > 0) {
+          this._logger.verbose(`Applying delay of ${delay}ms to route variant '${this._id}'`);
+          setTimeout(() => {
             next();
-          }
-        });
-        this._router[httpMethod](routeVariant.url, routeVariant.middleware.bind(routeVariant));
-      });
+          }, delay);
+        } else {
+          next();
+        }
+      };
+      if (!routeVariant.disabled) {
+        if (routeVariant.router) {
+          this._router.use(routeVariant.url, logAndApplyDelay);
+          this._router.use(routeVariant.url, routeVariant.router.bind(routeVariant));
+        } else {
+          const methods = getRouteMethods(routeVariant);
+          methods.forEach((method) => {
+            const httpMethod = HTTP_METHODS[method.toUpperCase()];
+            this._router[httpMethod](routeVariant.url, logAndApplyDelay);
+            if (routeVariant.router) {
+              this._router.use(routeVariant.url, routeVariant.router.bind(routeVariant));
+            } else {
+              this._router[httpMethod](
+                routeVariant.url,
+                routeVariant.middleware.bind(routeVariant)
+              );
+            }
+          });
+        }
+      }
     });
   }
 

@@ -26,6 +26,7 @@ const HTTP_METHODS = {
   OPTIONS: "options",
   HEAD: "head",
   TRACE: "trace",
+  ALL: "all",
 };
 
 const CLASSES = { Function: Function, RegExp: RegExp };
@@ -148,6 +149,9 @@ const routesSchema = {
           id: {
             type: "string",
           },
+          disabled: {
+            type: "boolean",
+          },
           handler: {
             type: "string",
             enum: [], // this enum is defined when validator is compiled
@@ -173,7 +177,21 @@ const routesSchema = {
       },
     },
   },
-  required: ["id", "url", "method", "variants"],
+  required: ["id", "url", "variants"],
+  additionalProperties: false,
+};
+
+const disabledVariantSchema = {
+  type: "object",
+  properties: {
+    id: {
+      type: "string",
+    },
+    disabled: {
+      type: "boolean",
+    },
+  },
+  required: ["id", "disabled"],
   additionalProperties: false,
 };
 
@@ -348,6 +366,25 @@ function routeValidationErrors(route) {
   return null;
 }
 
+function variantDisabledValidationErrors(route, variant) {
+  const variantValidator = ajv.compile(disabledVariantSchema);
+  const dataToCheck = variant;
+  const isValid = variantValidator(dataToCheck);
+  if (!isValid) {
+    const validationMessage = validationSingleMessage(
+      disabledVariantSchema,
+      dataToCheck,
+      variantValidator.errors
+    );
+    const idTrace = variant && variant.id ? `${traceId(variant.id)} ` : "";
+    return {
+      message: `Variant ${idTrace}in route ${traceId(route.id)} is invalid: ${validationMessage}`,
+      errors: variantValidator.errors,
+    };
+  }
+  return null;
+}
+
 function variantValidationErrors(route, variant, Handler) {
   if (!Handler.validationSchema) {
     return null;
@@ -384,6 +421,7 @@ module.exports = {
   collectionValidationErrors,
   routeValidationErrors,
   variantValidationErrors,
+  variantDisabledValidationErrors,
   compileRouteValidator,
   validationSingleMessage,
   findRouteVariantByVariantId,

@@ -20,6 +20,7 @@ const {
   findRouteVariantByVariantId,
   collectionRouteVariantsValidationErrors,
   getCollectionRouteVariantsProperty,
+  variantDisabledValidationErrors,
 } = require("./validations");
 
 const DEFAULT_ROUTES_HANDLER = "default";
@@ -208,6 +209,29 @@ function getHandlerId(variant) {
   return variant.type || variant.handler || DEFAULT_ROUTES_HANDLER;
 }
 
+function getDisabledVariantHandler({ logger, route, variant, variantIndex, alerts }) {
+  const variantId = getVariantId(route.id, variant.id);
+  const variantAlerts = alerts.collection(variant.id || variantIndex);
+  const variantErrors = variantDisabledValidationErrors(route, variant);
+
+  variantAlerts.clean();
+
+  if (!!variantErrors) {
+    variantAlerts.set("validation", variantErrors.message);
+    logger.silly(`Variant validation errors: ${JSON.stringify(variantErrors.errors)}`);
+    return null;
+  }
+
+  return {
+    disabled: variant.disabled,
+    id: variant.id,
+    variantId: variantId,
+    routeId: route.id,
+    url: route.url,
+    method: route.method,
+  };
+}
+
 function getVariantHandler({
   route,
   variant,
@@ -219,6 +243,15 @@ function getVariantHandler({
   alerts,
   alertsRoutes,
 }) {
+  if (variant.disabled) {
+    return getDisabledVariantHandler({
+      logger,
+      route,
+      variant,
+      variantIndex,
+      alerts,
+    });
+  }
   let routeHandler = null;
   const variantId = getVariantId(route.id, variant.id);
   const variantAlerts = alerts.collection(variant.id || variantIndex);
@@ -249,7 +282,7 @@ function getVariantHandler({
     routeHandler = new Handler(
       {
         ...variantArgument,
-        variantId,
+        variantId, // LEGACY, remove
         url: route.url,
         method: route.method,
       },
@@ -258,6 +291,7 @@ function getVariantHandler({
     // TODO, do not add properties to handler. Store it in "handler" property
     routeHandler.delay = getRouteHandlerDelay(variant, route);
     routeHandler.id = variant.id;
+    routeHandler.disabled = false;
     routeHandler.variantId = variantId;
     routeHandler.routeId = route.id;
     routeHandler.url = route.url;

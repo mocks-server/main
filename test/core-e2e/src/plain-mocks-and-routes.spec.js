@@ -86,6 +86,7 @@ describe("mocks and routes", () => {
           id: "get-user:1",
           route: "get-user",
           type: "json",
+          disabled: false,
           preview: {
             body: {
               id: 1,
@@ -99,6 +100,7 @@ describe("mocks and routes", () => {
           id: "get-user:2",
           route: "get-user",
           type: "json",
+          disabled: false,
           preview: {
             body: {
               id: 2,
@@ -112,6 +114,7 @@ describe("mocks and routes", () => {
           id: "get-user:real",
           route: "get-user",
           type: "middleware",
+          disabled: false,
           preview: null,
           delay: null,
         },
@@ -119,6 +122,7 @@ describe("mocks and routes", () => {
           id: "get-users:success",
           route: "get-users",
           type: "json",
+          disabled: false,
           preview: {
             body: [
               {
@@ -138,6 +142,7 @@ describe("mocks and routes", () => {
           id: "get-users:error",
           route: "get-users",
           type: "json",
+          disabled: false,
           preview: {
             body: {
               message: "Bad data",

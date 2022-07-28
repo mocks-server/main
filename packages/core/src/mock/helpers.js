@@ -163,6 +163,7 @@ function getPlainRouteVariants(routeVariants) {
     const preview = getPreview(routeVariant);
     return {
       id: routeVariant.variantId,
+      disabled: routeVariant.disabled,
       route: routeVariant.routeId,
       type: routeVariant.constructor.id,
       preview: isUndefined(preview) ? null : preview,

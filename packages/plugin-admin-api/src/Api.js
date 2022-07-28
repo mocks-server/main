@@ -81,7 +81,8 @@ class Api {
     const parseRoute = (route) => {
       return {
         ...route,
-        method: route.method.toLowerCase(),
+        // LEGACY, move to core
+        method: route.method ? route.method.toLowerCase() : route.method,
       };
     };
 

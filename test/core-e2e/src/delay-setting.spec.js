@@ -118,6 +118,7 @@ describe("delay setting", () => {
       expect(core.mock.routes.plainVariants[2]).toEqual({
         type: "json",
         id: "get-user:zero-delay",
+        disabled: false,
         delay: 0,
         preview: {
           status: 200,
@@ -149,6 +150,7 @@ describe("delay setting", () => {
       expect(core.mock.routes.plainVariants[3]).toEqual({
         type: "json",
         id: "get-user:null-delay",
+        disabled: false,
         delay: null,
         preview: {
           status: 200,

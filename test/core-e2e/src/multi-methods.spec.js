@@ -86,6 +86,7 @@ describe("when method is defined as array", () => {
             id: "get-user:1",
             route: "get-user",
             type: "json",
+            disabled: false,
             preview: {
               body: {
                 id: 1,
@@ -99,6 +100,7 @@ describe("when method is defined as array", () => {
             id: "get-user:2",
             route: "get-user",
             type: "json",
+            disabled: false,
             preview: {
               body: {
                 id: 2,
@@ -112,6 +114,7 @@ describe("when method is defined as array", () => {
             id: "get-users:success",
             route: "get-users",
             type: "json",
+            disabled: false,
             preview: {
               body: [
                 {
@@ -131,6 +134,7 @@ describe("when method is defined as array", () => {
             id: "get-users:error",
             route: "get-users",
             type: "json",
+            disabled: false,
             preview: {
               body: {
                 message: "Bad data",

@@ -332,6 +332,7 @@ describe("mocks helpers", () => {
       { variantId: "route-id-1:variant-2", routeId: "route-id-1" },
       { variantId: "route-id-2:variant-1", routeId: "route-id-2" },
       { variantId: "route-id-5:variant-1", routeId: "route-id-5" },
+      { variantId: "route-id-6:variant-1", routeId: "route-id-6" },
     ];
 
     it("should return routes in plain format", () => {
@@ -341,7 +342,7 @@ describe("mocks helpers", () => {
             {
               id: "route-id-1",
               url: "route-url-1",
-              method: "route-method-1",
+              method: "*",
               delay: "route-delay-1",
               foo: "route-foo-1",
               variants: [{ id: "variant-1" }, { id: "variant-2" }],
@@ -349,15 +350,30 @@ describe("mocks helpers", () => {
             {
               id: "route-id-2",
               url: "route-url-2",
-              method: "route-method-2",
+              method: ["get", "POST", "put"],
               foo: "route-foo-2",
               variants: [{ id: "variant-1" }],
             },
             {
               id: "route-id-5",
               url: "route-url-5",
-              method: "route-method-5",
+              method: "PATCH",
               foo: "route-foo-5",
+              delay: 0,
+              variants: [{ id: "variant-1" }],
+            },
+            {
+              id: "route-id-5",
+              url: "route-url-5",
+              method: "PATCH",
+              foo: "route-foo-5",
+              delay: 0,
+              variants: [{ id: "variant-1" }],
+            },
+            {
+              id: "route-id-6",
+              url: "route-url-6",
+              foo: "route-foo-6",
               delay: 0,
               variants: [{ id: "variant-1" }],
             },
@@ -368,23 +384,30 @@ describe("mocks helpers", () => {
         {
           id: "route-id-1",
           url: "route-url-1",
-          method: "route-method-1",
+          method: ["get", "post", "patch", "delete", "put", "options", "head", "trace"],
           delay: "route-delay-1",
           variants: ["route-id-1:variant-1", "route-id-1:variant-2"],
         },
         {
           id: "route-id-2",
           url: "route-url-2",
-          method: "route-method-2",
+          method: ["get", "post", "put"],
           delay: null,
           variants: ["route-id-2:variant-1"],
         },
         {
           id: "route-id-5",
           url: "route-url-5",
-          method: "route-method-5",
+          method: "patch",
           delay: 0,
           variants: ["route-id-5:variant-1"],
+        },
+        {
+          id: "route-id-6",
+          url: "route-url-6",
+          method: ["get", "post", "patch", "delete", "put", "options", "head", "trace"],
+          delay: 0,
+          variants: ["route-id-6:variant-1"],
         },
       ]);
     });
@@ -405,7 +428,7 @@ describe("mocks helpers", () => {
             {
               id: "route-id-2",
               url: "route-url-2",
-              method: "route-method-2",
+              method: "GET",
               delay: "route-delay-2",
               foo: "route-foo-2",
               variants: [{ id: "variant-1" }],
@@ -418,7 +441,7 @@ describe("mocks helpers", () => {
         {
           id: "route-id-2",
           url: "route-url-2",
-          method: "route-method-2",
+          method: "get",
           delay: "route-delay-2",
           variants: ["route-id-2:variant-1"],
         },
@@ -432,7 +455,7 @@ describe("mocks helpers", () => {
             {
               id: "route-id-1",
               url: "route-url-1",
-              method: "route-method-1",
+              method: "PATCH",
               delay: "route-delay-1",
               foo: "route-foo-1",
               variants: [{ id: "variant-1" }, { id: "variant-2" }, { id: "variant-3" }, null],
@@ -440,7 +463,7 @@ describe("mocks helpers", () => {
             {
               id: "route-id-5",
               url: "route-url-1",
-              method: "route-method-1",
+              method: "FOO",
               delay: "route-delay-1",
               foo: "route-foo-1",
               variants: "foo",
@@ -450,7 +473,7 @@ describe("mocks helpers", () => {
             {
               id: "route-id-2",
               url: "route-url-2",
-              method: "route-method-2",
+              method: ["get"],
               delay: "route-delay-2",
               foo: "route-foo-2",
               variants: [{ id: "variant-1" }, { id: "variant-2" }],
@@ -470,21 +493,20 @@ describe("mocks helpers", () => {
         {
           id: "route-id-1",
           url: "route-url-1",
-          method: "route-method-1",
+          method: "patch",
           delay: "route-delay-1",
           variants: ["route-id-1:variant-1", "route-id-1:variant-2"],
         },
         {
           id: "route-id-5",
           url: "route-url-1",
-          method: "route-method-1",
           delay: "route-delay-1",
           variants: [],
         },
         {
           id: "route-id-2",
           url: "route-url-2",
-          method: "route-method-2",
+          method: ["get"],
           delay: "route-delay-2",
           variants: ["route-id-2:variant-1"],
         },
@@ -498,7 +520,7 @@ describe("mocks helpers", () => {
             {
               id: "route-id-1",
               url: "route-url-1",
-              method: "route-method-1",
+              method: ["get"],
               delay: "route-delay-1",
               foo: "route-foo-1",
               variants: [{ id: "variant-1" }, { id: "variant-2" }, { id: "variant-3" }, null],
@@ -518,7 +540,7 @@ describe("mocks helpers", () => {
         {
           id: "route-id-1",
           url: "route-url-1",
-          method: "route-method-1",
+          method: ["get"],
           delay: "route-delay-1",
           variants: ["route-id-1:variant-1", "route-id-1:variant-2"],
         },

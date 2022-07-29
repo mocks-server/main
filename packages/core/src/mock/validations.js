@@ -26,8 +26,13 @@ const HTTP_METHODS = {
   OPTIONS: "options",
   HEAD: "head",
   TRACE: "trace",
-  ALL: "all",
 };
+
+const ALL_HTTP_METHODS = Object.keys(HTTP_METHODS).map((methodKey) => {
+  return HTTP_METHODS[methodKey];
+});
+
+const ALL_HTTP_METHODS_ALIAS = "*";
 
 const CLASSES = { Function: Function, RegExp: RegExp };
 
@@ -125,7 +130,7 @@ const routesSchema = {
       oneOf: [
         {
           type: "string",
-          enum: validHttpMethodsLowerAndUpper,
+          enum: [...validHttpMethodsLowerAndUpper, ALL_HTTP_METHODS_ALIAS],
         },
         {
           type: "array",
@@ -417,6 +422,8 @@ function variantValidationErrors(route, variant, Handler) {
 
 module.exports = {
   HTTP_METHODS,
+  ALL_HTTP_METHODS_ALIAS,
+  ALL_HTTP_METHODS,
   getIds,
   collectionValidationErrors,
   routeValidationErrors,

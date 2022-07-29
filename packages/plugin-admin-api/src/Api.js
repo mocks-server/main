@@ -79,11 +79,7 @@ class Api {
     });
 
     const parseRoute = (route) => {
-      return {
-        ...route,
-        // LEGACY, move to core
-        method: route.method ? route.method.toLowerCase() : route.method,
-      };
+      return route;
     };
 
     this._routesApi = readCollectionAndModelRouter({

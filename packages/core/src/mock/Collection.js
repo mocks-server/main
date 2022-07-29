@@ -10,17 +10,21 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 
-const { HTTP_METHODS } = require("./validations");
+const { HTTP_METHODS, ALL_HTTP_METHODS_ALIAS } = require("./validations");
 
-function getRouteMethods(route) {
-  const methods = route.method;
-  if (!methods) {
-    return [HTTP_METHODS.ALL];
+function getExpressHttpMethod(method) {
+  return HTTP_METHODS[method.toUpperCase()];
+}
+
+function getRouteMethods(routeVariant) {
+  const method = routeVariant.method;
+  if (!method || method === ALL_HTTP_METHODS_ALIAS) {
+    return ["all"];
   }
-  if (Array.isArray(methods)) {
-    return methods;
+  if (Array.isArray(method)) {
+    return method.map(getExpressHttpMethod);
   }
-  return [methods];
+  return [getExpressHttpMethod(method)];
 }
 
 class Collection {
@@ -54,9 +58,8 @@ class Collection {
         } else {
           const methods = getRouteMethods(routeVariant);
           methods.forEach((method) => {
-            const httpMethod = HTTP_METHODS[method.toUpperCase()];
-            this._router[httpMethod](routeVariant.url, logAndApplyDelay);
-            this._router[httpMethod](routeVariant.url, routeVariant.middleware.bind(routeVariant));
+            this._router[method](routeVariant.url, logAndApplyDelay);
+            this._router[method](routeVariant.url, routeVariant.middleware.bind(routeVariant));
           });
         }
       }

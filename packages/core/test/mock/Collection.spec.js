@@ -51,7 +51,7 @@ describe("Collection", () => {
       },
       {
         url: "url-5",
-        method: "all",
+        method: "*",
         middleware: sandbox.stub(),
       },
       {

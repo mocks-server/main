@@ -21,6 +21,9 @@ const {
   collectionRouteVariantsValidationErrors,
   getCollectionRouteVariantsProperty,
   variantDisabledValidationErrors,
+  ALL_HTTP_METHODS_ALIAS,
+  ALL_HTTP_METHODS,
+  HTTP_METHODS,
 } = require("./validations");
 
 const DEFAULT_ROUTES_HANDLER = "default";
@@ -134,8 +137,20 @@ function getRoutePlainRouteVariants(route, routeVariants) {
   );
 }
 
+function parseRouteMethod(method) {
+  return HTTP_METHODS[method.toUpperCase()];
+}
+
+function parseRouteMethods(method) {
+  if (!method || method === ALL_HTTP_METHODS_ALIAS) {
+    return ALL_HTTP_METHODS;
+  }
+  return Array.isArray(method) ? method.map(parseRouteMethod) : parseRouteMethod(method);
+}
+
 function getPlainRoutes(routes, routeVariants) {
   let ids = [];
+
   return compact(
     routes.map((route) => {
       if (
@@ -150,7 +165,7 @@ function getPlainRoutes(routes, routeVariants) {
       return {
         id: route.id,
         url: route.url,
-        method: route.method,
+        method: parseRouteMethods(route.method),
         delay: hasDelayProperty(route) ? route.delay : null,
         variants: getRoutePlainRouteVariants(route, routeVariants),
       };

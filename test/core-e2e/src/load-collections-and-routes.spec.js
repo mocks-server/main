@@ -62,7 +62,7 @@ describe("loadCollections and loadRoutes methods", () => {
         {
           id: "get-books",
           url: "/api/books",
-          method: "GET",
+          method: "get",
           variants: [
             {
               id: "success",
@@ -87,7 +87,7 @@ describe("loadCollections and loadRoutes methods", () => {
         {
           id: "get-authors",
           url: "/api/authors",
-          method: "GET",
+          method: "get",
           variants: [
             {
               id: "success",

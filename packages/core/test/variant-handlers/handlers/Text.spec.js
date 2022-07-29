@@ -11,12 +11,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const CoreMocks = require("../../Core.mocks.js");
-const Json = require("../../../src/variant-handlers/handlers/Json");
+const Text = require("../../../src/variant-handlers/handlers/Text");
 
-describe("Json variant handler", () => {
+describe("Text variant handler", () => {
   const FOO_VARIANT = {
     status: 200,
-    body: {},
+    body: "foo",
   };
   let sandbox;
   let coreMocks;
@@ -39,7 +39,7 @@ describe("Json variant handler", () => {
     };
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
-    routesHandler = new Json(FOO_VARIANT, coreInstance);
+    routesHandler = new Text(FOO_VARIANT, coreInstance);
   });
 
   afterEach(() => {
@@ -48,38 +48,31 @@ describe("Json variant handler", () => {
   });
 
   describe("id", () => {
-    it("should have json value", () => {
-      expect(Json.id).toEqual("json");
+    it("should have text value", () => {
+      expect(Text.id).toEqual("text");
     });
   });
 
   describe("version", () => {
     it("should have 4 value", () => {
-      expect(Json.version).toEqual("4");
+      expect(Text.version).toEqual("4");
     });
   });
 
   describe("validationSchema", () => {
     it("should be defined", () => {
-      expect(Json.validationSchema).toBeDefined();
+      expect(Text.validationSchema).toBeDefined();
     });
 
-    it("should allow arrays and objects as body", () => {
-      expect(Json.validationSchema.properties.body.oneOf).toEqual([
-        {
-          type: "object",
-        },
-        {
-          type: "array",
-        },
-      ]);
+    it("should allow strings as body", () => {
+      expect(Text.validationSchema.properties.body.type).toEqual("string");
     });
   });
 
   describe("preview", () => {
     it("should return response body and status", () => {
       expect(routesHandler.preview).toEqual({
-        body: {},
+        body: "foo",
         status: 200,
       });
     });
@@ -93,17 +86,27 @@ describe("Json variant handler", () => {
     });
 
     it("should add default headers to response", () => {
-      const FOO_HEADERS = { "Content-Type": "application/json; charset=utf-8" };
-      routesHandler = new Json({ ...FOO_VARIANT }, coreInstance);
+      const FOO_HEADERS = { "Content-Type": "text/plain; charset=utf-8" };
+      routesHandler = new Text({ ...FOO_VARIANT }, coreInstance);
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
       expect(expressStubs.res.set.getCall(0).args[0]).toEqual(FOO_HEADERS);
     });
 
     it("should add headers to default headers if they are defined in response", () => {
-      const FOO_HEADERS = { "Content-Type": "application/json; charset=utf-8", foo: "foo" };
-      routesHandler = new Json({ ...FOO_VARIANT, headers: FOO_HEADERS }, coreInstance);
+      const FOO_HEADERS = { foo: "foo" };
+      routesHandler = new Text({ ...FOO_VARIANT, headers: FOO_HEADERS }, coreInstance);
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
-      expect(expressStubs.res.set.getCall(0).args[0]).toEqual(FOO_HEADERS);
+      expect(expressStubs.res.set.getCall(0).args[0]).toEqual({
+        "Content-Type": "text/plain; charset=utf-8",
+        ...FOO_HEADERS,
+      });
+    });
+
+    it("should overwrite default headers if they are defined in response", () => {
+      const CUSTOM_HEADERS = { "Content-Type": "text/plain; charset=utf-8", foo: "foo" };
+      routesHandler = new Text({ ...FOO_VARIANT, headers: CUSTOM_HEADERS }, coreInstance);
+      routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
+      expect(expressStubs.res.set.getCall(0).args[0]).toEqual(CUSTOM_HEADERS);
     });
   });
 });

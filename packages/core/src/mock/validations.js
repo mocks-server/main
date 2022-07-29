@@ -28,6 +28,12 @@ const HTTP_METHODS = {
   TRACE: "trace",
 };
 
+const ALL_HTTP_METHODS = Object.keys(HTTP_METHODS).map((methodKey) => {
+  return HTTP_METHODS[methodKey];
+});
+
+const ALL_HTTP_METHODS_ALIAS = "*";
+
 const CLASSES = { Function: Function, RegExp: RegExp };
 
 const validHttpMethods = objectKeys(HTTP_METHODS);
@@ -124,7 +130,7 @@ const routesSchema = {
       oneOf: [
         {
           type: "string",
-          enum: validHttpMethodsLowerAndUpper,
+          enum: [...validHttpMethodsLowerAndUpper, ALL_HTTP_METHODS_ALIAS],
         },
         {
           type: "array",
@@ -147,6 +153,9 @@ const routesSchema = {
         properties: {
           id: {
             type: "string",
+          },
+          disabled: {
+            type: "boolean",
           },
           handler: {
             type: "string",
@@ -173,7 +182,21 @@ const routesSchema = {
       },
     },
   },
-  required: ["id", "url", "method", "variants"],
+  required: ["id", "url", "variants"],
+  additionalProperties: false,
+};
+
+const disabledVariantSchema = {
+  type: "object",
+  properties: {
+    id: {
+      type: "string",
+    },
+    disabled: {
+      type: "boolean",
+    },
+  },
+  required: ["id", "disabled"],
   additionalProperties: false,
 };
 
@@ -348,6 +371,25 @@ function routeValidationErrors(route) {
   return null;
 }
 
+function variantDisabledValidationErrors(route, variant) {
+  const variantValidator = ajv.compile(disabledVariantSchema);
+  const dataToCheck = variant;
+  const isValid = variantValidator(dataToCheck);
+  if (!isValid) {
+    const validationMessage = validationSingleMessage(
+      disabledVariantSchema,
+      dataToCheck,
+      variantValidator.errors
+    );
+    const idTrace = variant && variant.id ? `${traceId(variant.id)} ` : "";
+    return {
+      message: `Variant ${idTrace}in route ${traceId(route.id)} is invalid: ${validationMessage}`,
+      errors: variantValidator.errors,
+    };
+  }
+  return null;
+}
+
 function variantValidationErrors(route, variant, Handler) {
   if (!Handler.validationSchema) {
     return null;
@@ -380,10 +422,13 @@ function variantValidationErrors(route, variant, Handler) {
 
 module.exports = {
   HTTP_METHODS,
+  ALL_HTTP_METHODS_ALIAS,
+  ALL_HTTP_METHODS,
   getIds,
   collectionValidationErrors,
   routeValidationErrors,
   variantValidationErrors,
+  variantDisabledValidationErrors,
   compileRouteValidator,
   validationSingleMessage,
   findRouteVariantByVariantId,

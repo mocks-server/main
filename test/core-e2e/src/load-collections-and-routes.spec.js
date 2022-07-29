@@ -62,7 +62,7 @@ describe("loadCollections and loadRoutes methods", () => {
         {
           id: "get-books",
           url: "/api/books",
-          method: "GET",
+          method: "get",
           variants: [
             {
               id: "success",
@@ -87,7 +87,7 @@ describe("loadCollections and loadRoutes methods", () => {
         {
           id: "get-authors",
           url: "/api/authors",
-          method: "GET",
+          method: "get",
           variants: [
             {
               id: "success",
@@ -150,6 +150,11 @@ describe("loadCollections and loadRoutes methods", () => {
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
       ]);
+    });
+
+    it("should send content-type header as json", async () => {
+      const response = await doFetch("/api/books");
+      expect(response.headers.get("Content-Type")).toEqual("application/json; charset=utf-8");
     });
 
     it("should be able to change collection using select method", async () => {

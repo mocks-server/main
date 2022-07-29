@@ -8,6 +8,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
+const { resolveWhenConditionPass } = require("../common/helpers");
+
 const OPTIONS = [
   {
     description: "Selected collection",
@@ -54,8 +56,14 @@ class Collections {
     return this._getPlainCollections();
   }
 
-  select(collection) {
+  // LEGACY, set check to true by default on next major version, or remove the option
+  select(collection, { check = false } = {}) {
     this._selectedOption.value = collection;
+    if (check) {
+      return resolveWhenConditionPass(() => {
+        return this.selected === collection;
+      });
+    }
   }
 }
 

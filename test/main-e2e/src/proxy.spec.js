@@ -88,7 +88,7 @@ describe("scaffold", () => {
           id: "proxy-all",
           url: "*",
           delay: null,
-          method: ["GET", "POST", "PATCH", "PUT"],
+          method: ["get", "post", "patch", "put"],
           variants: ["proxy-all:enabled", "proxy-all:disabled"],
         },
       ]);

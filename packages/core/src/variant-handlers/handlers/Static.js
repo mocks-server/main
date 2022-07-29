@@ -10,9 +10,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-class Json {
+const express = require("express");
+
+class Static {
   static get id() {
-    return "json";
+    return "static";
   }
 
   static get version() {
@@ -23,54 +25,42 @@ class Json {
     return {
       type: "object",
       properties: {
+        path: {
+          type: "string",
+        },
         headers: {
           type: "object",
         },
-        status: {
-          type: "number",
-        },
-        body: {
-          oneOf: [
-            {
-              type: "object",
-            },
-            {
-              type: "array",
-            },
-          ],
+        options: {
+          type: "object",
         },
       },
-      required: ["status", "body"],
+      required: ["path"],
       additionalProperties: false,
-    };
-  }
-
-  get defaultHeaders() {
-    return {
-      "Content-Type": "application/json; charset=utf-8",
     };
   }
 
   constructor(options, core) {
     this._options = options;
+    this._expressStaticOptions = this._options.options || {};
     this._logger = core.logger;
     this._core = core;
   }
 
-  middleware(req, res) {
-    this._logger.debug(`Setting headers | req: ${req.id}`);
-    res.set({ ...this.defaultHeaders, ...this._options.headers });
-    res.status(this._options.status);
-    this._logger.verbose(`Sending response | req: ${req.id}`);
-    res.send(this._options.body);
-  }
+  get router() {
+    this._logger.verbose(`Creating router to serve static folder ${this._options.path}`);
 
-  get preview() {
-    return {
-      body: this._options.body,
-      status: this._options.status,
-    };
+    let setHeadersOption;
+    if (this._options.headers) {
+      setHeadersOption = (res) => {
+        res.set(this._options.headers);
+      };
+    }
+    return express.static(this._options.path, {
+      ...this._expressStaticOptions,
+      setHeaders: this._expressStaticOptions.setHeaders || setHeadersOption,
+    });
   }
 }
 
-module.exports = Json;
+module.exports = Static;

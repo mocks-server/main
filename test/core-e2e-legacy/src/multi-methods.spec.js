@@ -66,14 +66,14 @@ describe("when method is defined as array", () => {
           {
             id: "get-user",
             url: "/api/users/:id",
-            method: ["PUT", "GET", "PATCH", "POST", "DELETE", "OPTIONS", "HEAD", "TRACE"],
+            method: ["put", "get", "patch", "post", "delete", "options", "head", "trace"],
             delay: null,
             variants: ["get-user:1", "get-user:2"],
           },
           {
             id: "get-users",
             url: "/api/users",
-            method: "GET",
+            method: "get",
             delay: null,
             variants: ["get-users:success", "get-users:error"],
           },

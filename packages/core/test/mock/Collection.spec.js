@@ -45,6 +45,24 @@ describe("Collection", () => {
         delay: 1000,
         middleware: sandbox.stub(),
       },
+      {
+        url: "url-4",
+        middleware: sandbox.stub(),
+      },
+      {
+        url: "url-5",
+        method: "*",
+        middleware: sandbox.stub(),
+      },
+      {
+        url: "url-6",
+        disabled: true,
+        middleware: sandbox.stub(),
+      },
+      {
+        url: "url-7",
+        router: sandbox.stub(),
+      },
     ];
     middlewareMethodsStubs = {
       req: {
@@ -86,18 +104,39 @@ describe("Collection", () => {
   });
 
   describe("router", () => {
-    it("should add two routers for each routeVariant using correspondant method", () => {
+    it("should add two middlewares for each routeVariant using correspondant method", () => {
       expect(libsMocks.stubs.expressRouter.get.getCall(0).args[0]).toEqual("url-1");
       expect(libsMocks.stubs.expressRouter.get.getCall(1).args[0]).toEqual("url-1");
       expect(libsMocks.stubs.expressRouter.post.getCall(0).args[0]).toEqual("url-2");
       expect(libsMocks.stubs.expressRouter.post.getCall(1).args[0]).toEqual("url-2");
     });
 
-    it("should add two routers for each routeVariant using correspondant method when it is an array", () => {
+    it("should add two middlewares for each routeVariant using correspondant method when it is an array", () => {
       expect(libsMocks.stubs.expressRouter.put.getCall(0).args[0]).toEqual("url-3");
       expect(libsMocks.stubs.expressRouter.put.getCall(1).args[0]).toEqual("url-3");
       expect(libsMocks.stubs.expressRouter.patch.getCall(0).args[0]).toEqual("url-3");
       expect(libsMocks.stubs.expressRouter.patch.getCall(1).args[0]).toEqual("url-3");
+    });
+
+    it("should add middleware for all methods if method is not defined", () => {
+      expect(libsMocks.stubs.expressRouter.all.getCall(0).args[0]).toEqual("url-4");
+      expect(libsMocks.stubs.expressRouter.all.getCall(1).args[0]).toEqual("url-4");
+    });
+
+    it("should add middleware for all methods if method is all", () => {
+      expect(libsMocks.stubs.expressRouter.all.getCall(2).args[0]).toEqual("url-5");
+      expect(libsMocks.stubs.expressRouter.all.getCall(3).args[0]).toEqual("url-5");
+    });
+
+    it("should not add middleware if variant is disabled", () => {
+      expect(libsMocks.stubs.expressRouter.get.callCount).toEqual(2);
+      expect(libsMocks.stubs.expressRouter.get.calledWith("url-5")).toEqual(false);
+    });
+
+    it("should add router instead of middleware if variant has router property", () => {
+      expect(libsMocks.stubs.expressRouter.use.callCount).toEqual(2);
+      expect(libsMocks.stubs.expressRouter.use.getCall(0).args[0]).toEqual("url-7");
+      expect(libsMocks.stubs.expressRouter.use.getCall(1).args[0]).toEqual("url-7");
     });
 
     it("should not apply delay in first router middleware if routeVariant has not delay and getDelay returns null", () => {

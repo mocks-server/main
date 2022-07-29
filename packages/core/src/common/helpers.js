@@ -20,8 +20,25 @@ function deprecatedMessage(type, oldName, newName, url) {
   return `Usage of '${oldName}' ${type} is deprecated. Use '${newName}' instead: ${docsUrl(url)}`;
 }
 
+function resolveWhenConditionPass(condition, { interval = 200, timeout = 2000 } = {}) {
+  return new Promise((resolve, reject) => {
+    const checkConditionInterval = setInterval(() => {
+      if (condition() === true) {
+        clearTimeout(checkConditionTimeout);
+        clearInterval(checkConditionInterval);
+        resolve();
+      }
+    }, interval);
+    const checkConditionTimeout = setTimeout(() => {
+      clearInterval(checkConditionInterval);
+      reject(new Error());
+    }, timeout);
+  });
+}
+
 module.exports = {
   arrayMerge,
   deprecatedMessage,
   docsUrl,
+  resolveWhenConditionPass,
 };

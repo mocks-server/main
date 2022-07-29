@@ -10,13 +10,17 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-class Json {
+const Json = require("./Json");
+
+class Text extends Json {
   static get id() {
-    return "json";
+    return "text";
   }
 
-  static get version() {
-    return "4";
+  get defaultHeaders() {
+    return {
+      "Content-Type": "text/plain; charset=utf-8",
+    };
   }
 
   static get validationSchema() {
@@ -30,47 +34,13 @@ class Json {
           type: "number",
         },
         body: {
-          oneOf: [
-            {
-              type: "object",
-            },
-            {
-              type: "array",
-            },
-          ],
+          type: "string",
         },
       },
       required: ["status", "body"],
       additionalProperties: false,
     };
   }
-
-  get defaultHeaders() {
-    return {
-      "Content-Type": "application/json; charset=utf-8",
-    };
-  }
-
-  constructor(options, core) {
-    this._options = options;
-    this._logger = core.logger;
-    this._core = core;
-  }
-
-  middleware(req, res) {
-    this._logger.debug(`Setting headers | req: ${req.id}`);
-    res.set({ ...this.defaultHeaders, ...this._options.headers });
-    res.status(this._options.status);
-    this._logger.verbose(`Sending response | req: ${req.id}`);
-    res.send(this._options.body);
-  }
-
-  get preview() {
-    return {
-      body: this._options.body,
-      status: this._options.status,
-    };
-  }
 }
 
-module.exports = Json;
+module.exports = Text;

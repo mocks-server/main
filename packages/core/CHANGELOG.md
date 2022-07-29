@@ -10,6 +10,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [3.7.0] - 2022-07-22
+
+### Added
+
+- feat(#366): Add "text" Variant Handler
+- feat: Add `check` option to collections.select method. When set to `true`, the method returns a promise that is resolved when the collection exists and it is used by the mock. Otherwise the promise is rejected. It has been implemented with an option to avoid breaking changes.
+- feat(#337): Add "static" Variant Handler
+- feat: Support defining routes without method. In that case, the route will handle all HTTP methods
+- feat: Support method "*" in routes. In that case, the route will handle all HTTP methods.
+- feat: Add "disabled" property to variants. When it is true and the variant is selected, the route will be disabled.
+- feat: Support property `router` in Variant Handlers. When defined, the router will be mounted using express `use` instead of specific methods.
+
+### Changed
+
+- feat: Return http methods in lowercase in plain routes. Return only valid http methods.
+
+
 ## [3.6.0] - 2022-07-22
 
 ### Added

@@ -79,10 +79,7 @@ class Api {
     });
 
     const parseRoute = (route) => {
-      return {
-        ...route,
-        method: route.method.toLowerCase(),
-      };
+      return route;
     };
 
     this._routesApi = readCollectionAndModelRouter({

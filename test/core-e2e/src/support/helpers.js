@@ -88,7 +88,7 @@ const serverUrl = (port) => {
   return `http://127.0.0.1:${port || SERVER_PORT}`;
 };
 
-const doFetchAndParse = (uri, options = {}, parser) => {
+const doFetchAndParse = (uri, options = {}, parser = "json") => {
   const requestOptions = {
     ...defaultRequestOptions,
     ...options,

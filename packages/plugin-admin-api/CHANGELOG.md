@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [unreleased]
+## [3.3.0] - 2022-07-29
 
 ### Added
 - feat: Add new disabled property of variants to openapi.

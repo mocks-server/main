@@ -88,7 +88,7 @@ const serverUrl = (port) => {
   return `http://127.0.0.1:${port || SERVER_PORT}`;
 };
 
-const doFetch = (uri, options = {}) => {
+const doFetchAndParse = (uri, options = {}, parser = "json") => {
   const requestOptions = {
     ...defaultRequestOptions,
     ...options,
@@ -97,11 +97,18 @@ const doFetch = (uri, options = {}) => {
   return crossFetch(`${serverUrl(options.port)}${uri}`, {
     ...requestOptions,
   }).then((res) => {
-    return res
-      .json()
+    return res[parser]()
       .then((processedRes) => ({ body: processedRes, status: res.status, headers: res.headers }))
       .catch(() => ({ body: null, status: res.status, headers: res.headers }));
   });
+};
+
+const doFetch = (uri, options) => {
+  return doFetchAndParse(uri, options, "json");
+};
+
+const doTextFetch = (uri, options = {}) => {
+  return doFetchAndParse(uri, options, "text");
 };
 
 class TimeCounter {
@@ -179,6 +186,7 @@ module.exports = {
   startExistingCore,
   startCore,
   doFetch,
+  doTextFetch,
   TimeCounter,
   mocksRunner,
   wait,

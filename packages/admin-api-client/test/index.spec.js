@@ -186,6 +186,7 @@ describe("admin api client methods", () => {
         {
           id: "get-user:1",
           route: "get-user",
+          disabled: false,
           type: "json",
           preview: { body: [{ email: "foo@foo.com" }], status: 200 },
           delay: null,
@@ -193,6 +194,7 @@ describe("admin api client methods", () => {
         {
           id: "get-user:2",
           route: "get-user",
+          disabled: false,
           type: "json",
           preview: { body: [{ email: "foo2@foo2.com" }], status: 200 },
           delay: null,
@@ -207,6 +209,7 @@ describe("admin api client methods", () => {
       expect(data).toEqual({
         id: "get-user:2",
         route: "get-user",
+        disabled: false,
         type: "json",
         preview: { body: [{ email: "foo2@foo2.com" }], status: 200 },
         delay: null,

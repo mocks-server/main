@@ -20,6 +20,10 @@ const {
   findRouteVariantByVariantId,
   collectionRouteVariantsValidationErrors,
   getCollectionRouteVariantsProperty,
+  variantDisabledValidationErrors,
+  ALL_HTTP_METHODS_ALIAS,
+  ALL_HTTP_METHODS,
+  HTTP_METHODS,
 } = require("./validations");
 
 const DEFAULT_ROUTES_HANDLER = "default";
@@ -133,8 +137,20 @@ function getRoutePlainRouteVariants(route, routeVariants) {
   );
 }
 
+function parseRouteMethod(method) {
+  return HTTP_METHODS[method.toUpperCase()];
+}
+
+function parseRouteMethods(method) {
+  if (!method || method === ALL_HTTP_METHODS_ALIAS) {
+    return ALL_HTTP_METHODS;
+  }
+  return Array.isArray(method) ? method.map(parseRouteMethod) : parseRouteMethod(method);
+}
+
 function getPlainRoutes(routes, routeVariants) {
   let ids = [];
+
   return compact(
     routes.map((route) => {
       if (
@@ -149,7 +165,7 @@ function getPlainRoutes(routes, routeVariants) {
       return {
         id: route.id,
         url: route.url,
-        method: route.method,
+        method: parseRouteMethods(route.method),
         delay: hasDelayProperty(route) ? route.delay : null,
         variants: getRoutePlainRouteVariants(route, routeVariants),
       };
@@ -162,6 +178,7 @@ function getPlainRouteVariants(routeVariants) {
     const preview = getPreview(routeVariant);
     return {
       id: routeVariant.variantId,
+      disabled: routeVariant.disabled,
       route: routeVariant.routeId,
       type: routeVariant.constructor.id,
       preview: isUndefined(preview) ? null : preview,
@@ -208,6 +225,29 @@ function getHandlerId(variant) {
   return variant.type || variant.handler || DEFAULT_ROUTES_HANDLER;
 }
 
+function getDisabledVariantHandler({ logger, route, variant, variantIndex, alerts }) {
+  const variantId = getVariantId(route.id, variant.id);
+  const variantAlerts = alerts.collection(variant.id || variantIndex);
+  const variantErrors = variantDisabledValidationErrors(route, variant);
+
+  variantAlerts.clean();
+
+  if (!!variantErrors) {
+    variantAlerts.set("validation", variantErrors.message);
+    logger.silly(`Variant validation errors: ${JSON.stringify(variantErrors.errors)}`);
+    return null;
+  }
+
+  return {
+    disabled: variant.disabled,
+    id: variant.id,
+    variantId: variantId,
+    routeId: route.id,
+    url: route.url,
+    method: route.method,
+  };
+}
+
 function getVariantHandler({
   route,
   variant,
@@ -219,6 +259,15 @@ function getVariantHandler({
   alerts,
   alertsRoutes,
 }) {
+  if (variant.disabled) {
+    return getDisabledVariantHandler({
+      logger,
+      route,
+      variant,
+      variantIndex,
+      alerts,
+    });
+  }
   let routeHandler = null;
   const variantId = getVariantId(route.id, variant.id);
   const variantAlerts = alerts.collection(variant.id || variantIndex);
@@ -249,7 +298,7 @@ function getVariantHandler({
     routeHandler = new Handler(
       {
         ...variantArgument,
-        variantId,
+        variantId, // LEGACY, remove
         url: route.url,
         method: route.method,
       },
@@ -258,6 +307,7 @@ function getVariantHandler({
     // TODO, do not add properties to handler. Store it in "handler" property
     routeHandler.delay = getRouteHandlerDelay(variant, route);
     routeHandler.id = variant.id;
+    routeHandler.disabled = false;
     routeHandler.variantId = variantId;
     routeHandler.routeId = route.id;
     routeHandler.url = route.url;

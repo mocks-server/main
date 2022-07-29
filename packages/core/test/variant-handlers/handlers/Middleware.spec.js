@@ -13,7 +13,7 @@ const sinon = require("sinon");
 const CoreMocks = require("../../Core.mocks.js");
 const Middleware = require("../../../src/variant-handlers/handlers/Middleware");
 
-describe("Json routes handler", () => {
+describe("Middleware variant handler", () => {
   const FOO_VARIANT = {
     middleware: () => {
       // do nothing

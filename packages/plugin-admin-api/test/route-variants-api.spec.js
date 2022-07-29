@@ -30,6 +30,7 @@ describe("routes variants api", () => {
           id: "get-user:1",
           route: "get-user",
           type: "default",
+          disabled: false,
           preview: { body: { id: 1, name: "John Doe" }, status: 200 },
           delay: null,
         },
@@ -37,6 +38,7 @@ describe("routes variants api", () => {
           id: "get-user:2",
           route: "get-user",
           type: "default",
+          disabled: false,
           preview: { body: { id: 2, name: "Jane Doe" }, status: 200 },
           delay: null,
         },
@@ -44,6 +46,7 @@ describe("routes variants api", () => {
           id: "get-user:real",
           route: "get-user",
           type: "default",
+          disabled: false,
           preview: null,
           delay: null,
         },
@@ -51,6 +54,7 @@ describe("routes variants api", () => {
           id: "get-users:success",
           route: "get-users",
           type: "default",
+          disabled: false,
           preview: {
             body: [
               { id: 1, name: "John Doe" },
@@ -64,6 +68,7 @@ describe("routes variants api", () => {
           id: "get-users:error",
           route: "get-users",
           type: "default",
+          disabled: false,
           preview: { body: { message: "Bad data" }, status: 403 },
           delay: null,
         },
@@ -78,6 +83,7 @@ describe("routes variants api", () => {
         id: "get-user:1",
         route: "get-user",
         type: "default",
+        disabled: false,
         preview: { body: { id: 1, name: "John Doe" }, status: 200 },
         delay: null,
       });
@@ -91,6 +97,7 @@ describe("routes variants api", () => {
         id: "get-user:2",
         route: "get-user",
         type: "default",
+        disabled: false,
         preview: { body: { id: 2, name: "Jane Doe" }, status: 200 },
         delay: null,
       });

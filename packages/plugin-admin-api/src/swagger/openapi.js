@@ -380,6 +380,7 @@ module.exports = {
                         id: "get-user:1",
                         route: "get-user",
                         type: "json",
+                        disabled: false,
                         preview: {
                           body: {
                             email: "foo@foo.com",
@@ -392,6 +393,7 @@ module.exports = {
                         id: "get-user:2",
                         route: "get-user",
                         type: "json",
+                        disabled: false,
                         preview: {
                           body: {
                             email: "foo@foo.com",
@@ -441,6 +443,7 @@ module.exports = {
                       id: "get-user:2",
                       route: "get-user",
                       type: "json",
+                      disabled: false,
                       preview: {
                         body: {
                           email: "foo@foo.com",
@@ -755,6 +758,10 @@ module.exports = {
           type: {
             type: "string",
             description: "Variant handler ID",
+          },
+          disabled: {
+            type: "boolean",
+            description: "When true, using this variant disables the route",
           },
           preview: {
             type: "object",

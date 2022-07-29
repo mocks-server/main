@@ -301,6 +301,27 @@ describe("Mock", () => {
         mock.collections.select("foo-mock-id");
         expect(mock._collectionsInstance._selectedOption.value).toEqual("foo-mock-id");
       });
+
+      it("should return a promise and resolve it when current collection changes to the given value", () => {
+        mock.load();
+        mock._selectedId = "foo";
+        const promise = mock.collections.select("foo-mock-id", { check: true }).then(() => {
+          expect(mock.collections.selected).toEqual("foo-mock-id");
+        });
+        setTimeout(() => {
+          mock._selectedId = "foo-mock-id";
+        }, 400);
+        return promise;
+      });
+
+      it("should reject the promise when current collection does not change to the given value", () => {
+        mock.load();
+        mock._selectedId = "foo";
+        return mock.collections.select("foo-mock-id", { check: true }).catch(() => {
+          console.log(mock.collections.selected);
+          expect(mock.collections.selected).toEqual("foo");
+        });
+      });
     });
 
     describe("when setting custom route variant", () => {

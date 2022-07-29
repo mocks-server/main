@@ -10,7 +10,22 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 
-const { HTTP_METHODS } = require("./validations");
+const { HTTP_METHODS, ALL_HTTP_METHODS_ALIAS } = require("./validations");
+
+function getExpressHttpMethod(method) {
+  return HTTP_METHODS[method.toUpperCase()];
+}
+
+function getRouteMethods(routeVariant) {
+  const method = routeVariant.method;
+  if (!method || method === ALL_HTTP_METHODS_ALIAS) {
+    return ["all"];
+  }
+  if (Array.isArray(method)) {
+    return method.map(getExpressHttpMethod);
+  }
+  return [getExpressHttpMethod(method)];
+}
 
 class Collection {
   constructor({ id, routeVariants, getDelay, logger }) {
@@ -24,26 +39,30 @@ class Collection {
   _initRouter() {
     this._router = express.Router();
     this._routeVariants.forEach((routeVariant) => {
-      const methods = Array.isArray(routeVariant.method)
-        ? routeVariant.method
-        : [routeVariant.method];
-      methods.forEach((method) => {
-        const httpMethod = HTTP_METHODS[method.toUpperCase()];
-        // TODO, add methods matcher
-        this._router[httpMethod](routeVariant.url, (req, _res, next) => {
-          this._logger.info(`Request ${req.method} => ${req.url} | req: ${req.id}`);
-          const delay = routeVariant.delay !== null ? routeVariant.delay : this._getDelay();
-          if (delay > 0) {
-            this._logger.verbose(`Applying delay of ${delay}ms to route variant '${this._id}'`);
-            setTimeout(() => {
-              next();
-            }, delay);
-          } else {
+      const logAndApplyDelay = (req, _res, next) => {
+        this._logger.info(`Request ${req.method} => ${req.url} | req: ${req.id}`);
+        const delay = routeVariant.delay !== null ? routeVariant.delay : this._getDelay();
+        if (delay > 0) {
+          this._logger.verbose(`Applying delay of ${delay}ms to route variant '${this._id}'`);
+          setTimeout(() => {
             next();
-          }
-        });
-        this._router[httpMethod](routeVariant.url, routeVariant.middleware.bind(routeVariant));
-      });
+          }, delay);
+        } else {
+          next();
+        }
+      };
+      if (!routeVariant.disabled) {
+        if (routeVariant.router) {
+          this._router.use(routeVariant.url, logAndApplyDelay);
+          this._router.use(routeVariant.url, routeVariant.router.bind(routeVariant));
+        } else {
+          const methods = getRouteMethods(routeVariant);
+          methods.forEach((method) => {
+            this._router[method](routeVariant.url, logAndApplyDelay);
+            this._router[method](routeVariant.url, routeVariant.middleware.bind(routeVariant));
+          });
+        }
+      }
     });
   }
 

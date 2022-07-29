@@ -99,6 +99,8 @@ class Mock {
       patch: this._sandbox.stub(),
       put: this._sandbox.stub(),
       delete: this._sandbox.stub(),
+      all: this._sandbox.stub(),
+      use: this._sandbox.stub(),
     };
 
     this._stubs = {
@@ -140,6 +142,7 @@ class Mock {
     watch.mockImplementation(this._stubs.watch);
     this._sandbox.stub(http, "createServer").returns(this._stubs.http.createServer);
     this._sandbox.stub(express, "Router").returns(this._stubs.expressRouter);
+    this._stubs.express.static = this._sandbox.stub(express, "static");
   }
 
   get stubs() {

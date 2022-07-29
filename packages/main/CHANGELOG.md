@@ -14,10 +14,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [3.7.0] - 2022-07-29
+
+### Changed
+- chore(deps): Update core dependency to v3.7.0
+- chore(deps): Update plugin-admin-api dependency to v3.3.0
+
 ## [3.6.0] - 2022-07-22
 
 ### Added
 - feat: Export createServer function returning a core instance with preinstalled plugins
+
+### Changed
+- chore(deps): Update core dependency to v3.6.0
 
 ## [3.5.0] - 2022-07-05
 

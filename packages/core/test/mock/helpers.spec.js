@@ -930,6 +930,82 @@ describe("mocks helpers", () => {
     });
   });
 
+  describe("getVariantHandler for disabled variants", () => {
+    it("should add an alert if variant is not valid", () => {
+      const variantHandler = getVariantHandler({
+        route: { ...VALID_ROUTE },
+        variant: { ...VALID_VARIANT, disabled: true },
+        variantIndex: 0,
+        routeHandlers: [DefaultRoutesHandler],
+        core: coreMocks.stubs.instance,
+        alerts,
+        logger,
+        alertsRoutes,
+        loggerRoutes,
+      });
+
+      expect(variantHandler).toEqual(null);
+      expect(alerts.flat).toEqual([
+        {
+          collection: "foo:foo-variant",
+          id: "validation",
+          value: {
+            message:
+              "Variant with id 'foo-variant' in route with id 'foo-route' is invalid:  Property response is not expected to be here",
+          },
+        },
+      ]);
+    });
+
+    it("alert should use variant index if id is not defined", () => {
+      const variantHandler = getVariantHandler({
+        route: { id: "foo-route" },
+        variant: { disabled: true },
+        variantIndex: 0,
+        routeHandlers: [DefaultRoutesHandler],
+        core: coreMocks.stubs.instance,
+        alerts,
+        logger,
+        alertsRoutes,
+        loggerRoutes,
+      });
+
+      expect(variantHandler).toEqual(null);
+      expect(alerts.flat).toEqual([
+        {
+          collection: "foo:0",
+          id: "validation",
+          value: {
+            message:
+              "Variant in route with id 'foo-route' is invalid:  must have required property 'id'",
+          },
+        },
+      ]);
+    });
+
+    it("should return variant disabled when it is valid", () => {
+      const variantHandler = getVariantHandler({
+        route: { ...VALID_ROUTE, delay: 3000 },
+        variant: { id: "foo-variant", disabled: true },
+        variantIndex: 0,
+        routeHandlers: [DefaultRoutesHandler],
+        core: coreMocks.stubs.instance,
+        alerts,
+        logger,
+        alertsRoutes,
+        loggerRoutes,
+      });
+      expect(variantHandler).toEqual({
+        disabled: true,
+        id: "foo-variant",
+        variantId: "foo-route:foo-variant",
+        routeId: "foo-route",
+        url: "/foo",
+        method: "POST",
+      });
+    });
+  });
+
   describe("getVariantHandler for v4 variant handlers", () => {
     it("should add an alert if variant is not valid", () => {
       const variantHandler = getVariantHandler({

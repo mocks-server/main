@@ -56,14 +56,7 @@ class Collection {
           methods.forEach((method) => {
             const httpMethod = HTTP_METHODS[method.toUpperCase()];
             this._router[httpMethod](routeVariant.url, logAndApplyDelay);
-            if (routeVariant.router) {
-              this._router.use(routeVariant.url, routeVariant.router.bind(routeVariant));
-            } else {
-              this._router[httpMethod](
-                routeVariant.url,
-                routeVariant.middleware.bind(routeVariant)
-              );
-            }
+            this._router[httpMethod](routeVariant.url, routeVariant.middleware.bind(routeVariant));
           });
         }
       }

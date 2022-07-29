@@ -13,7 +13,7 @@ const sinon = require("sinon");
 const CoreMocks = require("../../Core.mocks.js");
 const Text = require("../../../src/variant-handlers/handlers/Text");
 
-describe("Text routes handler", () => {
+describe("Text variant handler", () => {
   const FOO_VARIANT = {
     status: 200,
     body: "foo",

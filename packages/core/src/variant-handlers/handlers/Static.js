@@ -56,7 +56,6 @@ class Static {
         res.set(this._options.headers);
       };
     }
-
     return express.static(this._options.path, {
       ...this._expressStaticOptions,
       setHeaders: this._expressStaticOptions.setHeaders || setHeadersOption,

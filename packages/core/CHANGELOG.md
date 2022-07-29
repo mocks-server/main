@@ -22,7 +22,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Add "disabled" property to variants. When it is true and the variant is selected, the route will be disabled.
 - feat: Support property `router` in Variant Handlers. When defined, the router will be mounted using express `use` instead of specific methods.
 
-
 ### Changed
 
 - feat: Return http methods in lowercase in plain routes. Return only valid http methods.

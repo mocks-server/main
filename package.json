@@ -62,7 +62,7 @@
     "is-ci": "3.0.1",
     "is-promise": "4.0.0",
     "jest": "27.5.1",
-    "lint-staged": "12.4.1",
+    "lint-staged": "12.5.0",
     "lodash": "4.17.21",
     "prettier": "2.6.2",
     "react": "17.0.2",

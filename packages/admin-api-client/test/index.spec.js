@@ -1,4 +1,4 @@
-import { wait } from "./support/helpers";
+import { wait, waitForServer } from "./support/helpers";
 
 import {
   readAbout,
@@ -15,9 +15,10 @@ import {
   readCustomRouteVariants,
   useRouteVariant,
   restoreRouteVariants,
+  configClient,
 } from "../index";
 
-describe("admin api client methods", () => {
+describe("admin api client global methods", () => {
   describe("when reading about", () => {
     it("should return current version", async () => {
       const about = await readAbout();
@@ -240,6 +241,30 @@ describe("admin api client methods", () => {
       await restoreRouteVariants();
       const data = await readCustomRouteVariants();
       expect(data).toEqual([]);
+    });
+  });
+
+  describe("when updating client config", () => {
+    it("should update update client port", async () => {
+      await updateConfig({
+        plugins: {
+          adminApi: {
+            port: 3120,
+          },
+        },
+      });
+      await waitForServer(3120);
+      configClient({
+        port: 3120,
+      });
+      const settings = await readConfig();
+      expect(settings.plugins.adminApi.port).toEqual(3120);
+    });
+
+    it("should do nothing if not port is provided", async () => {
+      configClient();
+      const settings = await readConfig();
+      expect(settings.plugins.adminApi.port).toEqual(3120);
     });
   });
 });

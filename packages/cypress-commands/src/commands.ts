@@ -1,86 +1,61 @@
-import {
-  updateConfig as apiClientUpdateConfig,
-  useRouteVariant as apiClientUseRouteVariant,
-  restoreRouteVariants as apiClientRestoreRouteVariants, 
-  configClient as apiClientConfigClient
-} from "@mocks-server/admin-api-client";
-
 import type {
   MocksServerConfig,
-  ApiClientConfig,
   CollectionId,
   DelayTime,
   RouteVariantId
 } from "@mocks-server/admin-api-client";
 
+import type { MocksServerCypressApiClientConfig } from "./types";
+
+import MocksServerApiClient from "./MocksServerApiClient";
+
 import {
-  isFalsy,
   ENABLED_ENVIRONMENT_VAR,
   ADMIN_API_PORT_ENVIRONMENT_VAR,
   ADMIN_API_HOST_ENVIRONMENT_VAR,
 } from "./helpers";
 
 export function commands(Cyp: typeof Cypress) {
-  function isDisabled() {
-    return isFalsy(Cyp.env(ENABLED_ENVIRONMENT_VAR));
+  const defaultApiClient = new MocksServerApiClient({
+    enabled: Cyp.env(ENABLED_ENVIRONMENT_VAR),
+    port: Cyp.env(ADMIN_API_PORT_ENVIRONMENT_VAR),
+    host: Cyp.env(ADMIN_API_HOST_ENVIRONMENT_VAR),
+  });
+
+  function getClient(apiClient?: MocksServerApiClient) {
+    return apiClient || defaultApiClient;
   }
 
-  function doNothing() {
-    return Promise.resolve();
-  }
-
-  function setCollection(id: CollectionId) {
-    if (isDisabled()) {
-      return doNothing();
-    }
-    return apiClientUpdateConfig({
+  function setCollection(id: CollectionId, apiClient?: MocksServerApiClient) {
+    return getClient(apiClient).updateConfig({
       mock: {
         collections: { selected: id },
       },
     });
   }
 
-  function setDelay (delay: DelayTime) {
-    if (isDisabled()) {
-      return doNothing();
-    }
-    return apiClientUpdateConfig({
+  function setDelay (delay: DelayTime, apiClient?: MocksServerApiClient) {
+    return getClient(apiClient).updateConfig({
       mock: {
         routes: { delay },
       },
     });
   }
 
-  function setConfig (mocksServerConfig: MocksServerConfig) {
-    if (isDisabled()) {
-      return doNothing();
-    }
-    return apiClientUpdateConfig(mocksServerConfig);
+  function setConfig (mocksServerConfig: MocksServerConfig, apiClient?: MocksServerApiClient) {
+    return getClient(apiClient).updateConfig(mocksServerConfig);
   }
 
-  function useRouteVariant (id: RouteVariantId) {
-    if (isDisabled()) {
-      return doNothing();
-    }
-    return apiClientUseRouteVariant(id);
+  function useRouteVariant (id: RouteVariantId, apiClient?: MocksServerApiClient) {
+    return getClient(apiClient).useRouteVariant(id);
   }
 
-  function restoreRouteVariants() {
-    if (isDisabled()) {
-      return doNothing();
-    }
-    return apiClientRestoreRouteVariants();
+  function restoreRouteVariants(apiClient?: MocksServerApiClient) {
+    return getClient(apiClient).restoreRouteVariants();
   }
 
-  function configClient (customConfig: ApiClientConfig) {
-    return apiClientConfigClient(customConfig);
-  }
-
-  if (Cyp.env(ADMIN_API_PORT_ENVIRONMENT_VAR)) {
-    configClient({ port: Cyp.env(ADMIN_API_PORT_ENVIRONMENT_VAR) });
-  }
-  if (Cyp.env(ADMIN_API_HOST_ENVIRONMENT_VAR)) {
-    configClient({ host: Cyp.env(ADMIN_API_HOST_ENVIRONMENT_VAR) });
+  function configClient (customConfig: MocksServerCypressApiClientConfig, apiClient?: MocksServerApiClient) {
+    return getClient(apiClient).configClient(customConfig);
   }
 
   return {

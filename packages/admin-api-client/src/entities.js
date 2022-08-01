@@ -16,9 +16,9 @@ const DEFAULT_OPTIONS = {
   host: "127.0.0.1",
 };
 
-let clientConfiguration = {
-  ...DEFAULT_OPTIONS,
-};
+function isUndefined(value) {
+  return typeof value === "undefined";
+}
 
 function handleResponse(res) {
   if (res.status > 199 && res.status < 300) {
@@ -29,29 +29,35 @@ function handleResponse(res) {
   });
 }
 
-export function configClient(options) {
-  clientConfiguration = {
-    ...clientConfiguration,
-    ...options,
-  };
-}
-
-class Fetcher {
-  constructor(url, id) {
-    this._url = url;
-    this._id = id ? `/${encodeURIComponent(id)}` : "";
+class ApiClient {
+  constructor() {
+    this._host = DEFAULT_OPTIONS.host;
+    this._port = DEFAULT_OPTIONS.port;
   }
 
-  get url() {
-    return `http://${clientConfiguration.host}:${clientConfiguration.port}${BASE_PATH}${this._url}${this._id}`;
+  get _baseUrl() {
+    return `http://${this._host}:${this._port}${BASE_PATH}`;
   }
 
-  _read() {
-    return crossFetch(this.url).then(handleResponse);
+  fullUrl(url) {
+    return `${this._baseUrl}${url}`;
   }
 
-  _patch(data) {
-    return crossFetch(this.url, {
+  config(configuration = {}) {
+    if (!isUndefined(configuration.host)) {
+      this._host = configuration.host;
+    }
+    if (!isUndefined(configuration.port)) {
+      this._port = configuration.port;
+    }
+  }
+
+  read(url) {
+    return crossFetch(this.fullUrl(url)).then(handleResponse);
+  }
+
+  patch(url, data) {
+    return crossFetch(this.fullUrl(url), {
       method: "PATCH",
       body: JSON.stringify(data),
       headers: {
@@ -60,14 +66,14 @@ class Fetcher {
     }).then(handleResponse);
   }
 
-  _delete() {
-    return crossFetch(this.url, {
+  delete(url) {
+    return crossFetch(this.fullUrl(url), {
       method: "DELETE",
     }).then(handleResponse);
   }
 
-  _create(data) {
-    return crossFetch(this.url, {
+  create(url, data) {
+    return crossFetch(this.fullUrl(url), {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -75,50 +81,94 @@ class Fetcher {
       },
     }).then(handleResponse);
   }
+}
+
+class ApiResource {
+  constructor(apiClient, url, id) {
+    this._url = url;
+    this._id = id ? `/${encodeURIComponent(id)}` : "";
+    this._apiClient = apiClient;
+  }
+
+  get url() {
+    return `${this._url}${this._id}`;
+  }
 
   read() {
-    return this._read();
+    return this._apiClient.read(this.url);
   }
 
   update(data) {
-    return this._patch(data);
+    return this._apiClient.patch(this.url, data);
   }
 
   delete() {
-    return this._delete();
+    return this._apiClient.delete(this.url);
   }
 
   create(data) {
-    return this._create(data);
+    return this._apiClient.create(this.url, data);
   }
 }
 
-export const about = new Fetcher(ABOUT);
+export class BaseAdminApiClient {
+  constructor() {
+    this._apiClient = new ApiClient();
 
-export const config = new Fetcher(CONFIG);
+    this._about = new ApiResource(this._apiClient, ABOUT);
+    this._config = new ApiResource(this._apiClient, CONFIG);
+    this._alerts = new ApiResource(this._apiClient, ALERTS);
+    this._collections = new ApiResource(this._apiClient, COLLECTIONS);
+    this._routes = new ApiResource(this._apiClient, ROUTES);
+    this._variants = new ApiResource(this._apiClient, VARIANTS);
+    this._customRouteVariants = new ApiResource(this._apiClient, CUSTOM_ROUTE_VARIANTS);
+  }
 
-export const alerts = new Fetcher(ALERTS);
+  get about() {
+    return this._about;
+  }
 
-export const alert = (id) => {
-  return new Fetcher(ALERTS, id);
-};
+  get config() {
+    return this._config;
+  }
 
-export const collections = new Fetcher(COLLECTIONS);
+  get alerts() {
+    return this._alerts;
+  }
 
-export const collection = (id) => {
-  return new Fetcher(COLLECTIONS, id);
-};
+  alert(id) {
+    return new ApiResource(this._apiClient, ALERTS, id);
+  }
 
-export const routes = new Fetcher(ROUTES);
+  get collections() {
+    return this._collections;
+  }
 
-export const route = (id) => {
-  return new Fetcher(ROUTES, id);
-};
+  collection(id) {
+    return new ApiResource(this._apiClient, COLLECTIONS, id);
+  }
 
-export const variants = new Fetcher(VARIANTS);
+  get routes() {
+    return this._routes;
+  }
 
-export const variant = (id) => {
-  return new Fetcher(VARIANTS, id);
-};
+  route(id) {
+    return new ApiResource(this._apiClient, ROUTES, id);
+  }
 
-export const customRouteVariants = new Fetcher(CUSTOM_ROUTE_VARIANTS);
+  get variants() {
+    return this._variants;
+  }
+
+  variant(id) {
+    return new ApiResource(this._apiClient, VARIANTS, id);
+  }
+
+  get customRouteVariants() {
+    return this._customRouteVariants;
+  }
+
+  configClient(configuration) {
+    this._apiClient.config(configuration);
+  }
+}

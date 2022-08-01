@@ -9,6 +9,13 @@ declare module '@mocks-server/admin-api-client' {
     port?: number;
   }
 
+  export class AdminApiClient {
+    updateConfig(config: MocksServerConfig): Promise<void>
+    useRouteVariant(routeVariantId: RouteVariantId): Promise<void>
+    restoreRouteVariants(): Promise<void>
+    configClient(clientConfig: ApiClientConfig): void
+  }
+
   export type Id = string
   export type CollectionId = Id;
 
@@ -18,7 +25,7 @@ declare module '@mocks-server/admin-api-client' {
   function updateConfig(config: MocksServerConfig): Promise<void>
   function useRouteVariant(routeVariantId: RouteVariantId): Promise<void>
   function restoreRouteVariants(): Promise<void>
-  function configClient(clientConfig: ApiClientConfig): Promise<void>
+  function configClient(clientConfig: ApiClientConfig): void
 
   export interface AdminApiClientMethods {
     updateConfig: typeof updateConfig,

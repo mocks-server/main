@@ -53,7 +53,7 @@ declare global {
       * @param apiClientConfig - Admin API client configuration
       * @example cy.mocksConfigAdminApiClient({ port: 3210 })
       */
-      mocksConfigAdminApiClient(apiClientConfig: ApiClientConfig): Promise<void>
+      mocksConfigAdminApiClient(apiClientConfig: MocksServerCypressApiClientConfig): Promise<void>
     }
   }
 }
@@ -62,3 +62,7 @@ declare global {
 export type CypressEnvVarValue = any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ArrayOfValues = (string | number | boolean)[];
+
+export interface MocksServerCypressApiClientConfig extends ApiClientConfig {
+  enabled?: boolean;
+}

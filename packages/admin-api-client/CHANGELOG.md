@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+
+### Added
+- feat: Export AdminApiClient class allowing to create clients.
+
+### Changed
+
+- refactor: Add class allowing to create multiple clients. Keep global client methods creating a default client and exporting its methods.
+
 ## [6.0.0] - 2022-07-22
 
 ### Changed

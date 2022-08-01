@@ -57,19 +57,28 @@ Set routes default delay.
 
 Set any [Mocks Server setting][mocks-server-options-url].
 
-#### `cy.mocksConfigAdminApiClient({ port: 3110, host: "127.0.0.1" })`
+#### `cy.mocksConfigClient(configuration)`
 
-Configures the [Mocks Server administration API client](https://github.com/mocks-server/admin-api-client), used under the hood to communicate with the administration REST API. Use this command only if you changed the administration API configuration and you need to configure the client properly.
+Configures the [Mocks Server administration API client](https://github.com/mocks-server/admin-api-client), used under the hood to communicate with the administration REST API.
+
+* __`configuration`__ _<Object>_ - It must be an object containing any of next properties:
+  * __`enabled`__ Enables or disables the API client.
+  * __`port`__ Changes the API client port. 
+  * __`host`__ Changes the API client host.
 
 ## Configuration
 
 By default, the API client is configured to request to `http://127.0.0.1:3110/api`, based in the [default Mocks Server options][mocks-server-options-url]
+
+Use next settings only if you changed the administration API configuration and you need to configure the client properly, or in case you also need to run your tests without starting the Mocks Server.
 
 You can change both the host and port of the administration API using the `cy.mocksConfigAdminApiClient` command mentioned above, or the plugin environment variables:
 
 * __`MOCKS_SERVER_ADMIN_API_PORT`__: Modifies the admin API client port. Default is `3110`.
 * __`MOCKS_SERVER_ADMIN_API_HOST`__: Modifies the admin API client host. Default is `127.0.0.1`.
 * __`MOCKS_SERVER_ENABLED`__: Disables requests to the Mocks Server admin API, so the commands will not fail even when Mocks Server is not running. This is useful to reuse same tests with a mocked API and a real API, because commands to change Mocks Server configuration will be ignored.
+
+> Note: This environment variables only affect to the default Mocks Server API client. Read [usage with multiple Mocks Servers](#usage-with-multiple-mocks-servers) bellow for further info.
 
 ### Using commands
 
@@ -95,6 +104,63 @@ describe("user with admin role", () => {
 
   it("should see the users section link", () => {
     cy.get("#users-section-link").should("be.visible");
+  });
+});
+```
+
+## Usage with multiple Mocks Servers
+
+This package can be used also to control multiple Mocks Server processes. __All commands described above support passing an extra argument__, which can be a different `MocksServerClient` instance configured in a different way. When the commands receive a `MocksServerClient` instance, it uses its configuration to perform requests to the Mocks Server administration API client instead of the default one.
+
+Note that changing the plugin environment variables values don't affect to custom clients created this way, so, if you want to configure them using environment variables you'll have to use your own.
+
+### MocksServerClient(configuration)
+
+Returns a new Mocks Server client to be provided to this plugin's Cypress commands, so they use this client instead of the default one. Configuration options are the same than described for the `cy.mocksConfigClient` command:
+
+* __`configuration`__ _<Object>_ - Optional (configuration can be changed also afterwards using the `cy.mocksConfigClient` command and passing the client to be configured). It should be an object containing any of next properties:
+  * __`enabled`__ Enables or disables the client.
+  * __`port`__ Changes the client port. 
+  * __`host`__ Changes the client host.
+
+### Commands API when using a custom client
+
+* __`cy.mocksSetCollection("users-error", mocksServerClient)`__ - Set current collection using the provided client.
+* __`cy.mocksUseRouteVariant("users:success", mocksServerClient)`__ - Set a specific route variant using the provided client.
+* __`cy.mocksRestoreRouteVariants(mocksServerClient)`__ - Restore route variants using the provided client.
+* __`cy.mocksSetDelay(2000, mocksServerClient)`__ - Set routes default delay using the provided client.
+* __`cy.mocksSetConfig(mocksServerConfiguration, mocksServerClient)`__ - Set any [Mocks Server setting][mocks-server-options-url] using the provided client.
+* __`cy.mocksConfigClient(clientConfiguration, mocksServerClient)`__ - Configures the provided admin API client.
+
+### Example
+
+```js
+import { MocksServerClient } from "@mocks-server/cypress-commands";
+
+const usersApiMock = new MocksServerClient({
+  port: 3500,
+  host: "127.0.0.1"
+});
+const gravatarApiMock = new MocksServerClient({
+  port: 3200,
+  host: "localhost"
+});
+
+describe("users page", () => {
+  describe("When normal user is logged in and gravatar API does not work", () => {
+    before(() => {
+      cy.mocksSetCollection("normal-user", usersApiMock);
+      cy.mocksSetCollection("server-error", gravatarApiMock);
+      cy.visit("/");
+    });
+
+    it("should not see the users section link", () => {
+      cy.get("#users-section-link").should("not.be.visible");
+    });
+
+    it("should not display user avatars", () => {
+      cy.get(".user-avatar").should("not.be.visible");
+    });
   });
 });
 ```

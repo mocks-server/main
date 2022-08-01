@@ -1,71 +1,101 @@
-import {
-  about,
-  config,
-  alerts,
-  alert,
-  collections,
-  collection,
-  routes,
-  route,
-  variants,
-  variant,
-  customRouteVariants,
-} from "./entities";
+import { BaseAdminApiClient } from "./entities";
 
-export function readAbout() {
-  return about.read();
+export class AdminApiClient {
+  constructor() {
+    this._adminApiClient = new BaseAdminApiClient();
+  }
+
+  readAbout() {
+    return this._adminApiClient.about.read();
+  }
+
+  readConfig() {
+    return this._adminApiClient.config.read();
+  }
+
+  updateConfig(newConfig) {
+    return this._adminApiClient.config.update(newConfig);
+  }
+
+  readAlerts() {
+    return this._adminApiClient.alerts.read();
+  }
+
+  readAlert(id) {
+    return this._adminApiClient.alert(id).read();
+  }
+
+  readCollections() {
+    return this._adminApiClient.collections.read();
+  }
+
+  readCollection(id) {
+    return this._adminApiClient.collection(id).read();
+  }
+
+  readRoutes() {
+    return this._adminApiClient.routes.read();
+  }
+
+  readRoute(id) {
+    return this._adminApiClient.route(id).read();
+  }
+
+  readVariants() {
+    return this._adminApiClient.variants.read();
+  }
+
+  readVariant(id) {
+    return this._adminApiClient.variant(id).read();
+  }
+
+  readCustomRouteVariants() {
+    return this._adminApiClient.customRouteVariants.read();
+  }
+
+  useRouteVariant(id) {
+    return this._adminApiClient.customRouteVariants.create({
+      id,
+    });
+  }
+
+  restoreRouteVariants() {
+    return this._adminApiClient.customRouteVariants.delete();
+  }
+
+  configClient(config) {
+    return this._adminApiClient.configClient(config);
+  }
 }
 
-export function readConfig() {
-  return config.read();
-}
+const defaultClient = new AdminApiClient();
 
-export function updateConfig(newConfig) {
-  return config.update(newConfig);
-}
+export const readAbout = defaultClient.readAbout.bind(defaultClient);
 
-export function readAlerts() {
-  return alerts.read();
-}
+export const readConfig = defaultClient.readConfig.bind(defaultClient);
 
-export function readAlert(id) {
-  return alert(id).read();
-}
+export const updateConfig = defaultClient.updateConfig.bind(defaultClient);
 
-export function readCollections() {
-  return collections.read();
-}
+export const readAlerts = defaultClient.readAlerts.bind(defaultClient);
 
-export function readCollection(id) {
-  return collection(id).read();
-}
+export const readAlert = defaultClient.readAlert.bind(defaultClient);
 
-export function readRoutes() {
-  return routes.read();
-}
+export const readCollections = defaultClient.readCollections.bind(defaultClient);
 
-export function readRoute(id) {
-  return route(id).read();
-}
+export const readCollection = defaultClient.readCollection.bind(defaultClient);
 
-export function readVariants() {
-  return variants.read();
-}
+export const readRoutes = defaultClient.readRoutes.bind(defaultClient);
 
-export function readVariant(id) {
-  return variant(id).read();
-}
+export const readRoute = defaultClient.readRoute.bind(defaultClient);
 
-export function readCustomRouteVariants() {
-  return customRouteVariants.read();
-}
+export const readVariants = defaultClient.readVariants.bind(defaultClient);
 
-export function useRouteVariant(id) {
-  return customRouteVariants.create({
-    id,
-  });
-}
+export const readVariant = defaultClient.readVariant.bind(defaultClient);
 
-export function restoreRouteVariants() {
-  return customRouteVariants.delete();
-}
+export const readCustomRouteVariants = defaultClient.readCustomRouteVariants.bind(defaultClient);
+
+export const useRouteVariant = defaultClient.useRouteVariant.bind(defaultClient);
+
+export const restoreRouteVariants = defaultClient.restoreRouteVariants.bind(defaultClient);
+
+export const configClient = defaultClient.configClient.bind(defaultClient);

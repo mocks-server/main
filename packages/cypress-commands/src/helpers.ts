@@ -16,3 +16,8 @@ export function valueIsOneOf(
 export function isFalsy(value: CypressEnvVarValue) {
   return valueIsOneOf(value, FALSY_VALUES);
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isUndefined(value: any) {
+  return typeof value === "undefined";
+}

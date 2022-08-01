@@ -1,0 +1,58 @@
+import { AdminApiClient } from "@mocks-server/admin-api-client";
+
+import type {
+  MocksServerConfig,
+  RouteVariantId
+} from "@mocks-server/admin-api-client";
+
+import type { MocksServerCypressApiClientConfig } from "./types";
+import { isUndefined, isFalsy } from "./helpers";
+
+function doNothing() {
+  return Promise.resolve();
+}
+
+export default class MocksServerApiClient {
+  private _enabled: MocksServerCypressApiClientConfig["enabled"] = true;
+  private _apiClient: AdminApiClient;
+
+  constructor(clientConfig: MocksServerCypressApiClientConfig) {
+    this._apiClient = new AdminApiClient();
+    this.configClient(clientConfig);
+  }
+
+  private _isDisabled() {
+    return isFalsy(this._enabled);
+  }
+
+  public updateConfig(mocksServerConfig: MocksServerConfig) {
+    if (this._isDisabled()) {
+      return doNothing();
+    }
+    return this._apiClient.updateConfig(mocksServerConfig);
+  }
+
+  public useRouteVariant(id: RouteVariantId) {
+    if (this._isDisabled()) {
+      return doNothing();
+    }
+    return this._apiClient.useRouteVariant(id);
+  }
+
+  public restoreRouteVariants() {
+    if (this._isDisabled()) {
+      return doNothing();
+    }
+    return this._apiClient.restoreRouteVariants();
+  }
+
+  public configClient(customConfig: MocksServerCypressApiClientConfig) {
+    if (!isUndefined(customConfig.enabled)) {
+      this._enabled = customConfig.enabled;
+    }
+    this._apiClient.configClient({
+      host: customConfig.host,
+      port: customConfig.port,
+    });
+  }
+}

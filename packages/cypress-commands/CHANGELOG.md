@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+- refactor: Migrate to TypeScript
+
 ## [5.0.0] - 2022-07-22
 
 ### Changed

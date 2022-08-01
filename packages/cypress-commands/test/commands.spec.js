@@ -1,9 +1,23 @@
-const sinon = require("sinon");
-const apiClient = require("@mocks-server/admin-api-client");
+import sinon from "sinon";
 
-const CypressMock = require("./Cypress.mock");
+function doNothing() {
+  // do nothing
+}
 
-const commands = require("../src/commands");
+const apiClient = {
+  updateConfig: doNothing,
+  useRouteVariant: doNothing,
+  restoreRouteVariants: doNothing,
+  configClient: doNothing,
+};
+
+jest.mock("@mocks-server/admin-api-client", () => {
+  return apiClient;
+});
+
+import CypressMock from "./Cypress.mock";
+
+import { commands } from "../src/commands";
 
 describe("commands", () => {
   let sandbox;

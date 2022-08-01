@@ -1,6 +1,6 @@
-const CypressMock = require("./Cypress.mock");
+import CypressMock from "./Cypress.mock";
 
-const register = require("../src/register");
+import { register } from "../src/register";
 
 describe("register", () => {
   let cypressMock;

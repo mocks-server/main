@@ -1,6 +1,5 @@
-const sinon = require("sinon");
-
-const Mock = class Mock {
+import sinon from "sinon";
+export default class Cypress {
   constructor() {
     this._sandbox = sinon.createSandbox();
 
@@ -19,6 +18,4 @@ const Mock = class Mock {
   restore() {
     this._sandbox.restore();
   }
-};
-
-module.exports = Mock;
+}

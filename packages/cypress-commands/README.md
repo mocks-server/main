@@ -99,6 +99,26 @@ describe("user with admin role", () => {
 });
 ```
 
+## Usage with TypeScript
+
+For those writing [TypesScript tests in Cypress][cypress-typescript], this package includes TypeScript declarations.
+
+Add "@mocks-server/cypress-commands" to the `types` property in the `tsconfig.json` file:
+
+```json
+{
+  "compilerOptions": {
+    "types": ["cypress", "@mocks-server/cypress-commands"]
+  }
+}
+```
+
+Or reference the package in the files using it:
+
+```typescript
+/// <reference types="@mocks-server/cypress-commands" />
+```
+
 ## Release notes
 
 Current major release (`5.x`) is compatible only with `@mocks-server/main` versions upper or equal than `3.6`. Use prior releases for lower versions. If you don't want to update to the latest major version of this package yet but you want to update `@mocks-server/main`, you can also use any `4.x` version of this package with any `@mocks-server/main@3.x` version.
@@ -109,3 +129,4 @@ MIT, see [LICENSE](./LICENSE) for details.
 
 [mocks-server-url]: https://www.mocks-server.org
 [mocks-server-options-url]: https://www.mocks-server.org/docs/configuration/options
+[cypress-typescript]: https://docs.cypress.io/guides/tooling/typescript-support.html

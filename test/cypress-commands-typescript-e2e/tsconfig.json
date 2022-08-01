@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "types": ["cypress", "../../packages/cypress-commands"],
+    "paths": {
+      "@mocks-server/cypress-commands": ["../../packages/cypress-commands"]
+    }
+  },
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+  ]
+}

@@ -405,6 +405,14 @@ importers:
     devDependencies:
       '@mocks-server/main': link:../../packages/main
 
+  test/cypress-commands-typescript-e2e:
+    specifiers:
+      '@mocks-server/main': workspace:*
+      ts-loader: 9.3.1
+    devDependencies:
+      '@mocks-server/main': link:../../packages/main
+      ts-loader: 9.3.1_typescript@4.6.4+webpack@5.72.1
+
   test/main-e2e:
     specifiers:
       '@mocks-server/inquirer-cli-runner': workspace:*
@@ -15837,6 +15845,21 @@ packages:
 
   /tryer/1.0.1:
     resolution: {integrity: sha512-c3zayb8/kWWpycWYg87P71E1S1ZL6b6IJxfb5fvsUgsf0S2MVGaDhDXXjDMpdCpfWXqptc+4mXwmiy1ypXqRAA==}
+    dev: true
+
+  /ts-loader/9.3.1_typescript@4.6.4+webpack@5.72.1:
+    resolution: {integrity: sha512-OkyShkcZTsTwyS3Kt7a4rsT/t2qvEVQuKCTg4LJmpj9fhFR7ukGdZwV6Qq3tRUkqcXtfGpPR7+hFKHCG/0d3Lw==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      typescript: '*'
+      webpack: ^5.0.0
+    dependencies:
+      chalk: 4.1.2
+      enhanced-resolve: 5.9.3
+      micromatch: 4.0.4
+      semver: 7.3.7
+      typescript: 4.6.4
+      webpack: 5.72.1
     dev: true
 
   /ts-pnp/1.2.0_typescript@4.6.4:

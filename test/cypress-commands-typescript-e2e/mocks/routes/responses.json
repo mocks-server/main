@@ -1,0 +1,23 @@
+[
+  {
+    "id": "response",
+    "url": "/api/response",
+    "method": "GET",
+    "variants": [
+      {
+        "id": "standard",
+        "response": {
+          "status": 200,
+          "body": { "display": "standard-response" }
+        }
+      },
+      {
+        "id": "custom",
+        "response": {
+          "status": 200,
+          "body": { "display": "custom-response" }
+        }
+      }
+    ]
+  }
+]

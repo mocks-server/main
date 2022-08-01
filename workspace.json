@@ -21,6 +21,7 @@
     "core-e2e-legacy": "test/core-e2e-legacy",
     "cypress-commands": "packages/cypress-commands",
     "cypress-commands-e2e": "test/cypress-commands-e2e",
+    "cypress-commands-typescript-e2e": "test/cypress-commands-typescript-e2e",
     "cypress-commands-e2e-vanilla-app": "mocks/cypress-commands-e2e-vanilla-app",
     "inquirer-cli-runner": "packages/inquirer-cli-runner",
     "logger": "packages/logger",

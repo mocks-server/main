@@ -1,22 +1,15 @@
-import commonjs from "@rollup/plugin-commonjs";
-import resolve from "@rollup/plugin-node-resolve";
-import babel from "@rollup/plugin-babel";
+import typescript from "@rollup/plugin-typescript";
 import { terser } from "rollup-plugin-terser";
 
 const BASE_CONFIG = {
-  input: "dist-tsc/index.js",
+  input: "src/index.ts",
 };
 
 const BASE_PLUGINS = [
-  resolve({
-    mainFields: ["module", "main"],
-    browser: true,
-    preferBuiltins: true,
-  }),
-  commonjs(),
-  babel({
-    babelrc: false,
-    presets: ["@babel/env"],
+  typescript({
+    compilerOptions: {
+      declaration: false,
+    },
   }),
 ];
 

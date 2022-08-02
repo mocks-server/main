@@ -16,7 +16,7 @@ import {
   useRouteVariant,
   restoreRouteVariants,
   configClient,
-} from "../index";
+} from "../src/index";
 
 describe("admin api client global methods", () => {
   describe("when reading about", () => {

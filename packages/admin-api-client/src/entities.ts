@@ -1,4 +1,6 @@
 import crossFetch from "cross-fetch";
+import type { Response } from "cross-fetch";
+import type { AnyObject, ApiClientConfig, Url, ApiPath, Id } from "./types";
 
 import {
   BASE_PATH,
@@ -13,11 +15,12 @@ import {
   DEFAULT_CLIENT_HOST,
 } from "@mocks-server/admin-api-paths";
 
-function isUndefined(value) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isUndefined(value: any) {
   return typeof value === "undefined";
 }
 
-function handleResponse(res) {
+function handleResponse(res: Response) {
   if (res.status > 199 && res.status < 300) {
     return res.json().catch(() => Promise.resolve());
   }
@@ -27,20 +30,18 @@ function handleResponse(res) {
 }
 
 class ApiClient {
-  constructor() {
-    this._host = DEFAULT_CLIENT_HOST;
-    this._port = DEFAULT_PORT;
-  }
+  private _host: ApiClientConfig["host"] = DEFAULT_CLIENT_HOST;
+  private _port: ApiClientConfig["port"] = DEFAULT_PORT;
 
-  get _baseUrl() {
+  get _baseUrl(): Url {
     return `http://${this._host}:${this._port}${BASE_PATH}`;
   }
 
-  fullUrl(url) {
-    return `${this._baseUrl}${url}`;
+  private _fullUrl(apiPath: ApiPath): Url {
+    return `${this._baseUrl}${apiPath}`;
   }
 
-  config(configuration = {}) {
+  public config(configuration: ApiClientConfig = {}) {
     if (!isUndefined(configuration.host)) {
       this._host = configuration.host;
     }
@@ -49,12 +50,12 @@ class ApiClient {
     }
   }
 
-  read(url) {
-    return crossFetch(this.fullUrl(url)).then(handleResponse);
+  public read(apiPath: ApiPath) {
+    return crossFetch(this._fullUrl(apiPath)).then(handleResponse);
   }
 
-  patch(url, data) {
-    return crossFetch(this.fullUrl(url), {
+  public patch(apiPath: ApiPath, data: AnyObject) {
+    return crossFetch(this._fullUrl(apiPath), {
       method: "PATCH",
       body: JSON.stringify(data),
       headers: {
@@ -63,14 +64,14 @@ class ApiClient {
     }).then(handleResponse);
   }
 
-  delete(url) {
-    return crossFetch(this.fullUrl(url), {
+  public delete(apiPath: ApiPath) {
+    return crossFetch(this._fullUrl(apiPath), {
       method: "DELETE",
     }).then(handleResponse);
   }
 
-  create(url, data) {
-    return crossFetch(this.fullUrl(url), {
+  public create(apiPath: ApiPath, data: AnyObject) {
+    return crossFetch(this._fullUrl(apiPath), {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -81,34 +82,47 @@ class ApiClient {
 }
 
 class ApiResource {
-  constructor(apiClient, url, id) {
-    this._url = url;
+  private _apiPath: ApiPath;
+  private _id: Id;
+  private _apiClient: ApiClient;
+
+  constructor(apiClient: ApiClient, apiPath: ApiPath, id?: Id) {
+    this._apiPath = apiPath;
     this._id = id ? `/${encodeURIComponent(id)}` : "";
     this._apiClient = apiClient;
   }
 
-  get url() {
-    return `${this._url}${this._id}`;
+  private get _fullApiPath() {
+    return `${this._apiPath}${this._id}`;
   }
 
-  read() {
-    return this._apiClient.read(this.url);
+  public read() {
+    return this._apiClient.read(this._fullApiPath);
   }
 
-  update(data) {
-    return this._apiClient.patch(this.url, data);
+  public update(data: AnyObject) {
+    return this._apiClient.patch(this._fullApiPath, data);
   }
 
-  delete() {
-    return this._apiClient.delete(this.url);
+  public delete() {
+    return this._apiClient.delete(this._fullApiPath);
   }
 
-  create(data) {
-    return this._apiClient.create(this.url, data);
+  public create(data: AnyObject) {
+    return this._apiClient.create(this._fullApiPath, data);
   }
 }
 
 export class BaseAdminApiClient {
+  private _apiClient: ApiClient;
+  private _about: ApiResource;
+  private _config: ApiResource;
+  private _alerts: ApiResource;
+  private _collections: ApiResource;
+  private _routes: ApiResource;
+  private _variants: ApiResource;
+  private _customRouteVariants: ApiResource;
+
   constructor() {
     this._apiClient = new ApiClient();
 
@@ -121,51 +135,51 @@ export class BaseAdminApiClient {
     this._customRouteVariants = new ApiResource(this._apiClient, CUSTOM_ROUTE_VARIANTS);
   }
 
-  get about() {
+  public get about() {
     return this._about;
   }
 
-  get config() {
+  public get config() {
     return this._config;
   }
 
-  get alerts() {
+  public get alerts() {
     return this._alerts;
   }
 
-  alert(id) {
+  public alert(id: Id) {
     return new ApiResource(this._apiClient, ALERTS, id);
   }
 
-  get collections() {
+  public get collections() {
     return this._collections;
   }
 
-  collection(id) {
+  public collection(id: Id) {
     return new ApiResource(this._apiClient, COLLECTIONS, id);
   }
 
-  get routes() {
+  public get routes() {
     return this._routes;
   }
 
-  route(id) {
+  public route(id: Id) {
     return new ApiResource(this._apiClient, ROUTES, id);
   }
 
-  get variants() {
+  public get variants() {
     return this._variants;
   }
 
-  variant(id) {
+  public variant(id: Id) {
     return new ApiResource(this._apiClient, VARIANTS, id);
   }
 
-  get customRouteVariants() {
+  public get customRouteVariants() {
     return this._customRouteVariants;
   }
 
-  configClient(configuration) {
+  public configClient(configuration: ApiClientConfig) {
     this._apiClient.config(configuration);
   }
 }

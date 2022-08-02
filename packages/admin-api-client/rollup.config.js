@@ -1,10 +1,11 @@
+import typescript from "@rollup/plugin-typescript";
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import babel from "@rollup/plugin-babel";
 import { terser } from "rollup-plugin-terser";
 
 const BASE_CONFIG = {
-  input: "index.js",
+  input: "src/index.ts",
   external: ["cross-fetch", "@mocks-server/admin-api-paths"],
 };
 
@@ -13,18 +14,10 @@ const GLOBALS = {
 };
 
 const BASE_PLUGINS = [
-  resolve({
-    mainFields: ["module", "main", "jsnext"],
-    browser: true,
-    preferBuiltins: true,
-  }),
-  commonjs({
-    include: [/node_modules/],
-  }),
-  babel({
-    babelHelpers: "bundled",
-    babelrc: false,
-    presets: ["@babel/env"],
+  typescript({
+    compilerOptions: {
+      declaration: false,
+    },
   }),
 ];
 
@@ -38,7 +31,7 @@ module.exports = [
     plugins: BASE_PLUGINS,
   },
   {
-    input: "index.js",
+    input: "src/index.ts",
     external: ["@mocks-server/admin-api-paths"],
     output: {
       file: "dist/index.umd.js",
@@ -48,7 +41,27 @@ module.exports = [
         "@mocks-server/admin-api-paths": "pluginAdminApiPaths",
       },
     },
-    plugins: [...BASE_PLUGINS, terser()],
+    plugins: [
+      typescript({
+        compilerOptions: {
+          declaration: false,
+        },
+      }),
+      resolve({
+        mainFields: ["module", "main", "jsnext"],
+        browser: true,
+        preferBuiltins: true,
+      }),
+      commonjs({
+        include: [/node_modules/],
+      }),
+      babel({
+        babelHelpers: "bundled",
+        babelrc: false,
+        presets: ["@babel/env"],
+      }),
+      terser(),
+    ],
   },
   {
     ...BASE_CONFIG,

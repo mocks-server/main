@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+- refactor: Migrate to TypeScript
 - refactor: Add class allowing to create multiple clients. Keep global client methods creating a default client and exporting its methods.
 - refactor: Use default host and port values from `@mocks-server/admin-api-paths`
 

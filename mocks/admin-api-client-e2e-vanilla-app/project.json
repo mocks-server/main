@@ -1,0 +1,6 @@
+{
+  "root": "mocks/admin-api-client-e2e-vanilla-app/",
+  "projectType": "application",
+  "implicitDependencies": ["admin-api-client"],
+  "tags": ["type:mock"]
+}

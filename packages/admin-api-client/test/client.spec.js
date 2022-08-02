@@ -1,6 +1,6 @@
 import { wait, waitForServer } from "./support/helpers";
 
-import { AdminApiClient } from "../index";
+import { AdminApiClient } from "../src/index";
 
 describe("AdminApiClient class", () => {
   let apiClient;

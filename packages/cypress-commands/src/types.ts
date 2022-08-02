@@ -89,8 +89,5 @@ export type CypressEnvVarValue = any;
 export type ArrayOfValues = (string | number | boolean)[];
 
 export interface MocksServerCypressApiClientConfig extends ApiClientConfig {
-  // Remove port and host when admin-api-client exports types
-  port?: number;
-  host?: string;
   enabled?: boolean;
 }

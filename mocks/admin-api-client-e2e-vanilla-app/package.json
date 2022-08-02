@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "cross-env node ./scripts/copyLibrary.js",
+    "serve": "serve -l 3000"
+  }
+}

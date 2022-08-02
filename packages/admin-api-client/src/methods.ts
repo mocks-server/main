@@ -1,6 +1,10 @@
 import { BaseAdminApiClient } from "./entities";
 
+import type { MocksServerConfig, Id, ApiClientConfig } from "./types";
+
 export class AdminApiClient {
+  private _adminApiClient: BaseAdminApiClient;
+
   constructor() {
     this._adminApiClient = new BaseAdminApiClient();
   }
@@ -13,7 +17,7 @@ export class AdminApiClient {
     return this._adminApiClient.config.read();
   }
 
-  updateConfig(newConfig) {
+  updateConfig(newConfig: MocksServerConfig) {
     return this._adminApiClient.config.update(newConfig);
   }
 
@@ -21,7 +25,7 @@ export class AdminApiClient {
     return this._adminApiClient.alerts.read();
   }
 
-  readAlert(id) {
+  readAlert(id: Id) {
     return this._adminApiClient.alert(id).read();
   }
 
@@ -29,7 +33,7 @@ export class AdminApiClient {
     return this._adminApiClient.collections.read();
   }
 
-  readCollection(id) {
+  readCollection(id: Id) {
     return this._adminApiClient.collection(id).read();
   }
 
@@ -37,7 +41,7 @@ export class AdminApiClient {
     return this._adminApiClient.routes.read();
   }
 
-  readRoute(id) {
+  readRoute(id: Id) {
     return this._adminApiClient.route(id).read();
   }
 
@@ -45,7 +49,7 @@ export class AdminApiClient {
     return this._adminApiClient.variants.read();
   }
 
-  readVariant(id) {
+  readVariant(id: Id) {
     return this._adminApiClient.variant(id).read();
   }
 
@@ -53,7 +57,7 @@ export class AdminApiClient {
     return this._adminApiClient.customRouteVariants.read();
   }
 
-  useRouteVariant(id) {
+  useRouteVariant(id: Id) {
     return this._adminApiClient.customRouteVariants.create({
       id,
     });
@@ -63,7 +67,7 @@ export class AdminApiClient {
     return this._adminApiClient.customRouteVariants.delete();
   }
 
-  configClient(config) {
+  configClient(config: ApiClientConfig) {
     return this._adminApiClient.configClient(config);
   }
 }

@@ -17,6 +17,7 @@ importers:
       '@rollup/plugin-babel': 5.3.1
       '@rollup/plugin-commonjs': 21.1.0
       '@rollup/plugin-node-resolve': 13.3.0
+      '@rollup/plugin-typescript': 8.3.4
       '@testing-library/cypress': 8.0.3
       '@typescript-eslint/eslint-plugin': 5.26.0
       '@typescript-eslint/parser': 5.27.0
@@ -75,6 +76,7 @@ importers:
       '@rollup/plugin-babel': 5.3.1_e931bf24091652160a0c732af432d11d
       '@rollup/plugin-commonjs': 21.1.0_rollup@2.73.0
       '@rollup/plugin-node-resolve': 13.3.0_rollup@2.73.0
+      '@rollup/plugin-typescript': 8.3.4_rollup@2.73.0+typescript@4.6.4
       '@testing-library/cypress': 8.0.3_cypress@9.7.0
       '@typescript-eslint/eslint-plugin': 5.26.0_53d38052debc4713ade978e5dea63382
       '@typescript-eslint/parser': 5.27.0_eslint@8.20.0+typescript@4.6.4
@@ -2997,6 +2999,23 @@ packages:
       '@rollup/pluginutils': 3.1.0_rollup@1.32.1
       magic-string: 0.25.9
       rollup: 1.32.1
+    dev: true
+
+  /@rollup/plugin-typescript/8.3.4_rollup@2.73.0+typescript@4.6.4:
+    resolution: {integrity: sha512-wt7JnYE9antX6BOXtsxGoeVSu4dZfw0dU3xykfOQ4hC3EddxRbVG/K0xiY1Wup7QOHJcjLYXWAn0Kx9Z1SBHHg==}
+    engines: {node: '>=8.0.0'}
+    peerDependencies:
+      rollup: ^2.14.0
+      tslib: '*'
+      typescript: '>=3.7.0'
+    peerDependenciesMeta:
+      tslib:
+        optional: true
+    dependencies:
+      '@rollup/pluginutils': 3.1.0_rollup@2.73.0
+      resolve: 1.22.0
+      rollup: 2.73.0
+      typescript: 4.6.4
     dev: true
 
   /@rollup/pluginutils/3.1.0_rollup@1.32.1:

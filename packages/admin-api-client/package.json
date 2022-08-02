@@ -23,12 +23,14 @@
     "access": "public"
   },
   "files": [
-    "dist"
+    "dist",
+    "dist-tsc"
   ],
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
+  "types": "dist-tsc/index.d.ts",
   "scripts": {
-    "build": "rollup --config",
+    "build": "tsc && rollup --config",
     "mocks:ci": "pnpm -w run nx start admin-api-client-unit-mocks",
     "test": "jest --runInBand",
     "test:unit": "start-server-and-test mocks:ci tcp:127.0.0.1:3200 test"

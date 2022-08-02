@@ -1,6 +1,6 @@
 const waitOn = require("wait-on");
 
-import { configClient } from "../../index";
+import { configClient } from "../../src/index";
 
 configClient({
   port: 3110,

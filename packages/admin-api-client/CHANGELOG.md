@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 - refactor: Add class allowing to create multiple clients. Keep global client methods creating a default client and exporting its methods.
+- refactor: Use default host and port values from `@mocks-server/admin-api-paths`
 
 ## [6.0.0] - 2022-07-22
 

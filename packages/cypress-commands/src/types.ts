@@ -59,7 +59,7 @@ declare global {
       mocksRestoreRouteVariants(adminApiClient?: AdminApiClient): Promise<void>
 
       /**
-      * Alias of cy.mocksConfigClient. Will be deprecated in next major versions
+      * Alias of cy.mocksConfigClient. This alias will be deprecated in next major versions. Use cy.mocksConfigClient instead
       * @param apiClientConfig - Admin API client configuration
       * @param adminApiClient - custom admin api client to use instead of the default one
       * @example cy.mocksConfigAdminApiClient({ port: 3210 })

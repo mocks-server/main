@@ -4,7 +4,7 @@ import babel from "@rollup/plugin-babel";
 import { terser } from "rollup-plugin-terser";
 
 const BASE_CONFIG = {
-  input: "index.js",
+  input: "dist-tsc/index.js",
 };
 
 const BASE_PLUGINS = [

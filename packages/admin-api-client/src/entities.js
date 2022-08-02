@@ -9,12 +9,9 @@ import {
   ROUTES,
   VARIANTS,
   CUSTOM_ROUTE_VARIANTS,
+  DEFAULT_PORT,
+  DEFAULT_CLIENT_HOST,
 } from "@mocks-server/admin-api-paths";
-
-const DEFAULT_OPTIONS = {
-  port: 3110,
-  host: "127.0.0.1",
-};
 
 function isUndefined(value) {
   return typeof value === "undefined";
@@ -31,8 +28,8 @@ function handleResponse(res) {
 
 class ApiClient {
   constructor() {
-    this._host = DEFAULT_OPTIONS.host;
-    this._port = DEFAULT_OPTIONS.port;
+    this._host = DEFAULT_CLIENT_HOST;
+    this._port = DEFAULT_PORT;
   }
 
   get _baseUrl() {

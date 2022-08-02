@@ -12,6 +12,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const http = require("http");
 
 const express = require("express");
+const { DEFAULT_HOST, DEFAULT_PORT } = require("@mocks-server/admin-api-paths");
+
 const {
   addRequestId,
   enableCors,
@@ -21,7 +23,7 @@ const {
   logRequest,
 } = require("./middlewares");
 
-const { ALL_HOSTS, serverUrl } = require("../common/helpers");
+const { serverUrl } = require("../common/helpers");
 
 const START_ALERT_ID = "start";
 const START_ERROR_MESSAGE = "Error starting server";
@@ -32,13 +34,13 @@ const OPTIONS = [
     description: "Port number for the admin API server to be listening at",
     name: "port",
     type: "number",
-    default: 3110,
+    default: DEFAULT_PORT,
   },
   {
     description: "Host for the admin API server",
     name: "host",
     type: "string",
-    default: ALL_HOSTS,
+    default: DEFAULT_HOST,
   },
 ];
 

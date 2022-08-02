@@ -30,7 +30,7 @@ The UMD build is also available on unpkg. When UMD package is loaded, it creates
 <script src="https://unpkg.com/@mocks-server/admin-api-client/dist/index.umd.js"></script>
 ```
 
-> The umd distribution is bundled with the `cross-env` dependency, but requires the `@mocks-server/admin-api-paths` dependency to be added separately.
+> NOTE: The umd distribution is bundled with the `cross-fetch` dependency, but it requires the `@mocks-server/admin-api-paths` dependency to be added separately.
 
 ## Usage
 

@@ -1,5 +1,8 @@
 export * from "./types";
+export { MocksServerApiClient } from "./MocksServerApiClient";
 
-import { register } from "./register";
+import { register as registerer } from "./register";
 
-register(Cypress);
+export function register() {
+  registerer(Cypress);
+}

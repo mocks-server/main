@@ -38,6 +38,7 @@ jest.mock("@mocks-server/admin-api-client", () => {
 import CypressMock from "./Cypress.mock";
 
 import { commands } from "../src/commands";
+import { MocksServerApiClient } from "../src/MocksServerApiClient";
 
 describe("commands", () => {
   let sandbox;
@@ -188,6 +189,118 @@ describe("commands", () => {
           port: "foo-port",
         })
       ).toBe(true);
+    });
+  });
+
+  describe("when custom clients are used", () => {
+    describe("when setting client config", () => {
+      it("should call to set client config of custom client", () => {
+        const customApiClient = new MocksServerApiClient();
+        sandbox.stub(customApiClient, "configClient");
+        const { configClient } = commands(cypressMock.stubs);
+        sandbox.reset();
+
+        configClient(
+          {
+            host: "foo-host",
+          },
+          customApiClient
+        );
+
+        expect(
+          customApiClient.configClient.calledWith({
+            host: "foo-host",
+          })
+        ).toBe(true);
+
+        expect(apiClient.configClient.callCount).toEqual(0);
+      });
+
+      it("should call to set client config of default client", () => {
+        const customApiClient = new MocksServerApiClient();
+        sandbox.stub(customApiClient, "configClient");
+        const { configClient } = commands(cypressMock.stubs);
+        sandbox.reset();
+
+        configClient({
+          host: "foo-host",
+        });
+
+        expect(
+          apiClient.configClient.calledWith({
+            host: "foo-host",
+            port: undefined,
+          })
+        ).toBe(true);
+
+        expect(customApiClient.configClient.callCount).toEqual(0);
+      });
+    });
+
+    describe("setCollection command", () => {
+      it("should call to set current collection of custom client", () => {
+        const customApiClient = new MocksServerApiClient();
+        sandbox.stub(customApiClient, "updateConfig");
+        const { setCollection } = commands(cypressMock.stubs);
+        setCollection("foo", customApiClient);
+        expect(
+          customApiClient.updateConfig.calledWith({
+            mock: {
+              collections: {
+                selected: "foo",
+              },
+            },
+          })
+        ).toBe(true);
+      });
+    });
+
+    describe("setDelay command", () => {
+      it("should call to update delay of custom client", () => {
+        const customApiClient = new MocksServerApiClient();
+        sandbox.stub(customApiClient, "updateConfig");
+        const { setDelay } = commands(cypressMock.stubs);
+        setDelay(3000, customApiClient);
+        expect(
+          customApiClient.updateConfig.calledWith({
+            mock: {
+              routes: {
+                delay: 3000,
+              },
+            },
+          })
+        ).toBe(true);
+      });
+    });
+
+    describe("setConfig command", () => {
+      it("should call to update config of custom client", () => {
+        const customApiClient = new MocksServerApiClient();
+        sandbox.stub(customApiClient, "updateConfig");
+        const { setConfig } = commands(cypressMock.stubs);
+        setConfig("foo", customApiClient);
+        expect(customApiClient.updateConfig.calledWith("foo")).toBe(true);
+      });
+    });
+
+    describe("useRouteVariant command", () => {
+      it("should call to useRoute variant of custom client", () => {
+        const customApiClient = new MocksServerApiClient();
+        sandbox.stub(customApiClient, "useRouteVariant");
+        const { useRouteVariant } = commands(cypressMock.stubs);
+        useRouteVariant("foo", customApiClient);
+        expect(customApiClient.useRouteVariant.calledWith("foo")).toBe(true);
+      });
+    });
+
+    describe("restoreRouteVariants command", () => {
+      it("should call to useRoute variant of custom client", () => {
+        const customApiClient = new MocksServerApiClient();
+        sandbox.stub(customApiClient, "restoreRouteVariants");
+        const { restoreRouteVariants } = commands(cypressMock.stubs);
+        restoreRouteVariants(customApiClient);
+        expect(customApiClient.restoreRouteVariants.callCount).toEqual(1);
+      });
     });
   });
 });

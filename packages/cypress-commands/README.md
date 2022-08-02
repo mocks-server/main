@@ -23,17 +23,36 @@ This module is distributed via npm and should be installed as one of your projec
 npm i --save-dev @mocks-server/cypress-commands
 ```
 
-## Usage
+### Registering commands
 
-`@mocks-server/cypress-commands` extends Cypress' cy command.
+`@mocks-server/cypress-commands` extends Cypress' cy commands.
 
-Add this line to your project's `cypress/support/commands.js`:
+At the top of your Cypress' support file (usually `cypress/support/e2e.js` for `e2e` testing type):
 
-```js
-import "@mocks-server/cypress-commands"
+```javascript
+import { register } from "@mocks-server/cypress-commands";
+
+register();
 ```
 
-You can now use all next commands:
+Read [Cypress configuration docs](https://docs.cypress.io/guides/references/configuration) for further info.
+
+<details>
+<summary><strong>Registering commands in Cypress <10.0</strong></summary>
+
+Add these lines to your project's `cypress/support/index.js`:
+
+```js
+import { register } from "@mocks-server/cypress-commands";
+
+register();
+```
+
+</details>
+
+## Usage
+
+Once registered, you can use all next commands:
 
 ### Commands
 
@@ -110,13 +129,13 @@ describe("user with admin role", () => {
 
 ## Usage with multiple Mocks Servers
 
-This package can be used also to control multiple Mocks Server processes. __All commands described above support passing an extra argument__, which can be a different `MocksServerClient` instance configured in a different way. When the commands receive a `MocksServerClient` instance, it uses its configuration to perform requests to the Mocks Server administration API client instead of the default one.
+This package can be used also to control multiple Mocks Server processes. __All commands described above support passing an extra argument__, which can be a different `MocksServerApiClient` instance configured in a different way. When the commands receive a `MocksServerApiClient` instance, it uses its configuration to perform requests to the Mocks Server administration API client instead of the default one.
 
-Note that changing the plugin environment variables values don't affect to custom clients created this way, so, if you want to configure them using environment variables you'll have to use your own.
+Note that changing the plugin environment variables values don't affect to custom API clients created this way, so, if you want to configure them using environment variables you'll have to use your own.
 
-### MocksServerClient(configuration)
+### MocksServerApiClient(configuration)
 
-Returns a new Mocks Server client to be provided to this plugin's Cypress commands, so they use this client instead of the default one. Configuration options are the same than described for the `cy.mocksConfigClient` command:
+Returns a new Mocks Server client to be provided to this plugin's Cypress commands, so they use that client instead of the default one. Configuration options are the same than described for the `cy.mocksConfigClient` command:
 
 * __`configuration`__ _<Object>_ - Optional (configuration can be changed also afterwards using the `cy.mocksConfigClient` command and passing the client to be configured). It should be an object containing any of next properties:
   * __`enabled`__ Enables or disables the client.
@@ -125,23 +144,23 @@ Returns a new Mocks Server client to be provided to this plugin's Cypress comman
 
 ### Commands API when using a custom client
 
-* __`cy.mocksSetCollection("users-error", mocksServerClient)`__ - Set current collection using the provided client.
-* __`cy.mocksUseRouteVariant("users:success", mocksServerClient)`__ - Set a specific route variant using the provided client.
-* __`cy.mocksRestoreRouteVariants(mocksServerClient)`__ - Restore route variants using the provided client.
-* __`cy.mocksSetDelay(2000, mocksServerClient)`__ - Set routes default delay using the provided client.
-* __`cy.mocksSetConfig(mocksServerConfiguration, mocksServerClient)`__ - Set any [Mocks Server setting][mocks-server-options-url] using the provided client.
-* __`cy.mocksConfigClient(clientConfiguration, mocksServerClient)`__ - Configures the provided admin API client.
+* __`cy.mocksSetCollection("users-error", mocksServerApiClient)`__ - Set current collection using the provided client.
+* __`cy.mocksUseRouteVariant("users:success", mocksServerApiClient)`__ - Set a specific route variant using the provided client.
+* __`cy.mocksRestoreRouteVariants(mocksServerApiClient)`__ - Restore route variants using the provided client.
+* __`cy.mocksSetDelay(2000, mocksServerApiClient)`__ - Set routes default delay using the provided client.
+* __`cy.mocksSetConfig(mocksServerConfiguration, mocksServerApiClient)`__ - Set any [Mocks Server setting][mocks-server-options-url] using the provided client.
+* __`cy.mocksConfigClient(clientConfiguration, mocksServerApiClient)`__ - Configures the provided admin API client.
 
 ### Example
 
 ```js
-import { MocksServerClient } from "@mocks-server/cypress-commands";
+import { MocksServerApiClient } from "@mocks-server/cypress-commands";
 
-const usersApiMock = new MocksServerClient({
+const usersApiMock = new MocksServerApiClient({
   port: 3500,
   host: "127.0.0.1"
 });
-const gravatarApiMock = new MocksServerClient({
+const gravatarApiMock = new MocksServerApiClient({
   port: 3200,
   host: "localhost"
 });

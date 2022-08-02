@@ -12,7 +12,7 @@ function doNothing() {
   return Promise.resolve();
 }
 
-export default class MocksServerApiClient {
+export class MocksServerApiClient {
   private _enabled: MocksServerCypressApiClientConfig["enabled"] = true;
   private _apiClient: AdminApiClient;
 
@@ -46,7 +46,7 @@ export default class MocksServerApiClient {
     return this._apiClient.restoreRouteVariants();
   }
 
-  public configClient(customConfig: MocksServerCypressApiClientConfig) {
+  public configClient(customConfig: MocksServerCypressApiClientConfig = {}) {
     if (!isUndefined(customConfig.enabled)) {
       this._enabled = customConfig.enabled;
     }

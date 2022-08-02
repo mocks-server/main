@@ -7,7 +7,7 @@ import type {
 
 import type { MocksServerCypressApiClientConfig } from "./types";
 
-import MocksServerApiClient from "./MocksServerApiClient";
+import { MocksServerApiClient } from "./MocksServerApiClient";
 
 import {
   ENABLED_ENVIRONMENT_VAR,

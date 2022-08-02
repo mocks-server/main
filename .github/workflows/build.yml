@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - release
+      - feat-229-cypress-commands
   pull_request:
 jobs:
   get-affected:

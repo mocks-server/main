@@ -2,8 +2,11 @@
   "private": true,
   "scripts": {
     "mocks": "mocks-server",
+    "mocks:ci:2": "mocks-server --no-plugins.inquirerCli.enabled --server.port=3300 --plugins.adminApi.port=3310",
     "mocks:ci": "mocks-server --no-plugins.inquirerCli.enabled",
     "mocks:ci:custom-config": "mocks-server --no-plugins.inquirerCli.enabled --server.port=3200 --plugins.adminApi.port=3120",
+    "all:mocks:ci": "start-server-and-test mocks:ci:2 http-get://127.0.0.1:3310/api/about mocks:ci",
+    "all:mocks:ci:custom-config": "start-server-and-test mocks:ci:2 http-get://127.0.0.1:3310/api/about mocks:ci:custom-config",
     "build:app": "pnpm -w run nx build cypress-commands-e2e-vanilla-app -- --port=3100",
     "build:app:custom-config": "pnpm -w run nx build cypress-commands-e2e-vanilla-app -- --port=3200",
     "cypress:install": "cypress install",
@@ -12,8 +15,8 @@
     "cypress:run": "cypress run",
     "cypress:run:custom-config": "cross-env CYPRESS_MOCKS_SERVER_ADMIN_API_PORT=3120 cypress run",
     "start:app": "pnpm -w run nx start cypress-commands-e2e-vanilla-app",
-    "mocks:ci-and-start:app": "start-server-and-test mocks:ci http-get://127.0.0.1:3110/api/about start:app",
-    "mocks:ci:custom-config-and-start:app": "start-server-and-test mocks:ci:custom-config http-get://127.0.0.1:3120/api/about start:app",
+    "mocks:ci-and-start:app": "start-server-and-test all:mocks:ci http-get://127.0.0.1:3110/api/about start:app",
+    "mocks:ci:custom-config-and-start:app": "start-server-and-test all:mocks:ci:custom-config http-get://127.0.0.1:3120/api/about start:app",
     "test:app": "start-server-and-test mocks:ci-and-start:app http-get://127.0.0.1:3000 cypress:run",
     "test:app:custom-config": "start-server-and-test mocks:ci:custom-config-and-start:app http-get://127.0.0.1:3000 cypress:run:custom-config",
     "test:e2e": "npm run build:app && npm run test:app && npm run build:app:custom-config && npm run test:app:custom-config"

@@ -30,7 +30,7 @@
   "scripts": {
     "build": "rollup --config",
     "mocks:ci": "pnpm -w run nx start admin-api-client-unit-mocks",
-    "test": "jest",
+    "test": "jest --runInBand",
     "test:unit": "start-server-and-test mocks:ci tcp:127.0.0.1:3200 test"
   },
   "dependencies": {

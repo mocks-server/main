@@ -1,1 +1,2 @@
-import "@mocks-server/cypress-commands";
+import { register } from "@mocks-server/cypress-commands";
+register();

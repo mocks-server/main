@@ -14,9 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - feat(#229): Support managing multiple Mocks Servers allowing to create multiple ApiClients
+- feat(#229): Export `MocksServerApiClient` class for creating api clients
 
 
 ### Changed
+- feat: BREAKING CHANGE. Export `register` method for registering commands.
 - refactor: Migrate to TypeScript
 
 ## [5.0.0] - 2022-07-22

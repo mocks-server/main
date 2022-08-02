@@ -1,4 +1,10 @@
+import { AdminApiClient } from "@mocks-server/cypress-commands";
+
+const SECOND_SERVER_URL = `http://localhost:3300/api/response`;
+
 describe("Mocks server responses", () => {
+  let secondServer;
+
   const SELECTORS = {
     RESPONSE: "#response",
     RESPONSE_TIME: "#response-time",
@@ -8,6 +14,9 @@ describe("Mocks server responses", () => {
 
   describe("when started", () => {
     before(() => {
+      secondServer = new AdminApiClient({
+        port: 3310,
+      });
       cy.visit("/");
     });
 
@@ -20,6 +29,12 @@ describe("Mocks server responses", () => {
         const text = $div.text();
 
         expect(Number(text)).to.be.lessThan(1000);
+      });
+    });
+
+    it("should send standard-response in second server", () => {
+      cy.request("GET", SECOND_SERVER_URL).then((response) => {
+        expect(response.body).to.have.property("display", "standard-response");
       });
     });
   });
@@ -39,6 +54,46 @@ describe("Mocks server responses", () => {
         const text = $div.text();
 
         expect(Number(text)).to.be.lessThan(1000);
+      });
+    });
+
+    it("should send standard-response in second server", () => {
+      cy.request("GET", SECOND_SERVER_URL).then((response) => {
+        expect(response.body).to.have.property("display", "standard-response");
+      });
+    });
+  });
+
+  describe("when second server collection is changed to custom", () => {
+    before(() => {
+      cy.mocksSetCollection("custom", secondServer);
+      cy.visit("/");
+    });
+
+    it("should display custom response", () => {
+      cy.get(SELECTORS.RESPONSE).should("have.text", "custom-response");
+    });
+
+    it("should send custom-response in second server", () => {
+      cy.request("GET", SECOND_SERVER_URL).then((response) => {
+        expect(response.body).to.have.property("display", "custom-response");
+      });
+    });
+  });
+
+  describe("when second server collection is changed to standard", () => {
+    before(() => {
+      cy.mocksSetCollection("standard", secondServer);
+      cy.visit("/");
+    });
+
+    it("should display custom response", () => {
+      cy.get(SELECTORS.RESPONSE).should("have.text", "custom-response");
+    });
+
+    it("should send custom-response in second server", () => {
+      cy.request("GET", SECOND_SERVER_URL).then((response) => {
+        expect(response.body).to.have.property("display", "standard-response");
       });
     });
   });
@@ -90,14 +145,38 @@ describe("Mocks server responses", () => {
     });
   });
 
+  describe("when custom route variant is used in second server", () => {
+    before(() => {
+      cy.mocksUseRouteVariant("response:custom", secondServer);
+      cy.visit("/");
+    });
+
+    it("should display standard response", () => {
+      cy.get(SELECTORS.RESPONSE).should("have.text", "standard-response");
+    });
+
+    it("should send custom-response in second server", () => {
+      cy.request("GET", SECOND_SERVER_URL).then((response) => {
+        expect(response.body).to.have.property("display", "custom-response");
+      });
+    });
+  });
+
   describe("when custom route variant is used", () => {
     before(() => {
       cy.mocksUseRouteVariant("response:custom");
+      cy.mocksRestoreRouteVariants(secondServer);
       cy.visit("/");
     });
 
     it("should display custom response", () => {
       cy.get(SELECTORS.RESPONSE).should("have.text", "custom-response");
+    });
+
+    it("should send standard-response in second server", () => {
+      cy.request("GET", SECOND_SERVER_URL).then((response) => {
+        expect(response.body).to.have.property("display", "standard-response");
+      });
     });
   });
 

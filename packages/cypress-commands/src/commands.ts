@@ -7,7 +7,7 @@ import type {
 
 import type { MocksServerCypressApiClientConfig } from "./types";
 
-import { MocksServerApiClient } from "./MocksServerApiClient";
+import { AdminApiClient } from "./AdminApiClient";
 
 import {
   ENABLED_ENVIRONMENT_VAR,
@@ -16,17 +16,17 @@ import {
 } from "./helpers";
 
 export function commands(Cyp: typeof Cypress) {
-  const defaultApiClient = new MocksServerApiClient({
+  const defaultApiClient = new AdminApiClient({
     enabled: Cyp.env(ENABLED_ENVIRONMENT_VAR),
     port: Cyp.env(ADMIN_API_PORT_ENVIRONMENT_VAR),
     host: Cyp.env(ADMIN_API_HOST_ENVIRONMENT_VAR),
   });
 
-  function getClient(apiClient?: MocksServerApiClient) {
+  function getClient(apiClient?: AdminApiClient) {
     return apiClient || defaultApiClient;
   }
 
-  function setCollection(id: CollectionId, apiClient?: MocksServerApiClient) {
+  function setCollection(id: CollectionId, apiClient?: AdminApiClient) {
     return getClient(apiClient).updateConfig({
       mock: {
         collections: { selected: id },
@@ -34,7 +34,7 @@ export function commands(Cyp: typeof Cypress) {
     });
   }
 
-  function setDelay (delay: DelayTime, apiClient?: MocksServerApiClient) {
+  function setDelay (delay: DelayTime, apiClient?: AdminApiClient) {
     return getClient(apiClient).updateConfig({
       mock: {
         routes: { delay },
@@ -42,19 +42,19 @@ export function commands(Cyp: typeof Cypress) {
     });
   }
 
-  function setConfig (mocksServerConfig: MocksServerConfig, apiClient?: MocksServerApiClient) {
+  function setConfig (mocksServerConfig: MocksServerConfig, apiClient?: AdminApiClient) {
     return getClient(apiClient).updateConfig(mocksServerConfig);
   }
 
-  function useRouteVariant (id: RouteVariantId, apiClient?: MocksServerApiClient) {
+  function useRouteVariant (id: RouteVariantId, apiClient?: AdminApiClient) {
     return getClient(apiClient).useRouteVariant(id);
   }
 
-  function restoreRouteVariants(apiClient?: MocksServerApiClient) {
+  function restoreRouteVariants(apiClient?: AdminApiClient) {
     return getClient(apiClient).restoreRouteVariants();
   }
 
-  function configClient (customConfig: MocksServerCypressApiClientConfig, apiClient?: MocksServerApiClient) {
+  function configClient (customConfig: MocksServerCypressApiClientConfig, apiClient?: AdminApiClient) {
     return getClient(apiClient).configClient(customConfig);
   }
 

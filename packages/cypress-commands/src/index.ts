@@ -1,5 +1,5 @@
 export * from "./types";
-export { MocksServerApiClient } from "./MocksServerApiClient";
+export { AdminApiClient } from "./AdminApiClient";
 
 import { register as registerer } from "./register";
 

@@ -38,7 +38,7 @@ jest.mock("@mocks-server/admin-api-client", () => {
 import CypressMock from "./Cypress.mock";
 
 import { commands } from "../src/commands";
-import { MocksServerApiClient } from "../src/MocksServerApiClient";
+import { AdminApiClient } from "../src/AdminApiClient";
 
 describe("commands", () => {
   let sandbox;
@@ -195,7 +195,7 @@ describe("commands", () => {
   describe("when custom clients are used", () => {
     describe("when setting client config", () => {
       it("should call to set client config of custom client", () => {
-        const customApiClient = new MocksServerApiClient();
+        const customApiClient = new AdminApiClient();
         sandbox.stub(customApiClient, "configClient");
         const { configClient } = commands(cypressMock.stubs);
         sandbox.reset();
@@ -217,7 +217,7 @@ describe("commands", () => {
       });
 
       it("should call to set client config of default client", () => {
-        const customApiClient = new MocksServerApiClient();
+        const customApiClient = new AdminApiClient();
         sandbox.stub(customApiClient, "configClient");
         const { configClient } = commands(cypressMock.stubs);
         sandbox.reset();
@@ -239,7 +239,7 @@ describe("commands", () => {
 
     describe("setCollection command", () => {
       it("should call to set current collection of custom client", () => {
-        const customApiClient = new MocksServerApiClient();
+        const customApiClient = new AdminApiClient();
         sandbox.stub(customApiClient, "updateConfig");
         const { setCollection } = commands(cypressMock.stubs);
         setCollection("foo", customApiClient);
@@ -257,7 +257,7 @@ describe("commands", () => {
 
     describe("setDelay command", () => {
       it("should call to update delay of custom client", () => {
-        const customApiClient = new MocksServerApiClient();
+        const customApiClient = new AdminApiClient();
         sandbox.stub(customApiClient, "updateConfig");
         const { setDelay } = commands(cypressMock.stubs);
         setDelay(3000, customApiClient);
@@ -275,7 +275,7 @@ describe("commands", () => {
 
     describe("setConfig command", () => {
       it("should call to update config of custom client", () => {
-        const customApiClient = new MocksServerApiClient();
+        const customApiClient = new AdminApiClient();
         sandbox.stub(customApiClient, "updateConfig");
         const { setConfig } = commands(cypressMock.stubs);
         setConfig("foo", customApiClient);
@@ -285,7 +285,7 @@ describe("commands", () => {
 
     describe("useRouteVariant command", () => {
       it("should call to useRoute variant of custom client", () => {
-        const customApiClient = new MocksServerApiClient();
+        const customApiClient = new AdminApiClient();
         sandbox.stub(customApiClient, "useRouteVariant");
         const { useRouteVariant } = commands(cypressMock.stubs);
         useRouteVariant("foo", customApiClient);
@@ -295,7 +295,7 @@ describe("commands", () => {
 
     describe("restoreRouteVariants command", () => {
       it("should call to useRoute variant of custom client", () => {
-        const customApiClient = new MocksServerApiClient();
+        const customApiClient = new AdminApiClient();
         sandbox.stub(customApiClient, "restoreRouteVariants");
         const { restoreRouteVariants } = commands(cypressMock.stubs);
         restoreRouteVariants(customApiClient);

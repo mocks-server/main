@@ -1,4 +1,4 @@
-import { AdminApiClient } from "@mocks-server/admin-api-client";
+import { AdminApiClient as BaseAdminApiClient } from "@mocks-server/admin-api-client";
 
 import type {
   MocksServerConfig,
@@ -12,12 +12,12 @@ function doNothing() {
   return Promise.resolve();
 }
 
-export class MocksServerApiClient {
+export class AdminApiClient {
   private _enabled: MocksServerCypressApiClientConfig["enabled"] = true;
-  private _apiClient: AdminApiClient;
+  private _apiClient: BaseAdminApiClient;
 
   constructor(clientConfig: MocksServerCypressApiClientConfig) {
-    this._apiClient = new AdminApiClient();
+    this._apiClient = new BaseAdminApiClient();
     this.configClient(clientConfig);
   }
 

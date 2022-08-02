@@ -1,4 +1,4 @@
-import { MocksServerApiClient } from "@mocks-server/cypress-commands";
+import { AdminApiClient } from "@mocks-server/cypress-commands";
 
 const SECOND_SERVER_URL = `http://localhost:3300/api/response`;
 
@@ -14,7 +14,7 @@ describe("Mocks server responses", () => {
 
   describe("when started", () => {
     before(() => {
-      secondServer = new MocksServerApiClient({
+      secondServer = new AdminApiClient({
         port: 3310,
       });
       cy.visit("/");

@@ -17,13 +17,13 @@ This package provides an API client for administrating Mocks Server through HTTP
 
 Requests to the Mocks Server administration API are made using [`cross-fetch`](https://www.npmjs.com/package/cross-fetch), which makes this package compatible with browsers and Node.js environments, but, if you are going to build a browser application, you'll probably prefer to use the [`@mocks-server/admin-api-client-data-provider` package](https://www.npmjs.com/package/@mocks-server/admin-api-client-data-provider), which uses [Data Provider](https://www.data-provider.org), and works well with Redux, React, etc.
 
-## Install
+## Installation
 
 ```bash
 npm install --save @mocks-server/admin-api-client
 ```
 
-The UMD build is also available on unpkg. When UMD package is loaded, it creates a `mocksServerAdminApiClient` global object containing all of the methods.
+The UMD build is also available on unpkg. When UMD package is loaded, it creates a `mocksServerAdminApiClient` global object containing all methods and classes.
 
 ```html
 <script src="https://unpkg.com/@mocks-server/admin-api-paths/dist/index.umd.js"></script>
@@ -34,19 +34,21 @@ The UMD build is also available on unpkg. When UMD package is loaded, it creates
 
 ## Usage
 
-All methods described in the [Api](#api) return Promises when executed (except the `configClient` method):
+Import and create a new `AdminApiClient` class. All methods described in the [Api](#api) return Promises when executed (except the `configClient` method):
 
 ```js
-import { readAbout, readConfig, updateConfig } from "@mocks-server/admin-api-client";
+import { AdminApiClient } from "@mocks-server/admin-api-client";
 
 const example = async () => {
-  const { version } = await readAbout();
+  const adminApiClient = new AdminApiClient();
+
+  const { version } = await adminApiClient.readAbout();
   console.log(`Current Admin API plugin version is ${versions.adminApi}`);
 
-  const currentConfig = await readConfig();
+  const currentConfig = await adminApiClient.readConfig();
   console.log("Current Mocks Server config is", JSON.stringify(currentConfig));
 
-  await updateConfig({
+  await adminApiClient.updateConfig({
     mock: {
       collections: {
         selected: "user-super-admin"
@@ -64,6 +66,10 @@ example();
 
 ## Api
 
+### new AdminApiClient()
+
+Returns an instance containing next methods:
+
 * `readAbout()` - Returns info about the Admin API plugin, such as current version.
 * `readConfig()` - Returns current configuration.
 * `updateConfig(configObject)` - Updates Mocks Server configuration. A configuration object has to be provided. Read the [Mocks Server configuration docs](https://www.mocks-server.org/docs/configuration/options) for further info.
@@ -78,17 +84,23 @@ example();
 * `readCustomRouteVariants()` - Returns current custom route variants of the current collection.
 * `useRouteVariant(id)` - Sets a custom route variant to be used by current collection.
 * `restoreRouteVariants()` - Restore route variants to those defined in current collection.
+* `configClient(clientConfig)` - Changes the client configuration.
+  * `clientConfig` _`<Object>`_ - It should be an object containing any of next properties:
+    * `port` - Changes the client port. 
+    * `host` - Changes the client host.
 
 ## Configuration
 
-By default, the client is configured to request to `http://127.0.0.1:3110/api`, based in the [default options of Mocks Server](https://www.mocks-server.org/docs/configuration/options)
+By default, clients are configured to request to `http://127.0.0.1:3110/api`, based in the [default options of Mocks Server Plugin Admin API](https://www.mocks-server.org/docs/configuration/options)
 
-You can change both the the host and port of the administration API:
+You can change both the the host and port of the administration API using the `configClient` method:
 
 ```js
-import { configClient } from "@mocks-server/admin-api-client";
 
-configClient({
+import { AdminApiClient } from "@mocks-server/admin-api-client";
+
+const apiClient = new AdminApiClient();
+apiClient.configClient({
   host: "localhost",
   port: 3500
 });
@@ -96,7 +108,8 @@ configClient({
 
 ## Release notes
 
-Current major release is compatible only with `@mocks-server/main` versions upper or equal than `3.6`. Use prior releases for lower versions. If you don't want to update to the latest major version of this package yet but you want to update `@mocks-server/main`, you can also use any `5.x` version of this package with any `@mocks-server/main@3.x` version.
+* Due to backward compatibility reasons, the package also creates a default `AdminApiClient` automatically and exports all of its methods as functions available at first level. Usage of these "global" functions is discouraged, as they will be removed in next major version. 
+* Current major release is compatible only with `@mocks-server/main` versions upper or equal than `3.6`. Use prior releases for lower versions. If you don't want to update to the latest major version of this package yet but you want to update `@mocks-server/main`, you can also use any `5.x` version of this package with any `@mocks-server/main@3.x` version.
 
 ## Contributing
 

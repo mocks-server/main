@@ -18,4 +18,5 @@ export function register(Cyp: typeof Cypress) {
   Cyp.Commands.add("mocksRestoreRouteVariants", restoreRouteVariants);
 
   Cyp.Commands.add("mocksConfigAdminApiClient", configClient);
+  Cyp.Commands.add("mocksConfigClient", configClient);
 }

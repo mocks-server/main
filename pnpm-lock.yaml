@@ -129,7 +129,7 @@ importers:
   mocks/admin-api-client-data-provider-e2e-react-app:
     specifiers:
       '@data-provider/axios': 5.0.0
-      '@data-provider/core': 3.1.0
+      '@data-provider/core': 4.0.0
       '@data-provider/react': 1.6.0
       '@mocks-server/admin-api-client-data-provider': workspace:*
       '@mocks-server/admin-api-paths': workspace:*
@@ -139,9 +139,9 @@ importers:
       react-redux: 7.2.8
       redux: 4.2.0
     dependencies:
-      '@data-provider/axios': 5.0.0_@data-provider+core@3.1.0
-      '@data-provider/core': 3.1.0_redux@4.2.0
-      '@data-provider/react': 1.6.0_f1bca3deeca712f082491ec5ebab3f7d
+      '@data-provider/axios': 5.0.0_@data-provider+core@4.0.0
+      '@data-provider/core': 4.0.0_redux@4.2.0
+      '@data-provider/react': 1.6.0_fc988d86fd515d7f7711b36b3facbcfb
       '@mocks-server/admin-api-client-data-provider': link:../../packages/admin-api-client-data-provider
       '@mocks-server/admin-api-paths': link:../../packages/admin-api-paths
       prop-types: 15.8.1
@@ -173,14 +173,14 @@ importers:
   packages/admin-api-client-data-provider:
     specifiers:
       '@data-provider/axios': 5.0.0
-      '@data-provider/core': 3.1.0
+      '@data-provider/core': 4.0.0
       '@mocks-server/admin-api-paths': workspace:*
       redux: 4.2.0
     dependencies:
       '@mocks-server/admin-api-paths': link:../admin-api-paths
     devDependencies:
-      '@data-provider/axios': 5.0.0_@data-provider+core@3.1.0
-      '@data-provider/core': 3.1.0_redux@4.2.0
+      '@data-provider/axios': 5.0.0_@data-provider+core@4.0.0
+      '@data-provider/core': 4.0.0_redux@4.2.0
       redux: 4.2.0
 
   packages/admin-api-paths:
@@ -2041,13 +2041,13 @@ packages:
       kuler: 2.0.0
     dev: false
 
-  /@data-provider/axios/5.0.0_@data-provider+core@3.1.0:
+  /@data-provider/axios/5.0.0_@data-provider+core@4.0.0:
     resolution: {integrity: sha512-ectEFUhENHHiBOkOldnUtM3yvO9XjIzTgWqjCgePxDve4mUihSKSCauXex7wJ37OkKKU+bVTu+pd4MZ0jIuCEw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@data-provider/core': 4.x
     dependencies:
-      '@data-provider/core': 3.1.0_redux@4.2.0
+      '@data-provider/core': 4.0.0_redux@4.2.0
       axios: 0.27.2
       axios-retry: 3.2.5
       path-to-regexp: 6.2.1
@@ -2055,9 +2055,9 @@ packages:
     transitivePeerDependencies:
       - debug
 
-  /@data-provider/core/3.1.0_redux@4.2.0:
-    resolution: {integrity: sha512-Ppj9aebdpTtz5nQGvQ7RgtAoF+ddGv59XX7OA6qhxi9wGLx3q9horS4k/vLH6a+31yCkWHxV2rMXq3XJgZ4lgQ==}
-    engines: {node: '>=12.0.0'}
+  /@data-provider/core/4.0.0_redux@4.2.0:
+    resolution: {integrity: sha512-dzlzYFCex7xlfQq5p2i36KyN23vu7ivpJtDcgiFAFhJsiZvQVDbS0u9IQUXIcZMHPsjghoTjovYH1SAKlyyHAQ==}
+    engines: {node: '>=14.0.0'}
     peerDependencies:
       redux: 4.x
     dependencies:
@@ -2065,7 +2065,7 @@ packages:
       lodash.isplainobject: 4.0.6
       redux: 4.2.0
 
-  /@data-provider/react/1.6.0_f1bca3deeca712f082491ec5ebab3f7d:
+  /@data-provider/react/1.6.0_fc988d86fd515d7f7711b36b3facbcfb:
     resolution: {integrity: sha512-isp+5miboMt4NmZS48he249NWD30vKYQ9DFi54KK6E0s3yJ9PPUqBpykun+Zjf1Jg1xrNutEK50pQemuTgkH0g==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -2073,7 +2073,7 @@ packages:
       react: '>=16.8.0'
       react-redux: '>=7.1.0'
     dependencies:
-      '@data-provider/core': 3.1.0_redux@4.2.0
+      '@data-provider/core': 4.0.0_redux@4.2.0
       hoist-non-react-statics: 3.3.2
       react: 17.0.2
       react-redux: 7.2.8_react-dom@17.0.2+react@17.0.2
@@ -11472,7 +11472,7 @@ packages:
     dev: true
 
   /lodash.isplainobject/4.0.6:
-    resolution: {integrity: sha1-fFJqUtibRcRcxpC4gWO+BJf1UMs=}
+    resolution: {integrity: sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA==}
 
   /lodash.memoize/4.1.2:
     resolution: {integrity: sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4=}

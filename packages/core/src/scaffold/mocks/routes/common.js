@@ -22,10 +22,7 @@ module.exports = [
       },
       {
         id: "disabled", // variant id
-        handler: "middleware", // variant handler id
-        options: {
-          middleware: (_req, _res, next) => next(), // Express middleware to execute
-        },
+        disabled: true,
       },
     ],
   },

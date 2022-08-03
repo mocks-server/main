@@ -14,7 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- feat(#389): Add status variant handler
+- feat(#389): Add "status" Variant Handler
+- feat(#388): Add "file" Variant Handler
 
 ## [3.7.0] - 2022-07-29
 

@@ -14,6 +14,7 @@ const Text = require("./handlers/Text");
 const Middleware = require("./handlers/Middleware");
 const Static = require("./handlers/Static");
 const Status = require("./handlers/Status");
+const File = require("./handlers/File");
 
 const OPTIONS = [
   {
@@ -32,7 +33,15 @@ class VariantHandlers {
   constructor({ logger, config }) {
     this._logger = logger;
     this._registeredVariantHandlers = [];
-    this._coreVariantHandlers = [DefaultVariantHandler, Json, Text, Status, Middleware, Static];
+    this._coreVariantHandlers = [
+      DefaultVariantHandler,
+      Json,
+      Text,
+      Status,
+      Middleware,
+      Static,
+      File,
+    ];
     this._config = config;
 
     [this._registerOption] = this._config.addOptions(OPTIONS);

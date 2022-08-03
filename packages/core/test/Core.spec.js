@@ -269,8 +269,8 @@ describe("Core", () => {
     it("should add Route Handler", () => {
       core.addRoutesHandler("foo");
       // TODO, do not use private properties in testing
-      expect(core._variantHandlers._registeredVariantHandlers.length).toEqual(7);
-      expect(core._variantHandlers._registeredVariantHandlers[6]).toEqual("foo");
+      expect(core._variantHandlers._registeredVariantHandlers.length).toEqual(8);
+      expect(core._variantHandlers._registeredVariantHandlers[7]).toEqual("foo");
     });
   });
 

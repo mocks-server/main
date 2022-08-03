@@ -128,7 +128,7 @@ importers:
 
   mocks/admin-api-client-data-provider-e2e-react-app:
     specifiers:
-      '@data-provider/axios': 4.1.0
+      '@data-provider/axios': 5.0.0
       '@data-provider/core': 3.1.0
       '@data-provider/react': 1.6.0
       '@mocks-server/admin-api-client-data-provider': workspace:*
@@ -139,7 +139,7 @@ importers:
       react-redux: 7.2.8
       redux: 4.2.0
     dependencies:
-      '@data-provider/axios': 4.1.0_@data-provider+core@3.1.0
+      '@data-provider/axios': 5.0.0_@data-provider+core@3.1.0
       '@data-provider/core': 3.1.0_redux@4.2.0
       '@data-provider/react': 1.6.0_f1bca3deeca712f082491ec5ebab3f7d
       '@mocks-server/admin-api-client-data-provider': link:../../packages/admin-api-client-data-provider
@@ -172,14 +172,14 @@ importers:
 
   packages/admin-api-client-data-provider:
     specifiers:
-      '@data-provider/axios': 4.1.0
+      '@data-provider/axios': 5.0.0
       '@data-provider/core': 3.1.0
       '@mocks-server/admin-api-paths': workspace:*
       redux: 4.2.0
     dependencies:
       '@mocks-server/admin-api-paths': link:../admin-api-paths
     devDependencies:
-      '@data-provider/axios': 4.1.0_@data-provider+core@3.1.0
+      '@data-provider/axios': 5.0.0_@data-provider+core@3.1.0
       '@data-provider/core': 3.1.0_redux@4.2.0
       redux: 4.2.0
 
@@ -2041,17 +2041,17 @@ packages:
       kuler: 2.0.0
     dev: false
 
-  /@data-provider/axios/4.1.0_@data-provider+core@3.1.0:
-    resolution: {integrity: sha512-mMu5hswlDyEgo3scd3Ujrq+iX01D+S6UAFrQOizvZHNsXU496HiJRrDrJzRX21YKVAhetzbZOHoi9QcWIxCoIQ==}
-    engines: {node: '>=12.0.0'}
+  /@data-provider/axios/5.0.0_@data-provider+core@3.1.0:
+    resolution: {integrity: sha512-ectEFUhENHHiBOkOldnUtM3yvO9XjIzTgWqjCgePxDve4mUihSKSCauXex7wJ37OkKKU+bVTu+pd4MZ0jIuCEw==}
+    engines: {node: '>=14.0.0'}
     peerDependencies:
-      '@data-provider/core': 3.x
+      '@data-provider/core': 4.x
     dependencies:
       '@data-provider/core': 3.1.0_redux@4.2.0
-      axios: 0.24.0
-      axios-retry: 3.2.4
-      path-to-regexp: 6.2.0
-      query-string: 7.0.1
+      axios: 0.27.2
+      axios-retry: 3.2.5
+      path-to-regexp: 6.2.1
+      query-string: 7.1.1
     transitivePeerDependencies:
       - debug
 
@@ -4706,8 +4706,7 @@ packages:
     resolution: {integrity: sha512-spZRyzKL5l5BZQrr/6m/SqFdBN0q3OCI0f9rjfBzCMBIP4p75P620rR3gTmaksNOhmzgdxcaxdNfMy6anrbM0g==}
 
   /asynckit/0.4.0:
-    resolution: {integrity: sha1-x57Zf380y48robyXkLzDZkdLS3k=}
-    dev: true
+    resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
   /at-least-node/1.0.0:
     resolution: {integrity: sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==}
@@ -4746,8 +4745,8 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /axios-retry/3.2.4:
-    resolution: {integrity: sha512-Co3UXiv4npi6lM963mfnuH90/YFLKWWDmoBYfxkHT5xtkSSWNqK9zdG3fw5/CP/dsoKB5aMMJCsgab+tp1OxLQ==}
+  /axios-retry/3.2.5:
+    resolution: {integrity: sha512-a8umkKbfIkTiYJQLx3v3TzKM85TGKB8ZQYz4zwykt2fpO64TsRlUhjaPaAb3fqMWCXFm2YhWcd8V5FHDKO9bSA==}
     dependencies:
       '@babel/runtime': 7.17.8
       is-retry-allowed: 2.2.0
@@ -4760,13 +4759,6 @@ packages:
       - debug
     dev: true
 
-  /axios/0.24.0:
-    resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
-    dependencies:
-      follow-redirects: 1.14.9
-    transitivePeerDependencies:
-      - debug
-
   /axios/0.25.0:
     resolution: {integrity: sha512-cD8FOb0tRH3uuEe6+evtAbgJtfxr7ly3fQjYcMcuPlgkwVS9xboaVIpcDV+cYQe+yGykgwZCs1pzjntcGa6l5g==}
     dependencies:
@@ -4774,6 +4766,14 @@ packages:
     transitivePeerDependencies:
       - debug
     dev: true
+
+  /axios/0.27.2:
+    resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
+    dependencies:
+      follow-redirects: 1.14.9
+      form-data: 4.0.0
+    transitivePeerDependencies:
+      - debug
 
   /axobject-query/2.2.0:
     resolution: {integrity: sha512-Td525n+iPOOyUQIeBfcASuG6uJsDOITl7Mds5gFyerkWiX7qhUTdYUBlSgNMyVqtSJqwpt1kXGLdUt6SykLMRA==}
@@ -6033,7 +6033,6 @@ packages:
     engines: {node: '>= 0.8'}
     dependencies:
       delayed-stream: 1.0.0
-    dev: true
 
   /commander/2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -6829,7 +6828,7 @@ packages:
     dev: true
 
   /decode-uri-component/0.2.0:
-    resolution: {integrity: sha1-6zkTMzRYd1y4TNGh+uBiEGu4dUU=}
+    resolution: {integrity: sha512-hjf+xovcEn31w/EUYdTXQh/8smFL/dzYjohQGEIgjyNavaJfBY2p5F527Bo1VPATxv0VYTUC2bOcXvqFwk78Og==}
     engines: {node: '>=0.10'}
 
   /decompress-response/3.3.0:
@@ -6932,9 +6931,8 @@ packages:
     dev: true
 
   /delayed-stream/1.0.0:
-    resolution: {integrity: sha1-3zrhmayt+31ECqrgsp4icrJOxhk=}
+    resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
-    dev: true
 
   /depd/1.1.2:
     resolution: {integrity: sha512-7emPTl6Dpo6JRXOXjLRxck+FlLRX5847cLKEn00PLAgc3g2hTZZgr+e4c2v6QpSmLeFP3n5yUo7ft6avBK/5jQ==}
@@ -8396,7 +8394,7 @@ packages:
     dev: true
 
   /filter-obj/1.1.0:
-    resolution: {integrity: sha1-mzERErxsYSehbgFsbF1/GeCAXFs=}
+    resolution: {integrity: sha512-8rXg1ZnX7xzy2NGDVkBVaAy+lSlPNwad13BtgSlLuxfIslyt5Vg64U7tFcCt4WS1R0hvtnQybT/IyCkGZ3DpXQ==}
     engines: {node: '>=0.10.0'}
 
   /finalhandler/1.1.2:
@@ -8586,6 +8584,14 @@ packages:
       combined-stream: 1.0.8
       mime-types: 2.1.34
     dev: true
+
+  /form-data/4.0.0:
+    resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
+    engines: {node: '>= 6'}
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      mime-types: 2.1.34
 
   /forwarded/0.2.0:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
@@ -12647,8 +12653,8 @@ packages:
     resolution: {integrity: sha512-gu9bD6Ta5bwGrrU8muHzVOBFFREpp2iRkVfhBJahwJ6p6Xw20SjT0MxLnwkjOibQmGSYhiUnf2FLe7k+jcFmGQ==}
     dev: true
 
-  /path-to-regexp/6.2.0:
-    resolution: {integrity: sha512-f66KywYG6+43afgE/8j/GoiNyygk/bnoCbps++3ErRKsIYkGGupyv07R2Ok5m9i67Iqc+T2g1eAUGUPzWhYTyg==}
+  /path-to-regexp/6.2.1:
+    resolution: {integrity: sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw==}
 
   /path-type/4.0.0:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
@@ -13651,8 +13657,8 @@ packages:
       strict-uri-encode: 1.1.0
     dev: true
 
-  /query-string/7.0.1:
-    resolution: {integrity: sha512-uIw3iRvHnk9to1blJCG3BTc+Ro56CBowJXKmNNAm3RulvPBzWLRqKSiiDk+IplJhsydwtuNMHi8UGQFcCLVfkA==}
+  /query-string/7.1.1:
+    resolution: {integrity: sha512-MplouLRDHBZSG9z7fpuAAcI7aAYjDLhtsiVZsevsfaHWDS2IDdORKbSd1kWUA+V4zyva/HZoSfpwnYMMQDhb0w==}
     engines: {node: '>=6'}
     dependencies:
       decode-uri-component: 0.2.0
@@ -15290,7 +15296,7 @@ packages:
     dev: true
 
   /strict-uri-encode/2.0.0:
-    resolution: {integrity: sha1-ucczDHBChi9rFC3CdLvMWGbONUY=}
+    resolution: {integrity: sha512-QwiXZgpRcKkhTj2Scnn++4PKtWsH0kpzZ62L2R6c/LUVYv7hVnZqcg2+sMuT6R7Jusu1vviK/MFsu6kNJfWlEQ==}
     engines: {node: '>=4'}
 
   /string-argv/0.3.1:

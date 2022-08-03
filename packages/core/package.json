@@ -57,7 +57,7 @@
     "lodash": "4.17.21",
     "node-watch": "0.7.3",
     "update-notifier": "5.1.0",
-    "winston": "3.7.2",
+    "winston": "3.8.1",
     "winston-array-transport": "1.1.10"
   },
   "engines": {

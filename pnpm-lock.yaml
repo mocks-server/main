@@ -155,6 +155,9 @@ importers:
   mocks/admin-api-client-data-provider-e2e-vanilla-app:
     specifiers: {}
 
+  mocks/admin-api-client-e2e-vanilla-app:
+    specifiers: {}
+
   mocks/admin-api-client-unit-mocks:
     specifiers:
       '@mocks-server/main': workspace:*
@@ -267,8 +270,10 @@ importers:
   packages/cypress-commands:
     specifiers:
       '@mocks-server/admin-api-client': workspace:*
+      '@mocks-server/admin-api-paths': workspace:*
     dependencies:
       '@mocks-server/admin-api-client': link:../admin-api-client
+      '@mocks-server/admin-api-paths': link:../admin-api-paths
 
   packages/inquirer-cli-runner:
     specifiers:
@@ -372,6 +377,9 @@ importers:
       '@mocks-server/admin-api-client': workspace:*
     devDependencies:
       '@mocks-server/admin-api-client': link:../../packages/admin-api-client
+
+  test/admin-api-client-vanilla-app-e2e:
+    specifiers: {}
 
   test/config-e2e:
     specifiers:

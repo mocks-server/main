@@ -1,4 +1,4 @@
-import type { BASE_PATH } from "@mocks-server/admin-api-paths";
+import type { BASE_PATH, DEFAULT_PROTOCOL } from "@mocks-server/admin-api-paths";
 
 export interface AnyObject {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,4 +21,4 @@ export type CollectionId = Id;
 export type DelayTime = number;
 export type RouteVariantId = `${Id}:${Id}`
 export type ApiPath = string
-export type Url = `http://${ApiClientConfig["host"]}:${ApiClientConfig["port"]}${typeof BASE_PATH}${ApiPath}`
+export type Url = `${typeof DEFAULT_PROTOCOL}://${ApiClientConfig["host"]}:${ApiClientConfig["port"]}${typeof BASE_PATH}${ApiPath}`

@@ -16,7 +16,7 @@ declare global {
       mocksSetCollection(
         collectionId: CollectionId,
         adminApiClient?: AdminApiClient,
-      ): Promise<void>
+      ): void
 
       /**
        * Change routes global delay
@@ -87,6 +87,11 @@ declare global {
 export type CypressEnvVarValue = any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ArrayOfValues = (string | number | boolean)[];
+
+export type Log = string;
+export type RequestLogs = Log | Log[];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type RequestError = any;
 
 export interface MocksServerCypressApiClientConfig extends ApiClientConfig {
   enabled?: boolean;

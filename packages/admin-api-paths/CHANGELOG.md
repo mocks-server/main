@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- feat: Add DEFAULT_PORT and DEFAULT_HOST constants
+- feat: Add DEFAULT_PORT, DEFAULT_HOST, DEFAULT_CLIENT_HOST and DEFAULT_PROTOCOL constants
 - docs: Add installation chapter
 
 ### Changed

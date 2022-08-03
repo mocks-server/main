@@ -13,6 +13,7 @@ import {
   CUSTOM_ROUTE_VARIANTS,
   DEFAULT_PORT,
   DEFAULT_CLIENT_HOST,
+  DEFAULT_PROTOCOL,
 } from "@mocks-server/admin-api-paths";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -34,7 +35,7 @@ class ApiClient {
   private _port: ApiClientConfig["port"] = DEFAULT_PORT;
 
   get _baseUrl(): Url {
-    return `http://${this._host}:${this._port}${BASE_PATH}`;
+    return `${DEFAULT_PROTOCOL}://${this._host}:${this._port}${BASE_PATH}`;
   }
 
   private _fullUrl(apiPath: ApiPath): Url {

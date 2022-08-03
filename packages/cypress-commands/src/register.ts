@@ -1,7 +1,7 @@
 
 import { commands } from "./commands";
 
-export function register(Cyp: typeof Cypress) {
+export function register(Cyp: typeof Cypress, CypCy: typeof cy) {
   const {
     configClient,
     setCollection,
@@ -9,7 +9,7 @@ export function register(Cyp: typeof Cypress) {
     setConfig,
     useRouteVariant,
     restoreRouteVariants,
-  } = commands(Cyp);
+  } = commands(Cyp, CypCy);
 
   Cyp.Commands.add("mocksSetCollection", setCollection);
   Cyp.Commands.add("mocksSetDelay", setDelay);

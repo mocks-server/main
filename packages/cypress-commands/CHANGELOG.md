@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [unreleased]
+## [6.0.0] - 2022-08-04
 
 ### Added
 - feat(#229): Support managing multiple Mocks Servers allowing to create multiple ApiClients

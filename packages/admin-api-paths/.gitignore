@@ -8,7 +8,10 @@
 
 # tests
 /coverage
+
+# build
 /dist
+/dist-tsc
 
 # misc
 .DS_Store

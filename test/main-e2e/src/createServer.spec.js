@@ -123,13 +123,7 @@ describe("createServer", () => {
           response: null,
           delay: null,
         },
-        {
-          id: "add-headers:disabled",
-          routeId: "add-headers",
-          handler: "middleware",
-          response: null,
-          delay: null,
-        },
+        { id: "add-headers:disabled", routeId: "add-headers", response: null },
         {
           id: "get-users:success",
           routeId: "get-users",

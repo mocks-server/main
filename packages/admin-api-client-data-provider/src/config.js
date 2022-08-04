@@ -1,11 +1,11 @@
 import { providers } from "@data-provider/core";
-import { BASE_PATH } from "@mocks-server/admin-api-paths";
+import { BASE_PATH, DEFAULT_PORT, DEFAULT_CLIENT_HOST } from "@mocks-server/admin-api-paths";
 
 import TAG from "./tag";
 
 const DEFAULT_OPTIONS = {
-  port: 3110,
-  host: "127.0.0.1",
+  port: DEFAULT_PORT,
+  host: DEFAULT_CLIENT_HOST,
 };
 
 export const configClient = (options) => {

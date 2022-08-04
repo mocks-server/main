@@ -16,7 +16,7 @@ import {
   LEGACY_ROUTES,
   LEGACY_ROUTES_VARIANTS,
   LEGACY_MOCK_CUSTOM_ROUTES_VARIANTS,
-} from "../index";
+} from "../src/index";
 
 describe("Exported paths", () => {
   describe("legacy", () => {

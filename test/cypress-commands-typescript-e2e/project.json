@@ -1,0 +1,6 @@
+{
+  "root": "test/cypress-commands-typescript-e2e/",
+  "projectType": "application",
+  "implicitDependencies": ["main", "cypress-commands-e2e-vanilla-app"],
+  "tags": ["type:test"]
+}

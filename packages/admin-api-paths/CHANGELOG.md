@@ -10,6 +10,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+
+## [4.1.0] - 2022-08-04
+
+### Added
+
+- feat: Add DEFAULT_PORT, DEFAULT_HOST, DEFAULT_CLIENT_HOST and DEFAULT_PROTOCOL constants
+- docs: Add installation chapter
+
+### Changed
+
+- refactor: Migrate to TypeScript
+
 ## [4.0.0] - 2022-07-22
 
 ### Added

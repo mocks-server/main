@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGES
 
+## [6.0.1] - 2022-08-04
+
+### Changed
+
+- refactor: Use default host and port values from `@mocks-server/admin-api-paths`
+
 ## [6.0.0] - 2022-07-22
 
 ### Changed

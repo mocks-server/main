@@ -11,6 +11,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [6.1.0] - 2022-08-04
+
+### Added
+- feat: Export AdminApiClient class allowing to create clients.
+
+### Changed
+
+- refactor: Migrate to TypeScript
+- refactor: Add class allowing to create multiple clients. Keep global client methods creating a default client and exporting its methods.
+- refactor: Use default host and port values from `@mocks-server/admin-api-paths`
+
 ## [6.0.0] - 2022-07-22
 
 ### Changed

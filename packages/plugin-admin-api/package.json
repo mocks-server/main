@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/plugin-admin-api",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "Mocks Server plugin providing an administration REST API",
   "keywords": [
     "mocks-server-plugin",

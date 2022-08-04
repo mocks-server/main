@@ -27,14 +27,16 @@
     "access": "public"
   },
   "files": [
-    "index.js",
-    "src"
+    "dist"
   ],
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsc", 
     "test:unit": "jest"
   },
   "dependencies": {
+    "@mocks-server/admin-api-paths": "workspace:*",
     "@mocks-server/admin-api-client": "workspace:*"
   },
   "peerDependencies": {

@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "admin-api-client": "packages/admin-api-client",
+    "admin-api-client-e2e-vanilla-app": "mocks/admin-api-client-e2e-vanilla-app",
     "admin-api-client-data-provider": "packages/admin-api-client-data-provider",
     "admin-api-client-data-provider-e2e-mocks": "mocks/admin-api-client-data-provider-e2e-mocks",
     "admin-api-client-data-provider-e2e-react-app": "mocks/admin-api-client-data-provider-e2e-react-app",
@@ -12,6 +13,7 @@
     "admin-api-client-data-provider-vanilla-app-e2e": "test/admin-api-client-data-provider-vanilla-app-e2e",
     "admin-api-client-nodejs-e2e": "test/admin-api-client-nodejs-e2e",
     "admin-api-client-unit-mocks": "mocks/admin-api-client-unit-mocks",
+    "admin-api-client-vanilla-app-e2e": "test/admin-api-client-vanilla-app-e2e",
     "admin-api-paths": "packages/admin-api-paths",
     "cli-runner": "packages/cli-runner",
     "config": "packages/config",
@@ -21,6 +23,7 @@
     "core-e2e-legacy": "test/core-e2e-legacy",
     "cypress-commands": "packages/cypress-commands",
     "cypress-commands-e2e": "test/cypress-commands-e2e",
+    "cypress-commands-typescript-e2e": "test/cypress-commands-typescript-e2e",
     "cypress-commands-e2e-vanilla-app": "mocks/cypress-commands-e2e-vanilla-app",
     "inquirer-cli-runner": "packages/inquirer-cli-runner",
     "logger": "packages/logger",

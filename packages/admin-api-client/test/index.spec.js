@@ -1,4 +1,4 @@
-import { wait } from "./support/helpers";
+import { wait, waitForServer } from "./support/helpers";
 
 import {
   readAbout,
@@ -15,9 +15,10 @@ import {
   readCustomRouteVariants,
   useRouteVariant,
   restoreRouteVariants,
-} from "../index";
+  configClient,
+} from "../src/index";
 
-describe("admin api client methods", () => {
+describe("admin api client global methods", () => {
   describe("when reading about", () => {
     it("should return current version", async () => {
       const about = await readAbout();
@@ -26,44 +27,35 @@ describe("admin api client methods", () => {
   });
 
   describe("when reading alerts", () => {
-    describe("when there are alerts", () => {
-      it("should return alerts", async () => {
+    describe("when there are not alerts", () => {
+      it("should return no alerts", async () => {
+        await updateConfig({
+          mock: { collections: { selected: "user2" } },
+        });
+        await wait(1000);
+        await updateConfig({
+          mock: { collections: { selected: "base" } },
+        });
+        await wait(3000);
         const alerts = await readAlerts();
-        expect(alerts.length).toEqual(1);
-      });
-
-      it("should return alert about collection not defined", async () => {
-        const alerts = await readAlerts();
-        expect(alerts[0].message).toEqual(
-          expect.stringContaining("Option 'mock.collections.selected' was not defined")
-        );
+        expect(alerts.length).toEqual(0);
       });
     });
 
     describe("when there are alerts about files with error", () => {
-      it("should return 3 alerts", async () => {
+      it("should return 2 alerts", async () => {
         expect.assertions(1);
         await updateConfig({
           files: { path: "mocks-with-error" },
         });
-        await wait(2000);
+        await wait(3000);
         const alerts = await readAlerts();
-        expect(alerts.length).toEqual(3);
-      });
-
-      it("alert about config should exist", async () => {
-        const alerts = await readAlerts();
-        const alertId = alerts[0].id;
-        const alert = await readAlert(alertId);
-        expect(alert.id).toEqual(alertId);
-        expect(alert.message).toEqual(
-          expect.stringContaining("Option 'mock.collections.selected' was not defined")
-        );
+        expect(alerts.length).toEqual(2);
       });
 
       it("alert about empty collections should exist", async () => {
         const alerts = await readAlerts();
-        const alertId = alerts[1].id;
+        const alertId = alerts[0].id;
         const alert = await readAlert(alertId);
         expect(alert.id).toEqual(alertId);
         expect(alert.message).toEqual(expect.stringContaining("No collections found"));
@@ -71,7 +63,7 @@ describe("admin api client methods", () => {
 
       it("alert about files error should exist", async () => {
         const alerts = await readAlerts();
-        const alertId = alerts[2].id;
+        const alertId = alerts[1].id;
         const alert = await readAlert(alertId);
         expect(alert.id).toEqual(alertId);
         expect(alert.message).toEqual(expect.stringContaining("Error loading collections"));
@@ -240,6 +232,46 @@ describe("admin api client methods", () => {
       await restoreRouteVariants();
       const data = await readCustomRouteVariants();
       expect(data).toEqual([]);
+    });
+  });
+
+  describe("when updating client config", () => {
+    it("should update update client port", async () => {
+      await updateConfig({
+        plugins: {
+          adminApi: {
+            port: 3120,
+          },
+        },
+      });
+      await waitForServer(3120);
+      configClient({
+        port: 3120,
+      });
+      const settings = await readConfig();
+      expect(settings.plugins.adminApi.port).toEqual(3120);
+    });
+
+    it("should do nothing if not port is provided", async () => {
+      configClient();
+      const settings = await readConfig();
+      expect(settings.plugins.adminApi.port).toEqual(3120);
+    });
+
+    it("should update update client port again", async () => {
+      await updateConfig({
+        plugins: {
+          adminApi: {
+            port: 3110,
+          },
+        },
+      });
+      await waitForServer(3110);
+      configClient({
+        port: 3110,
+      });
+      const settings = await readConfig();
+      expect(settings.plugins.adminApi.port).toEqual(3110);
     });
   });
 });

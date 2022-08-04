@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="admin-api-client vanilla tests">
+    <title>Vanilla App</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="js/admin-api-paths.js"></script>
+    <script src="js/admin-api-client.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+    <script src="main.js"></script>
+</head>
+
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root">
+        <div class="App">
+            <header class="App-header">
+                <div class="content">
+                    <p class="content__title">About</p>
+                    <ul id="about-container">
+                    </ul>
+                </div>
+                <div class="content">
+                    <p class="content__title">Current Config</p>
+                    <ul id="config-container">
+                    </ul>
+                </div>
+                <div class="content">
+                    <p class="content__title">collections</p>
+                    <ul id="collections-container">
+                    </ul>
+                </div>
+                <div class="content">
+                    <p class="content__title">Current collection: <span data-testid="current-collection-id" id="current-collection-id"></span></p>
+                    <p data-testid="current-collection" id="current-collection"></p>
+                    <p class="content__title">Current Route Variant: <span data-testid="current-variant-id" id="current-variant-id"></span></p>
+                    <p data-testid="current-variant" id="current-variant"></p>
+                    <button data-testid="set-collection-base" id="set-collection-base">Set collection base</button>
+                    <button data-testid="set-collection-user2" id="set-collection-user2">Set collection user2</button>
+                </div>
+                <div class="content">
+                    <p class="content__title">Routes</p>
+                    <ul id="routes-container">
+                    </ul>
+                </div>
+                <div class="content">
+                    <p class="content__title">Alerts</p>
+                    <ul id="alerts-container">
+                    </ul>
+                </div>
+            </header>
+        </div>
+    </div>
+</body>
+
+</html>

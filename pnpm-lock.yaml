@@ -17,6 +17,7 @@ importers:
       '@rollup/plugin-babel': 5.3.1
       '@rollup/plugin-commonjs': 21.1.0
       '@rollup/plugin-node-resolve': 13.3.0
+      '@rollup/plugin-typescript': 8.3.4
       '@testing-library/cypress': 8.0.3
       '@typescript-eslint/eslint-plugin': 5.26.0
       '@typescript-eslint/parser': 5.27.0
@@ -75,6 +76,7 @@ importers:
       '@rollup/plugin-babel': 5.3.1_809417f311639b271a4f91eb43d32827
       '@rollup/plugin-commonjs': 21.1.0_rollup@2.77.2
       '@rollup/plugin-node-resolve': 13.3.0_rollup@2.77.2
+      '@rollup/plugin-typescript': 8.3.4_rollup@2.77.2+typescript@4.7.4
       '@testing-library/cypress': 8.0.3_cypress@9.7.0
       '@typescript-eslint/eslint-plugin': 5.26.0_fe3719c19b412a71f0644b581c9489fa
       '@typescript-eslint/parser': 5.27.0_eslint@8.20.0+typescript@4.7.4
@@ -151,6 +153,9 @@ importers:
       redux: 4.2.0
 
   mocks/admin-api-client-data-provider-e2e-vanilla-app:
+    specifiers: {}
+
+  mocks/admin-api-client-e2e-vanilla-app:
     specifiers: {}
 
   mocks/admin-api-client-unit-mocks:
@@ -265,8 +270,10 @@ importers:
   packages/cypress-commands:
     specifiers:
       '@mocks-server/admin-api-client': workspace:*
+      '@mocks-server/admin-api-paths': workspace:*
     dependencies:
       '@mocks-server/admin-api-client': link:../admin-api-client
+      '@mocks-server/admin-api-paths': link:../admin-api-paths
 
   packages/inquirer-cli-runner:
     specifiers:
@@ -371,6 +378,9 @@ importers:
     devDependencies:
       '@mocks-server/admin-api-client': link:../../packages/admin-api-client
 
+  test/admin-api-client-vanilla-app-e2e:
+    specifiers: {}
+
   test/config-e2e:
     specifiers:
       '@mocks-server/cli-runner': workspace:*
@@ -404,6 +414,14 @@ importers:
       '@mocks-server/main': workspace:*
     devDependencies:
       '@mocks-server/main': link:../../packages/main
+
+  test/cypress-commands-typescript-e2e:
+    specifiers:
+      '@mocks-server/main': workspace:*
+      ts-loader: 9.3.1
+    devDependencies:
+      '@mocks-server/main': link:../../packages/main
+      ts-loader: 9.3.1_typescript@4.7.4+webpack@5.74.0
 
   test/main-e2e:
     specifiers:
@@ -2989,6 +3007,23 @@ packages:
       '@rollup/pluginutils': 3.1.0_rollup@1.32.1
       magic-string: 0.25.9
       rollup: 1.32.1
+    dev: true
+
+  /@rollup/plugin-typescript/8.3.4_rollup@2.77.2+typescript@4.7.4:
+    resolution: {integrity: sha512-wt7JnYE9antX6BOXtsxGoeVSu4dZfw0dU3xykfOQ4hC3EddxRbVG/K0xiY1Wup7QOHJcjLYXWAn0Kx9Z1SBHHg==}
+    engines: {node: '>=8.0.0'}
+    peerDependencies:
+      rollup: ^2.14.0
+      tslib: '*'
+      typescript: '>=3.7.0'
+    peerDependenciesMeta:
+      tslib:
+        optional: true
+    dependencies:
+      '@rollup/pluginutils': 3.1.0_rollup@2.77.2
+      resolve: 1.22.0
+      rollup: 2.77.2
+      typescript: 4.7.4
     dev: true
 
   /@rollup/pluginutils/3.1.0_rollup@1.32.1:
@@ -15853,6 +15888,21 @@ packages:
 
   /tryer/1.0.1:
     resolution: {integrity: sha512-c3zayb8/kWWpycWYg87P71E1S1ZL6b6IJxfb5fvsUgsf0S2MVGaDhDXXjDMpdCpfWXqptc+4mXwmiy1ypXqRAA==}
+    dev: true
+
+  /ts-loader/9.3.1_typescript@4.7.4+webpack@5.74.0:
+    resolution: {integrity: sha512-OkyShkcZTsTwyS3Kt7a4rsT/t2qvEVQuKCTg4LJmpj9fhFR7ukGdZwV6Qq3tRUkqcXtfGpPR7+hFKHCG/0d3Lw==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      typescript: '*'
+      webpack: ^5.0.0
+    dependencies:
+      chalk: 4.1.2
+      enhanced-resolve: 5.10.0
+      micromatch: 4.0.5
+      semver: 7.3.7
+      typescript: 4.7.4
+      webpack: 5.74.0
     dev: true
 
   /ts-pnp/1.2.0_typescript@4.7.4:

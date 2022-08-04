@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+### Added
+
+- feat(#389): Add "status" Variant Handler
+- feat(#388): Add "file" Variant Handler
+
 ## [3.7.0] - 2022-07-29
 
 ### Added

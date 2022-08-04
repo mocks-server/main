@@ -15,6 +15,18 @@
 
 Constants defining API paths of the [Mocks Server Plugin Admin API][plugin-admin-api-url]. They can be used to build plugin API clients.
 
+## Installation
+
+```bash
+npm install --save @mocks-server/admin-api-paths
+```
+
+The UMD build is also available on unpkg. When UMD package is loaded, it creates a `pluginAdminApiPaths` global object containing all constants.
+
+```html
+<script src="https://unpkg.com/@mocks-server/admin-api-paths/dist/index.umd.js"></script>
+```
+
 ## Usage
 
 ```js

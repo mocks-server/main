@@ -68,14 +68,14 @@ describe("file variant handler", () => {
       await changeMockAndWait("users-error");
 
       const users = await doTextFetch("/api/users");
-      expect(users.body).toEqual("Error loaded from file");
+      expect(users.body).toEqual(expect.stringContaining("Error loaded from file"));
       expect(users.status).toEqual(400);
       expect(users.headers.get("Content-Type")).toEqual("text/plain; charset=UTF-8");
     });
 
     it("should return txt error in user route", async () => {
       const users = await doTextFetch("/api/users/1");
-      expect(users.body).toEqual("Error loaded from file");
+      expect(users.body).toEqual(expect.stringContaining("Error loaded from file"));
       expect(users.status).toEqual(400);
       expect(users.headers.get("Content-Type")).toEqual("text/plain; charset=UTF-8");
     });
@@ -110,7 +110,7 @@ describe("file variant handler", () => {
       const users = await doTextFetch("/api/users");
       timeCounter.stop();
       expect(timeCounter.total).toBeGreaterThan(400);
-      expect(users.body).toEqual("Error loaded from file");
+      expect(users.body).toEqual(expect.stringContaining("Error loaded from file"));
     });
   });
 });

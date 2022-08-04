@@ -19,6 +19,12 @@ class Status {
     return "4";
   }
 
+  get defaultHeaders() {
+    return {
+      "Content-Length": "0",
+    };
+  }
+
   static get validationSchema() {
     return {
       type: "object",
@@ -35,23 +41,17 @@ class Status {
     };
   }
 
-  get defaultHeaders() {
-    return {
-      "Content-Length": "0",
-    };
-  }
-
   constructor(options, core) {
+    this._core = core;
     this._options = options;
     this._logger = core.logger;
-    this._core = core;
   }
 
   middleware(req, res) {
     this._logger.debug(`Setting headers | req: ${req.id}`);
     res.set({ ...this.defaultHeaders, ...this._options.headers });
     res.status(this._options.status);
-    this._logger.verbose(`Sending response | req: ${req.id}`);
+    this._logger.verbose(`Sending response with empty body | req: ${req.id}`);
     res.send();
   }
 

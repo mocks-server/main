@@ -2,7 +2,7 @@
   "private": true,
   "dependencies": {
     "@data-provider/axios": "5.0.0",
-    "@data-provider/core": "3.1.0",
+    "@data-provider/core": "4.0.0",
     "@data-provider/react": "1.6.0",
     "@mocks-server/admin-api-client-data-provider": "workspace:*",
     "@mocks-server/admin-api-paths": "workspace:*",

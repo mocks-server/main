@@ -424,4 +424,10 @@ describe("Core", () => {
       expect(core.variantHandlers).toEqual(core._variantHandlers);
     });
   });
+
+  describe("files getter", () => {
+    it("should return files instance", () => {
+      expect(core.files).toEqual(filesLoadersMocks.stubs.instance);
+    });
+  });
 });

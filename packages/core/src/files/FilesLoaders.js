@@ -261,11 +261,14 @@ class FilesLoaders {
       this._watcher = watch(
         this._path,
         { recursive: true },
-        debounce(() => {
-          this._logger.info("File change detected");
-          this._loadFiles();
-        }),
-        1000
+        debounce(
+          () => {
+            this._logger.info("File change detected");
+            this._loadFiles();
+          },
+          200,
+          { maxWait: 1000 }
+        )
       );
     }
   }

@@ -14,6 +14,7 @@ const globule = require("globule");
 const watch = require("node-watch");
 const fsExtra = require("fs-extra");
 const { map, debounce } = require("lodash");
+const isPromise = require("is-promise");
 
 const CollectionsLoader = require("./loaders/Collections");
 const RoutesLoader = require("./loaders/Routes");
@@ -96,7 +97,6 @@ class FilesLoaders {
   }
 
   init() {
-    // This elements should be started from the core, move them there when refactor finished and checked
     this._collectionsLoader = new CollectionsLoader({
       loadCollections: this._loadCollections,
       createLoader: this.createLoader,
@@ -106,14 +106,18 @@ class FilesLoaders {
       createLoader: this.createLoader,
     });
     this._enabled = this._enabledOption.value;
-    try {
-      if (this._enabled) {
-        this._loadFiles();
+    if (this._enabled) {
+      try {
+        return this._loadFiles();
+      } catch (error) {
+        return Promise.reject(error);
       }
-      return Promise.resolve();
-    } catch (err) {
-      return Promise.reject(err);
     }
+    return Promise.resolve();
+  }
+
+  reload() {
+    return this._loadFiles();
   }
 
   start() {
@@ -131,12 +135,18 @@ class FilesLoaders {
 
   _readFile(filePath) {
     if (isYamlFile(filePath)) {
-      this._logger.debug(`Loading yaml file ${filePath}`);
+      this._logger.debug(`Reading yaml file ${filePath}`);
       return readYamlFile(filePath);
     }
-    this._logger.debug(`Loading file ${filePath}`);
-    const content = this._require(filePath);
-    return (content && content.default) || content;
+    this._logger.debug(`Reading file ${filePath}`);
+    return new Promise((resolve, reject) => {
+      try {
+        const content = this._require(filePath);
+        resolve((content && content.default) || content);
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   _cleanRequireCacheFolder() {
@@ -191,12 +201,12 @@ class FilesLoaders {
       );
     }
     this._cleanRequireCacheFolder();
-    this._loadLoaders();
+    return this._loadLoaders();
   }
 
   _loadLoaders() {
     this._alertsLoad.clean();
-    map(this._loaders, this._loadLoader);
+    return Promise.all(map(this._loaders, this._loadLoader));
   }
 
   _loadLoader(loader) {
@@ -211,27 +221,36 @@ class FilesLoaders {
     });
 
     this._logger.silly(`Files to load for loader '${loader.id}': ${JSON.stringify(filesToLoad)}`);
-    const errors = [];
 
-    const filesDetails = filesToLoad
-      .map((filePath) => {
-        try {
-          const fileContent = this._readFile(filePath);
-          return {
-            path: filePath,
-            content: fileContent,
-          };
-        } catch (error) {
-          this._alertsLoad.set(filePath, `Error loading file ${filePath}`, error);
-          errors.push({
-            path: filePath,
-            error,
+    return Promise.all(
+      filesToLoad.map((filePath) => {
+        return this._readFile(filePath)
+          .then((fileContent) => {
+            return {
+              path: filePath,
+              content: fileContent,
+            };
+          })
+          .catch((error) => {
+            this._alertsLoad.set(filePath, `Error loading file ${filePath}`, error);
+            return Promise.resolve({
+              path: filePath,
+              error,
+            });
           });
-        }
       })
-      .filter((fileDetails) => !!fileDetails);
-
-    loader.load(filesDetails, errors);
+    ).then((filesDetails) => {
+      const loadedFiles = filesDetails.filter((fileDetails) => !!fileDetails.content);
+      const erroredFiles = filesDetails.filter((fileDetails) => !!fileDetails.error);
+      const loadProcess = loader.load(loadedFiles, erroredFiles);
+      if (isPromise(loadProcess)) {
+        return loadProcess.catch((error) => {
+          this._alertsLoad.set(loader.id, `Error proccesing loaded files`, error);
+          return Promise.resolve();
+        });
+      }
+      return Promise.resolve();
+    });
   }
 
   _switchWatch() {

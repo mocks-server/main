@@ -50,19 +50,25 @@ describe("FilesLoader helpers", () => {
 
   describe("getFilesGlobule", () => {
     it("should return default plugin globules when babelRegister is disabled", () => {
-      expect(getFilesGlobule("**/*", false, {})).toEqual(["**/*.json", "**/*.js"]);
+      expect(getFilesGlobule("**/*", false, {})).toEqual([
+        "**/*.json",
+        "**/*.js",
+        "**/*.yaml",
+        "**/*.yml",
+      ]);
     });
 
     it("should return babel/register globules and default plugin globules when babelRegister is enabled", () => {
       expect(getFilesGlobule("**/*", true, {})).toEqual([
         "**/*.json",
         "**/*.js",
+        "**/*.yaml",
+        "**/*.yml",
         "**/*.es6",
         "**/*.es",
         "**/*.esm",
         "**/*.cjs",
         "**/*.jsx",
-        "**/*.js",
         "**/*.mjs",
         "**/*.ts",
       ]);
@@ -73,7 +79,7 @@ describe("FilesLoader helpers", () => {
         getFilesGlobule("**/*", true, {
           extensions: [".foo", ".foo2"],
         })
-      ).toEqual(["**/*.json", "**/*.js", "**/*.foo", "**/*.foo2"]);
+      ).toEqual(["**/*.json", "**/*.js", "**/*.yaml", "**/*.yml", "**/*.foo", "**/*.foo2"]);
     });
   });
 });

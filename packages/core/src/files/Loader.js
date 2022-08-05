@@ -9,7 +9,7 @@ class Loader {
   }
 
   load(filesContents, fileErrors) {
-    this._onLoad(filesContents, fileErrors);
+    return this._onLoad(filesContents, fileErrors);
   }
 
   get logger() {

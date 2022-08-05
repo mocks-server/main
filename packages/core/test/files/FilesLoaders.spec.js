@@ -11,6 +11,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 const sinon = require("sinon");
+const yaml = require("yaml");
+const fsExtra = require("fs-extra");
 const { cloneDeep } = require("lodash");
 const { Logger } = require("@mocks-server/logger");
 
@@ -84,7 +86,7 @@ describe("FilesLoaders", () => {
     coreMocks = new CoreMocks();
     libsMocks = new LibsMocks();
     coreInstance = coreMocks.stubs.instance;
-
+    sandbox.stub(fsExtra, "readFile").resolves();
     sandbox.stub(Logger.prototype, "warn");
     sandbox.stub(Logger.prototype, "verbose");
     sandbox.stub(Logger.prototype, "debug");
@@ -108,6 +110,7 @@ describe("FilesLoaders", () => {
     });
     sandbox.stub(path, "isAbsolute").returns(true);
     sandbox.stub(console, "log");
+    sandbox.stub(yaml, "parse");
     libsMocks.stubs.fsExtra.existsSync.returns(true);
     libsMocks.stubs.globule.find.returns([]);
     pathOption = { value: "foo-path" };
@@ -223,6 +226,21 @@ describe("FilesLoaders", () => {
       expect(alerts.flat.length).toEqual(0);
     });
 
+    it("should not add an alert when a routes file content is yaml and pass validation", async () => {
+      yaml.parse.returns([]);
+      libsMocks.stubs.globule.find.returns(["foo.yml"]);
+      filesLoader = new FilesLoaders(pluginMethods, {
+        requireCache,
+        require: () => [],
+      });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
+      await filesLoader.init();
+      expect(alerts.flat.length).toEqual(0);
+    });
+
     it("should not throw and add an alert if there is an error loading mocks file", async () => {
       await filesLoader.init();
       expect(alerts.flat.length).toEqual(1);
@@ -303,7 +321,7 @@ describe("FilesLoaders", () => {
         "Defining collections in 'mocks.json' file is deprecated. Please rename it to 'collections.json'"
       );
       libsMocks.stubs.globule.find.returns(["collections.json"]);
-      filesLoader._loadFiles();
+      await filesLoader.reload();
       expect(alerts.flat.length).toEqual(0);
     });
 
@@ -434,6 +452,95 @@ describe("FilesLoaders", () => {
       configMock.stubs.option.onChange.getCall(1).args[0](false);
       await wait();
       expect(libsMocks.stubs.watchClose.callCount).toEqual(1);
+    });
+  });
+
+  describe("when creating loaders", () => {
+    it("should call to its load function when files are loaded", async () => {
+      libsMocks.stubs.globule.find.returns(["foo/foo-path/**"]);
+      const spy = sandbox.spy();
+      filesLoader = new FilesLoaders(pluginMethods, {
+        requireCache,
+        require: () => ["foo-content"],
+      });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
+      filesLoader.createLoader({
+        id: "foo",
+        src: "foo/foo-path/**/*",
+        onLoad: spy,
+      });
+      await filesLoader.init();
+      expect(libsMocks.stubs.globule.find.getCall(0).args[0]).toEqual({
+        prefixBase: true,
+        src: [
+          "foo/foo-path/**/*.json",
+          "foo/foo-path/**/*.js",
+          "foo/foo-path/**/*.yaml",
+          "foo/foo-path/**/*.yml",
+        ],
+        srcBase: "foo-path",
+      });
+      expect(spy.getCall(0).args[0]).toEqual([
+        { path: "foo/foo-path/**", content: ["foo-content"] },
+      ]);
+    });
+
+    it("should support async onLoad functions", async () => {
+      libsMocks.stubs.globule.find.returns(["foo/foo-path/**"]);
+      const spy = sandbox.spy();
+      filesLoader = new FilesLoaders(pluginMethods, {
+        requireCache,
+        require: () => ["foo-content"],
+      });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
+      filesLoader.createLoader({
+        id: "foo",
+        src: "foo/foo-path/**/*",
+        onLoad: (files) => {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              spy(files);
+              resolve();
+            }, 200);
+          });
+        },
+      });
+      await filesLoader.init();
+      expect(spy.getCall(0).args[0]).toEqual([
+        { path: "foo/foo-path/**", content: ["foo-content"] },
+      ]);
+    });
+
+    it("should catch error and add an alert if onLoad promise is rejected", async () => {
+      libsMocks.stubs.globule.find.returns(["foo/foo-path/**"]);
+      filesLoader = new FilesLoaders(pluginMethods, {
+        requireCache,
+        require: () => ["foo-content"],
+      });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
+      filesLoader.createLoader({
+        id: "foo",
+        src: "foo/foo-path/**/*",
+        onLoad: () => {
+          return new Promise((_resolve, reject) => {
+            setTimeout(() => {
+              reject(new Error("foo-error"));
+            }, 200);
+          });
+        },
+      });
+      await filesLoader.init();
+      expect(alerts.flat[0].value.message).toEqual("Error proccesing loaded files");
+      expect(alerts.flat[0].value.error.message).toEqual("foo-error");
     });
   });
 });

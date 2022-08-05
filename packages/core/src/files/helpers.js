@@ -80,8 +80,9 @@ function isYamlFile(filePath) {
 }
 
 function readYamlFile(filePath) {
-  const fileContent = fsExtra.readFileSync(filePath, "utf8");
-  return yaml.parse(fileContent);
+  return fsExtra.readFile(filePath, "utf8").then((fileContent) => {
+    return yaml.parse(fileContent);
+  });
 }
 
 module.exports = {

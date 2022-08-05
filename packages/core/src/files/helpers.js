@@ -8,9 +8,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { flatten } = require("lodash");
+const path = require("path");
 
-const DEFAULT_EXTENSIONS = [".json", ".js"];
+const fsExtra = require("fs-extra");
+const yaml = require("yaml");
+const { flatten, uniq } = require("lodash");
+
+const YAML_EXTENSIONS = [".yaml", ".yml"];
+const DEFAULT_EXTENSIONS = [".json", ".js"].concat(YAML_EXTENSIONS);
 const BABEL_DEFAULT_EXTENSIONS = [".es6", ".es", ".esm", ".cjs", ".jsx", ".js", ".mjs", ".ts"];
 
 function globuleExtensionPattern(srcGlob, extension) {
@@ -25,10 +30,12 @@ function extensionsGlobulePatterns(srcGlob, extensions) {
 
 function getGlobulePatterns(src, extensions) {
   const srcs = Array.isArray(src) ? src : [src];
-  return flatten(
-    srcs.map((srcGlob) => {
-      return extensionsGlobulePatterns(srcGlob, extensions);
-    })
+  return uniq(
+    flatten(
+      srcs.map((srcGlob) => {
+        return extensionsGlobulePatterns(srcGlob, extensions);
+      })
+    )
   );
 }
 
@@ -43,7 +50,7 @@ function getFilesExtensions(babelRegister, babelRegisterOptions) {
 }
 
 function getFilesGlobule(src, babelRegister, babelRegisterOptions) {
-  return getGlobulePatterns(src, getFilesExtensions(babelRegister, babelRegisterOptions));
+  return getGlobulePatterns(src, uniq(getFilesExtensions(babelRegister, babelRegisterOptions)));
 }
 
 function babelRegisterOnlyFilter(collectionsFolder) {
@@ -68,8 +75,19 @@ function validateFileContent(fileContent) {
   return null;
 }
 
+function isYamlFile(filePath) {
+  return YAML_EXTENSIONS.includes(path.extname(filePath));
+}
+
+function readYamlFile(filePath) {
+  const fileContent = fsExtra.readFileSync(filePath, "utf8");
+  return yaml.parse(fileContent);
+}
+
 module.exports = {
   babelRegisterDefaultOptions,
   getFilesGlobule,
   validateFileContent,
+  isYamlFile,
+  readYamlFile,
 };

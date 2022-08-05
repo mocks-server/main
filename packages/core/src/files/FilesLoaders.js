@@ -19,7 +19,12 @@ const CollectionsLoader = require("./loaders/Collections");
 const RoutesLoader = require("./loaders/Routes");
 const Loader = require("./Loader");
 
-const { babelRegisterDefaultOptions, getFilesGlobule } = require("./helpers");
+const {
+  babelRegisterDefaultOptions,
+  getFilesGlobule,
+  isYamlFile,
+  readYamlFile,
+} = require("./helpers");
 
 const OPTIONS = [
   {
@@ -125,6 +130,11 @@ class FilesLoaders {
   }
 
   _readFile(filePath) {
+    if (isYamlFile(filePath)) {
+      this._logger.debug(`Loading yaml file ${filePath}`);
+      return readYamlFile(filePath);
+    }
+    this._logger.debug(`Loading file ${filePath}`);
     const content = this._require(filePath);
     return (content && content.default) || content;
   }
@@ -205,7 +215,6 @@ class FilesLoaders {
 
     const filesDetails = filesToLoad
       .map((filePath) => {
-        this._logger.debug(`Loading file ${filePath}`);
         try {
           const fileContent = this._readFile(filePath);
           return {

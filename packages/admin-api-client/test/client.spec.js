@@ -60,7 +60,8 @@ describe("AdminApiClient class", () => {
         const alertId = alerts[1].id;
         const alert = await apiClient.readAlert(alertId);
         expect(alert.id).toEqual(alertId);
-        expect(alert.message).toEqual(expect.stringContaining("Error loading collections"));
+        expect(alert.message).toEqual(expect.stringContaining("Error loading file"));
+        expect(alert.message).toEqual(expect.stringContaining("collections.js"));
       });
     });
 

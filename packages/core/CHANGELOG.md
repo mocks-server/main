@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+### Changed
+
+- refactor(#371): Separate logic about loading files from logic about loading routes and collections from files. Add `createLoader` method to files. Use the method to create routes and collections loaders.
+
 ## [3.8.0] - 2022-08-04
 
 ### Added

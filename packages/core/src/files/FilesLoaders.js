@@ -13,16 +13,13 @@ const path = require("path");
 const globule = require("globule");
 const watch = require("node-watch");
 const fsExtra = require("fs-extra");
-const { map, debounce, flatten } = require("lodash");
+const { map, debounce } = require("lodash");
 
-const {
-  collectionsFileToUse,
-  babelRegisterDefaultOptions,
-  getFilesGlobule,
-  validateFileContent,
-} = require("./helpers");
+const CollectionsLoader = require("./loaders/Collections");
+const RoutesLoader = require("./loaders/Routes");
+const Loader = require("./Loader");
 
-const ROUTES_FOLDER = "routes";
+const { babelRegisterDefaultOptions, getFilesGlobule } = require("./helpers");
 
 const OPTIONS = [
   {
@@ -68,14 +65,16 @@ class FilesLoaders {
   }
 
   constructor({ config, loadCollections, logger, loadRoutes, alerts }, extraOptions = {}) {
+    this._loaders = {};
     this._logger = logger;
+    this._alerts = alerts;
     this._loadCollections = loadCollections;
     this._loadRoutes = loadRoutes;
-    this._alerts = alerts;
-    this._deprecationAlerts = alerts.collection("deprecated");
-    this._collectionsAlerts = alerts.collection("collections");
-    this._routesAlerts = alerts.collection("routes");
-    this._routesFilesAlerts = this._routesAlerts.collection("file");
+
+    this._loggerLoaders = this._logger.namespace("loader");
+    this._alertsLoaders = alerts.collection("loader");
+    this._alertsLoad = alerts.collection("load");
+
     this._customRequireCache = extraOptions.requireCache;
     this._require = extraOptions.require || require;
     this._config = config;
@@ -86,9 +85,21 @@ class FilesLoaders {
       .addOptions(BABEL_REGISTER_OPTIONS);
     this._pathOption.onChange(this._onChangePathOption.bind(this));
     this._watchOption.onChange(this._onChangeWatchOption.bind(this));
+
+    this._loadLoader = this._loadLoader.bind(this);
+    this.createLoader = this.createLoader.bind(this);
   }
 
   init() {
+    // This elements should be started from the core, move them there when refactor finished and checked
+    this._collectionsLoader = new CollectionsLoader({
+      loadCollections: this._loadCollections,
+      createLoader: this.createLoader,
+    });
+    this._routesLoader = new RoutesLoader({
+      loadRoutes: this._loadRoutes,
+      createLoader: this.createLoader,
+    });
     this._enabled = this._enabledOption.value;
     try {
       if (this._enabled) {
@@ -170,88 +181,48 @@ class FilesLoaders {
       );
     }
     this._cleanRequireCacheFolder();
-    this._loadRoutesFiles();
-    this._loadCollectionsFile();
+    this._loadLoaders();
   }
 
-  _loadRoutesFiles() {
-    const routesPath = path.resolve(this._path, ROUTES_FOLDER);
-    try {
-      const routeFiles = globule.find({
-        src: getFilesGlobule(
-          this._babelRegisterOption.value,
-          this._babelRegisterOptionsOption.value
-        ),
-        srcBase: routesPath,
-        prefixBase: true,
-      });
-      this._routesAlerts.clean();
-      const routes = flatten(
-        routeFiles
-          .map((filePath) => {
-            const fileContent = this._readFile(filePath);
-            const fileErrors = validateFileContent(fileContent);
-            if (!!fileErrors) {
-              this._routesFilesAlerts.set(
-                filePath,
-                `Error loading routes from file ${filePath}: ${fileErrors}`
-              );
-              return null;
-            }
-            return fileContent;
-          })
-          .filter((fileContent) => !!fileContent)
-      );
-      this._loadRoutes(routes);
-      this._logger.silly(`Loaded routes from folder ${routesPath}`);
-    } catch (error) {
-      this._loadRoutes([]);
-      this._routesAlerts.set("error", `Error loading routes from folder ${routesPath}`, error);
-    }
+  _loadLoaders() {
+    this._alertsLoad.clean();
+    map(this._loaders, this._loadLoader);
   }
 
-  _loadCollectionsFile() {
-    let collectionsFile = collectionsFileToUse(
-      this._path,
-      this._babelRegisterOption.value,
-      this._babelRegisterOptionsOption.value
-    );
+  _loadLoader(loader) {
+    const filesToLoad = globule.find({
+      src: getFilesGlobule(
+        loader.src,
+        this._babelRegisterOption.value,
+        this._babelRegisterOptionsOption.value
+      ),
+      srcBase: this._getPath(),
+      prefixBase: true,
+    });
 
-    if (collectionsFile) {
-      const fileName = path.basename(collectionsFile);
-      // LEGACY, to be removed
-      if (fileName.startsWith("mocks")) {
-        this._deprecationAlerts.set(
-          "mocks",
-          `Defining collections in '${fileName}' file is deprecated. Please rename it to '${fileName.replace(
-            "mocks",
-            "collections"
-          )}'`
-        );
-      } else {
-        this._deprecationAlerts.remove("mocks");
-      }
-      try {
-        const collections = this._readFile(collectionsFile);
-        const fileErrors = validateFileContent(collections);
-        if (!!fileErrors) {
-          throw new Error(fileErrors);
+    this._logger.silly(`Files to load for loader '${loader.id}': ${JSON.stringify(filesToLoad)}`);
+    const errors = [];
+
+    const filesDetails = filesToLoad
+      .map((filePath) => {
+        this._logger.debug(`Loading file ${filePath}`);
+        try {
+          const fileContent = this._readFile(filePath);
+          return {
+            path: filePath,
+            content: fileContent,
+          };
+        } catch (error) {
+          this._alertsLoad.set(filePath, `Error loading file ${filePath}`, error);
+          errors.push({
+            path: filePath,
+            error,
+          });
         }
-        this._loadCollections(collections);
-        this._logger.silly(`Loaded collections from file ${collectionsFile}`);
-        this._collectionsAlerts.clean();
-      } catch (error) {
-        this._loadCollections([]);
-        this._collectionsAlerts.set(
-          "error",
-          `Error loading collections from file ${collectionsFile}`,
-          error
-        );
-      }
-    } else {
-      this._loadCollections([]);
-      this._collectionsAlerts.set("not-found", `No collections file was found in ${this._path}`);
-    }
+      })
+      .filter((fileDetails) => !!fileDetails);
+
+    loader.load(filesDetails, errors);
   }
 
   _switchWatch() {
@@ -282,6 +253,23 @@ class FilesLoaders {
 
   _cache() {
     return this._customRequireCache || require.cache;
+  }
+
+  createLoader({ id, src, onLoad }) {
+    this._logger.debug(`Creating files loader '${id}'`);
+    this._loaders[id] = new Loader({
+      id,
+      alerts: this._alertsLoaders.collection(id),
+      logger: this._loggerLoaders.namespace(id),
+      src,
+      onLoad,
+      getRootPath: this._getPath.bind(this),
+    });
+    return this._loaders[id];
+  }
+
+  get loaders() {
+    return { ...this._loaders };
   }
 }
 

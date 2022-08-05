@@ -8,26 +8,28 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const fsExtra = require("fs-extra");
-const path = require("path");
+const { flatten } = require("lodash");
 
-// **/*
-const COLLECTIONS_FILE_NAME = "collections";
-// Legacy, to be removed
-const LEGACY_COLLECTIONS_FILE_NAME = "mocks";
 const DEFAULT_EXTENSIONS = [".json", ".js"];
-const BABEL_DEFAULT_EXTENSIONS = [".es6", ".es", ".jsx", ".js", ".mjs", ".ts"];
+const BABEL_DEFAULT_EXTENSIONS = [".es6", ".es", ".esm", ".cjs", ".jsx", ".js", ".mjs", ".ts"];
 
-function globuleExtensionPattern(extension) {
-  return `**/*${extension}`;
+function globuleExtensionPattern(srcGlob, extension) {
+  return `${srcGlob}${extension}`;
 }
 
-function extensionsGlobulePatterns(extensions) {
-  return extensions.map(globuleExtensionPattern);
+function extensionsGlobulePatterns(srcGlob, extensions) {
+  return extensions.map((extension) => {
+    return globuleExtensionPattern(srcGlob, extension);
+  });
 }
 
-function getGlobulePatterns(extensions) {
-  return extensionsGlobulePatterns(extensions);
+function getGlobulePatterns(src, extensions) {
+  const srcs = Array.isArray(src) ? src : [src];
+  return flatten(
+    srcs.map((srcGlob) => {
+      return extensionsGlobulePatterns(srcGlob, extensions);
+    })
+  );
 }
 
 function getFilesExtensions(babelRegister, babelRegisterOptions) {
@@ -40,8 +42,8 @@ function getFilesExtensions(babelRegister, babelRegisterOptions) {
   return DEFAULT_EXTENSIONS;
 }
 
-function getFilesGlobule(babelRegister, babelRegisterOptions) {
-  return getGlobulePatterns(getFilesExtensions(babelRegister, babelRegisterOptions));
+function getFilesGlobule(src, babelRegister, babelRegisterOptions) {
+  return getGlobulePatterns(src, getFilesExtensions(babelRegister, babelRegisterOptions));
 }
 
 function babelRegisterOnlyFilter(collectionsFolder) {
@@ -59,46 +61,6 @@ function babelRegisterDefaultOptions(collectionsFolder, babelRegisterOptions) {
   };
 }
 
-function collectionsFilePath(collectionsFolder, extension, fileName) {
-  return path.resolve(collectionsFolder, `${fileName}${extension}`);
-}
-
-function collectionsFileNameToUse(
-  collectionsFolder,
-  babelRegister,
-  babelRegisterOptions,
-  fileName
-) {
-  const extensions = getFilesExtensions(babelRegister, babelRegisterOptions);
-
-  const existentExtension = extensions.find((extension) => {
-    return fsExtra.existsSync(collectionsFilePath(collectionsFolder, extension, fileName));
-  });
-
-  if (existentExtension) {
-    return collectionsFilePath(collectionsFolder, existentExtension, fileName);
-  }
-  return null;
-}
-
-function collectionsFileToUse(collectionsFolder, babelRegister, babelRegisterOptions) {
-  return (
-    collectionsFileNameToUse(
-      collectionsFolder,
-      babelRegister,
-      babelRegisterOptions,
-      COLLECTIONS_FILE_NAME
-    ) ||
-    // LEGACY, to be removed
-    collectionsFileNameToUse(
-      collectionsFolder,
-      babelRegister,
-      babelRegisterOptions,
-      LEGACY_COLLECTIONS_FILE_NAME
-    )
-  );
-}
-
 function validateFileContent(fileContent) {
   if (!Array.isArray(fileContent)) {
     return "File does not export an array";
@@ -107,7 +69,6 @@ function validateFileContent(fileContent) {
 }
 
 module.exports = {
-  collectionsFileToUse,
   babelRegisterDefaultOptions,
   getFilesGlobule,
   validateFileContent,

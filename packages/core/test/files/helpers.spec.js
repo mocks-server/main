@@ -21,7 +21,16 @@ describe("FilesLoader helpers", () => {
     describe("extensions property", () => {
       it("should return Babel default extensions", () => {
         const options = babelRegisterDefaultOptions("foo/folder", {});
-        expect(options.extensions).toEqual([".es6", ".es", ".jsx", ".js", ".mjs", ".ts"]);
+        expect(options.extensions).toEqual([
+          ".es6",
+          ".es",
+          ".esm",
+          ".cjs",
+          ".jsx",
+          ".js",
+          ".mjs",
+          ".ts",
+        ]);
       });
     });
 
@@ -41,15 +50,17 @@ describe("FilesLoader helpers", () => {
 
   describe("getFilesGlobule", () => {
     it("should return default plugin globules when babelRegister is disabled", () => {
-      expect(getFilesGlobule(false, {})).toEqual(["**/*.json", "**/*.js"]);
+      expect(getFilesGlobule("**/*", false, {})).toEqual(["**/*.json", "**/*.js"]);
     });
 
     it("should return babel/register globules and default plugin globules when babelRegister is enabled", () => {
-      expect(getFilesGlobule(true, {})).toEqual([
+      expect(getFilesGlobule("**/*", true, {})).toEqual([
         "**/*.json",
         "**/*.js",
         "**/*.es6",
         "**/*.es",
+        "**/*.esm",
+        "**/*.cjs",
         "**/*.jsx",
         "**/*.js",
         "**/*.mjs",
@@ -59,7 +70,7 @@ describe("FilesLoader helpers", () => {
 
     it("should return babel/register custom globules and default plugin globules when babelRegisterOptions has custom extensions", () => {
       expect(
-        getFilesGlobule(true, {
+        getFilesGlobule("**/*", true, {
           extensions: [".foo", ".foo2"],
         })
       ).toEqual(["**/*.json", "**/*.js", "**/*.foo", "**/*.foo2"]);

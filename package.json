@@ -23,11 +23,11 @@
     "graph": "nx graph"
   },
   "devDependencies": {
-    "@babel/core": "7.17.10",
-    "@babel/eslint-parser": "7.17.0",
-    "@babel/preset-env": "7.17.10",
-    "@babel/preset-react": "7.16.7",
-    "@babel/preset-typescript": "7.16.7",
+    "@babel/core": "7.18.10",
+    "@babel/eslint-parser": "7.18.9",
+    "@babel/preset-env": "7.18.10",
+    "@babel/preset-react": "7.18.6",
+    "@babel/preset-typescript": "7.18.6",
     "@cypress/webpack-preprocessor": "5.12.0",
     "@nrwl/cli": "13.8.3",
     "@nrwl/eslint-plugin-nx": "13.8.3",

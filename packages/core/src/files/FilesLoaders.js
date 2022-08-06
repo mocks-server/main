@@ -100,10 +100,12 @@ class FilesLoaders {
     this._collectionsLoader = new CollectionsLoader({
       loadCollections: this._loadCollections,
       createLoader: this.createLoader,
+      getBasePath: this._getPath.bind(this),
     });
     this._routesLoader = new RoutesLoader({
       loadRoutes: this._loadRoutes,
       createLoader: this.createLoader,
+      getBasePath: this._getPath.bind(this),
     });
     this._enabled = this._enabledOption.value;
     if (this._enabled) {
@@ -242,7 +244,10 @@ class FilesLoaders {
     ).then((filesDetails) => {
       const loadedFiles = filesDetails.filter((fileDetails) => !!fileDetails.content);
       const erroredFiles = filesDetails.filter((fileDetails) => !!fileDetails.error);
-      const loadProcess = loader.load(loadedFiles, erroredFiles);
+      const loadProcess = loader.load(loadedFiles, erroredFiles, {
+        alerts: loader.alerts,
+        logger: loader.logger,
+      });
       if (isPromise(loadProcess)) {
         return loadProcess.catch((error) => {
           this._alertsLoad.set(loader.id, `Error proccesing loaded files`, error);
@@ -294,7 +299,6 @@ class FilesLoaders {
       logger: this._loggerLoaders.namespace(id),
       src,
       onLoad,
-      getRootPath: this._getPath.bind(this),
     });
     return this._loaders[id];
   }

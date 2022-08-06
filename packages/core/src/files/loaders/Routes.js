@@ -8,13 +8,14 @@ const ID = "routes";
 const FOLDER_NAME = "routes";
 
 class RoutesLoader {
-  constructor({ loadRoutes, createLoader }) {
+  constructor({ loadRoutes, createLoader, getBasePath }) {
     this._loader = createLoader({
       id: ID,
       src: `${FOLDER_NAME}/**/*`,
       onLoad: this._onLoad.bind(this),
     });
 
+    this._getBasePath = getBasePath;
     this._loadRoutes = loadRoutes;
     this._logger = this._loader.logger;
     this._alerts = this._loader.alerts;
@@ -44,7 +45,7 @@ class RoutesLoader {
     );
     this._loadRoutes(routes);
     this._logger.verbose(
-      `Loaded routes from folder '${path.resolve(this._loader.basePath, FOLDER_NAME)}'`
+      `Loaded routes from folder '${path.resolve(this._getBasePath(), FOLDER_NAME)}'`
     );
   }
 }

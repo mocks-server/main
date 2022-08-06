@@ -17,13 +17,14 @@ function getFileToUse(filesContents) {
 }
 
 class CollectionsLoader {
-  constructor({ loadCollections, createLoader }) {
+  constructor({ loadCollections, createLoader, getBasePath }) {
     this._loader = createLoader({
       id: ID,
       src: [FILE_NAME, LEGACY_FILE_NAME],
       onLoad: this._onLoad.bind(this),
     });
 
+    this._getBasePath = getBasePath;
     this._loadCollections = loadCollections;
     this._logger = this._loader.logger;
     this._alerts = this._loader.alerts;
@@ -37,7 +38,7 @@ class CollectionsLoader {
     if (!filesContents.length && !filesErrors.length) {
       this._alerts.set(
         "not-found",
-        `No collections file was found: '${path.resolve(this._loader.basePath, FILE_NAME)}.*'`
+        `No collections file was found: '${path.resolve(this._getBasePath(), FILE_NAME)}.*'`
       );
     }
 

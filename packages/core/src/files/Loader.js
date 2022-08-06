@@ -1,15 +1,14 @@
 class Loader {
-  constructor({ id, alerts, logger, src, onLoad, getRootPath }) {
+  constructor({ id, alerts, logger, src, onLoad }) {
     this._id = id;
     this._logger = logger;
     this._alerts = alerts;
     this._src = src;
     this._onLoad = onLoad;
-    this._getRootPath = getRootPath;
   }
 
-  load(filesContents, fileErrors) {
-    return this._onLoad(filesContents, fileErrors);
+  load(filesContents, fileErrors, tools) {
+    return this._onLoad(filesContents, fileErrors, tools);
   }
 
   get logger() {
@@ -18,10 +17,6 @@ class Loader {
 
   get alerts() {
     return this._alerts;
-  }
-
-  get basePath() {
-    return this._getRootPath();
   }
 
   get id() {

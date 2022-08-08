@@ -15,7 +15,6 @@ const {
   waitForServerAndCli,
   wait,
   fixturesFolder,
-  pathJoin,
 } = require("./support/helpers");
 
 describe("files watcher", () => {
@@ -164,13 +163,9 @@ describe("files watcher", () => {
       expect(mocks.currentScreen).toEqual(expect.stringContaining("Error: [files:load"));
       expect(mocks.currentScreen).toEqual(expect.stringContaining("Error loading file"));
       expect(mocks.currentScreen).toEqual(
-        expect.stringContaining(
-          `${pathJoin("main", "fixtures", "temp", "collections.js")}: foo is not defined`
-        )
+        expect.stringContaining(`collections.js: foo is not defined`)
       );
-      expect(mocks.currentScreen).toEqual(
-        expect.stringContaining(`${pathJoin("main", "fixtures", "temp", "collections.js")}:11:18`)
-      );
+      expect(mocks.currentScreen).toEqual(expect.stringContaining(`collections.js:11:18`));
     });
 
     it("should have no mocks available", async () => {

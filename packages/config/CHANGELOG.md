@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed
 
+## [Unreleased]
+
+### Fixed
+- docs: Fix allowUnknownArguments docs
+
 ## [1.2.0] - 2022-07-22
 
 ### Added

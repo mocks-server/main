@@ -289,7 +289,7 @@ All of the built-in options are defined in the `config` namespace:
 * __`config.readArguments`__ _(Boolean)_: _Default: `true`_. Determines whether the arguments are read or not. It can be defined only using programmatic configuration.
 * __`config.readEnvironment`__ _(Boolean)_: _Default: `true`_. Determines whether the environment variables are read or not. It can be defined using programmatic configuration or command line arguments.
 * __`config.fileSearchPlaces`__ _(Array)_: _Default from cosmiconfig_. An array of places to search for the configuration file. It can be defined in any source, except configuration files.
-* __`config.allowUnknownArguments`__ _(Boolean)_: _Default `false`_. An array of places to search for the configuration file. It can be defined in any source, except configuration files.
+* __`config.allowUnknownArguments`__ _(Boolean)_: _Default `false`_. When set to `true`, it allows to define unknown command line arguments. It can be defined in any source.
 
 ## Lifecycle
 

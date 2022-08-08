@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
-## [unreleased]
+## [3.9.0] - 2022-08-08
 
 ### Changed
 - feat: Log possible start errors

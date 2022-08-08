@@ -318,6 +318,17 @@ describe("Plugins", () => {
       expect(version).toEqual("foo-version");
     });
 
+    it("should have core.files available", async () => {
+      const fooPlugin = {
+        register: ({ files }) => {
+          files.reload();
+        },
+      };
+      pluginsOption.value = [fooPlugin];
+      await plugins.register();
+      expect(coreInstance.files.reload.callCount).toEqual(1);
+    });
+
     it("should have core addRouter method available", async () => {
       const fooPlugin = {
         register: ({ addRouter }) => {

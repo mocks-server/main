@@ -11,6 +11,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 const sinon = require("sinon");
+const yaml = require("yaml");
+const fsExtra = require("fs-extra");
 const { cloneDeep } = require("lodash");
 const { Logger } = require("@mocks-server/logger");
 
@@ -84,7 +86,7 @@ describe("FilesLoaders", () => {
     coreMocks = new CoreMocks();
     libsMocks = new LibsMocks();
     coreInstance = coreMocks.stubs.instance;
-
+    sandbox.stub(fsExtra, "readFile").resolves();
     sandbox.stub(Logger.prototype, "warn");
     sandbox.stub(Logger.prototype, "verbose");
     sandbox.stub(Logger.prototype, "debug");
@@ -108,6 +110,7 @@ describe("FilesLoaders", () => {
     });
     sandbox.stub(path, "isAbsolute").returns(true);
     sandbox.stub(console, "log");
+    sandbox.stub(yaml, "parse");
     libsMocks.stubs.fsExtra.existsSync.returns(true);
     libsMocks.stubs.globule.find.returns([]);
     pathOption = { value: "foo-path" };
@@ -143,6 +146,14 @@ describe("FilesLoaders", () => {
     });
   });
 
+  describe("loaders getter", () => {
+    it("should return loaders", async () => {
+      await filesLoader.init();
+      expect(filesLoader.loaders.collections).toBeDefined();
+      expect(filesLoader.loaders.routes).toBeDefined();
+    });
+  });
+
   describe("when initialized", () => {
     it("should not require files from mocks folders if it is disabled", async () => {
       enabledOption.value = false;
@@ -162,7 +173,7 @@ describe("FilesLoaders", () => {
     it("should not throw and add an alert if there is an error loading route files", async () => {
       libsMocks.stubs.globule.find.returns(["foo"]);
       await filesLoader.init();
-      expect(alerts.flat.length).toEqual(2);
+      expect(alerts.flat.length).toEqual(1);
     });
 
     it("should add an alert when a routes file content does not pass validation", async () => {
@@ -176,10 +187,28 @@ describe("FilesLoaders", () => {
       filesLoader._babelRegisterOption = babelRegisterOption;
       filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await filesLoader.init();
-      expect(alerts.flat[1].collection).toEqual("files:routes:file");
-      expect(alerts.flat[1].id).toEqual("foo");
-      expect(alerts.flat[1].value.message).toEqual(
+      expect(alerts.flat[0].collection).toEqual("files:loader:routes:file");
+      expect(alerts.flat[0].id).toEqual("foo");
+      expect(alerts.flat[0].value.message).toEqual(
         expect.stringContaining("Error loading routes from file foo")
+      );
+    });
+
+    it("should add an alert when collections file content does not pass validation", async () => {
+      libsMocks.stubs.globule.find.returns(["collections.json"]);
+      filesLoader = new FilesLoaders(pluginMethods, {
+        requireCache,
+        require: () => ({}),
+      });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
+      await filesLoader.init();
+      expect(alerts.flat[0].collection).toEqual("files:loader:collections");
+      expect(alerts.flat[0].id).toEqual("error");
+      expect(alerts.flat[0].value.message).toEqual(
+        expect.stringContaining("Error loading collections from file")
       );
     });
 
@@ -197,12 +226,9 @@ describe("FilesLoaders", () => {
       expect(alerts.flat.length).toEqual(0);
     });
 
-    it("should not throw and add an alert if there is an error loading mocks file", async () => {
-      await filesLoader.init();
-      expect(alerts.flat.length).toEqual(1);
-    });
-
-    it("should remove alerts when mocks file loads successfully", async () => {
+    it("should not add an alert when a routes file content is yaml and pass validation", async () => {
+      yaml.parse.returns([]);
+      libsMocks.stubs.globule.find.returns(["foo.yml"]);
       filesLoader = new FilesLoaders(pluginMethods, {
         requireCache,
         require: () => [],
@@ -213,6 +239,42 @@ describe("FilesLoaders", () => {
       filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await filesLoader.init();
       expect(alerts.flat.length).toEqual(0);
+    });
+
+    it("should not throw and add an alert if there is an error loading mocks file", async () => {
+      await filesLoader.init();
+      expect(alerts.flat.length).toEqual(1);
+    });
+
+    it("should remove alerts when collections file loads successfully", async () => {
+      libsMocks.stubs.globule.find.returns(["foo"]);
+      filesLoader = new FilesLoaders(pluginMethods, {
+        requireCache,
+        require: () => [],
+      });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
+      await filesLoader.init();
+      expect(alerts.flat.length).toEqual(0);
+    });
+
+    it("should add an alert when no collections file is found", async () => {
+      libsMocks.stubs.globule.find.returns([]);
+      filesLoader = new FilesLoaders(pluginMethods, {
+        requireCache,
+        require: () => [],
+      });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
+      await filesLoader.init();
+      expect(alerts.flat.length).toEqual(1);
+      expect(alerts.flat[0].value.message).toEqual(
+        expect.stringContaining("No collections file was found")
+      );
     });
 
     it("should call to loadCollections method when mocks file is loaded", async () => {
@@ -228,39 +290,39 @@ describe("FilesLoaders", () => {
       expect(pluginMethods.loadCollections.callCount).toEqual(1);
     });
 
-    it("should try to load collections.json when collections.js file does not exists", async () => {
-      filesLoader = new FilesLoaders(pluginMethods, {
-        requireCache,
-        require: sandbox.spy,
-      });
-      filesLoader._pathOption = pathOption;
-      filesLoader._watchOption = watchOption;
-      filesLoader._babelRegisterOption = babelRegisterOption;
-      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
-      libsMocks.stubs.fsExtra.existsSync.onCall(0).returns(true);
-      libsMocks.stubs.fsExtra.existsSync.onCall(1).returns(false);
-      libsMocks.stubs.fsExtra.existsSync.onCall(2).returns(true);
-      await filesLoader.init();
-      expect(libsMocks.stubs.fsExtra.existsSync.callCount).toEqual(3);
-    });
-
     it("should add an alert when file name is mocks", async () => {
+      libsMocks.stubs.globule.find.returns(["mocks.json"]);
       filesLoader = new FilesLoaders(pluginMethods, {
         requireCache,
-        require: sandbox.spy,
+        require: () => [],
       });
       filesLoader._pathOption = pathOption;
       filesLoader._watchOption = watchOption;
       filesLoader._babelRegisterOption = babelRegisterOption;
       filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
-      libsMocks.stubs.fsExtra.existsSync.onCall(0).returns(true);
-      libsMocks.stubs.fsExtra.existsSync.onCall(1).returns(false);
-      libsMocks.stubs.fsExtra.existsSync.onCall(2).returns(false);
-      libsMocks.stubs.fsExtra.existsSync.onCall(3).returns(true);
       await filesLoader.init();
       expect(alerts.flat[0].value.message).toEqual(
         "Defining collections in 'mocks.json' file is deprecated. Please rename it to 'collections.json'"
       );
+    });
+
+    it("should remove alert when file name is collections", async () => {
+      libsMocks.stubs.globule.find.returns(["mocks.json"]);
+      filesLoader = new FilesLoaders(pluginMethods, {
+        requireCache,
+        require: () => [],
+      });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
+      await filesLoader.init();
+      expect(alerts.flat[0].value.message).toEqual(
+        "Defining collections in 'mocks.json' file is deprecated. Please rename it to 'collections.json'"
+      );
+      libsMocks.stubs.globule.find.returns(["collections.json"]);
+      await filesLoader.reload();
+      expect(alerts.flat.length).toEqual(0);
     });
 
     it("should not throw and add an alert if there is an error in loadRoutesfiles method", async () => {
@@ -390,6 +452,95 @@ describe("FilesLoaders", () => {
       configMock.stubs.option.onChange.getCall(1).args[0](false);
       await wait();
       expect(libsMocks.stubs.watchClose.callCount).toEqual(1);
+    });
+  });
+
+  describe("when creating loaders", () => {
+    it("should call to its load function when files are loaded", async () => {
+      libsMocks.stubs.globule.find.returns(["foo/foo-path/**"]);
+      const spy = sandbox.spy();
+      filesLoader = new FilesLoaders(pluginMethods, {
+        requireCache,
+        require: () => ["foo-content"],
+      });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
+      filesLoader.createLoader({
+        id: "foo",
+        src: "foo/foo-path/**/*",
+        onLoad: spy,
+      });
+      await filesLoader.init();
+      expect(libsMocks.stubs.globule.find.getCall(0).args[0]).toEqual({
+        prefixBase: true,
+        src: [
+          "foo/foo-path/**/*.json",
+          "foo/foo-path/**/*.js",
+          "foo/foo-path/**/*.yaml",
+          "foo/foo-path/**/*.yml",
+        ],
+        srcBase: "foo-path",
+      });
+      expect(spy.getCall(0).args[0]).toEqual([
+        { path: "foo/foo-path/**", content: ["foo-content"] },
+      ]);
+    });
+
+    it("should support async onLoad functions", async () => {
+      libsMocks.stubs.globule.find.returns(["foo/foo-path/**"]);
+      const spy = sandbox.spy();
+      filesLoader = new FilesLoaders(pluginMethods, {
+        requireCache,
+        require: () => ["foo-content"],
+      });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
+      filesLoader.createLoader({
+        id: "foo",
+        src: "foo/foo-path/**/*",
+        onLoad: (files) => {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              spy(files);
+              resolve();
+            }, 200);
+          });
+        },
+      });
+      await filesLoader.init();
+      expect(spy.getCall(0).args[0]).toEqual([
+        { path: "foo/foo-path/**", content: ["foo-content"] },
+      ]);
+    });
+
+    it("should catch error and add an alert if onLoad promise is rejected", async () => {
+      libsMocks.stubs.globule.find.returns(["foo/foo-path/**"]);
+      filesLoader = new FilesLoaders(pluginMethods, {
+        requireCache,
+        require: () => ["foo-content"],
+      });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
+      filesLoader.createLoader({
+        id: "foo",
+        src: "foo/foo-path/**/*",
+        onLoad: () => {
+          return new Promise((_resolve, reject) => {
+            setTimeout(() => {
+              reject(new Error("foo-error"));
+            }, 200);
+          });
+        },
+      });
+      await filesLoader.init();
+      expect(alerts.flat[0].value.message).toEqual("Error proccesing loaded files");
+      expect(alerts.flat[0].value.error.message).toEqual("foo-error");
     });
   });
 });

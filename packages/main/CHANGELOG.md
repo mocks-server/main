@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [unreleased]
+
+### Changed
+- feat: Log possible start errors
+- chore(deps): Update `@mocks-server/core` dependency
+
 ## [3.8.0] - 2022-08-04
 
 ### Changed

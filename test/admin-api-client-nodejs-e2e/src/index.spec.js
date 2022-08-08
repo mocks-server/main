@@ -74,7 +74,7 @@ describe("admin api client methods", () => {
         const alertId = alerts[2].id;
         const alert = await readAlert(alertId);
         expect(alert.id).toEqual(alertId);
-        expect(alert.message).toEqual(expect.stringContaining("Error loading collections"));
+        expect(alert.message).toEqual(expect.stringContaining("Error loading file"));
       });
     });
 

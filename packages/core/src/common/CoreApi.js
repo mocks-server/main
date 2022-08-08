@@ -110,6 +110,10 @@ class CoreApi {
     return this._core.server;
   }
 
+  get files() {
+    return this._core.files;
+  }
+
   get mock() {
     return this._core.mock;
   }

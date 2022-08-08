@@ -49,7 +49,7 @@ class VariantHandlers {
 
   _registerOne(VariantHandler) {
     // TODO, check id, etc..
-    this._logger.verbose(`Registering '${VariantHandler.id}' variant handler`);
+    this._logger.debug(`Registering '${VariantHandler.id}' variant handler`);
     this._registeredVariantHandlers.push(VariantHandler);
   }
 

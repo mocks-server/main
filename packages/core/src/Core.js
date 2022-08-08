@@ -508,6 +508,10 @@ class Core {
     return this._variantHandlers;
   }
 
+  get files() {
+    return this._filesLoader;
+  }
+
   get version() {
     return version;
   }

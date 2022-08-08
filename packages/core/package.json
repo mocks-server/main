@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/core",
-  "version": "3.8.0",
+  "version": "3.9.0",
   "description": "Pluggable mock server supporting multiple route variants and mocks",
   "keywords": [
     "mocks",
@@ -38,7 +38,8 @@
     "test:unit": "jest"
   },
   "dependencies": {
-    "@babel/register": "7.17.7",
+    "@babel/core": "7.18.10",
+    "@babel/register": "7.18.9",
     "@hapi/boom": "9.1.4",
     "@mocks-server/config": "workspace:*",
     "@mocks-server/logger": "workspace:*",
@@ -58,7 +59,8 @@
     "node-watch": "0.7.3",
     "update-notifier": "5.1.0",
     "winston": "3.8.1",
-    "winston-array-transport": "1.1.10"
+    "winston-array-transport": "1.1.10",
+    "yaml": "2.1.1"
   },
   "engines": {
     "node": ">=14.x"

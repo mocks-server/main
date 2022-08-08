@@ -15,6 +15,7 @@ const { createCore } = require("./createCore");
 
 const handleError = (error) => {
   console.error(`Error: ${error.message}`);
+  console.log(error);
   process.exitCode = 1;
 };
 

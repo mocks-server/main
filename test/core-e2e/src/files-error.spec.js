@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Javier Brea
+Copyright 2021-2022 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -43,9 +43,14 @@ describe("when there is an error loading files", () => {
     });
 
     it("should have added an alert about error loading collections", async () => {
-      expect(findAlert("files:collections", core.alerts).message).toEqual(
-        expect.stringContaining("Error loading collections from file")
-      );
+      const alert = findAlert("files:load:", core.alerts);
+      expect(alert.message).toEqual(expect.stringContaining("Error loading file"));
+      expect(alert.message).toEqual(expect.stringContaining("collections.js"));
+    });
+
+    it("should have not added an alert about no collections file found", async () => {
+      const alert = findAlert("files:loader:collections:not-found", core.alerts);
+      expect(alert).toBe(undefined);
     });
   });
 
@@ -72,9 +77,9 @@ describe("when there is an error loading files", () => {
     });
 
     it("should have added an alert about error loading routes", async () => {
-      expect(findAlert("files:routes", core.alerts).message).toEqual(
-        expect.stringContaining("Error loading routes from folder")
-      );
+      const alert = findAlert("files:load:", core.alerts);
+      expect(alert.message).toEqual(expect.stringContaining("Error loading file"));
+      expect(alert.message).toEqual(expect.stringContaining("user.js"));
     });
 
     it("collections should not have routes", () => {

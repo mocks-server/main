@@ -19,9 +19,9 @@ Node.js mock server running live, interactive mocks in place of real APIs. __It 
 
 ## Usage
 
-Define your mocked API routes in JSON, JavaScript or TypeScript files. Mocks Server loads them automatically and watches for changes. Defining routes using any of the available APIs is also possible.
+Define your mocked API routes in YAML, JSON, JavaScript or TypeScript files. Mocks Server loads them automatically and watches for changes. Defining routes using any of the available APIs is also possible.
 
-Routes can be defined in many ways, from plain objects to Express middlewares, and they can act in different ways also, from sending a response to proxy the request to another host.
+Routes can be defined in many ways, from plain objects to plain text and even Express middlewares, and they can act in different ways also, from sending a response to proxy the request to another host.
 
 ## Configuration
 

@@ -10,6 +10,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [3.9.0] - 2022-08-08
+
+### Changed
+
+- refactor(#371): Separate logic about loading files from logic about loading routes and collections from files. Use the new `files.createLoader` method to create routes and collections loaders.
+
+### Added
+- feat: Expose files API in core.
+- feat: Add `createLoader` method to files.
+- feat: Add `reload` method to files.
+
+### Fixed
+- fix: Debounce time in files reload aw not working. Now it has 200ms of debounce, with a maximum time wait of 1000ms
+
 ## [3.8.0] - 2022-08-04
 
 ### Added

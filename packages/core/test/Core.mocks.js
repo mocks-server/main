@@ -74,6 +74,12 @@ class CoreMock {
         register: this._sandbox.stub(),
       },
       version: "foo-version",
+      files: {
+        start: this._sandbox.stub(),
+        stop: this._sandbox.stub(),
+        reload: this._sandbox.stub(),
+        createLoader: this._sandbox.stub(),
+      },
     };
 
     Core.mockImplementation(() => this._stubs);

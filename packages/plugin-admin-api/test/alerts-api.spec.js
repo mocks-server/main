@@ -97,8 +97,8 @@ describe("alerts api", () => {
 
     it("should return alert containing error", async () => {
       const response = await doApiFetch("/alerts");
-      expect(response.body.length).toEqual(5);
-      expect(response.body[4].error.message).toEqual(
+      expect(response.body.length).toEqual(6);
+      expect(response.body[5].error.message).toEqual(
         expect.stringContaining("Cannot find module '../db/users'")
       );
     });

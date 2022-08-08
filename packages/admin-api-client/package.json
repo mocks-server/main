@@ -33,7 +33,7 @@
     "build": "tsc && rollup --config",
     "mocks:ci": "pnpm -w run nx start admin-api-client-unit-mocks",
     "test": "jest --runInBand",
-    "test:unit": "start-server-and-test mocks:ci tcp:127.0.0.1:3200 test"
+    "test:unit": "start-server-and-test mocks:ci tcp:127.0.0.1:3110 test"
   },
   "dependencies": {
     "@mocks-server/admin-api-paths": "workspace:*",

@@ -43,9 +43,14 @@ describe("when there is an error loading files", () => {
     });
 
     it("should have added an alert about error loading collections", async () => {
-      expect(findAlert("files:collections", core.alerts).message).toEqual(
-        expect.stringContaining("Error loading collections from file")
-      );
+      const alert = findAlert("files:load:", core.alerts);
+      expect(alert.message).toEqual(expect.stringContaining("Error loading file"));
+      expect(alert.message).toEqual(expect.stringContaining("mocks.js"));
+    });
+
+    it("should have not added an alert about no collections file found", async () => {
+      const alert = findAlert("files:loader:collections:not-found", core.alerts);
+      expect(alert).toBe(undefined);
     });
   });
 
@@ -72,9 +77,9 @@ describe("when there is an error loading files", () => {
     });
 
     it("should have added an alert about error loading routes", async () => {
-      expect(findAlert("files:routes", core.alerts).message).toEqual(
-        expect.stringContaining("Error loading routes from folder")
-      );
+      const alert = findAlert("files:load:", core.alerts);
+      expect(alert.message).toEqual(expect.stringContaining("Error loading file"));
+      expect(alert.message).toEqual(expect.stringContaining("user.js"));
     });
 
     it("mocks should not have routes variants", () => {

@@ -223,6 +223,7 @@ importers:
 
   packages/core:
     specifiers:
+      '@babel/core': 7.18.10
       '@babel/register': 7.18.9
       '@hapi/boom': 9.1.4
       '@mocks-server/config': workspace:*
@@ -246,6 +247,7 @@ importers:
       winston-array-transport: 1.1.10
       yaml: 2.1.1
     dependencies:
+      '@babel/core': 7.18.10
       '@babel/register': 7.18.9_@babel+core@7.18.10
       '@hapi/boom': 9.1.4
       '@mocks-server/config': link:../config
@@ -295,14 +297,12 @@ importers:
 
   packages/main:
     specifiers:
-      '@babel/core': 7.18.10
       '@mocks-server/core': workspace:*
       '@mocks-server/plugin-admin-api': workspace:*
       '@mocks-server/plugin-inquirer-cli': workspace:*
       '@mocks-server/plugin-proxy': workspace:*
       deepmerge: 4.2.2
     dependencies:
-      '@babel/core': 7.18.10
       '@mocks-server/core': link:../core
       '@mocks-server/plugin-admin-api': link:../plugin-admin-api
       '@mocks-server/plugin-inquirer-cli': link:../plugin-inquirer-cli

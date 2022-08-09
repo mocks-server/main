@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - release
+      - feat-390-https
   pull_request:
 jobs:
   get-affected:

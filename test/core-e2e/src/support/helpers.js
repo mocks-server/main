@@ -21,6 +21,8 @@ const SERVER_PORT = 3100;
 const DEFAULT_BINARY_PATH = "./starter";
 const FIXTURES_PATH = path.resolve(__dirname, "..", "fixtures");
 const CONFIG_FILE = path.resolve(FIXTURES_PATH, "mocks.config.js");
+const CERT_FILE = path.resolve(FIXTURES_PATH, "localhost.cert");
+const KEY_FILE = path.resolve(FIXTURES_PATH, "localhost.key");
 
 const defaultOptions = {
   log: "silent",
@@ -84,8 +86,9 @@ const startCore = (mocksPath, options = {}) => {
   return startExistingCore(createCore(options), mocksPath, options);
 };
 
-const serverUrl = (port) => {
-  return `http://127.0.0.1:${port || SERVER_PORT}`;
+const serverUrl = (port, protocol) => {
+  const protocolToUse = protocol || "http";
+  return `${protocolToUse}://127.0.0.1:${port || SERVER_PORT}`;
 };
 
 const doFetchAndParse = (uri, options = {}, parser = "json") => {
@@ -94,7 +97,7 @@ const doFetchAndParse = (uri, options = {}, parser = "json") => {
     ...options,
   };
 
-  return crossFetch(`${serverUrl(options.port)}${uri}`, {
+  return crossFetch(`${serverUrl(options.port, options.protocol)}${uri}`, {
     ...requestOptions,
   }).then((res) => {
     return res[parser]()
@@ -171,10 +174,19 @@ const findTrace = (traceFragment, traces) => {
   return traces.find((trace) => trace.includes(traceFragment));
 };
 
-const removeConfigFile = () => {
-  if (fsExtra.existsSync(CONFIG_FILE)) {
-    fsExtra.removeSync(CONFIG_FILE);
+const removeFile = (file) => {
+  if (fsExtra.existsSync(file)) {
+    fsExtra.removeSync(file);
   }
+};
+
+const removeConfigFile = () => {
+  removeFile(CONFIG_FILE);
+};
+
+const removeCertFiles = () => {
+  removeFile(CERT_FILE);
+  removeFile(KEY_FILE);
 };
 
 const removeNewLines = (str) => {
@@ -197,5 +209,6 @@ module.exports = {
   findAlert,
   findTrace,
   removeConfigFile,
+  removeCertFiles,
   removeNewLines,
 };

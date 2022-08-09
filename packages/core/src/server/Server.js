@@ -21,6 +21,7 @@ const {
   notFound,
   errorHandler,
 } = require("./middlewares");
+const { readFileSync } = require("../common/helpers");
 
 const ALL_HOSTS = "0.0.0.0";
 const LOCALHOST = "localhost";
@@ -41,6 +42,27 @@ const OPTIONS = [
     name: "host",
     type: "string",
     default: ALL_HOSTS,
+  },
+];
+
+const HTTPS_NAMESPACE = "https";
+
+const HTTPS_OPTIONS = [
+  {
+    description: "Use https protocol or not",
+    name: "enabled",
+    type: "boolean",
+    default: false,
+  },
+  {
+    description: "Path to a TLS/SSL certificate",
+    name: "cert",
+    type: "string",
+  },
+  {
+    description: "Path to the certificate private key",
+    name: "key",
+    type: "string",
   },
 ];
 
@@ -113,6 +135,7 @@ class Server {
     const formBodyParserConfigNamespace = this._config.addNamespace(
       URL_ENCODED_BODY_PARSER_NAMESPACE
     );
+    const httpsConfigNamespace = this._config.addNamespace(HTTPS_NAMESPACE);
 
     [this._portOption, this._hostOption] = this._config.addOptions(OPTIONS);
 
@@ -124,6 +147,9 @@ class Server {
 
     [this._urlEncodedBodyParserEnabledOption, this._urlEncodedBodyParserOptionsOption] =
       formBodyParserConfigNamespace.addOptions(URL_ENCODED_BODY_PARSER_OPTIONS);
+
+    [this._httpsEnabledOption, this._httpsCertOption, this._httpsKeyOption] =
+      httpsConfigNamespace.addOptions(HTTPS_OPTIONS);
 
     this.restart = this.restart.bind(this);
 
@@ -187,18 +213,47 @@ class Server {
     this._express.use(errorHandler({ logger: this._logger }));
 
     // Create server
-    this._server = http.createServer(this._express);
-    this._alerts.remove(SERVER_ALERT_ID);
-    this._server.on("error", (error) => {
-      this._alerts.set(SERVER_ALERT_ID, "Server error", error);
-      this._error = error;
-      throw error;
-    });
-    this._serverInitted = true;
+    this._server = this._createServer();
+    if (this._server) {
+      this._alerts.remove(SERVER_ALERT_ID);
+      this._server.on("error", (error) => {
+        this._alerts.set(SERVER_ALERT_ID, "Server error", error);
+        this._error = error;
+        throw error;
+      });
+      this._serverInitted = true;
+    }
+  }
+
+  _createHttpsServer() {
+    this._logger.verbose("Creating HTTPS server");
+    try {
+      const https = require("https");
+      return https.createServer(
+        {
+          cert: readFileSync(this._httpsCertOption.value),
+          key: readFileSync(this._httpsKeyOption.value),
+        },
+        this._express
+      );
+    } catch (error) {
+      this._alerts.set(START_ALERT_ID, "Error creating HTTPS server", error);
+      this._serverInitError = error;
+    }
+  }
+
+  _createHttpServer() {
+    this._logger.verbose("Creating HTTP server");
+    return http.createServer(this._express);
+  }
+
+  _createServer() {
+    this._server = null;
+    return !!this._httpsEnabledOption.value ? this._createHttpsServer() : this._createHttpServer();
   }
 
   _reinitServer() {
-    if (this._serverInitted) {
+    if (this._serverInitted || !this._server) {
       this._serverInitted = false;
       if (this._serverStarted) {
         return this.restart();
@@ -215,7 +270,6 @@ class Server {
   _startServer(resolve, reject) {
     const host = this._hostOption.value;
     const port = this._portOption.value;
-    const hostName = host === ALL_HOSTS ? LOCALHOST : host;
 
     try {
       this._server.listen(
@@ -231,7 +285,7 @@ class Server {
             this._error = error;
             reject(error);
           } else {
-            this._logger.info(`Server started and listening at http://${hostName}:${port}`);
+            this._logger.info(`Server started and listening at ${this.url}`);
             this._error = null;
             this._serverStarting = false;
             this._serverStarted = true;
@@ -315,6 +369,16 @@ class Server {
   async restart() {
     await this.stop();
     return this.start();
+  }
+
+  get protocol() {
+    return !!this._httpsEnabledOption.value ? "https" : "http";
+  }
+
+  get url() {
+    const host = this._hostOption.value;
+    const hostName = host === ALL_HOSTS ? LOCALHOST : host;
+    return `${this.protocol}://${hostName}:${this._portOption.value}`;
   }
 
   // LEGACY, to be removed

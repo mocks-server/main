@@ -9,6 +9,9 @@
 # tests
 /coverage
 /dist
+/*.pem
+/*.cert
+/*.key
 
 # misc
 .DS_Store

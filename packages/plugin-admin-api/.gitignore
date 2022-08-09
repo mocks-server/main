@@ -9,8 +9,10 @@
 # tests
 /coverage
 /mocks
-/test/e2e/fixtures/temp
-/test/e2e/fixtures/mocks.config.js
+/test/fixtures/temp
+/test/fixtures/mocks.config.js
+/test/fixtures/*.cert
+/test/fixtures/*.key
 
 # misc
 .DS_Store

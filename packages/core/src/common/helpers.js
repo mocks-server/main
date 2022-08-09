@@ -9,7 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const path = require("path");
-const { readFileSync: fsReadFileSync } = require("fs-extra");
+const fsExtra = require("fs-extra");
 
 function arrayMerge(_destinationArray, sourceArray) {
   return sourceArray;
@@ -40,7 +40,7 @@ function resolveWhenConditionPass(condition, { interval = 200, timeout = 2000 } 
 }
 
 function readFileSync(filePath) {
-  return fsReadFileSync(path.resolve(process.cwd(), filePath), "utf-8");
+  return fsExtra.readFileSync(path.resolve(process.cwd(), filePath), "utf-8");
 }
 
 module.exports = {

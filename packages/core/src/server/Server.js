@@ -26,6 +26,7 @@ const { readFileSync } = require("../common/helpers");
 const ALL_HOSTS = "0.0.0.0";
 const LOCALHOST = "localhost";
 
+const HTTPS_ALERT_ID = "https";
 const START_ALERT_ID = "start";
 const START_ERROR_MESSAGE = "Error starting server";
 const SERVER_ALERT_ID = "server";
@@ -161,6 +162,9 @@ class Server {
     this._jsonBodyParserOptionsOption.onChange(this.restart);
     this._urlEncodedBodyParserEnabledOption.onChange(this.restart);
     this._urlEncodedBodyParserOptionsOption.onChange(this.restart);
+    this._httpsEnabledOption.onChange(this.restart);
+    this._httpsCertOption.onChange(this.restart);
+    this._httpsKeyOption.onChange(this.restart);
 
     this._routesRouter = routesRouter;
     this._customRouters = [];
@@ -222,11 +226,14 @@ class Server {
         throw error;
       });
       this._serverInitted = true;
+    } else {
+      this._serverInitted = false;
     }
   }
 
   _createHttpsServer() {
     this._logger.verbose("Creating HTTPS server");
+    this._alerts.remove(HTTPS_ALERT_ID);
     try {
       const https = require("https");
       return https.createServer(
@@ -237,7 +244,7 @@ class Server {
         this._express
       );
     } catch (error) {
-      this._alerts.set(START_ALERT_ID, "Error creating HTTPS server", error);
+      this._alerts.set(HTTPS_ALERT_ID, "Error creating HTTPS server", error);
       this._serverInitError = error;
     }
   }
@@ -253,7 +260,7 @@ class Server {
   }
 
   _reinitServer() {
-    if (this._serverInitted || !this._server) {
+    if (this._serverInitted) {
       this._serverInitted = false;
       if (this._serverStarted) {
         return this.restart();

@@ -10,6 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
+const fsExtra = require("fs-extra");
 const http = require("http");
 const { Logger } = require("@mocks-server/logger");
 
@@ -47,7 +48,10 @@ describe("Server", () => {
     optionJsonBodyParserEnabled,
     optionJsonBodyParserOptions,
     optionUrlEncodedBodyParserEnabled,
-    optionUrlEncodedBodyParserOptions;
+    optionUrlEncodedBodyParserOptions,
+    optionHttpsEnabled,
+    optionHttpsCert,
+    optionHttpsKey;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -58,6 +62,7 @@ describe("Server", () => {
     sandbox.stub(Logger.prototype, "error");
     sandbox.stub(Logger.prototype, "info");
     sandbox.stub(Logger.prototype, "debug");
+    sandbox.stub(fsExtra, "readFileSync");
     bodyParser.json = sandbox.stub();
     bodyParser.urlencoded = sandbox.stub();
 
@@ -80,6 +85,13 @@ describe("Server", () => {
       optionJsonBodyParserOptions = { ...server._optionWatch, value: { extended: true } };
       optionUrlEncodedBodyParserEnabled = { ...server._optionMock, value: true };
       optionUrlEncodedBodyParserOptions = { ...server._optionMock, value: {} };
+      optionHttpsEnabled = { ...server._httpsEnabledOption, value: false };
+      optionHttpsCert = { ...server._httpsCertOption, value: "" };
+      optionHttpsKey = { ...server._httpsKeyOption, value: "" };
+
+      server._httpsEnabledOption = optionHttpsEnabled;
+      server._httpsCertOption = optionHttpsCert;
+      server._httpsKeyOption = optionHttpsKey;
 
       server._hostOption = optionHost;
       server._portOption = optionPort;
@@ -256,6 +268,39 @@ describe("Server", () => {
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(false);
       expect(http.createServer.callCount).toEqual(2);
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
+    });
+  });
+
+  describe("when using https", () => {
+    describe("when an error is produced trying to create https server", () => {
+      it("should add an alert about https error and another one about error starting", async () => {
+        expect.assertions(2);
+        const error = new Error("foo");
+        optionHttpsEnabled.value = true;
+        fsExtra.readFileSync.throws(error);
+
+        await server.init();
+
+        try {
+          await server.start();
+        } catch (err) {
+          expect(alerts.get("https")).toEqual({
+            message: "Error creating HTTPS server",
+            error: error,
+          });
+          expect(alerts.get("start")).toEqual({
+            message: "Error starting server",
+            error: err,
+          });
+        }
+      });
+    });
+
+    describe("protocol", () => {
+      it("should return https", async () => {
+        optionHttpsEnabled.value = true;
+        expect(server.protocol).toEqual("https");
+      });
     });
   });
 

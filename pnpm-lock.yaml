@@ -413,8 +413,10 @@ importers:
 
   test/cypress-commands-e2e:
     specifiers:
+      '@mocks-server/cli-runner': workspace:*
       '@mocks-server/main': workspace:*
     devDependencies:
+      '@mocks-server/cli-runner': link:../../packages/cli-runner
       '@mocks-server/main': link:../../packages/main
 
   test/cypress-commands-typescript-e2e:

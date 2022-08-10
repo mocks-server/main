@@ -1,6 +1,18 @@
-import { wait, waitForServer } from "./support/helpers";
-
+import https from "https";
 import { AdminApiClient } from "../src/index";
+
+import {
+  wait,
+  waitForServer,
+  createCertFiles,
+  removeCertFiles,
+  certFile,
+  keyFile,
+} from "./support/helpers";
+
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false,
+});
 
 describe("AdminApiClient class", () => {
   let apiClient;
@@ -230,7 +242,7 @@ describe("AdminApiClient class", () => {
     });
   });
 
-  describe("when updating client config", () => {
+  describe("when updating client port", () => {
     it("should update update client port", async () => {
       await apiClient.updateConfig({
         plugins: {
@@ -264,6 +276,68 @@ describe("AdminApiClient class", () => {
       await waitForServer(3110);
       apiClient.configClient({
         port: 3110,
+      });
+      const settings = await apiClient.readConfig();
+      expect(settings.plugins.adminApi.port).toEqual(3110);
+    });
+  });
+
+  describe("when updating client protocol", () => {
+    beforeAll(async () => {
+      await createCertFiles();
+    });
+
+    afterAll(() => {
+      removeCertFiles();
+    });
+
+    it("should update client protocol", async () => {
+      await apiClient.updateConfig({
+        plugins: {
+          adminApi: {
+            port: 3120,
+            https: {
+              enabled: true,
+              cert: certFile,
+              key: keyFile,
+            },
+          },
+        },
+      });
+      await waitForServer(3120, {
+        protocol: "https",
+      });
+      apiClient.configClient({
+        port: 3120,
+        https: true,
+        agent: httpsAgent,
+      });
+      const settings = await apiClient.readConfig();
+      expect(settings.plugins.adminApi.port).toEqual(3120);
+    });
+
+    it("should do nothing if no protocol is provided", async () => {
+      apiClient.configClient();
+      const settings = await apiClient.readConfig();
+      expect(settings.plugins.adminApi.port).toEqual(3120);
+    });
+
+    it("should update update client protocol again", async () => {
+      await apiClient.updateConfig({
+        plugins: {
+          adminApi: {
+            port: 3110,
+            https: {
+              enabled: false,
+            },
+          },
+        },
+      });
+      await waitForServer(3110);
+      apiClient.configClient({
+        port: 3110,
+        https: false,
+        agent: null,
       });
       const settings = await apiClient.readConfig();
       expect(settings.plugins.adminApi.port).toEqual(3110);

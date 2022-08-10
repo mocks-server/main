@@ -86,23 +86,46 @@ Returns an instance containing next methods:
 * `restoreRouteVariants()` - Restore route variants to those defined in current collection.
 * `configClient(clientConfig)` - Changes the client configuration.
   * `clientConfig` _`<Object>`_ - It should be an object containing any of next properties:
-    * `port` - Changes the client port. 
-    * `host` - Changes the client host.
+    * `port` - _`<Number>`_ - Changes the client port. Default is `3110`.
+    * `host` - _`<String>`_ - Changes the client host. Default is `127.0.0.1`.
+    * `https` - _`<Boolean>`_ - If `true`, changes the client host to "https". Default is `false`.
+    * `agent` - _`<http.Agent | https.Agent>`_ - A custom agent can be provided. This is useful in Node.js environments in order to make able to request to https APIs with self-signed certificates ([see example below](#requesting-to-apis-with-https-enabled-and-self-signed-certificate)).
 
 ## Configuration
 
 By default, clients are configured to request to `http://127.0.0.1:3110/api`, based in the [default options of Mocks Server Plugin Admin API](https://www.mocks-server.org/docs/configuration/options)
 
-You can change both the the host and port of the administration API using the `configClient` method:
+You can change the host, port and protocol of the administration API using the `configClient` method:
 
 ```js
-
 import { AdminApiClient } from "@mocks-server/admin-api-client";
 
 const apiClient = new AdminApiClient();
 apiClient.configClient({
   host: "localhost",
-  port: 3500
+  port: 3500,
+  https: true,
+});
+```
+
+### Requesting to APIs with https enabled and self-signed certificate
+
+When the administration API is started with https enabled using a self-signed certificate, and the client is used in Node.js, a custom agent can be provided in order to avoid unauthorized rejections:
+
+```js
+import https from "https";
+import { AdminApiClient } from "@mocks-server/admin-api-client";
+
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false,
+});
+
+const apiClient = new AdminApiClient();
+apiClient.configClient({
+  host: "localhost",
+  port: 3500,
+  https: true,
+  agent: httpsAgent
 });
 ```
 

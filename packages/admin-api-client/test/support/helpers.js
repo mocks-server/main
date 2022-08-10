@@ -1,6 +1,18 @@
 const waitOn = require("wait-on");
+const path = require("path");
+const fsExtra = require("fs-extra");
 
+import Spawn from "./Spawn";
 import { configClient } from "../../src/index";
+
+const TEMP_FOLDER = path.resolve(__dirname, "temp");
+
+const tempPath = (folderName) => {
+  return path.resolve(TEMP_FOLDER, folderName);
+};
+
+const certFile = tempPath("localhost.cert");
+const keyFile = tempPath("localhost.key");
 
 configClient({
   port: 3110,
@@ -19,7 +31,50 @@ const waitForServer = (port) => {
   return waitOn({ resources: [`tcp:127.0.0.1:${port}`] });
 };
 
+const spawn = (args = [], options = {}) => {
+  return new Spawn(args, {
+    cwd: TEMP_FOLDER,
+    ...options,
+  });
+};
+
+const removeFile = (file) => {
+  if (fsExtra.existsSync(file)) {
+    fsExtra.removeSync(file);
+  }
+};
+
+const removeCertFiles = () => {
+  removeFile(certFile);
+  removeFile(keyFile);
+};
+
+const createCertFiles = async () => {
+  const generator = spawn([
+    "openssl",
+    "req",
+    "-newkey",
+    "rsa:4096",
+    "-days",
+    "1",
+    "-nodes",
+    "-x509",
+    "-subj",
+    "/C=US/ST=Denial/L=Springfield/O=Dis/CN=localhost",
+    "-keyout",
+    "localhost.key",
+    "-out",
+    "localhost.cert",
+  ]);
+  await generator.hasExited();
+};
+
 module.exports = {
   wait,
   waitForServer,
+  spawn,
+  removeCertFiles,
+  createCertFiles,
+  certFile,
+  keyFile,
 };

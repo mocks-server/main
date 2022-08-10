@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+### Added
+
+- feat: Add HTTPS_PROTOCOL constant
+
 
 ## [4.1.0] - 2022-08-04
 

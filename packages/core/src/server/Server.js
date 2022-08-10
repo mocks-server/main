@@ -153,6 +153,7 @@ class Server {
       httpsConfigNamespace.addOptions(HTTPS_OPTIONS);
 
     this.restart = this.restart.bind(this);
+    this._reinitServer = this._reinitServer.bind(this);
 
     this._hostOption.onChange(this.restart);
     this._portOption.onChange(this.restart);
@@ -162,9 +163,9 @@ class Server {
     this._jsonBodyParserOptionsOption.onChange(this.restart);
     this._urlEncodedBodyParserEnabledOption.onChange(this.restart);
     this._urlEncodedBodyParserOptionsOption.onChange(this.restart);
-    this._httpsEnabledOption.onChange(this.restart);
-    this._httpsCertOption.onChange(this.restart);
-    this._httpsKeyOption.onChange(this.restart);
+    this._httpsEnabledOption.onChange(this._reinitServer);
+    this._httpsCertOption.onChange(this._reinitServer);
+    this._httpsKeyOption.onChange(this._reinitServer);
 
     this._routesRouter = routesRouter;
     this._customRouters = [];

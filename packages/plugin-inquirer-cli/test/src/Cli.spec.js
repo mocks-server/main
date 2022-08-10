@@ -50,6 +50,10 @@ describe("Cli", () => {
   let onChangeHost;
   let onChangeWatch;
   let onChangeCollection;
+  let optionHttps;
+  let onChangeHttps;
+  let optionPort;
+  let onChangePort;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
@@ -71,16 +75,20 @@ describe("Cli", () => {
     onChangeHost = sandbox.stub();
     onChangeWatch = sandbox.stub();
     onChangeCollection = sandbox.stub();
+    onChangeHttps = sandbox.stub();
+    onChangePort = sandbox.stub();
     expect.assertions(1);
     mockOptions = () => {
       optionCli = { ...cli._optionCli, onChange: onChangeCli, value: true };
       optionEmojis = { ...cli._optionEmojis, onChange: onChangeEmojis, value: true };
       optionLog = { ...cli._optionLog, onChange: onChangeLog, value: "info" };
+      optionPort = { ...cli._optionLog, onChange: onChangePort, value: 3100 };
       optionDelay = { ...cli._optionDelay, onChange: onChangeDelay, value: 0 };
       optionDelayLegacy = { ...cli._optionDelayLegacy, value: 0 };
       optionHost = { ...cli._optionHost, onChange: onChangeHost, value: "0.0.0.0" };
       optionWatch = { ...cli._optionWatch, onChange: onChangeWatch, value: true };
       optionCollection = { ...cli._optionCollection, onChange: onChangeCollection, value: "base" };
+      optionHttps = { ...cli._optionHttps, onChange: onChangeHttps, value: false };
       cli._optionEmojis = optionEmojis;
       cli._optionDelay = optionDelay;
       cli._optionCli = optionCli;
@@ -89,6 +97,8 @@ describe("Cli", () => {
       cli._optionWatch = optionWatch;
       cli._optionCollection = optionCollection;
       cli._optionDelayLegacy = optionDelayLegacy;
+      cli._optionHttps = optionHttps;
+      cli._optionPort = optionPort;
     };
     mockOptions();
     await cli.init();
@@ -160,6 +170,22 @@ describe("Cli", () => {
     it("should refresh main menu when watch option is changed and current screen is main menu", async () => {
       expect.assertions(2);
       onChangeWatch.getCall(0).args[0](false);
+      await wait();
+      expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
+    });
+
+    it("should refresh main menu when port option is changed and current screen is main menu", async () => {
+      expect.assertions(2);
+      onChangePort.getCall(0).args[0](3200);
+      await wait();
+      expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
+      expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
+    });
+
+    it("should refresh main menu when https option is changed and current screen is main menu", async () => {
+      expect.assertions(2);
+      onChangeHttps.getCall(0).args[0](false);
       await wait();
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
@@ -629,6 +655,18 @@ describe("Cli", () => {
       optionHost.value = "0.0.0.0";
       await cli.start();
       expect(cli._header()[0]).toEqual(expect.stringContaining("http://localhost"));
+    });
+
+    it("should print protocol as http when https is disabled", async () => {
+      optionHttps.value = false;
+      await cli.start();
+      expect(cli._header()[0]).toEqual(expect.stringContaining("http://localhost"));
+    });
+
+    it("should print protocol as https when https is enabled", async () => {
+      optionHttps.value = true;
+      await cli.start();
+      expect(cli._header()[0]).toEqual(expect.stringContaining("https://localhost"));
     });
 
     it("should print custom host as host", async () => {

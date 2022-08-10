@@ -156,6 +156,7 @@ class Cli {
     this._optionDelayLegacy = this._config.root.namespace("mocks").option("delay");
     this._optionPort = this._config.root.namespace("server").option("port");
     this._optionHost = this._config.root.namespace("server").option("host");
+    this._optionHttps = this._config.root.namespace("server").namespace("https").option("enabled");
     this._optionWatch = this._config.root.namespace("files").option("watch");
   }
 
@@ -175,6 +176,7 @@ class Cli {
     this._optionHost.onChange(this._refreshMenuIfStarted);
     this._optionWatch.onChange(this._refreshMenuIfStarted);
     this._optionEmojis.onChange(this._onChangeOptionEmojis);
+    this._optionHttps.onChange(this._refreshMenuIfStarted);
 
     this._inited = true;
     return Promise.resolve();
@@ -257,7 +259,8 @@ class Cli {
   get _serverUrl() {
     const hostSetting = this._optionHost.value;
     const host = hostSetting === "0.0.0.0" ? "localhost" : hostSetting;
-    return `http://${host}:${this._optionPort.value}`;
+    const protocol = this._optionHttps.value === true ? "https" : "http";
+    return `${protocol}://${host}:${this._optionPort.value}`;
   }
 
   _header() {

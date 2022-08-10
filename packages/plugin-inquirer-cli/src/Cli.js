@@ -171,6 +171,7 @@ class Cli {
     this._optionLog.onChange(this._onChangeOptionLog);
     this._optionCollection.onChange(this._refreshMenuIfStarted);
     this._optionDelay.onChange(this._refreshMenuIfStarted);
+    this._optionPort.onChange(this._refreshMenuIfStarted);
     this._optionHost.onChange(this._refreshMenuIfStarted);
     this._optionWatch.onChange(this._refreshMenuIfStarted);
     this._optionEmojis.onChange(this._onChangeOptionEmojis);

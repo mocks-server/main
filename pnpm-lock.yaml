@@ -429,9 +429,11 @@ importers:
 
   test/main-e2e:
     specifiers:
+      '@mocks-server/cli-runner': workspace:*
       '@mocks-server/inquirer-cli-runner': workspace:*
       '@mocks-server/main': workspace:*
     dependencies:
+      '@mocks-server/cli-runner': link:../../packages/cli-runner
       '@mocks-server/inquirer-cli-runner': link:../../packages/inquirer-cli-runner
       '@mocks-server/main': link:../../packages/main
 

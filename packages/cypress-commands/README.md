@@ -192,12 +192,13 @@ describe("users page", () => {
 
 For those writing [TypesScript tests in Cypress][cypress-typescript], this package includes TypeScript declarations.
 
-Add "@mocks-server/cypress-commands" to the `types` property in the `tsconfig.json` file:
+Add "@mocks-server/cypress-commands" to the `types` property in the `tsconfig.json` file. You may also need to set the TS `allowSyntheticDefaultImports` option to true:
 
 ```json
 {
   "compilerOptions": {
-    "types": ["cypress", "@mocks-server/cypress-commands"]
+    "types": ["cypress", "@mocks-server/cypress-commands"],
+    "allowSyntheticDefaultImports": true
   }
 }
 ```

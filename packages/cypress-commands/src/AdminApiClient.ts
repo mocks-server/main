@@ -1,9 +1,10 @@
 import { AdminApiClient as BaseAdminApiClient } from "@mocks-server/admin-api-client";
-import { DEFAULT_PROTOCOL, DEFAULT_PORT, DEFAULT_CLIENT_HOST } from "@mocks-server/admin-api-paths";
+import { HTTPS_PROTOCOL, DEFAULT_PROTOCOL, DEFAULT_PORT, DEFAULT_CLIENT_HOST } from "@mocks-server/admin-api-paths";
 
 import type {
   MocksServerConfig,
-  RouteVariantId
+  RouteVariantId,
+  Protocol,
 } from "@mocks-server/admin-api-client";
 
 import type { MocksServerCypressApiClientConfig } from "./types";
@@ -18,6 +19,7 @@ export class AdminApiClient {
   private _apiClient: BaseAdminApiClient;
   private _port: MocksServerCypressApiClientConfig["port"] = DEFAULT_PORT;
   private _host: MocksServerCypressApiClientConfig["host"] = DEFAULT_CLIENT_HOST;
+  private _protocol: Protocol = DEFAULT_PROTOCOL;
 
   constructor(clientConfig: MocksServerCypressApiClientConfig) {
     this._apiClient = new BaseAdminApiClient();
@@ -59,13 +61,18 @@ export class AdminApiClient {
     if (!isUndefined(customConfig.port)) {
       this._port = customConfig.port;
     }
+    if (!isUndefined(customConfig.https)) {
+      this._protocol = customConfig.https ? HTTPS_PROTOCOL : DEFAULT_PROTOCOL;
+    }
     this._apiClient.configClient({
       host: customConfig.host,
       port: customConfig.port,
+      https: customConfig.https,
+      agent: customConfig.agent,
     });
   }
 
   public get url() {
-    return `${DEFAULT_PROTOCOL}://${this._host}:${this._port}`;
+    return `${this._protocol}://${this._host}:${this._port}`;
   }
 }

@@ -88,7 +88,7 @@ Returns an instance containing next methods:
   * `clientConfig` _`<Object>`_ - It should be an object containing any of next properties:
     * `port` - _`<Number>`_ - Changes the client port. Default is `3110`.
     * `host` - _`<String>`_ - Changes the client host. Default is `127.0.0.1`.
-    * `https` - _`<Boolean>`_ - If `true`, changes the client host to "https". Default is `false`.
+    * `https` - _`<Boolean>`_ - If `true`, changes the client protocol to "https". Default is `false`.
     * `agent` - _`<http.Agent | https.Agent>`_ - A custom agent can be provided. This is useful in Node.js environments in order to make able to request to https APIs with self-signed certificates ([see example below](#requesting-to-apis-with-https-enabled-and-self-signed-certificate)).
 
 ## Configuration

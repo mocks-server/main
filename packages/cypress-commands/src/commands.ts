@@ -13,8 +13,10 @@ import {
   ENABLED_ENVIRONMENT_VAR,
   ADMIN_API_PORT_ENVIRONMENT_VAR,
   ADMIN_API_HOST_ENVIRONMENT_VAR,
+  ADMIN_API_HTTPS_ENVIRONMENT_VAR,
   LOG_ENVIRONMENT_VAR,
   isFalsy,
+  isTruthy,
 } from "./helpers";
 
 import type Bluebird from "cypress/types/bluebird";
@@ -26,6 +28,7 @@ export function commands(Cyp: typeof Cypress, CypCy: typeof cy) {
     enabled: Cyp.env(ENABLED_ENVIRONMENT_VAR),
     port: Cyp.env(ADMIN_API_PORT_ENVIRONMENT_VAR),
     host: Cyp.env(ADMIN_API_HOST_ENVIRONMENT_VAR),
+    https: isTruthy(Cyp.env(ADMIN_API_HTTPS_ENVIRONMENT_VAR)),
   });
 
   function getClient(apiClient?: AdminApiClient) {

@@ -1,4 +1,4 @@
-import type https = require("https");
+import type https from "https";
 import type { BASE_PATH } from "@mocks-server/admin-api-paths";
 
 export interface AnyObject {

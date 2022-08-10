@@ -5,6 +5,7 @@
     "module": "commonjs",
     "outDir": "dist",
     "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
     "types": ["cypress", "../../packages/cypress-commands"],
     "paths": {
       "@mocks-server/cypress-commands": ["../../packages/cypress-commands"]

@@ -15,6 +15,8 @@
 
 Extends Cypress' cy commands with methods for easily changing [Mocks Server configuration][mocks-server-options-url] while it is running, such as current collection, custom route variants, delay time, etc.
 
+For further info, you can read the [Mocks Server Cypress integration docs](https://www.mocks-server.org/docs/integrations/cypress).
+
 ## Installation
 
 This module is distributed via npm and should be installed as one of your project's devDependencies:
@@ -97,7 +99,7 @@ You can change the protocol, host and port of the administration API using the `
 * __`MOCKS_SERVER_LOGS`__: Log commands status on Cypress or not. Default is `true`.
 * __`MOCKS_SERVER_ADMIN_API_PORT`__: Modifies the admin API client port. Default is `3110`.
 * __`MOCKS_SERVER_ADMIN_API_HOST`__: Modifies the admin API client host. Default is `127.0.0.1`.
-* __`MOCKS_SERVER_ADMIN_API_HTTPS`__: If `true`, changes the cadmin API client protocol to "https". Default is `false`.
+* __`MOCKS_SERVER_ADMIN_API_HTTPS`__: If `true`, changes the admin API client protocol to "https". Default is `false`.
 * __`MOCKS_SERVER_ENABLED`__: Disables requests to the Mocks Server admin API, so the commands will not fail even when Mocks Server is not running. This is useful to reuse same tests with a mocked API and a real API, because commands to change Mocks Server configuration will be ignored.
 
 > Note: These environment variables only affect to the default Mocks Server API client (except `MOCKS_SERVER_LOGS`). Read [usage with multiple Mocks Servers](#usage-with-multiple-mocks-servers) bellow for further info.
@@ -208,6 +210,10 @@ Or reference the package in the files using it:
 ```typescript
 /// <reference types="@mocks-server/cypress-commands" />
 ```
+
+## Further info
+
+For further info, you can read the [Mocks Server Cypress integration docs](https://www.mocks-server.org/docs/integrations/cypress).
 
 ## Release notes
 

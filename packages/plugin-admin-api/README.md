@@ -27,6 +27,9 @@ This plugin is included in the main distribution of the Mocks Server project, so
 
 * __`plugins.adminApi.port`__ _(Number)_: Port for the administration REST API. Default is `3110`.
 * __`plugins.adminApi.host`__ _(String)_: Host for the administration REST API. Default is `0.0.0.0` (Reachable to all IPv4 addresses on the local machine).
+* __`plugins.adminApi.https.enabled`__ _(Boolean)_: Enables the HTTPS protocol in the administration REST API
+* __`plugins.adminApi.https.cert`__ _(String)_: Path to the HTTPS certificate. Relative to the current `process.cwd()` or absolute.
+* __`plugins.adminApi.https.key`__ _(String)_: Path to the HTTPS certificate key. Relative to the current `process.cwd()` or absolute.
 
 Read more about [how to set options in Mocks Server here](https://www.mocks-server.org/docs/configuration/how-to-change-settings).
 

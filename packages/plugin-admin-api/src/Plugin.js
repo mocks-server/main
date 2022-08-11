@@ -65,11 +65,12 @@ class Plugin {
       alerts,
       logger: this._logger.namespace("server"),
       config,
-      onChangeOptions: ({ host, port }) => {
+      onChangeOptions: ({ host, port, protocol }) => {
         this._swagger.setOptions({
           version,
           host,
           port,
+          protocol,
         });
       },
     });

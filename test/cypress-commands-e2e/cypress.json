@@ -1,4 +1,16 @@
 {
   "baseUrl": "http://localhost:3000",
-  "video": false
+  "video": false,
+  "clientCertificates": [
+    {
+      "url": "https://127.0.0.1",
+      "ca": [],
+      "certs": [
+        {
+          "cert": "localhost.cert",
+          "key": "localhost.key"
+        }
+      ]
+    }
+  ]
 }

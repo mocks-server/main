@@ -64,6 +64,9 @@ describe("settings api", () => {
             path: "/admin",
             host: "0.0.0.0",
             port: 3110,
+            https: {
+              enabled: false,
+            },
           },
         },
         log: "silent",
@@ -86,6 +89,9 @@ describe("settings api", () => {
             options: {
               extended: true,
             },
+          },
+          https: {
+            enabled: false,
           },
         },
         variantHandlers: {

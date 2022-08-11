@@ -11,6 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const http = require("http");
+const https = require("https");
 
 jest.mock("express");
 jest.mock("node-watch");
@@ -103,6 +104,14 @@ class Mock {
       use: this._sandbox.stub(),
     };
 
+    const createServer = {
+      on: this._sandbox.stub().callsFake(httpCreateServerOnError.runner),
+      onError: httpCreateServerOnError,
+      listen: this._sandbox.stub().callsFake(httpCreateServerOnListen.runner),
+      onListen: httpCreateServerOnListen,
+      close: this._sandbox.stub().callsFake((cb) => cb()),
+    };
+
     this._stubs = {
       watch: watchStub,
       watchTriggerChange: watchRunner.triggerChange,
@@ -117,13 +126,10 @@ class Mock {
         find: this._sandbox.stub(globule, "find"),
       },
       http: {
-        createServer: {
-          on: this._sandbox.stub().callsFake(httpCreateServerOnError.runner),
-          onError: httpCreateServerOnError,
-          listen: this._sandbox.stub().callsFake(httpCreateServerOnListen.runner),
-          onListen: httpCreateServerOnListen,
-          close: this._sandbox.stub().callsFake((cb) => cb()),
-        },
+        createServer,
+      },
+      https: {
+        createServer,
       },
       fsExtra: {
         ensureDirSync: ensureDirSyncStub,
@@ -141,6 +147,7 @@ class Mock {
     express.mockImplementation(() => this._stubs.express);
     watch.mockImplementation(this._stubs.watch);
     this._sandbox.stub(http, "createServer").returns(this._stubs.http.createServer);
+    this._sandbox.stub(https, "createServer").returns(this._stubs.http.createServer);
     this._sandbox.stub(express, "Router").returns(this._stubs.expressRouter);
     this._stubs.express.static = this._sandbox.stub(express, "static");
   }

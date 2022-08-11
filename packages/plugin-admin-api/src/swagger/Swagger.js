@@ -18,9 +18,9 @@ class Swagger {
     this._router.use(express.static(swaggerUIDist.absolutePath()));
   }
 
-  setOptions({ version, port, host }) {
+  setOptions({ version, port, host, protocol }) {
     this._openApi.info.version = version;
-    this._openApi.servers[0].url = `${serverUrl({ host, port })}/api`;
+    this._openApi.servers[0].url = `${serverUrl({ host, port, protocol })}/api`;
     this._openApi.components.schemas.Config = this._config.root.getValidationSchema();
   }
 

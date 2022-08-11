@@ -1,6 +1,6 @@
 import crossFetch from "cross-fetch";
 import type { Response } from "cross-fetch";
-import type { AnyObject, ApiClientConfig, Url, ApiPath, Id } from "./types";
+import type { AnyObject, ApiClientConfig, Url, ApiPath, Id, Protocol, CrossFetchOptions } from "./types";
 
 import {
   BASE_PATH,
@@ -14,7 +14,12 @@ import {
   DEFAULT_PORT,
   DEFAULT_CLIENT_HOST,
   DEFAULT_PROTOCOL,
+  HTTPS_PROTOCOL,
 } from "@mocks-server/admin-api-paths";
+
+const JSON_HEADERS = {
+  "Content-Type": "application/json",
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isUndefined(value: any) {
@@ -33,13 +38,22 @@ function handleResponse(res: Response) {
 class ApiClient {
   private _host: ApiClientConfig["host"] = DEFAULT_CLIENT_HOST;
   private _port: ApiClientConfig["port"] = DEFAULT_PORT;
+  private _protocol: Protocol = DEFAULT_PROTOCOL;
+  private _agent?: ApiClientConfig["agent"];
 
   get _baseUrl(): Url {
-    return `${DEFAULT_PROTOCOL}://${this._host}:${this._port}${BASE_PATH}`;
+    return `${this._protocol}://${this._host}:${this._port}${BASE_PATH}`;
   }
 
   private _fullUrl(apiPath: ApiPath): Url {
     return `${this._baseUrl}${apiPath}`;
+  }
+
+  private _addAgent(options: CrossFetchOptions = {}): CrossFetchOptions {
+    if(this._agent) {
+      options.agent = this._agent;
+    }
+    return options;
   }
 
   public config(configuration: ApiClientConfig = {}) {
@@ -49,36 +63,38 @@ class ApiClient {
     if (!isUndefined(configuration.port)) {
       this._port = configuration.port;
     }
+    if (!isUndefined(configuration.https)) {
+      this._protocol = configuration.https ? HTTPS_PROTOCOL : DEFAULT_PROTOCOL;
+    }
+    if (!isUndefined(configuration.agent)) {
+      this._agent = configuration.agent;
+    }
   }
 
   public read(apiPath: ApiPath) {
-    return crossFetch(this._fullUrl(apiPath)).then(handleResponse);
+    return crossFetch(this._fullUrl(apiPath), this._addAgent()).then(handleResponse);
   }
 
   public patch(apiPath: ApiPath, data: AnyObject) {
-    return crossFetch(this._fullUrl(apiPath), {
+    return crossFetch(this._fullUrl(apiPath), this._addAgent({
       method: "PATCH",
       body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then(handleResponse);
+      headers: JSON_HEADERS,
+    })).then(handleResponse);
   }
 
   public delete(apiPath: ApiPath) {
-    return crossFetch(this._fullUrl(apiPath), {
+    return crossFetch(this._fullUrl(apiPath), this._addAgent({
       method: "DELETE",
-    }).then(handleResponse);
+    })).then(handleResponse);
   }
 
   public create(apiPath: ApiPath, data: AnyObject) {
-    return crossFetch(this._fullUrl(apiPath), {
+    return crossFetch(this._fullUrl(apiPath), this._addAgent({
       method: "POST",
       body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then(handleResponse);
+      headers: JSON_HEADERS,
+    })).then(handleResponse);
   }
 }
 

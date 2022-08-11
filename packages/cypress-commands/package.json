@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/cypress-commands",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "description": "Extends Cypress' cy commands with methods for administrating Mocks Server",
   "keywords": [
     "cypress",

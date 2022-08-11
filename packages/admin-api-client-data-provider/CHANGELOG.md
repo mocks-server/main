@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGES
 
+## [6.1.0] - 2022-08-11
+
+### Added
+
+- feat(#390): Add protocol option to `configClient` method
+
+
 ## [6.0.1] - 2022-08-04
 
 ### Changed

@@ -10,11 +10,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const path = require("path");
 
+const fsExtra = require("fs-extra");
 const deepMerge = require("deepmerge");
 const crossFetch = require("cross-fetch");
 const waitOn = require("wait-on");
 
 const Core = require("@mocks-server/core");
+
+const Spawn = require("./Spawn");
 const AdminApiPlugin = require("../../index");
 
 const SERVER_PORT = 3100;
@@ -37,9 +40,14 @@ const defaultRequestOptions = {
   },
 };
 
+const FIXTURES_PATH = path.resolve(__dirname, "..", "fixtures");
+
 const fixturesFolder = (folderName) => {
-  return path.resolve(__dirname, "..", "fixtures", folderName);
+  return path.resolve(FIXTURES_PATH, folderName);
 };
+
+const certFile = fixturesFolder("localhost.cert");
+const keyFile = fixturesFolder("localhost.key");
 
 const createCore = () => {
   return new Core({
@@ -80,8 +88,9 @@ const startServer = (mocksPath, options = {}) => {
   return startExistingCore(createCore(), mocksPath, options);
 };
 
-const serverUrl = (port) => {
-  return `http://127.0.0.1:${port || SERVER_PORT}`;
+const serverUrl = (port, protocol) => {
+  const protocolToUse = protocol || "http";
+  return `${protocolToUse}://127.0.0.1:${port || SERVER_PORT}`;
 };
 
 const doFetch = (uri, options = {}) => {
@@ -93,7 +102,7 @@ const doFetch = (uri, options = {}) => {
     requestOptions.body = JSON.stringify(requestOptions.body);
   }
 
-  return crossFetch(`${serverUrl(options.port)}${uri}`, {
+  return crossFetch(`${serverUrl(options.port, options.protocol)}${uri}`, {
     ...requestOptions,
   }).then((res) => {
     return res
@@ -159,8 +168,8 @@ const waitForServer = (port) => {
   return waitOn({ resources: [`tcp:127.0.0.1:${port || SERVER_PORT}`] });
 };
 
-const waitForServerUrl = (url) => {
-  return waitOn({ resources: [`${serverUrl()}${url}`] });
+const waitForServerUrl = (url, options = {}) => {
+  return waitOn({ resources: [`${serverUrl(options.port, options.protocol)}${url}`] });
 };
 
 const findAlert = (alertContextFragment, alerts) => {
@@ -171,7 +180,28 @@ const findTrace = (traceFragment, traces) => {
   return traces.find((trace) => trace.includes(traceFragment));
 };
 
+const spawn = (args = [], options = {}) => {
+  return new Spawn(args, {
+    cwd: FIXTURES_PATH,
+    ...options,
+  });
+};
+
+const removeFile = (file) => {
+  if (fsExtra.existsSync(file)) {
+    fsExtra.removeSync(file);
+  }
+};
+
+const removeCertFiles = () => {
+  removeFile(certFile);
+  removeFile(keyFile);
+};
+
 module.exports = {
+  certFile,
+  keyFile,
+  removeCertFiles,
   createCore,
   startExistingCore,
   startServer,
@@ -186,4 +216,5 @@ module.exports = {
   fixturesFolder,
   findAlert,
   findTrace,
+  spawn,
 };

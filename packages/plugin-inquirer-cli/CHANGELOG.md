@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGE
 
+## [3.3.0] - 2022-08-11
+
+### Added
+- feat(#390): Change displayed protocol based on the value of the `server.https.enabled` option
+
+### Fixed
+- fix(#408): Refresh interface when port changes
+
 ## [3.2.0] - 2022-07-22
 
 ### Added

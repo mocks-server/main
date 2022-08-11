@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [3.10.0] - 2022-08-11
+
+### Added
+- feat(#390): Add https support
+- feat(#390): Add `server.https.enabled`, `server.https.cert` and `server.https.key` options
+
 ## [3.9.0] - 2022-08-08
 
 ### Changed

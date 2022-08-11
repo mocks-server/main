@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "mocks": "mocks-server",
+    "create-certs": "node scripts/create-certs.js",
     "mocks:ci:2": "mocks-server --no-plugins.inquirerCli.enabled --server.port=3300 --plugins.adminApi.port=3310",
     "mocks:ci": "mocks-server --no-plugins.inquirerCli.enabled",
     "mocks:ci:custom-config": "mocks-server --no-plugins.inquirerCli.enabled --server.port=3200 --plugins.adminApi.port=3120",
@@ -19,9 +20,10 @@
     "mocks:ci:custom-config-and-start:app": "start-server-and-test all:mocks:ci:custom-config http-get://127.0.0.1:3120/api/about start:app",
     "test:app": "start-server-and-test mocks:ci-and-start:app http-get://127.0.0.1:3000 cypress:run",
     "test:app:custom-config": "start-server-and-test mocks:ci:custom-config-and-start:app http-get://127.0.0.1:3000 cypress:run:custom-config",
-    "test:e2e": "npm run build:app && npm run test:app && npm run build:app:custom-config && npm run test:app:custom-config"
+    "test:e2e": "npm run create-certs && npm run build:app && npm run test:app && npm run build:app:custom-config && npm run test:app:custom-config"
   },
   "devDependencies": {
-    "@mocks-server/main": "workspace:*"
+    "@mocks-server/main": "workspace:*",
+    "@mocks-server/cli-runner": "workspace:*"
   }
 }

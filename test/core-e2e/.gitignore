@@ -10,6 +10,8 @@
 /src/fixtures/temp
 /src/fixtures/unexistant
 /src/fixtures/mocks.config.js
+/src/fixtures/*.cert
+/src/fixtures/*.key
 
 # misc
 .DS_Store

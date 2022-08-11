@@ -78,14 +78,15 @@ All exported properties are [`@data-provider/axios`](https://github.com/data-pro
 
 By default, the client is configured to request to http://127.0.0.1:3110/api, based in the [default options of Mocks Server admin API plugin](https://www.mocks-server.org/docs/configuration/options)
 
-You can change both the port and the host using the `configClient` method:
+You can change the port, host and protocol using the `configClient` method:
 
 ```js
 import { configClient } from "@mocks-server/admin-api-client-data-provider";
 
 configClient({
   port: 3500,
-  host: "localhost"
+  host: "localhost",
+  protocol: "https",
 });
 ```
 

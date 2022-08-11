@@ -75,11 +75,14 @@ describe("commands", () => {
     it("should call to set client config", () => {
       CypressStub.env.withArgs("MOCKS_SERVER_ADMIN_API_PORT").returns("foo-port");
       CypressStub.env.withArgs("MOCKS_SERVER_ADMIN_API_HOST").returns("foo-host");
+      CypressStub.env.withArgs("MOCKS_SERVER_ADMIN_API_HTTPS").returns("true");
       commands(CypressStub, cyStub);
       expect(
         apiClient.configClient.calledWith({
           port: "foo-port",
           host: "foo-host",
+          https: true,
+          agent: undefined,
         })
       ).toBe(true);
     });
@@ -131,6 +134,19 @@ describe("commands", () => {
       await wait();
       expect(cyStub.log.getCall(1).args[0]).toEqual(
         expect.stringContaining("http://127.0.0.1:3110")
+      );
+    });
+
+    it("should log https protocol when https is enabled", async () => {
+      apiClient.updateConfig.rejects(new Error("Network"));
+      const { setCollection, configClient } = commands(CypressStub, cyStub);
+      configClient({
+        https: true,
+      });
+      setCollection("foo");
+      await wait();
+      expect(cyStub.log.getCall(1).args[0]).toEqual(
+        expect.stringContaining("https://127.0.0.1:3110")
       );
     });
 
@@ -267,6 +283,8 @@ describe("commands", () => {
         apiClient.configClient.calledWith({
           host: "foo",
           port: undefined,
+          https: undefined,
+          agent: undefined,
         })
       ).toBe(true);
     });
@@ -282,6 +300,8 @@ describe("commands", () => {
         apiClient.configClient.calledWith({
           host: "foo-host",
           port: "foo-port",
+          https: undefined,
+          agent: undefined,
         })
       ).toBe(true);
     });
@@ -325,6 +345,8 @@ describe("commands", () => {
           apiClient.configClient.calledWith({
             host: "foo-host",
             port: undefined,
+            https: undefined,
+            agent: undefined,
           })
         ).toBe(true);
 

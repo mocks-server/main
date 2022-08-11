@@ -190,4 +190,30 @@ describe("Mocks server responses", () => {
       cy.get(SELECTORS.RESPONSE).should("have.text", "standard-response");
     });
   });
+
+  describe("when Admin API changes to https and client is configured", () => {
+    before(() => {
+      cy.mocksSetConfig({
+        plugins: {
+          adminApi: {
+            https: {
+              enabled: true,
+              cert: "localhost.cert",
+              key: "localhost.key",
+            },
+          },
+        },
+      });
+      cy.mocksConfigClient({
+        https: true,
+      });
+    });
+
+    it("client should be able to change collection to custom", () => {
+      cy.wait(10000);
+      cy.mocksSetCollection("custom");
+      cy.visit("/");
+      cy.get(SELECTORS.RESPONSE).should("have.text", "custom-response");
+    });
+  });
 });

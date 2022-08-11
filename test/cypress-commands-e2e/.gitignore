@@ -11,6 +11,10 @@
 /cypress/fixtures
 /cypress/screenshots
 
+# generated
+/*.cert
+/*.key
+
 # misc
 .DS_Store
 .env.local

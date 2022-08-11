@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [unreleased]
+## [6.1.0] - 2022-08-11
 
 ### Added
 - feat(#390): Add `https` option to the `mocksConfigClient` command and the `AdminApiClient` class.

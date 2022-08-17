@@ -42,6 +42,9 @@
       "@mocks-server/plugin-inquirer-cli": [
         "packages/plugin-inquirer-cli/index.js"
       ],
+      "@mocks-server/plugin-openapi": [
+        "packages/plugin-openapi/dist/index.js"
+      ],
       "@mocks-server/plugin-proxy": [
         "packages/plugin-proxy/index.js"
       ]

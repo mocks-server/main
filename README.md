@@ -43,9 +43,10 @@ To check out docs, visit [www.mocks-server.org][website-url].
 | --- | --- | --- |
 | [main] | [![main-status]][main-package] | Main distribution. It includes all plugins preinstalled |
 | [core] | [![core-status]][core-package] | Pluggable core. It can be used programmatically also |
-| [plugin-proxy] | [![plugin-proxy-status]][plugin-proxy-package] | Plugin providing Proxy route handler |
-| [plugin-inquirer-cli] | [![plugin-inquirer-cli-status]][plugin-inquirer-cli-package] | Plugin providing an administration interactive CLI |
 | [plugin-admin-api] | [![plugin-admin-api-status]][plugin-admin-api-package] | Plugin providing an administration REST API |
+| [plugin-inquirer-cli] | [![plugin-inquirer-cli-status]][plugin-inquirer-cli-package] | Plugin providing an administration interactive CLI |
+| [plugin-openapi] | [![plugin-openapi-status]][plugin-openapi-package] | Plugin allowing to create routes and collections from OpenApi definitions |
+| [plugin-proxy] | [![plugin-proxy-status]][plugin-proxy-package] | Plugin providing Proxy route handler |
 | [admin-api-client] | [![admin-api-client-status]][admin-api-client-package] | API client for [plugin-admin-api] |
 | [admin-api-client-data-provider] | [![admin-api-client-data-provider-status]][admin-api-client-data-provider-package] | API client for [plugin-admin-api] built using [data-provider] |
 | [admin-api-paths] | [![admin-api-paths-status]][admin-api-paths-package] | Definition of [plugin-admin-api] routes |
@@ -67,17 +68,21 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [core-status]: https://img.shields.io/npm/v/@mocks-server/core.svg
 [core-package]: https://npmjs.com/package/@mocks-server/core
 
-[plugin-proxy]: https://github.com/mocks-server/main/tree/master/packages/plugin-proxy
-[plugin-proxy-status]: https://img.shields.io/npm/v/@mocks-server/plugin-proxy.svg
-[plugin-proxy-package]: https://npmjs.com/package/@mocks-server/plugin-proxy
+[plugin-admin-api]: https://github.com/mocks-server/main/tree/master/packages/plugin-admin-api
+[plugin-admin-api-status]: https://img.shields.io/npm/v/@mocks-server/plugin-admin-api.svg
+[plugin-admin-api-package]: https://npmjs.com/package/@mocks-server/plugin-admin-api
 
 [plugin-inquirer-cli]: https://github.com/mocks-server/main/tree/master/packages/plugin-inquirer-cli
 [plugin-inquirer-cli-status]: https://img.shields.io/npm/v/@mocks-server/plugin-inquirer-cli.svg
 [plugin-inquirer-cli-package]: https://npmjs.com/package/@mocks-server/plugin-inquirer-cli
 
-[plugin-admin-api]: https://github.com/mocks-server/main/tree/master/packages/plugin-admin-api
-[plugin-admin-api-status]: https://img.shields.io/npm/v/@mocks-server/plugin-admin-api.svg
-[plugin-admin-api-package]: https://npmjs.com/package/@mocks-server/plugin-admin-api
+[plugin-openapi]: https://github.com/mocks-server/main/tree/master/packages/plugin-openapi
+[plugin-openapi-status]: https://img.shields.io/npm/v/@mocks-server/plugin-openapi.svg
+[plugin-openapi-package]: https://npmjs.com/package/@mocks-server/plugin-openapi
+
+[plugin-proxy]: https://github.com/mocks-server/main/tree/master/packages/plugin-proxy
+[plugin-proxy-status]: https://img.shields.io/npm/v/@mocks-server/plugin-proxy.svg
+[plugin-proxy-package]: https://npmjs.com/package/@mocks-server/plugin-proxy
 
 [admin-api-client]: https://github.com/mocks-server/main/tree/master/packages/admin-api-client
 [admin-api-client-status]: https://img.shields.io/npm/v/@mocks-server/admin-api-client.svg

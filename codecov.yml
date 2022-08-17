@@ -43,6 +43,9 @@ coverage:
       plugin-inquirer-cli:
         flags:
           - plugin-inquirer-cli
+      plugin-openapi:
+        flags:
+          - plugin-openapi
       plugin-proxy:
         flags:
           - plugin-proxy
@@ -94,6 +97,10 @@ flags:
   plugin-inquirer-cli:
     paths:
       - packages/plugin-inquirer-cli/**
+    carryforward: true
+  plugin-openapi:
+    paths:
+      - packages/plugin-openapi/**
     carryforward: true
   plugin-proxy:
     paths:

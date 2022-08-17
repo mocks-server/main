@@ -300,12 +300,14 @@ importers:
       '@mocks-server/core': workspace:*
       '@mocks-server/plugin-admin-api': workspace:*
       '@mocks-server/plugin-inquirer-cli': workspace:*
+      '@mocks-server/plugin-openapi': workspace:*
       '@mocks-server/plugin-proxy': workspace:*
       deepmerge: 4.2.2
     dependencies:
       '@mocks-server/core': link:../core
       '@mocks-server/plugin-admin-api': link:../plugin-admin-api
       '@mocks-server/plugin-inquirer-cli': link:../plugin-inquirer-cli
+      '@mocks-server/plugin-openapi': link:../plugin-openapi
       '@mocks-server/plugin-proxy': link:../plugin-proxy
       deepmerge: 4.2.2
 
@@ -347,6 +349,12 @@ importers:
       inquirer-autocomplete-prompt: 1.4.0_inquirer@8.2.4
       lodash: 4.17.21
       node-emoji: 1.11.0
+    devDependencies:
+      '@mocks-server/core': link:../core
+
+  packages/plugin-openapi:
+    specifiers:
+      '@mocks-server/core': workspace:*
     devDependencies:
       '@mocks-server/core': link:../core
 

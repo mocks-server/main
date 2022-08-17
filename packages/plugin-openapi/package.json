@@ -1,0 +1,45 @@
+{
+  "name": "@mocks-server/plugin-openapi",
+  "version": "1.0.0",
+  "description": "Mocks server plugin allowing to create routes and collections from OpenApi definitions",
+  "keywords": [
+    "mocks-server-plugin",
+    "OpenApi",
+    "mock",
+    "http",
+    "rest",
+    "plugin",
+    "mocks-server"
+  ],
+  "author": "Javier Brea",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mocks-server/main.git",
+    "directory": "packages/plugin-openapi"
+  },
+  "homepage": "https://www.mocks-server.org",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test:unit": "jest"
+  },
+  "peerDependencies": {
+    "@mocks-server/core": ">=3.10.0 <4.x"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@mocks-server/core": "workspace:*"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [unreleased]
+
+### Added
+- feat(#384): Add plugin-openapi to preinstalled plugins
+
 ## [3.10.0] - 2022-08-11
 
 ### Changed

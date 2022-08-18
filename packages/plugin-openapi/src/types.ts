@@ -1,4 +1,5 @@
 import type { OpenAPIV3 } from "openapi-types";
+import { MOCKS_SERVER_ROUTE_ID, MOCKS_SERVER_VARIANT_ID } from "./constants";
 
 export interface OpenApiMockDocument {
   basePath: string,
@@ -6,3 +7,9 @@ export interface OpenApiMockDocument {
 }
 
 export type OpenApiMockDocuments = OpenApiMockDocument[]
+
+export type ResponseObjectWithVariantId = OpenAPIV3.ResponseObject & { [MOCKS_SERVER_VARIANT_ID]?: string }
+export type ExampleObjectWithVariantId = OpenAPIV3.ExampleObject & { [MOCKS_SERVER_VARIANT_ID]?: string }
+
+export type OperationObjectWithRouteId = OpenAPIV3.OperationObject<{[MOCKS_SERVER_ROUTE_ID]?: string}>
+

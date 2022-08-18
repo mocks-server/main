@@ -20,21 +20,21 @@ describe("when openapi has custom ids", () => {
           url: "/api/users",
           method: "get",
           delay: null,
-          variants: ["read-users:200-json-one-user", "read-users:200-json-two-users"],
+          variants: ["read-users:one-user", "read-users:two-users"],
         },
         {
           id: "create-user",
           url: "/api/users",
           method: "post",
           delay: null,
-          variants: ["create-user:201-status", "create-user:400-text-error-message"],
+          variants: ["create-user:success", "create-user:error"],
         },
         {
           id: "read-user",
           url: "/api/users/:id",
           method: "get",
           delay: null,
-          variants: ["read-user:200-json-success", "read-user:404-json-not-found"],
+          variants: ["read-user:success", "read-user:not-found"],
         },
       ]);
     });

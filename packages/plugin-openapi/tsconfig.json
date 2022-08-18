@@ -4,6 +4,9 @@
     "outDir": "./dist",
     "declaration": true,
     "target": "es6",
+    "lib": [
+      "es2019"
+    ],
     "strict": true,
     "strictNullChecks": true,
     "esModuleInterop": true,

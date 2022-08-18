@@ -355,8 +355,13 @@ importers:
   packages/plugin-openapi:
     specifiers:
       '@mocks-server/core': workspace:*
+      '@mocks-server/nested-collections': workspace:*
+      openapi-types: 12.0.0
+    dependencies:
+      openapi-types: 12.0.0
     devDependencies:
       '@mocks-server/core': link:../core
+      '@mocks-server/nested-collections': link:../nested-collections
 
   packages/plugin-proxy:
     specifiers:
@@ -12479,6 +12484,10 @@ packages:
       is-docker: 2.2.1
       is-wsl: 2.2.0
     dev: true
+
+  /openapi-types/12.0.0:
+    resolution: {integrity: sha512-6Wd9k8nmGQHgCbehZCP6wwWcfXcvinhybUTBatuhjRsCxUIujuYFZc9QnGeae75CyHASewBtxs0HX/qwREReUw==}
+    dev: false
 
   /opn/5.5.0:
     resolution: {integrity: sha512-PqHpggC9bLV0VeWcdKhkpxY+3JTzetLSqTCWL/z/tFIbI6G8JCjondXklT1JinczLz2Xib62sSp0T/gKT4KksA==}

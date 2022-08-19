@@ -42,16 +42,40 @@ declare module "@mocks-server/core" {
     path: string
   }
 
+  interface HTTPHeaders {
+    [header: string]: string;
+  }
+
+  interface JsonVariantOptions {
+    status: number,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    body: object | [],
+    headers?: HTTPHeaders,
+  }
+
+  interface TextVariantOptions {
+    status: number,
+    body: string,
+    headers?: HTTPHeaders,
+  }
+
+  interface StatusVariantOptions {
+    status: number,
+  }
+
   interface RouteVariant {
     id: string,
     type: RouteVariantTypes
+    options: JsonVariantOptions | TextVariantOptions | StatusVariantOptions,
   }
+
+  type RouteVariants = RouteVariant[] | null
 
   interface Route {
     id: string,
     url: string,
     method: OpenAPIV3.HttpMethods,
-    variants: RouteVariant[],
+    variants: RouteVariants,
   }
 
   type Routes = Route[]

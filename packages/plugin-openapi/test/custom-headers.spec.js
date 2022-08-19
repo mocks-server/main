@@ -4,9 +4,7 @@ describe("when openapi response has headers", () => {
   let server;
 
   beforeAll(async () => {
-    server = await startServer("custom-headers", {
-      log: "debug",
-    });
+    server = await startServer("custom-headers");
     await waitForServer();
   });
 

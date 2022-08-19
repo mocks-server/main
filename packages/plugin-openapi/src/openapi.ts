@@ -1,5 +1,5 @@
 import type { OpenAPIV3 } from "openapi-types";
-import type { Routes, RouteVariantTypes } from "@mocks-server/core";
+import type { HTTPHeaders, Routes, RouteVariant, RouteVariants, RouteVariantTypes } from "@mocks-server/core";
 
 import { OpenAPIV3 as OpenApiV3Object } from "openapi-types";
 import type { OpenApiMockDocuments, OpenApiMockDocument, ResponseObjectWithVariantId, ExampleObjectWithVariantId, OperationObjectWithRouteId, ResponseHeaders } from "./types";
@@ -49,7 +49,7 @@ function isTextMediaType(mediaType: string): boolean {
   return mediaType.includes("text/");
 }
 
-function openApiResponseBaseVariant(variantType: RouteVariantTypes, code: string, options: { customId?: string, exampleId?: string }) {
+function openApiResponseBaseVariant(variantType: RouteVariantTypes, code: number, options: { customId?: string, exampleId?: string }): Partial<RouteVariant> {
   let id;
   if (options.customId) {
     id = options.customId;
@@ -62,8 +62,26 @@ function openApiResponseBaseVariant(variantType: RouteVariantTypes, code: string
   };
 }
 
+function replaceCodeWildcards(code: string): string {
+  return code.replace(/X/gim, "0");
+}
+
+function hasAnySuccessCode(codes: string[]): boolean {
+  return !!codes.find((code) => {
+    return code.startsWith("1") || code.startsWith("2") || code.startsWith("3");
+  });
+}
+
+function getStatusCode(code: string, codes: string[]): number {
+  const statusCodes = codes.map(replaceCodeWildcards)
+  if (code === "default") {
+    return hasAnySuccessCode(statusCodes) ? 400 : 200;
+  }
+  return Number(replaceCodeWildcards(code));
+}
+
 // TODO, support also ReferenceObject in examples
-function openApiResponseExampleToVariant(exampleId: string, code: string, variantType: RouteVariantTypes, mediaType: string, openApiResponseExample: ExampleObjectWithVariantId, openApiResponseHeaders?: ResponseHeaders) {
+function openApiResponseExampleToVariant(exampleId: string, code: number, variantType: RouteVariantTypes, mediaType: string, openApiResponseExample: ExampleObjectWithVariantId, openApiResponseHeaders?: ResponseHeaders): RouteVariant | null {
   if(!notEmpty(openApiResponseExample) || !notEmpty(openApiResponseExample.value)) {
     return null;
   }
@@ -77,24 +95,25 @@ function openApiResponseExampleToVariant(exampleId: string, code: string, varian
         ...openApiResponseHeaders,
         [CONTENT_TYPE_HEADER]: mediaType,
       },
-      status: Number(code),
+      status: code,
       body: openApiResponseExample.value
     } 
-  }
+  } as RouteVariant;
 }
 
-function openApiResponseNoContentToVariant(code: string, openApiResponse: ResponseObjectWithVariantId) {
+function openApiResponseNoContentToVariant(code: number, openApiResponse: ResponseObjectWithVariantId): RouteVariant {
   const baseVariant = openApiResponseBaseVariant(VariantTypes.STATUS, code, { customId: openApiResponse[MOCKS_SERVER_VARIANT_ID] });
   return {
     ...baseVariant,
     options: {
-      headers: openApiResponse.headers,
-      status: Number(code),
+      // TODO, convert possible ref
+      headers: openApiResponse.headers as HTTPHeaders,
+      status: code,
     } 
-  }
+  } as RouteVariant;
 }
 
-function openApiResponseExamplesToVariants(code: string, variantType: RouteVariantTypes, mediaType: string, openApiResponseMediaType: OpenAPIV3.MediaTypeObject, openApiResponseHeaders?: ResponseHeaders) {
+function openApiResponseExamplesToVariants(code: number, variantType: RouteVariantTypes, mediaType: string, openApiResponseMediaType: OpenAPIV3.MediaTypeObject, openApiResponseHeaders?: ResponseHeaders): RouteVariants {
   const examples = openApiResponseMediaType.examples;
   if(!notEmpty(examples)) {
     return null;
@@ -105,7 +124,7 @@ function openApiResponseExamplesToVariants(code: string, variantType: RouteVaria
   }).filter(notEmpty);
 }
 
-function openApiResponseMediaToVariants(code: string, mediaType: string, openApiResponseMediaType?: OpenAPIV3.MediaTypeObject, openApiResponseHeaders?: ResponseHeaders) {
+function openApiResponseMediaToVariants(code: number, mediaType: string, openApiResponseMediaType?: OpenAPIV3.MediaTypeObject, openApiResponseHeaders?: ResponseHeaders): RouteVariants  {
   if(!notEmpty(openApiResponseMediaType)) {
     return null;
   }
@@ -118,7 +137,7 @@ function openApiResponseMediaToVariants(code: string, mediaType: string, openApi
   return null;
 }
 
-function openApiResponseCodeToVariants(code: string, openApiResponse?: ResponseObjectWithVariantId) {
+function openApiResponseCodeToVariants(code: number, openApiResponse?: ResponseObjectWithVariantId): RouteVariants  {
   if(!notEmpty(openApiResponse)) {
     return [];
   }
@@ -128,16 +147,18 @@ function openApiResponseCodeToVariants(code: string, openApiResponse?: ResponseO
       return openApiResponseMediaToVariants(code, mediaType, content[mediaType], openApiResponse.headers);
     }).flat().filter(notEmpty);
   }
-  return openApiResponseNoContentToVariant(code, openApiResponse);
+  return [openApiResponseNoContentToVariant(code, openApiResponse)];
 }
 
-function routeVariants(openApiResponses?: OpenAPIV3.ResponsesObject) {
+function routeVariants(openApiResponses?: OpenAPIV3.ResponsesObject): RouteVariants {
   if(!notEmpty(openApiResponses)) {
     return [];
   }
-  return Object.keys(openApiResponses).map((code: string) => {
+  const codes = Object.keys(openApiResponses);
+
+  return codes.map((code: string) => {
       const response = openApiResponses[code] as ResponseObjectWithVariantId;
-      return openApiResponseCodeToVariants(code, response);
+      return openApiResponseCodeToVariants(getStatusCode(code, codes), response);
   }).flat().filter(notEmpty);
 }
 

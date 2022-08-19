@@ -3,8 +3,8 @@ import type { OpenAPIV3 } from "openapi-types";
 import { MOCKS_SERVER_ROUTE_ID, MOCKS_SERVER_VARIANT_ID } from "./constants";
 
 export interface RefsOptions {
-  location: string,
-  subDocPath: string,
+  location?: string,
+  subDocPath?: string,
 }
 
 export interface OpenApiMockDocument {

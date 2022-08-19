@@ -67,8 +67,8 @@ class Plugin {
     });
   }
 
-  async _resolveMockDocumentRefs(documentMock: OpenApiMockDocument): Promise<OpenApiMockDocument | null> {
-    const document = await this._resolveDocumentRefs(documentMock.document, documentMock.refs);
+  async _resolveMockDocumentRefs(documentMock: OpenApiMockDocument, location: string): Promise<OpenApiMockDocument | null> {
+    const document = await this._resolveDocumentRefs(documentMock.document, {location, ...documentMock.refs});
     if(document) {
       return {
         ...documentMock,
@@ -78,22 +78,29 @@ class Plugin {
     return null;
   }
 
-  _resolveMockDocumentsRefs(documents: OpenApiMockDocuments): Promise<OpenApiMockDocuments> {
-    return Promise.all(documents.map(this._resolveMockDocumentRefs)).then((resolvedDocuments) => {
+  _resolveMockDocumentsRefs(documents: OpenApiMockDocuments, location: string): Promise<OpenApiMockDocuments> {
+    this._logger.debug(`Resolving refs in openApi definitions: '${JSON.stringify(documents)}'`);
+    return Promise.all(documents.map((document) => {
+      return this._resolveMockDocumentRefs(document, location);
+    })).then((resolvedDocuments) => {
       return resolvedDocuments.filter(notEmpty);
     })
   }
 
+  async _loadMockDocumentsFromFilesContents(filesContents: FilesContents): Promise<OpenApiMockDocuments> {
+    const openApiMockDocuments = await Promise.all(
+      filesContents.map((fileDetails) => {
+        return this._resolveMockDocumentsRefs(fileDetails.content, fileDetails.path);
+      })
+    );
+    return openApiMockDocuments.flat();
+  }
+
   async _onLoadFiles(filesContents: FilesContents) {
     this._documentsAlerts.clean();
-    const openApiMockDocuments = filesContents
-      .map((fileDetails) => {
-        return fileDetails.content;
-      }).flat();
-    this._logger.debug(`Resolving refs in openApi definitions: '${JSON.stringify(openApiMockDocuments)}'`);
-    const resolvedOpenApiMockDocuments = await this._resolveMockDocumentsRefs(openApiMockDocuments);
-    this._logger.debug(`Creating routes from openApi definitions: '${JSON.stringify(resolvedOpenApiMockDocuments)}'`);
-    const routes = openApiMockDocumentsToRoutes(resolvedOpenApiMockDocuments);
+    const openApiMockDocuments = await this._loadMockDocumentsFromFilesContents(filesContents);
+    this._logger.debug(`Creating routes from openApi definitions: '${JSON.stringify(openApiMockDocuments)}'`);
+    const routes = openApiMockDocumentsToRoutes(openApiMockDocuments);
     this._logger.debug(`Routes to load from openApi definitions: '${JSON.stringify(routes)}'`);
     this._logger.verbose(`Loading ${routes.length} routes from openApi definitions found in '${this._files.path}/${DEFAULT_FOLDER}'`);
     this._loadRoutes(routes);

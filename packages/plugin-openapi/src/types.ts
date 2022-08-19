@@ -10,6 +10,7 @@ export type OpenApiMockDocuments = OpenApiMockDocument[]
 
 export type ResponseObjectWithVariantId = OpenAPIV3.ResponseObject & { [MOCKS_SERVER_VARIANT_ID]?: string }
 export type ExampleObjectWithVariantId = OpenAPIV3.ExampleObject & { [MOCKS_SERVER_VARIANT_ID]?: string }
+export type ResponseHeaders = OpenAPIV3.ResponseObject["headers"]
 
 export type OperationObjectWithRouteId = OpenAPIV3.OperationObject<{[MOCKS_SERVER_ROUTE_ID]?: string}>
 

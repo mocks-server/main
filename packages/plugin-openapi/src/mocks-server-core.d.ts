@@ -2,6 +2,14 @@ declare module "@mocks-server/core" {
   import type Collection from "@mocks-server/nested-collections";
   import type { OpenAPIV3 } from "openapi-types";
 
+  enum VariantTypes {
+    JSON = "json",
+    TEXT = "text",
+    STATUS = "status"
+  }
+
+  type RouteVariantTypes = VariantTypes
+
   interface Logger {
     verbose(message: string): void
     debug(message: string): void
@@ -29,8 +37,6 @@ declare module "@mocks-server/core" {
     onLoad: FilesLoaderOnLoad,
   }
 
-  type RouteVariantType = "json" | "status" | "text"
-
   interface Files {
     createLoader(options: FilesLoaderOptions): void
     path: string
@@ -38,7 +44,7 @@ declare module "@mocks-server/core" {
 
   interface RouteVariant {
     id: string,
-    type: RouteVariantType
+    type: RouteVariantTypes
   }
 
   interface Route {

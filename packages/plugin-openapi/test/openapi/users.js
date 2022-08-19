@@ -1,6 +1,7 @@
 module.exports = {
   openapi: "3.1.0",
   info: {
+    version: "1.0.0",
     title: "Testing API",
     description: "OpenApi document to create mock for testing purpses",
     contact: {
@@ -17,9 +18,6 @@ module.exports = {
             description: "successful operation",
             content: {
               "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/Users",
-                },
                 examples: {
                   "one-user": {
                     summary: "One route",
@@ -73,15 +71,23 @@ module.exports = {
     },
     "/users/{id}": {
       get: {
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            description: "ID the user",
+            required: true,
+            schema: {
+              type: "string",
+            },
+          },
+        ],
         summary: "Return one user",
         responses: {
           "200": {
             description: "successful operation",
             content: {
               "application/json": {
-                schema: {
-                  $ref: "#/components/schemas/User",
-                },
                 examples: {
                   success: {
                     summary: "One user",

@@ -1,8 +1,15 @@
 import type { OpenAPIV3 } from "openapi-types";
+
 import { MOCKS_SERVER_ROUTE_ID, MOCKS_SERVER_VARIANT_ID } from "./constants";
+
+export interface RefsOptions {
+  location: string,
+  subDocPath: string,
+}
 
 export interface OpenApiMockDocument {
   basePath: string,
+  refs: RefsOptions,
   document: OpenAPIV3.Document
 }
 
@@ -13,4 +20,3 @@ export type ExampleObjectWithVariantId = OpenAPIV3.ExampleObject & { [MOCKS_SERV
 export type ResponseHeaders = OpenAPIV3.ResponseObject["headers"]
 
 export type OperationObjectWithRouteId = OpenAPIV3.OperationObject<{[MOCKS_SERVER_ROUTE_ID]?: string}>
-

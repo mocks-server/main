@@ -8,7 +8,7 @@ import { MOCKS_SERVER_ROUTE_ID, MOCKS_SERVER_VARIANT_ID, VariantTypes, CONTENT_T
 
 const methods = Object.values(OpenApiV3Object.HttpMethods);
 
-function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
   return value !== null && value !== undefined;
 }
 

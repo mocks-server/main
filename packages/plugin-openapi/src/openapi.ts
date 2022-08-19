@@ -162,8 +162,8 @@ function routeVariants(openApiResponses?: OpenAPIV3.ResponsesObject): RouteVaria
   }).flat().filter(notEmpty);
 }
 
-function getMockServerRouteId(openApiOperation: OperationObjectWithRouteId): string | undefined {
-  return openApiOperation[MOCKS_SERVER_ROUTE_ID];
+function getCustomRouteId(openApiOperation: OperationObjectWithRouteId): string | undefined {
+  return openApiOperation[MOCKS_SERVER_ROUTE_ID] || openApiOperation.operationId;
 }
 
 function openApiPathToRoutes(path: string, basePath = "", openApiPathObject?: OpenAPIV3.PathItemObject ): Routes | null {
@@ -174,7 +174,7 @@ function openApiPathToRoutes(path: string, basePath = "", openApiPathObject?: Op
     if(notEmpty(openApiPathObject[method])) {
       const openApiOperation = openApiPathObject[method] as OperationObjectWithRouteId;
       return {
-        id: routeId(path, method, getMockServerRouteId(openApiOperation)),
+        id: routeId(path, method, getCustomRouteId(openApiOperation)),
         url: routeUrl(path, basePath),
         method,
         variants: routeVariants(openApiOperation.responses),

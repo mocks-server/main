@@ -28,7 +28,7 @@ module.exports = [
             },
           },
           post: {
-            "x-mocks-server-route-id": "create-user",
+            operationId: "create-user",
             responses: {
               "201": {
                 "x-mocks-server-variant-id": "success",

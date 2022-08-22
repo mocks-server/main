@@ -119,6 +119,25 @@ describe("when openapi has refs", () => {
   testValidRefs("refs");
   testValidRefs("refs-files");
 
+  describe("Remote refs", () => {
+    let refsServer;
+    beforeAll(async () => {
+      refsServer = await startServer("refs-remote-server", {
+        log: "debug",
+        server: {
+          port: 3200,
+        },
+      });
+      await waitForServer(3200);
+    });
+
+    afterAll(async () => {
+      await refsServer.stop();
+    });
+
+    testValidRefs("refs-remote");
+  });
+
   describe("when fixture has wrong refs", () => {
     beforeAll(async () => {
       server = await startServer("wrong-refs");

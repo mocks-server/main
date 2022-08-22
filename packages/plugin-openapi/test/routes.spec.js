@@ -1,18 +1,18 @@
-import { startServer, fetchJson, fetchText, waitForServer } from "./support/helpers";
+import {
+  startServer,
+  fetchJson,
+  fetchText,
+  waitForServer,
+  waitForServerUrl,
+} from "./support/helpers";
+import openApiDocument from "./openapi/users";
 
-describe("routes generated from openapi file", () => {
+import { openApiToRoutes } from "../src/index";
+
+describe("generated routes", () => {
   let server;
 
-  describe("when fixture is api-users", () => {
-    beforeAll(async () => {
-      server = await startServer("api-users");
-      await waitForServer();
-    });
-
-    afterAll(async () => {
-      await server.stop();
-    });
-
+  function testRoutes() {
     describe("routes", () => {
       it("should have created routes from openapi document defined in files", async () => {
         expect(server.mock.routes.plain).toEqual([
@@ -110,6 +110,42 @@ describe("routes generated from openapi file", () => {
         expect(response.status).toEqual(404);
       });
     });
+  }
+
+  describe("when fixture is api-users", () => {
+    beforeAll(async () => {
+      server = await startServer("api-users");
+      await waitForServer();
+    });
+
+    afterAll(async () => {
+      await server.stop();
+    });
+
+    testRoutes();
+  });
+
+  describe("when openapi definition is loaded using function", () => {
+    beforeAll(async () => {
+      server = await startServer("no-paths");
+      await waitForServer();
+      const { loadRoutes } = server.mock.createLoaders();
+
+      const routes = await openApiToRoutes({
+        basePath: "/api",
+        document: openApiDocument,
+      });
+
+      loadRoutes(routes);
+
+      await waitForServerUrl("/api/users");
+    });
+
+    afterAll(async () => {
+      await server.stop();
+    });
+
+    testRoutes();
   });
 
   describe("when openapi mock has no basePath", () => {

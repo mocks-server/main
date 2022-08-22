@@ -1,8 +1,10 @@
-import type { OpenAPIV3 } from "openapi-types";
-import type { HTTPHeaders, Routes, RouteVariant, RouteVariants, RouteVariantTypes } from "@mocks-server/core";
-
 import { OpenAPIV3 as OpenApiV3Object } from "openapi-types";
-import type { OpenApiMockDocuments, OpenApiMockDocument, ResponseObjectWithVariantId, ExampleObjectWithVariantId, OperationObjectWithRouteId, ResponseHeaders } from "./types";
+import { resolveRefs } from "json-refs";
+
+import type { ResolvedRefsResults, UnresolvedRefDetails } from "json-refs";
+import type { OpenAPIV3 } from "openapi-types";
+import type { Alerts, HTTPHeaders, Routes, RouteVariant, RouteVariants, RouteVariantTypes } from "@mocks-server/core";
+import type { OpenApiMockDocuments, OpenApiMockDocument, ResponseObjectWithVariantId, ExampleObjectWithVariantId, OperationObjectWithRouteId, ResponseHeaders, OpenApiToRoutesAdvancedOptions } from "./types";
 
 import { MOCKS_SERVER_ROUTE_ID, MOCKS_SERVER_VARIANT_ID, VariantTypes, CONTENT_TYPE_HEADER } from "./constants";
 
@@ -183,7 +185,7 @@ function openApiPathToRoutes(path: string, basePath = "", openApiPathObject?: Op
   }).filter(notEmpty);
 }
 
-function openApiMockDocumentToRoutes(openApiMockDocument: OpenApiMockDocument): Routes {
+function openApiDocumentToRoutes(openApiMockDocument: OpenApiMockDocument): Routes {
   const openApiDocument = openApiMockDocument.document;
   const basePath = openApiMockDocument.basePath;
 
@@ -193,6 +195,70 @@ function openApiMockDocumentToRoutes(openApiMockDocument: OpenApiMockDocument): 
   }).flat().filter(notEmpty);
 }
 
-export function openApiMockDocumentsToRoutes(openApiMockDocuments: OpenApiMockDocuments): Routes {
-  return openApiMockDocuments.map(openApiMockDocumentToRoutes).flat();
+function documentRefsErrors(refsResults: ResolvedRefsResults): Error[] {
+  const refs = refsResults.refs;
+  return Object.keys(refs).map((refKey) => {
+    // @ts-expect-error expression of type 'string' can't be used to index type 'ResolvedRefDetails', but resolvedRefDetails.refs is in fact an object
+    const ref = refs[refKey] as UnresolvedRefDetails;
+    if(ref.error) {
+      return new Error(ref.error);
+    }
+    return null;
+  }).filter(notEmpty)
+}
+
+function addOpenApiRefAlert(alerts: Alerts, error: Error): void {
+  alerts.set(String(alerts.flat.length), "Error resolving openapi $ref", error);
+}
+
+function resolveDocumentRefs(document: OpenAPIV3.Document, refsOptions: OpenApiMockDocument["refs"], { alerts, logger }: OpenApiToRoutesAdvancedOptions): Promise<OpenAPIV3.Document | null> {
+  return resolveRefs(document, refsOptions).then((res) => {
+    if (logger) {
+      logger.silly(`Document with resolved refs: '${JSON.stringify(res)}'`);
+    }
+    const refsErrors = documentRefsErrors(res);
+    if (refsErrors.length) {
+      if(alerts) {
+        refsErrors.forEach((error: Error) => {
+          addOpenApiRefAlert(alerts, error);
+        })
+      } else {
+        throw new Error(refsErrors.map((error) => error.message).join(". "));
+      }
+    }
+    return res.resolved as OpenAPIV3.Document;
+  }).catch((error) => {
+    if(alerts) {
+      alerts.set(String(alerts.flat.length), "Error loading openapi definition", error);
+      return null;
+    }
+    return Promise.reject(error);
+  });
+}
+
+async function resolveOpenApiDocumentRefs(documentMock: OpenApiMockDocument, { defaultLocation, alerts, logger }: OpenApiToRoutesAdvancedOptions = {}): Promise<OpenApiMockDocument | null> {
+  const document = await resolveDocumentRefs(documentMock.document, {location: defaultLocation, ...documentMock.refs}, { alerts, logger });
+  if(document) {
+    return {
+      ...documentMock,
+      document,
+    }
+  }
+  return null;
+}
+
+export async function openApiToRoutes(openApiMockDocument: OpenApiMockDocument, advancedOptions?: OpenApiToRoutesAdvancedOptions): Promise<Routes> {
+  const openApiDocument = await resolveOpenApiDocumentRefs(openApiMockDocument, advancedOptions);
+  if(!openApiDocument) {
+    return [];
+  }
+  return openApiDocumentToRoutes(openApiDocument);
+}
+
+export function openApisToRoutes(openApiMockDocuments: OpenApiMockDocuments, advancedOptions?: OpenApiToRoutesAdvancedOptions): Promise<Routes> {
+  return Promise.all(openApiMockDocuments.map((openApiMockDocument) => {
+    return openApiToRoutes(openApiMockDocument, advancedOptions);
+  })).then((allRoutes) => {
+    return allRoutes.flat();
+  });
 }

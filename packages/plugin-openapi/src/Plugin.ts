@@ -1,26 +1,9 @@
-import { resolveRefs } from "json-refs";
+import type { Routes, Core, MockLoaders, FilesContents } from "@mocks-server/core";
 
-import type { Core, MockLoaders, FilesContents } from "@mocks-server/core";
-import type { OpenAPIV3 } from "openapi-types";
-import type { ResolvedRefsResults, UnresolvedRefDetails } from "json-refs";
-import type { OpenApiMockDocuments, OpenApiMockDocument } from "./types";
-
-import { openApiMockDocumentsToRoutes, notEmpty } from "./openapi";
+import { openApisToRoutes } from "./openapi";
 
 const PLUGIN_ID = "openapi";
 const DEFAULT_FOLDER = "openapi";
-
-function documentRefsErrors(refsResults: ResolvedRefsResults): Error[] {
-  const refs = refsResults.refs;
-  return Object.keys(refs).map((refKey) => {
-    // @ts-expect-error expression of type 'string' can't be used to index type 'ResolvedRefDetails', but resolvedRefDetails.refs is in fact an object
-    const ref = refs[refKey] as UnresolvedRefDetails;
-    if(ref.error) {
-      return new Error(ref.error);
-    }
-    return null;
-  }).filter(notEmpty)
-}
 
 class Plugin {
   static get id() {
@@ -47,50 +30,19 @@ class Plugin {
       src: `${DEFAULT_FOLDER}/**/*`,
       onLoad: this._onLoadFiles.bind(this),
     })
-    this._resolveMockDocumentRefs = this._resolveMockDocumentRefs.bind(this);
-    this._addOpenApiRefAlert = this._addOpenApiRefAlert.bind(this);
   }
 
-  _addOpenApiRefAlert(error: Error): void {
-    this._documentsAlerts.set(String(this._documentsAlerts.flat.length), "Error resolving openapi $ref", error);
-  }
-
-  _resolveDocumentRefs(document: OpenAPIV3.Document, refsOptions?: OpenApiMockDocument["refs"]): Promise<OpenAPIV3.Document | null> {
-    return resolveRefs(document, refsOptions).then((res) => {
-      this._logger.silly(`Document with resolved refs: '${JSON.stringify(res)}'`);
-      const refsErrors = documentRefsErrors(res);
-      refsErrors.forEach(this._addOpenApiRefAlert)
-      return res.resolved as OpenAPIV3.Document;
-    }).catch((error) => {
-      this._documentsAlerts.set(String(this._documentsAlerts.flat.length), "Error loading openapi definition", error);
-      return null;
-    });
-  }
-
-  async _resolveMockDocumentRefs(documentMock: OpenApiMockDocument, location: string): Promise<OpenApiMockDocument | null> {
-    const document = await this._resolveDocumentRefs(documentMock.document, {location, ...documentMock.refs});
-    if(document) {
-      return {
-        ...documentMock,
-        document,
-      }
-    }
-    return null;
-  }
-
-  _resolveMockDocumentsRefs(documents: OpenApiMockDocuments, location: string): Promise<OpenApiMockDocuments> {
-    this._logger.debug(`Resolving refs in openApi definitions: '${JSON.stringify(documents)}'`);
-    return Promise.all(documents.map((document) => {
-      return this._resolveMockDocumentRefs(document, location);
-    })).then((resolvedDocuments) => {
-      return resolvedDocuments.filter(notEmpty);
-    })
-  }
-
-  async _loadMockDocumentsFromFilesContents(filesContents: FilesContents): Promise<OpenApiMockDocuments> {
+  async _getRoutesFromFilesContents(filesContents: FilesContents): Promise<Routes> {
     const openApiMockDocuments = await Promise.all(
       filesContents.map((fileDetails) => {
-        return this._resolveMockDocumentsRefs(fileDetails.content, fileDetails.path);
+        const fileContent = fileDetails.content;
+        // TODO, validate file content
+        this._logger.debug(`Creating routes from openApi definitions: '${JSON.stringify(fileContent)}'`);
+        return openApisToRoutes(fileContent, {
+          defaultLocation: fileDetails.path,
+          logger: this._logger,
+          alerts: this._documentsAlerts
+        });
       })
     );
     return openApiMockDocuments.flat();
@@ -98,11 +50,9 @@ class Plugin {
 
   async _onLoadFiles(filesContents: FilesContents) {
     this._documentsAlerts.clean();
-    const openApiMockDocuments = await this._loadMockDocumentsFromFilesContents(filesContents);
-    this._logger.debug(`Creating routes from openApi definitions: '${JSON.stringify(openApiMockDocuments)}'`);
-    const routes = openApiMockDocumentsToRoutes(openApiMockDocuments);
+    const routes = await this._getRoutesFromFilesContents(filesContents);
     this._logger.debug(`Routes to load from openApi definitions: '${JSON.stringify(routes)}'`);
-    this._logger.verbose(`Loading ${routes.length} routes from openApi definitions found in '${this._files.path}/${DEFAULT_FOLDER}'`);
+    this._logger.verbose(`Loading ${routes.length} routes from openApi definitions found in folder '${this._files.path}/${DEFAULT_FOLDER}'`);
     this._loadRoutes(routes);
   }
 }

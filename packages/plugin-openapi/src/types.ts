@@ -20,3 +20,13 @@ export type ExampleObjectWithVariantId = OpenAPIV3.ExampleObject & { [MOCKS_SERV
 export type ResponseHeaders = OpenAPIV3.ResponseObject["headers"]
 
 export type OperationObjectWithRouteId = OpenAPIV3.OperationObject<{[MOCKS_SERVER_ROUTE_ID]?: string}>
+
+export interface OpenApiToRoutesAdvancedOptions { 
+  defaultLocation?: string,
+  // TODO, add alerts type when exported by core
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  alerts?: any,
+  // TODO, add alerts type when exported by core
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  logger?: any
+}

@@ -1,16 +1,15 @@
-import { OpenAPIV3 as OpenApiV3Object } from "openapi-types";
+import { OpenAPIV3 as OpenAPIV3Object } from "openapi-types";
 import { resolveRefs } from "json-refs";
 
 import type { ResolvedRefsResults, UnresolvedRefDetails } from "json-refs";
-import type { OpenAPIV3 } from "openapi-types";
 import type { Alerts, HTTPHeaders, Routes, RouteVariant, RouteVariants, RouteVariantTypes } from "@mocks-server/core";
-import type { OpenApiMockDocuments, OpenApiMockDocument, ResponseObjectWithVariantId, ExampleObjectWithVariantId, OperationObjectWithRouteId, ResponseHeaders, OpenApiToRoutesAdvancedOptions } from "./types";
+import type { OpenApiRoutes, OpenAPIV3 } from "./types";
 
 import { MOCKS_SERVER_ROUTE_ID, MOCKS_SERVER_VARIANT_ID, VariantTypes, CONTENT_TYPE_HEADER } from "./constants";
 
-const methods = Object.values(OpenApiV3Object.HttpMethods);
+const methods = Object.values(OpenAPIV3Object.HttpMethods);
 
-export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
   return value !== null && value !== undefined;
 }
 
@@ -83,7 +82,7 @@ function getStatusCode(code: string, codes: string[]): number {
 }
 
 // TODO, support also ReferenceObject in examples
-function openApiResponseExampleToVariant(exampleId: string, code: number, variantType: RouteVariantTypes, mediaType: string, openApiResponseExample: ExampleObjectWithVariantId, openApiResponseHeaders?: ResponseHeaders): RouteVariant | null {
+function openApiResponseExampleToVariant(exampleId: string, code: number, variantType: RouteVariantTypes, mediaType: string, openApiResponseExample: OpenAPIV3.ExampleObject, openApiResponseHeaders?:  OpenAPIV3.ResponseHeaders): RouteVariant | null {
   if(!notEmpty(openApiResponseExample) || !notEmpty(openApiResponseExample.value)) {
     return null;
   }
@@ -103,7 +102,7 @@ function openApiResponseExampleToVariant(exampleId: string, code: number, varian
   } as RouteVariant;
 }
 
-function openApiResponseNoContentToVariant(code: number, openApiResponse: ResponseObjectWithVariantId): RouteVariant {
+function openApiResponseNoContentToVariant(code: number, openApiResponse: OpenAPIV3.ResponseObject ): RouteVariant {
   const baseVariant = openApiResponseBaseVariant(VariantTypes.STATUS, code, { customId: openApiResponse[MOCKS_SERVER_VARIANT_ID] });
   return {
     ...baseVariant,
@@ -115,18 +114,18 @@ function openApiResponseNoContentToVariant(code: number, openApiResponse: Respon
   } as RouteVariant;
 }
 
-function openApiResponseExamplesToVariants(code: number, variantType: RouteVariantTypes, mediaType: string, openApiResponseMediaType: OpenAPIV3.MediaTypeObject, openApiResponseHeaders?: ResponseHeaders): RouteVariants {
+function openApiResponseExamplesToVariants(code: number, variantType: RouteVariantTypes, mediaType: string, openApiResponseMediaType: OpenAPIV3.MediaTypeObject, openApiResponseHeaders?: OpenAPIV3.ResponseHeaders): RouteVariants {
   const examples = openApiResponseMediaType.examples;
   if(!notEmpty(examples)) {
     return null;
   }
   return Object.keys(examples).map((exampleId: string) => {
     // TODO, support also ReferenceObject in examples
-    return openApiResponseExampleToVariant(exampleId, code, variantType, mediaType, examples[exampleId] as ExampleObjectWithVariantId, openApiResponseHeaders);
+    return openApiResponseExampleToVariant(exampleId, code, variantType, mediaType, examples[exampleId] as OpenAPIV3.ExampleObject , openApiResponseHeaders);
   }).filter(notEmpty);
 }
 
-function openApiResponseMediaToVariants(code: number, mediaType: string, openApiResponseMediaType?: OpenAPIV3.MediaTypeObject, openApiResponseHeaders?: ResponseHeaders): RouteVariants  {
+function openApiResponseMediaToVariants(code: number, mediaType: string, openApiResponseMediaType?: OpenAPIV3.MediaTypeObject, openApiResponseHeaders?: OpenAPIV3.ResponseHeaders): RouteVariants  {
   if(!notEmpty(openApiResponseMediaType)) {
     return null;
   }
@@ -139,7 +138,7 @@ function openApiResponseMediaToVariants(code: number, mediaType: string, openApi
   return null;
 }
 
-function openApiResponseCodeToVariants(code: number, openApiResponse?: ResponseObjectWithVariantId): RouteVariants  {
+function openApiResponseCodeToVariants(code: number, openApiResponse?: OpenAPIV3.ResponseObject): RouteVariants  {
   if(!notEmpty(openApiResponse)) {
     return [];
   }
@@ -159,12 +158,12 @@ function routeVariants(openApiResponses?: OpenAPIV3.ResponsesObject): RouteVaria
   const codes = Object.keys(openApiResponses);
 
   return codes.map((code: string) => {
-      const response = openApiResponses[code] as ResponseObjectWithVariantId;
+      const response = openApiResponses[code] as OpenAPIV3.ResponseObject;
       return openApiResponseCodeToVariants(getStatusCode(code, codes), response);
   }).flat().filter(notEmpty);
 }
 
-function getCustomRouteId(openApiOperation: OperationObjectWithRouteId): string | undefined {
+function getCustomRouteId(openApiOperation: OpenAPIV3.OperationObject): string | undefined {
   return openApiOperation[MOCKS_SERVER_ROUTE_ID] || openApiOperation.operationId;
 }
 
@@ -174,7 +173,7 @@ function openApiPathToRoutes(path: string, basePath = "", openApiPathObject?: Op
   }
   return methods.map(method => {
     if(notEmpty(openApiPathObject[method])) {
-      const openApiOperation = openApiPathObject[method] as OperationObjectWithRouteId;
+      const openApiOperation = openApiPathObject[method] as OpenAPIV3.OperationObject;
       return {
         id: routeId(path, method, getCustomRouteId(openApiOperation)),
         url: routeUrl(path, basePath),
@@ -185,7 +184,7 @@ function openApiPathToRoutes(path: string, basePath = "", openApiPathObject?: Op
   }).filter(notEmpty);
 }
 
-function openApiDocumentToRoutes(openApiMockDocument: OpenApiMockDocument): Routes {
+function openApiDocumentToRoutes(openApiMockDocument: OpenApiRoutes.Document): Routes {
   const openApiDocument = openApiMockDocument.document;
   const basePath = openApiMockDocument.basePath;
 
@@ -211,7 +210,7 @@ function addOpenApiRefAlert(alerts: Alerts, error: Error): void {
   alerts.set(String(alerts.flat.length), "Error resolving openapi $ref", error);
 }
 
-function resolveDocumentRefs(document: OpenAPIV3.Document, refsOptions: OpenApiMockDocument["refs"], { alerts, logger }: OpenApiToRoutesAdvancedOptions): Promise<OpenAPIV3.Document | null> {
+function resolveDocumentRefs(document: OpenAPIV3.Document, refsOptions: OpenApiRoutes.RefsOptions, { alerts, logger }: OpenApiRoutes.Options): Promise<OpenAPIV3.Document | null> {
   return resolveRefs(document, refsOptions).then((res) => {
     if (logger) {
       logger.silly(`Document with resolved refs: '${JSON.stringify(res)}'`);
@@ -236,7 +235,7 @@ function resolveDocumentRefs(document: OpenAPIV3.Document, refsOptions: OpenApiM
   });
 }
 
-async function resolveOpenApiDocumentRefs(documentMock: OpenApiMockDocument, { defaultLocation, alerts, logger }: OpenApiToRoutesAdvancedOptions = {}): Promise<OpenApiMockDocument | null> {
+async function resolveOpenApiDocumentRefs(documentMock: OpenApiRoutes.Document, { defaultLocation, alerts, logger }: OpenApiRoutes.Options = {}): Promise<OpenApiRoutes.Document | null> {
   const document = await resolveDocumentRefs(documentMock.document, {location: defaultLocation, ...documentMock.refs}, { alerts, logger });
   if(document) {
     return {
@@ -247,7 +246,7 @@ async function resolveOpenApiDocumentRefs(documentMock: OpenApiMockDocument, { d
   return null;
 }
 
-export async function openApiToRoutes(openApiMockDocument: OpenApiMockDocument, advancedOptions?: OpenApiToRoutesAdvancedOptions): Promise<Routes> {
+export async function openApiRoutes(openApiMockDocument: OpenApiRoutes.Document, advancedOptions?: OpenApiRoutes.Options): Promise<Routes> {
   const openApiDocument = await resolveOpenApiDocumentRefs(openApiMockDocument, advancedOptions);
   if(!openApiDocument) {
     return [];
@@ -255,9 +254,9 @@ export async function openApiToRoutes(openApiMockDocument: OpenApiMockDocument, 
   return openApiDocumentToRoutes(openApiDocument);
 }
 
-export function openApisToRoutes(openApiMockDocuments: OpenApiMockDocuments, advancedOptions?: OpenApiToRoutesAdvancedOptions): Promise<Routes> {
+export function openApisRoutes(openApiMockDocuments: OpenApiRoutes.Document[], advancedOptions?: OpenApiRoutes.Options): Promise<Routes> {
   return Promise.all(openApiMockDocuments.map((openApiMockDocument) => {
-    return openApiToRoutes(openApiMockDocument, advancedOptions);
+    return openApiRoutes(openApiMockDocument, advancedOptions);
   })).then((allRoutes) => {
     return allRoutes.flat();
   });

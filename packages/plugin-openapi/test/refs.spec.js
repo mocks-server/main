@@ -8,7 +8,7 @@ import {
   waitForServerUrl,
 } from "./support/helpers";
 
-import { openApiToRoutes } from "../src/index";
+import { openApiRoutes } from "../src/index";
 
 describe("when openapi has refs", () => {
   let server;
@@ -161,12 +161,10 @@ describe("when openapi has refs", () => {
         },
       });
       await waitForServer(3200);
-      server = await startServer("no-paths", {
-        log: "debug",
-      });
+      server = await startServer("no-paths");
       await waitForServer();
       const { loadRoutes } = server.mock.createLoaders();
-      const routes = await openApiToRoutes({
+      const routes = await openApiRoutes({
         basePath: "/api",
         document: {
           $ref: "http://127.0.0.1:3200/openapi.json",
@@ -193,12 +191,10 @@ describe("when openapi has refs", () => {
         },
       });
       await waitForServer(3200);
-      server = await startServer("no-paths", {
-        log: "debug",
-      });
+      server = await startServer("no-paths");
       await waitForServer();
       const { loadRoutes } = server.mock.createLoaders();
-      const routes = await openApiToRoutes({
+      const routes = await openApiRoutes({
         basePath: "/api",
         refs: {
           location: path.resolve(__dirname, "refs.spec.js"),

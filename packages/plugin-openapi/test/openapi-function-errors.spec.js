@@ -1,13 +1,13 @@
 import deepMerge from "deepmerge";
 
 import openApiDocument from "./openapi/users";
-import { openApiToRoutes } from "../src/index";
+import { openApiRoutes } from "../src/index";
 
 describe("when function is used and openapi definition is wrong", () => {
   describe("when has a wrong ref", () => {
     it("should throw an error with message", async () => {
       await expect(
-        openApiToRoutes({
+        openApiRoutes({
           basePath: "/api",
           document: deepMerge(openApiDocument, {
             paths: {
@@ -26,7 +26,7 @@ describe("when function is used and openapi definition is wrong", () => {
   describe("when has multiple wrong refs", () => {
     it("should throw an error with all messages", async () => {
       await expect(
-        openApiToRoutes({
+        openApiRoutes({
           basePath: "/api",
           document: deepMerge(openApiDocument, {
             paths: {
@@ -56,7 +56,7 @@ describe("when function is used and openapi definition is wrong", () => {
   describe("when options are wrong", () => {
     it("should throw an error with message", async () => {
       await expect(
-        openApiToRoutes({
+        openApiRoutes({
           basePath: "/api",
           refs: {
             subDocPath: "dasd",

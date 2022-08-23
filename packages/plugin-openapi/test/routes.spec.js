@@ -7,7 +7,7 @@ import {
 } from "./support/helpers";
 import openApiDocument from "./openapi/users";
 
-import { openApiToRoutes } from "../src/index";
+import { openApiRoutes } from "../src/index";
 
 describe("generated routes", () => {
   let server;
@@ -131,7 +131,7 @@ describe("generated routes", () => {
       await waitForServer();
       const { loadRoutes } = server.mock.createLoaders();
 
-      const routes = await openApiToRoutes({
+      const routes = await openApiRoutes({
         basePath: "/api",
         document: openApiDocument,
       });

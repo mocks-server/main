@@ -1,6 +1,6 @@
 import type { Routes, Core, MockLoaders, FilesContents } from "@mocks-server/core";
 
-import { openApisToRoutes } from "./openapi";
+import { openApisRoutes } from "./openapi";
 
 const PLUGIN_ID = "openapi";
 const DEFAULT_FOLDER = "openapi";
@@ -38,7 +38,7 @@ class Plugin {
         const fileContent = fileDetails.content;
         // TODO, validate file content
         this._logger.debug(`Creating routes from openApi definitions: '${JSON.stringify(fileContent)}'`);
-        return openApisToRoutes(fileContent, {
+        return openApisRoutes(fileContent, {
           defaultLocation: fileDetails.path,
           logger: this._logger,
           alerts: this._documentsAlerts

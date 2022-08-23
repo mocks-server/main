@@ -13,7 +13,7 @@ const path = require("path");
 const globule = require("globule");
 const watch = require("node-watch");
 const fsExtra = require("fs-extra");
-const { map, debounce } = require("lodash");
+const { map, debounce, isFunction } = require("lodash");
 const isPromise = require("is-promise");
 
 const CollectionsLoader = require("./loaders/Collections");
@@ -144,7 +144,31 @@ class FilesLoaders {
     return new Promise((resolve, reject) => {
       try {
         const content = this._require(filePath);
-        resolve((content && content.default) || content);
+        const exportedContent = (content && content.default) || content;
+        if (isFunction(exportedContent)) {
+          this._logger.debug(
+            `Function exported by '${filePath}'. Executing it to return its result`
+          );
+          const exportedContentResult = exportedContent();
+          if (isPromise(exportedContentResult)) {
+            this._logger.debug(
+              `Function in '${filePath}' returned a promise. Waiting for it to resolve its result`
+            );
+            exportedContentResult
+              .then((exportedContentPromiseResult) => {
+                this._logger.silly(`Promise in '${filePath}' was resolved`);
+                resolve(exportedContentPromiseResult);
+              })
+              .catch((error) => {
+                this._logger.silly(`Promise in '${filePath}' was rejected`);
+                reject(error);
+              });
+          } else {
+            resolve(exportedContentResult);
+          }
+        } else {
+          resolve(exportedContent);
+        }
       } catch (error) {
         reject(error);
       }

@@ -3,7 +3,7 @@ import { resolveRefs } from "json-refs";
 
 import type { ResolvedRefsResults, UnresolvedRefDetails } from "json-refs";
 import type { Alerts, HTTPHeaders, Routes, RouteVariant, RouteVariants, RouteVariantTypes } from "@mocks-server/core";
-import type { OpenApiRoutes, OpenAPIV3 } from "./types";
+import type { OpenApiDefinition, OpenAPIV3 } from "./types";
 
 import { MOCKS_SERVER_ROUTE_ID, MOCKS_SERVER_VARIANT_ID, VariantTypes, CONTENT_TYPE_HEADER } from "./constants";
 
@@ -184,7 +184,7 @@ function openApiPathToRoutes(path: string, basePath = "", openApiPathObject?: Op
   }).filter(notEmpty);
 }
 
-function openApiDocumentToRoutes(openApiMockDocument: OpenApiRoutes.Document): Routes {
+function openApiDocumentToRoutes(openApiMockDocument: OpenApiDefinition.Definition): Routes {
   const openApiDocument = openApiMockDocument.document;
   const basePath = openApiMockDocument.basePath;
 
@@ -210,7 +210,7 @@ function addOpenApiRefAlert(alerts: Alerts, error: Error): void {
   alerts.set(String(alerts.flat.length), "Error resolving openapi $ref", error);
 }
 
-function resolveDocumentRefs(document: OpenAPIV3.Document, refsOptions: OpenApiRoutes.RefsOptions, { alerts, logger }: OpenApiRoutes.Options): Promise<OpenAPIV3.Document | null> {
+function resolveDocumentRefs(document: OpenAPIV3.Document, refsOptions: OpenApiDefinition.Refs, { alerts, logger }: OpenApiDefinition.Options): Promise<OpenAPIV3.Document | null> {
   return resolveRefs(document, refsOptions).then((res) => {
     if (logger) {
       logger.silly(`Document with resolved refs: '${JSON.stringify(res)}'`);
@@ -235,7 +235,7 @@ function resolveDocumentRefs(document: OpenAPIV3.Document, refsOptions: OpenApiR
   });
 }
 
-async function resolveOpenApiDocumentRefs(documentMock: OpenApiRoutes.Document, { defaultLocation, alerts, logger }: OpenApiRoutes.Options = {}): Promise<OpenApiRoutes.Document | null> {
+async function resolveOpenApiDocumentRefs(documentMock: OpenApiDefinition.Definition, { defaultLocation, alerts, logger }: OpenApiDefinition.Options = {}): Promise<OpenApiDefinition.Definition | null> {
   const document = await resolveDocumentRefs(documentMock.document, {location: defaultLocation, ...documentMock.refs}, { alerts, logger });
   if(document) {
     return {
@@ -246,18 +246,10 @@ async function resolveOpenApiDocumentRefs(documentMock: OpenApiRoutes.Document, 
   return null;
 }
 
-export async function openApiRoutes(openApiMockDocument: OpenApiRoutes.Document, advancedOptions?: OpenApiRoutes.Options): Promise<Routes> {
+export async function openApiRoutes(openApiMockDocument: OpenApiDefinition.Definition, advancedOptions?: OpenApiDefinition.Options): Promise<Routes> {
   const openApiDocument = await resolveOpenApiDocumentRefs(openApiMockDocument, advancedOptions);
   if(!openApiDocument) {
     return [];
   }
   return openApiDocumentToRoutes(openApiDocument);
-}
-
-export function openApisRoutes(openApiMockDocuments: OpenApiRoutes.Document[], advancedOptions?: OpenApiRoutes.Options): Promise<Routes> {
-  return Promise.all(openApiMockDocuments.map((openApiMockDocument) => {
-    return openApiRoutes(openApiMockDocument, advancedOptions);
-  })).then((allRoutes) => {
-    return allRoutes.flat();
-  });
 }

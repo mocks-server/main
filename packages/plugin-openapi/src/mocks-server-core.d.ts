@@ -79,10 +79,35 @@ declare module "@mocks-server/core" {
     variants: RouteVariants,
   }
 
+  interface Collection {
+    id: string,
+    from: string,
+    routes: string[],
+  }
+
+  interface OptionProperties {
+    description: string,
+    name: string,
+    type: string,
+    default?: unknown,
+  }
+
+  interface ConfigOption {
+    addNamespace(): Config
+    addOptions(): Config
+  }
+
+  interface Config {
+    addNamespace(name: string): Config
+    addOptions(options: OptionProperties[]): ConfigOption[]
+  }
+
   type Routes = Route[]
+  type Collections = Collection[]
 
   interface MockLoaders {
-    loadRoutes(routes: Routes): void
+    loadRoutes(routes: Routes): void,
+    loadCollections(collections: Collections): void
   }
 
   interface Mock {
@@ -98,6 +123,7 @@ declare module "@mocks-server/core" {
     logger: Logger
     alerts: Alerts
     files: Files
-    mock: Mock
+    mock: Mock,
+    config: Config,
   }
 }

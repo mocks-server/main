@@ -26,7 +26,7 @@ export namespace OpenAPIV3 {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace OpenApiRoutes {
+export namespace OpenApiDefinition {
   export interface Options { 
     defaultLocation?: string,
     // TODO, add alerts type when exported by core
@@ -37,14 +37,20 @@ export namespace OpenApiRoutes {
     logger?: any
   }
 
-  export interface RefsOptions {
+  export interface Collection {
+    id: string,
+    from: string,
+  }
+
+  export interface Refs {
     location?: string,
     subDocPath?: string,
   }
 
-  export interface Document {
+  export interface Definition {
     basePath: string,
-    refs?: RefsOptions,
+    refs?: Refs,
+    collection?: Collection,
     document: OpenAPIV3.Document
   }
 }

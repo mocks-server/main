@@ -430,6 +430,12 @@ describe("mocks validations", () => {
       ).toEqual(null);
     });
 
+    it("should return error if collection is undefined", () => {
+      const errors = collectionValidationErrors();
+      expect(errors.message).toEqual(expect.stringContaining("type must be object"));
+      expect(errors.errors.length).toEqual(4);
+    });
+
     it("should return error if mock has not id", () => {
       const errors = collectionValidationErrors({
         routes: [],

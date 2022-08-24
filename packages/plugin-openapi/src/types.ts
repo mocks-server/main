@@ -39,7 +39,7 @@ export namespace OpenApiDefinition {
 
   export interface Collection {
     id: string,
-    from: string,
+    from?: string,
   }
 
   export interface Refs {

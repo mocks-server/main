@@ -93,8 +93,7 @@ declare module "@mocks-server/core" {
   }
 
   interface ConfigOption {
-    addNamespace(): Config
-    addOptions(): Config
+    value: unknown
   }
 
   interface Config {

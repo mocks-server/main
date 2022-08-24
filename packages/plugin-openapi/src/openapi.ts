@@ -184,9 +184,9 @@ function openApiPathToRoutes(path: string, basePath = "", openApiPathObject?: Op
   }).filter(notEmpty);
 }
 
-function openApiDocumentToRoutes(openApiMockDocument: OpenApiDefinition.Definition): Routes {
-  const openApiDocument = openApiMockDocument.document;
-  const basePath = openApiMockDocument.basePath;
+function openApiDefinitionToRoutes(openApiDefinition: OpenApiDefinition.Definition): Routes {
+  const openApiDocument = openApiDefinition.document;
+  const basePath = openApiDefinition.basePath;
 
   const paths = openApiDocument.paths || {};
   return Object.keys(paths).map((path: string) => {
@@ -235,21 +235,21 @@ function resolveDocumentRefs(document: OpenAPIV3.Document, refsOptions: OpenApiD
   });
 }
 
-async function resolveOpenApiDocumentRefs(documentMock: OpenApiDefinition.Definition, { defaultLocation, alerts, logger }: OpenApiDefinition.Options = {}): Promise<OpenApiDefinition.Definition | null> {
-  const document = await resolveDocumentRefs(documentMock.document, {location: defaultLocation, ...documentMock.refs}, { alerts, logger });
+async function resolveOpenApiDocumentRefs(openApiDefinition: OpenApiDefinition.Definition, { defaultLocation, alerts, logger }: OpenApiDefinition.Options = {}): Promise<OpenApiDefinition.Definition | null> {
+  const document = await resolveDocumentRefs(openApiDefinition.document, {location: defaultLocation, ...openApiDefinition.refs}, { alerts, logger });
   if(document) {
     return {
-      ...documentMock,
+      ...openApiDefinition,
       document,
     }
   }
   return null;
 }
 
-export async function openApiRoutes(openApiMockDocument: OpenApiDefinition.Definition, advancedOptions?: OpenApiDefinition.Options): Promise<Routes> {
-  const openApiDocument = await resolveOpenApiDocumentRefs(openApiMockDocument, advancedOptions);
-  if(!openApiDocument) {
+export async function openApiRoutes(openApiDefinition: OpenApiDefinition.Definition, advancedOptions?: OpenApiDefinition.Options): Promise<Routes> {
+  const resolvedOpenApiDefinition = await resolveOpenApiDocumentRefs(openApiDefinition, advancedOptions);
+  if(!resolvedOpenApiDefinition) {
     return [];
   }
-  return openApiDocumentToRoutes(openApiDocument);
+  return openApiDefinitionToRoutes(resolvedOpenApiDefinition);
 }

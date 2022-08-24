@@ -36,6 +36,20 @@ describe("generated collections", () => {
               "get-users-id:200-json-success",
             ],
           },
+          {
+            id: "openapi",
+            from: null,
+            definedRoutes: [
+              "get-users:200-json-one-user",
+              "post-users:201-status",
+              "get-users-id:200-json-success",
+            ],
+            routes: [
+              "get-users:200-json-one-user",
+              "post-users:201-status",
+              "get-users-id:200-json-success",
+            ],
+          },
         ]);
       });
     });
@@ -97,6 +111,12 @@ describe("generated collections", () => {
         expect(server.mock.collections.plain).toEqual([
           {
             id: "users",
+            from: null,
+            definedRoutes: ["post-users:201-status", "get-users-id:200-json-success"],
+            routes: ["post-users:201-status", "get-users-id:200-json-success"],
+          },
+          {
+            id: "openapi",
             from: null,
             definedRoutes: ["post-users:201-status", "get-users-id:200-json-success"],
             routes: ["post-users:201-status", "get-users-id:200-json-success"],

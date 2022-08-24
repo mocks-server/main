@@ -54,7 +54,7 @@ const collectionsSchema = {
           type: "string",
         },
         from: {
-          type: "string",
+          type: ["string", "null"],
         },
         routesVariants: {
           type: "array",
@@ -74,7 +74,7 @@ const collectionsSchema = {
           type: "string",
         },
         from: {
-          type: "string",
+          type: ["string", "null"],
         },
         routeVariants: {
           type: "array",
@@ -94,7 +94,7 @@ const collectionsSchema = {
           type: "string",
         },
         from: {
-          type: "string",
+          type: ["string", "null"],
         },
         routes: {
           type: "array",

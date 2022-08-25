@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed
 
-## [unreleased]
+## [1.3.0] - 2022-08-25
 
 ### Added
 - feat: Add 'nullable' property to option. Nullable types are 'string', 'number' and 'boolean'

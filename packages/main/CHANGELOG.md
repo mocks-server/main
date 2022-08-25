@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
-## [unreleased]
+## [3.11.0] - 2022-08-25
 
 ### Added
 - feat(#384): Add `@mocks-server/plugin-openapi` to preinstalled plugins

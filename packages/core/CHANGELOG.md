@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [unreleased]
+## [3.11.0] - 2022-08-25
 
 ### Added
 - feat: Support asynchronies in files. Files now can export a function. In that case, the loader will receive the result of the function. If function returns a promise, it will receive the result of the promise once it is resolved (rejected promises are treated as file load errors).

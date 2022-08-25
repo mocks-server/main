@@ -14,32 +14,101 @@ describe("validate method", () => {
   });
 
   describe("when option is created in root", () => {
-    it("should not pass validation when type is string and value does not match type", async () => {
-      config = new Config();
-      config.addOption({
-        name: "fooOption",
-        type: "string",
-        default: "default-str",
+    function testTypeValidation({ type, validValue, invalidValue, default: defaultValue }) {
+      const name = "fooOption";
+
+      describe(`${type} type`, () => {
+        it("should not pass validation when value does not match type", async () => {
+          config = new Config();
+          config.addOption({
+            name,
+            type,
+            default: defaultValue,
+          });
+          const validation = config.validate({
+            [name]: invalidValue,
+          });
+          expect(validation.valid).toEqual(false);
+          expect(validation.errors.length).toEqual(1);
+        });
+
+        it("should pass validation when is nullable and value is null", async () => {
+          config = new Config();
+          config.addOption({
+            name,
+            type,
+            nullable: true,
+            default: defaultValue,
+          });
+          const validation = config.validate({
+            [name]: null,
+          });
+          expect(validation.valid).toEqual(true);
+          expect(validation.errors).toEqual(null);
+        });
+
+        it("should not throw when is nullable and value is set to null", async () => {
+          config = new Config();
+          config.addOption({
+            name,
+            type,
+            nullable: true,
+            default: defaultValue,
+          });
+          config.option(name).value = null;
+          expect(config.option(name).value).toEqual(null);
+        });
+
+        it("should pass validation when is nullable string and default value is null", async () => {
+          config = new Config();
+          config.addOption({
+            name,
+            type,
+            default: null,
+            nullable: true,
+          });
+          const validation = config.validate({
+            [name]: validValue,
+          });
+          expect(validation.valid).toEqual(true);
+          expect(validation.errors).toEqual(null);
+        });
+
+        it("should pass validation when value matches type", async () => {
+          config = new Config();
+          config.addOption({
+            name,
+            type,
+            default: defaultValue,
+          });
+          const validation = config.validate({
+            [name]: validValue,
+          });
+          expect(validation.valid).toEqual(true);
+          expect(validation.errors).toEqual(null);
+        });
       });
-      const validation = config.validate({
-        fooOption: 2,
-      });
-      expect(validation.valid).toEqual(false);
-      expect(validation.errors.length).toEqual(1);
+    }
+
+    testTypeValidation({
+      type: "string",
+      invalidValue: 2,
+      validValue: "2",
+      default: "default-str",
     });
 
-    it("should pass validation when type is string and value does not match type", async () => {
-      config = new Config();
-      config.addOption({
-        name: "fooOption",
-        type: "string",
-        default: "default-str",
-      });
-      const validation = config.validate({
-        fooOption: "2",
-      });
-      expect(validation.valid).toEqual(true);
-      expect(validation.errors).toEqual(null);
+    testTypeValidation({
+      type: "number",
+      invalidValue: "2",
+      validValue: 2,
+      default: 3,
+    });
+
+    testTypeValidation({
+      type: "boolean",
+      invalidValue: "2",
+      validValue: true,
+      default: false,
     });
   });
 

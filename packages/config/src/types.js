@@ -4,6 +4,7 @@ const types = {
   BOOLEAN: "boolean",
   OBJECT: "object",
   ARRAY: "array",
+  NULL: "null",
 };
 
 const FALSY_VALUES = ["false", "0", 0];

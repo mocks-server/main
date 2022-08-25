@@ -90,6 +90,7 @@ declare module "@mocks-server/core" {
     name: string,
     type: string,
     default?: unknown,
+    nullable?: boolean,
   }
 
   interface ConfigOption {

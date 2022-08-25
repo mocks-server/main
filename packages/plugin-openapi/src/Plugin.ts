@@ -13,6 +13,7 @@ const COLLECTION_OPTIONS = [
     description: "Name for the collection created from OpenAPI definitions",
     name: "id",
     type: "string",
+    nullable: true,
     default: "openapi",
   },
   {

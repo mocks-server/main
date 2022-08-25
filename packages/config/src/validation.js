@@ -6,11 +6,12 @@ const ajv = new Ajv({ allErrors: true });
 
 const { types } = require("./types");
 
-function enforceDefaultTypeSchema(type, itemsType) {
+function enforceDefaultTypeSchema({ type, itemsType, nullable }) {
   const schema = {
     properties: {
       name: { type: types.STRING },
       type: { enum: [type] },
+      nullable: { enum: [false] },
       description: { type: types.STRING },
       default: {
         type,
@@ -21,15 +22,20 @@ function enforceDefaultTypeSchema(type, itemsType) {
       },
     },
     additionalProperties: false,
-    required: ["name", "type"],
+    required: ["name", "type", "nullable"],
   };
+
+  if (nullable) {
+    schema.properties.default.type = [type, types.NULL];
+    schema.properties.nullable = { enum: [true] };
+  }
 
   if (itemsType) {
     schema.properties.itemsType = { enum: [itemsType] };
     schema.properties.default.items = {
       type: itemsType,
     };
-    schema.required = ["name", "type", "itemsType"];
+    schema.required = ["name", "type", "nullable", "itemsType"];
   }
 
   return schema;
@@ -38,15 +44,18 @@ function enforceDefaultTypeSchema(type, itemsType) {
 const optionSchema = {
   type: types.OBJECT,
   oneOf: [
-    enforceDefaultTypeSchema(types.NUMBER),
-    enforceDefaultTypeSchema(types.STRING),
-    enforceDefaultTypeSchema(types.BOOLEAN),
-    enforceDefaultTypeSchema(types.OBJECT),
-    enforceDefaultTypeSchema(types.ARRAY),
-    enforceDefaultTypeSchema(types.ARRAY, types.NUMBER),
-    enforceDefaultTypeSchema(types.ARRAY, types.STRING),
-    enforceDefaultTypeSchema(types.ARRAY, types.BOOLEAN),
-    enforceDefaultTypeSchema(types.ARRAY, types.OBJECT),
+    enforceDefaultTypeSchema({ type: types.NUMBER }),
+    enforceDefaultTypeSchema({ type: types.NUMBER, nullable: true }),
+    enforceDefaultTypeSchema({ type: types.STRING }),
+    enforceDefaultTypeSchema({ type: types.STRING, nullable: true }),
+    enforceDefaultTypeSchema({ type: types.BOOLEAN }),
+    enforceDefaultTypeSchema({ type: types.BOOLEAN, nullable: true }),
+    enforceDefaultTypeSchema({ type: types.OBJECT }),
+    enforceDefaultTypeSchema({ type: types.ARRAY }),
+    enforceDefaultTypeSchema({ type: types.ARRAY, itemsType: types.NUMBER }),
+    enforceDefaultTypeSchema({ type: types.ARRAY, itemsType: types.STRING }),
+    enforceDefaultTypeSchema({ type: types.ARRAY, itemsType: types.BOOLEAN }),
+    enforceDefaultTypeSchema({ type: types.ARRAY, itemsType: types.OBJECT }),
   ],
 };
 
@@ -133,9 +142,16 @@ function validateSchemaAndThrow(config, schema, validator) {
 function addNamespaceSchema(namespace, { rootSchema, allowAdditionalProperties }) {
   const initialSchema = rootSchema || emptySchema({ allowAdditionalProperties });
   const schema = namespace.options.reduce((currentSchema, option) => {
-    currentSchema.properties[option.name] = {
-      type: option.type,
-    };
+    if (option.nullable) {
+      currentSchema.properties[option.name] = {
+        type: [option.type, types.NULL],
+      };
+    } else {
+      currentSchema.properties[option.name] = {
+        type: option.type,
+      };
+    }
+
     if (option.itemsType) {
       currentSchema.properties[option.name].items = {
         type: option.itemsType,
@@ -192,7 +208,10 @@ function validateOptionAndThrow(properties) {
   validateSchemaAndThrow(properties, optionSchema, optionValidator);
 }
 
-function validateValueTypeAndThrow(value, type, itemsType) {
+function validateValueTypeAndThrow(value, type, nullable, itemsType) {
+  if (nullable && value === null) {
+    return;
+  }
   typeAndThrowValidators[type](value, itemsType);
 }
 

@@ -430,6 +430,12 @@ describe("mocks validations", () => {
       ).toEqual(null);
     });
 
+    it("should return error if collection is undefined", () => {
+      const errors = collectionValidationErrors();
+      expect(errors.message).toEqual(expect.stringContaining("type must be object"));
+      expect(errors.errors.length).toEqual(4);
+    });
+
     it("should return error if mock has not id", () => {
       const errors = collectionValidationErrors({
         routes: [],
@@ -453,7 +459,7 @@ describe("mocks validations", () => {
         foo: "foo",
       });
       expect(errors.message).toEqual(
-        "Collection is invalid:  must have required property 'routes'. /from: type must be string. /from: type must be string. /from: type must be string"
+        "Collection is invalid:  must have required property 'routes'. /from: type must be string,null. /from: type must be string,null. /from: type must be string,null"
       );
     });
   });

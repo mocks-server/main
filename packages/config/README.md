@@ -86,6 +86,8 @@ Options can be added to a namespace, or to the root config object. Both `config`
 
 Options can be of one of next types: `string`, `boolean`, `number`, `object` or `array`. This library automatically converts the values from command line arguments and environment variables to the expected type when possible. If the conversion is not possible or the validation fails an error is thrown. Validation errors provide enough context to users to let them know the option that failed. This library uses [`ajv`](https://github.com/ajv-validator) and [`better-ajv-errors`](https://github.com/atlassian/better-ajv-errors) for validations.
 
+Types `string`, `boolean`, `number` can be nullable using the option `nullable` property.
+
 Here is an example of how to add an option to the root config object, and then you have information about how the option would be set from different sources:
 
 ```js
@@ -279,6 +281,21 @@ Examples about how to define options of type `object` from sources:
 
 __The contents of the array are also converted to its correspondent type when the `itemsType` option is provided.__
 
+### __Nullable types__
+
+An option can be null when it is set as `nullable`. Nullable types are `string`, `boolean` and `number`. Types `object` and `array` can't be nullable, their value should be set to empty array or empty object instead.
+
+```js
+const config = new Config({ moduleName: "moduleName" });
+const option = config.addOption({
+  name: "optionA",
+  type: "string",
+  nullable: true,
+  default: null,
+});
+await config.load();
+```
+
 ## Built-in options
 
 The library registers some options that can be used to determine the behavior of the library itself. As the rest of the configuration created by the library, these options can be set using configuration file, environment variables, command line arguments, etc. But there are some of them that can be defined only in some specific sources because they affect to reading that sources or not.
@@ -356,6 +373,7 @@ const namespace = config.addNamespace("name");
     * __`name`__ _(String)_: Name for the option.
     * __`description`__ _(String)_: _Optional_. Used in help, traces, etc.
     * __`type`__  _(String)_. One of _`string`_, _`boolean`_, _`number`_, _`array`_ or _`object`_. Used to apply type validation when loading configuration and in `option.value` setter.
+    * __`nullable`__ _(Boolean)_. _Optional_. Default is `false`. When `true`, the option value can be set to `null`. It is only supported in types `string`, `number` and `boolean`.
     * __`itemsType`__ _(String)_. Can be defined only when `type` is `array`. It must be one of _`string`_, _`boolean`_, _`number`_ or _`object`_.
     * __`default`__ - _Optional_. Default value. Its type depends on the `type` option.
     * __`extraData`__ - _(Object)_. _Optional_. Useful to store any extra data you want in the option. For example, Mocks Server uses it to define whether an option must be written when creating the configuration scaffold or not.
@@ -384,6 +402,7 @@ const rootOption = config.addOption("name2");
   * `callback(value)` _(Function)_: Callback to be executed whenever the option value changes. It receives the new value as first argument.
 * __`name`__: Getter returning the option name.
 * __`type`__: Getter returning the option type.
+* __`nullable`__: Getter returning whether the option is nullable or not.
 * __`description`__: Getter returning the option description.
 * __`extraData`__: Getter returning the option extra data.
 * __`default`__: Getter returning the option default value.

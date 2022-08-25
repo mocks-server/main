@@ -1,0 +1,55 @@
+{
+  "get": {
+    "summary": "Return all users",
+    "description": "Use it to get current users",
+    "responses": {
+      "200": {
+        "description": "successful operation",
+        "content": {
+          "application/json": {
+            "examples": {
+              "one-user": {
+                "summary": "One route",
+                "value": [{
+                  "id": 1,
+                  "name": "John Doe"
+                }]
+              },
+              "two-users": {
+                "summary": "Two users",
+                "value": [{
+                  "id": 1,
+                  "name": "John Doe"
+                }, {
+                  "id": 2,
+                  "name": "Jane Doe"
+                }]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "post": {
+    "summary": "Create an user",
+    "responses": {
+      "201": {
+        "description": "successful operation"
+      },
+      "400": {
+        "description": "bad data",
+        "content": {
+          "text/plain": {
+            "examples": {
+              "error-message": {
+                "summary": "Error message",
+                "value": "Bad data"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -15,6 +15,7 @@ const Core = require("@mocks-server/core");
 const PluginProxy = require("@mocks-server/plugin-proxy");
 const AdminApi = require("@mocks-server/plugin-admin-api");
 const InquirerCli = require("@mocks-server/plugin-inquirer-cli");
+const OpenApi = require("@mocks-server/plugin-openapi").default;
 const deepMerge = require("deepmerge");
 
 const pkg = require("../package.json");
@@ -26,7 +27,7 @@ const DEFAULT_CONFIG = {
     readFile: false,
   },
   plugins: {
-    register: [PluginProxy, AdminApi, InquirerCli],
+    register: [PluginProxy, AdminApi, InquirerCli, OpenApi],
     inquirerCli: {
       enabled: false,
     },

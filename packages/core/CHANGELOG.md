@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+### Added
+- feat: Support asynchronies in files. Files now can export a function. In that case, the loader will receive the result of the function. If function returns a promise, it will receive the result of the promise once it is resolved (rejected promises are treated as file load errors).
+- Added: Support null value in "from" property in collections
+
+### Changed
+
+- chore(deps): Update @mocks-server/config to 1.3.0
+
+### Fixed
+- fix: Collections and routes validation was throwing when undefined was passed as value
+
 ## [3.10.0] - 2022-08-11
 
 ### Added

@@ -1,0 +1,3 @@
+- id: "base"
+  routes:
+    - static:success

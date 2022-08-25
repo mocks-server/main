@@ -44,6 +44,7 @@
     "@mocks-server/core": "workspace:*",
     "@mocks-server/plugin-admin-api": "workspace:*",
     "@mocks-server/plugin-inquirer-cli": "workspace:*",
+    "@mocks-server/plugin-openapi": "workspace:*",
     "@mocks-server/plugin-proxy": "workspace:*",
     "deepmerge": "4.2.2"
   },

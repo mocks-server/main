@@ -13,7 +13,18 @@
 
 # Mocks Server Plugin OpenApi
 
-[Mocks Server][website-url] plugin allowing to create routes and collections from OpenApi definitions.
+[Mocks Server][website-url] plugin enabling to create routes and collections from OpenApi definitions.
+
+## Usage
+
+This plugin is included in the main distribution of the Mocks Server project, so you can refer to the [official documentation website][website-url].
+
+## Options
+
+* __`plugins.openapi.collection.id`__ _(String | Null)_: Id for the collection to be created with __all routes from all OpenAPI documents__. Default is "openapi". When it is set to `null`, no collection will be created.
+* __`plugins.openapi.collection.from`__ _(String)_: When provided, the created collection will extend from this one.
+
+Read more about [how to set options in Mocks Server here](https://www.mocks-server.org/docs/configuration/how-to-change-settings).
 
 ## Contributing
 

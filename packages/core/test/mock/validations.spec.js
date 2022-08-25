@@ -459,7 +459,7 @@ describe("mocks validations", () => {
         foo: "foo",
       });
       expect(errors.message).toEqual(
-        "Collection is invalid:  must have required property 'routes'. /from: type must be string. /from: type must be string. /from: type must be string"
+        "Collection is invalid:  must have required property 'routes'. /from: type must be string,null. /from: type must be string,null. /from: type must be string,null"
       );
     });
   });

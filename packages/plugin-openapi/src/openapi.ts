@@ -81,7 +81,6 @@ function getStatusCode(code: string, codes: string[]): number {
   return Number(replaceCodeWildcards(code));
 }
 
-// TODO, support also ReferenceObject in examples
 function openApiResponseExampleToVariant(exampleId: string, code: number, variantType: RouteVariantTypes, mediaType: string, openApiResponseExample: OpenAPIV3.ExampleObject, openApiResponseHeaders?:  OpenAPIV3.ResponseHeaders): RouteVariant | null {
   if(!notEmpty(openApiResponseExample) || !notEmpty(openApiResponseExample.value)) {
     return null;
@@ -107,7 +106,6 @@ function openApiResponseNoContentToVariant(code: number, openApiResponse: OpenAP
   return {
     ...baseVariant,
     options: {
-      // TODO, convert possible ref
       headers: openApiResponse.headers as HTTPHeaders,
       status: code,
     } 
@@ -120,7 +118,6 @@ function openApiResponseExamplesToVariants(code: number, variantType: RouteVaria
     return null;
   }
   return Object.keys(examples).map((exampleId: string) => {
-    // TODO, support also ReferenceObject in examples
     return openApiResponseExampleToVariant(exampleId, code, variantType, mediaType, examples[exampleId] as OpenAPIV3.ExampleObject , openApiResponseHeaders);
   }).filter(notEmpty);
 }

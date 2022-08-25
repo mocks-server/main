@@ -29,10 +29,10 @@ export namespace OpenAPIV3 {
 export namespace OpenApiDefinition {
   export interface Options { 
     defaultLocation?: string,
-    // TODO, add alerts type when exported by core
+    // Add alerts type when exported by core
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     alerts?: any,
-    // TODO, add alerts type when exported by core
+    // Add alerts type when exported by core
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     logger?: any
   }

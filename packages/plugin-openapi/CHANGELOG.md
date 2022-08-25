@@ -12,3 +12,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### BREAKING CHANGE
 
 ## [unreleased]
+
+### Added
+- feat: First release

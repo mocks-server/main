@@ -245,8 +245,8 @@ function customValidationSingleMessage(errors) {
     .join(". ");
 }
 
-function validationSingleMessage(schema, data = {}, errors) {
-  const formattedJson = betterAjvErrors(schema, data, errors, {
+function validationSingleMessage(schema, data, errors) {
+  const formattedJson = betterAjvErrors(schema, data || {}, errors, {
     format: "js",
   });
   return formattedJson.map((result) => result.error).join(". ");

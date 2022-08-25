@@ -34,6 +34,7 @@
     "plugin-admin-api-swagger-e2e": "test/plugin-admin-api-swagger-e2e",
     "plugin-inquirer-cli": "packages/plugin-inquirer-cli",
     "plugin-inquirer-cli-e2e": "test/plugin-inquirer-cli-e2e",
+    "plugin-openapi": "packages/plugin-openapi",
     "plugin-proxy": "packages/plugin-proxy"
   }
 }

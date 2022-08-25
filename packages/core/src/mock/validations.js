@@ -54,7 +54,7 @@ const collectionsSchema = {
           type: "string",
         },
         from: {
-          type: "string",
+          type: ["string", "null"],
         },
         routesVariants: {
           type: "array",
@@ -74,7 +74,7 @@ const collectionsSchema = {
           type: "string",
         },
         from: {
-          type: "string",
+          type: ["string", "null"],
         },
         routeVariants: {
           type: "array",
@@ -94,7 +94,7 @@ const collectionsSchema = {
           type: "string",
         },
         from: {
-          type: "string",
+          type: ["string", "null"],
         },
         routes: {
           type: "array",
@@ -246,7 +246,7 @@ function customValidationSingleMessage(errors) {
 }
 
 function validationSingleMessage(schema, data, errors) {
-  const formattedJson = betterAjvErrors(schema, data, errors, {
+  const formattedJson = betterAjvErrors(schema, data || {}, errors, {
     format: "js",
   });
   return formattedJson.map((result) => result.error).join(". ");

@@ -1,0 +1,16 @@
+{
+  "description": "successful operation",
+  "content": {
+    "application/json": {
+      "examples": {
+        "success": {
+          "summary": "One user",
+          "value": {
+            "id": 1,
+            "name": "John Doe"
+          }
+        }
+      }
+    }
+  }
+}

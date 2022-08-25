@@ -488,6 +488,86 @@ describe("FilesLoaders", () => {
       ]);
     });
 
+    it("should call to its load function passing the result when file exports a function", async () => {
+      libsMocks.stubs.globule.find.returns(["foo/foo-file.js"]);
+      const spy = sandbox.spy();
+      filesLoader = new FilesLoaders(pluginMethods, {
+        requireCache,
+        require: () => () => ["foo-content"],
+      });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
+      filesLoader.createLoader({
+        id: "foo",
+        src: "foo/foo-path/**/*",
+        onLoad: spy,
+      });
+      await filesLoader.init();
+      expect(spy.getCall(0).args[0]).toEqual([
+        { path: "foo/foo-file.js", content: ["foo-content"] },
+      ]);
+    });
+
+    it("should call to its load function passing the promise resolved result when file exports a function returning a promise", async () => {
+      libsMocks.stubs.globule.find.returns(["foo/foo-file.js"]);
+      const exportedFunction = () => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(["foo-promise-content"]);
+          }, 200);
+        });
+      };
+      const spy = sandbox.spy();
+      filesLoader = new FilesLoaders(pluginMethods, {
+        requireCache,
+        require: () => exportedFunction,
+      });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
+      filesLoader.createLoader({
+        id: "foo",
+        src: "foo/foo-path/**/*",
+        onLoad: spy,
+      });
+      await filesLoader.init();
+      expect(spy.getCall(0).args[0]).toEqual([
+        { path: "foo/foo-file.js", content: ["foo-promise-content"] },
+      ]);
+    });
+
+    it("should catch the error and pass it as an errored file when the file exports a promise that is rejected", async () => {
+      const promiseError = new Error("Foo error");
+      libsMocks.stubs.globule.find.returns(["foo/foo-file.js"]);
+      const exportedFunction = () => {
+        return new Promise((_resolve, reject) => {
+          setTimeout(() => {
+            reject(promiseError);
+          }, 200);
+        });
+      };
+      const spy = sandbox.spy();
+      filesLoader = new FilesLoaders(pluginMethods, {
+        requireCache,
+        require: () => exportedFunction,
+      });
+      filesLoader._pathOption = pathOption;
+      filesLoader._watchOption = watchOption;
+      filesLoader._babelRegisterOption = babelRegisterOption;
+      filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
+      filesLoader.createLoader({
+        id: "foo",
+        src: "foo/foo-path/**/*",
+        onLoad: spy,
+      });
+      await filesLoader.init();
+      expect(spy.getCall(0).args[0]).toEqual([]);
+      expect(spy.getCall(0).args[1]).toEqual([{ path: "foo/foo-file.js", error: promiseError }]);
+    });
+
     it("should support async onLoad functions", async () => {
       libsMocks.stubs.globule.find.returns(["foo/foo-path/**"]);
       const spy = sandbox.spy();

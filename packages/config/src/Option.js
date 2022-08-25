@@ -10,8 +10,8 @@ const { types, avoidArraysMerge } = require("./types");
 class Option {
   constructor(properties) {
     this._eventEmitter = new EventEmitter();
-    validateOptionAndThrow(properties);
     this._name = properties.name;
+    this._nullable = Boolean(properties.nullable);
     this._extraData = properties.extraData;
     this._type = properties.type;
     this._description = properties.description;
@@ -20,6 +20,8 @@ class Option {
     this._value = this._default;
     this._eventsStarted = false;
     this._hasBeenSet = false;
+
+    validateOptionAndThrow({ ...properties, nullable: this._nullable });
   }
 
   get extraData() {
@@ -36,6 +38,10 @@ class Option {
 
   get type() {
     return this._type;
+  }
+
+  get nullable() {
+    return this._nullable;
   }
 
   get itemsType() {
@@ -64,7 +70,7 @@ class Option {
   }
 
   _validateAndThrow(value) {
-    validateValueTypeAndThrow(value, this._type, this._itemsType);
+    validateValueTypeAndThrow(value, this._type, this._nullable, this._itemsType);
   }
 
   _emitChange(previousValue, value) {

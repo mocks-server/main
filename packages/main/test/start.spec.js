@@ -13,6 +13,7 @@ const sinon = require("sinon");
 const PluginProxy = require("@mocks-server/plugin-proxy");
 const AdminApi = require("@mocks-server/plugin-admin-api");
 const InquirerCli = require("@mocks-server/plugin-inquirer-cli");
+const OpenApi = require("@mocks-server/plugin-openapi").default;
 
 const CoreMocks = require("./Core.mocks.js");
 
@@ -38,7 +39,7 @@ describe("start method", () => {
     expect(coreMocks.stubs.Constructor.mock.calls[0][0]).toEqual({
       config: { readArguments: true, readEnvironment: true, readFile: true },
       plugins: {
-        register: [PluginProxy, AdminApi, InquirerCli],
+        register: [PluginProxy, AdminApi, InquirerCli, OpenApi],
         inquirerCli: { enabled: true },
       },
       files: { enabled: true },

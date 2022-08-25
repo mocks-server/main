@@ -13,6 +13,7 @@ const sinon = require("sinon");
 const PluginProxy = require("@mocks-server/plugin-proxy");
 const AdminApi = require("@mocks-server/plugin-admin-api");
 const InquirerCli = require("@mocks-server/plugin-inquirer-cli");
+const OpenApi = require("@mocks-server/plugin-openapi").default;
 
 const CoreMocks = require("./Core.mocks.js");
 
@@ -42,7 +43,7 @@ describe("createCore method", () => {
         readFile: false,
       },
       plugins: {
-        register: [PluginProxy, AdminApi, InquirerCli],
+        register: [PluginProxy, AdminApi, InquirerCli, OpenApi],
         inquirerCli: {
           enabled: false,
         },
@@ -75,7 +76,7 @@ describe("createCore method", () => {
         readFile: false,
       },
       plugins: {
-        register: [PluginProxy, AdminApi, InquirerCli, FooPlugin],
+        register: [PluginProxy, AdminApi, InquirerCli, OpenApi, FooPlugin],
         inquirerCli: {
           enabled: false,
         },

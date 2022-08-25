@@ -1,0 +1,5 @@
+{
+  "root": "packages/plugin-openapi/",
+  "projectType": "library",
+  "tags": ["type:lib"]
+}

@@ -120,30 +120,31 @@ class Plugin {
   }
 
   async _onLoadFiles(filesContents: FilesContents) {
-    let collectionsToLoad;
-    this._documentsAlerts.clean();
-    const { routes, collections } = await this._getRoutesAndCollectionsFromFilesContents(filesContents);
-    const folderTrace = `from OpenAPI definitions found in folder '${this._files.path}/${DEFAULT_FOLDER}'`;
+    if (filesContents.length) {
+      let collectionsToLoad;
+      this._documentsAlerts.clean();
+      const { routes, collections } = await this._getRoutesAndCollectionsFromFilesContents(filesContents);
+      const folderTrace = `from OpenAPI definitions found in folder '${this._files.path}/${DEFAULT_FOLDER}'`;
 
-    this._logger.debug(`Routes to load from openApi definitions: '${JSON.stringify(routes)}'`);
-    this._logger.verbose(`Loading ${routes.length} routes ${folderTrace}`);
+      this._logger.debug(`Routes to load from openApi definitions: '${JSON.stringify(routes)}'`);
+      this._logger.verbose(`Loading ${routes.length} routes ${folderTrace}`);
 
-    this._loadRoutes(routes);
+      this._loadRoutes(routes);
 
-    this._logger.debug(`Collections created from OpenAPI definitions: '${JSON.stringify(collections)}'`);
+      this._logger.debug(`Collections created from OpenAPI definitions: '${JSON.stringify(collections)}'`);
 
-    if (this._defaultCollectionOptions) {
-      const defaultCollection = getRoutesCollection(routes, this._defaultCollectionOptions);
-      this._logger.debug(`Collection created from all OpenAPI definitions: '${JSON.stringify(defaultCollection)}'`);
-      collectionsToLoad = collections.concat([defaultCollection as Collection]);
-    } else {
-      collectionsToLoad = collections;
+      if (this._defaultCollectionOptions) {
+        const defaultCollection = getRoutesCollection(routes, this._defaultCollectionOptions);
+        this._logger.debug(`Collection created from all OpenAPI definitions: '${JSON.stringify(defaultCollection)}'`);
+        collectionsToLoad = collections.concat([defaultCollection as Collection]);
+      } else {
+        collectionsToLoad = collections;
+      }
+      
+      this._logger.verbose(`Loading ${collectionsToLoad.length} collections ${folderTrace}`);
+
+      this._loadCollections(collectionsToLoad);
     }
-    
-    this._logger.verbose(`Loading ${collectionsToLoad.length} collections ${folderTrace}`);
-
-    this._loadCollections(collectionsToLoad);
-
   }
 }
 

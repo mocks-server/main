@@ -15,7 +15,7 @@ importers:
       '@nrwl/tao': 13.8.3
       '@nrwl/workspace': 13.8.3
       '@rollup/plugin-babel': 5.3.1
-      '@rollup/plugin-commonjs': 21.1.0
+      '@rollup/plugin-commonjs': 22.0.2
       '@rollup/plugin-node-resolve': 13.3.0
       '@rollup/plugin-typescript': 8.3.4
       '@testing-library/cypress': 8.0.3
@@ -74,7 +74,7 @@ importers:
       '@nrwl/tao': 13.8.3
       '@nrwl/workspace': 13.8.3_c8b271dfdffafccb68f14d3a3239262b
       '@rollup/plugin-babel': 5.3.1_20dbd2a7d8fda8c56cf39791bec718a0
-      '@rollup/plugin-commonjs': 21.1.0_rollup@2.77.2
+      '@rollup/plugin-commonjs': 22.0.2_rollup@2.77.2
       '@rollup/plugin-node-resolve': 13.3.0_rollup@2.77.2
       '@rollup/plugin-typescript': 8.3.4_rollup@2.77.2+typescript@4.7.4
       '@testing-library/cypress': 8.0.3_cypress@9.7.0
@@ -3060,11 +3060,11 @@ packages:
       rollup: 2.77.2
     dev: true
 
-  /@rollup/plugin-commonjs/21.1.0_rollup@2.77.2:
-    resolution: {integrity: sha512-6ZtHx3VHIp2ReNNDxHjuUml6ur+WcQ28N1yHgCQwsbNkQg2suhxGMDQGJOn/KuDxKtd1xuZP5xSTwBA4GQ8hbA==}
-    engines: {node: '>= 8.0.0'}
+  /@rollup/plugin-commonjs/22.0.2_rollup@2.77.2:
+    resolution: {integrity: sha512-//NdP6iIwPbMTcazYsiBMbJW7gfmpHom33u1beiIoHDEM0Q9clvtQB1T0efvMqHeKsGohiHo97BCPCkBXdscwg==}
+    engines: {node: '>= 12.0.0'}
     peerDependencies:
-      rollup: ^2.38.3
+      rollup: ^2.68.0
     dependencies:
       '@rollup/pluginutils': 3.1.0_rollup@2.77.2
       commondir: 1.0.1
@@ -9594,11 +9594,11 @@ packages:
       wrappy: 1.0.2
 
   /inherits/2.0.1:
-    resolution: {integrity: sha1-sX0I0ya0Qj5Wjv9xn5GwscvfafE=}
+    resolution: {integrity: sha512-8nWq2nLTAwd02jTqJExUYFSD/fKq6VH9Y/oG2accc/kdI0V98Bag8d5a4gi3XHz73rDWa2PvTtvcWYquKqSENA==}
     dev: true
 
   /inherits/2.0.3:
-    resolution: {integrity: sha1-Yzwsg+PaQqUC9SRmAiSA9CCCYd4=}
+    resolution: {integrity: sha512-x00IRNXNy63jwGkJmzPigoySHbaqpNuzKbBOmzK+g2OdZpQ9w+sxCN+VSB3ja7IAge2OP2qpfxTjeNcyjmW1uw==}
     dev: true
 
   /inherits/2.0.4:

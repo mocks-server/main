@@ -36,6 +36,16 @@ const CONFIG_OPTIONS = [
     itemsType: types.STRING,
   },
   {
+    name: "fileSearchFrom",
+    description: "Start searching for the configuration file from this folder",
+    type: types.STRING,
+  },
+  {
+    name: "fileSearchStop",
+    description: "Directory where the search for the configuration file will stop",
+    type: types.STRING,
+  },
+  {
     name: "allowUnknownArguments",
     description: "Allow unknown arguments",
     type: types.BOOLEAN,
@@ -72,6 +82,8 @@ class Config {
       this._readArguments,
       this._readEnvironment,
       this._fileSearchPlaces,
+      this._fileSearchFrom,
+      this._fileSearchStop,
       this._allowUnknownArguments,
     ] = this._configNamespace.addOptions(CONFIG_OPTIONS);
   }
@@ -82,6 +94,8 @@ class Config {
     }
     return this._files.read(this._programmaticConfig, {
       searchPlaces: this._fileSearchPlaces.value,
+      searchFrom: this._fileSearchFrom.value,
+      searchStop: this._fileSearchStop.value,
     });
   }
 

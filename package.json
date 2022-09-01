@@ -23,12 +23,12 @@
     "graph": "nx graph"
   },
   "devDependencies": {
-    "@babel/core": "7.18.10",
+    "@babel/core": "7.18.13",
     "@babel/eslint-parser": "7.18.9",
     "@babel/preset-env": "7.18.10",
     "@babel/preset-react": "7.18.6",
     "@babel/preset-typescript": "7.18.6",
-    "@cypress/webpack-preprocessor": "5.12.0",
+    "@cypress/webpack-preprocessor": "5.12.2",
     "@nrwl/cli": "13.8.3",
     "@nrwl/eslint-plugin-nx": "13.8.3",
     "@nrwl/tao": "13.8.3",
@@ -52,7 +52,7 @@
     "cypress": "9.7.0",
     "cypress-fail-fast": "3.4.1",
     "deepmerge": "4.2.2",
-    "eslint": "8.21.0",
+    "eslint": "8.22.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-jest": "26.7.0",
     "eslint-plugin-no-only-tests": "2.6.0",

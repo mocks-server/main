@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed
 
+## [1.4.0] - 2022-09-01
+
+### Added
+- feat: Add 'fileSearchFrom' and 'fileSearchStop' options
+
 ## [1.3.0] - 2022-08-25
 
 ### Added

@@ -6,7 +6,6 @@ on:
     branches:
       - master
       - release
-      - feat-384-openapi
   pull_request:
 jobs:
   get-affected:

@@ -70,7 +70,7 @@ Once options and namespaces are added, and the `load` method is called, the libr
 
 * __Default option value__. When the option is created, it can contain a `default` property. That value will be assigned if no other one is found.
 * __Programmatic config__. An object containing initial configuration can be provided to the `load` or `init` methods.
-* __Configuration files__. Configuration files in `process.cwd()`. [Cosmiconfig](https://github.com/davidtheclark/cosmiconfig) is used to provide this feature, so it is compatible with next files formats:
+* __Configuration file__. It searches for a configuration file in the `process.cwd()` folder (or any other folders using built-in [options](#built-in-options)). [Cosmiconfig](https://github.com/davidtheclark/cosmiconfig) is used to provide this feature, so it is compatible with next files formats:
   * A `[moduleName]` property in a `package.json` file
   * A `.[moduleName]rc file with JSON or YAML syntax.`
   * A `.[moduleName]rc.json`, `.[moduleName]rc.yaml`, `.[moduleName].yml`, `.[moduleName]rc.js`, or `.[moduleName]rc.cjs` file.
@@ -306,6 +306,8 @@ All of the built-in options are defined in the `config` namespace:
 * __`config.readArguments`__ _(Boolean)_: _Default: `true`_. Determines whether the arguments are read or not. It can be defined only using programmatic configuration.
 * __`config.readEnvironment`__ _(Boolean)_: _Default: `true`_. Determines whether the environment variables are read or not. It can be defined using programmatic configuration or command line arguments.
 * __`config.fileSearchPlaces`__ _(Array)_: _Default from cosmiconfig_. An array of places to search for the configuration file. It can be defined in any source, except configuration files.
+* __`config.fileSearchFrom`__ _(String)_: _Default process.cwd_. Start searching for the configuration file from this folder, and keep searching up in the parent directories until arriving at the `config.fileSearchStop` folder.
+* __`config.fileSearchStop`__ _(Array)_: _Default process.cwd_. Directory where the search for the configuration file will stop.
 * __`config.allowUnknownArguments`__ _(Boolean)_: _Default `false`_. When set to `true`, it allows to define unknown command line arguments. It can be defined in any source.
 
 ## Lifecycle

@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [3.12.0] - 2022-09-01
+
+### Added
+- feat: Update @mocks-server/core to 3.12.0. Add 'config.fileSearchFrom' and 'config.fileSearchStop' options
+
 ## [3.11.0] - 2022-08-25
 
 ### Added

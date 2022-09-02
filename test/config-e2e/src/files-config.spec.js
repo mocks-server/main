@@ -143,6 +143,61 @@ describe("Config from files", () => {
     });
   });
 
+  describe("when fileSearchFrom option is provided", () => {
+    it("should search starting from designed folder", async () => {
+      await run("json-config-custom-name", "two-namespaces", {
+        args: ["--config.fileSearchFrom", path.resolve(__dirname, "fixtures", "search-from")],
+      });
+
+      expect(options).toEqual(expect.arrayContaining(["component.alias:string:alias-from-json"]));
+    });
+  });
+
+  describe("when fileSearchFrom option points to a subfolder", () => {
+    it("should continue searching folders up", async () => {
+      await run("json-config-custom-name", "two-namespaces", {
+        args: [
+          "--config.fileSearchFrom",
+          path.resolve(__dirname, "fixtures", "search-from", "subfolder", "subfolder"),
+        ],
+      });
+
+      expect(options).toEqual(expect.arrayContaining(["component.alias:string:alias-from-json"]));
+    });
+  });
+
+  describe("when fileSearchFrom and fileSearchStop is provided", () => {
+    it("should search starting from fileSearchFrom folder and stop in the fileSearchStop folder", async () => {
+      await run("json-config-custom-name", "two-namespaces", {
+        args: [
+          "--config.fileSearchFrom",
+          path.resolve(__dirname, "fixtures", "search-from", "subfolder", "subfolder"),
+          "--config.fileSearchStop",
+          path.resolve(__dirname, "fixtures", "search-from", "subfolder"),
+        ],
+      });
+
+      expect(options).toEqual(
+        expect.not.arrayContaining(["component.alias:string:alias-from-json"])
+      );
+    });
+  });
+
+  describe("when fileSearchFrom and fileSearchPlaces are provided", () => {
+    it("should search for custom file starting from fileSearchFrom", async () => {
+      await run("json-config-custom-name", "two-namespaces", {
+        args: [
+          "--config.fileSearchFrom",
+          path.resolve(__dirname, "fixtures", "search-from", "subfolder"),
+          "--config.fileSearchPlaces",
+          "foo.json",
+        ],
+      });
+
+      expect(options).toEqual(expect.arrayContaining(["component.alias:string:alias-from-json"]));
+    });
+  });
+
   describe("when .mocksrc.json config is provided with namespaces", () => {
     it("should assign values from it", async () => {
       await run("json-config-two-namespaces", "several-namespaces");

@@ -9,7 +9,7 @@ const {
 } = require("@mocks-server/admin-api-paths");
 
 module.exports = {
-  openapi: "3.0.1",
+  openapi: "3.1.0",
   info: {
     title: "Mocks Server admin API",
     description:

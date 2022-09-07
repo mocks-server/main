@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [unreleased]
+
+### Fixed
+- fix: Update @mocks-server/plugin-admin-api
+
 ## [3.12.0] - 2022-09-01
 
 ### Added

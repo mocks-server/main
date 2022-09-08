@@ -15,7 +15,6 @@ const { addEventListener, CHANGE_MOCK } = require("../common/events");
 const Loaders = require("./Loaders");
 const Collections = require("./Collections");
 const Routes = require("./Routes");
-const { deprecatedMessage } = require("../common/helpers");
 const {
   getPlainCollections,
   getPlainRoutes,
@@ -24,35 +23,8 @@ const {
   getRouteVariants,
   getCollections,
   getCollection,
-  plainCollectionsToLegacy,
-  plainRouteVariantsToLegacy,
 } = require("./helpers");
 const { getIds, compileRouteValidator } = require("./validations");
-
-const LEGACY_OPTIONS = [
-  // LEGACY, to be removed
-  {
-    description: "Selected collection. Legacy",
-    name: "selected",
-    type: "string",
-    extraData: {
-      scaffold: {
-        omit: true,
-      },
-    },
-  },
-  {
-    description: "Global delay to apply to routes. Legacy",
-    name: "delay",
-    type: "number",
-    default: 0,
-    extraData: {
-      scaffold: {
-        omit: true,
-      },
-    },
-  },
-];
 
 const SELECTED_COLLECTION_ID = "selected";
 const EMPTY_ALERT_ID = "empty";
@@ -63,19 +35,9 @@ class Mock {
     return "mock";
   }
 
-  static get legacyId() {
-    return "mocks";
-  }
-
-  constructor({ config, legacyConfig, logger, onChange, alerts }, core) {
+  constructor({ config, logger, onChange, alerts }, core) {
     this._eventEmitter = new EventEmitter();
     this._logger = logger;
-
-    this._legacyConfig = legacyConfig;
-    [this._selectedCollectionOptionLegacy, this._currentDelayOptionLegacy] =
-      this._legacyConfig.addOptions(LEGACY_OPTIONS);
-    this._selectedCollectionOptionLegacy.onChange(this._setCurrentLegacy.bind(this));
-    this._currentDelayOptionLegacy.onChange(this._emitChange.bind(this));
 
     this._config = config;
 
@@ -83,7 +45,6 @@ class Mock {
     this._core = core;
 
     this._alerts = alerts;
-    this._alertsDeprecation = alerts.collection("deprecated");
 
     this._routesConfig = this._config.addNamespace(Routes.id);
     this._routesLogger = logger.namespace(Routes.id);
@@ -111,7 +72,6 @@ class Mock {
       logger: this._collectionsLogger,
       config: this._collectionsConfig,
       onChangeSelected: this._setCurrent.bind(this),
-      getSelectedCollection: this._getSelectedCollection.bind(this),
       getIds: this._getCollectionsIds.bind(this),
       getPlainCollections: this._getPlainCollections.bind(this),
     });
@@ -159,46 +119,13 @@ class Mock {
   }
 
   _getDelay() {
-    // Temportal workaround to know current delay in this class
-    // TODO, move to Routes class
-    if (this._currentDelayOptionLegacy.hasBeenSet) {
-      this._alertsDeprecation.set(
-        "mocks.delay",
-        deprecatedMessage(
-          "option",
-          "mocks.delay",
-          "mock.routes.delay",
-          "releases/migrating-from-v3#options"
-        )
-      );
-    }
-    return this._routes._delayOption.hasBeenSet
-      ? this._routes._delayOption.value
-      : this._currentDelayOptionLegacy.value;
-  }
-
-  // LEGACY, to be removed
-  _addCollectionsSelectedOptionAlert() {
-    this._alertsDeprecation.set(
-      "mocks.selected",
-      deprecatedMessage(
-        "option",
-        "mocks.selected",
-        "mock.collections.selected",
-        "releases/migrating-from-v3#options"
-      )
-    );
+    return this._routes.delay;
   }
 
   // Temportal workaround to know selected collection in this class while it has a deprecated option setting the same value.
   // TODO, move to Collections class
   _getCollectionSelected() {
-    if (this._selectedCollectionOptionLegacy.hasBeenSet) {
-      this._addCollectionsSelectedOptionAlert();
-    }
-    return this._collectionsInstance._selectedOption.hasBeenSet
-      ? this._collectionsInstance._selectedOption.value
-      : this._selectedCollectionOptionLegacy.value;
+    return this._collectionsInstance.selected;
   }
 
   _reloadRouter() {
@@ -303,31 +230,13 @@ class Mock {
     this._reloadRouter();
   }
 
-  _setCurrentLegacy(id) {
-    this._addCollectionsSelectedOptionAlert();
-    this._setCurrent(id);
-  }
-
-  // Legacy, to be removed
-  set current(id) {
-    this._alertsDeprecation.set(
-      "current",
-      deprecatedMessage(
-        "setter",
-        "mocks.current",
-        "mock.collections.select()",
-        "releases/migrating-from-v3#api"
-      )
-    );
-    this._setCurrent(id);
-  }
-
   _stopUsingVariants() {
     this._customVariants = [];
     this._customVariantsCollection = null;
   }
 
   _createCustomCollection() {
+    // TODO, set custom collection. Reserve "custom" id in collections for this one
     const selectedCollectionId = this._selectedId;
     const alerts = this._alertsLoadCollections.collection("custom");
     alerts.clean();
@@ -344,20 +253,6 @@ class Mock {
       logger: this._loggerLoadCollections,
       loggerRoutes: this._routesLogger,
     });
-  }
-
-  // Legacy, to be removed
-  restoreRoutesVariants() {
-    this._alertsDeprecation.set(
-      "restorerouteVariants",
-      deprecatedMessage(
-        "method",
-        "mocks.restoreRoutesVariants",
-        "mock.restoreRouteVariants",
-        "releases/migrating-from-v3#api"
-      )
-    );
-    this.restoreRouteVariants();
   }
 
   restoreRouteVariants() {
@@ -391,72 +286,12 @@ class Mock {
     return this._getPlainCustomRouteVariants();
   }
 
-  // Legacy, to be removed
-  get customRoutesVariants() {
-    this._alertsDeprecation.set(
-      "customrouteVariants",
-      deprecatedMessage(
-        "method",
-        "mocks.customrouteVariants",
-        "mock.plainCustomRouteVariants",
-        "releases/migrating-from-v3#api"
-      )
-    );
-    return this._getPlainCustomRouteVariants();
-  }
-
-  _getSelectedCollection() {
-    return this._selectedId;
-  }
-
-  // Legacy, to be removed
-  get current() {
-    this._alertsDeprecation.set(
-      "current",
-      deprecatedMessage(
-        "getter",
-        "mocks.current",
-        "mock.collections.selected",
-        "releases/migrating-from-v3#api"
-      )
-    );
-    return this._getSelectedCollection();
-  }
-
   _getCollectionsIds() {
     return [...this._collectionsIds];
   }
 
-  // Legacy, to be removed
-  get ids() {
-    this._alertsDeprecation.set(
-      "ids",
-      deprecatedMessage(
-        "getter",
-        "mocks.ids",
-        "mock.collections.ids",
-        "releases/migrating-from-v3#api"
-      )
-    );
-    return this._getCollectionsIds();
-  }
-
   _getPlainCollections() {
     return [...this._plainCollections];
-  }
-
-  // Legacy, to be removed
-  get plainMocks() {
-    this._alertsDeprecation.set(
-      "plainMocks",
-      deprecatedMessage(
-        "getter",
-        "mocks.plainMocks",
-        "mock.collections.plain",
-        "releases/migrating-from-v3#api"
-      )
-    );
-    return plainCollectionsToLegacy(this._getPlainCollections());
   }
 
   _getPlainRoutes() {
@@ -465,34 +300,6 @@ class Mock {
 
   _getPlainVariants() {
     return [...this._plainVariants];
-  }
-
-  // Legacy, to be removed
-  get plainRoutes() {
-    this._alertsDeprecation.set(
-      "plainRoutes",
-      deprecatedMessage(
-        "getter",
-        "mocks.plainRoutes",
-        "mock.routes.plain",
-        "releases/migrating-from-v3#api"
-      )
-    );
-    return this._getPlainRoutes();
-  }
-
-  // Legacy, to be removed
-  get plainRoutesVariants() {
-    this._alertsDeprecation.set(
-      "plainRoutesVariants",
-      deprecatedMessage(
-        "getter",
-        "mocks.plainRoutesVariants",
-        "mock.routes.plainVariants",
-        "releases/migrating-from-v3#api"
-      )
-    );
-    return plainRouteVariantsToLegacy(this._getPlainVariants());
   }
 
   get routes() {

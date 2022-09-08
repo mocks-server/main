@@ -169,7 +169,6 @@ class Server {
 
     this._routesRouter = routesRouter;
     this._customRouters = [];
-    this._error = null;
     this._alerts = alerts;
 
     this._startServer = this._startServer.bind(this);
@@ -223,7 +222,6 @@ class Server {
       this._alerts.remove(SERVER_ALERT_ID);
       this._server.on("error", (error) => {
         this._alerts.set(SERVER_ALERT_ID, "Server error", error);
-        this._error = error;
         throw error;
       });
       this._serverInitted = true;
@@ -290,11 +288,9 @@ class Server {
             this._serverStarting = false;
             this._serverStarted = false;
             this._alerts.set(START_ALERT_ID, START_ERROR_MESSAGE, error);
-            this._error = error;
             reject(error);
           } else {
             this._logger.info(`Server started and listening at ${this.url}`);
-            this._error = null;
             this._serverStarting = false;
             this._serverStarted = true;
             this._alerts.remove(START_ALERT_ID);
@@ -387,11 +383,6 @@ class Server {
     const host = this._hostOption.value;
     const hostName = host === ALL_HOSTS ? LOCALHOST : host;
     return `${this.protocol}://${hostName}:${this._portOption.value}`;
-  }
-
-  // LEGACY, to be removed
-  get error() {
-    return this._error;
   }
 }
 

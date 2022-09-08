@@ -32,8 +32,7 @@ class Alerts extends NestedCollections {
     return super.remove(id);
   }
 
-  // LEGACY, to be changed by flat in next major version
-  get customFlat() {
+  get flat() {
     return this._flat.map((item) => {
       let context = item.collection;
       let sep = ":";

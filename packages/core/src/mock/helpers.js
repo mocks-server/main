@@ -26,8 +26,6 @@ const {
   HTTP_METHODS,
 } = require("./validations");
 
-const DEFAULT_ROUTES_HANDLER = "default";
-
 function findEqualRouteVariant(routeVariants, routeVariantToFind) {
   return routeVariants.find((routeVariant) => {
     return routeVariant.routeId === routeVariantToFind.routeId;
@@ -68,7 +66,7 @@ function getCollectionRouteVariants(
   routeVariantsToAdd = []
 ) {
   const collectionRouteVariants = compact(
-    getCollectionRouteVariantsProperty(collection, alertsCollections).map((variantId) => {
+    getCollectionRouteVariantsProperty(collection).map((variantId) => {
       return findRouteVariantByVariantId(routeVariants, variantId);
     })
   );
@@ -222,7 +220,7 @@ function findRouteHandler(routeHandlers, handlerId) {
 }
 
 function getHandlerId(variant) {
-  return variant.type || variant.handler || DEFAULT_ROUTES_HANDLER;
+  return variant.type;
 }
 
 function getDisabledVariantHandler({ logger, route, variant, variantIndex, alerts }) {
@@ -278,7 +276,6 @@ function getVariantHandler({
   const variantNamespace = variantId || getVariantId(route.id, variantIndex);
   const routeVariantLogger = loggerRoutes.namespace(variantNamespace);
   const routeVariantAlerts = alertsRoutes.collection(variantNamespace);
-  const handlersAlerts = alertsRoutes.collection("handlers");
   const routeVariantCoreApi = new CoreApi({
     core,
     logger: routeVariantLogger,
@@ -294,11 +291,10 @@ function getVariantHandler({
   }
 
   try {
-    const variantArgument = getDataFromVariant(variant, Handler, handlersAlerts);
+    const variantArgument = getDataFromVariant(variant);
     routeHandler = new Handler(
       {
         ...variantArgument,
-        variantId, // LEGACY, remove
         url: route.url,
         method: route.method,
       },
@@ -489,31 +485,6 @@ function getCollections({
   return collections;
 }
 
-// LEGACY, to be removed
-function plainCollectionsToLegacy(plainCollections) {
-  return plainCollections.map((collection) => {
-    return {
-      id: collection.id,
-      from: collection.from,
-      routesVariants: collection.definedRoutes,
-      appliedRoutesVariants: collection.routes,
-    };
-  });
-}
-
-// LEGACY, to be removed
-function plainRouteVariantsToLegacy(plainRouteVariants) {
-  return plainRouteVariants.map((routeVariant) => {
-    return {
-      id: routeVariant.id,
-      routeId: routeVariant.route,
-      handler: routeVariant.type,
-      response: routeVariant.preview,
-      delay: routeVariant.delay,
-    };
-  });
-}
-
 module.exports = {
   getCollectionRouteVariants,
   getVariantId,
@@ -527,6 +498,4 @@ module.exports = {
   hasDelayProperty,
   getCollection,
   getCollections,
-  plainCollectionsToLegacy,
-  plainRouteVariantsToLegacy,
 };

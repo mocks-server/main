@@ -7,6 +7,8 @@ const OPTIONS = [
   },
 ];
 
+// TODO, add to data model
+
 class Routes {
   static get id() {
     return "routes";
@@ -29,6 +31,10 @@ class Routes {
 
   get plainVariants() {
     return this._getPlainVariants();
+  }
+
+  get delay() {
+    return this._delayOption.value;
   }
 }
 

@@ -12,8 +12,7 @@ const Ajv = require("ajv");
 const { compact } = require("lodash");
 const betterAjvErrors = require("better-ajv-errors").default;
 
-const { getDataFromVariant, isVersion4 } = require("../variant-handlers/helpers");
-const { deprecatedMessage } = require("../common/helpers");
+const { getDataFromVariant } = require("../variant-handlers/helpers");
 
 const ajv = new Ajv({ allErrors: true });
 
@@ -211,8 +210,6 @@ function getIds(objs) {
 function compileRouteValidator(variantHandlers) {
   const supportedRouteHandlersIds = getIds(variantHandlers);
   const schema = { ...routesSchema };
-  // LEGACY, handler property
-  schema.properties.variants.items.properties.handler.enum = supportedRouteHandlersIds;
   schema.properties.variants.items.properties.type.enum = supportedRouteHandlersIds;
   routeSchema = { ...schema };
   routeValidator = ajv.compile(schema);
@@ -299,20 +296,8 @@ function collectionRouteVariantsErrors(variants, routeVariants) {
   );
 }
 
-function getCollectionRouteVariantsProperty(collection, alertsCollections) {
-  if (alertsCollections && collection && collection.routesVariants) {
-    alertsCollections.set(
-      "routesVariants",
-      deprecatedMessage(
-        "property",
-        "collection.routesVariants",
-        "collection.routes",
-        "releases/migrating-from-v3#main-concepts"
-      )
-    );
-  }
-  // LEGACY, remove routesVariants support
-  return collection.routes || collection.routeVariants || collection.routesVariants;
+function getCollectionRouteVariantsProperty(collection) {
+  return collection.routes || collection.routeVariants;
 }
 
 function collectionInvalidRouteVariants(collection, routeVariants) {
@@ -395,8 +380,8 @@ function variantValidationErrors(route, variant, Handler) {
     return null;
   }
   const variantValidator = ajv.compile(Handler.validationSchema);
-  const dataToCheck = getDataFromVariant(variant, Handler);
-  const dataMessage = isVersion4(Handler) ? "Invalid 'options' property:" : "";
+  const dataToCheck = getDataFromVariant(variant);
+  const dataMessage = "Invalid 'options' property:";
   const isValid = variantValidator(dataToCheck);
   if (!isValid) {
     let validationMessage;

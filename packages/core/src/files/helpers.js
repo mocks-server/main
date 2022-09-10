@@ -15,7 +15,7 @@ const yaml = require("yaml");
 const { flatten, uniq } = require("lodash");
 
 const YAML_EXTENSIONS = [".yaml", ".yml"];
-const DEFAULT_EXTENSIONS = [".json", ".js"].concat(YAML_EXTENSIONS);
+const DEFAULT_EXTENSIONS = [".json", ".js", ".cjs"].concat(YAML_EXTENSIONS);
 const BABEL_DEFAULT_EXTENSIONS = [".es6", ".es", ".esm", ".cjs", ".jsx", ".js", ".mjs", ".ts"];
 
 function globuleExtensionPattern(srcGlob, extension) {

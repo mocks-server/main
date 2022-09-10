@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGE
 
+## [unreleased]
+
+### Removed
+- feat: Remove support for legacy mocks.delay option
+
 ## [3.3.0] - 2022-08-11
 
 ### Added

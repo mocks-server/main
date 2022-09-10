@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+### Changed
+
+- feat: Rename "proxy-v4" handler into "proxy". Load only "proxy" handler. 
+
 ## [3.1.0] - 2022-07-22
 
 ### Changed

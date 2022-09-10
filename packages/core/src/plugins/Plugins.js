@@ -115,7 +115,7 @@ class Plugins {
       coreApi;
     const pluginOptions = { core: this._core, ...pluginMethods };
     try {
-      // TODO, throw an error if plugin has no id
+      // TODO, throw an error if plugin has no id. legacy
       if (Plugin.id) {
         pluginConfig = this._config.addNamespace(Plugin.id);
         pluginAlerts = this._alerts.collection(Plugin.id);
@@ -175,7 +175,7 @@ class Plugins {
         }
         this._pluginsOptions.push(coreApi);
       }
-      // TODO, deprecate register method. It is duplicated with the constructor
+      // TODO, deprecate register method. It is duplicated with the constructor. Legacy
       if (isFunction(pluginInstance.register)) {
         try {
           // TODO, if there is a problem registering, remove it

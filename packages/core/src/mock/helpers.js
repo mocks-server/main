@@ -275,6 +275,7 @@ function getVariantHandler({
 
   const variantNamespace = variantId || getVariantId(route.id, variantIndex);
   const routeVariantLogger = loggerRoutes.namespace(variantNamespace);
+  loggerRoutes.debug(`Creating logger namespace for route variant ${variantNamespace}`);
   const routeVariantAlerts = alertsRoutes.collection(variantNamespace);
   const routeVariantCoreApi = new CoreApi({
     core,
@@ -308,6 +309,7 @@ function getVariantHandler({
     routeHandler.routeId = route.id;
     routeHandler.url = route.url;
     routeHandler.method = route.method;
+    routeHandler.logger = routeVariantLogger;
   } catch (error) {
     variantAlerts.set("process", error.message, error);
   }

@@ -22,7 +22,7 @@ const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
 });
 
-describe("https protocol", () => {
+describe("https option", () => {
   let cli;
 
   beforeAll(async () => {
@@ -63,7 +63,7 @@ describe("https protocol", () => {
     await wait(6000);
   });
 
-  it("should set server port", async () => {
+  it("should set server protocol", async () => {
     const users = await doFetch("/api/users", {
       agent: httpsAgent,
       protocol: "https",

@@ -31,7 +31,7 @@ const logRequest =
 const notFound =
   ({ logger }) =>
   (req, _res, next) => {
-    logger.debug(`Sending Not found response | ${req.id}`);
+    logger.debug(`Sending Not found response | ${req.method} => ${req.url} | ${req.id}`);
     next(Boom.notFound());
   };
 

@@ -65,7 +65,7 @@ describe("Quick start tutorial", () => {
     });
 
     it("should have added an alert about folder not found", async () => {
-      expect(findAlert("scaffold:folder", core.alerts).message).toEqual(
+      expect(findAlert("scaffold:folder", core.alerts.flat).message).toEqual(
         expect.stringContaining("Mocks Server folder was not found")
       );
     });

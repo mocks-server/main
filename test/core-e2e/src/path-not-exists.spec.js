@@ -34,7 +34,7 @@ describe("when path not exists", () => {
 
   afterAll(async () => {
     removeConfigFile();
-    await fsExtra.remove(fixturesFolder(FOLDER));
+    // await fsExtra.remove(fixturesFolder(FOLDER));
     await core.stop();
   });
 
@@ -51,7 +51,7 @@ describe("when path not exists", () => {
     });
 
     it("should have added an alert about folder not found", async () => {
-      expect(findAlert("scaffold:folder", core.alerts).message).toEqual(
+      expect(findAlert("scaffold:folder", core.alerts.flat).message).toEqual(
         expect.stringContaining("Mocks Server folder was not found")
       );
     });

@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Fixed
 ### Removed
-### Breaking change
+
+## [unreleased]
+
+### Removed
+- feat: Remove default client. BREAKING CHANGE
 
 ## [6.2.0] - 2022-08-11
 

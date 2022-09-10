@@ -3,7 +3,7 @@ function getDataFromVariant(variant) {
 }
 
 function getPreview(variantInstance) {
-  return variantInstance.plainResponsePreview;
+  return variantInstance.preview;
 }
 
 module.exports = {

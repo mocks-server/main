@@ -134,18 +134,35 @@ describe("plugins", () => {
           expect(response.body).toEqual(FOO_CUSTOM_RESPONSE);
         });
 
-        it("should have added two plugin alerts", async () => {
-          const alerts = filterPluginAlerts(core.alerts);
-          const registerAlert = alerts.find(
-            (alert) => alert.context === "plugins:test-plugin:test-register"
-          );
-          const startAlert = alerts.find(
-            (alert) => alert.context === "plugins:test-plugin:test-start"
-          );
-          expect(alerts.length).toEqual(2);
-          expect(registerAlert.message).toEqual("Warning registering plugin");
-          expect(startAlert.message).toEqual("Warning starting plugin");
-        });
+        if (pluginConstructor.id) {
+          it("should have added two plugin alerts", async () => {
+            const alerts = filterPluginAlerts(core.alerts.flat);
+            const registerAlert = alerts.find(
+              (alert) => alert.context === "plugins:test-plugin:test-register"
+            );
+            const startAlert = alerts.find(
+              (alert) => alert.context === "plugins:test-plugin:test-start"
+            );
+            expect(alerts.length).toEqual(2);
+            expect(registerAlert.message).toEqual("Warning registering plugin");
+            expect(startAlert.message).toEqual("Warning starting plugin");
+          });
+        } else {
+          it("should have added three plugin alerts", async () => {
+            const alerts = filterPluginAlerts(core.alerts.flat);
+            const registerAlert = alerts.find(
+              (alert) => alert.context === "plugins:test-plugin:test-register"
+            );
+            const startAlert = alerts.find(
+              (alert) => alert.context === "plugins:test-plugin:test-start"
+            );
+            const idAlert = alerts.find((alert) => alert.context === "plugins:format:0");
+            expect(alerts.length).toEqual(3);
+            expect(registerAlert.message).toEqual("Warning registering plugin");
+            expect(idAlert.message).toEqual("Plugins must have a static id property");
+            expect(startAlert.message).toEqual("Warning starting plugin");
+          });
+        }
       });
 
       describe("when emit events", () => {
@@ -164,10 +181,15 @@ describe("plugins", () => {
         beforeAll(async () => {
           await core.stop();
         });
-
-        it("should have removed all alerts", async () => {
-          expect(filterPluginAlerts(core.alerts)).toEqual([]);
-        });
+        if (pluginConstructor.id) {
+          it("should have removed all alerts", async () => {
+            expect(filterPluginAlerts(core.alerts.flat)).toEqual([]);
+          });
+        } else {
+          it("should have removed two alerts", async () => {
+            expect(filterPluginAlerts(core.alerts.flat).length).toEqual(1);
+          });
+        }
 
         it("should have executed logger in stop method", () => {
           expect(
@@ -208,7 +230,7 @@ describe("plugins", () => {
         }
 
         it("should have added two alerts", async () => {
-          expect(filterPluginAlerts(core.alerts)).toEqual([
+          expect(filterPluginAlerts(core.alerts.flat)).toEqual([
             {
               // Plugin id is still not available in register method
               // It should have been renamed when start alert is received using a different context

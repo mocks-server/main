@@ -10,13 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-class Json {
+class Middleware {
   static get id() {
     return "middleware";
-  }
-
-  static get version() {
-    return "4";
   }
 
   static get validationSchema() {
@@ -48,4 +44,4 @@ class Json {
   }
 }
 
-module.exports = Json;
+module.exports = Middleware;

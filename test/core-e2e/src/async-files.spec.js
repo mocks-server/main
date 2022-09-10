@@ -34,7 +34,7 @@ describe("async files", () => {
 
   describe("collection by default", () => {
     it("should have added an alert about collection was not defined", () => {
-      expect(findAlert("mock:collections:selected", core.alerts).message).toEqual(
+      expect(findAlert("mock:collections:selected", core.alerts.flat).message).toEqual(
         expect.stringContaining("Option 'mock.collections.selected' was not defined")
       );
     });
@@ -67,7 +67,7 @@ describe("async files", () => {
     });
 
     it("should have removed alert", () => {
-      expect(findAlert("mock:collections:selected", core.alerts)).toEqual(undefined);
+      expect(findAlert("mock:collections:selected", core.alerts.flat)).toEqual(undefined);
     });
 
     it("should serve users collection under the /api/users path", async () => {

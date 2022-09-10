@@ -15,10 +15,6 @@ class Status {
     return "status";
   }
 
-  static get version() {
-    return "4";
-  }
-
   get defaultHeaders() {
     return {
       "Content-Length": "0",

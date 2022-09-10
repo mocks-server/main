@@ -21,7 +21,7 @@ module.exports = [
         type: "middleware",
         options: {
           middleware: (req, _res, next, core) => {
-            core.tracer.info(
+            core.logger.info(
               `Middleware in request ${req.query.req} => ${req.method} => ${req.url}`
             );
             next();

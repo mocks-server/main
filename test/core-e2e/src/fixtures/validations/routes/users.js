@@ -67,7 +67,7 @@ module.exports = [
       {
         id: "2",
         type: "json",
-        options: null,
+        options: {},
       },
     ],
   },

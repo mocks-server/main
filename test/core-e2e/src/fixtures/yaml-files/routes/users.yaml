@@ -12,7 +12,7 @@
           - id: 2
             name: "Jane Doe"
     - id: "error"
-      type": "json"
+      type: "json"
       options:
         status: 403
         body:

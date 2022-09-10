@@ -1,5 +1,5 @@
+// TODO, publish as a handler, not as a plugin
 const ProxyRoutesHandler = require("./ProxyRoutesHandler");
-const ProxyRoutesHandlerV4 = require("./ProxyRoutesHandlerV4");
 
 class Plugin {
   static get id() {
@@ -7,7 +7,7 @@ class Plugin {
   }
 
   constructor({ variantHandlers }) {
-    variantHandlers.register([ProxyRoutesHandler, ProxyRoutesHandlerV4]);
+    variantHandlers.register([ProxyRoutesHandler]);
   }
 }
 

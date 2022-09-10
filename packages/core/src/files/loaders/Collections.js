@@ -4,6 +4,7 @@ const { validateFileContent } = require("../helpers");
 
 const ID = "collections";
 const FILE_NAME = "collections";
+const LEGACY_FILE_NAME = "mocks";
 
 function findFile(filesContents, fileName) {
   return filesContents.find((fileDetails) => {
@@ -12,14 +13,14 @@ function findFile(filesContents, fileName) {
 }
 
 function getFileToUse(filesContents) {
-  return findFile(filesContents, FILE_NAME);
+  return findFile(filesContents, FILE_NAME) || findFile(filesContents, LEGACY_FILE_NAME);
 }
 
 class CollectionsLoader {
   constructor({ loadCollections, createLoader, getBasePath }) {
     this._loader = createLoader({
       id: ID,
-      src: [FILE_NAME],
+      src: [FILE_NAME, LEGACY_FILE_NAME],
       onLoad: this._onLoad.bind(this),
     });
 
@@ -44,6 +45,19 @@ class CollectionsLoader {
     if (fileToUse) {
       const filePath = fileToUse.path;
       const fileContent = fileToUse.content;
+      const fileName = path.basename(filePath);
+      // LEGACY, to be removed
+      if (fileName.startsWith(LEGACY_FILE_NAME)) {
+        this._deprecationAlerts.set(
+          LEGACY_FILE_NAME,
+          `Defining collections in '${fileName}' file is deprecated. Please rename it to '${fileName.replace(
+            LEGACY_FILE_NAME,
+            FILE_NAME
+          )}'`
+        );
+      } else {
+        this._deprecationAlerts.remove(LEGACY_FILE_NAME);
+      }
 
       try {
         const fileErrors = validateFileContent(fileContent);

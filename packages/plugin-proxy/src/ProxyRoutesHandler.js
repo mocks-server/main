@@ -5,10 +5,6 @@ class ProxyRoutesHandler {
     return "proxy";
   }
 
-  static get deprecated() {
-    return true;
-  }
-
   static get validationSchema() {
     return {
       type: "object",
@@ -31,16 +27,15 @@ class ProxyRoutesHandler {
     };
   }
 
-  constructor(route, core) {
-    this._response = route.response;
-    this._variantId = route.variantId;
+  constructor(options, core) {
+    this._options = options;
     this._core = core;
-    this._host = route.host;
-    this._options = route.options;
-    this.middleware = httpProxy(this._host, this._options);
+    this._host = this._options.host;
+    this._optionsProxy = this._options.options;
+    this.middleware = httpProxy(this._host, this._optionsProxy);
   }
 
-  get plainResponsePreview() {
+  get preview() {
     return {
       host: this._host,
     };

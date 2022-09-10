@@ -40,7 +40,7 @@ class Collection {
     this._router = express.Router();
     this._routeVariants.forEach((routeVariant) => {
       const logAndApplyDelay = (req, _res, next) => {
-        this._logger.info(`Request ${req.method} => ${req.url} | req: ${req.id}`);
+        routeVariant.logger.info(`Request ${req.method} => ${req.url} | req: ${req.id}`);
         const delay = routeVariant.delay !== null ? routeVariant.delay : this._getDelay();
         if (delay > 0) {
           this._logger.verbose(`Applying delay of ${delay}ms to route variant '${this._id}'`);

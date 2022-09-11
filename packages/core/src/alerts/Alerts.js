@@ -10,6 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { NestedCollections } = require("@mocks-server/nested-collections");
 
+const ALERTS_ROOT_ID = "alerts";
+const ID_SEP = ":";
+
 class Alerts extends NestedCollections {
   constructor(id, options) {
     super(id, { ...options, Decorator: Alerts });
@@ -34,21 +37,14 @@ class Alerts extends NestedCollections {
 
   get flat() {
     return this._flat.map((item) => {
-      let context = item.collection;
-      let sep = ":";
-      if (context.startsWith("alerts:")) {
-        context = context.replace("alerts:", "");
-      } else {
-        context = "";
-        sep = "";
+      let collection = item.collection.replace(`${ALERTS_ROOT_ID}${ID_SEP}`, "");
+      if (!collection.endsWith(ID_SEP)) {
+        collection = `${collection}${ID_SEP}`;
       }
-
-      const id = `${context}${sep}${item.id}`;
 
       return {
         ...item.value,
-        id,
-        context: id,
+        id: `${collection}${item.id}`,
       };
     });
   }

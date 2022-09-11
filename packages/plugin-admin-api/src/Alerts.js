@@ -31,7 +31,6 @@ class AlertsApi {
       getItems: this._getCollection.bind(this),
       parseItem: this._parseModel.bind(this),
       logger: this._logger.namespace("alert"),
-      finder: (context) => (item) => item.context === context,
     });
   }
 

@@ -56,12 +56,7 @@ function renderHeader(description, message, status, context) {
 
 function renderAlert(alert) {
   const message = alert.error ? `${alert.message}: ${formatError(alert.error)}` : alert.message;
-  return renderHeader(
-    alert.error ? "Error" : "Warning",
-    message,
-    alert.error ? 2 : 1,
-    alert.context
-  );
+  return renderHeader(alert.error ? "Error" : "Warning", message, alert.error ? 2 : 1, alert.id);
 }
 
 function renderLogsMode() {

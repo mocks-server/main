@@ -40,11 +40,11 @@ class AlertsApi {
   }
 
   _parseCollection() {
-    return this._alerts.root.customFlat.map(this._parseModel.bind(this));
+    return this._alerts.root.flat.map(this._parseModel.bind(this));
   }
 
   _getCollection() {
-    return this._alerts.root.customFlat;
+    return this._alerts.root.flat;
   }
 
   get router() {

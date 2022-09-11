@@ -682,13 +682,6 @@ describe("Cli", () => {
       expect(cli._header()[1]).toEqual(expect.stringContaining(chalk.yellow("1000")));
     });
 
-    it("should print legacy delay in yellow if is greater than 0", async () => {
-      optionDelay.hasBeenSet = false;
-      optionDelayLegacy.value = 1000;
-      await cli.start();
-      expect(cli._header()[1]).toEqual(expect.stringContaining(chalk.yellow("1000")));
-    });
-
     it("should print delay in green if is equal to 0", async () => {
       optionDelay.hasBeenSet = true;
       optionDelay.value = 0;
@@ -768,25 +761,25 @@ describe("Cli", () => {
 
   describe("when displaying alerts", () => {
     it("should not display alerts if core alerts are empty", async () => {
-      coreInstance.alerts.root.customFlat = [];
+      coreInstance.alerts.root.flat = [];
       await cli.start();
       expect(cli._alertsHeader().length).toEqual(0);
     });
 
-    it("should display provided alert context", async () => {
-      coreInstance.alerts.root.customFlat = [
+    it("should display provided alert id", async () => {
+      coreInstance.alerts.root.flat = [
         {
           message: "foo message",
-          context: "foo-context",
+          id: "foo-id",
         },
       ];
       await cli.start();
-      expect(cli._alertsHeader()[0]).toEqual(expect.stringContaining("[foo-context]"));
+      expect(cli._alertsHeader()[0]).toEqual(expect.stringContaining("[foo-id]"));
     });
 
     it("should display provided alert in yellow when it has no error", async () => {
       expect.assertions(2);
-      coreInstance.alerts.root.customFlat = [
+      coreInstance.alerts.root.flat = [
         {
           message: "foo message",
         },
@@ -798,7 +791,7 @@ describe("Cli", () => {
 
     it("should display provided alert in red when it has error", async () => {
       expect.assertions(2);
-      coreInstance.alerts.root.customFlat = [
+      coreInstance.alerts.root.flat = [
         {
           message: "foo message",
           error: {

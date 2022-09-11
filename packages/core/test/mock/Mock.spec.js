@@ -18,7 +18,6 @@ const LoadersMock = require("./Loaders.mocks");
 const Alerts = require("../../src/alerts/Alerts");
 const Mock = require("../../src/mock/Mock");
 const ConfigMock = require("../common/Config.mocks");
-const DefaultRoutesHandler = require("../../src/variant-handlers/handlers/Default");
 
 describe("Mock", () => {
   let configMock;
@@ -59,7 +58,7 @@ describe("Mock", () => {
     mock = new Mock(methods, core);
     mock._routesLoaders.contents = [];
     mock._collectionsLoaders.contents = [];
-    mock.init([DefaultRoutesHandler]);
+    mock.init([]);
   });
 
   afterEach(() => {

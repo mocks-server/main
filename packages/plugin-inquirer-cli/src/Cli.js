@@ -291,7 +291,7 @@ class Cli {
   }
 
   _alertsHeader() {
-    return this._alerts.flat.map(renderAlert);
+    return this._alerts.root.flat.map(renderAlert);
   }
 
   async _displayMainMenu() {

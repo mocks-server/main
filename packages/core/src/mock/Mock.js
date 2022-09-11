@@ -74,6 +74,9 @@ class Mock {
       onChangeSelected: this._setCurrent.bind(this),
       getIds: this._getCollectionsIds.bind(this),
       getPlainCollections: this._getPlainCollections.bind(this),
+      getSelected: () => {
+        return this._selectedId;
+      },
     });
 
     // Create collections loaders
@@ -125,7 +128,7 @@ class Mock {
   // Temportal workaround to know selected collection in this class while it has a deprecated option setting the same value.
   // TODO, move to Collections class
   _getCollectionSelected() {
-    return this._collectionsInstance.selected;
+    return this._collectionsInstance._selectedOption.value;
   }
 
   _reloadRouter() {

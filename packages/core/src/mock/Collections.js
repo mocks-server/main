@@ -25,19 +25,20 @@ class Collections {
     return "collections";
   }
 
-  constructor({ logger, config, onChangeSelected, getIds, getPlainCollections }) {
+  constructor({ logger, config, onChangeSelected, getIds, getPlainCollections, getSelected }) {
     this._logger = logger;
     this._config = config;
     this._onChangeSelected = onChangeSelected;
     this._getPlainCollections = getPlainCollections;
     this._getIds = getIds;
+    this._getSelected = getSelected;
 
     [this._selectedOption] = this._config.addOptions(OPTIONS);
     this._selectedOption.onChange(onChangeSelected);
   }
 
   get selected() {
-    return this._selectedOption.value;
+    return this._getSelected();
   }
 
   get ids() {

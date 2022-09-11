@@ -17,7 +17,6 @@ const {
   collectionValidationErrors,
   collectionRouteVariantsValidationErrors,
 } = require("../../src/mock/validations");
-const DefaultRoutesHandler = require("../../src/variant-handlers/handlers/Default");
 const JsonRoutesHandler = require("../../src/variant-handlers/handlers/Json");
 const MiddlewareRoutesHandler = require("../../src/variant-handlers/handlers/Middleware");
 
@@ -245,66 +244,6 @@ describe("mocks validations", () => {
   describe("variantValidationErrors", () => {
     it("should return null if Handler has not validationSchema", () => {
       expect(variantValidationErrors({}, {}, {})).toEqual(null);
-    });
-  });
-
-  describe("variantValidationErrors using DefaultRoutesHandler schema", () => {
-    it("should return null if variant is valid", () => {
-      expect(
-        variantValidationErrors({ id: "foo-route" }, VALID_VARIANT, DefaultRoutesHandler)
-      ).toEqual(null);
-    });
-
-    it("should return error if variant has not response property and it has not id", () => {
-      const errors = variantValidationErrors(
-        { id: "foo-route" },
-        { ...VALID_VARIANT, id: undefined, response: undefined },
-        DefaultRoutesHandler
-      );
-      expect(errors.message).toEqual(
-        "Variant in route with id 'foo-route' is invalid:  must have required property 'response'"
-      );
-    });
-
-    it("should return error if variant has not response property", () => {
-      const errors = variantValidationErrors(
-        { id: "foo-route" },
-        { ...VALID_VARIANT, response: undefined },
-        DefaultRoutesHandler
-      );
-      expect(errors.message).toEqual(
-        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid:  must have required property 'response'"
-      );
-    });
-
-    it("should return error if variant response headers is not an object", () => {
-      const errors = variantValidationErrors(
-        { id: "foo-route" },
-        {
-          ...VALID_VARIANT,
-          response: {
-            headers: "foo",
-          },
-        },
-        DefaultRoutesHandler
-      );
-      expect(errors.message).toEqual(
-        "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: /response must have required property 'status'"
-      );
-    });
-
-    it("should allow defining variant response as a function", () => {
-      const errors = variantValidationErrors(
-        { id: "foo-route" },
-        {
-          ...VALID_VARIANT,
-          response: () => {
-            // do nothing
-          },
-        },
-        DefaultRoutesHandler
-      );
-      expect(errors).toEqual(null);
     });
   });
 

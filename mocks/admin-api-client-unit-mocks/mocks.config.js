@@ -3,4 +3,9 @@ module.exports = {
   server: {
     port: 3200,
   },
+  mock: {
+    collections: {
+      selected: "doo",
+    },
+  },
 };

@@ -64,8 +64,10 @@ describe("server", () => {
   describe("when collection is changed", () => {
     it("should respond with new collection", async () => {
       server.config.set({
-        mocks: {
-          selected: "user-2",
+        mock: {
+          collections: {
+            selected: "user-2",
+          },
         },
       });
       await wait(1000);

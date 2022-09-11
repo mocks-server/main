@@ -38,8 +38,7 @@ describe("alerts api", () => {
   describe("when started", () => {
     it("should return collection not found alert", async () => {
       const response = await doApiFetch("/alerts");
-      // one alert is caused by deprecated handler
-      expect(response.body.length).toEqual(2);
+      expect(response.body.length).toEqual(1);
     });
 
     it("should return specific alert when requested by id", async () => {
@@ -77,8 +76,7 @@ describe("alerts api", () => {
 
     it("should return no alerts", async () => {
       const response = await doApiFetch("/alerts");
-      // one alert is caused by deprecated handler
-      expect(response.body.length).toEqual(1);
+      expect(response.body.length).toEqual(0);
     });
   });
 
@@ -97,8 +95,8 @@ describe("alerts api", () => {
 
     it("should return alert containing error", async () => {
       const response = await doApiFetch("/alerts");
-      expect(response.body.length).toEqual(6);
-      expect(response.body[5].error.message).toEqual(
+      expect(response.body.length).toEqual(5);
+      expect(response.body[4].error.message).toEqual(
         expect.stringContaining("Cannot find module '../db/users'")
       );
     });

@@ -11,8 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const express = require("express");
 
-const filterPluginAlerts = (alerts) =>
-  alerts.filter((alert) => alert.context.indexOf("plugins") === 0);
+const filterPluginAlerts = (alerts) => alerts.filter((alert) => alert.id.indexOf("plugins") === 0);
 
 const filterLogs = (logs, text) => logs.filter((log) => log.includes(text));
 
@@ -138,10 +137,10 @@ describe("plugins", () => {
           it("should have added two plugin alerts", async () => {
             const alerts = filterPluginAlerts(core.alerts.flat);
             const registerAlert = alerts.find(
-              (alert) => alert.context === "plugins:test-plugin:test-register"
+              (alert) => alert.id === "plugins:test-plugin:test-register"
             );
             const startAlert = alerts.find(
-              (alert) => alert.context === "plugins:test-plugin:test-start"
+              (alert) => alert.id === "plugins:test-plugin:test-start"
             );
             expect(alerts.length).toEqual(2);
             expect(registerAlert.message).toEqual("Warning registering plugin");
@@ -151,12 +150,12 @@ describe("plugins", () => {
           it("should have added three plugin alerts", async () => {
             const alerts = filterPluginAlerts(core.alerts.flat);
             const registerAlert = alerts.find(
-              (alert) => alert.context === "plugins:test-plugin:test-register"
+              (alert) => alert.id === "plugins:test-plugin:test-register"
             );
             const startAlert = alerts.find(
-              (alert) => alert.context === "plugins:test-plugin:test-start"
+              (alert) => alert.id === "plugins:test-plugin:test-start"
             );
-            const idAlert = alerts.find((alert) => alert.context === "plugins:format:0");
+            const idAlert = alerts.find((alert) => alert.id === "plugins:format:0");
             expect(alerts.length).toEqual(3);
             expect(registerAlert.message).toEqual("Warning registering plugin");
             expect(idAlert.message).toEqual("Plugins must have a static id property");

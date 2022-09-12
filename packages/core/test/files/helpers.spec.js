@@ -53,6 +53,7 @@ describe("FilesLoader helpers", () => {
       expect(getFilesGlobule("**/*", false, {})).toEqual([
         "**/*.json",
         "**/*.js",
+        "**/*.cjs",
         "**/*.yaml",
         "**/*.yml",
       ]);
@@ -62,12 +63,12 @@ describe("FilesLoader helpers", () => {
       expect(getFilesGlobule("**/*", true, {})).toEqual([
         "**/*.json",
         "**/*.js",
+        "**/*.cjs",
         "**/*.yaml",
         "**/*.yml",
         "**/*.es6",
         "**/*.es",
         "**/*.esm",
-        "**/*.cjs",
         "**/*.jsx",
         "**/*.mjs",
         "**/*.ts",
@@ -79,7 +80,15 @@ describe("FilesLoader helpers", () => {
         getFilesGlobule("**/*", true, {
           extensions: [".foo", ".foo2"],
         })
-      ).toEqual(["**/*.json", "**/*.js", "**/*.yaml", "**/*.yml", "**/*.foo", "**/*.foo2"]);
+      ).toEqual([
+        "**/*.json",
+        "**/*.js",
+        "**/*.cjs",
+        "**/*.yaml",
+        "**/*.yml",
+        "**/*.foo",
+        "**/*.foo2",
+      ]);
     });
   });
 });

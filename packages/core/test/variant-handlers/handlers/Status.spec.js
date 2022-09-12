@@ -52,12 +52,6 @@ describe("Status variant handler", () => {
     });
   });
 
-  describe("version", () => {
-    it("should have 4 value", () => {
-      expect(Status.version).toEqual("4");
-    });
-  });
-
   describe("validationSchema", () => {
     it("should be defined", () => {
       expect(Status.validationSchema).toBeDefined();

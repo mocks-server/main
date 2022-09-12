@@ -19,9 +19,10 @@ const Alerts = require("../../src/alerts/Alerts");
 const Mock = require("../../src/mock/Mock");
 const ConfigMock = require("../common/Config.mocks");
 
+const JsonRoutesHandler = require("../../src/variant-handlers/handlers/Json");
+
 describe("Mock", () => {
   let configMock;
-  let legacyConfigMock;
   let sandbox;
   let collectionMock;
   let mock;
@@ -36,7 +37,6 @@ describe("Mock", () => {
     sandbox = sinon.createSandbox();
     configMock = new ConfigMock();
     loadersMock = new LoadersMock();
-    legacyConfigMock = new ConfigMock();
     collectionMock = new CollectionMock();
     routerMock = sandbox.stub();
     sandbox.stub(express, "Router").returns(routerMock);
@@ -48,7 +48,6 @@ describe("Mock", () => {
     core = {};
     methods = {
       config: configMock.stubs.namespace,
-      legacyConfig: legacyConfigMock.stubs.namespace,
       getCurrentMock: sandbox.stub().returns(null),
       onChange: sandbox.stub(),
       alerts,
@@ -58,7 +57,7 @@ describe("Mock", () => {
     mock = new Mock(methods, core);
     mock._routesLoaders.contents = [];
     mock._collectionsLoaders.contents = [];
-    mock.init([]);
+    mock.init([JsonRoutesHandler]);
   });
 
   afterEach(() => {
@@ -72,38 +71,11 @@ describe("Mock", () => {
     });
   });
 
-  describe("legacyId", () => {
-    it("should return mocks", async () => {
-      expect(Mock.legacyId).toEqual("mocks");
-    });
-  });
-
   describe("getDelay method", () => {
     it("should return delay option value", () => {
       mock._routes._delayOption.hasBeenSet = true;
       mock._routes._delayOption.value = "foo-delay";
       expect(mock._getDelay()).toEqual("foo-delay");
-    });
-
-    it("should set an alert if legacy delay option has been set", () => {
-      mock._currentDelayOptionLegacy.hasBeenSet = true;
-      mock._currentDelayOptionLegacy.value = "foo-delay";
-      mock._getDelay();
-      const alert = alerts.flat.pop();
-      expect(alert.id).toEqual("mocks.delay");
-      expect(alert.value.message).toEqual(
-        expect.stringContaining(
-          "Usage of 'mocks.delay' option is deprecated. Use 'mock.routes.delay' instead"
-        )
-      );
-      expect(alert.collection).toEqual("mocks:deprecated");
-    });
-
-    it("should return legacy delay option value if new option has not been set", () => {
-      mock._routes._delayOption.hasBeenSet = false;
-      mock._routes._delayOption.value = "foo-delay";
-      mock._currentDelayOptionLegacy.value = "foo-delay-legacy";
-      expect(mock._getDelay()).toEqual("foo-delay-legacy");
     });
   });
 
@@ -130,18 +102,17 @@ describe("Mock", () => {
   describe("load method", () => {
     it("should process loaded mocks", () => {
       mock.load();
-      expect(mock.plainMocks).toEqual([]);
       expect(mock.collections.plain).toEqual([]);
     });
 
     it("should process loaded routes", () => {
       mock.load();
-      expect(mock.plainRoutes).toEqual([]);
+      expect(mock.routes.plain).toEqual([]);
     });
 
-    it("should process routesVariants routes", () => {
+    it("should process route variants", () => {
       mock.load();
-      expect(mock.plainRoutesVariants).toEqual([]);
+      expect(mock.routes.plainVariants).toEqual([]);
     });
 
     it("should call onChange method", () => {
@@ -158,19 +129,9 @@ describe("Mock", () => {
       expect(routerMock.callCount).toEqual(1);
     });
 
-    it("should return null as current", () => {
-      mock.load();
-      expect(mock.current).toEqual(null);
-    });
-
     it("should return null as selected collection", () => {
       mock.load();
       expect(mock.collections.selected).toEqual(null);
-    });
-
-    it("should return empty array in ids", () => {
-      mock.load();
-      expect(mock.ids).toEqual([]);
     });
 
     it("should return empty array in collections ids", () => {
@@ -209,26 +170,34 @@ describe("Mock", () => {
       mock._routesLoaders.contents = [
         {
           id: "route-1",
-          variants: [{ id: "variant-1", method: "GET", response: { body: {}, status: 200 } }],
+          variants: [
+            { id: "variant-1", method: "GET", type: "json", options: { body: {}, status: 200 } },
+          ],
         },
         {
           id: "route-2",
           delay: 500,
           variants: [
-            { id: "variant-1", method: "GET", response: { body: {}, status: 200 } },
-            { id: "variant-2", delay: 1000, method: "GET", response: { body: {}, status: 200 } },
+            { id: "variant-1", method: "GET", type: "json", options: { body: {}, status: 200 } },
+            {
+              id: "variant-2",
+              delay: 1000,
+              method: "GET",
+              type: "json",
+              options: { body: {}, status: 200 },
+            },
           ],
         },
       ];
       mock._collectionsLoaders.contents = [
         {
           id: "mock-1",
-          routesVariants: ["route-1:variant-1", "route-2:variant-1"],
+          routes: ["route-1:variant-1", "route-2:variant-1"],
         },
         {
           id: "mock-2",
           from: "mock-1",
-          routesVariants: ["route-2:variant-2"],
+          routes: ["route-2:variant-2"],
         },
       ];
     });
@@ -236,61 +205,28 @@ describe("Mock", () => {
     describe("when loaded", () => {
       it("should set current id", () => {
         mock.load();
-        expect(mock.current).toEqual("mock-id");
-      });
-
-      it("should set selected collection id", () => {
-        mock.load();
         expect(mock.collections.selected).toEqual("mock-id");
-      });
-
-      it("should return array of ids in ids getter", () => {
-        mock.load();
-        expect(mock.ids).toEqual(["mock-id"]);
       });
 
       it("should set selected collection id using new option if it was set", () => {
         mock._collectionsInstance._selectedOption.hasBeenSet = true;
         mock._collectionsInstance._selectedOption.value = "mock-id";
         mock.load();
-        expect(mock.current).toEqual("mock-id");
-      });
-
-      it("should set selected collection id using legacy option if new was not set", () => {
-        mock._collectionsInstance._selectedOption.hasBeenSet = false;
-        mock._collectionsInstance._selectedOption.value = "foo";
-        mock._selectedCollectionOptionLegacy.hasBeenSet = true;
-        mock._selectedCollectionOptionLegacy.value = "mock-id";
-        mock.load();
-        expect(mock.current).toEqual("mock-id");
-      });
-    });
-
-    describe("when legacy option mocks.selected changes", () => {
-      it("should set current mock when it exists", () => {
-        mock.load();
-        mock._setCurrentLegacy("mock-id");
-        expect(mock.current).toEqual("mock-id");
+        expect(mock.collections.selected).toEqual("mock-id");
       });
     });
 
     describe("when setting current collection", () => {
-      it("should set current collection when it exists", () => {
-        mock.load();
-        mock.current = "mock-id";
-        expect(mock.current).toEqual("mock-id");
-      });
-
       it("should set selected collection when it exists", () => {
         mock.load();
-        mock.current = "mock-id";
+        mock.collections.select("mock-id");
         expect(mock.collections.selected).toEqual("mock-id");
       });
 
       it("should set default collection when id does not exists", () => {
         mock.load();
-        mock.current = "foo-id";
-        expect(mock.current).toEqual("mock-id");
+        mock.collections.select("foo-id");
+        expect(mock.collections.selected).toEqual("mock-id");
       });
     });
 
@@ -317,7 +253,6 @@ describe("Mock", () => {
         mock.load();
         mock._selectedId = "foo";
         return mock.collections.select("foo-mock-id", { check: true }).catch(() => {
-          console.log(mock.collections.selected);
           expect(mock.collections.selected).toEqual("foo");
         });
       });
@@ -327,20 +262,7 @@ describe("Mock", () => {
       it("should return customVariants", () => {
         mock.load();
         mock.useRouteVariant("route-2:variant-2");
-        expect(mock.customRoutesVariants).toEqual(["route-2:variant-2"]);
         expect(mock.customRouteVariants).toEqual(["route-2:variant-2"]);
-      });
-    });
-
-    describe("when restoring custom route variants using legacy method", () => {
-      it("should return empty array", () => {
-        mock.load();
-        mock.useRouteVariant("route-2:variant-2");
-        expect(mock.customRoutesVariants).toEqual(["route-2:variant-2"]);
-        expect(mock.customRouteVariants).toEqual(["route-2:variant-2"]);
-        mock.restoreRoutesVariants();
-        expect(mock.customRoutesVariants).toEqual([]);
-        expect(mock.customRouteVariants).toEqual([]);
       });
     });
 
@@ -348,10 +270,8 @@ describe("Mock", () => {
       it("should return empty array", () => {
         mock.load();
         mock.useRouteVariant("route-2:variant-2");
-        expect(mock.customRoutesVariants).toEqual(["route-2:variant-2"]);
         expect(mock.customRouteVariants).toEqual(["route-2:variant-2"]);
         mock.restoreRouteVariants();
-        expect(mock.customRoutesVariants).toEqual([]);
         expect(mock.customRouteVariants).toEqual([]);
       });
     });
@@ -368,42 +288,29 @@ describe("Mock", () => {
         mock.load();
         expect(alerts.flat).toEqual([
           {
-            id: "validation",
-            value: {
-              message: "Route is invalid: : type must be object",
-              error: undefined,
-            },
-            collection: "mocks:routes:load:0",
+            id: "mocks:routes:load:0:validation",
+            message: "Route is invalid: : type must be object",
+            error: undefined,
           },
           {
-            id: "selected",
-            value: {
-              message: "Option 'mock.collections.selected' was not defined",
-              error: undefined,
-            },
-            collection: "mocks:collections",
+            id: "mocks:collections:selected",
+            message: "Option 'mock.collections.selected' was not defined",
+            error: undefined,
           },
           {
-            id: "empty",
-            value: { message: "No collections found", error: undefined },
-            collection: "mocks:collections",
+            id: "mocks:collections:empty",
+            message: "No collections found",
+            error: undefined,
           },
           {
-            id: "critical-error",
-            value: {
-              message: "Critical errors found while loading collections: 1",
-              error: undefined,
-            },
-            collection: "mocks:collections:load",
+            id: "mocks:collections:load:critical-error",
+            message: "Critical errors found while loading collections: 1",
+            error: undefined,
           },
           {
-            id: "validation",
-            value: {
-              message:
-                "Collection is invalid: : type must be object. : type must be object. : type must be object. : oneOf must match exactly one schema in oneOf",
-              error: undefined,
-            },
-            collection: "mocks:collections:load:0",
+            id: "mocks:collections:load:0:validation",
+            message: "Collection is invalid: : type must be object",
+            error: undefined,
           },
         ]);
       });
@@ -412,8 +319,8 @@ describe("Mock", () => {
     describe("when setting current collection", () => {
       it("should not set collection when id does not exists", () => {
         mock.load();
-        mock.current = "foo-id";
-        expect(mock.current).toEqual(null);
+        mock.collections.select("foo-id");
+        expect(mock.collections.selected).toEqual(null);
       });
     });
   });

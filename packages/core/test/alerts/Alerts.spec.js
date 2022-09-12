@@ -36,11 +36,8 @@ describe("Alerts", () => {
       alerts.set("foo", "Foo message");
       expect(alerts.flat).toEqual([
         {
-          collection: "alerts",
           id: "foo",
-          value: {
-            message: "Foo message",
-          },
+          message: "Foo message",
         },
       ]);
     });
@@ -50,18 +47,12 @@ describe("Alerts", () => {
       alerts.collection("foo-collection").set("foo-2", "Foo message 2");
       expect(alerts.flat).toEqual([
         {
-          collection: "alerts",
           id: "foo",
-          value: {
-            message: "Foo message",
-          },
+          message: "Foo message",
         },
         {
-          collection: "alerts:foo-collection",
-          id: "foo-2",
-          value: {
-            message: "Foo message 2",
-          },
+          id: "foo-collection:foo-2",
+          message: "Foo message 2",
         },
       ]);
     });

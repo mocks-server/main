@@ -54,12 +54,6 @@ describe("Static variant handler", () => {
     });
   });
 
-  describe("version", () => {
-    it("should have 4 value", () => {
-      expect(Static.version).toEqual("4");
-    });
-  });
-
   describe("validationSchema", () => {
     it("should be defined", () => {
       expect(Static.validationSchema).toBeDefined();

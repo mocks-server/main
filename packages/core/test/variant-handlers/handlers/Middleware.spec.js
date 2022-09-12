@@ -54,12 +54,6 @@ describe("Middleware variant handler", () => {
     });
   });
 
-  describe("version", () => {
-    it("should have 4 value", () => {
-      expect(Middleware.version).toEqual("4");
-    });
-  });
-
   describe("validationSchema", () => {
     it("should be defined", () => {
       expect(Middleware.validationSchema).toBeDefined();

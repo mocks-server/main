@@ -53,12 +53,6 @@ describe("Text variant handler", () => {
     });
   });
 
-  describe("version", () => {
-    it("should have 4 value", () => {
-      expect(Text.version).toEqual("4");
-    });
-  });
-
   describe("validationSchema", () => {
     it("should be defined", () => {
       expect(Text.validationSchema).toBeDefined();

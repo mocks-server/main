@@ -532,23 +532,4 @@ describe("Server", () => {
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
     });
   });
-
-  describe("error getter", () => {
-    it("should return null if there is no error", async () => {
-      await server.init();
-      expect(server.error).toEqual(null);
-    });
-
-    it("should return current error if there was an error", async () => {
-      const error = new Error();
-      libsMocks.stubs.http.createServer.onListen.returns(new Error());
-      await server.init();
-
-      try {
-        await server.start();
-      } catch (err) {
-        expect(server.error).toEqual(error);
-      }
-    });
-  });
 });

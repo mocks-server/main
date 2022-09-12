@@ -187,9 +187,8 @@ describe("FilesLoaders", () => {
       filesLoader._babelRegisterOption = babelRegisterOption;
       filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await filesLoader.init();
-      expect(alerts.flat[0].collection).toEqual("files:loader:routes:file");
-      expect(alerts.flat[0].id).toEqual("foo");
-      expect(alerts.flat[0].value.message).toEqual(
+      expect(alerts.flat[0].id).toEqual("files:loader:routes:file:foo");
+      expect(alerts.flat[0].message).toEqual(
         expect.stringContaining("Error loading routes from file foo")
       );
     });
@@ -205,9 +204,8 @@ describe("FilesLoaders", () => {
       filesLoader._babelRegisterOption = babelRegisterOption;
       filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await filesLoader.init();
-      expect(alerts.flat[0].collection).toEqual("files:loader:collections");
-      expect(alerts.flat[0].id).toEqual("error");
-      expect(alerts.flat[0].value.message).toEqual(
+      expect(alerts.flat[0].id).toEqual("files:loader:collections:error");
+      expect(alerts.flat[0].message).toEqual(
         expect.stringContaining("Error loading collections from file")
       );
     });
@@ -272,7 +270,7 @@ describe("FilesLoaders", () => {
       filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await filesLoader.init();
       expect(alerts.flat.length).toEqual(1);
-      expect(alerts.flat[0].value.message).toEqual(
+      expect(alerts.flat[0].message).toEqual(
         expect.stringContaining("No collections file was found")
       );
     });
@@ -301,7 +299,7 @@ describe("FilesLoaders", () => {
       filesLoader._babelRegisterOption = babelRegisterOption;
       filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await filesLoader.init();
-      expect(alerts.flat[0].value.message).toEqual(
+      expect(alerts.flat[0].message).toEqual(
         "Defining collections in 'mocks.json' file is deprecated. Please rename it to 'collections.json'"
       );
     });
@@ -317,7 +315,7 @@ describe("FilesLoaders", () => {
       filesLoader._babelRegisterOption = babelRegisterOption;
       filesLoader._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await filesLoader.init();
-      expect(alerts.flat[0].value.message).toEqual(
+      expect(alerts.flat[0].message).toEqual(
         "Defining collections in 'mocks.json' file is deprecated. Please rename it to 'collections.json'"
       );
       libsMocks.stubs.globule.find.returns(["collections.json"]);
@@ -478,6 +476,7 @@ describe("FilesLoaders", () => {
         src: [
           "foo/foo-path/**/*.json",
           "foo/foo-path/**/*.js",
+          "foo/foo-path/**/*.cjs",
           "foo/foo-path/**/*.yaml",
           "foo/foo-path/**/*.yml",
         ],
@@ -619,8 +618,8 @@ describe("FilesLoaders", () => {
         },
       });
       await filesLoader.init();
-      expect(alerts.flat[0].value.message).toEqual("Error proccesing loaded files");
-      expect(alerts.flat[0].value.error.message).toEqual("foo-error");
+      expect(alerts.flat[0].message).toEqual("Error proccesing loaded files");
+      expect(alerts.flat[0].error.message).toEqual("foo-error");
     });
   });
 });

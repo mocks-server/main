@@ -76,12 +76,9 @@ describe("UpdateNotifier", () => {
       notifier.init();
       expect(alerts.flat).toEqual([
         {
-          collection: "update-notifier",
-          id: "out-of-date",
-          value: {
-            error: undefined,
-            message: "Update available: @mocks-server/core@foo-version",
-          },
+          id: "update-notifier:out-of-date",
+          error: undefined,
+          message: "Update available: @mocks-server/core@foo-version",
         },
       ]);
     });

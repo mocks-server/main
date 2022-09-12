@@ -146,7 +146,7 @@ const routesSchema = {
                 enum: [true],
               },
             },
-            required: ["id", "disabled"],
+            required: ["id"],
             additionalProperties: false,
           },
         ],

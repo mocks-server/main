@@ -53,12 +53,6 @@ describe("Json variant handler", () => {
     });
   });
 
-  describe("version", () => {
-    it("should have 4 value", () => {
-      expect(Json.version).toEqual("4");
-    });
-  });
-
   describe("validationSchema", () => {
     it("should be defined", () => {
       expect(Json.validationSchema).toBeDefined();

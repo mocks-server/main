@@ -37,14 +37,14 @@ class Alerts extends NestedCollections {
 
   get flat() {
     return this._flat.map((item) => {
-      let collection = item.collection.replace(`${ALERTS_ROOT_ID}${ID_SEP}`, "");
-      if (!collection.endsWith(ID_SEP)) {
-        collection = `${collection}${ID_SEP}`;
+      let collectionPaths = item.collection.split(ID_SEP);
+      if (collectionPaths[0] === ALERTS_ROOT_ID) {
+        collectionPaths.shift();
       }
 
       return {
         ...item.value,
-        id: `${collection}${item.id}`,
+        id: [...collectionPaths, item.id].join(ID_SEP),
       };
     });
   }

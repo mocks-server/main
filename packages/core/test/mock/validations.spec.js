@@ -28,13 +28,14 @@ describe("mocks validations", () => {
     variants: [
       {
         id: "foo",
-        handler: "foo-handler",
+        type: "foo-handler",
       },
     ],
   };
   const VALID_VARIANT = {
     id: "foo-variant",
-    response: {
+    type: "foo-handler",
+    options: {
       headers: {
         foo: "foo",
       },
@@ -169,7 +170,7 @@ describe("mocks validations", () => {
         ],
       });
       expect(errors.message).toEqual(
-        "Route with id 'foo-route' is invalid: /variants/0/id: type must be string. /variants/1/id: type must be string"
+        "Route with id 'foo-route' is invalid: /variants/0 must have required property 'type'. /variants/1 must have required property 'type'"
       );
     });
 
@@ -184,7 +185,7 @@ describe("mocks validations", () => {
         ],
       });
       expect(errors.message).toEqual(
-        "Route with id 'foo-route' is invalid: /variants/0/handler must be equal to one of the allowed values: foo-handler"
+        "Route with id 'foo-route' is invalid: /variants/0 must have required property 'type'"
       );
     });
 
@@ -194,13 +195,14 @@ describe("mocks validations", () => {
         variants: [
           {
             id: "foo",
-            handler: "foo-handler",
+            type: "foo-handler",
             delay: -2,
+            options: {},
           },
         ],
       });
       expect(errors.message).toEqual(
-        "Route with id 'foo-route' is invalid: /variants/0/delay: type must be null. /variants/0/delay: minimum must be >= 0. /variants/0/delay: oneOf must match exactly one schema in oneOf"
+        "Route with id 'foo-route' is invalid: /variants/0 Property type is not expected to be here. /variants/0 Property delay is not expected to be here. /variants/0 Property options is not expected to be here. /variants/0: oneOf must match exactly one schema in oneOf. /variants/0/delay: type must be null. /variants/0/delay: minimum must be >= 0. /variants/0/delay: oneOf must match exactly one schema in oneOf"
       );
     });
 
@@ -218,7 +220,7 @@ describe("mocks validations", () => {
         ],
       });
       expect(errors.message).toEqual(
-        "Route with id '4' is invalid:  must have required property 'url'. /id: type must be string. /method: enum must be equal to one of the allowed values. /method: type must be array. /method: oneOf must match exactly one schema in oneOf. /delay: minimum must be >= 0. /variants/0/id: type must be string. /variants/0/delay: type must be null. /variants/0/delay: minimum must be >= 0. /variants/0/delay: oneOf must match exactly one schema in oneOf"
+        "Route with id '4' is invalid:  must have required property 'url'. /id: type must be string. /method: enum must be equal to one of the allowed values. /method: type must be array. /method: oneOf must match exactly one schema in oneOf. /delay: minimum must be >= 0. /variants/0 must have required property 'type'"
       );
     });
   });
@@ -233,7 +235,8 @@ describe("mocks validations", () => {
         variants: [
           {
             id: "foo-new-variant",
-            handler: "foo-new-handler",
+            type: "foo-new-handler",
+            options: {},
           },
         ],
       });
@@ -254,10 +257,10 @@ describe("mocks validations", () => {
       ).toEqual(null);
     });
 
-    it("should return error if variant has not response property and it has not id", () => {
+    it("should return error if variant has not options property and it has not id", () => {
       const errors = variantValidationErrors(
         { id: "foo-route" },
-        { ...VALID_VARIANT, id: undefined, response: undefined },
+        { ...VALID_VARIANT, id: undefined, options: undefined },
         JsonRoutesHandler
       );
       expect(errors.message).toEqual(
@@ -265,10 +268,10 @@ describe("mocks validations", () => {
       );
     });
 
-    it("should return error if variant has not response property", () => {
+    it("should return error if variant has not options property", () => {
       const errors = variantValidationErrors(
         { id: "foo-route" },
-        { ...VALID_VARIANT, response: undefined },
+        { ...VALID_VARIANT, options: undefined },
         JsonRoutesHandler
       );
       expect(errors.message).toEqual(
@@ -276,12 +279,12 @@ describe("mocks validations", () => {
       );
     });
 
-    it("should return error if variant response headers is not an object", () => {
+    it("should return error if variant options headers is not an object", () => {
       const errors = variantValidationErrors(
         { id: "foo-route" },
         {
           ...VALID_VARIANT,
-          response: {
+          options: {
             headers: "foo",
           },
         },
@@ -292,12 +295,12 @@ describe("mocks validations", () => {
       );
     });
 
-    it("should not allow defining variant response as a function", () => {
+    it("should not allow defining variant options as a function", () => {
       const errors = variantValidationErrors(
         { id: "foo-route" },
         {
           ...VALID_VARIANT,
-          response: () => {
+          options: () => {
             // do nothing
           },
         },
@@ -318,16 +321,16 @@ describe("mocks validations", () => {
       expect(
         variantValidationErrors(
           { id: "foo-route" },
-          { ...VALID_VARIANT, response: { middleware: EMPTY_MIDDLEWARE } },
+          { ...VALID_VARIANT, options: { middleware: EMPTY_MIDDLEWARE } },
           MiddlewareRoutesHandler
         )
       ).toEqual(null);
     });
 
-    it("should return error if variant has not response property and it has not id", () => {
+    it("should return error if variant has not options property and it has not id", () => {
       const errors = variantValidationErrors(
         { id: "foo-route" },
-        { ...VALID_VARIANT, id: undefined, response: undefined },
+        { ...VALID_VARIANT, id: undefined, options: undefined },
         MiddlewareRoutesHandler
       );
       expect(errors.message).toEqual(
@@ -335,10 +338,10 @@ describe("mocks validations", () => {
       );
     });
 
-    it("should return error if variant has not response property", () => {
+    it("should return error if variant has not options property", () => {
       const errors = variantValidationErrors(
         { id: "foo-route" },
-        { ...VALID_VARIANT, response: undefined },
+        { ...VALID_VARIANT, options: undefined },
         MiddlewareRoutesHandler
       );
       expect(errors.message).toEqual(
@@ -346,7 +349,7 @@ describe("mocks validations", () => {
       );
     });
 
-    it("should not allow defining variant response without middleware property", () => {
+    it("should not allow defining variant options without middleware property", () => {
       const errors = variantValidationErrors(
         { id: "foo-route" },
         VALID_VARIANT,
@@ -364,7 +367,7 @@ describe("mocks validations", () => {
         collectionValidationErrors({
           id: "foo",
           from: "foo-base",
-          routesVariants: [],
+          routes: [],
         })
       ).toEqual(null);
     });
@@ -372,15 +375,15 @@ describe("mocks validations", () => {
     it("should return error if collection is undefined", () => {
       const errors = collectionValidationErrors();
       expect(errors.message).toEqual(expect.stringContaining("type must be object"));
-      expect(errors.errors.length).toEqual(4);
+      expect(errors.errors.length).toEqual(1);
     });
 
-    it("should return error if mock has not id", () => {
+    it("should return error if collection has not id", () => {
       const errors = collectionValidationErrors({
         routes: [],
       });
       expect(errors.message).toEqual("Collection is invalid:  must have required property 'id'");
-      expect(errors.errors.length).toEqual(8);
+      expect(errors.errors.length).toEqual(1);
     });
 
     it("should return error if mock has not routes", () => {
@@ -398,7 +401,7 @@ describe("mocks validations", () => {
         foo: "foo",
       });
       expect(errors.message).toEqual(
-        "Collection is invalid:  must have required property 'routes'. /from: type must be string,null. /from: type must be string,null. /from: type must be string,null"
+        "Collection is invalid:  must have required property 'routes'. /from: type must be string,null"
       );
     });
   });
@@ -425,7 +428,7 @@ describe("mocks validations", () => {
           {
             id: "foo",
             from: "foo-base",
-            routesVariants: ["foo:success", "foo2:error"],
+            routes: ["foo:success", "foo2:error"],
           },
           ROUTE_VARIANTS
         )
@@ -437,7 +440,7 @@ describe("mocks validations", () => {
         {
           id: "foo",
           from: "foo-base",
-          routesVariants: ["foo:fake", "foo2:success"],
+          routes: ["foo:fake", "foo2:success"],
         },
         ROUTE_VARIANTS
       );
@@ -451,7 +454,7 @@ describe("mocks validations", () => {
         {
           id: "foo",
           from: "foo-base",
-          routesVariants: ["foo:error", "foo:success"],
+          routes: ["foo:error", "foo:success"],
         },
         ROUTE_VARIANTS
       );
@@ -465,7 +468,7 @@ describe("mocks validations", () => {
         {
           id: "foo",
           from: "foo-base",
-          routesVariants: ["foo:error", "foo:success", "foo2:success"],
+          routes: ["foo:error", "foo:success", "foo2:success"],
         },
         ROUTE_VARIANTS
       );
@@ -474,7 +477,7 @@ describe("mocks validations", () => {
       );
     });
 
-    it("should work when no routeVariants are provided in mock", () => {
+    it("should work when no routes are provided in mock", () => {
       const errors = collectionRouteVariantsValidationErrors({
         id: "foo",
         from: "foo-base",

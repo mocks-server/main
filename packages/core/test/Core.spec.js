@@ -16,13 +16,11 @@ const MockMock = require("./mock/Mock.mock.js");
 const ServerMocks = require("./server/Server.mocks.js");
 const PluginsMocks = require("./plugins/Plugins.mocks.js");
 const ConfigMocks = require("./common/Config.mocks.js");
-const AlertsMocks = require("./alerts/AlertsLegacy.mocks.js");
 const FilesLoadersMocks = require("./files/FilesLoaders.mocks.js");
 const ScaffoldMocks = require("./scaffold/Scaffold.mocks.js");
 const UpdateNotifierMock = require("./update-notifier/UpdateNotifier.mock.js");
 
 const Core = require("../src/Core");
-const tracer = require("../src/common/legacyTracer");
 const Alerts = require("../src/alerts/Alerts");
 const { version } = require("../package.json");
 
@@ -35,8 +33,6 @@ describe("Core", () => {
   let pluginsMocks;
   let pluginsInstance;
   let configMocks;
-  let alertsMocks;
-  let loadersMocks;
   let filesLoadersMocks;
   let scaffoldMocks;
   let core;
@@ -51,8 +47,6 @@ describe("Core", () => {
     serverInstance = serverMocks.stubs.instance;
     pluginsMocks = new PluginsMocks();
     pluginsInstance = pluginsMocks.stubs.instance;
-    alertsMocks = new AlertsMocks();
-    loadersMocks = mockMock.stubs.loaders;
     configMocks = new ConfigMocks();
     filesLoadersMocks = new FilesLoadersMocks();
     scaffoldMocks = new ScaffoldMocks();
@@ -71,7 +65,6 @@ describe("Core", () => {
     serverMocks.restore();
     configMocks.restore();
     pluginsMocks.restore();
-    alertsMocks.restore();
     filesLoadersMocks.restore();
     scaffoldMocks.restore();
     updateNotifierMock.restore();
@@ -83,62 +76,12 @@ describe("Core", () => {
       configMocks.stubs.option.onChange.getCall(0).args[0]("foo-level");
       expect(core.logger.setLevel.getCall(1).args[0]).toEqual("foo-level");
     });
-
-    it("should listen to change trace level when log option changes", async () => {
-      core = new Core();
-      expect(configMocks.stubs.option.onChange.getCall(1).args[0]).toEqual(tracer.set);
-    });
   });
 
   describe("version", () => {
     it("should return current version", async () => {
       core = new Core();
       expect(core.version).toEqual(version);
-    });
-  });
-
-  describe("Plugins parameters", () => {
-    describe("createCollectionsLoader", () => {
-      it("should return a new loader", () => {
-        pluginsMocks.stubs.Constructor.mock.calls[0][0].createCollectionsLoader()(
-          "foo-collection"
-        );
-        expect(loadersMocks.loadCollections.callCount).toEqual(1);
-        expect(loadersMocks.loadCollections.getCall(0).args[0]).toEqual("foo-collection");
-      });
-    });
-
-    describe("createRoutesLoader", () => {
-      it("should return a new loader", () => {
-        pluginsMocks.stubs.Constructor.mock.calls[0][0].createRoutesLoader()("foo-routes");
-        expect(loadersMocks.loadRoutes.callCount).toEqual(1);
-        expect(loadersMocks.loadRoutes.getCall(0).args[0]).toEqual("foo-routes");
-      });
-    });
-  });
-
-  describe("loadMocks method", () => {
-    it("should call to mock loader loadCollections", () => {
-      core.loadMocks("foo");
-      expect(loadersMocks.loadCollections.getCall(0).args[0]).toEqual("foo");
-    });
-  });
-
-  describe("loadRoutes method", () => {
-    it("should call to mock loader loadRoutes", () => {
-      core.loadRoutes("foo");
-      expect(loadersMocks.loadRoutes.getCall(0).args[0]).toEqual("foo");
-    });
-  });
-
-  describe("Mocks callbacks", () => {
-    describe("onChange", () => {
-      it("should emit a change:mock event", () => {
-        const spy = sandbox.spy();
-        core.onChangeMocks(spy);
-        mockMock.stubs.Constructor.mock.calls[0][0].onChange();
-        expect(spy.callCount).toEqual(1);
-      });
     });
   });
 
@@ -175,14 +118,6 @@ describe("Core", () => {
 
     it("should register plugins", () => {
       expect(pluginsInstance.register.callCount).toEqual(1);
-    });
-
-    it("should add an Alert if legacy routesHandlers option is set", async () => {
-      core = new Core();
-      sandbox.spy(core._deprecationAlerts, "set");
-      core._variantHandlersOption.hasBeenSet = true;
-      await core.init();
-      expect(core._deprecationAlerts.set.callCount).toEqual(1);
     });
 
     it("should init server", () => {
@@ -251,89 +186,6 @@ describe("Core", () => {
     });
   });
 
-  describe("addRouter method", () => {
-    it("should add router to server", () => {
-      core.addRouter();
-      expect(serverInstance.addRouter.callCount).toEqual(1);
-    });
-  });
-
-  describe("removeRouter method", () => {
-    it("should remove router from server", () => {
-      core.removeRouter();
-      expect(serverInstance.removeRouter.callCount).toEqual(1);
-    });
-  });
-
-  describe("addRoutesHandler method", () => {
-    it("should add Route Handler", () => {
-      core.addRoutesHandler("foo");
-      // TODO, do not use private properties in testing
-      expect(core._variantHandlers._registeredVariantHandlers.length).toEqual(8);
-      expect(core._variantHandlers._registeredVariantHandlers[7]).toEqual("foo");
-    });
-  });
-
-  describe("onChangeMocks method", () => {
-    it("should add listener to eventEmitter", () => {
-      const spy = sandbox.spy();
-      core.onChangeMocks(spy);
-      core._eventEmitter.emit("change:mock");
-      expect(spy.callCount).toEqual(1);
-    });
-
-    it("should return a function to remove listener", () => {
-      expect.assertions(2);
-      const spy = sandbox.spy();
-      const removeCallback = core.onChangeMocks(spy);
-      core._eventEmitter.emit("change:mock");
-      expect(spy.callCount).toEqual(1);
-      removeCallback();
-      core._eventEmitter.emit("change:mock");
-      expect(spy.callCount).toEqual(1);
-    });
-  });
-
-  describe("onChangeAlerts method", () => {
-    it("should execute callback when alerts execute onChange callback", () => {
-      const spy = sandbox.spy();
-      core.onChangeAlerts(spy);
-      NestedCollections.prototype.onChange.getCall(0).args[0]();
-      expect(spy.callCount).toEqual(1);
-    });
-
-    it("should return a function to remove listener", () => {
-      expect.assertions(2);
-      const spy = sandbox.spy();
-      const removeCallback = core.onChangeAlerts(spy);
-      core._eventEmitter.emit("change:alerts");
-      expect(spy.callCount).toEqual(1);
-      removeCallback();
-      core._eventEmitter.emit("change:alerts");
-      expect(spy.callCount).toEqual(1);
-    });
-  });
-
-  describe("onChangeLogs method", () => {
-    it("should execute callback when logs execute onChangeGlobalStore callback", () => {
-      const spy = sandbox.spy();
-      core.onChangeLogs(spy);
-      Logger.prototype.onChangeGlobalStore.getCall(0).args[0]();
-      expect(spy.callCount).toEqual(1);
-    });
-
-    it("should return a function to remove listener", () => {
-      expect.assertions(2);
-      const spy = sandbox.spy();
-      const removeCallback = core.onChangeLogs(spy);
-      core._eventEmitter.emit("change:logs");
-      expect(spy.callCount).toEqual(1);
-      removeCallback();
-      core._eventEmitter.emit("change:logs");
-      expect(spy.callCount).toEqual(1);
-    });
-  });
-
   describe("stop method", () => {
     it("should stop server", async () => {
       await core.stop();
@@ -363,31 +215,6 @@ describe("Core", () => {
     });
   });
 
-  describe("restartServer method", () => {
-    it("should restart server", async () => {
-      await core.restartServer();
-      expect(serverInstance.restart.callCount).toEqual(1);
-    });
-  });
-
-  describe("tracer getter", () => {
-    it("should return tracer instance", () => {
-      expect(core.tracer).toEqual(tracer);
-    });
-  });
-
-  describe("logs getter", () => {
-    it("should return Logger global store from logs", () => {
-      expect(core.logs).toEqual(core.logger.globalStore);
-    });
-  });
-
-  describe("mocks getter", () => {
-    it("should return mocks instance", () => {
-      expect(core.mocks).toEqual(mockInstance);
-    });
-  });
-
   describe("mock getter", () => {
     it("should return routes instance", () => {
       expect(core.mock).toEqual(mockInstance);
@@ -401,15 +228,9 @@ describe("Core", () => {
   });
 
   describe("alerts getter", () => {
-    it("should return alerts", () => {
-      expect(core.alerts).toEqual(core._alerts.customFlat);
-    });
-  });
-
-  describe("alertsApi getter", () => {
     it("should return alerts API", () => {
-      expect(core.alertsApi instanceof Alerts).toBe(true);
-      expect(core.alertsApi.id).toEqual("alerts");
+      expect(core.alerts instanceof Alerts).toBe(true);
+      expect(core.alerts.id).toEqual("alerts");
     });
   });
 

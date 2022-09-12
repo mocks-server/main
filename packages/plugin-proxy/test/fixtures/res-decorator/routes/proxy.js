@@ -13,7 +13,7 @@ module.exports = [
     variants: [
       {
         id: "enabled",
-        type: "proxy-v4",
+        type: "proxy",
         options: {
           host: "http://127.0.0.1:3200",
           options: {

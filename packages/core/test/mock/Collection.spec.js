@@ -25,6 +25,7 @@ describe("Collection", () => {
   let logger;
 
   beforeEach(() => {
+    logger = new Logger();
     sandbox = sinon.createSandbox();
     routeVariants = [
       {
@@ -32,36 +33,43 @@ describe("Collection", () => {
         url: "url-1",
         delay: null,
         middleware: sandbox.stub(),
+        logger,
       },
       {
         method: "POST",
         url: "url-2",
         delay: 1000,
         middleware: sandbox.stub(),
+        logger,
       },
       {
         method: ["PUT", "PATCH"],
         url: "url-3",
         delay: 1000,
         middleware: sandbox.stub(),
+        logger,
       },
       {
         url: "url-4",
         middleware: sandbox.stub(),
+        logger,
       },
       {
         url: "url-5",
         method: "*",
         middleware: sandbox.stub(),
+        logger,
       },
       {
         url: "url-6",
         disabled: true,
         middleware: sandbox.stub(),
+        logger,
       },
       {
         url: "url-7",
         router: sandbox.stub(),
+        logger,
       },
     ];
     middlewareMethodsStubs = {
@@ -76,7 +84,6 @@ describe("Collection", () => {
     };
     getDelay = sandbox.stub();
     libsMocks = new LibsMocks();
-    logger = new Logger();
     collection = new Collection({ id: "mock-id", routeVariants, getDelay, logger });
   });
 

@@ -107,12 +107,7 @@ class Plugins {
   }
 
   _registerPlugin(Plugin, pluginMethods, pluginIndex) {
-    let pluginInstance,
-      pluginConfig,
-      pluginAlerts,
-      pluginLogger,
-      optionsAdded = false,
-      coreApi;
+    let pluginInstance, pluginConfig, pluginAlerts, pluginLogger, coreApi;
     const pluginOptions = { core: this._core, ...pluginMethods };
     try {
       // TODO, throw an error if plugin has no id. legacy
@@ -135,7 +130,6 @@ class Plugins {
       coreApi = new CoreApi(pluginFinalOptions);
       pluginInstance = new Plugin(coreApi);
       this._pluginsOptions.push(coreApi);
-      optionsAdded = true;
       this._pluginsInstances.push(pluginInstance);
       this._pluginsRegistered++;
     } catch (error) {
@@ -153,6 +147,7 @@ class Plugins {
         alerts: pluginAlerts,
         logger: pluginLogger,
       };
+      // If plugin has not static id, custom core API is passed only to methods
       // Legacy, remove when plugin static id is mandatory
       if (!pluginConfig && pluginInstance.id) {
         pluginConfig = this._config.addNamespace(pluginInstance.id);
@@ -165,24 +160,18 @@ class Plugins {
           logger: pluginLogger,
         };
         coreApi = new CoreApi(pluginFinalOptions);
-        if (optionsAdded) {
-          this._pluginsOptions.pop();
-        }
+        this._pluginsOptions.pop();
         this._pluginsOptions.push(coreApi);
       } else {
-        if (!coreApi) {
-          coreApi = new CoreApi(pluginFinalOptions);
-        }
         this._pluginsOptions.push(coreApi);
       }
       // TODO, deprecate register method. It is duplicated with the constructor. Legacy
       if (isFunction(pluginInstance.register)) {
         try {
-          // TODO, if there is a problem registering, remove it
           pluginInstance.register(coreApi);
         } catch (error) {
-          this._catchRegisterError(error, pluginIndex);
           this._pluginsRegistered = this._pluginsRegistered - 1;
+          return this._catchRegisterError(error, pluginIndex);
         }
       }
     }

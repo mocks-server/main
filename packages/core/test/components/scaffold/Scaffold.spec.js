@@ -110,9 +110,10 @@ describe("Scaffold", () => {
     });
 
     it("should not set the selected mock value if it has value", async () => {
-      scaffold._mockSelectedOption.value = "base2";
+      scaffold._collectionSelectedOption.hasBeenSet = true;
+      scaffold._collectionSelectedOption.value = "base2";
       await scaffold.init({ filesLoaderPath: "foo" });
-      expect(scaffold._mockSelectedOption.value).toEqual("base2");
+      expect(scaffold._collectionSelectedOption.value).toEqual("base2");
     });
 
     it("should create the config scaffold even if mocks folder exists", async () => {

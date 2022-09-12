@@ -19,7 +19,7 @@ class CoreApi {
   }
 
   get config() {
-    return this._config || this._core.config;
+    return this._config;
   }
 
   get alerts() {

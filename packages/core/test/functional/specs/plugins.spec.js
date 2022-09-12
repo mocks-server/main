@@ -37,6 +37,7 @@ describe("plugins", () => {
   let registerSpy;
   let configSpy;
   let startSpy;
+  let propertiesSpy;
 
   beforeAll(async () => {
     sandbox = sinon.createSandbox();
@@ -45,6 +46,7 @@ describe("plugins", () => {
     initSpy = sandbox.spy();
     registerSpy = sandbox.spy();
     configSpy = sandbox.spy();
+    propertiesSpy = sandbox.spy();
     startSpy = sandbox.spy();
     customRouter = express.Router();
     customRouter.get("/", (_req, res) => {
@@ -88,6 +90,18 @@ describe("plugins", () => {
             expect(configSpy.getCall(0).args[0]).not.toBe(undefined);
           });
         }
+
+        it("should have received  core files", async () => {
+          expect(propertiesSpy.getCall(0).args[0]).toBe(core.files);
+        });
+
+        it("should have received  core version", async () => {
+          expect(propertiesSpy.getCall(0).args[1]).toEqual(core.version);
+        });
+
+        it("should have received  core variantHandlers", async () => {
+          expect(propertiesSpy.getCall(0).args[2]).toBe(core.variantHandlers);
+        });
 
         it("should have executed register method", async () => {
           expect(registerSpy.callCount).toEqual(1);
@@ -255,12 +269,13 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      constructor({ server, alerts, config, logger }) {
+      constructor({ server, alerts, config, logger, files, version, variantHandlers }) {
         logger.info("Log from register method");
         server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy();
         configSpy(config);
+        propertiesSpy(files, version, variantHandlers);
       }
       init({ alerts, mock, logger, config }) {
         logger.info("Log from init method");
@@ -292,12 +307,13 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      register({ server, alerts, config, logger }) {
+      register({ server, alerts, config, logger, files, version, variantHandlers }) {
         logger.info("Log from register method");
         server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy();
         configSpy(config);
+        propertiesSpy(files, version, variantHandlers);
       }
       init({ logger, config, alerts, mock }) {
         logger.info("Log from init method");
@@ -325,12 +341,13 @@ describe("plugins", () => {
   testPlugin(
     "created as a Class with register method and without static id",
     class Plugin {
-      register({ server, alerts, config, logger }) {
+      register({ server, alerts, config, logger, files, version, variantHandlers }) {
         logger.info("Log from register method");
         server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy();
         configSpy(config);
+        propertiesSpy(files, version, variantHandlers);
       }
       init({ logger, config, alerts, mock }) {
         logger.info("Log from init method");
@@ -365,11 +382,12 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      register({ server, alerts, config }) {
+      register({ server, alerts, config, files, version, variantHandlers }) {
         server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy();
         configSpy(config);
+        propertiesSpy(files, version, variantHandlers);
       }
       async init() {
         await wait(2000);

@@ -45,6 +45,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Ignore `version` property in variant handlers. From now, all handlers are considered to be defined in “v4” format
 - feat: Do not support `plainResponsePreview` getter in variant handlers. Now only `preview` getter is supported
 - feat: Do not support `routeVariants` or `routesVariants` properties in collections. Now, only `routes` is supported
+- feat: Remove legacy methods passed to the plugins as parameters: `loadMocks`, `loadRoutes`, `addAlert`, `removeAlert`, `core`. Now, only the core is passed as argument (with namespaced alerts, logger and config)
 
 
 ### Changed

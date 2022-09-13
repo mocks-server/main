@@ -48,7 +48,6 @@ class Plugins {
 
     this._core = core;
     this._pluginsInstances = [];
-    this._pluginsMethods = [];
     this._pluginsOptions = [];
     this._pluginsRegistered = 0;
     this._pluginsInitialized = 0;
@@ -106,9 +105,9 @@ class Plugins {
     return {};
   }
 
-  _registerPlugin(Plugin, pluginMethods, pluginIndex) {
+  _registerPlugin(Plugin, pluginIndex) {
     let pluginInstance, pluginConfig, pluginAlerts, pluginLogger, coreApi;
-    const pluginOptions = { core: this._core, ...pluginMethods };
+    const pluginCoreOptions = { core: this._core };
     try {
       // TODO, throw an error if plugin has no id. legacy
       if (Plugin.id) {
@@ -121,13 +120,13 @@ class Plugins {
           "Plugins must have a static id property"
         );
       }
-      const pluginFinalOptions = {
-        ...pluginOptions,
+      const pluginCoreFinalOptions = {
+        ...pluginCoreOptions,
         config: pluginConfig,
         alerts: pluginAlerts,
         logger: pluginLogger,
       };
-      coreApi = new CoreApi(pluginFinalOptions);
+      coreApi = new CoreApi(pluginCoreFinalOptions);
       pluginInstance = new Plugin(coreApi);
       this._pluginsOptions.push(coreApi);
       this._pluginsInstances.push(pluginInstance);
@@ -141,8 +140,8 @@ class Plugins {
       isFunction(pluginInstance.start) ||
       isFunction(pluginInstance.stop)
     ) {
-      let pluginFinalOptions = {
-        ...pluginOptions,
+      let pluginCoreFinalOptions = {
+        ...pluginCoreOptions,
         config: pluginConfig,
         alerts: pluginAlerts,
         logger: pluginLogger,
@@ -153,13 +152,13 @@ class Plugins {
         pluginConfig = this._config.addNamespace(pluginInstance.id);
         pluginAlerts = this._alerts.collection(pluginInstance.id);
         pluginLogger = this._logger.namespace(pluginInstance.id);
-        pluginFinalOptions = {
-          ...pluginOptions,
+        pluginCoreFinalOptions = {
+          ...pluginCoreOptions,
           config: pluginConfig,
           alerts: pluginAlerts,
           logger: pluginLogger,
         };
-        coreApi = new CoreApi(pluginFinalOptions);
+        coreApi = new CoreApi(pluginCoreFinalOptions);
         this._pluginsOptions.pop();
         this._pluginsOptions.push(coreApi);
       } else {
@@ -182,9 +181,7 @@ class Plugins {
     if (pluginIndex === this._plugins.length) {
       return Promise.resolve();
     }
-    const pluginMethods = {};
-    this._pluginsMethods.push(pluginMethods);
-    this._registerPlugin(this._plugins[pluginIndex], pluginMethods, pluginIndex);
+    this._registerPlugin(this._plugins[pluginIndex], pluginIndex);
     return this._registerPlugins(pluginIndex + 1);
   }
 

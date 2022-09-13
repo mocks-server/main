@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 
 ### Removed
-- feat: Remove default client. BREAKING CHANGE
+- feat: Remove default client methods. Class `AdminApiClient` has to be used instead. BREAKING CHANGE
 
 ## [6.2.0] - 2022-08-11
 

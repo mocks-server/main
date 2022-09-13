@@ -17,11 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 - feat: Remove custom router "/admin" from mock server. Admin API is only available at its own server from now.
 
-### Fixed
-- fix: Use OpenAPI version 3.1. Nullable type as array was not supported in 3.0.1
-
 ### Added
-- feat: Add route and method to not found log
+- feat: Add url and method to route not found log
 
 ## [3.4.0] - 2022-08-11
 

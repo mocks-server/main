@@ -10,6 +10,53 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+### Removed
+- feat: Remove legacy `routesHandlers` option
+- feat: Remove legacy `core.addRoutesHandler` method
+- feat: Remove legacy `core.loadMocks` method
+- feat: Remove legacy `core.loadRoutes` method
+- feat: Remove legacy `core.onChangeMocks` method
+- feat: Remove legacy `core.onChangeAlerts` method
+- feat: Remove legacy `core.onChangeLogs` method
+- feat: Remove legacy `core.restartServer` method
+- feat: Remove legacy `core.addRouter` method
+- feat: Remove legacy `core.removeRouter` method
+- feat: Remove `context` property from `alerts.flat` collection items
+- feat: Remove legacy `core.alertsApi` getter. Now `core.alerts` can be used instead
+- feat: Remove legacy `core.mocks` getter
+- feat: Remove legacy `core.tracer` getter
+- feat: Remove legacy `core.logs` getter
+- feat: Remove legacy `mocks.selected` option
+- feat: Remove legacy `mocks.delay` option
+- feat: Remove legacy `core.mock.current` setter
+- feat: Remove legacy `core.mock.restoreRoutesVariants` method
+- feat: Remove legacy `core.mock.customRoutesVariants` getter
+- feat: Remove legacy `core.mock.current` getter
+- feat: Remove legacy `core.mock.ids` getter
+- feat: Remove legacy `core.mock.plainMocks` getter
+- feat: Remove legacy `core.mock.plainRoutes`
+- feat: Remove legacy `core.mock.plainRoutesVariants`
+- feat: Remove legacy `core.mock.error` getter
+- feat: Remove support for defining plugins as objects, functions, etc. Now, only classes are supported. If the class has not a static id, the `alerts`, `config` and `logger` properties won’t be available in the core passed to the constructor. If the class has an id getter, those properties will be received in start, stop, init and register methods, but not in the constructor.
+- feat: Remove default route handler. Now the `type` property is mandatory in variants
+- feat: Do not support `handler` property in variants, which was an alias for `type`. From now, only `type` is supported (and required, unless disabled property is true)
+- feat: Ignore `version` property in variant handlers. From now, all handlers are considered to be defined in “v4” format
+- feat: Do not support `plainResponsePreview` getter in variant handlers. Now only `preview` getter is supported
+- feat: Do not support `routeVariants` or `routesVariants` properties in collections. Now, only `routes` is supported
+
+
+### Changed
+- feat: `core.alerts` getter now returns the root Alerts API, not a flat collection of alerts.
+- test: Migrate functional tests to core package from core-e2e (those that can be used to get coverage)
+- feat: Use namespaces logger when tracing variant requests
+
+### Added
+- feat: Add support for `.cjs` files
+- feat: Add `core.mock.routes.delay` getter
+- feat: Add route method and url to route not found logs.
+
 ## [3.12.0] - 2022-09-01
 
 ### Added

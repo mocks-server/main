@@ -1,4 +1,3 @@
-// TODO, publish as a handler, not as a plugin
 const ProxyRoutesHandler = require("./ProxyRoutesHandler");
 
 class Plugin {

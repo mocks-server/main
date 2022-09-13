@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - fix: Update @mocks-server/plugin-admin-api
+- fix: Update @mocks-server/core
 
 ## [3.12.0] - 2022-09-01
 

@@ -47,7 +47,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Do not support `routeVariants` or `routesVariants` properties in collections. Now, only `routes` is supported
 - feat: Remove legacy methods passed to the plugins as parameters: `loadMocks`, `loadRoutes`, `addAlert`, `removeAlert`, `core`. Now, only the core is passed as argument (with namespaced alerts, logger and config)
 
-
 ### Changed
 - feat: `core.alerts` getter now returns the root Alerts API, not a flat collection of alerts.
 - test: Migrate functional tests to core package from core-e2e (those that can be used to get coverage)

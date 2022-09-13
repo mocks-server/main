@@ -14,11 +14,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
-## [unreleased]
+## [4.0.0] - 2022-09-14
 
-### Fixed
-- fix: Update @mocks-server/plugin-admin-api
-- fix: Update @mocks-server/core
+### Changed
+- chore(deps): Update @mocks-server/plugin-admin-api to 4.0.0
+- chore(deps): Update @mocks-server/core to 4.0.0
+- chore(deps): Update @mocks-server/plugin-proxy to 4.0.0
+- chore(deps): Update dependencies
 
 ## [3.12.0] - 2022-09-01
 

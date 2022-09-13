@@ -11,10 +11,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGE
 
-## [unreleased]
+## [4.0.0] - 2022-09-14
 
 ### Removed
 - feat: Remove support for legacy mocks.delay option
+
+### Changed
+- chore(deps): Update dependencies
+- chore(deps): Require @mocks-server/core@4.x in peerDependencies
 
 ## [3.3.0] - 2022-08-11
 

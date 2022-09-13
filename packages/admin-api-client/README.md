@@ -129,10 +129,6 @@ apiClient.configClient({
 });
 ```
 
-## Release notes
-
-* Current major release is compatible only with `@mocks-server/main` versions upper or equal than `3.6`. Use prior releases for lower versions. If you don't want to update to the latest major version of this package yet but you want to update `@mocks-server/main`, you can also use any `5.x` version of this package with any `@mocks-server/main@3.x` version.
-
 ## Contributing
 
 Contributors are welcome.

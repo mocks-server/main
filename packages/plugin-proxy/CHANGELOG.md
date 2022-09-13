@@ -12,11 +12,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [unreleased]
+## [4.0.0] - 2022-09-14
 
 ### Changed
 
-- feat: Rename "proxy-v4" handler into "proxy". Remove legacy proxy handler.
+- feat: Rename "proxy-v4" handler into "proxy". Remove legacy proxy handler
+- chore(deps): Update dependencies
+- chore(deps): Require @mocks-server/core@4.x in peerDependencies
 
 ## [3.1.0] - 2022-07-22
 

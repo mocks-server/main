@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
-## [unreleased]
+## [4.0.0] - 2022-09-14
 
 ### Removed
 - feat: Remove legacy `routesHandlers` option

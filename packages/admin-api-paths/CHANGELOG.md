@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+### Removed
+- feat: Remove legacy paths
+
+
 ## [4.2.0] - 2022-08-11
 
 ### Added

@@ -9,11 +9,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const isPromise = require("is-promise");
-const { isObject, isFunction } = require("lodash");
+const { isFunction } = require("lodash");
 
-const { scopedAlertsMethods } = require("../alerts/legacyHelpers");
 const CoreApi = require("../common/CoreApi");
-const { docsUrl } = require("../common/helpers");
 
 const OPTIONS = [
   {
@@ -29,30 +27,12 @@ const OPTIONS = [
   },
 ];
 
-function formatDeprecatedMessage(format) {
-  return `Defining Plugins as ${format} is deprecated and it won't be supported in next major version. Consider migrating it to a Class Plugin: ${docsUrl(
-    "plugins/development"
-  )}`;
-}
-
 class Plugins {
   static get id() {
     return "plugins";
   }
 
-  constructor(
-    {
-      config,
-      alerts,
-      logger,
-      addAlert,
-      removeAlerts,
-      renameAlerts,
-      createCollectionsLoader,
-      createRoutesLoader,
-    },
-    core
-  ) {
+  constructor({ config, alerts, logger }, core) {
     this._config = config;
     this._logger = logger;
 
@@ -66,14 +46,8 @@ class Plugins {
     this._alertsStop = this._alerts.collection("stop");
     this._alertsFormat = this._alerts.collection("format");
 
-    this._addAlert = addAlert;
-    this._removeAlerts = removeAlerts;
-    this._renameAlerts = renameAlerts;
-    this._createCollectionsLoader = createCollectionsLoader;
-    this._createRoutesLoader = createRoutesLoader;
     this._core = core;
     this._pluginsInstances = [];
-    this._pluginsMethods = [];
     this._pluginsOptions = [];
     this._pluginsRegistered = 0;
     this._pluginsInitialized = 0;
@@ -131,55 +105,34 @@ class Plugins {
     return {};
   }
 
-  _registerPlugin(Plugin, pluginMethods, pluginIndex) {
-    let pluginInstance,
-      formatIsObject,
-      formatIsFunction,
-      pluginConfig,
-      pluginAlerts,
-      pluginLogger,
-      optionsAdded = false,
-      coreApi;
-    const pluginOptions = { core: this._core, ...pluginMethods };
-    if (isObject(Plugin) && !isFunction(Plugin)) {
-      pluginInstance = Plugin;
+  _registerPlugin(Plugin, pluginIndex) {
+    let pluginInstance, pluginConfig, pluginAlerts, pluginLogger, coreApi;
+    const pluginCoreOptions = { core: this._core };
+    try {
+      // TODO, throw an error if plugin has no id. legacy
+      if (Plugin.id) {
+        pluginConfig = this._config.addNamespace(Plugin.id);
+        pluginAlerts = this._alerts.collection(Plugin.id);
+        pluginLogger = this._logger.namespace(Plugin.id);
+      } else {
+        this._alertsFormat.set(
+          this._pluginId(pluginIndex),
+          "Plugins must have a static id property"
+        );
+      }
+      const pluginCoreFinalOptions = {
+        ...pluginCoreOptions,
+        config: pluginConfig,
+        alerts: pluginAlerts,
+        logger: pluginLogger,
+      };
+      coreApi = new CoreApi(pluginCoreFinalOptions);
+      pluginInstance = new Plugin(coreApi);
+      this._pluginsOptions.push(coreApi);
       this._pluginsInstances.push(pluginInstance);
       this._pluginsRegistered++;
-      formatIsObject = true;
-    } else {
-      try {
-        if (Plugin.id) {
-          pluginConfig = this._config.addNamespace(Plugin.id);
-          pluginAlerts = this._alerts.collection(Plugin.id);
-          pluginLogger = this._logger.namespace(Plugin.id);
-        }
-        const pluginFinalOptions = {
-          ...pluginOptions,
-          config: pluginConfig,
-          alerts: pluginAlerts,
-          logger: pluginLogger,
-        };
-        coreApi = new CoreApi(pluginFinalOptions);
-        pluginInstance = new Plugin(coreApi);
-        this._pluginsOptions.push(coreApi);
-        optionsAdded = true;
-        this._pluginsInstances.push(pluginInstance);
-        this._pluginsRegistered++;
-      } catch (error) {
-        if (error.message.includes("is not a constructor")) {
-          try {
-            const pluginFunc = Plugin;
-            pluginInstance = pluginFunc(new CoreApi(pluginOptions)) || {};
-            this._pluginsInstances.push(pluginInstance);
-            this._pluginsRegistered++;
-            formatIsFunction = true;
-          } catch (err) {
-            return this._catchRegisterError(err, pluginIndex);
-          }
-        } else {
-          return this._catchRegisterError(error, pluginIndex);
-        }
-      }
+    } catch (error) {
+      return this._catchRegisterError(error, pluginIndex);
     }
     if (
       isFunction(pluginInstance.register) ||
@@ -187,47 +140,39 @@ class Plugins {
       isFunction(pluginInstance.start) ||
       isFunction(pluginInstance.stop)
     ) {
-      let pluginFinalOptions = {
-        ...pluginOptions,
+      let pluginCoreFinalOptions = {
+        ...pluginCoreOptions,
         config: pluginConfig,
         alerts: pluginAlerts,
         logger: pluginLogger,
       };
+      // If plugin has not static id, custom core API is passed only to methods
+      // Legacy, remove when plugin static id is mandatory
       if (!pluginConfig && pluginInstance.id) {
         pluginConfig = this._config.addNamespace(pluginInstance.id);
         pluginAlerts = this._alerts.collection(pluginInstance.id);
         pluginLogger = this._logger.namespace(pluginInstance.id);
-        pluginFinalOptions = {
-          ...pluginOptions,
+        pluginCoreFinalOptions = {
+          ...pluginCoreOptions,
           config: pluginConfig,
           alerts: pluginAlerts,
           logger: pluginLogger,
         };
-        coreApi = new CoreApi(pluginFinalOptions);
-        if (optionsAdded) {
-          this._pluginsOptions.pop();
-        }
+        coreApi = new CoreApi(pluginCoreFinalOptions);
+        this._pluginsOptions.pop();
         this._pluginsOptions.push(coreApi);
       } else {
-        if (!coreApi) {
-          coreApi = new CoreApi(pluginFinalOptions);
-        }
         this._pluginsOptions.push(coreApi);
       }
+      // TODO, deprecate register method. It is duplicated with the constructor. Legacy
       if (isFunction(pluginInstance.register)) {
         try {
           pluginInstance.register(coreApi);
         } catch (error) {
-          this._catchRegisterError(error, pluginIndex);
           this._pluginsRegistered = this._pluginsRegistered - 1;
+          return this._catchRegisterError(error, pluginIndex);
         }
       }
-    }
-    if (formatIsObject) {
-      this._alertsFormat.set(this._pluginId(pluginIndex), formatDeprecatedMessage("objects"));
-    }
-    if (formatIsFunction) {
-      this._alertsFormat.set(this._pluginId(pluginIndex), formatDeprecatedMessage("functions"));
     }
     return pluginInstance;
   }
@@ -236,22 +181,7 @@ class Plugins {
     if (pluginIndex === this._plugins.length) {
       return Promise.resolve();
     }
-    const loadMocks = this._createCollectionsLoader();
-    const loadRoutes = this._createRoutesLoader();
-    const pluginMethods = {
-      loadMocks,
-      loadRoutes,
-      ...scopedAlertsMethods(
-        () => {
-          return this._pluginId(pluginIndex);
-        },
-        this._addAlert,
-        this._removeAlerts,
-        this._renameAlerts
-      ),
-    };
-    this._pluginsMethods.push(pluginMethods);
-    this._registerPlugin(this._plugins[pluginIndex], pluginMethods, pluginIndex);
+    this._registerPlugin(this._plugins[pluginIndex], pluginIndex);
     return this._registerPlugins(pluginIndex + 1);
   }
 

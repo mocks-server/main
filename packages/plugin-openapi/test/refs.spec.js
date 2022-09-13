@@ -242,7 +242,7 @@ describe("when openapi has refs", () => {
     describe("alerts", () => {
       it("should have added an alert about wrong refs", async () => {
         const alert =
-          server.alerts.find((serverAlert) => serverAlert.id.includes("openapi")) || {};
+          server.alerts.flat.find((serverAlert) => serverAlert.id.includes("openapi")) || {};
         expect(alert.id).toEqual("plugins:openapi:documents:0");
         expect(alert.message).toEqual("Error resolving openapi $ref");
         expect(alert.error.message).toEqual(
@@ -293,7 +293,7 @@ describe("when openapi has refs", () => {
     describe("alerts", () => {
       it("should have added an alert about wrong openapi", async () => {
         const alert =
-          server.alerts.find((serverAlert) => serverAlert.id.includes("openapi")) || {};
+          server.alerts.flat.find((serverAlert) => serverAlert.id.includes("openapi")) || {};
         expect(alert.id).toEqual("plugins:openapi:documents:0");
         expect(alert.message).toEqual("Error loading openapi definition");
         expect(alert.error.message).toEqual(

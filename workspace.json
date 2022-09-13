@@ -20,7 +20,6 @@
     "config-e2e": "test/config-e2e",
     "core": "packages/core",
     "core-e2e": "test/core-e2e",
-    "core-e2e-legacy": "test/core-e2e-legacy",
     "cypress-commands": "packages/cypress-commands",
     "cypress-commands-e2e": "test/cypress-commands-e2e",
     "cypress-commands-typescript-e2e": "test/cypress-commands-typescript-e2e",

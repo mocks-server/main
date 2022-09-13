@@ -1,6 +1,0 @@
-{
-  "root": "test/core-e2e-legacy/",
-  "projectType": "application",
-  "implicitDependencies": [],
-  "tags": ["type:test"]
-}

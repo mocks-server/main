@@ -8,7 +8,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const DefaultVariantHandler = require("./handlers/Default");
 const Json = require("./handlers/Json");
 const Text = require("./handlers/Text");
 const Middleware = require("./handlers/Middleware");
@@ -33,15 +32,7 @@ class VariantHandlers {
   constructor({ logger, config }) {
     this._logger = logger;
     this._registeredVariantHandlers = [];
-    this._coreVariantHandlers = [
-      DefaultVariantHandler,
-      Json,
-      Text,
-      Status,
-      Middleware,
-      Static,
-      File,
-    ];
+    this._coreVariantHandlers = [Json, Text, Status, Middleware, Static, File];
     this._config = config;
 
     [this._registerOption] = this._config.addOptions(OPTIONS);
@@ -59,11 +50,9 @@ class VariantHandlers {
     });
   }
 
-  // LEGACY, remove parameter
-  registerConfig(variantHandlersFromLegacyConfig) {
+  registerConfig() {
     const variantHandlersToRegister = [
       ...this._coreVariantHandlers,
-      ...variantHandlersFromLegacyConfig,
       ...this._registerOption.value,
     ];
     this.register(variantHandlersToRegister);

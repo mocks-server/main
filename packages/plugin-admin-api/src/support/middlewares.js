@@ -22,14 +22,13 @@ function collectionMiddleware({ name, getItems, logger }) {
   };
 }
 
-function modelMiddleware({ name, getItems, parseItem, logger, finder }) {
+function modelMiddleware({ name, getItems, parseItem, logger }) {
   const capitalizedName = capitalize(name);
   const returnItem = parseItem ? (item) => parseItem(item) : (item) => item;
-  const finderMethod = finder ? finder : (id) => (item) => item.id === id;
   return function (req, res, next) {
     const id = req.params.id;
     logger.verbose(`Sending ${name} ${id} | ${req.id}`);
-    const foundItem = getItems().find(finderMethod(id));
+    const foundItem = getItems().find((item) => item.id === id);
     if (foundItem) {
       res.status(200);
       res.send(returnItem(foundItem));

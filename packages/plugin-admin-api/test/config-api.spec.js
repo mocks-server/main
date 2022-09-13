@@ -12,12 +12,10 @@ const {
   startServer,
   doFetch,
   doApiFetch,
-  doLegacyFetch,
   fixturesFolder,
   TimeCounter,
   wait,
   waitForServer,
-  waitForServerUrl,
 } = require("./support/helpers");
 
 describe("settings api", () => {
@@ -41,13 +39,8 @@ describe("settings api", () => {
           readEnvironment: false,
           readFile: false,
         },
-        mocks: {
-          delay: 0,
-        },
         mock: {
-          collections: {
-            selected: "base",
-          },
+          collections: {},
           routes: {
             delay: 0,
           },
@@ -64,7 +57,6 @@ describe("settings api", () => {
         plugins: {
           register: [null],
           adminApi: {
-            path: "/admin",
             host: "0.0.0.0",
             port: 3110,
             https: {
@@ -73,7 +65,6 @@ describe("settings api", () => {
           },
         },
         log: "silent",
-        routesHandlers: [],
         server: {
           host: "0.0.0.0",
           port: 3100,
@@ -153,46 +144,16 @@ describe("settings api", () => {
         await doApiFetch("/config", {
           method: "PATCH",
           body: {
-            mocks: {
-              delay: 2000,
+            mock: {
+              routes: {
+                delay: 2000,
+              },
             },
           },
         });
         await doFetch("/api/users");
         timeCounter.stop();
         expect(timeCounter.total).toBeGreaterThan(2000);
-      });
-
-      it("should set delay option to 0 when using legacy option", async () => {
-        const timeCounter = new TimeCounter();
-        await doApiFetch("/config", {
-          method: "PATCH",
-          body: {
-            mocks: {
-              delay: 0,
-            },
-          },
-        });
-        await doFetch("/api/users");
-        timeCounter.stop();
-        expect(timeCounter.total).toBeLessThan(200);
-      });
-
-      it("should set delay option to 1000", async () => {
-        await doApiFetch("/config", {
-          method: "PATCH",
-          body: {
-            mock: {
-              routes: {
-                delay: 1000,
-              },
-            },
-          },
-        });
-        const timeCounter = new TimeCounter();
-        await doFetch("/api/users");
-        timeCounter.stop();
-        expect(timeCounter.total).toBeGreaterThan(900);
       });
 
       it("should set delay option to 0", async () => {
@@ -213,7 +174,7 @@ describe("settings api", () => {
       });
     });
 
-    describe("when changing mock option", () => {
+    describe("when changing collection option", () => {
       describe("without changing it", () => {
         it("should serve user 1 under the /api/users/1 path", async () => {
           const users = await doFetch("/api/users/1");
@@ -231,16 +192,18 @@ describe("settings api", () => {
           await doApiFetch("/config", {
             method: "PATCH",
             body: {
-              mocks: {
-                selected: "user-2",
+              mock: {
+                collections: {
+                  selected: "user-2",
+                },
               },
             },
           });
         });
 
-        it("should return new mock when getting settings", async () => {
+        it("should return new collection when getting settings", async () => {
           const settingsResponse = await doApiFetch("/config");
-          expect(settingsResponse.body.mocks.selected).toEqual("user-2");
+          expect(settingsResponse.body.mock.collections.selected).toEqual("user-2");
         });
 
         it("should serve user 2 under the /api/users/1 path", async () => {
@@ -324,41 +287,6 @@ describe("settings api", () => {
           port: 3200,
         });
         expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
-      });
-    });
-
-    describe("when changing adminApiPath option", () => {
-      beforeAll(async () => {
-        await doApiFetch("/config", {
-          method: "PATCH",
-          body: {
-            plugins: {
-              adminApi: {
-                path: "/administration",
-              },
-            },
-          },
-        });
-        await waitForServerUrl("/administration/about");
-      });
-
-      afterAll(async () => {
-        await doApiFetch("/config", {
-          method: "PATCH",
-          body: {
-            plugins: {
-              adminApi: {
-                path: "/admin",
-              },
-            },
-          },
-        });
-        await waitForServerUrl("/admin/about");
-      });
-
-      it("should return new port adminApiPath when getting legacy settings, using new admin api path", async () => {
-        const settingsResponse = await doLegacyFetch("/administration/settings");
-        expect(settingsResponse.body.plugins.adminApi.path).toEqual("/administration");
       });
     });
   });

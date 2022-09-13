@@ -15,10 +15,6 @@ class Json {
     return "json";
   }
 
-  static get version() {
-    return "4";
-  }
-
   static get validationSchema() {
     return {
       type: "object",

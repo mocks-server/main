@@ -51,41 +51,45 @@ describe("createServer", () => {
     });
   });
 
-  describe("mocks api", () => {
-    it("should return mocks", async () => {
-      const response = await doFetch("/admin/mocks");
+  describe("mock collections api", () => {
+    it("should return collections", async () => {
+      const response = await doFetch("/api/mock/collections", {
+        port: 3110,
+      });
       expect(response.body).toEqual([
         {
           id: "base",
           from: null,
-          routesVariants: ["add-headers:enabled", "get-users:success", "get-user:success"],
-          appliedRoutesVariants: ["add-headers:enabled", "get-users:success", "get-user:success"],
+          definedRoutes: ["add-headers:enabled", "get-users:success", "get-user:success"],
+          routes: ["add-headers:enabled", "get-users:success", "get-user:success"],
         },
         {
           id: "no-headers",
           from: "base",
-          routesVariants: ["add-headers:disabled"],
-          appliedRoutesVariants: ["add-headers:disabled", "get-users:success", "get-user:success"],
+          definedRoutes: ["add-headers:disabled"],
+          routes: ["add-headers:disabled", "get-users:success", "get-user:success"],
         },
         {
           id: "all-users",
           from: "base",
-          routesVariants: ["get-users:all", "get-user:id-3"],
-          appliedRoutesVariants: ["add-headers:enabled", "get-users:all", "get-user:id-3"],
+          definedRoutes: ["get-users:all", "get-user:id-3"],
+          routes: ["add-headers:enabled", "get-users:all", "get-user:id-3"],
         },
         {
           id: "user-real",
           from: "no-headers",
-          routesVariants: ["get-user:real"],
-          appliedRoutesVariants: ["add-headers:disabled", "get-users:success", "get-user:real"],
+          definedRoutes: ["get-user:real"],
+          routes: ["add-headers:disabled", "get-users:success", "get-user:real"],
         },
       ]);
     });
   });
 
-  describe("routes api", () => {
+  describe("mock routes api", () => {
     it("should return routes", async () => {
-      const response = await doFetch("/admin/routes");
+      const response = await doFetch("/api/mock/routes", {
+        port: 3110,
+      });
       expect(response.body).toEqual([
         {
           id: "add-headers",
@@ -113,22 +117,26 @@ describe("createServer", () => {
   });
 
   describe("routes variants api", () => {
-    it("should return routes variants", async () => {
-      const response = await doFetch("/admin/routes-variants");
+    it("should return route variants", async () => {
+      const response = await doFetch("/api/mock/variants", {
+        port: 3110,
+      });
       expect(response.body).toEqual([
         {
           id: "add-headers:enabled",
-          routeId: "add-headers",
-          handler: "middleware",
-          response: null,
+          disabled: false,
+          route: "add-headers",
+          type: "middleware",
+          preview: null,
           delay: null,
         },
-        { id: "add-headers:disabled", routeId: "add-headers", response: null },
+        { id: "add-headers:disabled", disabled: true, route: "add-headers", preview: null },
         {
           id: "get-users:success",
-          routeId: "get-users",
-          handler: "json",
-          response: {
+          disabled: false,
+          route: "get-users",
+          type: "json",
+          preview: {
             body: [
               { id: 1, name: "John Doe" },
               { id: 2, name: "Jane Doe" },
@@ -139,9 +147,10 @@ describe("createServer", () => {
         },
         {
           id: "get-users:all",
-          routeId: "get-users",
-          handler: "json",
-          response: {
+          disabled: false,
+          route: "get-users",
+          type: "json",
+          preview: {
             body: [
               { id: 1, name: "John Doe" },
               { id: 2, name: "Jane Doe" },
@@ -154,30 +163,34 @@ describe("createServer", () => {
         },
         {
           id: "get-users:error",
-          routeId: "get-users",
-          handler: "json",
-          response: { body: { message: "Error" }, status: 400 },
+          disabled: false,
+          route: "get-users",
+          type: "json",
+          preview: { body: { message: "Error" }, status: 400 },
           delay: null,
         },
         {
           id: "get-user:success",
-          routeId: "get-user",
-          handler: "json",
-          response: { body: { id: 1, name: "John Doe" }, status: 200 },
+          disabled: false,
+          route: "get-user",
+          type: "json",
+          preview: { body: { id: 1, name: "John Doe" }, status: 200 },
           delay: null,
         },
         {
           id: "get-user:id-3",
-          routeId: "get-user",
-          handler: "json",
-          response: { body: { id: 3, name: "Tommy" }, status: 200 },
+          disabled: false,
+          route: "get-user",
+          type: "json",
+          preview: { body: { id: 3, name: "Tommy" }, status: 200 },
           delay: null,
         },
         {
           id: "get-user:real",
-          routeId: "get-user",
-          handler: "middleware",
-          response: null,
+          disabled: false,
+          route: "get-user",
+          type: "middleware",
+          preview: null,
           delay: null,
         },
       ]);
@@ -271,21 +284,26 @@ describe("createServer", () => {
     });
   });
 
-  describe("when using api to change current mock", () => {
+  describe("when using api to change current collection", () => {
     beforeAll(async () => {
-      await doFetch("/admin/settings", {
+      await doFetch("/api/config", {
+        port: 3110,
         method: "PATCH",
         body: {
-          mocks: {
-            selected: "base",
+          mock: {
+            collections: {
+              selected: "base",
+            },
           },
         },
       });
     });
 
-    it("should return new mock when getting settings", async () => {
-      const settingsResponse = await doFetch("/admin/settings");
-      expect(settingsResponse.body.mocks.selected).toEqual("base");
+    it("should return new collection when getting config", async () => {
+      const settingsResponse = await doFetch("/api/config", {
+        port: 3110,
+      });
+      expect(settingsResponse.body.mock.collections.selected).toEqual("base");
     });
 
     it("should serve user 1 under the /api/users/2 path", async () => {
@@ -296,7 +314,8 @@ describe("createServer", () => {
 
   describe("when using api to set route variant", () => {
     beforeAll(async () => {
-      await doFetch("/admin/mock-custom-routes-variants", {
+      await doFetch("/api/mock/custom-route-variants", {
+        port: 3110,
         method: "POST",
         body: {
           id: "get-user:real",
@@ -305,7 +324,9 @@ describe("createServer", () => {
     });
 
     it("should return custom route variant in API", async () => {
-      const response = await doFetch("/admin/mock-custom-routes-variants");
+      const response = await doFetch("/api/mock/custom-route-variants", {
+        port: 3110,
+      });
       expect(response.body).toEqual(["get-user:real"]);
     });
 
@@ -327,13 +348,16 @@ describe("createServer", () => {
 
   describe("when using api to restore routes variants", () => {
     beforeAll(async () => {
-      await doFetch("/admin/mock-custom-routes-variants", {
+      await doFetch("/api/mock/custom-route-variants", {
+        port: 3110,
         method: "DELETE",
       });
     });
 
     it("should return custom route variants in API", async () => {
-      const response = await doFetch("/admin/mock-custom-routes-variants");
+      const response = await doFetch("/api/mock/custom-route-variants", {
+        port: 3110,
+      });
       expect(response.body).toEqual([]);
     });
 

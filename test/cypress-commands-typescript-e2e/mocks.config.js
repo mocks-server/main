@@ -6,7 +6,9 @@ module.exports = {
   config: {
     allowUnknownArguments: true,
   },
-  mocks: {
-    selected: "standard",
+  mock: {
+    collections: {
+      selected: "standard",
+    },
   },
 };

@@ -3,7 +3,6 @@ const path = require("path");
 const fsExtra = require("fs-extra");
 
 import Spawn from "./Spawn";
-import { configClient } from "../../src/index";
 
 const TEMP_FOLDER = path.resolve(__dirname, "temp");
 
@@ -13,11 +12,6 @@ const tempPath = (folderName) => {
 
 const certFile = tempPath("localhost.cert");
 const keyFile = tempPath("localhost.key");
-
-configClient({
-  port: 3110,
-  host: "127.0.0.1",
-});
 
 const wait = (time = 1000) => {
   return new Promise((resolve) => {

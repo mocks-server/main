@@ -130,13 +130,6 @@ const doApiFetch = (uri, options) => {
   return doServerFetch(`/api${uri}`, options);
 };
 
-const doLegacyFetch = (uri, options = {}) => {
-  return doFetch(uri, {
-    port: 3100,
-    ...options,
-  });
-};
-
 class TimeCounter {
   constructor() {
     this._startTime = new Date();
@@ -205,7 +198,6 @@ module.exports = {
   createCore,
   startExistingCore,
   startServer,
-  doLegacyFetch,
   doFetch,
   doServerFetch,
   doApiFetch,

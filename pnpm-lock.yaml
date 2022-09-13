@@ -130,7 +130,7 @@ importers:
 
   mocks/admin-api-client-data-provider-e2e-react-app:
     specifiers:
-      '@data-provider/axios': 5.0.0
+      '@data-provider/axios': 5.0.1
       '@data-provider/core': 4.0.0
       '@data-provider/react': 1.6.0
       '@mocks-server/admin-api-client-data-provider': workspace:*
@@ -141,7 +141,7 @@ importers:
       react-redux: 7.2.8
       redux: 4.2.0
     dependencies:
-      '@data-provider/axios': 5.0.0_@data-provider+core@4.0.0
+      '@data-provider/axios': 5.0.1_@data-provider+core@4.0.0
       '@data-provider/core': 4.0.0_redux@4.2.0
       '@data-provider/react': 1.6.0_fc988d86fd515d7f7711b36b3facbcfb
       '@mocks-server/admin-api-client-data-provider': link:../../packages/admin-api-client-data-provider
@@ -177,14 +177,14 @@ importers:
 
   packages/admin-api-client-data-provider:
     specifiers:
-      '@data-provider/axios': 5.0.0
+      '@data-provider/axios': 5.0.1
       '@data-provider/core': 4.0.0
       '@mocks-server/admin-api-paths': workspace:*
       redux: 4.2.0
     dependencies:
       '@mocks-server/admin-api-paths': link:../admin-api-paths
     devDependencies:
-      '@data-provider/axios': 5.0.0_@data-provider+core@4.0.0
+      '@data-provider/axios': 5.0.1_@data-provider+core@4.0.0
       '@data-provider/core': 4.0.0_redux@4.2.0
       redux: 4.2.0
 
@@ -2150,15 +2150,15 @@ packages:
       kuler: 2.0.0
     dev: false
 
-  /@data-provider/axios/5.0.0_@data-provider+core@4.0.0:
-    resolution: {integrity: sha512-ectEFUhENHHiBOkOldnUtM3yvO9XjIzTgWqjCgePxDve4mUihSKSCauXex7wJ37OkKKU+bVTu+pd4MZ0jIuCEw==}
+  /@data-provider/axios/5.0.1_@data-provider+core@4.0.0:
+    resolution: {integrity: sha512-7DeO9AvXWa7HJmTNRvgmMg6VWdv8pUNXMJ84wlYkNpOcrTIkQ5P3Y0BNn0RdCc8JS/c3fR6roIFUeigwoEeHIQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@data-provider/core': 4.x
     dependencies:
       '@data-provider/core': 4.0.0_redux@4.2.0
       axios: 0.27.2
-      axios-retry: 3.2.5
+      axios-retry: 3.3.1
       path-to-regexp: 6.2.1
       query-string: 7.1.1
     transitivePeerDependencies:
@@ -4898,8 +4898,8 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /axios-retry/3.2.5:
-    resolution: {integrity: sha512-a8umkKbfIkTiYJQLx3v3TzKM85TGKB8ZQYz4zwykt2fpO64TsRlUhjaPaAb3fqMWCXFm2YhWcd8V5FHDKO9bSA==}
+  /axios-retry/3.3.1:
+    resolution: {integrity: sha512-RohAUQTDxBSWLFEnoIG/6bvmy8l3TfpkclgStjl5MDCMBDgapAWCmr1r/9harQfWC8bzLC8job6UcL1A1Yc+/Q==}
     dependencies:
       '@babel/runtime': 7.17.8
       is-retry-allowed: 2.2.0

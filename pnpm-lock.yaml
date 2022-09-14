@@ -357,10 +357,10 @@ importers:
       '@mocks-server/core': workspace:*
       '@mocks-server/nested-collections': workspace:*
       json-refs: 3.0.15
-      openapi-types: 12.0.0
+      openapi-types: 12.0.2
     dependencies:
       json-refs: 3.0.15
-      openapi-types: 12.0.0
+      openapi-types: 12.0.2
     devDependencies:
       '@mocks-server/core': link:../core
       '@mocks-server/nested-collections': link:../nested-collections
@@ -12560,8 +12560,8 @@ packages:
       is-wsl: 2.2.0
     dev: true
 
-  /openapi-types/12.0.0:
-    resolution: {integrity: sha512-6Wd9k8nmGQHgCbehZCP6wwWcfXcvinhybUTBatuhjRsCxUIujuYFZc9QnGeae75CyHASewBtxs0HX/qwREReUw==}
+  /openapi-types/12.0.2:
+    resolution: {integrity: sha512-GuTo7FyZjOIWVhIhQSWJVaws6A82sWIGyQogxxYBYKZ0NBdyP2CYSIgOwFfSB+UVoPExk/YzFpyYitHS8KVZtA==}
     dev: false
 
   /opn/5.5.0:

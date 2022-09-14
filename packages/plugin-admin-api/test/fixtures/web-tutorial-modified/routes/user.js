@@ -18,32 +18,37 @@ module.exports = [
     variants: [
       {
         id: "1",
-        response: {
+        type: "json",
+        options: {
           status: 200,
           body: USERS[0],
         },
       },
       {
         id: "2",
-        response: {
+        type: "json",
+        options: {
           status: 200,
           body: USERS[1],
         },
       },
       {
         id: "real",
-        response: (req, res) => {
-          const userId = req.params.id;
-          const user = USERS.find((userData) => userData.id === Number(userId));
-          if (user) {
-            res.status(200);
-            res.send(user);
-          } else {
-            res.status(404);
-            res.send({
-              message: "User not found",
-            });
-          }
+        type: "middleware",
+        options: {
+          middleware: (req, res) => {
+            const userId = req.params.id;
+            const user = USERS.find((userData) => userData.id === Number(userId));
+            if (user) {
+              res.status(200);
+              res.send(user);
+            } else {
+              res.status(404);
+              res.send({
+                message: "User not found",
+              });
+            }
+          },
         },
       },
     ],

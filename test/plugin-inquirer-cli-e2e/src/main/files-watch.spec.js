@@ -33,11 +33,11 @@ describe("files watcher", () => {
   });
 
   describe("When started", () => {
-    it("should display available mocks in CLI", async () => {
+    it("should display available collections in CLI", async () => {
       expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 3"));
     });
 
-    it("should display current mock in CLI", async () => {
+    it("should display current collection in CLI", async () => {
       expect(mocks.logs).toEqual(expect.stringContaining("Current collection: base"));
     });
 
@@ -156,7 +156,7 @@ describe("files watcher", () => {
   describe("When files are modified and contain an error", () => {
     beforeAll(async () => {
       fsExtra.copySync(fixturesFolder("files-error-mock"), fixturesFolder("temp"));
-      await wait(3000);
+      await wait(5000);
     });
 
     it("should display an error", async () => {
@@ -179,7 +179,7 @@ describe("files watcher", () => {
 
     it("should remove alerts when error is fixed", async () => {
       fsExtra.copySync(fixturesFolder("web-tutorial-modified"), fixturesFolder("temp"));
-      await wait(3000);
+      await wait(5000);
       expect(mocks.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
     });
   });

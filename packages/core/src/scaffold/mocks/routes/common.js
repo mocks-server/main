@@ -10,7 +10,7 @@ module.exports = [
     variants: [
       {
         id: "enabled", // variant id
-        handler: "middleware", // variant handler id
+        type: "middleware", // variant handler id
         options: {
           // Express middleware to execute
           middleware: (_req, res, next, core) => {

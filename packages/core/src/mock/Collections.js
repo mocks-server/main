@@ -15,37 +15,30 @@ const OPTIONS = [
     description: "Selected collection",
     name: "selected",
     type: "string",
-    // LEGACY, remove and set value from scaffold when legacy option is removed
-    default: "base",
   },
 ];
+
+// TODO, add to data model
 
 class Collections {
   static get id() {
     return "collections";
   }
 
-  constructor({
-    logger,
-    config,
-    onChangeSelected,
-    getIds,
-    getSelectedCollection,
-    getPlainCollections,
-  }) {
+  constructor({ logger, config, onChangeSelected, getIds, getPlainCollections, getSelected }) {
     this._logger = logger;
     this._config = config;
     this._onChangeSelected = onChangeSelected;
-    this._getSelectedCollection = getSelectedCollection;
     this._getPlainCollections = getPlainCollections;
     this._getIds = getIds;
+    this._getSelected = getSelected;
 
     [this._selectedOption] = this._config.addOptions(OPTIONS);
     this._selectedOption.onChange(onChangeSelected);
   }
 
   get selected() {
-    return this._getSelectedCollection();
+    return this._getSelected();
   }
 
   get ids() {
@@ -56,7 +49,6 @@ class Collections {
     return this._getPlainCollections();
   }
 
-  // LEGACY, set check to true by default on next major version, or remove the option
   select(collection, { check = false } = {}) {
     this._selectedOption.value = collection;
     if (check) {

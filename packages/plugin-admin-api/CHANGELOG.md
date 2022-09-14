@@ -12,6 +12,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [4.0.0] - 2022-09-14
+
+### Removed
+- feat: Remove custom router "/admin" from mock server. Admin API is only available at its own server from now.
+
+### Added
+- feat: Add url and method to route not found log
+
+### Changed
+- chore(deps): Update dependencies
+- chore(deps): Require @mocks-server/core@4.x in peerDependencies
+
 ## [3.4.0] - 2022-08-11
 
 ### Added

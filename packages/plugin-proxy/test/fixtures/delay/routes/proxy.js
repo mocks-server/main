@@ -7,7 +7,7 @@ module.exports = [
       {
         id: "enabled",
         delay: 1000,
-        type: "proxy-v4",
+        type: "proxy",
         options: {
           host: "http://127.0.0.1:3200",
           options: {},

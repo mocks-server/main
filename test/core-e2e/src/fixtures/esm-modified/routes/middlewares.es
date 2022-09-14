@@ -14,7 +14,7 @@ const middlewares = [
         options: {
           middleware: (req, res, next, mocksServer) => {
             res.set("x-mocks-server-example", "custom-header");
-            mocksServer.tracer.info(
+            mocksServer.logger.info(
               "Custom header added by add-headers:enabled route variant middleware"
             );
             next();

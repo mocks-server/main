@@ -6,14 +6,16 @@
     "variants": [
       {
         "id": "standard",
-        "response": {
+        "type": "json",
+        "options": {
           "status": 200,
           "body": { "display": "standard-response" }
         }
       },
       {
         "id": "custom",
-        "response": {
+        "type": "json",
+        "options": {
           "status": 200,
           "body": { "display": "custom-response" }
         }

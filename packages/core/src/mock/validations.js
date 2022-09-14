@@ -12,8 +12,7 @@ const Ajv = require("ajv");
 const { compact } = require("lodash");
 const betterAjvErrors = require("better-ajv-errors").default;
 
-const { getDataFromVariant, isVersion4 } = require("../variant-handlers/helpers");
-const { deprecatedMessage } = require("../common/helpers");
+const { getDataFromVariant } = require("../variant-handlers/helpers");
 
 const ajv = new Ajv({ allErrors: true });
 
@@ -46,68 +45,24 @@ ajv.addKeyword({
 });
 
 const collectionsSchema = {
-  oneOf: [
-    {
-      type: "object",
-      properties: {
-        id: {
-          type: "string",
-        },
-        from: {
-          type: ["string", "null"],
-        },
-        routesVariants: {
-          type: "array",
-          uniqueItems: true,
-          items: {
-            type: "string",
-          },
-        },
-      },
-      required: ["id", "routesVariants"],
-      additionalProperties: false,
+  type: "object",
+  properties: {
+    id: {
+      type: "string",
     },
-    {
-      type: "object",
-      properties: {
-        id: {
-          type: "string",
-        },
-        from: {
-          type: ["string", "null"],
-        },
-        routeVariants: {
-          type: "array",
-          uniqueItems: true,
-          items: {
-            type: "string",
-          },
-        },
-      },
-      required: ["id", "routeVariants"],
-      additionalProperties: false,
+    from: {
+      type: ["string", "null"],
     },
-    {
-      type: "object",
-      properties: {
-        id: {
-          type: "string",
-        },
-        from: {
-          type: ["string", "null"],
-        },
-        routes: {
-          type: "array",
-          uniqueItems: true,
-          items: {
-            type: "string",
-          },
-        },
+    routes: {
+      type: "array",
+      uniqueItems: true,
+      items: {
+        type: "string",
       },
-      required: ["id", "routes"],
-      additionalProperties: false,
     },
-  ],
+  },
+  required: ["id", "routes"],
+  additionalProperties: false,
 };
 
 const routesSchema = {
@@ -149,36 +104,52 @@ const routesSchema = {
     variants: {
       type: "array",
       items: {
-        type: "object",
-        properties: {
-          id: {
-            type: "string",
-          },
-          disabled: {
-            type: "boolean",
-          },
-          handler: {
-            type: "string",
-            enum: [], // this enum is defined when validator is compiled
-          },
-          type: {
-            type: "string",
-            enum: [], // this enum is defined when validator is compiled
-          },
-          delay: {
-            oneOf: [
-              {
-                type: "null",
+        oneOf: [
+          {
+            type: "object",
+            properties: {
+              id: {
+                type: "string",
               },
-              {
-                type: "integer",
-                minimum: 0,
+              disabled: {
+                enum: [false],
               },
-            ],
+              type: {
+                type: "string",
+                enum: [], // this enum is defined when validator is compiled
+              },
+              delay: {
+                oneOf: [
+                  {
+                    type: "null",
+                  },
+                  {
+                    type: "integer",
+                    minimum: 0,
+                  },
+                ],
+              },
+              options: {
+                type: "object",
+              },
+            },
+            required: ["id", "type"],
+            additionalProperties: false,
           },
-        },
-        // TODO, require "options" in all variants to be an object, do not allow additionalProperties. Deprecate "response"
-        required: ["id"],
+          {
+            type: "object",
+            properties: {
+              id: {
+                type: "string",
+              },
+              disabled: {
+                enum: [true],
+              },
+            },
+            required: ["id"],
+            additionalProperties: false,
+          },
+        ],
       },
     },
   },
@@ -211,9 +182,7 @@ function getIds(objs) {
 function compileRouteValidator(variantHandlers) {
   const supportedRouteHandlersIds = getIds(variantHandlers);
   const schema = { ...routesSchema };
-  // LEGACY, handler property
-  schema.properties.variants.items.properties.handler.enum = supportedRouteHandlersIds;
-  schema.properties.variants.items.properties.type.enum = supportedRouteHandlersIds;
+  schema.properties.variants.items.oneOf[0].properties.type.enum = supportedRouteHandlersIds;
   routeSchema = { ...schema };
   routeValidator = ajv.compile(schema);
 }
@@ -299,20 +268,8 @@ function collectionRouteVariantsErrors(variants, routeVariants) {
   );
 }
 
-function getCollectionRouteVariantsProperty(collection, alertsCollections) {
-  if (alertsCollections && collection && collection.routesVariants) {
-    alertsCollections.set(
-      "routesVariants",
-      deprecatedMessage(
-        "property",
-        "collection.routesVariants",
-        "collection.routes",
-        "releases/migrating-from-v3#main-concepts"
-      )
-    );
-  }
-  // LEGACY, remove routesVariants support
-  return collection.routes || collection.routeVariants || collection.routesVariants;
+function getCollectionRouteVariantsProperty(collection) {
+  return collection.routes || collection.routeVariants;
 }
 
 function collectionInvalidRouteVariants(collection, routeVariants) {
@@ -395,8 +352,8 @@ function variantValidationErrors(route, variant, Handler) {
     return null;
   }
   const variantValidator = ajv.compile(Handler.validationSchema);
-  const dataToCheck = getDataFromVariant(variant, Handler);
-  const dataMessage = isVersion4(Handler) ? "Invalid 'options' property:" : "";
+  const dataToCheck = getDataFromVariant(variant);
+  const dataMessage = "Invalid 'options' property:";
   const isValid = variantValidator(dataToCheck);
   if (!isValid) {
     let validationMessage;

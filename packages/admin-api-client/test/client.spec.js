@@ -95,16 +95,6 @@ describe("AdminApiClient class", () => {
   });
 
   describe("when updating config", () => {
-    it("should update current delay using legacy option", async () => {
-      await apiClient.updateConfig({
-        mocks: {
-          delay: 1000,
-        },
-      });
-      const settings = await apiClient.readConfig();
-      expect(settings.mocks.delay).toEqual(1000);
-    });
-
     it("should update current delay", async () => {
       await apiClient.updateConfig({
         mock: {

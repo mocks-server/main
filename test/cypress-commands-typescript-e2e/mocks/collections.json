@@ -1,10 +1,10 @@
 [
   {
     "id": "standard",
-    "routesVariants": ["response:standard"]
+    "routes": ["response:standard"]
   },
   {
     "id": "custom",
-    "routesVariants": ["response:custom"]
+    "routes": ["response:custom"]
   }
 ]

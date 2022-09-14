@@ -10,6 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const { NestedCollections } = require("@mocks-server/nested-collections");
 
+const ALERTS_ROOT_ID = "alerts";
+const ID_SEP = ":";
+
 class Alerts extends NestedCollections {
   constructor(id, options) {
     super(id, { ...options, Decorator: Alerts });
@@ -32,24 +35,16 @@ class Alerts extends NestedCollections {
     return super.remove(id);
   }
 
-  // LEGACY, to be changed by flat in next major version
-  get customFlat() {
+  get flat() {
     return this._flat.map((item) => {
-      let context = item.collection;
-      let sep = ":";
-      if (context.startsWith("alerts:")) {
-        context = context.replace("alerts:", "");
-      } else {
-        context = "";
-        sep = "";
+      let collectionPaths = item.collection.split(ID_SEP);
+      if (collectionPaths[0] === ALERTS_ROOT_ID) {
+        collectionPaths.shift();
       }
-
-      const id = `${context}${sep}${item.id}`;
 
       return {
         ...item.value,
-        id,
-        context: id,
+        id: [...collectionPaths, item.id].join(ID_SEP),
       };
     });
   }

@@ -152,8 +152,6 @@ class Cli {
       .namespace("collections")
       .option("selected");
     this._optionDelay = this._config.root.namespace("mock").namespace("routes").option("delay");
-    // LEGACY, to be removed
-    this._optionDelayLegacy = this._config.root.namespace("mocks").option("delay");
     this._optionPort = this._config.root.namespace("server").option("port");
     this._optionHost = this._config.root.namespace("server").option("host");
     this._optionHttps = this._config.root.namespace("server").namespace("https").option("enabled");
@@ -264,9 +262,7 @@ class Cli {
   }
 
   _header() {
-    const delay = this._optionDelay.hasBeenSet
-      ? this._optionDelay.value
-      : this._optionDelayLegacy.value;
+    const delay = this._optionDelay.value;
     const watchEnabled = this._optionWatch.value;
 
     const currentCollection = this._mock.collections.selected || "-";
@@ -295,7 +291,7 @@ class Cli {
   }
 
   _alertsHeader() {
-    return this._alerts.root.customFlat.map(renderAlert);
+    return this._alerts.root.flat.map(renderAlert);
   }
 
   async _displayMainMenu() {

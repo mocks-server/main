@@ -31,7 +31,7 @@ const logRequest =
 const notFound =
   ({ logger }) =>
   (req, _res, next) => {
-    logger.debug(`Sending Not found response | ${req.id}`);
+    logger.debug(`Sending Not found response | ${req.method} => ${req.url} | ${req.id}`);
     next(Boom.notFound());
   };
 
@@ -55,16 +55,6 @@ const enableCors = () =>
     preflightContinue: false,
   });
 
-const addLegacyApiAlert = (alerts) => {
-  return (_req, _res, next) => {
-    alerts.set(
-      "legacy-api",
-      "Usage of legacy REST API detected. Consider using the new REST API: https://www.mocks-server.org/docs/integrations/rest-api"
-    );
-    next();
-  };
-};
-
 module.exports = {
   addRequestId,
   jsonBodyParser,
@@ -72,5 +62,4 @@ module.exports = {
   notFound,
   errorHandler,
   enableCors,
-  addLegacyApiAlert,
 };

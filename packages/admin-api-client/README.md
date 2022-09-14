@@ -129,11 +129,6 @@ apiClient.configClient({
 });
 ```
 
-## Release notes
-
-* Due to backward compatibility reasons, the package also creates a default `AdminApiClient` automatically and exports all of its methods as functions available at first level. Usage of these "global" functions is discouraged, as they will be removed in next major version. 
-* Current major release is compatible only with `@mocks-server/main` versions upper or equal than `3.6`. Use prior releases for lower versions. If you don't want to update to the latest major version of this package yet but you want to update `@mocks-server/main`, you can also use any `5.x` version of this package with any `@mocks-server/main@3.x` version.
-
 ## Contributing
 
 Contributors are welcome.

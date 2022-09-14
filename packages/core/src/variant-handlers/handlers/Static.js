@@ -17,10 +17,6 @@ class Static {
     return "static";
   }
 
-  static get version() {
-    return "4";
-  }
-
   static get validationSchema() {
     return {
       type: "object",

@@ -163,11 +163,11 @@ const mocksRunner = (args = [], options = {}) => {
 };
 
 const filterAlerts = (alertContextFragment, alerts) => {
-  return alerts.filter((alert) => alert.context.includes(alertContextFragment));
+  return alerts.filter((alert) => alert.id.includes(alertContextFragment));
 };
 
 const findAlert = (alertContextFragment, alerts) => {
-  return alerts.find((alert) => alert.context.includes(alertContextFragment));
+  return alerts.find((alert) => alert.id.includes(alertContextFragment));
 };
 
 const findTrace = (traceFragment, traces) => {

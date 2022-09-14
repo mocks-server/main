@@ -323,7 +323,7 @@ importers:
       cors: 2.8.5
       express: 4.18.1
       express-request-id: 1.4.1
-      swagger-ui-dist: 4.13.0
+      swagger-ui-dist: 4.14.0
     dependencies:
       '@hapi/boom': 9.1.4
       '@mocks-server/admin-api-paths': link:../admin-api-paths
@@ -331,7 +331,7 @@ importers:
       cors: 2.8.5
       express: 4.18.1
       express-request-id: 1.4.1
-      swagger-ui-dist: 4.13.0
+      swagger-ui-dist: 4.14.0
     devDependencies:
       '@mocks-server/core': link:../core
 
@@ -407,16 +407,6 @@ importers:
       '@mocks-server/config': link:../../packages/config
 
   test/core-e2e:
-    specifiers:
-      '@mocks-server/cli-runner': workspace:*
-      '@mocks-server/core': workspace:*
-      express: 4.17.3
-    dependencies:
-      '@mocks-server/cli-runner': link:../../packages/cli-runner
-      '@mocks-server/core': link:../../packages/core
-      express: 4.17.3
-
-  test/core-e2e-legacy:
     specifiers:
       '@mocks-server/cli-runner': workspace:*
       '@mocks-server/core': workspace:*
@@ -15799,8 +15789,8 @@ packages:
       util.promisify: 1.0.1
     dev: true
 
-  /swagger-ui-dist/4.13.0:
-    resolution: {integrity: sha512-5yqhkUU9uV5oT/MTMBeSgDGI0Vx6eCOU43AszQBs88poI8OB1v+FoXEFHv+NaBbEfTkXCMWlAJrH6iWyDzLETQ==}
+  /swagger-ui-dist/4.14.0:
+    resolution: {integrity: sha512-TBzhheU15s+o54Cgk9qxuYcZMiqSm/SkvKnapoGHOF66kz0Y5aGjpzj5BT/vpBbn6rTPJ9tUYXQxuDWfsjiGMw==}
     dev: false
 
   /symbol-tree/3.2.4:

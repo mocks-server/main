@@ -15,6 +15,12 @@
 /babel.config.js
 /_babel.config.js
 
+/test/functional/fixtures/temp
+/test/functional/fixtures/unexistant
+/test/functional/fixtures/mocks.config.js
+/test/functional/fixtures/*.cert
+/test/functional/fixtures/*.key
+
 # misc
 .DS_Store
 .env.local

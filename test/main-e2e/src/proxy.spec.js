@@ -33,7 +33,7 @@ describe("scaffold", () => {
   });
 
   describe("When started", () => {
-    it("should have 2 mocks available", async () => {
+    it("should have 2 collections available", async () => {
       expect(mocks.currentScreen).toEqual(expect.stringContaining("Collections: 2"));
     });
 
@@ -60,21 +60,23 @@ describe("scaffold", () => {
     });
   });
 
-  describe("mocks api", () => {
-    it("should return mocks", async () => {
-      const response = await doFetch("/admin/mocks");
+  describe("collections api", () => {
+    it("should return collections", async () => {
+      const response = await doFetch("/api/mock/collections", {
+        port: 3110,
+      });
       expect(response.body).toEqual([
         {
           id: "base",
           from: null,
-          routesVariants: ["proxy-all:enabled"],
-          appliedRoutesVariants: ["proxy-all:enabled"],
+          routes: ["proxy-all:enabled"],
+          definedRoutes: ["proxy-all:enabled"],
         },
         {
           id: "proxy-disabled",
           from: null,
-          routesVariants: ["proxy-all:disabled"],
-          appliedRoutesVariants: ["proxy-all:disabled"],
+          routes: ["proxy-all:disabled"],
+          definedRoutes: ["proxy-all:disabled"],
         },
       ]);
     });
@@ -82,7 +84,9 @@ describe("scaffold", () => {
 
   describe("routes api", () => {
     it("should return routes", async () => {
-      const response = await doFetch("/admin/routes");
+      const response = await doFetch("/api/mock/routes", {
+        port: 3110,
+      });
       expect(response.body).toEqual([
         {
           id: "proxy-all",
@@ -95,24 +99,28 @@ describe("scaffold", () => {
     });
   });
 
-  describe("routes variants api", () => {
-    it("should return routes variants", async () => {
-      const response = await doFetch("/admin/routes-variants");
+  describe("route variants api", () => {
+    it("should return route variants", async () => {
+      const response = await doFetch("/api/mock/variants", {
+        port: 3110,
+      });
       expect(response.body).toEqual([
         {
           id: "proxy-all:enabled",
-          routeId: "proxy-all",
-          handler: "proxy-v4",
-          response: {
+          route: "proxy-all",
+          type: "proxy",
+          disabled: false,
+          preview: {
             host: "http://127.0.0.1:3200",
           },
           delay: null,
         },
         {
           id: "proxy-all:disabled",
-          routeId: "proxy-all",
-          handler: "middleware",
-          response: null,
+          route: "proxy-all",
+          type: "middleware",
+          disabled: false,
+          preview: null,
           delay: null,
         },
       ]);
@@ -167,7 +175,8 @@ describe("scaffold", () => {
 
   describe("when using api to restore routes variants", () => {
     beforeAll(async () => {
-      await doFetch("/admin/mock-custom-routes-variants", {
+      await doFetch("/api/mock/custom-route-variants", {
+        port: 3110,
         method: "DELETE",
       });
     });
@@ -181,7 +190,9 @@ describe("scaffold", () => {
     });
 
     it("should return custom route variants in API", async () => {
-      const response = await doFetch("/admin/mock-custom-routes-variants");
+      const response = await doFetch("/api/mock/custom-route-variants", {
+        port: 3110,
+      });
       expect(response.body).toEqual([]);
     });
 
@@ -193,11 +204,14 @@ describe("scaffold", () => {
 
   describe("when using api to change current mock", () => {
     beforeAll(async () => {
-      await doFetch("/admin/settings", {
+      await doFetch("/api/config", {
+        port: 3110,
         method: "PATCH",
         body: {
-          mocks: {
-            selected: "base",
+          mock: {
+            collections: {
+              selected: "base",
+            },
           },
         },
       });

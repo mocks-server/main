@@ -85,27 +85,17 @@ describe("data provider methods used through node", () => {
   describe("when reading config", () => {
     it("should return current collection", async () => {
       const config = await readConfig();
-      expect(config.mocks.selected).toEqual(undefined);
+      expect(config.mock.collections.selected).toEqual(undefined);
     });
   });
 
   describe("when updating config", () => {
     it("should update current collection", async () => {
       await updateConfig({
-        mocks: { selected: "user2" },
+        mock: { collections: { selected: "user2" } },
       });
       const config = await readConfig();
-      expect(config.mocks.selected).toEqual("user2");
-    });
-
-    it("should update current delay using legacy option", async () => {
-      await updateConfig({
-        mocks: {
-          delay: 1000,
-        },
-      });
-      const config = await readConfig();
-      expect(config.mocks.delay).toEqual(1000);
+      expect(config.mock.collections.selected).toEqual("user2");
     });
 
     it("should update current delay", async () => {

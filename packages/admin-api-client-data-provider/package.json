@@ -36,7 +36,7 @@
     "@mocks-server/admin-api-paths": "workspace:*"
   },
   "devDependencies": {
-    "@data-provider/axios": "5.0.0",
+    "@data-provider/axios": "5.0.1",
     "@data-provider/core": "4.0.0",
     "redux": "4.2.0"
   },

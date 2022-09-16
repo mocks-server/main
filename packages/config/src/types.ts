@@ -1,77 +1,29 @@
-const STRING_TYPE = "string";
-const NUMBER_TYPE = "number";
-const BOOLEAN_TYPE = "boolean";
-const OBJECT_TYPE = "object";
-const ARRAY_TYPE = "array";
-const NULL_TYPE = "null";
-
-export const types = {
-  STRING: STRING_TYPE,
-  NUMBER: NUMBER_TYPE,
-  BOOLEAN: BOOLEAN_TYPE,
-  OBJECT: OBJECT_TYPE,
-  ARRAY: ARRAY_TYPE,
-  NULL: NULL_TYPE,
-}
-
-type OptionType = typeof STRING_TYPE | typeof NUMBER_TYPE | typeof BOOLEAN_TYPE | typeof OBJECT_TYPE | typeof ARRAY_TYPE | typeof NULL_TYPE;
-
-interface OptionBoolean {
-  type: typeof BOOLEAN_TYPE
-  value: boolean
-}
-
-interface OptionNumber {
-  type: typeof NUMBER_TYPE
-  value: number
-}
-
-interface OptionString {
-  type: typeof STRING_TYPE
-  value: string
-}
-
-interface OptionObject {
-  type: typeof OBJECT_TYPE
-  value: Record<string, unknown>
-}
-
-interface OptionArray {
-  type: typeof ARRAY_TYPE
-  value: Record<string, unknown>
-  itemsType: OptionType
-}
-
-interface OptionNull {
-  type: typeof NULL_TYPE
-  value: null
-}
+import { types } from "./types/Option";
+import type { Option, OptionArray, OptionType, ItemsType } from "./types/Option";
 
 interface ValueParser {
   (value: unknown): unknown
 }
 
-type Option = OptionBoolean | OptionNumber | OptionString | OptionObject | OptionArray | OptionNull
-
 const FALSY_VALUES = ["false", "0", 0];
 
 function typeIsNumber(type: OptionType): boolean {
-  return type === NUMBER_TYPE;
+  return type === types.NUMBER;
 }
 
 function typeIsBoolean(type: OptionType): boolean {
-  return type === BOOLEAN_TYPE;
+  return type === types.BOOLEAN;
 }
 
 export function typeIsObject(type: OptionType): boolean {
-  return type === OBJECT_TYPE;
+  return type === types.OBJECT;
 }
 
 export function typeIsArray(type: OptionType): boolean {
-  return type === ARRAY_TYPE;
+  return type === types.ARRAY;
 }
 
-function optionIsArray(option: Option): option is OptionArray {
+export function optionIsArray(option: Option): option is OptionArray {
   return typeIsArray(option.type);
 }
 
@@ -101,7 +53,7 @@ function getTypeParser(type: OptionType) {
   return doNothingParser;
 }
 
-function getTypeParserWithBooleans(type: OptionType) {
+function getTypeParserWithBooleans(type: ItemsType) {
   if (typeIsBoolean(type)) {
     return parseBoolean as ValueParser;
   }

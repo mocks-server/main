@@ -4,7 +4,8 @@ import CommandLineArguments from "./CommandLineArguments";
 import Environment from "./Environment";
 import Files from "./Files";
 import Namespace from "./Namespace";
-import { types, avoidArraysMerge } from "./types";
+import { avoidArraysMerge } from "./types";
+import { types } from "./types/Option";
 import { validateConfigAndThrow, validateConfig, getValidationSchema } from "./validation";
 import { checkNamespaceName, findObjectWithName, getNamespacesValues } from "./namespaces";
 

@@ -1,7 +1,8 @@
 import { isUndefined } from "lodash";
 import commander from "commander";
 
-import { types, getOptionParserWithArrayContents } from "./types";
+import { types } from "./types/Option";
+import { getOptionParserWithArrayContents } from "./types";
 import { namespaceAndParentNames } from "./namespaces";
 
 const NAMESPACE_SEPARATOR = ".";

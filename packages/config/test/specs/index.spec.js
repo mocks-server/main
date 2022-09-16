@@ -1,5 +1,5 @@
 import Config from "../../src/Config";
-import index from "../../src/index";
+import index from "../../src/index.ts";
 
 describe("index", () => {
   it("should export Config", () => {

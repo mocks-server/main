@@ -5,7 +5,7 @@ import { isUndefined, isEqual } from "lodash";
 
 import { validateOptionAndThrow, validateValueTypeAndThrow } from "./validation";
 import { addEventListener, CHANGE } from "./events";
-import { types, avoidArraysMerge } from "./types";
+import { typeIsArray, typeIsObject, avoidArraysMerge } from "./types";
 
 class Option {
   constructor(properties) {
@@ -64,10 +64,10 @@ class Option {
     if (isUndefined(value)) {
       return value;
     }
-    if (this._type === types.ARRAY) {
+    if (typeIsArray(this._type)) {
       return [...value];
     }
-    if (this._type === types.OBJECT) {
+    if (typeIsObject(this._type)) {
       return { ...value };
     }
     return value;
@@ -97,7 +97,7 @@ class Option {
   set(value, { merge = false } = {}) {
     if (!isUndefined(value)) {
       this._hasBeenSet = true;
-      if (merge && this.type === types.OBJECT) {
+      if (merge && typeIsObject(this.type)) {
         this._merge(value);
       } else {
         const previousValue = this._value;

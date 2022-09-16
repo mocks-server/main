@@ -1,13 +1,13 @@
-const EventEmitter = require("events");
+import EventEmitter from "events";
 
-const Option = require("./Option");
-const {
+import Option from "./Option";
+import {
   checkNamespaceName,
   checkOptionName,
   findObjectWithName,
   getNamespacesValues,
   getOptionsValues,
-} = require("./namespaces");
+} from "./namespaces";
 
 class Namespace {
   constructor(name, { parents = [], brothers, root }) {
@@ -102,4 +102,4 @@ class Namespace {
   }
 }
 
-module.exports = Namespace;
+export default Namespace;

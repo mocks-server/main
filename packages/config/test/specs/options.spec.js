@@ -1,8 +1,8 @@
-const sinon = require("sinon");
+import sinon from "sinon";
 
-const { createConfigBeforeElements, wait } = require("../support/helpers");
+import { createConfigBeforeElements, wait } from "../support/helpers";
 
-const Config = require("../../src/Config");
+import Config from "../../src/Config";
 
 describe("options", () => {
   let sandbox, createConfig, config, namespace, option;

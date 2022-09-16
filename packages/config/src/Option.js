@@ -1,11 +1,11 @@
-const EventEmitter = require("events");
+import EventEmitter from "events";
 
-const deepMerge = require("deepmerge");
-const { isUndefined, isEqual } = require("lodash");
+import deepMerge from "deepmerge";
+import { isUndefined, isEqual } from "lodash";
 
-const { validateOptionAndThrow, validateValueTypeAndThrow } = require("./validation");
-const { addEventListener, CHANGE } = require("./events");
-const { types, avoidArraysMerge } = require("./types");
+import { validateOptionAndThrow, validateValueTypeAndThrow } from "./validation";
+import { addEventListener, CHANGE } from "./events";
+import { types, avoidArraysMerge } from "./types";
 
 class Option {
   constructor(properties) {
@@ -56,6 +56,10 @@ class Option {
     return this._clone(this._value);
   }
 
+  set value(value) {
+    this.set(value);
+  }
+
   _clone(value) {
     if (isUndefined(value)) {
       return value;
@@ -90,10 +94,6 @@ class Option {
     this._emitChange(previousValue, this._value);
   }
 
-  set value(value) {
-    this.set(value);
-  }
-
   set(value, { merge = false } = {}) {
     if (!isUndefined(value)) {
       this._hasBeenSet = true;
@@ -117,4 +117,4 @@ class Option {
   }
 }
 
-module.exports = Option;
+export default Option;

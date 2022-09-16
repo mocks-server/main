@@ -1,10 +1,11 @@
-const commander = require("commander");
-const cosmiconfig = require("cosmiconfig");
-const sinon = require("sinon");
+import commander from "commander";
+import sinon from "sinon";
 
-const { createConfigBeforeElements } = require("../support/helpers");
+import { createConfigBeforeElements } from "../support/helpers";
 
-const Config = require("../../src/Config");
+import { cosmiconfig } from "cosmiconfig";
+
+import Config from "../../src/Config";
 
 describe("files", () => {
   let sandbox, cosmiconfigStub, createConfig, config, namespace, option;
@@ -94,7 +95,7 @@ describe("files", () => {
           fileSearchPlaces: ["foo", "foo2"],
         },
       });
-      expect(cosmiconfig.cosmiconfig.getCall(0).args[1].searchPlaces).toEqual(["foo", "foo2"]);
+      expect(cosmiconfig.mock.calls[0][1].searchPlaces).toEqual(["foo", "foo2"]);
     });
 
     it("should not return value from file if readFile is disabled in init method", async () => {

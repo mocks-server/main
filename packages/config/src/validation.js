@@ -1,10 +1,10 @@
-const Ajv = require("ajv");
-const betterAjvErrors = require("better-ajv-errors").default;
-const { isString, isNumber, isObject, isBoolean } = require("lodash");
+import Ajv from "ajv";
+import betterAjvErrors from "better-ajv-errors";
+import { isString, isNumber, isObject, isBoolean } from "lodash";
+
+import { types } from "./types";
 
 const ajv = new Ajv({ allErrors: true });
-
-const { types } = require("./types");
 
 function enforceDefaultTypeSchema({ type, itemsType, nullable }) {
   const schema = {
@@ -186,39 +186,31 @@ function getConfigValidationSchema({ namespaces, allowAdditionalProperties }) {
   });
 }
 
-function validateConfigAndThrow(config, { namespaces, allowAdditionalProperties }) {
+export function validateConfigAndThrow(config, { namespaces, allowAdditionalProperties }) {
   validateSchemaAndThrow(
     config,
     getConfigValidationSchema({ namespaces, allowAdditionalProperties })
   );
 }
 
-function validateConfig(config, { namespaces, allowAdditionalProperties }) {
+export function validateConfig(config, { namespaces, allowAdditionalProperties }) {
   return validateSchema(
     config,
     getConfigValidationSchema({ namespaces, allowAdditionalProperties })
   );
 }
 
-function getValidationSchema({ namespaces, allowAdditionalProperties }) {
+export function getValidationSchema({ namespaces, allowAdditionalProperties }) {
   return getConfigValidationSchema({ namespaces, allowAdditionalProperties });
 }
 
-function validateOptionAndThrow(properties) {
+export function validateOptionAndThrow(properties) {
   validateSchemaAndThrow(properties, optionSchema, optionValidator);
 }
 
-function validateValueTypeAndThrow(value, type, nullable, itemsType) {
+export function validateValueTypeAndThrow(value, type, nullable, itemsType) {
   if (nullable && value === null) {
     return;
   }
   typeAndThrowValidators[type](value, itemsType);
 }
-
-module.exports = {
-  validateConfig,
-  validateConfigAndThrow,
-  validateOptionAndThrow,
-  validateValueTypeAndThrow,
-  getValidationSchema,
-};

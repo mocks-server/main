@@ -1,12 +1,12 @@
-const deepMerge = require("deepmerge");
+import deepMerge from "deepmerge";
 
-const CommandLineArguments = require("./CommandLineArguments");
-const Environment = require("./Environment");
-const Files = require("./Files");
-const Namespace = require("./Namespace");
-const { types, avoidArraysMerge } = require("./types");
-const { validateConfigAndThrow, validateConfig, getValidationSchema } = require("./validation");
-const { checkNamespaceName, findObjectWithName, getNamespacesValues } = require("./namespaces");
+import CommandLineArguments from "./CommandLineArguments";
+import Environment from "./Environment";
+import Files from "./Files";
+import Namespace from "./Namespace";
+import { types, avoidArraysMerge } from "./types";
+import { validateConfigAndThrow, validateConfig, getValidationSchema } from "./validation";
+import { checkNamespaceName, findObjectWithName, getNamespacesValues } from "./namespaces";
 
 const CONFIG_NAMESPACE = "config";
 
@@ -211,6 +211,10 @@ class Config {
     return getNamespacesValues(this._namespaces);
   }
 
+  set value(configuration) {
+    this.set(configuration);
+  }
+
   get programmaticLoadedValues() {
     return { ...this._programmaticConfig };
   }
@@ -229,10 +233,6 @@ class Config {
 
   get loadedFile() {
     return this._files.loadedFile;
-  }
-
-  set value(configuration) {
-    this.set(configuration);
   }
 
   get namespaces() {
@@ -258,4 +258,4 @@ class Config {
   }
 }
 
-module.exports = Config;
+export default Config;

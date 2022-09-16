@@ -1,6 +1,6 @@
-const { createConfigBeforeElements } = require("../support/helpers");
+import { createConfigBeforeElements } from "../support/helpers";
 
-const Config = require("../../src/Config");
+import Config from "../../src/Config";
 
 describe("environment nested", () => {
   let sandbox, cosmiconfigStub, createConfig, config, namespace, parentNamespace, option;

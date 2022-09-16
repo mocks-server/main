@@ -27,11 +27,12 @@
     "access": "public"
   },
   "files": [
-    "src",
-    "index.js"
+    "dist"
   ],
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsc", 
     "test:unit": "jest"
   },
   "dependencies": {

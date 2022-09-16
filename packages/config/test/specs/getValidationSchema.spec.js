@@ -1,6 +1,6 @@
-const { createConfigBeforeElements } = require("../support/helpers");
+import { createConfigBeforeElements } from "../support/helpers";
 
-const Config = require("../../src/Config");
+import Config from "../../src/Config";
 
 describe("getValidationSchema method", () => {
   let sandbox, config, namespace;

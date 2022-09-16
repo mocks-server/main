@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const EventEmitter = require("events");
 
 const deepMerge = require("deepmerge");
-const Config = require("@mocks-server/config");
+const Config = require("@mocks-server/config").default;
 const { Logger } = require("@mocks-server/logger");
 
 const VariantHandlers = require("./variant-handlers/VariantHandlers");

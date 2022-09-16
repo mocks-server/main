@@ -1,8 +1,8 @@
-const sinon = require("sinon");
+import sinon from "sinon";
 
-const { createConfigBeforeElements } = require("../support/helpers");
+import { createConfigBeforeElements } from "../support/helpers";
 
-const Config = require("../../src/Config");
+import Config from "../../src/Config";
 
 describe("files nested", () => {
   let sandbox, cosmiconfigStub, createConfig, config, namespace, parentNamespace, option;

@@ -1,8 +1,8 @@
-const commander = require("commander");
+import commander from "commander";
 
-const { createConfigBeforeElements } = require("../support/helpers");
+import { createConfigBeforeElements } from "../support/helpers";
 
-const Config = require("../../src/Config");
+import Config from "../../src/Config";
 
 describe("arguments nested", () => {
   let sandbox, cosmiconfigStub, createConfig, config, namespace, parentNamespace, option;

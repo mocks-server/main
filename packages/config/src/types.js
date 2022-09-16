@@ -1,4 +1,4 @@
-const types = {
+export const types = {
   NUMBER: "number",
   STRING: "string",
   BOOLEAN: "boolean",
@@ -13,7 +13,7 @@ function doNothingParser(value) {
   return value;
 }
 
-function parseObject(value) {
+export function parseObject(value) {
   try {
     return JSON.parse(value);
   } catch (error) {
@@ -42,7 +42,7 @@ function getTypeParserWithBooleans(type) {
   return getTypeParser(type);
 }
 
-function getOptionParser(option) {
+export function getOptionParser(option) {
   return getTypeParser(option.type);
 }
 
@@ -53,7 +53,7 @@ function ParseArrayContents(option) {
   };
 }
 
-function getOptionParserWithBooleansAndArrays(option) {
+export function getOptionParserWithBooleansAndArrays(option) {
   if (option.type === types.BOOLEAN) {
     return parseBoolean;
   }
@@ -63,22 +63,13 @@ function getOptionParserWithBooleansAndArrays(option) {
   return getOptionParser(option);
 }
 
-function getOptionParserWithArrayContents(option) {
+export function getOptionParserWithArrayContents(option) {
   if (option.type === types.ARRAY) {
     return ParseArrayContents(option);
   }
   return getOptionParser(option);
 }
 
-function avoidArraysMerge(_destinationArray, sourceArray) {
+export function avoidArraysMerge(_destinationArray, sourceArray) {
   return sourceArray;
 }
-
-module.exports = {
-  types,
-  getOptionParser,
-  getOptionParserWithBooleansAndArrays,
-  getOptionParserWithArrayContents,
-  parseObject,
-  avoidArraysMerge,
-};

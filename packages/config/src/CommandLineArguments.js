@@ -1,8 +1,8 @@
-const { isUndefined } = require("lodash");
-const commander = require("commander");
+import { isUndefined } from "lodash";
+import commander from "commander";
 
-const { types, getOptionParserWithArrayContents } = require("./types");
-const { namespaceAndParentNames } = require("./namespaces");
+import { types, getOptionParserWithArrayContents } from "./types";
+import { namespaceAndParentNames } from "./namespaces";
 
 const NAMESPACE_SEPARATOR = ".";
 const COMMANDER_VALUE_GETTER = ` <value>`;
@@ -126,4 +126,4 @@ class CommandLineArguments {
   }
 }
 
-module.exports = CommandLineArguments;
+export default CommandLineArguments;

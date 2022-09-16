@@ -1,7 +1,7 @@
-const { isUndefined, isEmpty, snakeCase } = require("lodash");
+import { isUndefined, isEmpty, snakeCase } from "lodash";
 
-const { getOptionParserWithBooleansAndArrays } = require("./types");
-const { namespaceAndParentNames } = require("./namespaces");
+import { getOptionParserWithBooleansAndArrays } from "./types";
+import { namespaceAndParentNames } from "./namespaces";
 
 function varSegment(segment) {
   return snakeCase(segment).toUpperCase();
@@ -54,4 +54,4 @@ class Environment {
   }
 }
 
-module.exports = Environment;
+export default Environment;

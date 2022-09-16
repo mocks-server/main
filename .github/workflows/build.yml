@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - release
+      - migrate-config-to-ts
   pull_request:
 jobs:
   get-affected:

@@ -1,12 +1,12 @@
-const { compact } = require("lodash");
+import { compact } from "lodash";
 
-function namespaceAndParentNames(namespace) {
+export function namespaceAndParentNames(namespace) {
   const namespaceName = namespace.name;
   const parentNames = namespace.parents.map((parentNamespace) => parentNamespace.name);
   return compact([...parentNames, namespaceName]);
 }
 
-function findObjectWithName(objects, name) {
+export function findObjectWithName(objects, name) {
   return objects.find((object) => object.name === name);
 }
 
@@ -22,7 +22,7 @@ function throwNamespaceAlreadyExists(name) {
   throwItemAlreadyExists("Namespace", name);
 }
 
-function checkNamespaceName(name, { allowNoName, options, namespaces }) {
+export function checkNamespaceName(name, { allowNoName, options, namespaces }) {
   if (!name && !allowNoName) {
     throw new Error("Please provide a name for the namespace");
   }
@@ -32,7 +32,7 @@ function checkNamespaceName(name, { allowNoName, options, namespaces }) {
   return findObjectWithName(namespaces, name);
 }
 
-function checkOptionName(name, { options, namespaces }) {
+export function checkOptionName(name, { options, namespaces }) {
   if (options && findObjectWithName(options, name)) {
     throwOptionAlreadyExists(name);
   }
@@ -41,14 +41,14 @@ function checkOptionName(name, { options, namespaces }) {
   }
 }
 
-function getOptionsValues(options) {
+export function getOptionsValues(options) {
   return options.reduce((values, option) => {
     values[option.name] = option.value;
     return values;
   }, {});
 }
 
-function getNamespacesValues(namespaces) {
+export function getNamespacesValues(namespaces) {
   return namespaces.reduce((values, namespace) => {
     const namespaceValues = namespace.value;
     if (namespace.name) {
@@ -62,12 +62,3 @@ function getNamespacesValues(namespaces) {
     return values;
   }, {});
 }
-
-module.exports = {
-  namespaceAndParentNames,
-  checkNamespaceName,
-  checkOptionName,
-  findObjectWithName,
-  getNamespacesValues,
-  getOptionsValues,
-};

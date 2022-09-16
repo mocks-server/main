@@ -1,5 +1,5 @@
-const cosmiconfig = require("cosmiconfig");
-const { isFunction } = require("lodash");
+import { cosmiconfig } from "cosmiconfig";
+import { isFunction } from "lodash";
 
 class Files {
   constructor(moduleName) {
@@ -22,7 +22,7 @@ class Files {
     if (searchPlaces) {
       options.searchPlaces = searchPlaces;
     }
-    const explorer = cosmiconfig.cosmiconfig(this._moduleName, options);
+    const explorer = cosmiconfig(this._moduleName, options);
     const result = await explorer.search(searchFrom);
 
     if (!result) {
@@ -40,4 +40,4 @@ class Files {
   }
 }
 
-module.exports = Files;
+export default Files;

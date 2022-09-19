@@ -1,22 +1,31 @@
 import { cosmiconfig } from "cosmiconfig";
 import { isFunction } from "lodash";
+import type { FilesInterface, ReadOptions } from "./types/Files";
+import type { ConfigObject, ConfigFunction } from "./types/Common";
 
-class Files {
-  constructor(moduleName) {
+class Files implements FilesInterface {
+  private _moduleName: string
+  private _loadedFrom: null | string
+  private _config: ConfigObject
+
+  constructor(moduleName: string) {
     this._moduleName = moduleName;
     this._loadedFrom = null;
     this._config = {};
   }
 
-  async _transformConfig(config, initConfig) {
+  private async _transformConfig(config: ConfigObject | ConfigFunction, initConfig: ConfigObject): Promise<ConfigObject> {
     if (isFunction(config)) {
       return config(initConfig);
     }
     return config;
   }
 
-  async read(initConfig, { searchPlaces, searchFrom, searchStop }) {
-    const options = {
+  public async read(initConfig: ConfigObject, { searchPlaces, searchFrom, searchStop }: ReadOptions): Promise<ConfigObject> {
+    interface PrivateOptions extends ReadOptions {
+      stopDir: string
+    }
+    const options: PrivateOptions = {
       stopDir: searchStop || process.cwd(),
     };
     if (searchPlaces) {
@@ -35,7 +44,7 @@ class Files {
     return { ...this._config };
   }
 
-  get loadedFile() {
+  public get loadedFile(): string | null {
     return this._loadedFrom;
   }
 }

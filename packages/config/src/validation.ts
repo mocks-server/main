@@ -6,7 +6,8 @@ import { types } from "./types/Option";
 import { optionIsArray } from "./types";
 
 import type { JSONSchema7TypeName, JSONSchema7, JSONSchema7Definition } from "json-schema"
-import type { AnyObject, Option, OptionType, ItemsType } from "./types/Option";
+import type { AnyObject } from "./types/Common";
+import type { Option, OptionType, ItemsType } from "./types/Option";
 import type { Namespaces, Namespace } from "./types/Namespace";
 
 const ajv = new Ajv({ allErrors: true });

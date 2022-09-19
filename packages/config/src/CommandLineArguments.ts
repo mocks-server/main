@@ -5,15 +5,21 @@ import { types } from "./types/Option";
 import { getOptionParserWithArrayContents } from "./types";
 import { namespaceAndParentNames } from "./namespaces";
 
+import type { Command } from "commander"
+import type { Option } from "./types/Option";
+import type { Namespace, Namespaces } from "./types/Namespace";
+import type { BaseCommanderOptionProperties, CommanderOptionProperties, CommandLineArgumentsInterface, CommanderOptionsData, ReadOptions } from "./types/CommandLineArgument";
+import type { ConfigObject, AnyObject } from "./types/Common";
+
 const NAMESPACE_SEPARATOR = ".";
 const COMMANDER_VALUE_GETTER = ` <value>`;
 const COMMANDER_ARRAY_VALUE_GETTER = ` <value...>`;
 
-function getOptionPrefix({ isBoolean, defaultIsTrue }) {
+function getOptionPrefix({ isBoolean, defaultIsTrue }: { isBoolean: boolean, defaultIsTrue: boolean }): string {
   return isBoolean && defaultIsTrue ? "--no-" : "--";
 }
 
-function getOptionGetter({ isBoolean, isArray }) {
+function getOptionGetter({ isBoolean, isArray }: { isBoolean: boolean, isArray: boolean }): string {
   if (isBoolean) {
     return "";
   }
@@ -23,7 +29,7 @@ function getOptionGetter({ isBoolean, isArray }) {
   return COMMANDER_VALUE_GETTER;
 }
 
-function getCommanderOptionProperties(commanderOptionName, option) {
+function getCommanderOptionProperties(commanderOptionName: string, option: Option): BaseCommanderOptionProperties {
   const isBoolean = option.type === types.BOOLEAN;
   const isArray = option.type === types.ARRAY;
   const defaultIsTrue = option.default === true;
@@ -41,11 +47,11 @@ function getCommanderOptionProperties(commanderOptionName, option) {
   };
 }
 
-function getCommanderOptionName(namespace, optionName) {
+function getCommanderOptionName(namespace: Namespace, optionName: string): string {
   return [...namespaceAndParentNames(namespace), optionName].join(NAMESPACE_SEPARATOR);
 }
 
-function commanderValueHasToBeIgnored(optionValue, commanderOptionProperties) {
+function commanderValueHasToBeIgnored(optionValue: unknown, commanderOptionProperties: CommanderOptionProperties): boolean {
   return (
     !commanderOptionProperties ||
     isUndefined(optionValue) ||
@@ -56,40 +62,43 @@ function commanderValueHasToBeIgnored(optionValue, commanderOptionProperties) {
   );
 }
 
-class CommandLineArguments {
+class CommandLineArguments implements CommandLineArgumentsInterface {
+  private _config: ConfigObject
+
   constructor() {
     this._config = {};
   }
 
-  _createNamespaceOptions(namespace, program, optionsData) {
+  _createNamespaceOptions(namespace: Namespace, command: Command, optionsData: CommanderOptionsData) {
     namespace.options.forEach((option) => {
       const commanderOptionName = getCommanderOptionName(namespace, option.name);
       const commanderOptionProperties = getCommanderOptionProperties(commanderOptionName, option);
-      optionsData[commanderOptionName] = {
+      const data = {
         namespace,
         option,
         ...commanderOptionProperties,
-      };
-      program.addOption(commanderOptionProperties.Option);
+      } as CommanderOptionProperties
+      optionsData[commanderOptionName] = data;
+      command.addOption(commanderOptionProperties.Option);
     });
-    this._createNamespacesOptions(namespace.namespaces, program, optionsData);
+    this._createNamespacesOptions(namespace.namespaces, command, optionsData);
   }
 
-  _createNamespacesOptions(namespaces, program, optionsData) {
+  _createNamespacesOptions(namespaces: Namespaces, command: Command, optionsData: CommanderOptionsData) {
     namespaces.forEach((namespace) => {
-      this._createNamespaceOptions(namespace, program, optionsData);
+      this._createNamespaceOptions(namespace, command, optionsData);
     });
   }
 
-  _addLevelsToConfig(config, levels, index = 0) {
+  _addLevelsToConfig(config: ConfigObject, levels: string[], index = 0): ConfigObject {
     if (index === levels.length) {
       return config;
     }
     config[levels[index]] = config[levels[index]] || {};
-    return this._addLevelsToConfig(config[levels[index]], levels, index + 1);
+    return this._addLevelsToConfig(config[levels[index]] as ConfigObject, levels, index + 1);
   }
 
-  _commanderResultsToConfigObject(results, config, commanderOptionsData) {
+  _commanderResultsToConfigObject(results: AnyObject, config: ConfigObject, commanderOptionsData: CommanderOptionsData) {
     Object.keys(results).forEach((optionName) => {
       const optionValue = results[optionName];
       if (!commanderValueHasToBeIgnored(optionValue, commanderOptionsData[optionName])) {
@@ -98,13 +107,13 @@ class CommandLineArguments {
         const configAtLevel = this._addLevelsToConfig(config, objectLevels);
         const originalOptionName = option.name;
         const parser = getOptionParserWithArrayContents(option);
-        configAtLevel[originalOptionName] = parser(optionValue);
+        configAtLevel[originalOptionName] = parser(optionValue as unknown[]);
       }
     });
     return config;
   }
 
-  read(namespaces, { allowUnknownOption }) {
+  read(namespaces: Namespaces, { allowUnknownOption }: ReadOptions): ConfigObject {
     const config = {};
 
     // Create commander options

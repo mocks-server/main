@@ -2,40 +2,46 @@ import { isUndefined, isEmpty, snakeCase } from "lodash";
 
 import { getOptionParserWithBooleansAndArrays } from "./types";
 import { namespaceAndParentNames } from "./namespaces";
+import type { EnvironmentInterface } from "./types/Environment";
+import type { Namespaces, Namespace } from "./types/Namespace";
+import type { ConfigObject } from "./types/Common";
 
-function varSegment(segment) {
+function varSegment(segment: string): string {
   return snakeCase(segment).toUpperCase();
 }
 
-function envVarName(moduleName, namespace, optionName) {
+function envVarName(moduleName: string, namespace: Namespace, optionName: string): string {
   return [moduleName, ...namespaceAndParentNames(namespace), optionName].map(varSegment).join("_");
 }
 
-class Environment {
-  constructor(moduleName) {
+class Environment implements EnvironmentInterface {
+  private _config: ConfigObject;
+  private _moduleName: string;
+
+  constructor(moduleName: string) {
     this._moduleName = moduleName;
     this._config = {};
   }
 
-  loadFromEnv(namespace, optionName) {
+  private _loadFromEnv(namespace: Namespace, optionName: string): string | undefined {
     return process.env[envVarName(this._moduleName, namespace, optionName)];
   }
 
-  _readNamespace(namespace) {
+  private _readNamespace(namespace: Namespace): ConfigObject {
     const values = namespace.options.reduce((optionsValues, option) => {
-      const value = this.loadFromEnv(namespace, option.name);
+      const value = this._loadFromEnv(namespace, option.name);
       if (!isUndefined(value)) {
         const parser = getOptionParserWithBooleansAndArrays(option);
         optionsValues[option.name] = parser(value);
       }
       return optionsValues;
-    }, {});
+    }, {} as ConfigObject);
     const namespacesConfig = this._readNamespaces(namespace.namespaces);
     return { ...values, ...namespacesConfig };
   }
 
-  _readNamespaces(namespaces) {
-    return namespaces.reduce((config, namespace) => {
+  private _readNamespaces(namespaces: Namespaces): ConfigObject {
+    return namespaces.reduce((config, namespace: Namespace) => {
       const namespaceConfig = this._readNamespace(namespace);
       if (!isEmpty(namespaceConfig)) {
         if (namespace.name) {
@@ -45,10 +51,10 @@ class Environment {
         }
       }
       return config;
-    }, {});
+    }, {} as ConfigObject);
   }
 
-  read(namespaces) {
+  read(namespaces: Namespaces): ConfigObject {
     this._config = this._readNamespaces(namespaces);
     return this._config;
   }

@@ -1,11 +1,27 @@
-import type { Option } from "./Option";
-import type { AnyObject, ObjectWithName } from "./Common";
+import type { OptionInterface, OptionProperties, SetMethodOptions } from "./Option";
+import type { ConfigObject, ObjectWithName } from "./Common";
 
-export interface Namespace extends ObjectWithName {
-  options: Option[]
-  namespaces: Namespaces
-  parents: Namespaces,
-  value: AnyObject,
+export interface NamespaceProperties {
+  parents: NamespaceInterface[]
+  brothers: NamespaceInterface[]
+  root?: NamespaceInterface
 }
 
-export type Namespaces = Namespace[]
+export interface NamespaceConstructor {
+  new (name: string, options: NamespaceProperties): NamespaceInterface
+}
+export interface NamespaceInterface extends ObjectWithName {
+  options: OptionInterface[]
+  namespaces: NamespaceInterface[]
+  parents: NamespaceInterface[],
+  value: ConfigObject,
+  root?: NamespaceInterface,
+  name: string
+  startEvents(): void
+  addOption(optionProperties: OptionProperties): OptionInterface
+  addOptions(options: OptionProperties[]): OptionInterface[]
+  set(configuration: ConfigObject, options: SetMethodOptions): void
+  addNamespace(name: NamespaceInterface["name"]): NamespaceInterface
+  namespace(name: NamespaceInterface["name"]): NamespaceInterface | undefined
+  option(name: OptionInterface["name"]): OptionInterface | undefined
+}

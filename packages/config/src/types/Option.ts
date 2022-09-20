@@ -22,67 +22,81 @@ export type ItemsType = typeof types.STRING | typeof types.NUMBER | typeof types
 
 export type OptionSingleValue = boolean | number | string | AnyObject | null | undefined
 export type OptionArrayValue = boolean[] | number[] | string[] | AnyObject[]
-export type OptionValue = OptionSingleValue | OptionArrayValue
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type OptionValue = any
 
-export interface BaseOption  extends ObjectWithName {
+export interface BaseOptionProperties  extends ObjectWithName {
   name: string
   type: ItemsType | OptionType
-  description: string
+  description?: string
   default?: OptionValue
   value?: OptionValue
-  nullable: boolean
-  extraData: AnyObject
+  nullable?: boolean
+  extraData?: AnyObject
   itemsType?: ItemsType
 }
 
-export interface OptionBoolean extends BaseOption {
+export interface OptionBooleanProperties extends BaseOptionProperties {
   type: typeof types.BOOLEAN
   value?: boolean
   default?: boolean
 }
 
-export interface OptionNumber extends BaseOption {
+export interface OptionNumberProperties extends BaseOptionProperties {
   type: typeof types.NUMBER
   value?: number
   default?: number
 }
 
-export interface OptionString extends BaseOption {
+export interface OptionStringProperties extends BaseOptionProperties {
   type: typeof types.STRING
   value?: string
   default?: string
 }
 
-export interface OptionObject extends BaseOption {
+export interface OptionObjectProperties extends BaseOptionProperties {
   type: typeof types.OBJECT
   value?: AnyObject
   default?: AnyObject
 }
 
-export interface OptionArray extends BaseOption {
+export interface OptionArrayProperties extends BaseOptionProperties {
   type: typeof types.ARRAY
   value?: OptionArrayValue
   itemsType: ItemsType
   default?: OptionArrayValue
 }
 
-export interface OptionNull extends BaseOption {
+export interface OptionNullProperties extends BaseOptionProperties {
   type: typeof types.NULL
   value?: null
   default?: null
 }
 
-export type OptionProperties = OptionBoolean | OptionNumber | OptionString | OptionObject | OptionArray | OptionNull
-
-export type Option = OptionBoolean | OptionNumber | OptionString | OptionObject | OptionArray | OptionNull
-export type Options = Option[]
+export type OptionProperties = OptionBooleanProperties | OptionNumberProperties | OptionStringProperties | OptionObjectProperties | OptionArrayProperties | OptionNullProperties
 
 export interface OptionConstructor {
   new (option: OptionProperties): OptionInterface
 }
 
-export interface OptionInterface extends BaseOption {
+export interface OptionInterface extends BaseOptionProperties {
   onChange(eventListener: EventListener): EventListenerRemover
+  set(value: OptionValue, options: SetMethodOptions): void
+  startEvents(): void
+  hasBeenSet: boolean
+}
+
+export interface OptionInterfaceArray extends OptionInterface {
+  type: typeof types.ARRAY
+  value?: OptionArrayValue
+  itemsType: ItemsType
+  default?: OptionArrayValue
+}
+
+export interface OptionInterfaceBoolean extends OptionInterface {
+  type: typeof types.BOOLEAN
+  value?: boolean
+  default?: boolean
 }
 
 export interface SetMethodOptions {

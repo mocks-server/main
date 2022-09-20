@@ -8,4 +8,4 @@ export interface ConfigFunction {
   (initialConfig: ConfigObject): ConfigObject
 }
 
-export type ConfigObject = AnyObject
+export type ConfigObject = Partial<AnyObject>

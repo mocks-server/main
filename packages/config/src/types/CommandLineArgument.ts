@@ -1,9 +1,8 @@
 import type { Option as CommanderOption } from "commander"
 
-import type { Namespaces, Namespace } from "./Namespace";
-import type { AnyObject } from "./Common"
-import type { OptionArrayValue, Option } from "./Option"
-import type { ConfigObject } from "./Common";
+import type { NamespaceInterface } from "./Namespace";
+import type { AnyObject, ConfigObject } from "./Common"
+import type { OptionArrayValue, OptionInterface } from "./Option"
 
 export interface ReadOptions {
   allowUnknownOption: boolean
@@ -17,8 +16,8 @@ export interface BaseCommanderOptionProperties {
 }
 
 export interface CommanderOptionProperties extends BaseCommanderOptionProperties {
-  namespace: Namespace,
-  option: Option,
+  namespace: NamespaceInterface,
+  option: OptionInterface,
 }
 
 export interface CommanderOptionsData {
@@ -30,5 +29,5 @@ export interface CommandLineArgumentsConstructor {
 }
 
 export interface CommandLineArgumentsInterface {
-  read(namespaces: Namespaces, options: ReadOptions): ConfigObject
+  read(namespaces: NamespaceInterface[], options: ReadOptions): ConfigObject
 }

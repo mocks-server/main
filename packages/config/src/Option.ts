@@ -15,9 +15,9 @@ class Option implements OptionInterface {
   private _eventEmitter: EventEmitter
   private _name: string
   private _nullable: boolean
-  private _extraData: AnyObject
+  private _extraData: AnyObject | undefined
   private _type: OptionType
-  private _description: string
+  private _description: string | undefined
   private _itemsType?: ItemsType
   private _default: OptionValue
   private _value: OptionValue
@@ -40,23 +40,23 @@ class Option implements OptionInterface {
     validateOptionAndThrow({ ...optionProperties, nullable: this._nullable });
   }
 
-  public get name() {
+  public get name(): string {
     return this._name;
   }
 
-  public get type() {
+  public get type(): OptionType {
     return this._type;
   }
 
-  public get description() {
+  public get description(): string | undefined {
     return this._description;
   }
 
-  public get default() {
+  public get default(): OptionValue {
     return this._clone(this._default);
   }
 
-  public get value() {
+  public get value(): OptionValue {
     return this._clone(this._value);
   }
 
@@ -64,15 +64,15 @@ class Option implements OptionInterface {
     this.set(value);
   }
 
-  public get nullable() {
+  public get nullable(): boolean {
     return this._nullable;
   }
 
-  public get extraData() {
+  public get extraData(): AnyObject | undefined {
     return this._extraData;
   }
 
-  public get itemsType() {
+  public get itemsType(): ItemsType | undefined {
     return this._itemsType;
   }
 
@@ -110,7 +110,7 @@ class Option implements OptionInterface {
     this._emitChange(previousValue, this._value);
   }
 
-  public set(value: OptionValue, { merge = false } : SetMethodOptions = {}) {
+  public set(value: OptionValue, { merge = false } : SetMethodOptions = {}): void {
     if (!isUndefined(value)) {
       this._hasBeenSet = true;
       if (merge && typeIsObject(this.type)) {

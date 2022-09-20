@@ -1,9 +1,9 @@
 import { types } from "./types/Option";
 import type { 
-  Option,
-  OptionBoolean,
-  OptionArray,
+  OptionInterface,
   OptionType,
+  OptionInterfaceArray,
+  OptionInterfaceBoolean,
   ItemsType 
 } from "./types/Option";
 import type { AnyObject } from "./types/Common";
@@ -42,7 +42,7 @@ export function typeIsArray(type: OptionType): boolean {
   return type === types.ARRAY;
 }
 
-export function optionIsArray(option: Option): option is OptionArray {
+export function optionIsArray(option: OptionInterface): option is OptionInterfaceArray {
   return typeIsArray(option.type);
 }
 
@@ -79,11 +79,11 @@ function getTypeParserWithBooleans(type: ItemsType): ValueParser {
   return getTypeParser(type) as ValueParser;
 }
 
-export function getOptionParser(option: Option) {
+export function getOptionParser(option: OptionInterface) {
   return getTypeParser(option.type) as ValueParser;
 }
 
-function ParseArrayContents(option: OptionArray): ArrayValueParser {
+function ParseArrayContents(option: OptionInterfaceArray): ArrayValueParser {
   const parseArrayContents = getTypeParserWithBooleans(option.itemsType);
   return function (array: unknown[]) {
     return array.map((item) => parseArrayContents(item));
@@ -91,8 +91,8 @@ function ParseArrayContents(option: OptionArray): ArrayValueParser {
 }
 
 
-export function getOptionParserWithBooleansAndArrays<T extends Option>(option: T): T extends OptionArray ? StringObjectParser : T extends OptionBoolean ? BooleanParser : ValueParser;
-export function getOptionParserWithBooleansAndArrays(option: Option): ValueParser | StringObjectParser | BooleanParser {
+export function getOptionParserWithBooleansAndArrays<T extends OptionInterface>(option: T): T extends OptionInterfaceArray ? StringObjectParser : T extends OptionInterfaceBoolean ? BooleanParser : ValueParser;
+export function getOptionParserWithBooleansAndArrays(option: OptionInterface): ValueParser | StringObjectParser | BooleanParser {
   if (optionIsArray(option)) {
     return parseObject as ValueParser;
   }
@@ -102,8 +102,8 @@ export function getOptionParserWithBooleansAndArrays(option: Option): ValueParse
   return getOptionParser(option);
 }
 
-export function getOptionParserWithArrayContents<T extends Option>(option: T): T extends OptionArray ? ArrayValueParser : ValueParser;
-export function getOptionParserWithArrayContents(option: Option): ArrayValueParser | ValueParser {
+export function getOptionParserWithArrayContents<T extends OptionInterface>(option: T): T extends OptionInterfaceArray ? ArrayValueParser : ValueParser;
+export function getOptionParserWithArrayContents(option: OptionInterface): ArrayValueParser | ValueParser {
   if (optionIsArray(option)) {
     return ParseArrayContents(option);
   }

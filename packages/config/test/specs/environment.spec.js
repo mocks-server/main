@@ -45,14 +45,14 @@ describe("environment", () => {
     it("should return value of root options from environment in envLoadedValues getter", async () => {
       ({ config, namespace, option } = createConfig({ moduleName: "testRoot" }));
       config.addOption({
-        name: "rootOption",
+        name: "fooOption",
         type: "string",
         default: "default-value",
       });
-      process.env["TEST_ROOT_ROOT_OPTION"] = "foo-from-env";
+      process.env["TEST_ROOT_FOO_OPTION"] = "foo-from-env";
       await config.init();
       expect(config.envLoadedValues).toEqual({
-        rootOption: "foo-from-env",
+        fooOption: "foo-from-env",
       });
     });
 

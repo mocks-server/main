@@ -18,6 +18,7 @@ class Files implements FilesInterface {
     if (isFunction(config)) {
       return config(initConfig);
     }
+    console.log(config);
     return config;
   }
 

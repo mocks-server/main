@@ -1,7 +1,9 @@
 {
   "private": true,
   "scripts": {
-    "test:e2e": "jest --runInBand --detectOpenHandles"
+    "tsc": "tsc",
+    "jest": "jest --runInBand --detectOpenHandles",
+    "test:e2e": "tsc && npm run jest"
   },
   "dependencies": {
     "@mocks-server/config": "workspace:*",

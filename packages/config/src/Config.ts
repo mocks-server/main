@@ -1,5 +1,16 @@
 import deepMerge from "deepmerge";
 
+import type deepmerge from "deepmerge";
+
+import type { JSONSchema7 } from "json-schema";
+import type { ConfigInterface, ConfigOptions, ValidationOptions, LoadArgumentsOptions, NamespaceInterface } from "./types/Config";
+import type { ConfigObject } from "./types/Common";
+import type { FilesInterface } from "./types/Files";
+import type { CommandLineArgumentsInterface } from "./types/CommandLineArgument";
+import type { OptionInterface, SetMethodOptions } from "./types/Option";
+import type { EnvironmentInterface } from "./types/Environment";
+import type { GetValidationSchemaOptions, SchemaValidationResult } from "./types/Validation";
+
 import CommandLineArguments from "./CommandLineArguments";
 import Environment from "./Environment";
 import Files from "./Files";
@@ -8,6 +19,8 @@ import { avoidArraysMerge } from "./types";
 import { types } from "./types/Option";
 import { validateConfigAndThrow, validateConfig, getValidationSchema } from "./validation";
 import { checkNamespaceName, findObjectWithName, getNamespacesValues } from "./namespaces";
+
+const ROOT_NAMESPACE = "_rootOptions";
 
 const CONFIG_NAMESPACE = "config";
 
@@ -54,8 +67,31 @@ const CONFIG_OPTIONS = [
   },
 ];
 
-class Config {
-  constructor({ moduleName, mergeArrays = true } = {}) {
+class Config implements ConfigInterface {
+  private _initializated: boolean;
+  private _deepMergeOptions: deepmerge.Options;
+  private _programmaticConfig: ConfigObject;
+  private _fileConfig: ConfigObject;
+  private _argsConfig: ConfigObject;
+  private _envConfig: ConfigObject;
+  private _files: FilesInterface;
+  private _args: CommandLineArgumentsInterface;
+  private _environment: EnvironmentInterface;
+  private _namespaces: NamespaceInterface[];
+  private _rootNamespace: NamespaceInterface;
+  private _configNamespace: NamespaceInterface;
+  private _readFile: OptionInterface;
+  private _readArguments: OptionInterface;
+  private _readEnvironment: OptionInterface;
+  private _fileSearchPlaces: OptionInterface;
+  private _fileSearchFrom: OptionInterface;
+  private _fileSearchStop: OptionInterface;
+  private _config: ConfigObject;
+  private _allowUnknownArguments: OptionInterface;
+  public addOption: NamespaceInterface["addOption"];
+  public addOptions: NamespaceInterface["addOptions"];
+
+  constructor({ moduleName, mergeArrays = true }: ConfigOptions = { moduleName: "", mergeArrays: true }) {
     this._initializated = false;
 
     this._deepMergeOptions = !mergeArrays
@@ -67,13 +103,15 @@ class Config {
     this._fileConfig = {};
     this._envConfig = {};
     this._argsConfig = {};
+    this._config = {};
 
     this._files = new Files(moduleName);
     this._args = new CommandLineArguments();
     this._environment = new Environment(moduleName);
 
     this._namespaces = [];
-    this._rootNamespace = this.addNamespace();
+    this._rootNamespace = new Namespace(ROOT_NAMESPACE, { brothers: this._namespaces, root: this, isRoot: true });
+    this._namespaces.push(this._rootNamespace);
     this.addOption = this._rootNamespace.addOption.bind(this._rootNamespace);
     this.addOptions = this._rootNamespace.addOptions.bind(this._rootNamespace);
 
@@ -89,7 +127,7 @@ class Config {
     ] = this._configNamespace.addOptions(CONFIG_OPTIONS);
   }
 
-  async _loadFromFile() {
+  private async _loadFromFile(): Promise<ConfigObject> {
     if (this._readFile.value !== true) {
       return {};
     }
@@ -100,14 +138,14 @@ class Config {
     });
   }
 
-  async _loadFromEnv() {
+  private async _loadFromEnv(): Promise<ConfigObject> {
     if (this._readEnvironment.value !== true) {
       return {};
     }
     return this._environment.read(this._namespaces);
   }
 
-  async _loadFromArgs({ allowUnknown }) {
+  private async _loadFromArgs({ allowUnknown }: LoadArgumentsOptions): Promise<ConfigObject> {
     if (this._readArguments.value !== true) {
       return {};
     }
@@ -116,47 +154,47 @@ class Config {
     });
   }
 
-  _mergeConfig() {
+  private _mergeConfig(): void {
     this._config = deepMerge.all(
       [this._programmaticConfig, this._fileConfig, this._envConfig, this._argsConfig],
       this._deepMergeOptions
     );
   }
 
-  validate(config, { allowAdditionalProperties = false } = {}) {
+  public validate(config: ConfigObject, { allowAdditionalProperties = false }: ValidationOptions = {}): SchemaValidationResult | never {
     return validateConfig(config, {
       namespaces: this._namespaces,
       allowAdditionalProperties,
     });
   }
 
-  getValidationSchema({ allowAdditionalProperties = false } = {}) {
+  public getValidationSchema({ allowAdditionalProperties = false }: ValidationOptions = {}): JSONSchema7 {
     return getValidationSchema({
       namespaces: this._namespaces,
       allowAdditionalProperties,
     });
   }
 
-  _validateAndThrow({ allowAdditionalProperties }) {
+  private _validateAndThrow({ allowAdditionalProperties }: Partial<GetValidationSchemaOptions>) {
     validateConfigAndThrow(this._config, {
       namespaces: this._namespaces,
       allowAdditionalProperties,
-    });
+    } as GetValidationSchemaOptions);
   }
 
-  _startNamespacesEvents() {
+  private _startNamespacesEvents(): void {
     this._namespaces.forEach((namespace) => {
       namespace.startEvents();
     });
   }
 
-  _mergeValidateAndSetNamespaces({ allowUnknown }) {
+  private _mergeValidateAndSetNamespaces({ allowUnknown }: LoadArgumentsOptions): void {
     this._mergeConfig();
     this._validateAndThrow({ allowAdditionalProperties: allowUnknown });
     this.set(this._config, { merge: true });
   }
 
-  async _load({ allowUnknown = false } = {}) {
+  private async _load({ allowUnknown }: LoadArgumentsOptions = { allowUnknown: false }): Promise<void> {
     // Programmatic does not change, so we only load it in init method
     if (!this._initializated) {
       this._mergeValidateAndSetNamespaces({ allowUnknown });
@@ -176,12 +214,12 @@ class Config {
     }
   }
 
-  async init(programmaticConfig = {}) {
+  public async init(programmaticConfig: ConfigObject = {}): Promise<void> {
     this._programmaticConfig = programmaticConfig;
     await this._load({ allowUnknown: true });
   }
 
-  async load(programmaticConfig) {
+  public async load(programmaticConfig: ConfigObject): Promise<void> {
     if (!this._initializated) {
       await this.init(programmaticConfig);
     }
@@ -189,69 +227,68 @@ class Config {
     this._startNamespacesEvents();
   }
 
-  addNamespace(name) {
+  public addNamespace(name: NamespaceInterface["name"]): NamespaceInterface {
     const namespace =
       checkNamespaceName(name, {
         namespaces: this._namespaces,
         options: this._rootNamespace && this._rootNamespace.options,
-        allowNoName: !this._rootNamespace,
       }) || new Namespace(name, { brothers: this._namespaces, root: this });
     this._namespaces.push(namespace);
     return namespace;
   }
 
-  namespace(name) {
+  public namespace(name: NamespaceInterface["name"]): NamespaceInterface | undefined {
     return findObjectWithName(this._namespaces, name);
   }
 
-  option(name) {
+  public option(name: OptionInterface["name"]): OptionInterface | undefined {
     return findObjectWithName(this._rootNamespace.options, name);
   }
 
-  get value() {
+  public get value(): ConfigObject {
     return getNamespacesValues(this._namespaces);
   }
 
-  set value(configuration) {
+  public set value(configuration) {
     this.set(configuration);
   }
 
-  get programmaticLoadedValues() {
+  public get programmaticLoadedValues(): ConfigObject {
     return { ...this._programmaticConfig };
   }
 
-  get fileLoadedValues() {
+  public get fileLoadedValues(): ConfigObject {
     return { ...this._fileConfig };
   }
 
-  get envLoadedValues() {
+  public get envLoadedValues() {
     return { ...this._envConfig };
   }
 
-  get argsLoadedValues() {
+  public get argsLoadedValues() {
     return { ...this._argsConfig };
   }
 
-  get loadedFile() {
+  public get loadedFile(): string | null {
     return this._files.loadedFile;
   }
 
-  get namespaces() {
+  public get namespaces(): NamespaceInterface[] {
     return this._namespaces;
   }
 
-  get options() {
+  public get options(): OptionInterface[] {
     return this._rootNamespace.options;
   }
 
-  get root() {
+  public get root(): ConfigInterface {
     return this;
   }
 
-  set(configuration = {}, options = {}) {
+  public set(configuration: ConfigObject = {}, options: SetMethodOptions = {}): void {
     this._namespaces.forEach((namespace) => {
-      if (namespace.name) {
-        namespace.set(configuration[namespace.name] || {}, options);
+      if (!namespace.isRoot) {
+        namespace.set(configuration[namespace.name] as ConfigObject || {} , options);
       } else {
         namespace.set(configuration, options);
       }

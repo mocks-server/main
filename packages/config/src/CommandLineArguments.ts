@@ -7,7 +7,7 @@ import { getOptionParserWithArrayContents } from "./types";
 import { namespaceAndParentNames } from "./namespaces";
 
 import type { OptionInterface } from "./types/Option";
-import type { NamespaceInterface } from "./types/Namespace";
+import type { NamespaceInterface } from "./types/Config";
 import type { BaseCommanderOptionProperties, CommanderOptionProperties, CommandLineArgumentsInterface, CommanderOptionsData, ReadOptions } from "./types/CommandLineArgument";
 import type { ConfigObject, AnyObject } from "./types/Common";
 import { types } from "./types/Option";

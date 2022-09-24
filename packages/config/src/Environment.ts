@@ -3,7 +3,7 @@ import { isUndefined, isEmpty, snakeCase } from "lodash";
 import { getOptionParserWithBooleansAndArrays } from "./types";
 import { namespaceAndParentNames } from "./namespaces";
 import type { EnvironmentInterface } from "./types/Environment";
-import type { NamespaceInterface } from "./types/Namespace";
+import type { NamespaceInterface } from "./types/Config";
 import type { ConfigObject } from "./types/Common";
 
 function varSegment(segment: string): string {
@@ -44,7 +44,7 @@ class Environment implements EnvironmentInterface {
     return namespaces.reduce((config, namespace: NamespaceInterface) => {
       const namespaceConfig = this._readNamespace(namespace);
       if (!isEmpty(namespaceConfig)) {
-        if (namespace.name) {
+        if (!namespace.isRoot) {
           config[namespace.name] = namespaceConfig;
         } else {
           config = { ...config, ...namespaceConfig };

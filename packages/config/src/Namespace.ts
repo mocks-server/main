@@ -1,6 +1,6 @@
 import EventEmitter from "events";
 
-import type { NamespaceInterface, NamespaceProperties } from "./types/Namespace";
+import type { NamespaceInterface, NamespaceProperties, ConfigInterface } from "./types/Config";
 import type { OptionProperties, OptionInterface, SetMethodOptions } from "./types/Option";
 import type { ConfigObject } from "./types/Common";
 
@@ -16,14 +16,15 @@ import {
 class Namespace implements NamespaceInterface {
   private _brothers: NamespaceInterface[]
   private _parents: NamespaceInterface[]
-  private _root?: NamespaceInterface
+  private _root?: ConfigInterface
   private _eventEmitter: EventEmitter
   private _name: string
   private _namespaces: NamespaceInterface[]
   private _options: OptionInterface[]
   private _started: boolean
+  private _isRoot: true | undefined
 
-  constructor(name: string, { parents = [], brothers, root }: NamespaceProperties ) {
+  constructor(name: string, { parents = [], brothers, root, isRoot }: NamespaceProperties ) {
     this._brothers = brothers;
     this._parents = parents;
     this._root = root;
@@ -32,12 +33,13 @@ class Namespace implements NamespaceInterface {
     this._namespaces = [];
     this._options = [];
     this._started = false;
+    this._isRoot = isRoot;
   }
 
   public addOption(optionProperties: OptionProperties): OptionInterface {
     checkOptionName(optionProperties.name, {
       options: this._options,
-      namespaces: this._name ? this._namespaces : this._brothers,
+      namespaces: this._isRoot ? this._brothers : this._namespaces,
     });
     const option = new Option(optionProperties);
     this._options.push(option);
@@ -76,6 +78,10 @@ class Namespace implements NamespaceInterface {
     return namespace;
   }
 
+  public get isRoot(): boolean {
+    return Boolean(this._isRoot);
+  }
+
   public get name(): NamespaceInterface["name"] {
     return this._name;
   }
@@ -84,7 +90,7 @@ class Namespace implements NamespaceInterface {
     return [...this._parents];
   }
 
-  public get root(): NamespaceInterface | undefined {
+  public get root(): ConfigInterface | undefined {
     return this._root;
   }
 

@@ -1,6 +1,6 @@
 import type { Option as CommanderOption } from "commander"
 
-import type { NamespaceInterface } from "./Namespace";
+import type { NamespaceInterface } from "./Config";
 import type { AnyObject, ConfigObject } from "./Common"
 import type { OptionArrayValue, OptionInterface } from "./Option"
 

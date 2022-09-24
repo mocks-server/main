@@ -1,5 +1,5 @@
 import type { ConfigObject } from "./Common";
-import type { NamespaceInterface } from "./Namespace";
+import type { NamespaceInterface } from "./Config";
 
 export interface EnvironmentConstructor {
   new (moduleName: string): EnvironmentInterface

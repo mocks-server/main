@@ -1,24 +1,8 @@
 import type { ObjectWithName, AnyObject } from "./Common";
 import type { EventListener, EventListenerRemover } from "./Events";
 
-const STRING_TYPE = "string";
-const NUMBER_TYPE = "number";
-const BOOLEAN_TYPE = "boolean";
-const OBJECT_TYPE = "object";
-const ARRAY_TYPE = "array";
-const NULL_TYPE = "null";
-
-export const types = {
-  STRING: STRING_TYPE,
-  NUMBER: NUMBER_TYPE,
-  BOOLEAN: BOOLEAN_TYPE,
-  OBJECT: OBJECT_TYPE,
-  ARRAY: ARRAY_TYPE,
-  NULL: NULL_TYPE,
-}
-
-export type OptionType = typeof types.STRING | typeof types.NUMBER | typeof types.BOOLEAN | typeof types.OBJECT | typeof types.ARRAY | typeof types.NULL;
-export type ItemsType = typeof types.STRING | typeof types.NUMBER | typeof types.BOOLEAN | typeof types.OBJECT;
+export type OptionType = "string" | "number" | "boolean" | "object" | "array" | "null";
+export type ItemsType = "string" | "number" | "boolean" | "object";
 
 export type OptionSingleValue = boolean | number | string | AnyObject | null | undefined
 export type OptionArrayValue = boolean[] | number[] | string[] | AnyObject[]
@@ -29,7 +13,7 @@ export type ExtraData = AnyObject;
 
 export interface BaseOptionProperties  extends ObjectWithName {
   name: string
-  type: ItemsType | OptionType
+  type: OptionType
   description?: string
   default?: OptionValue
   value?: OptionValue
@@ -39,40 +23,45 @@ export interface BaseOptionProperties  extends ObjectWithName {
 }
 
 export interface OptionBooleanProperties extends BaseOptionProperties {
-  type: typeof types.BOOLEAN
+  type: "boolean"
   value?: boolean
   default?: boolean
+  itemsType?: undefined
 }
 
 export interface OptionNumberProperties extends BaseOptionProperties {
-  type: typeof types.NUMBER
+  type: "number"
   value?: number
   default?: number
+  itemsType?: undefined
 }
 
 export interface OptionStringProperties extends BaseOptionProperties {
-  type: typeof types.STRING
+  type: "string"
   value?: string
   default?: string
+  itemsType?: undefined
 }
 
 export interface OptionObjectProperties extends BaseOptionProperties {
-  type: typeof types.OBJECT
+  type: "object"
   value?: AnyObject
   default?: AnyObject
+  itemsType?: undefined
 }
 
 export interface OptionArrayProperties extends BaseOptionProperties {
-  type: typeof types.ARRAY
+  type: "array"
   value?: OptionArrayValue
   itemsType: ItemsType
   default?: OptionArrayValue
 }
 
 export interface OptionNullProperties extends BaseOptionProperties {
-  type: typeof types.NULL
+  type: "null"
   value?: null
   default?: null
+  itemsType?: undefined
 }
 
 export type OptionProperties = OptionBooleanProperties | OptionNumberProperties | OptionStringProperties | OptionObjectProperties | OptionArrayProperties | OptionNullProperties
@@ -90,14 +79,14 @@ export interface OptionInterface extends BaseOptionProperties {
 }
 
 export interface OptionInterfaceArray extends OptionInterface {
-  type: typeof types.ARRAY
+  type: "array"
   value?: OptionArrayValue
   itemsType: ItemsType
   default?: OptionArrayValue
 }
 
 export interface OptionInterfaceBoolean extends OptionInterface {
-  type: typeof types.BOOLEAN
+  type: "boolean"
   value?: boolean
   default?: boolean
 }

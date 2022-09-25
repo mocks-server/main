@@ -15,57 +15,13 @@ import CommandLineArguments from "./CommandLineArguments";
 import Environment from "./Environment";
 import Files from "./Files";
 import Namespace from "./Namespace";
-import { avoidArraysMerge } from "./types";
-import { types } from "./types/Option";
+import { avoidArraysMerge, STRING_TYPE, BOOLEAN_TYPE, ARRAY_TYPE } from "./types";
 import { validateConfigAndThrow, validateConfig, getValidationSchema } from "./validation";
 import { checkNamespaceName, findObjectWithName, getNamespacesValues } from "./namespaces";
 
 const ROOT_NAMESPACE = "_rootOptions";
 
 const CONFIG_NAMESPACE = "config";
-
-const CONFIG_OPTIONS = [
-  {
-    name: "readFile",
-    description: "Read configuration file or not",
-    type: types.BOOLEAN,
-    default: true,
-  },
-  {
-    name: "readArguments",
-    description: "Read command line arguments or not",
-    type: types.BOOLEAN,
-    default: true,
-  },
-  {
-    name: "readEnvironment",
-    description: "Read environment or not",
-    type: types.BOOLEAN,
-    default: true,
-  },
-  {
-    name: "fileSearchPlaces",
-    description: "An array of places to search for the configuration file",
-    type: types.ARRAY,
-    itemsType: types.STRING,
-  },
-  {
-    name: "fileSearchFrom",
-    description: "Start searching for the configuration file from this folder",
-    type: types.STRING,
-  },
-  {
-    name: "fileSearchStop",
-    description: "Directory where the search for the configuration file will stop",
-    type: types.STRING,
-  },
-  {
-    name: "allowUnknownArguments",
-    description: "Allow unknown arguments",
-    type: types.BOOLEAN,
-    default: false,
-  },
-];
 
 class Config implements ConfigInterface {
   private _initializated: boolean;
@@ -124,7 +80,48 @@ class Config implements ConfigInterface {
       this._fileSearchFrom,
       this._fileSearchStop,
       this._allowUnknownArguments,
-    ] = this._configNamespace.addOptions(CONFIG_OPTIONS);
+    ] = this._configNamespace.addOptions([
+      {
+        name: "readFile",
+        description: "Read configuration file or not",
+        type: BOOLEAN_TYPE,
+        default: true,
+      },
+      {
+        name: "readArguments",
+        description: "Read command line arguments or not",
+        type: BOOLEAN_TYPE,
+        default: true,
+      },
+      {
+        name: "readEnvironment",
+        description: "Read environment or not",
+        type: BOOLEAN_TYPE,
+        default: true,
+      },
+      {
+        name: "fileSearchPlaces",
+        description: "An array of places to search for the configuration file",
+        type: ARRAY_TYPE,
+        itemsType: STRING_TYPE,
+      },
+      {
+        name: "fileSearchFrom",
+        description: "Start searching for the configuration file from this folder",
+        type: STRING_TYPE,
+      },
+      {
+        name: "fileSearchStop",
+        description: "Directory where the search for the configuration file will stop",
+        type: STRING_TYPE,
+      },
+      {
+        name: "allowUnknownArguments",
+        description: "Allow unknown arguments",
+        type: BOOLEAN_TYPE,
+        default: false,
+      },
+    ]);
   }
 
   private async _loadFromFile(): Promise<ConfigObject> {

@@ -1,4 +1,3 @@
-import { types } from "./types/Option";
 import type { 
   OptionInterface,
   OptionType,
@@ -9,6 +8,13 @@ import type {
 import type { AnyObject } from "./types/Common";
 
 const FALSY_VALUES = ["false", "0", 0];
+
+export const STRING_TYPE = "string";
+export const NUMBER_TYPE = "number";
+export const BOOLEAN_TYPE = "boolean";
+export const OBJECT_TYPE = "object";
+export const ARRAY_TYPE = "array";
+export const NULL_TYPE = "null";
 
 interface ValueParser {
   (value: unknown): unknown
@@ -27,19 +33,19 @@ interface ArrayValueParser {
 }
 
 function typeIsNumber(type: OptionType): boolean {
-  return type === types.NUMBER;
+  return type === NUMBER_TYPE;
 }
 
 function typeIsBoolean(type: OptionType): boolean {
-  return type === types.BOOLEAN;
+  return type === BOOLEAN_TYPE;
 }
 
 export function typeIsObject(type: OptionType): boolean {
-  return type === types.OBJECT;
+  return type === OBJECT_TYPE;
 }
 
 export function typeIsArray(type: OptionType): boolean {
-  return type === types.ARRAY;
+  return type === ARRAY_TYPE;
 }
 
 export function optionIsArray(option: OptionInterface): option is OptionInterfaceArray {

@@ -11,7 +11,7 @@ const configOptions: _Config.Options = { moduleName: "mocks", mergeArrays: true 
 const config: _Config.Interface = new Config(configOptions);
 
 const rootOptionsOptions: _Option.Options[] = [
-  { name: "rootOption1", type: "array", default: ["foo-value"], itemsType: "foo" }
+  { name: "rootOption1", type: "array", default: ["foo-value"], itemsType: "string" }
 ];
 
 const rootOption: _Option.Interface = config.addOption(rootOptionsOptions[0]);

@@ -10,7 +10,7 @@ import type { OptionInterface } from "./types/Option";
 import type { NamespaceInterface } from "./types/Config";
 import type { BaseCommanderOptionProperties, CommanderOptionProperties, CommandLineArgumentsInterface, CommanderOptionsData, ReadOptions } from "./types/CommandLineArgument";
 import type { ConfigObject, AnyObject } from "./types/Common";
-import { types } from "./types/Option";
+import { BOOLEAN_TYPE, OBJECT_TYPE, ARRAY_TYPE } from "./types";
 
 const NAMESPACE_SEPARATOR = ".";
 const COMMANDER_VALUE_GETTER = ` <value>`;
@@ -31,8 +31,8 @@ function getOptionGetter({ isBoolean, isArray }: { isBoolean: boolean, isArray: 
 }
 
 function getCommanderOptionProperties(commanderOptionName: string, option: OptionInterface): BaseCommanderOptionProperties {
-  const isBoolean = option.type === types.BOOLEAN;
-  const isArray = option.type === types.ARRAY;
+  const isBoolean = option.type === BOOLEAN_TYPE;
+  const isArray = option.type === ARRAY_TYPE;
   const defaultIsTrue = option.default === true;
   // Option can only be set to false if default value is true or viceversa. So, users can't restore to default value using args when config in other places change it
   const optionPrefix = getOptionPrefix({ isBoolean, defaultIsTrue });
@@ -43,7 +43,7 @@ function getCommanderOptionProperties(commanderOptionName: string, option: Optio
   return {
     default: option.default,
     isBoolean,
-    isObject: option.type === types.OBJECT,
+    isObject: option.type === OBJECT_TYPE,
     Option: Option,
   };
 }

@@ -2,8 +2,7 @@ import Ajv, { ValidateFunction, DefinedError } from "ajv"
 import betterAjvErrors from "better-ajv-errors";
 import { isString, isNumber, isObject, isBoolean } from "lodash";
 
-import { types } from "./types/Option";
-import { optionIsArray } from "./types";
+import { optionIsArray, NUMBER_TYPE, STRING_TYPE, BOOLEAN_TYPE, OBJECT_TYPE, ARRAY_TYPE, NULL_TYPE } from "./types";
 
 import type { JSONSchema7TypeName, JSONSchema7, JSONSchema7Definition } from "json-schema"
 import type { AnyObject } from "./types/Common";
@@ -19,12 +18,12 @@ type AnyValue = AnySingleValue | AnyArrayValue
 
 function enforceDefaultTypeSchema({ type, itemsType, nullable } : { type: OptionType, itemsType?: ItemsType, nullable?: boolean }): JSONSchema7 {
   const properties : { [key: string]: JSONSchema7 } = {
-    name: { type: types.STRING as JSONSchema7TypeName },
+    name: { type: STRING_TYPE as JSONSchema7TypeName },
     type: { enum: [type] },
     nullable: { enum: [false] },
-    description: { type: types.STRING as JSONSchema7TypeName },
+    description: { type: STRING_TYPE as JSONSchema7TypeName },
     extraData: {
-      type: types.OBJECT as JSONSchema7TypeName,
+      type: OBJECT_TYPE as JSONSchema7TypeName,
       additionalProperties: true,
     },
   };
@@ -37,7 +36,7 @@ function enforceDefaultTypeSchema({ type, itemsType, nullable } : { type: Option
   const defaultProperty: JSONSchema7 = {}
 
   if (nullable) {
-    defaultProperty.type = [type as JSONSchema7TypeName, types.NULL as JSONSchema7TypeName];
+    defaultProperty.type = [type as JSONSchema7TypeName, NULL_TYPE as JSONSchema7TypeName];
     properties.nullable = { enum: [true] };
   } else {
     defaultProperty.type = type as JSONSchema7TypeName;
@@ -58,20 +57,20 @@ function enforceDefaultTypeSchema({ type, itemsType, nullable } : { type: Option
 }
 
 const optionSchema : JSONSchema7 = {
-  type: types.OBJECT as JSONSchema7TypeName,
+  type: OBJECT_TYPE as JSONSchema7TypeName,
   oneOf: [
-    enforceDefaultTypeSchema({ type: types.NUMBER }),
-    enforceDefaultTypeSchema({ type: types.NUMBER, nullable: true }),
-    enforceDefaultTypeSchema({ type: types.STRING }),
-    enforceDefaultTypeSchema({ type: types.STRING, nullable: true }),
-    enforceDefaultTypeSchema({ type: types.BOOLEAN }),
-    enforceDefaultTypeSchema({ type: types.BOOLEAN, nullable: true }),
-    enforceDefaultTypeSchema({ type: types.OBJECT }),
-    enforceDefaultTypeSchema({ type: types.ARRAY }),
-    enforceDefaultTypeSchema({ type: types.ARRAY, itemsType: types.NUMBER }),
-    enforceDefaultTypeSchema({ type: types.ARRAY, itemsType: types.STRING }),
-    enforceDefaultTypeSchema({ type: types.ARRAY, itemsType: types.BOOLEAN }),
-    enforceDefaultTypeSchema({ type: types.ARRAY, itemsType: types.OBJECT }),
+    enforceDefaultTypeSchema({ type: NUMBER_TYPE }),
+    enforceDefaultTypeSchema({ type: NUMBER_TYPE, nullable: true }),
+    enforceDefaultTypeSchema({ type: STRING_TYPE }),
+    enforceDefaultTypeSchema({ type: STRING_TYPE, nullable: true }),
+    enforceDefaultTypeSchema({ type: BOOLEAN_TYPE }),
+    enforceDefaultTypeSchema({ type: BOOLEAN_TYPE, nullable: true }),
+    enforceDefaultTypeSchema({ type: OBJECT_TYPE }),
+    enforceDefaultTypeSchema({ type: ARRAY_TYPE }),
+    enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: NUMBER_TYPE }),
+    enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: STRING_TYPE }),
+    enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: BOOLEAN_TYPE }),
+    enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: OBJECT_TYPE }),
   ],
 };
 
@@ -79,7 +78,7 @@ const optionValidator : ValidateFunction = ajv.compile(optionSchema);
 
 function emptySchema({ allowAdditionalProperties } : { allowAdditionalProperties: boolean }): JSONSchema7 {
   return {
-    type: types.OBJECT as JSONSchema7TypeName,
+    type: OBJECT_TYPE as JSONSchema7TypeName,
     properties: {},
     additionalProperties: allowAdditionalProperties,
   };
@@ -99,25 +98,25 @@ interface TypeAndThrowValidators {
 
 function validateStringAndThrow(value: unknown): void | never {
   if (!isString(value)) {
-    throwValueTypeError(value, types.STRING);
+    throwValueTypeError(value, STRING_TYPE);
   }
 }
 
 function validateBooleanAndThrow(value: unknown): void | never {
   if (!isBoolean(value)) {
-    throwValueTypeError(value, types.BOOLEAN);
+    throwValueTypeError(value, BOOLEAN_TYPE);
   }
 }
 
 function validateNumberAndThrow(value: unknown): void | never {
   if (!isNumber(value)) {
-    throwValueTypeError(value, types.NUMBER);
+    throwValueTypeError(value, NUMBER_TYPE);
   }
 }
 
 function validateObjectAndThrow(value: unknown): void | never {
   if (!isObject(value)) {
-    throwValueTypeError(value, types.OBJECT);
+    throwValueTypeError(value, OBJECT_TYPE);
   }
 }
 
@@ -133,16 +132,16 @@ function validateArrayAndThrow(value: AnyValue, itemsType?: ItemsType): void | n
       });
     }
   } else {
-    throwValueTypeError(value, types.ARRAY);
+    throwValueTypeError(value, ARRAY_TYPE);
   }
 }
 
 const typeAndThrowValidators: TypeAndThrowValidators = {
-  [types.STRING]: validateStringAndThrow,
-  [types.BOOLEAN]: validateBooleanAndThrow,
-  [types.NUMBER]: validateNumberAndThrow,
-  [types.OBJECT]: validateObjectAndThrow,
-  [types.ARRAY]: validateArrayAndThrow,
+  [STRING_TYPE]: validateStringAndThrow,
+  [BOOLEAN_TYPE]: validateBooleanAndThrow,
+  [NUMBER_TYPE]: validateNumberAndThrow,
+  [OBJECT_TYPE]: validateObjectAndThrow,
+  [ARRAY_TYPE]: validateArrayAndThrow,
 };
 
 function validateSchema(config: AnyObject | OptionProperties, schema: JSONSchema7, validator?: ValidateFunction): SchemaValidationResult {
@@ -174,7 +173,7 @@ function addNamespaceSchema(namespace: NamespaceInterface, { rootSchema, allowAd
     const properties : { [key: string]: JSONSchema7 } = {};
     if (option.nullable) {
       properties[option.name] = {
-        type: [option.type as JSONSchema7TypeName, types.NULL as JSONSchema7TypeName],
+        type: [option.type as JSONSchema7TypeName, NULL_TYPE as JSONSchema7TypeName],
       };
     } else {
       properties[option.name] = {

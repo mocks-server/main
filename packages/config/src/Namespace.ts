@@ -64,7 +64,7 @@ class Namespace implements NamespaceInterface {
     });
   }
 
-  public startEvents() {
+  public startEvents(): void {
     this._options.forEach((option) => option.startEvents());
     this._namespaces.forEach((namespace) => namespace.startEvents());
     this._started = true;

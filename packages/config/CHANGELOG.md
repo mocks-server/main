@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - refactor: In CJS, .default has to be required
 - refactor: Migrate to TypeScript
+- fix: Do not return root namespace in config.namespaces
 
 ## [1.4.0] - 2022-09-01
 

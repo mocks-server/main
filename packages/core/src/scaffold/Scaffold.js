@@ -88,13 +88,11 @@ function parseNamespacesForTemplates(namespaces) {
   if (namespaces) {
     return compact(
       namespaces.map((namespace) => {
-        if (namespace.name) {
-          return {
-            name: ensureQuotes(namespace.name),
-            options: parseOptionsForTemplate(namespace.options, namespace),
-            namespaces: parseNamespacesForTemplates(namespace.namespaces),
-          };
-        }
+        return {
+          name: ensureQuotes(namespace.name),
+          options: parseOptionsForTemplate(namespace.options, namespace),
+          namespaces: parseNamespacesForTemplates(namespace.namespaces),
+        };
       })
     );
   }

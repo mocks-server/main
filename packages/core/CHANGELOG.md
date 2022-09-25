@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+- refactor: Do not require namespaces to have a name when creating scaffold, because config 2.0.0 do not return root namespace. 
+
 ## [4.0.0] - 2022-09-14
 
 ### Removed

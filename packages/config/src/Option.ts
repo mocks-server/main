@@ -7,7 +7,7 @@ import { validateOptionAndThrow, validateValueTypeAndThrow } from "./validation"
 import { addEventListener, CHANGE } from "./events";
 import { typeIsArray, typeIsObject, avoidArraysMerge } from "./types";
 
-import type { OptionInterface, OptionProperties, ItemsType, OptionType, OptionValue, SetMethodOptions, OptionArrayValue } from "./types/Option";
+import type { OptionInterface, OptionProperties, ItemsType, OptionType, OptionValue, SetMethodOptions, OptionArrayValue, ExtraData } from "./types/Option";
 import type { EventListener, EventListenerRemover } from "./types/Events";
 import type { AnyObject } from "./types/Common";
 

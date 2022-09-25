@@ -249,7 +249,7 @@ class Config implements ConfigInterface {
     return getNamespacesValues(this._namespaces);
   }
 
-  public set value(configuration) {
+  public set value(configuration: ConfigObject) {
     this.set(configuration);
   }
 
@@ -261,11 +261,11 @@ class Config implements ConfigInterface {
     return { ...this._fileConfig };
   }
 
-  public get envLoadedValues() {
+  public get envLoadedValues(): ConfigObject {
     return { ...this._envConfig };
   }
 
-  public get argsLoadedValues() {
+  public get argsLoadedValues(): ConfigObject {
     return { ...this._argsConfig };
   }
 
@@ -274,7 +274,7 @@ class Config implements ConfigInterface {
   }
 
   public get namespaces(): NamespaceInterface[] {
-    return this._namespaces;
+    return this._namespaces.filter(namespace => !namespace.isRoot);
   }
 
   public get options(): OptionInterface[] {

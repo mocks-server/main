@@ -25,6 +25,8 @@ export type OptionArrayValue = boolean[] | number[] | string[] | AnyObject[]
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type OptionValue = any
 
+export type ExtraData = AnyObject;
+
 export interface BaseOptionProperties  extends ObjectWithName {
   name: string
   type: ItemsType | OptionType
@@ -32,7 +34,7 @@ export interface BaseOptionProperties  extends ObjectWithName {
   default?: OptionValue
   value?: OptionValue
   nullable?: boolean
-  extraData?: AnyObject
+  extraData?: ExtraData
   itemsType?: ItemsType
 }
 

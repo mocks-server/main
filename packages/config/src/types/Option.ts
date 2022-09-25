@@ -86,6 +86,7 @@ export interface OptionInterface extends BaseOptionProperties {
   set(value: OptionValue, options: SetMethodOptions): void
   startEvents(): void
   hasBeenSet: boolean
+  nullable: boolean
 }
 
 export interface OptionInterfaceArray extends OptionInterface {

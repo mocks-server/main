@@ -1,7 +1,7 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # generated files
-fixtures/ts-dist
+
 
 #environment variables
 .env
@@ -11,6 +11,7 @@ fixtures/ts-dist
 
 # tests
 /src/fixtures/*/index.js
+/src/fixtures/ts-dist
 
 # misc
 .DS_Store

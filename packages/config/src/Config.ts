@@ -161,7 +161,7 @@ class Config implements ConfigInterface {
     );
   }
 
-  public validate(config: ConfigObject, { allowAdditionalProperties = false }: ValidationOptions = {}): SchemaValidationResult | never {
+  public validate(config: ConfigObject, { allowAdditionalProperties = false }: ValidationOptions = {}): SchemaValidationResult {
     return validateConfig(config, {
       namespaces: this._namespaces,
       allowAdditionalProperties,

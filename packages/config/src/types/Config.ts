@@ -22,13 +22,15 @@ export interface LoadArgumentsOptions {
 }
 
 export interface ConfigInterface {
-  validate(config: ConfigObject, options?: ValidationOptions): SchemaValidationResult | never
+  validate(config: ConfigObject, options?: ValidationOptions): SchemaValidationResult
   getValidationSchema(options?: ValidationOptions): JSONSchema7
   init(programmaticConfig: ConfigObject): Promise<void>
   load(programmaticConfig: ConfigObject): Promise<void>
   addNamespace(name: NamespaceInterface["name"]): NamespaceInterface
   namespace(name: NamespaceInterface["name"]): NamespaceInterface | undefined
   option(name: OptionInterface["name"]): OptionInterface | undefined
+  addOption(optionProperties: OptionProperties): OptionInterface
+  addOptions(options: OptionProperties[]): OptionInterface[]
   value: ConfigObject
   programmaticLoadedValues: ConfigObject
   fileLoadedValues: ConfigObject
@@ -44,7 +46,7 @@ export interface ConfigInterface {
 export interface NamespaceProperties {
   parents?: NamespaceInterface[]
   brothers: NamespaceInterface[]
-  root?: ConfigInterface
+  root: ConfigInterface
   isRoot?: true
 }
 
@@ -56,7 +58,7 @@ export interface NamespaceInterface extends ObjectWithName {
   namespaces: NamespaceInterface[]
   parents: NamespaceInterface[],
   value: ConfigObject,
-  root?: ConfigInterface,
+  root: ConfigInterface,
   isRoot: boolean,
   name: string
   startEvents(): void

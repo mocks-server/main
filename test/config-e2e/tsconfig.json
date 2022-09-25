@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
-    "outDir": "./fixtures/ts-dist",
+    "outDir": "./src/fixtures/ts-dist",
     "declaration": true,
     "target": "es6",
     "strict": true,
@@ -20,6 +20,6 @@
     }
   },
   "include": [
-    "src/**/*"
+    "src/fixtures/typescript/**/*"
   ]
 }

@@ -16,7 +16,7 @@ import {
 class Namespace implements NamespaceInterface {
   private _brothers: NamespaceInterface[]
   private _parents: NamespaceInterface[]
-  private _root?: ConfigInterface
+  private _root: ConfigInterface
   private _eventEmitter: EventEmitter
   private _name: string
   private _namespaces: NamespaceInterface[]
@@ -90,7 +90,7 @@ class Namespace implements NamespaceInterface {
     return [...this._parents];
   }
 
-  public get root(): ConfigInterface | undefined {
+  public get root(): ConfigInterface {
     return this._root;
   }
 

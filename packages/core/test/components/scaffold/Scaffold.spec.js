@@ -225,28 +225,6 @@ describe("Scaffold", () => {
           ],
         },
         {
-          // simulate namespace with no name (root one)
-          options: [
-            {
-              description: "It contains a string",
-              name: "log",
-              type: "string",
-              value: "info",
-              extraData: {
-                scaffold: {
-                  commented: false,
-                },
-              },
-            },
-            {
-              description: "It contains undefined",
-              name: "secondValue",
-              type: "string",
-              value: undefined,
-            },
-          ],
-        },
-        {
           // simulate config namespace
           name: "config",
           options: [

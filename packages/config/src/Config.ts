@@ -216,7 +216,7 @@ class Config implements ConfigInterface {
     await this._load({ allowUnknown: true });
   }
 
-  public async load(programmaticConfig: ConfigObject): Promise<void> {
+  public async load(programmaticConfig?: ConfigObject): Promise<void> {
     if (!this._initializated) {
       await this.init(programmaticConfig);
     }
@@ -230,6 +230,7 @@ class Config implements ConfigInterface {
         namespaces: this._namespaces,
         options: this._rootNamespace && this._rootNamespace.options,
       }) || new Namespace(name, { brothers: this._namespaces, root: this });
+    // TODO, existant namespaces are adde twice
     this._namespaces.push(namespace);
     return namespace;
   }

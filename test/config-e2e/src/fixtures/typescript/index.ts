@@ -40,7 +40,7 @@ config.options.forEach((option) => {
   option.value = newValue;
 })
 
-const configNamespace: _Namespace.Interface = config.addNamespace("firstNamespace");
+const configNamespace: _Namespace.Interface = config.addNamespace("name");
 const namespaceOptionOptions: _Option.Options = { name: "fooOption", type: "string", default: "foo-value" };
 const namespaceOption: _Option.Interface = configNamespace.addOption(namespaceOptionOptions);
 const namespaceOptions: _Option.Interface[] = configNamespace.addOptions([{

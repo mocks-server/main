@@ -1,24 +1,38 @@
 import type { ObjectWithName, AnyObject } from "./Common";
 import type { EventListener, EventListenerRemover } from "./Events";
 
+/** Possible value types */
 export type OptionType = "string" | "number" | "boolean" | "object" | "array" | "null";
+/** Possible value types inside an array */
 export type ItemsType = "string" | "number" | "boolean" | "object";
 
+/** Possible types for the value of an option not being of type array */
 export type OptionSingleValue = boolean | number | string | AnyObject | null | undefined
+
+/** Possible types for the value of an option of type array */
 export type OptionArrayValue = boolean[] | number[] | string[] | AnyObject[]
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type OptionValue = any
 
+/** Extra data to store in the option interface */
 export type ExtraData = AnyObject;
 
+/** Properties for creating an option */
 export interface BaseOptionProperties  extends ObjectWithName {
+  /** Name for the option */
   name: string
+  /** Type of the option value */
   type: OptionType
+  /** Option description */
   description?: string
+  /** Default value */
   default?: OptionValue
-  value?: OptionValue
+  /** Value is nullable */
   nullable?: boolean
+  /** Extra data {@link ExtraData} */
   extraData?: ExtraData
+  /** Type of the items when type is array {@link ItemsType} */
   itemsType?: ItemsType
 }
 
@@ -70,11 +84,32 @@ export interface OptionConstructor {
   new (option: OptionProperties): OptionInterface
 }
 
+/** Option interface */
 export interface OptionInterface extends BaseOptionProperties {
+  /**
+  * Allows to execute a function whenever the option value changes
+  * @param eventListener - Function to execute when the option value changes {@link EventListener}
+  * @returns Function allowing to remove the event listener. Once executed, the eventListenet won't be executed any more {@link EventListenerRemover}
+  * @example const removeOnChangeListener = option.onChange(() => console.log("option value changed"))
+  */
   onChange(eventListener: EventListener): EventListenerRemover
+  /**
+  * Set the value of the option
+  * @param value - New value for the option
+  * @param options - Options {@link SetMethodOptions}
+  * @example option.set({ foo: 2 }, { merge: false })
+  */
   set(value: OptionValue, options: SetMethodOptions): void
+  /**
+  * Start emitting events
+  * @example option.startEvents()
+  */
   startEvents(): void
+  /** Current value */
+  value?: OptionValue
+  /** Option value has been already set or not (if not, it returns the default value) */
   hasBeenSet: boolean
+  /** Option value can be set to null or not */
   nullable: boolean
 }
 
@@ -91,6 +126,8 @@ export interface OptionInterfaceBoolean extends OptionInterface {
   default?: boolean
 }
 
+/** Options of the set method */
 export interface SetMethodOptions {
+  /** When passed value is an object, determines whether it has to be merged with previous value or not */
   merge?: boolean
 }

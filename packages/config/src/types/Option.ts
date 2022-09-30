@@ -32,7 +32,7 @@ export interface BaseOptionProperties  extends ObjectWithName {
   nullable?: boolean
   /** Extra data {@link ExtraData} */
   extraData?: ExtraData
-  /** Type of the items when type is array {@link ItemsType} */
+  /** Type of the items in the value array when option type is array {@link ItemsType} */
   itemsType?: ItemsType
 }
 
@@ -80,7 +80,14 @@ export interface OptionNullProperties extends BaseOptionProperties {
 
 export type OptionProperties = OptionBooleanProperties | OptionNumberProperties | OptionStringProperties | OptionObjectProperties | OptionArrayProperties | OptionNullProperties
 
+/** Creates an option interface */
 export interface OptionConstructor {
+  /**
+  * Creates an option interface
+  * @param option - Option properties {@link OptionProperties}
+  * @returns Option interface {@link OptionInterface}.
+  * @example const option = new Option({ name: "foo", type: "string" })
+  */
   new (option: OptionProperties): OptionInterface
 }
 

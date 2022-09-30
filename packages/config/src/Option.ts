@@ -15,7 +15,7 @@ class Option implements OptionInterface {
   private _eventEmitter: EventEmitter
   private _name: string
   private _nullable: boolean
-  private _extraData: AnyObject | undefined
+  private _extraData?: ExtraData
   private _type: OptionType
   private _description: string | undefined
   private _itemsType?: ItemsType

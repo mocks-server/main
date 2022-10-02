@@ -6,6 +6,7 @@
     "test:e2e": "tsc && npm run jest"
   },
   "dependencies": {
+    "@mocks-server/admin-api-client": "workspace:*",
     "@mocks-server/config": "workspace:*",
     "@mocks-server/cli-runner": "workspace:*"
   }

@@ -1,6 +1,17 @@
 import crossFetch from "cross-fetch";
-import type { Response } from "cross-fetch";
-import type { AnyObject, ApiClientConfig, Url, ApiPath, Id, Protocol, CrossFetchOptions } from "./types";
+import type {
+  Url,
+  Protocol,
+  CrossFetchOptions,
+  ApiPath,
+  ApiClientConfig,
+  ApiRequestBody,
+  ApiClientInterface,
+  ApiResponseBody,
+  ApiEntityInterface,
+  AdminApiClientEntitiesInterface
+} from "./types/AdminApiClientEntities";
+import type { EntityId } from "./types/Common";
 
 import {
   BASE_PATH,
@@ -21,8 +32,7 @@ const JSON_HEADERS = {
   "Content-Type": "application/json",
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isUndefined(value: any) {
+function isUndefined(value: unknown) {
   return typeof value === "undefined";
 }
 
@@ -35,7 +45,7 @@ function handleResponse(res: Response) {
   });
 }
 
-class ApiClient {
+class ApiClient implements ApiClientInterface {
   private _host: ApiClientConfig["host"] = DEFAULT_CLIENT_HOST;
   private _port: ApiClientConfig["port"] = DEFAULT_PORT;
   private _protocol: Protocol = DEFAULT_PROTOCOL;
@@ -56,7 +66,7 @@ class ApiClient {
     return options;
   }
 
-  public config(configuration: ApiClientConfig = {}) {
+  public config(configuration: ApiClientConfig = {}): void {
     if (!isUndefined(configuration.host)) {
       this._host = configuration.host;
     }
@@ -71,11 +81,11 @@ class ApiClient {
     }
   }
 
-  public read(apiPath: ApiPath) {
+  public get(apiPath: ApiPath): Promise<ApiResponseBody> {
     return crossFetch(this._fullUrl(apiPath), this._addAgent()).then(handleResponse);
   }
 
-  public patch(apiPath: ApiPath, data: AnyObject) {
+  public patch(apiPath: ApiPath, data: ApiRequestBody): Promise<ApiResponseBody> {
     return crossFetch(this._fullUrl(apiPath), this._addAgent({
       method: "PATCH",
       body: JSON.stringify(data),
@@ -83,13 +93,13 @@ class ApiClient {
     })).then(handleResponse);
   }
 
-  public delete(apiPath: ApiPath) {
+  public delete(apiPath: ApiPath): Promise<ApiResponseBody> {
     return crossFetch(this._fullUrl(apiPath), this._addAgent({
       method: "DELETE",
     })).then(handleResponse);
   }
 
-  public create(apiPath: ApiPath, data: AnyObject) {
+  public post(apiPath: ApiPath, data: ApiRequestBody): Promise<ApiResponseBody> {
     return crossFetch(this._fullUrl(apiPath), this._addAgent({
       method: "POST",
       body: JSON.stringify(data),
@@ -98,105 +108,105 @@ class ApiClient {
   }
 }
 
-class ApiResource {
-  private _apiPath: ApiPath;
-  private _id: Id;
+class ApiEntity implements ApiEntityInterface {
+  private _path: ApiPath;
+  private _id: EntityId;
   private _apiClient: ApiClient;
 
-  constructor(apiClient: ApiClient, apiPath: ApiPath, id?: Id) {
-    this._apiPath = apiPath;
+  constructor(apiClient: ApiClient, path: ApiPath, id?: EntityId) {
+    this._path = path;
     this._id = id ? `/${encodeURIComponent(id)}` : "";
     this._apiClient = apiClient;
   }
 
   private get _fullApiPath() {
-    return `${this._apiPath}${this._id}`;
+    return `${this._path}${this._id}`;
   }
 
-  public read() {
-    return this._apiClient.read(this._fullApiPath);
+  public read(): Promise<ApiResponseBody> {
+    return this._apiClient.get(this._fullApiPath);
   }
 
-  public update(data: AnyObject) {
+  public update(data: ApiRequestBody): Promise<ApiResponseBody> {
     return this._apiClient.patch(this._fullApiPath, data);
   }
 
-  public delete() {
+  public delete(): Promise<ApiResponseBody> {
     return this._apiClient.delete(this._fullApiPath);
   }
 
-  public create(data: AnyObject) {
-    return this._apiClient.create(this._fullApiPath, data);
+  public create(data: ApiRequestBody): Promise<ApiResponseBody> {
+    return this._apiClient.post(this._fullApiPath, data);
   }
 }
 
-export class BaseAdminApiClient {
+export class AdminApiClientEntities implements AdminApiClientEntitiesInterface {
   private _apiClient: ApiClient;
-  private _about: ApiResource;
-  private _config: ApiResource;
-  private _alerts: ApiResource;
-  private _collections: ApiResource;
-  private _routes: ApiResource;
-  private _variants: ApiResource;
-  private _customRouteVariants: ApiResource;
+  private _about: ApiEntity;
+  private _config: ApiEntity;
+  private _alerts: ApiEntity;
+  private _collections: ApiEntity;
+  private _routes: ApiEntity;
+  private _variants: ApiEntity;
+  private _customRouteVariants: ApiEntity;
 
   constructor() {
     this._apiClient = new ApiClient();
 
-    this._about = new ApiResource(this._apiClient, ABOUT);
-    this._config = new ApiResource(this._apiClient, CONFIG);
-    this._alerts = new ApiResource(this._apiClient, ALERTS);
-    this._collections = new ApiResource(this._apiClient, COLLECTIONS);
-    this._routes = new ApiResource(this._apiClient, ROUTES);
-    this._variants = new ApiResource(this._apiClient, VARIANTS);
-    this._customRouteVariants = new ApiResource(this._apiClient, CUSTOM_ROUTE_VARIANTS);
+    this._about = new ApiEntity(this._apiClient, ABOUT);
+    this._config = new ApiEntity(this._apiClient, CONFIG);
+    this._alerts = new ApiEntity(this._apiClient, ALERTS);
+    this._collections = new ApiEntity(this._apiClient, COLLECTIONS);
+    this._routes = new ApiEntity(this._apiClient, ROUTES);
+    this._variants = new ApiEntity(this._apiClient, VARIANTS);
+    this._customRouteVariants = new ApiEntity(this._apiClient, CUSTOM_ROUTE_VARIANTS);
   }
 
-  public get about() {
+  public get about(): ApiEntityInterface {
     return this._about;
   }
 
-  public get config() {
+  public get config(): ApiEntityInterface {
     return this._config;
   }
 
-  public get alerts() {
+  public get alerts(): ApiEntityInterface {
     return this._alerts;
   }
 
-  public alert(id: Id) {
-    return new ApiResource(this._apiClient, ALERTS, id);
+  public alert(id: EntityId): ApiEntityInterface {
+    return new ApiEntity(this._apiClient, ALERTS, id);
   }
 
-  public get collections() {
+  public get collections(): ApiEntityInterface {
     return this._collections;
   }
 
-  public collection(id: Id) {
-    return new ApiResource(this._apiClient, COLLECTIONS, id);
+  public collection(id: EntityId): ApiEntityInterface {
+    return new ApiEntity(this._apiClient, COLLECTIONS, id);
   }
 
-  public get routes() {
+  public get routes(): ApiEntityInterface {
     return this._routes;
   }
 
-  public route(id: Id) {
-    return new ApiResource(this._apiClient, ROUTES, id);
+  public route(id: EntityId): ApiEntityInterface {
+    return new ApiEntity(this._apiClient, ROUTES, id);
   }
 
-  public get variants() {
+  public get variants(): ApiEntityInterface {
     return this._variants;
   }
 
-  public variant(id: Id) {
-    return new ApiResource(this._apiClient, VARIANTS, id);
+  public variant(id: EntityId): ApiEntityInterface {
+    return new ApiEntity(this._apiClient, VARIANTS, id);
   }
 
-  public get customRouteVariants() {
+  public get customRouteVariants(): ApiEntityInterface {
     return this._customRouteVariants;
   }
 
-  public configClient(configuration: ApiClientConfig) {
+  public configClient(configuration: ApiClientConfig): void {
     this._apiClient.config(configuration);
   }
 }

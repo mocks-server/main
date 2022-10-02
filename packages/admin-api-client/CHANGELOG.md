@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+### Changed
+- refactor: Refactor and document types. Change exported types, export all of them in the `ApiClient` namespace
+
 ## [7.0.0] - 2022-09-14
 
 ### Removed

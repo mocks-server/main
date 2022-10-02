@@ -36,6 +36,7 @@
     "test:unit": "start-server-and-test mocks:ci tcp:127.0.0.1:3110 test"
   },
   "dependencies": {
+    "@mocks-server/config": "workspace:*",
     "@mocks-server/admin-api-paths": "workspace:*",
     "cross-fetch": "3.1.5"
   },

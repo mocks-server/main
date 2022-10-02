@@ -6,6 +6,16 @@ import type {
   ConfigurationObject as _ConfigurationObject
 } from "@mocks-server/config";
 
+import type {
+  AdminApiClient as _AdminApiClient
+} from "@mocks-server/admin-api-client";
+
+import {
+  AdminApiClient
+} from "@mocks-server/admin-api-client";
+
+const apiClient = new AdminApiClient();
+
 const configOptions: _Config.Options = { moduleName: "mocks", mergeArrays: true };
 
 const config: _Config.Interface = new Config(configOptions);

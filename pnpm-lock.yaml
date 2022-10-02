@@ -174,9 +174,11 @@ importers:
   packages/admin-api-client:
     specifiers:
       '@mocks-server/admin-api-paths': workspace:*
+      '@mocks-server/config': workspace:*
       cross-fetch: 3.1.5
     dependencies:
       '@mocks-server/admin-api-paths': link:../admin-api-paths
+      '@mocks-server/config': link:../config
       cross-fetch: 3.1.5
 
   packages/admin-api-client-data-provider:
@@ -404,9 +406,11 @@ importers:
 
   test/config-e2e:
     specifiers:
+      '@mocks-server/admin-api-client': workspace:*
       '@mocks-server/cli-runner': workspace:*
       '@mocks-server/config': workspace:*
     dependencies:
+      '@mocks-server/admin-api-client': link:../../packages/admin-api-client
       '@mocks-server/cli-runner': link:../../packages/cli-runner
       '@mocks-server/config': link:../../packages/config
 

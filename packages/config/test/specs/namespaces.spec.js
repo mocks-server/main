@@ -3,10 +3,10 @@ import { createConfigBeforeElements } from "../support/helpers";
 import Config from "../../src/Config";
 
 describe("namespaces", () => {
-  let sandbox, config, namespace, option;
+  let sandbox, config, namespace;
 
   beforeEach(() => {
-    ({ sandbox, config, namespace, option } = createConfigBeforeElements());
+    ({ sandbox, config, namespace } = createConfigBeforeElements());
   });
 
   afterEach(() => {
@@ -33,41 +33,28 @@ describe("namespaces", () => {
       expect(config.root).toBe(config);
     });
 
-    it("should return same namespace if name already exists", async () => {
-      let namespace2;
+    it("should throw if name already exists", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
-      namespace2 = config.addNamespace("foo");
-      option = namespace.addOption({ name: "foo", default: "foo-value", type: "string" });
-      expect(option.value).toEqual("foo-value");
-      expect(namespace2.options.length).toEqual(1);
-      expect(namespace.options.length).toEqual(1);
-      expect(namespace).toBe(namespace2);
+      expect(() => config.addNamespace("foo")).toThrow("already exists");
     });
 
-    it("should return same nested namespace if name already exists", async () => {
-      let namespace2, namespace3;
+    it("should throw if nested namespace name already exists", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
-      namespace2 = namespace.addNamespace("foo");
-      namespace3 = namespace.addNamespace("foo");
-      option = namespace3.addOption({ name: "foo", default: "foo-value", type: "string" });
-      expect(option.value).toEqual("foo-value");
-      expect(namespace3.options.length).toEqual(1);
-      expect(namespace2.options.length).toEqual(1);
-      expect(namespace2).toBe(namespace3);
+      namespace.addNamespace("foo");
+      expect(() => namespace.addNamespace("foo")).toThrow("already exists");
     });
 
     it("should throw if option with same name already exists", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
-      option = namespace.addOption({ name: "fooOption", default: "foo-value", type: "string" });
       expect(() => namespace.addNamespace("fooOption")).toThrow("already exists");
     });
 
     it("should throw if option with same name already exists in root level", async () => {
       config = new Config();
-      option = config.addOption({ name: "fooOption", default: "foo-value", type: "string" });
+      config.addOption({ name: "fooOption", default: "foo-value", type: "string" });
       expect(() => config.addNamespace("fooOption")).toThrow("already exists");
     });
   });

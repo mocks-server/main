@@ -225,12 +225,11 @@ class Config implements ConfigInterface {
   }
 
   public addNamespace(name: NamespaceInterface["name"]): NamespaceInterface {
-    const namespace =
-      checkNamespaceName(name, {
-        namespaces: this._namespaces,
-        options: this._rootNamespace && this._rootNamespace.options,
-      }) || new Namespace(name, { brothers: this._namespaces, root: this });
-    // TODO, existant namespaces are adde twice
+    checkNamespaceName(name, {
+      namespaces: this._namespaces,
+      options: this._rootNamespace && this._rootNamespace.options,
+    });
+    const namespace = new Namespace(name, { brothers: this._namespaces, root: this });
     this._namespaces.push(namespace);
     return namespace;
   }

@@ -72,7 +72,7 @@ export interface ConfigInterface {
   /**
   * Returns a configuration namespace
   * @param name - Name of the namespace to return
-  * @returns Configuration namespace {@link NamespaceInterface} or undefined.
+  * @returns Configuration namespace {@link NamespaceInterface}
   * @example const namespace = config.namespace("foo")
   */
   namespace(name: NamespaceInterface["name"]): NamespaceInterface | undefined

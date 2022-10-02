@@ -71,10 +71,8 @@ class Namespace implements NamespaceInterface {
   }
 
   public addNamespace(name: NamespaceInterface["name"]): NamespaceInterface {
-    const namespace =
-      checkNamespaceName(name, { namespaces: this._namespaces, options: this._options }) ||
-      new Namespace(name, { parents: [...this._parents, this], root: this._root, brothers: this._namespaces });
-    // TODO, existant namespaces are adde twice
+    checkNamespaceName(name, { namespaces: this._namespaces, options: this._options })
+    const namespace = new Namespace(name, { parents: [...this._parents, this], root: this._root, brothers: this._namespaces });
     this._namespaces.push(namespace);
     return namespace;
   }

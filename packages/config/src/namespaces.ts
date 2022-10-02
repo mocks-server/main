@@ -30,14 +30,16 @@ function throwNamespaceAlreadyExists(name: string): never {
   throwItemAlreadyExists("Namespace", name);
 }
 
-export function checkNamespaceName(name: string, { options, namespaces }: { options: OptionInterface[], namespaces: NamespaceInterface[] }): NamespaceInterface | undefined | never {
+export function checkNamespaceName(name: string, { options, namespaces }: { options: OptionInterface[], namespaces: NamespaceInterface[] }):  void | never {
   if (!name) {
     throw new Error("Please provide a name for the namespace");
   }
   if (options && findObjectWithName(options, name)) {
     throwOptionAlreadyExists(name);
   }
-  return findObjectWithName(namespaces, name);
+  if (findObjectWithName(namespaces, name)) {
+    throwNamespaceAlreadyExists(name);
+  }
 }
 
 export function checkOptionName(name: string, { options, namespaces }: { options: OptionInterface[], namespaces: NamespaceInterface[] }): void | never {

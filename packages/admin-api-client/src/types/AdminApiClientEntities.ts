@@ -9,8 +9,11 @@ export type ApiPath = string
 /** API protocol */
 export type Protocol = "http" | "https"
 
+/** API base url */
+export type BaseUrl = `${Protocol}://${ApiClientConfig["host"]}:${ApiClientConfig["port"]}`
+
 /** API url */
-export type Url = `${Protocol}://${ApiClientConfig["host"]}:${ApiClientConfig["port"]}${typeof BASE_PATH}${ApiPath}`
+export type Url = `${BaseUrl}${typeof BASE_PATH}${ApiPath}`
 
 /** API response body parsed */
 export type ApiResponseBody = undefined | AnyObject

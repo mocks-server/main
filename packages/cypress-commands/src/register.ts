@@ -16,7 +16,5 @@ export function register(Cyp: typeof Cypress, CypCy: typeof cy) {
   Cyp.Commands.add("mocksSetConfig", setConfig);
   Cyp.Commands.add("mocksUseRouteVariant", useRouteVariant);
   Cyp.Commands.add("mocksRestoreRouteVariants", restoreRouteVariants);
-
-  Cyp.Commands.add("mocksConfigAdminApiClient", configClient);
   Cyp.Commands.add("mocksConfigClient", configClient);
 }

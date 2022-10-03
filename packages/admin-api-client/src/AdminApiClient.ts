@@ -21,8 +21,8 @@ export class AdminApiClient implements AdminApiClientInterface {
     return this._adminApiClient.config.read() as Promise<ConfigurationObject>;
   }
 
-  public updateConfig(newConfig: ConfigurationObject): Promise<undefined> {
-    return this._adminApiClient.config.update(newConfig) as Promise<undefined>;
+  public updateConfig(newConfig: ConfigurationObject): Promise<void> {
+    return this._adminApiClient.config.update(newConfig) as Promise<void>;
   }
 
   public readAlerts(): Promise<ApiResponseBody> {
@@ -61,14 +61,14 @@ export class AdminApiClient implements AdminApiClientInterface {
     return this._adminApiClient.customRouteVariants.read();
   }
 
-  public useRouteVariant(id: EntityId): Promise<undefined> {
+  public useRouteVariant(id: EntityId): Promise<void> {
     return this._adminApiClient.customRouteVariants.create({
       id,
-    }) as Promise<undefined>;
+    }) as Promise<void>;
   }
 
-  public restoreRouteVariants(): Promise<undefined> {
-    return this._adminApiClient.customRouteVariants.delete() as Promise<undefined>;
+  public restoreRouteVariants(): Promise<void> {
+    return this._adminApiClient.customRouteVariants.delete() as Promise<void>;
   }
 
   public configClient(config: ApiClientConfig): void {

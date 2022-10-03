@@ -1,57 +1,56 @@
+import type { ConfigurationObject } from "@mocks-server/config";
+
 import { AdminApiClient as BaseAdminApiClient } from "@mocks-server/admin-api-client";
 import { HTTPS_PROTOCOL, DEFAULT_PROTOCOL, DEFAULT_PORT, DEFAULT_CLIENT_HOST } from "@mocks-server/admin-api-paths";
 
-import type {
-  MocksServerConfig,
-  RouteVariantId,
-  Protocol,
-} from "@mocks-server/admin-api-client";
+import type { ApiClient } from "@mocks-server/admin-api-client";
 
-import type { MocksServerCypressApiClientConfig } from "./types";
 import { isUndefined, isFalsy } from "./helpers";
 
-function doNothing() {
+import type { AdminApiClientConfig, AdminApiClientInterface } from "./types/AdminApiClient";
+
+function doNothing(): Promise<void> {
   return Promise.resolve();
 }
 
-export class AdminApiClient {
-  private _enabled: MocksServerCypressApiClientConfig["enabled"] = true;
-  private _apiClient: BaseAdminApiClient;
-  private _port: MocksServerCypressApiClientConfig["port"] = DEFAULT_PORT;
-  private _host: MocksServerCypressApiClientConfig["host"] = DEFAULT_CLIENT_HOST;
-  private _protocol: Protocol = DEFAULT_PROTOCOL;
+export class AdminApiClient implements AdminApiClientInterface {
+  private _enabled: AdminApiClientConfig["enabled"] = true;
+  private _apiClient: ApiClient.Interface;
+  private _port: AdminApiClientConfig["port"] = DEFAULT_PORT;
+  private _host: AdminApiClientConfig["host"] = DEFAULT_CLIENT_HOST;
+  private _protocol: ApiClient.Protocol = DEFAULT_PROTOCOL;
 
-  constructor(clientConfig: MocksServerCypressApiClientConfig) {
+  constructor(clientConfig: AdminApiClientConfig) {
     this._apiClient = new BaseAdminApiClient();
     this.configClient(clientConfig);
   }
 
-  private _isDisabled() {
+  private _isDisabled(): boolean {
     return isFalsy(this._enabled);
   }
 
-  public updateConfig(mocksServerConfig: MocksServerConfig) {
+  public updateConfig(mocksServerConfig: ConfigurationObject): Promise<void> {
     if (this._isDisabled()) {
       return doNothing();
     }
     return this._apiClient.updateConfig(mocksServerConfig);
   }
 
-  public useRouteVariant(id: RouteVariantId) {
+  public useRouteVariant(id: ApiClient.EntityId): Promise<void> {
     if (this._isDisabled()) {
       return doNothing();
     }
     return this._apiClient.useRouteVariant(id);
   }
 
-  public restoreRouteVariants() {
+  public restoreRouteVariants(): Promise<void> {
     if (this._isDisabled()) {
       return doNothing();
     }
     return this._apiClient.restoreRouteVariants();
   }
 
-  public configClient(customConfig: MocksServerCypressApiClientConfig = {}) {
+  public configClient(customConfig: AdminApiClientConfig = {}): void {
     if (!isUndefined(customConfig.enabled)) {
       this._enabled = customConfig.enabled;
     }
@@ -72,7 +71,7 @@ export class AdminApiClient {
     });
   }
 
-  public get url() {
+  public get baseUrl(): ApiClient.BaseUrl {
     return `${this._protocol}://${this._host}:${this._port}`;
   }
 }

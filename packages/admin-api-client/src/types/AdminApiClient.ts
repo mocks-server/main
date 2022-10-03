@@ -30,9 +30,9 @@ export interface AdminApiClientInterface {
   * Updates config data
   * @param newConfig - Partial Mocks Server configuration object to be updated {@link ConfigurationObject}
   * @returns Promise. Resolved with undefined when data is valid
-  * @example await adminApiClient.updateConfig();
+  * @example await adminApiClient.updateConfig({ mock: { delay: 1000 }});
   */
-  updateConfig(newConfig: ConfigurationObject): Promise<undefined>
+  updateConfig(newConfig: ConfigurationObject): Promise<void>
   /**
   * Returns alerts data
   * @returns Promise. Resolved with alerts data {@link ApiResponseBody}
@@ -97,13 +97,13 @@ export interface AdminApiClientInterface {
   * @returns Promise. Resolved with undefined
   * @example await adminApiClient.useRouteVariant("get-books:success");
   */
-  useRouteVariant(id: EntityId): Promise<undefined>
+  useRouteVariant(id: EntityId): Promise<void>
   /**
   * Restore route variants to those defined in current collection
   * @returns Promise. Resolved with undefined
   * @example await adminApiClient.restoreRouteVariants();
   */
-  restoreRouteVariants(): Promise<undefined>
+  restoreRouteVariants(): Promise<void>
   /**
   * Configurates the API client host, port, protocol and agent
   * @param configuration - API client configuration {@link ApiClientConfig}

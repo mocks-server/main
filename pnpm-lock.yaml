@@ -281,9 +281,11 @@ importers:
     specifiers:
       '@mocks-server/admin-api-client': workspace:*
       '@mocks-server/admin-api-paths': workspace:*
+      '@mocks-server/config': workspace:*
     dependencies:
       '@mocks-server/admin-api-client': link:../admin-api-client
       '@mocks-server/admin-api-paths': link:../admin-api-paths
+      '@mocks-server/config': link:../config
 
   packages/inquirer-cli-runner:
     specifiers:

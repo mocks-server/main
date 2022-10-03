@@ -1,14 +1,8 @@
-import type {
-  MocksServerConfig,
-  CollectionId,
-  DelayTime,
-  RouteVariantId
-} from "@mocks-server/admin-api-client";
-
-import type { MocksServerCypressApiClientConfig, Log, RequestLogs, RequestError } from "./types";
+import type { ConfigurationObject } from "@mocks-server/config";
+import type { ApiClient } from "@mocks-server/admin-api-client";
+import type Bluebird from "cypress/types/bluebird";
 
 import { AdminApiClient } from "./AdminApiClient";
-
 import {
   ENABLED_ENVIRONMENT_VAR,
   ADMIN_API_PORT_ENVIRONMENT_VAR,
@@ -19,9 +13,17 @@ import {
   isTruthy,
 } from "./helpers";
 
-import type Bluebird from "cypress/types/bluebird";
+import type { AdminApiClientConfig, AdminApiClientInterface } from "./types/AdminApiClient";
+import type { CypressCommandsMethods, Log } from "./types/Commands";
 
-export function commands(Cyp: typeof Cypress, CypCy: typeof cy) {
+/**
+* Creates methods to be used by Cypress commands
+* @param Cyp - Global Cypress  {@link Cypress}
+* @param CypCy - Global cy  {@link CypCy}
+* @returns Commands methods {@link CypressCommandsMethods}
+* @example const methods = commands(Cypress, cy);
+*/
+export function commands(Cyp: typeof Cypress, CypCy: typeof cy): CypressCommandsMethods {
   const logIsEnabled = !isFalsy(Cyp.env(LOG_ENVIRONMENT_VAR))
 
   const defaultApiClient = new AdminApiClient({
@@ -31,7 +33,7 @@ export function commands(Cyp: typeof Cypress, CypCy: typeof cy) {
     https: isTruthy(Cyp.env(ADMIN_API_HTTPS_ENVIRONMENT_VAR)),
   });
 
-  function getClient(apiClient?: AdminApiClient) {
+  function getClient(apiClient?: AdminApiClientInterface): AdminApiClientInterface {
     return apiClient || defaultApiClient;
   }
 
@@ -45,30 +47,31 @@ export function commands(Cyp: typeof Cypress, CypCy: typeof cy) {
     });
   }
 
-  function log( message:Log, rest: Log[]) {
+  function log( message:Log, rest: Log[]): void {
     if (logIsEnabled) {
       CypCy.log(message, ...rest);
     }
   }
 
-  function ensureLogsArray(logs?: RequestLogs): Log[] {
+  function ensureLogsArray(logs?: Log | Log[]): Log[] {
     if (!logs) {
       return [];
     }
     return Array.isArray(logs) ? logs : [logs];
   }
 
-  function logMessages(messages: RequestLogs, extraMessages?: RequestLogs) {
+  function logMessages(messages: Log | Log[], extraMessages?: Log | Log[]): void {
     const messagesArray = ensureLogsArray(messages);
     log(`[Mocks Server] ${messagesArray[0]}`, [...messagesArray.slice(1), ...ensureLogsArray(extraMessages)]);
   }
 
-  function doRequestAndLog(client: AdminApiClient, clientCommand: Promise<void>, successMessages: RequestLogs, errorMessages: RequestLogs) {
-    CypCy.wrap(handlePromise(clientCommand), { log: false }).then((error?: RequestError) => {
+  function doRequestAndLog(client: AdminApiClientInterface, clientCommand: Promise<void>, successMessages: Log | Log[], errorMessages: Log | Log[]): void {
+    CypCy.wrap(handlePromise(clientCommand), { log: false }).then((error?: unknown) => {
       if (error) {
-        logMessages(errorMessages, `Error: ${error.message}`);
-        if (error.message.includes("Network")) {
-          logMessages(`You should check if the Admin API is listening on ${client.url}`)
+        const receivedError = error as Error;
+        logMessages(errorMessages, `Error: ${receivedError.message}`);
+        if (receivedError.message.includes("Network")) {
+          logMessages(`You should check if the Admin API is listening on ${client.baseUrl}`)
         }
       } else {
         logMessages(successMessages);
@@ -76,7 +79,7 @@ export function commands(Cyp: typeof Cypress, CypCy: typeof cy) {
     })
   }
 
-  function setCollection(id: CollectionId, apiClient?: AdminApiClient) {
+  function setCollection(id: ApiClient.EntityId, apiClient?: AdminApiClientInterface): void {
     const client = getClient(apiClient);
     doRequestAndLog(
       client,
@@ -90,7 +93,7 @@ export function commands(Cyp: typeof Cypress, CypCy: typeof cy) {
     );
   }
 
-  function setDelay (delay: DelayTime, apiClient?: AdminApiClient) {
+  function setDelay(delay: number, apiClient?: AdminApiClientInterface): void {
     const client = getClient(apiClient);
     doRequestAndLog(
       client,
@@ -104,7 +107,7 @@ export function commands(Cyp: typeof Cypress, CypCy: typeof cy) {
     );
   }
 
-  function setConfig (mocksServerConfig: MocksServerConfig, apiClient?: AdminApiClient) {
+  function setConfig(mocksServerConfig: ConfigurationObject, apiClient?: AdminApiClientInterface): void {
     const client = getClient(apiClient);
     const configMessage = JSON.stringify(mocksServerConfig);
     doRequestAndLog(
@@ -115,7 +118,7 @@ export function commands(Cyp: typeof Cypress, CypCy: typeof cy) {
     );
   }
 
-  function useRouteVariant (id: RouteVariantId, apiClient?: AdminApiClient) {
+  function useRouteVariant(id: ApiClient.EntityId, apiClient?: AdminApiClientInterface): void {
     const client = getClient(apiClient);
     doRequestAndLog(
       client,
@@ -125,7 +128,7 @@ export function commands(Cyp: typeof Cypress, CypCy: typeof cy) {
     )
   }
 
-  function restoreRouteVariants(apiClient?: AdminApiClient) {
+  function restoreRouteVariants(apiClient?: AdminApiClientInterface): void {
     const client = getClient(apiClient);
     doRequestAndLog(
       client,
@@ -135,7 +138,7 @@ export function commands(Cyp: typeof Cypress, CypCy: typeof cy) {
     )
   }
 
-  function configClient (customConfig: MocksServerCypressApiClientConfig, apiClient?: AdminApiClient) {
+  function configClient (customConfig: AdminApiClientConfig, apiClient?: AdminApiClientInterface): void {
     return getClient(apiClient).configClient(customConfig);
   }
 

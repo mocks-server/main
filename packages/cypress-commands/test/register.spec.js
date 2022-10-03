@@ -15,12 +15,6 @@ describe("register", () => {
   });
 
   describe("commands", () => {
-    it("should register mocksConfigAdminApiClient command", () => {
-      expect(cypressMock.stubs.Cypress.Commands.add.calledWith("mocksConfigAdminApiClient")).toBe(
-        true
-      );
-    });
-
     it("should register mocksSetCollection command", () => {
       expect(cypressMock.stubs.Cypress.Commands.add.calledWith("mocksSetCollection")).toBe(true);
     });

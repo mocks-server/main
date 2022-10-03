@@ -49,6 +49,7 @@ describe("namespaces", () => {
     it("should throw if option with same name already exists", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+      namespace.addOption({ name: "fooOption", type: "boolean" });
       expect(() => namespace.addNamespace("fooOption")).toThrow("already exists");
     });
 

@@ -1,7 +1,9 @@
 /// <reference types="cypress" />
 
-import type { AdminApiClient } from "./AdminApiClient";
-import type { CollectionId, DelayTime, MocksServerConfig, RouteVariantId, ApiClientConfig } from "@mocks-server/admin-api-client";
+import type { ApiClient } from "@mocks-server/admin-api-client";
+
+import type { ConfigurationObject } from "@mocks-server/config";
+import type { AdminApiClientInterface, AdminApiClientConfig } from "./AdminApiClient";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -14,8 +16,8 @@ declare global {
        * @example cy.mocksSetCollection("collection-id")
        */
       mocksSetCollection(
-        collectionId: CollectionId,
-        adminApiClient?: AdminApiClient,
+        collectionId: ApiClient.EntityId,
+        adminApiClient?: AdminApiClientInterface,
       ): void
 
       /**
@@ -25,8 +27,8 @@ declare global {
        * @example cy.mocksSetDelay(1000)
        */
       mocksSetDelay(
-        delayTime: DelayTime,
-        adminApiClient?: AdminApiClient,
+        delayTime: number,
+        adminApiClient?: AdminApiClientInterface,
       ): Promise<void>
 
       /**
@@ -36,8 +38,8 @@ declare global {
        * @example cy.mocksSetConfig({ mock: { routes: { delay: 1000 }} })
        */
       mocksSetConfig(
-        mocksServerConfig: MocksServerConfig,
-        adminApiClient?: AdminApiClient,
+        mocksServerConfig: ConfigurationObject,
+        adminApiClient?: AdminApiClientInterface,
       ): Promise<void>
 
       /**
@@ -47,8 +49,8 @@ declare global {
        * @example cy.mocksUseRouteVariant("variant-id")
        */
       mocksUseRouteVariant(
-        routeVariantId: RouteVariantId,
-        adminApiClient?: AdminApiClient,
+        routeVariantId: ApiClient.EntityId,
+        adminApiClient?: AdminApiClientInterface,
       ): Promise<void>
 
       /**
@@ -56,43 +58,18 @@ declare global {
        * @param adminApiClient - custom admin api client to use instead of the default one
        * @example cy.mocksRestoreRouteVariants()
        */
-      mocksRestoreRouteVariants(adminApiClient?: AdminApiClient): Promise<void>
-
-      /**
-      * Alias of cy.mocksConfigClient. This alias will be deprecated in next major versions. Use cy.mocksConfigClient instead
-      * @param apiClientConfig - Admin API client configuration
-      * @param adminApiClient - custom admin api client to use instead of the default one
-      * @example cy.mocksConfigAdminApiClient({ port: 3210 })
-      */
-      mocksConfigAdminApiClient(
-        apiClientConfig: MocksServerCypressApiClientConfig,
-        adminApiClient?: AdminApiClient,
-      ): Promise<void>
+      mocksRestoreRouteVariants(adminApiClient?: AdminApiClientInterface): Promise<void>
 
       /**
       * Changes the configuration of the Mocks Server administration API client, used by the plugin commands to communicate with Mocks Server
       * @param apiClientConfig - Admin API client configuration
       * @param adminApiClient - custom admin api client to use instead of the default one
-      * @example cy.mocksConfigAdminApiClient({ port: 3210 })
+      * @example cy.mocksConfigClient({ port: 3210 })
       */
       mocksConfigClient(
-        apiClientConfig: MocksServerCypressApiClientConfig,
-        adminApiClient?: AdminApiClient,
+        apiClientConfig: AdminApiClientConfig,
+        adminApiClient?: AdminApiClientInterface,
       ): Promise<void>
     }
   }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type CypressEnvVarValue = any;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ArrayOfValues = (string | number | boolean)[];
-
-export type Log = string;
-export type RequestLogs = Log | Log[];
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type RequestError = any;
-
-export interface MocksServerCypressApiClientConfig extends ApiClientConfig {
-  enabled?: boolean;
 }

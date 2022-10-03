@@ -1,4 +1,4 @@
-import type { CypressEnvVarValue, ArrayOfValues } from "./types";
+import type { CypressEnvVarValue, ArrayOfValues } from "./types/Helpers";
 
 export const LOG_ENVIRONMENT_VAR = "MOCKS_SERVER_LOGS";
 export const ENABLED_ENVIRONMENT_VAR = "MOCKS_SERVER_ENABLED";
@@ -16,15 +16,14 @@ export function valueIsOneOf(
   return arrayOfValues.includes(value);
 }
 
-export function isFalsy(value: CypressEnvVarValue) {
+export function isFalsy(value: CypressEnvVarValue): boolean {
   return valueIsOneOf(value, FALSY_VALUES);
 }
 
-export function isTruthy(value: CypressEnvVarValue) {
+export function isTruthy(value: CypressEnvVarValue): boolean {
   return valueIsOneOf(value, TRUTHY_VALUES);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isUndefined(value: any) {
+export function isUndefined(value: unknown): boolean {
   return typeof value === "undefined";
 }

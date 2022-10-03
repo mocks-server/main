@@ -36,6 +36,7 @@
     "test:unit": "jest"
   },
   "dependencies": {
+    "@mocks-server/config": "workspace:*",
     "@mocks-server/admin-api-paths": "workspace:*",
     "@mocks-server/admin-api-client": "workspace:*"
   },

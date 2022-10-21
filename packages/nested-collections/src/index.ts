@@ -1,2 +1,2 @@
+export * from "./types/index";
 export * from "./Collection";
-export { default as NestedCollections } from "./Collection";

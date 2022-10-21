@@ -1,5 +1,5 @@
 import { createSandbox } from "sinon";
-import Logger from "../src/Logger.ts";
+import { Logger } from "../src/Logger.ts";
 
 import { formattedLog, cleanLogs } from "./support";
 

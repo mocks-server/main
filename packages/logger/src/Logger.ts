@@ -5,98 +5,62 @@ import ArrayTransport from "winston-array-transport";
 import chalk from "chalk";
 
 import { observableStore, CHANGE_EVENT, addEventListener } from "./events";
+import {
+  LEVEL_SILLY,
+  LEVEL_DEBUG,
+  LEVEL_VERBOSE,
+  LEVEL_INFO,
+  LEVEL_WARN,
+  LEVEL_ERROR,
+  LEVEL_SILENT,
+  TRANSPORT_CONSOLE,
+  TRANSPORT_STORE,
+  TRANSPORT_GLOBAL_STORE,
+} from "./types/Logger";
 
 import type {
-    LogsStore,
-    LevelSilly,
-    LevelDebug,
-    LevelVerbose,
-    LevelInfo,
-    LevelWarn,
-    LevelError,
-    LevelSilent,
-    TransportConsole,
-    TransportStore, 
-    TransportGlobalStore,
-    Label,
-    Level,
-    Log,
-    TransportsPinnedLevels,
-    PinnedLevel,
-    LoggerOptions,
-    SetOptions,
-    WinstonTransportType,
-    SetTransportLevelOptions,
-    TransportType,
-    SetBaseLevelOptions,
-    EventListener,
-    StoreLimit,
-    ArrayTransportInstance,
-  } from "./types";
-
-interface LoggerPrivateOptions {
-  parent?: Logger,
-  root?: Logger,
-  globalStore?: LogsStore,
-  globalStoreTransport?: ArrayTransportInstance,
-}
-
-interface Transports {
-  console: winston.transports.ConsoleTransportInstance;
-  store: ArrayTransportInstance;
-  globalStore: ArrayTransportInstance;
-}
+  LoggerTs,
+} from "./types/Logger";
+import type { EventsTs } from "./types/Events";
 
 const DEFAULT_STORE_LIMIT = 1000;
 const TIME_FORMAT = "HH:mm:ss:SS";
-
-const LEVEL_SILLY: LevelSilly = "silly";
-const LEVEL_DEBUG: LevelDebug = "debug";
-const LEVEL_VERBOSE: LevelVerbose = "verbose";
-const LEVEL_INFO: LevelInfo = "info";
-const LEVEL_WARN: LevelWarn = "warn";
-const LEVEL_ERROR: LevelError = "error";
-const LEVEL_SILENT: LevelSilent = "silent";
-
-const TRANSPORT_CONSOLE: TransportConsole = "console";
-const TRANSPORT_STORE: TransportStore = "store";
-const TRANSPORT_GLOBAL_STORE: TransportGlobalStore = "globalStore";
 
 const formatTimestamp = winston.format.timestamp({
     format: TIME_FORMAT,
   });
 
-function colourLabel(label: Label ): Label {
+function colourLabel(label: LoggerTs.Label ): LoggerTs.Label {
   if (!label.length) {
     return "";
   }
   return chalk.grey(label);
 }
 
-function formatLabelOrLevel(labelOrLevel: Label | Level): Log {
+function formatLabelOrLevel(labelOrLevel: LoggerTs.Label | LoggerTs.Level): LoggerTs.Message {
   if (!labelOrLevel.length) {
     return "";
   }
   return `[${labelOrLevel}]`;
 }
 
-function logTemplate(log: winston.Logform.TransformableInfo, colors = false): Log {
+function logTemplate(log: winston.Logform.TransformableInfo, colors = false): LoggerTs.Message {
   const label = colors ? colourLabel(log.label) : log.label;
   return `${log.timestamp} ${formatLabelOrLevel(log.level)}${formatLabelOrLevel(label)} ${log.message}`;
 }
 
-function colorsTemplate(log: winston.Logform.TransformableInfo): Log {
+function colorsTemplate(log: winston.Logform.TransformableInfo): LoggerTs.Message {
   return logTemplate(log, true);
 }
 
-function template(log: winston.Logform.TransformableInfo): Log {
+function template(log: winston.Logform.TransformableInfo): LoggerTs.Message {
   return logTemplate(log);
 }
 
 const formatLog = winston.format.printf(colorsTemplate);
 const formatStore = winston.format.printf(template);
 
-function createArrayTransport(store: LogsStore, defaultLevel: Level, storeLimit: StoreLimit): ArrayTransportInstance {
+function createArrayTransport(store: LoggerTs.Store, defaultLevel: LoggerTs.Level, storeLimit: LoggerTs.StoreLimit): LoggerTs.Transports.Array {
   return new ArrayTransport({
     array: store,
     limit: storeLimit,
@@ -109,7 +73,7 @@ function createArrayTransport(store: LogsStore, defaultLevel: Level, storeLimit:
   })
 }
 
-function createConsoleTransport(defaultLevel: Level): winston.transports.ConsoleTransportInstance {
+function createConsoleTransport(defaultLevel: LoggerTs.Level): winston.transports.ConsoleTransportInstance {
   return new winston.transports.Console({
     level: defaultLevel,
     format: winston.format.combine(
@@ -120,7 +84,7 @@ function createConsoleTransport(defaultLevel: Level): winston.transports.Console
   })
 }
 
-function createTransports(store: LogsStore, defaultLevel: Level, storeLimit: StoreLimit, globalStoreTransport: ArrayTransportInstance): Transports {
+function createTransports(store: LoggerTs.Store, defaultLevel: LoggerTs.Level, storeLimit: LoggerTs.StoreLimit, globalStoreTransport: LoggerTs.Transports.Array): LoggerTs.Transports.Winston {
   return {
     [TRANSPORT_CONSOLE]: createConsoleTransport(defaultLevel),
     [TRANSPORT_STORE]: createArrayTransport(store, defaultLevel, storeLimit),
@@ -128,7 +92,7 @@ function createTransports(store: LogsStore, defaultLevel: Level, storeLimit: Sto
   }
 }
 
-function namespaceLabel(parentLogger: Logger, label: Label) {
+function namespaceLabel(parentLogger: LoggerTs.Interface, label: LoggerTs.Label) {
   const parentLabel = parentLogger.label;
   if (!parentLabel.length) {
     return label;
@@ -136,28 +100,24 @@ function namespaceLabel(parentLogger: Logger, label: Label) {
   return `${parentLogger.label}:${label}`;
 }
 
-export default class Logger {
-  private _label: Label;
-  private _transports : Transports;
+export class Logger implements LoggerTs.Interface {
+  private _label: LoggerTs.Label;
+  private _transports : LoggerTs.Transports.Winston;
   private _container : winston.Container;
   private _logger: winston.Logger;
-  private _store: LogsStore;
+  private _store: LoggerTs.Store;
   private _storeEmitter: EventEmitter = new EventEmitter();
-  private _globalStore: LogsStore;
+  private _globalStore: LoggerTs.Store;
   private _globalStoreEmitter: EventEmitter = new EventEmitter();
-  private _namespaces: Logger[] = [];
-  private _parent: Logger | undefined;
-  private _root: Logger;
-  private _level: Level;
-  private _transportsPinnedLevels: TransportsPinnedLevels = { [TRANSPORT_CONSOLE]: false, [TRANSPORT_STORE]: false };
-  private _pinnedLevel: PinnedLevel = false;
-  private _globalStoreTransport: ArrayTransportInstance;
+  private _namespaces: LoggerTs.Interface[] = [];
+  private _parent: LoggerTs.Interface | undefined;
+  private _root: LoggerTs.Interface;
+  private _level: LoggerTs.Level;
+  private _transportsPinnedLevels: LoggerTs.Transports.PinnedLevels = { [TRANSPORT_CONSOLE]: false, [TRANSPORT_STORE]: false };
+  private _pinnedLevel: LoggerTs.SetLevel.Pinned = false;
+  private _globalStoreTransport: LoggerTs.Transports.Array;
 
-  /**
-   * Creates a root logger
-   * @returns Returns a new Logger instance
-  */
-  constructor(label: Label = "", { level, storeLimit = DEFAULT_STORE_LIMIT, globalStoreLimit = DEFAULT_STORE_LIMIT }: LoggerOptions = {}, { parent, root, globalStore, globalStoreTransport }: LoggerPrivateOptions = {}) {
+  constructor(label: LoggerTs.Label = "", { level, storeLimit = DEFAULT_STORE_LIMIT, globalStoreLimit = DEFAULT_STORE_LIMIT }: LoggerTs.Options = {}, { parent, root, globalStore, globalStoreTransport }: LoggerTs.PrivateOptions = {}) {
     this._parent = parent;
     this._root = root || this;
     const parentLevel = this._parent && this._parent.level;
@@ -182,7 +142,7 @@ export default class Logger {
     this._logger = this._container.get(label);
   }
 
-  private _setWinstonTransportLevel(level: Level, transport: WinstonTransportType) {
+  private _setWinstonTransportLevel(level: LoggerTs.Level, transport: LoggerTs.Transports.WinstonType): void {
     if (level === LEVEL_SILENT) {
       this._transports[transport].silent = true;
     } else {
@@ -191,7 +151,7 @@ export default class Logger {
     }
   }
 
-  private _setTransportLevel(level: Level, transport: TransportType, { pinned = false, fromBaseLevel = false, forcePropagation = false }: SetTransportLevelOptions) {
+  private _setTransportLevel(level: LoggerTs.Level, transport: LoggerTs.Transports.Type, { pinned = false, fromBaseLevel = false, forcePropagation = false }: LoggerTs.SetLevel.TransportOptions): void {
     if (forcePropagation || !fromBaseLevel || (fromBaseLevel && !this._transportsPinnedLevels[transport])) {
       this._transportsPinnedLevels[transport] = pinned;
       this._setWinstonTransportLevel(level, transport);
@@ -201,7 +161,7 @@ export default class Logger {
     }
   }
 
-  private _setBaseLevel(level: Level, { pinned = false, forcePropagation }: SetBaseLevelOptions) {
+  private _setBaseLevel(level: LoggerTs.Level, { pinned = false, forcePropagation }:  LoggerTs.SetLevel.BaseOptions): void {
       this._level = level;
       this._pinnedLevel = pinned;
 
@@ -209,98 +169,114 @@ export default class Logger {
       this._setTransportLevel(level, TRANSPORT_STORE, { fromBaseLevel: true, forcePropagation })
   }
 
-  private _setLevelFromParent(level: Level, { transport, forcePropagation = false }: SetOptions) {
+  public _setLevelFromParent(level: LoggerTs.Level, { transport, forcePropagation = false }: LoggerTs.SetLevel.Options): void {
     if(!this._pinnedLevel || forcePropagation) {
       this._set(level, { transport, forcePropagation });
     }
   }
 
-  private _set(level: Level, { transport, propagate = true, forcePropagation, pinned }: SetOptions = {} ) {
+  private _set(level: LoggerTs.Level, { transport, propagate = true, forcePropagation, pinned }: LoggerTs.SetLevel.Options = {} ): void {
     if(transport) {
       this._setTransportLevel(level, transport, { pinned, forcePropagation })
     } else {
       this._setBaseLevel(level, { pinned, forcePropagation });
     }
     if(propagate) {
-      this._namespaces.forEach((namespace: Logger) => {
+      this._namespaces.forEach((namespace: LoggerTs.Interface) => {
         namespace._setLevelFromParent(level, { transport, forcePropagation });
       });
     }
   }
 
-  private _getNamespace(label: Label): Logger | undefined {
-    return this._namespaces.find((namespace: Logger) => {
+  private _getNamespace(label: LoggerTs.Label): LoggerTs.Interface | undefined {
+    return this._namespaces.find((namespace: LoggerTs.Interface) => {
       return namespace.label === label;
     });
   }
 
-  private _createNamespace(label: Label, options: LoggerOptions): Logger {
+  private _createNamespace(label: LoggerTs.Label, options?: LoggerTs.Options): LoggerTs.Interface {
     const namespace = new Logger(label, options, { parent: this, root: this._root, globalStoreTransport: this._globalStoreTransport, globalStore: this._globalStore });
     this._namespaces.push(namespace);
     return namespace;
   }
 
-  get store(): LogsStore {
+  get store(): LoggerTs.Store {
     return this._store;
   }
 
-  get globalStore(): LogsStore {
+  get globalStore(): LoggerTs.Store {
     return this._globalStore;
   }
 
-  get label(): Label {
+  get label(): LoggerTs.Label {
     return this._label;
   }
 
-  get level(): Level {
+  get level(): LoggerTs.Level {
     return this._level;
   }
 
-  public [LEVEL_SILLY](log: Log) {
-    this._logger[LEVEL_SILLY](log);
+  public [LEVEL_SILLY](message: LoggerTs.Message): void {
+    this._logger[LEVEL_SILLY](message);
   }
 
-  public [LEVEL_DEBUG](log: Log) {
-    this._logger[LEVEL_DEBUG](log);
+  public [LEVEL_DEBUG](message: LoggerTs.Message): void {
+    this._logger[LEVEL_DEBUG](message);
   }
 
-  public [LEVEL_VERBOSE](log: Log) {
-    this._logger[LEVEL_VERBOSE](log);
+  public [LEVEL_VERBOSE](message: LoggerTs.Message): void {
+    this._logger[LEVEL_VERBOSE](message);
   }
 
-  public [LEVEL_INFO](log: Log) {
-    this._logger[LEVEL_INFO](log);
+  public [LEVEL_INFO](message: LoggerTs.Message): void {
+    this._logger[LEVEL_INFO](message);
   }
 
-  public [LEVEL_WARN](log: Log) {
-    this._logger[LEVEL_WARN](log);
+  public [LEVEL_WARN](message: LoggerTs.Message): void {
+    this._logger[LEVEL_WARN](message);
   }
 
-  public [LEVEL_ERROR](log: Log) {
-    this._logger[LEVEL_ERROR](log);
+  public [LEVEL_ERROR](message: LoggerTs.Message): void {
+    this._logger[LEVEL_ERROR](message);
   }
 
-  public setLevel(level: Level, options: SetOptions ) {
+  public setLevel(level: LoggerTs.Level, options?: LoggerTs.SetLevel.Options ): void {
     this._set(level, options);
   }
 
-  public namespace(label: Label, options: LoggerOptions): Logger {
+  public namespace(label: LoggerTs.Label, options?: LoggerTs.Options): LoggerTs.Interface {
     return this._getNamespace(label) || this._createNamespace(label, options);
   }
 
-  public cleanStore() {
+  public cleanStore(): void {
     this._store.splice(0, this._store.length);
   }
 
-  public onChangeStore(listener: EventListener) {
+  public onChangeStore(listener: EventsTs.Listener): EventsTs.ListenerRemover {
     return addEventListener(listener, CHANGE_EVENT, this._storeEmitter);
   }
 
-  public onChangeGlobalStore(listener: EventListener) {
+  public onChangeGlobalStore(listener: EventsTs.Listener): EventsTs.ListenerRemover {
     return addEventListener(listener, CHANGE_EVENT, this._globalStoreEmitter);
   }
 
-  public get root() {
+  public get root(): LoggerTs.Interface {
     return this._root;
   }
+}
+
+export const LEVELS = {
+  SILLY: LEVEL_SILLY,
+  DEBUG: LEVEL_DEBUG,
+  VERBOSE: LEVEL_VERBOSE,
+  INFO: LEVEL_INFO,
+  WARN: LEVEL_WARN,
+  ERROR: LEVEL_ERROR,
+  SILENT: LEVEL_SILENT,
+}
+
+export const TRANSPORTS = {
+  CONSOLE: TRANSPORT_CONSOLE,
+  STORE: TRANSPORT_STORE,
+  GLOBAL_STORE: TRANSPORT_GLOBAL_STORE,
 }

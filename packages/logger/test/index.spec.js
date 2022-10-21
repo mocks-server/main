@@ -1,4 +1,4 @@
-import Logger from "../src/Logger.ts";
+import { Logger } from "../src/Logger.ts";
 import { Logger as IndexLogger } from "../src/index.ts";
 
 describe("index", () => {

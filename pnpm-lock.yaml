@@ -411,10 +411,12 @@ importers:
       '@mocks-server/admin-api-client': workspace:*
       '@mocks-server/cli-runner': workspace:*
       '@mocks-server/config': workspace:*
+      '@mocks-server/logger': workspace:*
     dependencies:
       '@mocks-server/admin-api-client': link:../../packages/admin-api-client
       '@mocks-server/cli-runner': link:../../packages/cli-runner
       '@mocks-server/config': link:../../packages/config
+      '@mocks-server/logger': link:../../packages/logger
 
   test/core-e2e:
     specifiers:

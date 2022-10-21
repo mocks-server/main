@@ -1,5 +1,5 @@
 import { createSandbox } from "sinon";
-import Collection from "../src/Collection.ts";
+import { NestedCollections } from "../src/Collection.ts";
 
 const COLLECTION_ID = "foo-collection";
 const ITEM_ID = "foo-item";
@@ -26,80 +26,80 @@ describe("Collection", () => {
 
   describe("id", () => {
     it("getter should return null if no collection id is provided", () => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       expect(collection.id).toEqual(null);
     });
 
     it("getter should return collection id if provided", () => {
-      const collection = new Collection(COLLECTION_ID);
+      const collection = new NestedCollections(COLLECTION_ID);
       expect(collection.id).toEqual(COLLECTION_ID);
     });
 
     it("setter should change collection id", () => {
-      const collection = new Collection(COLLECTION_ID);
+      const collection = new NestedCollections(COLLECTION_ID);
       expect(collection.id).toEqual(COLLECTION_ID);
       collection.id = "new-id";
       expect(collection.id).toEqual("new-id");
     });
 
     it("should return always same collection if no id is provided when creating children", () => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       expect(collection.collection().collection()).toBe(collection.collection().collection());
     });
 
     it("should return different collections if ids are different", () => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       expect(collection.collection(COLLECTION_ID)).not.toBe(collection.collection());
     });
   });
 
   describe("path", () => {
     it("getter should return collection id if collection is root", () => {
-      const collection = new Collection("foo");
+      const collection = new NestedCollections("foo");
       expect(collection.path).toEqual("foo");
     });
 
     it("getter should return parent collections ids joined with collection id", () => {
-      const collection = new Collection("foo");
+      const collection = new NestedCollections("foo");
       expect(collection.collection("foo-2").collection("foo-3").path).toEqual("foo:foo-2:foo-3");
     });
   });
 
   describe("root", () => {
     it("should return same collection if it is root", () => {
-      const collection = new Collection("foo");
+      const collection = new NestedCollections("foo");
       expect(collection.root).toBe(collection);
     });
 
     it("should return root collection if it is a namespace", () => {
-      const collection = new Collection("foo");
+      const collection = new NestedCollections("foo");
       expect(collection.collection("foo-2").collection("foo-3").root).toBe(collection);
     });
   });
 
   describe("set method", () => {
     it("should set the item value when it is an object", () => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       const value = { foo: "foo" };
       collection.set("foo", value);
       expect(collection.get("foo")).toBe(value);
     });
 
     it("should set the item value when it is a string", () => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       collection.set("foo", FOO_VALUE);
       expect(collection.get("foo")).toEqual(FOO_VALUE);
     });
 
     it("should set item with value undefined when no value is provided", () => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       collection.set(ITEM_ID);
       expect(collection.get(ITEM_ID)).toBe(undefined);
     });
 
     it("should update item value when item id already exists", () => {
       const NEW_VALUE = "foo-2";
-      const collection = new Collection();
+      const collection = new NestedCollections();
       collection.set(ITEM_ID, FOO_VALUE);
       expect(collection.get(ITEM_ID)).toEqual(FOO_VALUE);
       collection.set(ITEM_ID, NEW_VALUE);
@@ -109,25 +109,25 @@ describe("Collection", () => {
 
   describe("get method", () => {
     it("should return undefined when item was set to undefined", () => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       collection.set(ITEM_ID, undefined);
       expect(collection.get(ITEM_ID)).toBe(undefined);
     });
 
     it("should return null when item does not exists", () => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       expect(collection.get(ITEM_ID)).toEqual(null);
     });
 
     it("should return null when neither item nor collection exist", () => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       expect(collection.collection().collection().get(ITEM_ID)).toEqual(null);
     });
   });
 
   describe("remove method", () => {
     it("should remove the item from collection", () => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       collection.set(ITEM_ID, FOO_VALUE);
       expect(collection.items).toEqual([{ id: ITEM_ID, value: FOO_VALUE }]);
       collection.remove(ITEM_ID);
@@ -135,7 +135,7 @@ describe("Collection", () => {
     });
 
     it("should do nothing if the item is not found", () => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       collection.set(ITEM_ID, FOO_VALUE);
       expect(collection.items).toEqual([{ id: ITEM_ID, value: FOO_VALUE }]);
       collection.remove("foo");
@@ -143,7 +143,7 @@ describe("Collection", () => {
     });
 
     it("should keep the other elements in the collection in the same order", () => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       collection.set("foo-item-0", FOO_VALUE);
       collection.set(ITEM_ID, FOO_VALUE);
       collection.set("foo-item-2", FOO_VALUE);
@@ -162,7 +162,7 @@ describe("Collection", () => {
 
   describe("cleanItems methods", () => {
     it("should remove all items from collection", () => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       collection.set("foo-item-0", FOO_VALUE);
       collection.set(ITEM_ID, FOO_VALUE);
       collection.set("foo-item-2", FOO_VALUE);
@@ -178,7 +178,7 @@ describe("Collection", () => {
 
   describe("clean method", () => {
     it("should remove all items from collection and from children collections, but keeping collections references", () => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       const collection2 = collection.collection("new-collection");
       const collection3 = collection2.collection("new-collection-2");
 
@@ -208,7 +208,7 @@ describe("Collection", () => {
 
   describe("onChange method", () => {
     it("should run eventListener whenever a new item is added", (done) => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       collection.onChange(() => {
         expect(collection.items).toEqual([{ id: ITEM_ID, value: FOO_VALUE }]);
         done();
@@ -217,7 +217,7 @@ describe("Collection", () => {
     });
 
     it("should remove event listener when returned function is executed", async () => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       const spy = sandbox.spy();
       const removeListener = collection.onChange(spy);
       removeListener();
@@ -227,7 +227,7 @@ describe("Collection", () => {
     });
 
     it("should run eventListener whenever a new item is added to any children collection", (done) => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       const childCollection = collection.collection("foo").collection("foo");
       collection.onChange(() => {
         expect(childCollection.items).toEqual([{ id: ITEM_ID, value: FOO_VALUE }]);
@@ -237,7 +237,7 @@ describe("Collection", () => {
     });
 
     it("should run eventListener whenever an item value is changed", (done) => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       collection.set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
         expect(collection.items).toEqual([{ id: ITEM_ID, value: "foo-new-value" }]);
@@ -247,7 +247,7 @@ describe("Collection", () => {
     });
 
     it("should run eventListener whenever an item value is changed in any children collection", (done) => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       const childCollection = collection.collection("foo").collection("foo");
       childCollection.collection().set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
@@ -258,7 +258,7 @@ describe("Collection", () => {
     });
 
     it("should run eventListener whenever an item is removed", (done) => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       collection.set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
         expect(collection.items).toEqual([]);
@@ -268,7 +268,7 @@ describe("Collection", () => {
     });
 
     it("should run eventListener whenever an item is removed in any children collection", (done) => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       const childCollection = collection.collection("foo").collection("foo");
       childCollection.set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
@@ -279,7 +279,7 @@ describe("Collection", () => {
     });
 
     it("should run eventListener whenever the collection is cleaned", (done) => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       collection.set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
         expect(collection.items).toEqual([]);
@@ -289,7 +289,7 @@ describe("Collection", () => {
     });
 
     it("should run eventListener whenever any children collection is cleaned", (done) => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       const childCollection = collection.collection("foo").collection("foo");
       childCollection.set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
@@ -300,7 +300,7 @@ describe("Collection", () => {
     });
 
     it("should run eventListener whenever the collection items are cleaned", (done) => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       collection.set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
         expect(collection.items).toEqual([]);
@@ -310,7 +310,7 @@ describe("Collection", () => {
     });
 
     it("should run eventListener whenever any children collection items are cleaned", (done) => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       const childCollection = collection.collection("foo").collection("foo");
       childCollection.set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
@@ -321,7 +321,7 @@ describe("Collection", () => {
     });
 
     it("should run eventListener whenever the collection id changes", (done) => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       collection.onChange(() => {
         expect(collection.id).toEqual("foo-new-id");
         done();
@@ -330,7 +330,7 @@ describe("Collection", () => {
     });
 
     it("should run eventListener whenever any children collection id changes", (done) => {
-      const collection = new Collection();
+      const collection = new NestedCollections();
       const childCollection = collection.collection("foo").collection("foo");
       collection.onChange(() => {
         expect(childCollection.id).toEqual("foo-new-id");
@@ -342,7 +342,7 @@ describe("Collection", () => {
 
   describe("flat getter", () => {
     it("should return flat items of collection and children collections", () => {
-      const collection = new Collection("foo");
+      const collection = new NestedCollections("foo");
       const childCollection1 = collection.collection("foo1");
       const childCollection2 = childCollection1.collection("foo2");
 
@@ -384,7 +384,7 @@ describe("Collection", () => {
 
   describe("merge method", () => {
     it("should move items and collections from origin collection to current collection recursively", () => {
-      const collection = new Collection("a");
+      const collection = new NestedCollections("a");
       collection.set("foo-1", "foo-1-value");
       collection.set("foo-2", "foo-2-value");
       collection.collection("child-1").set("child-1-foo-1", "child-1-foo-1-value");
@@ -394,7 +394,7 @@ describe("Collection", () => {
         .collection("child-2")
         .set("child-2-foo-1", "child-2-foo-1-value");
 
-      const collection2 = new Collection("b");
+      const collection2 = new NestedCollections("b");
       collection2.set("foo-2", "b-foo-2-value");
       collection2.collection("child-1").set("child-1-foo-1", "b-child-1-foo-1-value");
       collection2
@@ -441,7 +441,7 @@ describe("Collection", () => {
 
   describe("renameCollection method", () => {
     it("should merge the collection if there is another with the same id", () => {
-      const collection = new Collection("a");
+      const collection = new NestedCollections("a");
       collection.set("foo-1", "foo-1-value");
       collection.set("foo-2", "foo-2-value");
       collection.collection("child-1").set("child-1-foo-1", "child-1-foo-1-value");
@@ -498,7 +498,7 @@ describe("Collection", () => {
     });
 
     it("should change collection id if there is no other collection with same id", () => {
-      const collection = new Collection("a");
+      const collection = new NestedCollections("a");
       collection.collection("child-1").set("child-1-foo-1", "child-1-foo-1-value");
       collection.collection("child-2").set("child-2-foo-1", "child-2-foo-1-value");
 
@@ -519,7 +519,7 @@ describe("Collection", () => {
     });
 
     it("should do nothing if collection id does not exist", async () => {
-      const collection = new Collection("a");
+      const collection = new NestedCollections("a");
       collection.collection("child-1").set("child-1-foo-1", "child-1-foo-1-value");
       collection.collection("child-2").set("child-2-foo-1", "child-2-foo-1-value");
 
@@ -546,7 +546,7 @@ describe("Collection", () => {
     });
 
     it("should do nothing if collection new id is the same", async () => {
-      const collection = new Collection("a");
+      const collection = new NestedCollections("a");
       collection.collection("child-1").set("child-1-foo-1", "child-1-foo-1-value");
       collection.collection("child-2").set("child-2-foo-1", "child-2-foo-1-value");
 
@@ -575,7 +575,7 @@ describe("Collection", () => {
 
   describe("removeCollection method", () => {
     it("should remove collection and items recursively", () => {
-      const collection = new Collection("a");
+      const collection = new NestedCollections("a");
       collection.set("foo-1", "foo-1-value");
       collection.collection("child-1").set("child-1-foo-1", "child-1-foo-1-value");
       collection
@@ -616,7 +616,7 @@ describe("Collection", () => {
     });
 
     it("should do nothing if collection does not exist", async () => {
-      const collection = new Collection("a");
+      const collection = new NestedCollections("a");
       collection.set("foo-1", "foo-1-value");
       collection.collection("child-1").set("child-1-foo-1", "child-1-foo-1-value");
 

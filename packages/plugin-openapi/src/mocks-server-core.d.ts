@@ -1,5 +1,6 @@
 declare module "@mocks-server/core" {
-  import type { NestedCollections, Item } from "@mocks-server/nested-collections";
+  import type { CollectionTs } from "@mocks-server/nested-collections";
+  import { BaseNestedCollections } from "@mocks-server/nested-collections";
   import type { OpenAPIV3 } from "openapi-types";
 
   enum VariantTypes {
@@ -114,9 +115,8 @@ declare module "@mocks-server/core" {
     createLoaders(): MockLoaders
   }
 
-  class Alerts extends NestedCollections {
-    // @ts-expect-error Nested collections must be extended in core
-    set(id: string, value: string, error: Error): Item
+  class Alerts extends BaseNestedCollections {
+    set(id: string, value: string, error: Error): CollectionTs.Item
   }
 
   interface Core {

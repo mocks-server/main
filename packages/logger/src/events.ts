@@ -1,10 +1,9 @@
-import type EventEmitter from "events";
-
-import type { LogsStore, EventListener, StoreLimit } from "./types";
+import type { EventsTs } from "./types/Events";
+import type { LoggerTs } from "./types/Logger";
 
 export const CHANGE_EVENT = "change";
 
-export function addEventListener(listener: EventListener, eventName: string, eventEmitter: EventEmitter) {
+export function addEventListener(listener: EventsTs.Listener, eventName: string, eventEmitter: EventsTs.Emitter): EventsTs.ListenerRemover {
   const removeCallback = (): void => {
     eventEmitter.removeListener(eventName, listener);
   };
@@ -12,9 +11,8 @@ export function addEventListener(listener: EventListener, eventName: string, eve
   return removeCallback;
 }
 
-
-export function observableStore(eventEmitter: EventEmitter, storeLimit: StoreLimit): LogsStore {
-  const array: LogsStore = [];
+export function observableStore(eventEmitter: EventsTs.Emitter, storeLimit: LoggerTs.StoreLimit): LoggerTs.Store {
+  const array: LoggerTs.Store = [];
   return new Proxy(array, {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     set: function(target: string[], property: any, value: any) {      

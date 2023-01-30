@@ -1,26 +1,42 @@
+import { Option as CommanderOption, Command as CommanderCommand } from "commander";
+import type { Command } from "commander";
 import { isUndefined } from "lodash";
-import commander from "commander";
 
-import type { Command } from "commander"
+import type {
+  BaseCommanderOptionProperties,
+  CommanderOptionProperties,
+  CommandLineArgumentsInterface,
+  CommanderOptionsData,
+  ReadOptions,
+} from "./CommandLineArgumentTypes";
+import type { ConfigurationObject, AnyObject } from "./CommonTypes";
+import type { NamespaceInterface } from "./ConfigTypes";
+import type { OptionInterface } from "./OptionTypes";
 
-import { getOptionParserWithArrayContents } from "./types";
 import { namespaceAndParentNames } from "./namespaces";
-
-import type { OptionInterface } from "./types/Option";
-import type { NamespaceInterface } from "./types/Config";
-import type { BaseCommanderOptionProperties, CommanderOptionProperties, CommandLineArgumentsInterface, CommanderOptionsData, ReadOptions } from "./types/CommandLineArgument";
-import type { ConfigObject, AnyObject } from "./types/Common";
-import { BOOLEAN_TYPE, OBJECT_TYPE, ARRAY_TYPE } from "./types";
+import { getOptionParserWithArrayContents, BOOLEAN_TYPE, OBJECT_TYPE, ARRAY_TYPE } from "./typing";
 
 const NAMESPACE_SEPARATOR = ".";
 const COMMANDER_VALUE_GETTER = ` <value>`;
 const COMMANDER_ARRAY_VALUE_GETTER = ` <value...>`;
 
-function getOptionPrefix({ isBoolean, defaultIsTrue }: { isBoolean: boolean, defaultIsTrue: boolean }): string {
+function getOptionPrefix({
+  isBoolean,
+  defaultIsTrue,
+}: {
+  isBoolean: boolean;
+  defaultIsTrue: boolean;
+}): string {
   return isBoolean && defaultIsTrue ? "--no-" : "--";
 }
 
-function getOptionGetter({ isBoolean, isArray }: { isBoolean: boolean, isArray: boolean }): string {
+function getOptionGetter({
+  isBoolean,
+  isArray,
+}: {
+  isBoolean: boolean;
+  isArray: boolean;
+}): string {
   if (isBoolean) {
     return "";
   }
@@ -30,7 +46,10 @@ function getOptionGetter({ isBoolean, isArray }: { isBoolean: boolean, isArray: 
   return COMMANDER_VALUE_GETTER;
 }
 
-function getCommanderOptionProperties(commanderOptionName: string, option: OptionInterface): BaseCommanderOptionProperties {
+function getCommanderOptionProperties(
+  commanderOptionName: string,
+  option: OptionInterface
+): BaseCommanderOptionProperties {
   const isBoolean = option.type === BOOLEAN_TYPE;
   const isArray = option.type === ARRAY_TYPE;
   const defaultIsTrue = option.default === true;
@@ -38,7 +57,7 @@ function getCommanderOptionProperties(commanderOptionName: string, option: Optio
   const optionPrefix = getOptionPrefix({ isBoolean, defaultIsTrue });
   const optionValueGetter = getOptionGetter({ isBoolean, isArray });
 
-  const Option = new commander.Option(`${optionPrefix}${commanderOptionName}${optionValueGetter}`);
+  const Option = new CommanderOption(`${optionPrefix}${commanderOptionName}${optionValueGetter}`);
 
   return {
     default: option.default,
@@ -52,7 +71,10 @@ function getCommanderOptionName(namespace: NamespaceInterface, optionName: strin
   return [...namespaceAndParentNames(namespace), optionName].join(NAMESPACE_SEPARATOR);
 }
 
-function commanderValueHasToBeIgnored(optionValue: unknown, commanderOptionProperties: CommanderOptionProperties): boolean {
+function commanderValueHasToBeIgnored(
+  optionValue: unknown,
+  commanderOptionProperties: CommanderOptionProperties
+): boolean {
   return (
     !commanderOptionProperties ||
     isUndefined(optionValue) ||
@@ -63,14 +85,18 @@ function commanderValueHasToBeIgnored(optionValue: unknown, commanderOptionPrope
   );
 }
 
-class CommandLineArguments implements CommandLineArgumentsInterface {
-  private _config: ConfigObject
+export class CommandLineArguments implements CommandLineArgumentsInterface {
+  private _config: ConfigurationObject;
 
   constructor() {
     this._config = {};
   }
 
-  private _createNamespaceInterfaceOptions(namespace: NamespaceInterface, command: Command, optionsData: CommanderOptionsData) {
+  private _createNamespaceInterfaceOptions(
+    namespace: NamespaceInterface,
+    command: Command,
+    optionsData: CommanderOptionsData
+  ) {
     namespace.options.forEach((option) => {
       const commanderOptionName = getCommanderOptionName(namespace, option.name);
       const commanderOptionProperties = getCommanderOptionProperties(commanderOptionName, option);
@@ -78,28 +104,44 @@ class CommandLineArguments implements CommandLineArgumentsInterface {
         namespace,
         option,
         ...commanderOptionProperties,
-      } as CommanderOptionProperties
+      } as CommanderOptionProperties;
       optionsData[commanderOptionName] = data;
       command.addOption(commanderOptionProperties.Option);
     });
     this._createNamespaceOptions(namespace.namespaces, command, optionsData);
   }
 
-  private _createNamespaceOptions(namespaces: NamespaceInterface[], command: Command, optionsData: CommanderOptionsData) {
+  private _createNamespaceOptions(
+    namespaces: NamespaceInterface[],
+    command: Command,
+    optionsData: CommanderOptionsData
+  ) {
     namespaces.forEach((namespace) => {
       this._createNamespaceInterfaceOptions(namespace, command, optionsData);
     });
   }
 
-  private _addLevelsToConfig(config: ConfigObject, levels: string[], index = 0): ConfigObject {
+  private _addLevelsToConfig(
+    config: ConfigurationObject,
+    levels: string[],
+    index = 0
+  ): ConfigurationObject {
     if (index === levels.length) {
       return config;
     }
     config[levels[index]] = config[levels[index]] || {};
-    return this._addLevelsToConfig(config[levels[index]] as ConfigObject, levels, index + 1);
+    return this._addLevelsToConfig(
+      config[levels[index]] as ConfigurationObject,
+      levels,
+      index + 1
+    );
   }
 
-  private _commanderResultsToConfigObject(results: AnyObject, config: ConfigObject, commanderOptionsData: CommanderOptionsData) {
+  private _commanderResultsToConfigObject(
+    results: AnyObject,
+    config: ConfigurationObject,
+    commanderOptionsData: CommanderOptionsData
+  ) {
     Object.keys(results).forEach((optionName) => {
       const optionValue = results[optionName];
       if (!commanderValueHasToBeIgnored(optionValue, commanderOptionsData[optionName])) {
@@ -114,12 +156,15 @@ class CommandLineArguments implements CommandLineArgumentsInterface {
     return config;
   }
 
-  public read(namespaces: NamespaceInterface[], { allowUnknownOption }: ReadOptions): ConfigObject {
+  public read(
+    namespaces: NamespaceInterface[],
+    { allowUnknownOption }: ReadOptions
+  ): ConfigurationObject {
     const config = {};
 
     // Create commander options
     const commanderOptionsData = {};
-    const program = new commander.Command();
+    const program = new CommanderCommand();
     this._createNamespaceOptions(namespaces, program, commanderOptionsData);
 
     // Get commander results
@@ -136,5 +181,3 @@ class CommandLineArguments implements CommandLineArgumentsInterface {
     return this._config;
   }
 }
-
-export default CommandLineArguments;

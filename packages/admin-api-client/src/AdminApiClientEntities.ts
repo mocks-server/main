@@ -1,18 +1,3 @@
-import crossFetch from "cross-fetch";
-import type {
-  Url,
-  Protocol,
-  CrossFetchOptions,
-  ApiPath,
-  ApiClientConfig,
-  ApiRequestBody,
-  ApiClientInterface,
-  ApiResponseBody,
-  ApiEntityInterface,
-  AdminApiClientEntitiesInterface
-} from "./types/AdminApiClientEntities";
-import type { EntityId } from "./types/Common";
-
 import {
   BASE_PATH,
   CONFIG,
@@ -27,6 +12,21 @@ import {
   DEFAULT_PROTOCOL,
   HTTPS_PROTOCOL,
 } from "@mocks-server/admin-api-paths";
+import crossFetch from "cross-fetch";
+
+import type {
+  Url,
+  Protocol,
+  CrossFetchOptions,
+  ApiPath,
+  ApiClientConfig,
+  ApiRequestBody,
+  ApiClientInterface,
+  ApiResponseBody,
+  ApiEntityInterface,
+  AdminApiClientEntitiesInterface,
+} from "./AdminApiClientEntitiesTypes";
+import type { EntityId } from "./CommonTypes";
 
 const JSON_HEADERS = {
   "Content-Type": "application/json",
@@ -60,7 +60,7 @@ class ApiClient implements ApiClientInterface {
   }
 
   private _addAgent(options: CrossFetchOptions = {}): CrossFetchOptions {
-    if(this._agent) {
+    if (this._agent) {
       options.agent = this._agent;
     }
     return options;
@@ -86,25 +86,34 @@ class ApiClient implements ApiClientInterface {
   }
 
   public patch(apiPath: ApiPath, data: ApiRequestBody): Promise<ApiResponseBody> {
-    return crossFetch(this._fullUrl(apiPath), this._addAgent({
-      method: "PATCH",
-      body: JSON.stringify(data),
-      headers: JSON_HEADERS,
-    })).then(handleResponse);
+    return crossFetch(
+      this._fullUrl(apiPath),
+      this._addAgent({
+        method: "PATCH",
+        body: JSON.stringify(data),
+        headers: JSON_HEADERS,
+      })
+    ).then(handleResponse);
   }
 
   public delete(apiPath: ApiPath): Promise<ApiResponseBody> {
-    return crossFetch(this._fullUrl(apiPath), this._addAgent({
-      method: "DELETE",
-    })).then(handleResponse);
+    return crossFetch(
+      this._fullUrl(apiPath),
+      this._addAgent({
+        method: "DELETE",
+      })
+    ).then(handleResponse);
   }
 
   public post(apiPath: ApiPath, data: ApiRequestBody): Promise<ApiResponseBody> {
-    return crossFetch(this._fullUrl(apiPath), this._addAgent({
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: JSON_HEADERS,
-    })).then(handleResponse);
+    return crossFetch(
+      this._fullUrl(apiPath),
+      this._addAgent({
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: JSON_HEADERS,
+      })
+    ).then(handleResponse);
   }
 }
 

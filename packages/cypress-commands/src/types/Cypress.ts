@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import type { ApiClient } from "@mocks-server/admin-api-client";
+import type { EntityId } from "@mocks-server/admin-api-client";
 
 import type { ConfigurationObject } from "@mocks-server/config";
 import type { AdminApiClientInterface, AdminApiClientConfig } from "./AdminApiClient";
@@ -16,7 +16,7 @@ declare global {
        * @example cy.mocksSetCollection("collection-id")
        */
       mocksSetCollection(
-        collectionId: ApiClient.EntityId,
+        collectionId: EntityId,
         adminApiClient?: AdminApiClientInterface,
       ): void
 
@@ -49,7 +49,7 @@ declare global {
        * @example cy.mocksUseRouteVariant("variant-id")
        */
       mocksUseRouteVariant(
-        routeVariantId: ApiClient.EntityId,
+        routeVariantId: EntityId,
         adminApiClient?: AdminApiClientInterface,
       ): Promise<void>
 

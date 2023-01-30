@@ -1,6 +1,6 @@
 jest.mock("cosmiconfig");
 
-import Config from "../../src/Config";
+import { Config } from "../../src/Config";
 
 import { cosmiconfig } from "cosmiconfig";
 import commander from "commander";

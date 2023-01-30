@@ -1,8 +1,8 @@
 import { compact } from "lodash";
 
-import type { AnyObject, ObjectWithName } from "./types/Common";
-import type { NamespaceInterface } from "./types/Config";
-import type { OptionInterface } from "./types/Option";
+import type { AnyObject, ObjectWithName } from "./CommonTypes";
+import type { NamespaceInterface } from "./ConfigTypes";
+import type { OptionInterface } from "./OptionTypes";
 
 export function namespaceAndParentNames(namespace: NamespaceInterface): string[] {
   const namespaceName = namespace.name;
@@ -11,10 +11,19 @@ export function namespaceAndParentNames(namespace: NamespaceInterface): string[]
   return compact([...parentNames, isRoot ? undefined : namespaceName]);
 }
 
-export function findObjectWithName(objects: NamespaceInterface[], name: string): NamespaceInterface | undefined
-export function findObjectWithName(objects: OptionInterface[], name: string): OptionInterface | undefined
-export function findObjectWithName(objects: OptionInterface[] | NamespaceInterface[], name: string) {
-  const objectsToSearch = objects as ObjectWithName[]
+export function findObjectWithName(
+  objects: NamespaceInterface[],
+  name: string
+): NamespaceInterface | undefined;
+export function findObjectWithName(
+  objects: OptionInterface[],
+  name: string
+): OptionInterface | undefined;
+export function findObjectWithName(
+  objects: OptionInterface[] | NamespaceInterface[],
+  name: string
+) {
+  const objectsToSearch = objects as ObjectWithName[];
   return objectsToSearch.find((object) => object.name === name);
 }
 
@@ -30,7 +39,10 @@ function throwNamespaceAlreadyExists(name: string): never {
   throwItemAlreadyExists("Namespace", name);
 }
 
-export function checkNamespaceName(name: string, { options, namespaces }: { options: OptionInterface[], namespaces: NamespaceInterface[] }):  void | never {
+export function checkNamespaceName(
+  name: string,
+  { options, namespaces }: { options: OptionInterface[]; namespaces: NamespaceInterface[] }
+): void | never {
   if (!name) {
     throw new Error("Please provide a name for the namespace");
   }
@@ -42,7 +54,10 @@ export function checkNamespaceName(name: string, { options, namespaces }: { opti
   }
 }
 
-export function checkOptionName(name: string, { options, namespaces }: { options: OptionInterface[], namespaces: NamespaceInterface[] }): void | never {
+export function checkOptionName(
+  name: string,
+  { options, namespaces }: { options: OptionInterface[]; namespaces: NamespaceInterface[] }
+): void | never {
   if (options && findObjectWithName(options, name)) {
     throwOptionAlreadyExists(name);
   }

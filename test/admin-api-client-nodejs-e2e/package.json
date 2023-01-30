@@ -1,9 +1,12 @@
 {
   "private": true,
   "scripts": {
+    "tsc": "tsc",
     "mocks:ci": "pnpm -w run nx start admin-api-client-unit-mocks",
     "test": "jest",
-    "test:e2e": "start-server-and-test mocks:ci tcp:127.0.0.1:3200 test"
+    "test:e2e:node": "start-server-and-test mocks:ci tcp:127.0.0.1:3200 test",
+    "test:e2e:typescript": "tsc",
+    "test:e2e": "npm run test:e2e:typescript && npm run test:e2e:node"
   },
   "devDependencies": {
     "@mocks-server/admin-api-client": "workspace:*"

@@ -1,7 +1,7 @@
 import type { ConfigurationObject } from "@mocks-server/config";
-import type { ApiClient } from "@mocks-server/admin-api-client";
+import type { ApiClientConfig, EntityId, BaseUrl } from "@mocks-server/admin-api-client";
 
-export interface AdminApiClientConfig extends ApiClient.Config {
+export interface AdminApiClientConfig extends ApiClientConfig {
   enabled?: boolean;
 }
 
@@ -30,7 +30,7 @@ export interface AdminApiClientInterface {
   * @returns Promise. Resolved with undefined
   * @example await adminApiClient.useRouteVariant("get-books:success");
   */
-  useRouteVariant(id: ApiClient.EntityId): Promise<void>
+  useRouteVariant(id: EntityId): Promise<void>
   /**
   * Restore route variants to those defined in current collection
   * @returns Promise. Resolved with undefined
@@ -44,5 +44,5 @@ export interface AdminApiClientInterface {
   */
   configClient(configuration: AdminApiClientConfig): void
   /** Mocks Server admin API base url */
-  baseUrl: ApiClient.BaseUrl
+  baseUrl: BaseUrl
 }

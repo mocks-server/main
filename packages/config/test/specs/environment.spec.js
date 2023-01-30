@@ -2,7 +2,7 @@ import commander from "commander";
 
 import { createConfigBeforeElements } from "../support/helpers";
 
-import Config from "../../src/Config";
+import { Config } from "../../src/Config";
 
 describe("environment", () => {
   let sandbox, cosmiconfigStub, createConfig, config, namespace, option;

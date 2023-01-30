@@ -5,7 +5,7 @@ import { createConfigBeforeElements } from "../support/helpers";
 
 import { cosmiconfig } from "cosmiconfig";
 
-import Config from "../../src/Config";
+import { Config } from "../../src/Config";
 
 describe("files", () => {
   let sandbox, cosmiconfigStub, createConfig, config, namespace, option;

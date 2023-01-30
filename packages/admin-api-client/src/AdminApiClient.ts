@@ -1,12 +1,14 @@
 import type { ConfigurationObject } from "@mocks-server/config";
 
+import type { ApiClientConfig, ApiResponseBody } from "./AdminApiClientEntitiesTypes";
+import type { AdminApiClientInterface, AdminApiClientConstructor } from "./AdminApiClientTypes";
+import type { EntityId } from "./CommonTypes";
+
 import { AdminApiClientEntities } from "./AdminApiClientEntities";
 
-import type { ApiClientConfig, ApiResponseBody } from "./types/AdminApiClientEntities";
-import type { AdminApiClientInterface } from "./types/AdminApiClient";
-import type { EntityId } from "./types/Common";
-
-export class AdminApiClient implements AdminApiClientInterface {
+export const AdminApiClient: AdminApiClientConstructor = class AdminApiClient
+  implements AdminApiClientInterface
+{
   private _adminApiClient: AdminApiClientEntities;
 
   constructor() {
@@ -74,4 +76,4 @@ export class AdminApiClient implements AdminApiClientInterface {
   public configClient(config: ApiClientConfig): void {
     return this._adminApiClient.configClient(config);
   }
-}
+};

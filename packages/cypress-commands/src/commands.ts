@@ -1,5 +1,5 @@
 import type { ConfigurationObject } from "@mocks-server/config";
-import type { ApiClient } from "@mocks-server/admin-api-client";
+import type { EntityId } from "@mocks-server/admin-api-client";
 import type Bluebird from "cypress/types/bluebird";
 
 import { AdminApiClient } from "./AdminApiClient";
@@ -79,7 +79,7 @@ export function commands(Cyp: typeof Cypress, CypCy: typeof cy): CypressCommands
     })
   }
 
-  function setCollection(id: ApiClient.EntityId, apiClient?: AdminApiClientInterface): void {
+  function setCollection(id: EntityId, apiClient?: AdminApiClientInterface): void {
     const client = getClient(apiClient);
     doRequestAndLog(
       client,
@@ -118,7 +118,7 @@ export function commands(Cyp: typeof Cypress, CypCy: typeof cy): CypressCommands
     );
   }
 
-  function useRouteVariant(id: ApiClient.EntityId, apiClient?: AdminApiClientInterface): void {
+  function useRouteVariant(id: EntityId, apiClient?: AdminApiClientInterface): void {
     const client = getClient(apiClient);
     doRequestAndLog(
       client,

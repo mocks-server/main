@@ -3,26 +3,35 @@ import EventEmitter from "events";
 import deepMerge from "deepmerge";
 import { isUndefined, isEqual } from "lodash";
 
-import { validateOptionAndThrow, validateValueTypeAndThrow } from "./validation";
+import type { AnyObject } from "./CommonTypes";
+import type { EventListener, EventListenerRemover } from "./EventsTypes";
+import type {
+  OptionInterface,
+  OptionProperties,
+  OptionItemsType,
+  OptionType,
+  OptionValue,
+  SetMethodOptions,
+  OptionArrayValue,
+  OptionExtraData,
+} from "./OptionTypes";
+
 import { addEventListener, CHANGE } from "./events";
-import { typeIsArray, typeIsObject, avoidArraysMerge } from "./types";
+import { typeIsArray, typeIsObject, avoidArraysMerge } from "./typing";
+import { validateOptionAndThrow, validateValueTypeAndThrow } from "./validation";
 
-import type { OptionInterface, OptionProperties, ItemsType, OptionType, OptionValue, SetMethodOptions, OptionArrayValue, ExtraData } from "./types/Option";
-import type { EventListener, EventListenerRemover } from "./types/Events";
-import type { AnyObject } from "./types/Common";
-
-class Option implements OptionInterface {
-  private _eventEmitter: EventEmitter
-  private _name: string
-  private _nullable: boolean
-  private _extraData?: ExtraData
-  private _type: OptionType
-  private _description: string | undefined
-  private _itemsType?: ItemsType
-  private _default: OptionValue
-  private _value: OptionValue
-  private _eventsStarted: boolean
-  private _hasBeenSet: boolean
+export class Option implements OptionInterface {
+  private _eventEmitter: EventEmitter;
+  private _name: string;
+  private _nullable: boolean;
+  private _extraData?: OptionExtraData;
+  private _type: OptionType;
+  private _description: string | undefined;
+  private _itemsType?: OptionItemsType;
+  private _default: OptionValue;
+  private _value: OptionValue;
+  private _eventsStarted: boolean;
+  private _hasBeenSet: boolean;
 
   constructor(optionProperties: OptionProperties) {
     this._eventEmitter = new EventEmitter();
@@ -72,7 +81,7 @@ class Option implements OptionInterface {
     return this._extraData;
   }
 
-  public get itemsType(): ItemsType | undefined {
+  public get itemsType(): OptionItemsType | undefined {
     return this._itemsType;
   }
 
@@ -81,10 +90,10 @@ class Option implements OptionInterface {
       return value;
     }
     if (typeIsArray(this._type)) {
-      return [...value as OptionArrayValue] as OptionArrayValue;
+      return [...(value as OptionArrayValue)] as OptionArrayValue;
     }
     if (typeIsObject(this._type)) {
-      return { ...value as AnyObject };
+      return { ...(value as AnyObject) };
     }
     return value;
   }
@@ -106,11 +115,13 @@ class Option implements OptionInterface {
   private _merge(value: OptionValue) {
     const previousValue = this._value;
     this._validateAndThrow(value);
-    this._value = deepMerge((this._value || {}) as AnyObject, value as AnyObject, { arrayMerge: avoidArraysMerge });
+    this._value = deepMerge((this._value || {}) as AnyObject, value as AnyObject, {
+      arrayMerge: avoidArraysMerge,
+    });
     this._emitChange(previousValue, this._value);
   }
 
-  public set(value: OptionValue, { merge = false } : SetMethodOptions = {}): void {
+  public set(value: OptionValue, { merge = false }: SetMethodOptions = {}): void {
     if (!isUndefined(value)) {
       this._hasBeenSet = true;
       if (merge && typeIsObject(this.type)) {
@@ -132,5 +143,3 @@ class Option implements OptionInterface {
     return this._hasBeenSet;
   }
 }
-
-export default Option;

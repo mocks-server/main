@@ -1,23 +1,24 @@
 {
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
-    "outDir": "./dist-tsc",
+    "outDir": "./dist",
     "declaration": true,
     "target": "es6",
     "strict": true,
     "strictNullChecks": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "module": "ESNext",
+    "module": "commonjs",
     "useDefineForClassFields": true,
     "importsNotUsedAsValues": "error",
     "forceConsistentCasingInFileNames": true,
     "noUnusedParameters": true,
-    "isolatedModules": true,
-    "types": ["node"],
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "paths": {
+      "@mocks-server/admin-api-client": ["../../packages/admin-api-client"]
+    }
   },
   "include": [
-    "src/**/*"
+    "src/typescript/**/*"
   ]
 }

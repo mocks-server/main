@@ -2,7 +2,7 @@ import sinon from "sinon";
 
 import { createConfigBeforeElements } from "../support/helpers";
 
-import Config from "../../src/Config";
+import { Config } from "../../src/Config";
 
 describe("files nested", () => {
   let sandbox, cosmiconfigStub, createConfig, config, namespace, parentNamespace, option;

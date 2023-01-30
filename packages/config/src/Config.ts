@@ -1,35 +1,40 @@
 import deepMerge from "deepmerge";
-
 import type deepmerge from "deepmerge";
-
 import type { JSONSchema7 } from "json-schema";
-import type { ConfigInterface, ConfigOptions, ValidationOptions, LoadArgumentsOptions, NamespaceInterface } from "./types/Config";
-import type { ConfigObject } from "./types/Common";
-import type { FilesInterface } from "./types/Files";
-import type { CommandLineArgumentsInterface } from "./types/CommandLineArgument";
-import type { OptionInterface, SetMethodOptions } from "./types/Option";
-import type { EnvironmentInterface } from "./types/Environment";
-import type { GetValidationSchemaOptions, SchemaValidationResult } from "./types/Validation";
 
-import CommandLineArguments from "./CommandLineArguments";
-import Environment from "./Environment";
-import Files from "./Files";
-import Namespace from "./Namespace";
-import { avoidArraysMerge, STRING_TYPE, BOOLEAN_TYPE, ARRAY_TYPE } from "./types";
-import { validateConfigAndThrow, validateConfig, getValidationSchema } from "./validation";
+import type { CommandLineArgumentsInterface } from "./CommandLineArgumentTypes";
+import type { ConfigurationObject } from "./CommonTypes";
+import type {
+  ConfigInterface,
+  ConfigOptions,
+  ConfigValidationOptions,
+  LoadArgumentsOptions,
+  NamespaceInterface,
+} from "./ConfigTypes";
+import type { EnvironmentInterface } from "./EnvironmentTypes";
+import type { FilesInterface } from "./FilesTypes";
+import type { OptionInterface, SetMethodOptions } from "./OptionTypes";
+import type { GetValidationSchemaOptions, ConfigValidationResult } from "./ValidationTypes";
+
+import { CommandLineArguments } from "./CommandLineArguments";
+import { Environment } from "./Environment";
+import { Files } from "./Files";
+import { Namespace } from "./Namespace";
 import { checkNamespaceName, findObjectWithName, getNamespacesValues } from "./namespaces";
+import { avoidArraysMerge, STRING_TYPE, BOOLEAN_TYPE, ARRAY_TYPE } from "./typing";
+import { validateConfigAndThrow, validateConfig, getValidationSchema } from "./validation";
 
 const ROOT_NAMESPACE = "_rootOptions";
 
 const CONFIG_NAMESPACE = "config";
 
-class Config implements ConfigInterface {
+export class Config implements ConfigInterface {
   private _initializated: boolean;
   private _deepMergeOptions: deepmerge.Options;
-  private _programmaticConfig: ConfigObject;
-  private _fileConfig: ConfigObject;
-  private _argsConfig: ConfigObject;
-  private _envConfig: ConfigObject;
+  private _programmaticConfig: ConfigurationObject;
+  private _fileConfig: ConfigurationObject;
+  private _argsConfig: ConfigurationObject;
+  private _envConfig: ConfigurationObject;
   private _files: FilesInterface;
   private _args: CommandLineArgumentsInterface;
   private _environment: EnvironmentInterface;
@@ -42,12 +47,14 @@ class Config implements ConfigInterface {
   private _fileSearchPlaces: OptionInterface;
   private _fileSearchFrom: OptionInterface;
   private _fileSearchStop: OptionInterface;
-  private _config: ConfigObject;
+  private _config: ConfigurationObject;
   private _allowUnknownArguments: OptionInterface;
   public addOption: NamespaceInterface["addOption"];
   public addOptions: NamespaceInterface["addOptions"];
 
-  constructor({ moduleName, mergeArrays = true }: ConfigOptions = { moduleName: "", mergeArrays: true }) {
+  constructor(
+    { moduleName, mergeArrays = true }: ConfigOptions = { moduleName: "", mergeArrays: true }
+  ) {
     this._initializated = false;
 
     this._deepMergeOptions = !mergeArrays
@@ -66,7 +73,11 @@ class Config implements ConfigInterface {
     this._environment = new Environment(moduleName);
 
     this._namespaces = [];
-    this._rootNamespace = new Namespace(ROOT_NAMESPACE, { brothers: this._namespaces, root: this, isRoot: true });
+    this._rootNamespace = new Namespace(ROOT_NAMESPACE, {
+      brothers: this._namespaces,
+      root: this,
+      isRoot: true,
+    });
     this._namespaces.push(this._rootNamespace);
     this.addOption = this._rootNamespace.addOption.bind(this._rootNamespace);
     this.addOptions = this._rootNamespace.addOptions.bind(this._rootNamespace);
@@ -124,7 +135,7 @@ class Config implements ConfigInterface {
     ]);
   }
 
-  private async _loadFromFile(): Promise<ConfigObject> {
+  private async _loadFromFile(): Promise<ConfigurationObject> {
     if (this._readFile.value !== true) {
       return {};
     }
@@ -135,14 +146,16 @@ class Config implements ConfigInterface {
     });
   }
 
-  private async _loadFromEnv(): Promise<ConfigObject> {
+  private async _loadFromEnv(): Promise<ConfigurationObject> {
     if (this._readEnvironment.value !== true) {
       return {};
     }
     return this._environment.read(this._namespaces);
   }
 
-  private async _loadFromArgs({ allowUnknown }: LoadArgumentsOptions): Promise<ConfigObject> {
+  private async _loadFromArgs({
+    allowUnknown,
+  }: LoadArgumentsOptions): Promise<ConfigurationObject> {
     if (this._readArguments.value !== true) {
       return {};
     }
@@ -158,14 +171,19 @@ class Config implements ConfigInterface {
     );
   }
 
-  public validate(config: ConfigObject, { allowAdditionalProperties = false }: ValidationOptions = {}): SchemaValidationResult {
+  public validate(
+    config: ConfigurationObject,
+    { allowAdditionalProperties = false }: ConfigValidationOptions = {}
+  ): ConfigValidationResult {
     return validateConfig(config, {
       namespaces: this._namespaces,
       allowAdditionalProperties,
     });
   }
 
-  public getValidationSchema({ allowAdditionalProperties = false }: ValidationOptions = {}): JSONSchema7 {
+  public getValidationSchema({
+    allowAdditionalProperties = false,
+  }: ConfigValidationOptions = {}): JSONSchema7 {
     return getValidationSchema({
       namespaces: this._namespaces,
       allowAdditionalProperties,
@@ -191,7 +209,9 @@ class Config implements ConfigInterface {
     this.set(this._config, { merge: true });
   }
 
-  private async _load({ allowUnknown }: LoadArgumentsOptions = { allowUnknown: false }): Promise<void> {
+  private async _load(
+    { allowUnknown }: LoadArgumentsOptions = { allowUnknown: false }
+  ): Promise<void> {
     // Programmatic does not change, so we only load it in init method
     if (!this._initializated) {
       this._mergeValidateAndSetNamespaces({ allowUnknown });
@@ -211,12 +231,12 @@ class Config implements ConfigInterface {
     }
   }
 
-  public async init(programmaticConfig: ConfigObject = {}): Promise<void> {
+  public async init(programmaticConfig: ConfigurationObject = {}): Promise<void> {
     this._programmaticConfig = programmaticConfig;
     await this._load({ allowUnknown: true });
   }
 
-  public async load(programmaticConfig?: ConfigObject): Promise<void> {
+  public async load(programmaticConfig?: ConfigurationObject): Promise<void> {
     if (!this._initializated) {
       await this.init(programmaticConfig);
     }
@@ -242,27 +262,27 @@ class Config implements ConfigInterface {
     return findObjectWithName(this._rootNamespace.options, name);
   }
 
-  public get value(): ConfigObject {
+  public get value(): ConfigurationObject {
     return getNamespacesValues(this._namespaces);
   }
 
-  public set value(configuration: ConfigObject) {
+  public set value(configuration: ConfigurationObject) {
     this.set(configuration);
   }
 
-  public get programmaticLoadedValues(): ConfigObject {
+  public get programmaticLoadedValues(): ConfigurationObject {
     return { ...this._programmaticConfig };
   }
 
-  public get fileLoadedValues(): ConfigObject {
+  public get fileLoadedValues(): ConfigurationObject {
     return { ...this._fileConfig };
   }
 
-  public get envLoadedValues(): ConfigObject {
+  public get envLoadedValues(): ConfigurationObject {
     return { ...this._envConfig };
   }
 
-  public get argsLoadedValues(): ConfigObject {
+  public get argsLoadedValues(): ConfigurationObject {
     return { ...this._argsConfig };
   }
 
@@ -271,7 +291,7 @@ class Config implements ConfigInterface {
   }
 
   public get namespaces(): NamespaceInterface[] {
-    return this._namespaces.filter(namespace => !namespace.isRoot);
+    return this._namespaces.filter((namespace) => !namespace.isRoot);
   }
 
   public get options(): OptionInterface[] {
@@ -282,15 +302,13 @@ class Config implements ConfigInterface {
     return this;
   }
 
-  public set(configuration: ConfigObject = {}, options: SetMethodOptions = {}): void {
+  public set(configuration: ConfigurationObject = {}, options: SetMethodOptions = {}): void {
     this._namespaces.forEach((namespace) => {
       if (!namespace.isRoot) {
-        namespace.set(configuration[namespace.name] as ConfigObject || {} , options);
+        namespace.set((configuration[namespace.name] as ConfigurationObject) || {}, options);
       } else {
         namespace.set(configuration, options);
       }
     });
   }
 }
-
-export default Config;

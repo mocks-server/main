@@ -1,10 +1,9 @@
 import EventEmitter from "events";
 
-import type { NamespaceInterface, NamespaceProperties, ConfigInterface } from "./types/Config";
-import type { OptionProperties, OptionInterface, SetMethodOptions } from "./types/Option";
-import type { ConfigObject } from "./types/Common";
+import type { ConfigurationObject } from "./CommonTypes";
+import type { NamespaceInterface, NamespaceProperties, ConfigInterface } from "./ConfigTypes";
+import type { OptionProperties, OptionInterface, SetMethodOptions } from "./OptionTypes";
 
-import Option from "./Option";
 import {
   checkNamespaceName,
   checkOptionName,
@@ -12,19 +11,20 @@ import {
   getNamespacesValues,
   getOptionsValues,
 } from "./namespaces";
+import { Option } from "./Option";
 
-class Namespace implements NamespaceInterface {
-  private _brothers: NamespaceInterface[]
-  private _parents: NamespaceInterface[]
-  private _root: ConfigInterface
-  private _eventEmitter: EventEmitter
-  private _name: string
-  private _namespaces: NamespaceInterface[]
-  private _options: OptionInterface[]
-  private _started: boolean
-  private _isRoot: true | undefined
+export class Namespace implements NamespaceInterface {
+  private _brothers: NamespaceInterface[];
+  private _parents: NamespaceInterface[];
+  private _root: ConfigInterface;
+  private _eventEmitter: EventEmitter;
+  private _name: string;
+  private _namespaces: NamespaceInterface[];
+  private _options: OptionInterface[];
+  private _started: boolean;
+  private _isRoot: true | undefined;
 
-  constructor(name: string, { parents = [], brothers, root, isRoot }: NamespaceProperties ) {
+  constructor(name: string, { parents = [], brothers, root, isRoot }: NamespaceProperties) {
     this._brothers = brothers;
     this._parents = parents;
     this._root = root;
@@ -50,16 +50,16 @@ class Namespace implements NamespaceInterface {
     return options.map((option) => this.addOption(option));
   }
 
-  private _setOptions(configuration: ConfigObject, options: SetMethodOptions): void {
+  private _setOptions(configuration: ConfigurationObject, options: SetMethodOptions): void {
     this._options.forEach((option) => {
       option.set(configuration[option.name], options);
     });
   }
 
-  public set(configuration: ConfigObject = {}, options: SetMethodOptions = {}): void {
+  public set(configuration: ConfigurationObject = {}, options: SetMethodOptions = {}): void {
     this._setOptions(configuration, options);
     this._namespaces.forEach((namespace) => {
-      const namespaceConfig = configuration[namespace.name] as ConfigObject
+      const namespaceConfig = configuration[namespace.name] as ConfigurationObject;
       namespace.set(namespaceConfig || {}, options);
     });
   }
@@ -71,8 +71,12 @@ class Namespace implements NamespaceInterface {
   }
 
   public addNamespace(name: NamespaceInterface["name"]): NamespaceInterface {
-    checkNamespaceName(name, { namespaces: this._namespaces, options: this._options })
-    const namespace = new Namespace(name, { parents: [...this._parents, this], root: this._root, brothers: this._namespaces });
+    checkNamespaceName(name, { namespaces: this._namespaces, options: this._options });
+    const namespace = new Namespace(name, {
+      parents: [...this._parents, this],
+      root: this._root,
+      brothers: this._namespaces,
+    });
     this._namespaces.push(namespace);
     return namespace;
   }
@@ -101,14 +105,14 @@ class Namespace implements NamespaceInterface {
     return [...this._options];
   }
 
-  public get value(): ConfigObject {
+  public get value(): ConfigurationObject {
     return {
       ...getNamespacesValues(this._namespaces),
       ...getOptionsValues(this._options),
     };
   }
 
-  public set value(configuration: ConfigObject) {
+  public set value(configuration: ConfigurationObject) {
     this.set(configuration);
   }
 
@@ -120,5 +124,3 @@ class Namespace implements NamespaceInterface {
     return findObjectWithName(this._options, name);
   }
 }
-
-export default Namespace;

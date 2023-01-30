@@ -1,12 +1,13 @@
 import { cosmiconfig } from "cosmiconfig";
 import { isFunction } from "lodash";
-import type { FilesInterface, ReadOptions } from "./types/Files";
-import type { ConfigObject, ConfigFunction } from "./types/Common";
 
-class Files implements FilesInterface {
-  private _moduleName: string
-  private _loadedFrom: null | string
-  private _config: ConfigObject
+import type { ConfigurationObject, ConfigFunction } from "./CommonTypes";
+import type { FilesInterface, FilesReadOptions } from "./FilesTypes";
+
+export class Files implements FilesInterface {
+  private _moduleName: string;
+  private _loadedFrom: null | string;
+  private _config: ConfigurationObject;
 
   constructor(moduleName: string) {
     this._moduleName = moduleName;
@@ -14,7 +15,10 @@ class Files implements FilesInterface {
     this._config = {};
   }
 
-  private async _transformConfig(config: ConfigObject | ConfigFunction, initConfig: ConfigObject): Promise<ConfigObject> {
+  private async _transformConfig(
+    config: ConfigurationObject | ConfigFunction,
+    initConfig: ConfigurationObject
+  ): Promise<ConfigurationObject> {
     if (isFunction(config)) {
       return config(initConfig);
     }
@@ -22,9 +26,12 @@ class Files implements FilesInterface {
     return config;
   }
 
-  public async read(initConfig: ConfigObject, { searchPlaces, searchFrom, searchStop }: ReadOptions): Promise<ConfigObject> {
-    interface PrivateOptions extends ReadOptions {
-      stopDir: string
+  public async read(
+    initConfig: ConfigurationObject,
+    { searchPlaces, searchFrom, searchStop }: FilesReadOptions
+  ): Promise<ConfigurationObject> {
+    interface PrivateOptions extends FilesReadOptions {
+      stopDir: string;
     }
     const options: PrivateOptions = {
       stopDir: searchStop || process.cwd(),
@@ -49,5 +56,3 @@ class Files implements FilesInterface {
     return this._loadedFrom;
   }
 }
-
-export default Files;

@@ -1,21 +1,26 @@
 import { isUndefined, isEmpty, snakeCase } from "lodash";
 
-import { getOptionParserWithBooleansAndArrays } from "./types";
+import type { ConfigurationObject } from "./CommonTypes";
+import type { NamespaceInterface } from "./ConfigTypes";
+import type { EnvironmentInterface } from "./EnvironmentTypes";
+
 import { namespaceAndParentNames } from "./namespaces";
-import type { EnvironmentInterface } from "./types/Environment";
-import type { NamespaceInterface } from "./types/Config";
-import type { ConfigObject } from "./types/Common";
+import { getOptionParserWithBooleansAndArrays } from "./typing";
 
 function varSegment(segment: string): string {
   return snakeCase(segment).toUpperCase();
 }
 
-function envVarName(moduleName: string, namespace: NamespaceInterface, optionName: string): string {
+function envVarName(
+  moduleName: string,
+  namespace: NamespaceInterface,
+  optionName: string
+): string {
   return [moduleName, ...namespaceAndParentNames(namespace), optionName].map(varSegment).join("_");
 }
 
-class Environment implements EnvironmentInterface {
-  private _config: ConfigObject;
+export class Environment implements EnvironmentInterface {
+  private _config: ConfigurationObject;
   private _moduleName: string;
 
   constructor(moduleName: string) {
@@ -27,7 +32,7 @@ class Environment implements EnvironmentInterface {
     return process.env[envVarName(this._moduleName, namespace, optionName)];
   }
 
-  private _readNamespace(namespace: NamespaceInterface): ConfigObject {
+  private _readNamespace(namespace: NamespaceInterface): ConfigurationObject {
     const values = namespace.options.reduce((optionsValues, option) => {
       const value = this._loadFromEnv(namespace, option.name);
       if (!isUndefined(value)) {
@@ -35,12 +40,12 @@ class Environment implements EnvironmentInterface {
         optionsValues[option.name] = parser(value);
       }
       return optionsValues;
-    }, {} as ConfigObject);
+    }, {} as ConfigurationObject);
     const namespacesConfig = this._readNamespaces(namespace.namespaces);
     return { ...values, ...namespacesConfig };
   }
 
-  private _readNamespaces(namespaces: NamespaceInterface[]): ConfigObject {
+  private _readNamespaces(namespaces: NamespaceInterface[]): ConfigurationObject {
     return namespaces.reduce((config, namespace: NamespaceInterface) => {
       const namespaceConfig = this._readNamespace(namespace);
       if (!isEmpty(namespaceConfig)) {
@@ -51,13 +56,11 @@ class Environment implements EnvironmentInterface {
         }
       }
       return config;
-    }, {} as ConfigObject);
+    }, {} as ConfigurationObject);
   }
 
-  public read(namespaces: NamespaceInterface[]): ConfigObject {
+  public read(namespaces: NamespaceInterface[]): ConfigurationObject {
     this._config = this._readNamespaces(namespaces);
     return this._config;
   }
 }
-
-export default Environment;

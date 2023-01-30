@@ -1,4 +1,4 @@
-import Config from "../../src/Config";
+import { Config } from "../../src/Config";
 import index from "../../src/index.ts";
 
 describe("index", () => {

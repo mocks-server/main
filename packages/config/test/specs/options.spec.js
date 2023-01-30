@@ -2,7 +2,7 @@ import sinon from "sinon";
 
 import { createConfigBeforeElements, wait } from "../support/helpers";
 
-import Config from "../../src/Config";
+import { Config } from "../../src/Config";
 
 describe("options", () => {
   let sandbox, createConfig, config, namespace, option;

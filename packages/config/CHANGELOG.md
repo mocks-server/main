@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- refactor: In CJS, .default has to be required
+- refactor: Export named Config. In CJS, .default has to be required when importing default
 - refactor: Migrate to TypeScript
 - fix: Do not return root namespace in config.namespaces
 - feat: Throw an error when creating namespace if it already exists, as creating an option does

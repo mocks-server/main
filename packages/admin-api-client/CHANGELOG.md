@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 
 ### Changed
-- refactor: Refactor and document types. Change exported types, export all of them in the `ApiClient` namespace
+- refactor: Refactor and document types. Change exported types
+- style: Use prettier
 
 ## [7.0.0] - 2022-09-14
 

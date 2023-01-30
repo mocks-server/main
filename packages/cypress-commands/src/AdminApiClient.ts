@@ -3,7 +3,7 @@ import type { ConfigurationObject } from "@mocks-server/config";
 import { AdminApiClient as BaseAdminApiClient } from "@mocks-server/admin-api-client";
 import { HTTPS_PROTOCOL, DEFAULT_PROTOCOL, DEFAULT_PORT, DEFAULT_CLIENT_HOST } from "@mocks-server/admin-api-paths";
 
-import type { ApiClient } from "@mocks-server/admin-api-client";
+import type { AdminApiClientInterface as OriginalAdminApiClientInterface, Protocol, EntityId, BaseUrl } from "@mocks-server/admin-api-client";
 
 import { isUndefined, isFalsy } from "./helpers";
 
@@ -15,10 +15,10 @@ function doNothing(): Promise<void> {
 
 export class AdminApiClient implements AdminApiClientInterface {
   private _enabled: AdminApiClientConfig["enabled"] = true;
-  private _apiClient: ApiClient.Interface;
+  private _apiClient: OriginalAdminApiClientInterface;
   private _port: AdminApiClientConfig["port"] = DEFAULT_PORT;
   private _host: AdminApiClientConfig["host"] = DEFAULT_CLIENT_HOST;
-  private _protocol: ApiClient.Protocol = DEFAULT_PROTOCOL;
+  private _protocol: Protocol = DEFAULT_PROTOCOL;
 
   constructor(clientConfig: AdminApiClientConfig) {
     this._apiClient = new BaseAdminApiClient();
@@ -36,7 +36,7 @@ export class AdminApiClient implements AdminApiClientInterface {
     return this._apiClient.updateConfig(mocksServerConfig);
   }
 
-  public useRouteVariant(id: ApiClient.EntityId): Promise<void> {
+  public useRouteVariant(id: EntityId): Promise<void> {
     if (this._isDisabled()) {
       return doNothing();
     }
@@ -71,7 +71,7 @@ export class AdminApiClient implements AdminApiClientInterface {
     });
   }
 
-  public get baseUrl(): ApiClient.BaseUrl {
+  public get baseUrl(): BaseUrl {
     return `${this._protocol}://${this._host}:${this._port}`;
   }
 }

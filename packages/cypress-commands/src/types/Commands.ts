@@ -1,5 +1,5 @@
 import type { ConfigurationObject } from "@mocks-server/config";
-import type { ApiClient } from "@mocks-server/admin-api-client";
+import type { EntityId } from "@mocks-server/admin-api-client";
 
 import type { AdminApiClientConfig, AdminApiClientInterface } from "./AdminApiClient";
 
@@ -10,11 +10,11 @@ export type Log = string;
 export interface CypressCommandsMethods {
   /**
   * Set current collection
-  * @param id - Collection id {@link ApiClient.EntityId}
+  * @param id - Collection id {@link EntityId}
   * @param apiClient - Custom API client to be used instead of the default one. Useful to control several Mocks Servers instances {@link AdminApiClientInterface}
   * @example setCollection("base");
   */
-  setCollection(id: ApiClient.EntityId, apiClient?: AdminApiClientInterface): void
+  setCollection(id: EntityId, apiClient?: AdminApiClientInterface): void
   /**
   * Set Mocks Server routes global delay
   * @param delay - Mocks Server routes global delay
@@ -31,11 +31,11 @@ export interface CypressCommandsMethods {
   setConfig(mocksServerConfig: ConfigurationObject, apiClient?: AdminApiClientInterface): void
   /**
   * Set a specific route variant to be used by the current collection.
-  * @param id - Route variant id {@link ApiClient.EntityId}
+  * @param id - Route variant id {@link EntityId}
   * @param apiClient - Custom API client to be used instead of the default one. Useful to control several Mocks Servers instances {@link AdminApiClientInterface}
   * @example useRouteVariant("get-users:success");
   */
-  useRouteVariant(id: ApiClient.EntityId, apiClient?: AdminApiClientInterface): void
+  useRouteVariant(id: EntityId, apiClient?: AdminApiClientInterface): void
   /**
   * Restore route variants to those defined in the current collection.
   * @param apiClient - Custom API client to be used instead of the default one. Useful to control several Mocks Servers instances {@link AdminApiClientInterface}

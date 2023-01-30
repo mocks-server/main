@@ -1,2 +1,2 @@
-export * from "./types/index";
+export * from "./types";
 export { AdminApiClient } from "./AdminApiClient";

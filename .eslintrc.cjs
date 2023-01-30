@@ -100,12 +100,48 @@ module.exports = {
     {
       files: ["packages/**/*.ts"],
       parser: "@typescript-eslint/parser",
-      plugins: ["@typescript-eslint"],
+      plugins: ["prettier", "@typescript-eslint", "import"],
       extends: [
         "eslint:recommended",
+        "prettier",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
+        "plugin:import/recommended",
+        "plugin:import/typescript",
       ],
+      rules: {
+        "prettier/prettier": [
+          2,
+          {
+            printWidth: 99,
+            parser: "typescript",
+          },
+        ],
+        "import/order": [
+          "error",
+          {
+            groups: ["builtin", "external", "internal", "parent", "sibling", "index"],
+            pathGroups: [
+              {
+                pattern: "./*Types",
+                group: "internal",
+                position: "before",
+              },
+            ],
+            "newlines-between": "always",
+            alphabetize: {
+              order: "asc" /* sort in ascending order. Options: ['ignore', 'asc', 'desc'] */,
+              caseInsensitive: true /* ignore case. Options: [true, false] */,
+            },
+          },
+        ],
+      },
+      settings: {
+        "import/resolver": {
+          typescript: true,
+          node: true,
+        },
+      },
     },
   ],
 };

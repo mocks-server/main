@@ -1,6 +1,6 @@
 import { createConfigBeforeElements } from "../support/helpers";
 
-import Config from "../../src/Config";
+import { Config } from "../../src/Config";
 
 describe("options nested", () => {
   let sandbox, createConfig, config, namespace, parentNamespace, option;

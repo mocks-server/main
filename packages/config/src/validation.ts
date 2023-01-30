@@ -1,23 +1,44 @@
-import Ajv, { ValidateFunction, DefinedError } from "ajv"
+import Ajv, { ValidateFunction, DefinedError } from "ajv";
 import betterAjvErrors from "better-ajv-errors";
+import type { JSONSchema7TypeName, JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { isString, isNumber, isObject, isBoolean } from "lodash";
 
-import { optionIsArray, NUMBER_TYPE, STRING_TYPE, BOOLEAN_TYPE, OBJECT_TYPE, ARRAY_TYPE, NULL_TYPE } from "./types";
+import type { AnyObject } from "./CommonTypes";
+import type { NamespaceInterface } from "./ConfigTypes";
+import type {
+  OptionProperties,
+  OptionInterface,
+  OptionType,
+  OptionItemsType,
+} from "./OptionTypes";
+import type { ConfigValidationResult, GetValidationSchemaOptions } from "./ValidationTypes";
 
-import type { JSONSchema7TypeName, JSONSchema7, JSONSchema7Definition } from "json-schema"
-import type { AnyObject } from "./types/Common";
-import type { OptionProperties, OptionInterface, OptionType, ItemsType } from "./types/Option";
-import type { NamespaceInterface } from "./types/Config";
-import type { SchemaValidationResult, GetValidationSchemaOptions } from "./types/Validation";
+import {
+  optionIsArray,
+  NUMBER_TYPE,
+  STRING_TYPE,
+  BOOLEAN_TYPE,
+  OBJECT_TYPE,
+  ARRAY_TYPE,
+  NULL_TYPE,
+} from "./typing";
 
 const ajv = new Ajv({ allErrors: true });
 
-type AnySingleValue = unknown
-type AnyArrayValue = unknown[]
-type AnyValue = AnySingleValue | AnyArrayValue
+type AnySingleValue = unknown;
+type AnyArrayValue = unknown[];
+type AnyValue = AnySingleValue | AnyArrayValue;
 
-function enforceDefaultTypeSchema({ type, itemsType, nullable } : { type: OptionType, itemsType?: ItemsType, nullable?: boolean }): JSONSchema7 {
-  const properties : { [key: string]: JSONSchema7 } = {
+function enforceDefaultTypeSchema({
+  type,
+  itemsType,
+  nullable,
+}: {
+  type: OptionType;
+  itemsType?: OptionItemsType;
+  nullable?: boolean;
+}): JSONSchema7 {
+  const properties: { [key: string]: JSONSchema7 } = {
     name: { type: STRING_TYPE as JSONSchema7TypeName },
     type: { enum: [type] },
     nullable: { enum: [false] },
@@ -33,7 +54,7 @@ function enforceDefaultTypeSchema({ type, itemsType, nullable } : { type: Option
     required: ["name", "type", "nullable"],
   };
 
-  const defaultProperty: JSONSchema7 = {}
+  const defaultProperty: JSONSchema7 = {};
 
   if (nullable) {
     defaultProperty.type = [type as JSONSchema7TypeName, NULL_TYPE as JSONSchema7TypeName];
@@ -56,7 +77,7 @@ function enforceDefaultTypeSchema({ type, itemsType, nullable } : { type: Option
   return schema;
 }
 
-const optionSchema : JSONSchema7 = {
+const optionSchema: JSONSchema7 = {
   type: OBJECT_TYPE as JSONSchema7TypeName,
   oneOf: [
     enforceDefaultTypeSchema({ type: NUMBER_TYPE }),
@@ -74,9 +95,13 @@ const optionSchema : JSONSchema7 = {
   ],
 };
 
-const optionValidator : ValidateFunction = ajv.compile(optionSchema);
+const optionValidator: ValidateFunction = ajv.compile(optionSchema);
 
-function emptySchema({ allowAdditionalProperties } : { allowAdditionalProperties: boolean }): JSONSchema7 {
+function emptySchema({
+  allowAdditionalProperties,
+}: {
+  allowAdditionalProperties: boolean;
+}): JSONSchema7 {
   return {
     type: OBJECT_TYPE as JSONSchema7TypeName,
     properties: {},
@@ -89,11 +114,11 @@ function throwValueTypeError(value: AnyValue, type: OptionType): Error {
 }
 
 interface ThrowValidator {
-  (value: unknown | unknown[], itemsType?: ItemsType): Error | void
+  (value: unknown | unknown[], itemsType?: OptionItemsType): Error | void;
 }
 
 interface TypeAndThrowValidators {
-  [key: string]: ThrowValidator
+  [key: string]: ThrowValidator;
 }
 
 function validateStringAndThrow(value: unknown): void | never {
@@ -124,9 +149,9 @@ function valueIsArray(value: AnyValue): value is AnyArrayValue {
   return Array.isArray(value);
 }
 
-function validateArrayAndThrow(value: AnyValue, itemsType?: ItemsType): void | never {
+function validateArrayAndThrow(value: AnyValue, itemsType?: OptionItemsType): void | never {
   if (valueIsArray(value)) {
-    if(itemsType) {
+    if (itemsType) {
       value.forEach((item) => {
         validateValueTypeAndThrow(item, itemsType);
       });
@@ -144,7 +169,11 @@ const typeAndThrowValidators: TypeAndThrowValidators = {
   [ARRAY_TYPE]: validateArrayAndThrow,
 };
 
-function validateSchema(config: AnyObject | OptionProperties, schema: JSONSchema7, validator?: ValidateFunction): SchemaValidationResult {
+function validateSchema(
+  config: AnyObject | OptionProperties,
+  schema: JSONSchema7,
+  validator?: ValidateFunction
+): ConfigValidationResult {
   const validateProperties = validator || ajv.compile(schema);
   const valid = validateProperties(config);
   return {
@@ -153,45 +182,62 @@ function validateSchema(config: AnyObject | OptionProperties, schema: JSONSchema
   };
 }
 
-function formatErrors(schema: JSONSchema7, data: AnyObject | OptionProperties, errors: DefinedError[]): string {
+function formatErrors(
+  schema: JSONSchema7,
+  data: AnyObject | OptionProperties,
+  errors: DefinedError[]
+): string {
   const formattedJson = betterAjvErrors(schema, data, errors, {
     format: "js",
   });
   return formattedJson.map((result) => result.error).join(". ");
 }
 
-function validateSchemaAndThrow(object: AnyObject | OptionProperties, schema: JSONSchema7, validator?: ValidateFunction): void | never {
+function validateSchemaAndThrow(
+  object: AnyObject | OptionProperties,
+  schema: JSONSchema7,
+  validator?: ValidateFunction
+): void | never {
   const { valid, errors } = validateSchema(object, schema, validator);
   if (!valid) {
     throw new Error(formatErrors(schema, object, errors as DefinedError[]));
   }
 }
 
-function addNamespaceSchema(namespace: NamespaceInterface, { rootSchema, allowAdditionalProperties }: { rootSchema?: JSONSchema7, allowAdditionalProperties: boolean }): JSONSchema7 {
+function addNamespaceSchema(
+  namespace: NamespaceInterface,
+  {
+    rootSchema,
+    allowAdditionalProperties,
+  }: { rootSchema?: JSONSchema7; allowAdditionalProperties: boolean }
+): JSONSchema7 {
   const initialSchema = rootSchema || emptySchema({ allowAdditionalProperties });
-  const schema = namespace.options.reduce((currentSchema: JSONSchema7, option: OptionInterface) => {
-    const properties : { [key: string]: JSONSchema7 } = {};
-    if (option.nullable) {
-      properties[option.name] = {
-        type: [option.type as JSONSchema7TypeName, NULL_TYPE as JSONSchema7TypeName],
-      };
-    } else {
-      properties[option.name] = {
-        type: option.type as JSONSchema7TypeName,
-      };
-    }
+  const schema = namespace.options.reduce(
+    (currentSchema: JSONSchema7, option: OptionInterface) => {
+      const properties: { [key: string]: JSONSchema7 } = {};
+      if (option.nullable) {
+        properties[option.name] = {
+          type: [option.type as JSONSchema7TypeName, NULL_TYPE as JSONSchema7TypeName],
+        };
+      } else {
+        properties[option.name] = {
+          type: option.type as JSONSchema7TypeName,
+        };
+      }
 
-    if (optionIsArray(option)) {
-      properties[option.name].items = {
-        type: option.itemsType,
-      } as JSONSchema7Definition;
-    }
-    currentSchema.properties = {
-      ...currentSchema.properties,
-      ...properties,
-    }
-    return currentSchema;
-  }, initialSchema);
+      if (optionIsArray(option)) {
+        properties[option.name].items = {
+          type: option.itemsType,
+        } as JSONSchema7Definition;
+      }
+      currentSchema.properties = {
+        ...currentSchema.properties,
+        ...properties,
+      };
+      return currentSchema;
+    },
+    initialSchema
+  );
   addNamespacesSchema(namespace.namespaces, {
     rootSchema: initialSchema,
     allowAdditionalProperties,
@@ -199,9 +245,15 @@ function addNamespaceSchema(namespace: NamespaceInterface, { rootSchema, allowAd
   return schema;
 }
 
-function addNamespacesSchema(namespaces: NamespaceInterface[], { rootSchema, allowAdditionalProperties } : { rootSchema: JSONSchema7, allowAdditionalProperties: boolean }): JSONSchema7 {
+function addNamespacesSchema(
+  namespaces: NamespaceInterface[],
+  {
+    rootSchema,
+    allowAdditionalProperties,
+  }: { rootSchema: JSONSchema7; allowAdditionalProperties: boolean }
+): JSONSchema7 {
   return namespaces.reduce((currentSchema: JSONSchema7, namespace: NamespaceInterface) => {
-    const properties : { [key: string]: JSONSchema7 } = {};
+    const properties: { [key: string]: JSONSchema7 } = {};
     if (!namespace.isRoot) {
       properties[namespace.name] = addNamespaceSchema(namespace, {
         allowAdditionalProperties,
@@ -212,33 +264,54 @@ function addNamespacesSchema(namespaces: NamespaceInterface[], { rootSchema, all
     currentSchema.properties = {
       ...currentSchema.properties,
       ...properties,
-    }
+    };
     return currentSchema;
   }, rootSchema);
 }
 
-function getConfigValidationSchema({ namespaces, allowAdditionalProperties } : { namespaces: NamespaceInterface[], allowAdditionalProperties: boolean }): JSONSchema7 {
+function getConfigValidationSchema({
+  namespaces,
+  allowAdditionalProperties,
+}: {
+  namespaces: NamespaceInterface[];
+  allowAdditionalProperties: boolean;
+}): JSONSchema7 {
   return addNamespacesSchema(namespaces, {
     rootSchema: emptySchema({ allowAdditionalProperties }),
     allowAdditionalProperties,
   });
 }
 
-export function validateConfigAndThrow(config: AnyObject, { namespaces, allowAdditionalProperties }: { namespaces: NamespaceInterface[], allowAdditionalProperties: boolean }): void | never {
+export function validateConfigAndThrow(
+  config: AnyObject,
+  {
+    namespaces,
+    allowAdditionalProperties,
+  }: { namespaces: NamespaceInterface[]; allowAdditionalProperties: boolean }
+): void | never {
   validateSchemaAndThrow(
     config,
     getConfigValidationSchema({ namespaces, allowAdditionalProperties })
   );
 }
 
-export function validateConfig(config: AnyObject, { namespaces, allowAdditionalProperties }: { namespaces: NamespaceInterface[], allowAdditionalProperties: boolean }): SchemaValidationResult  {
+export function validateConfig(
+  config: AnyObject,
+  {
+    namespaces,
+    allowAdditionalProperties,
+  }: { namespaces: NamespaceInterface[]; allowAdditionalProperties: boolean }
+): ConfigValidationResult {
   return validateSchema(
     config,
     getConfigValidationSchema({ namespaces, allowAdditionalProperties })
   );
 }
 
-export function getValidationSchema({ namespaces, allowAdditionalProperties }: GetValidationSchemaOptions): JSONSchema7 {
+export function getValidationSchema({
+  namespaces,
+  allowAdditionalProperties,
+}: GetValidationSchemaOptions): JSONSchema7 {
   return getConfigValidationSchema({ namespaces, allowAdditionalProperties });
 }
 
@@ -246,7 +319,12 @@ export function validateOptionAndThrow(option: OptionProperties): void | never {
   validateSchemaAndThrow(option, optionSchema, optionValidator);
 }
 
-export function validateValueTypeAndThrow(value: unknown, type: OptionType, nullable?: boolean, itemsType?: ItemsType): undefined | never {
+export function validateValueTypeAndThrow(
+  value: unknown,
+  type: OptionType,
+  nullable?: boolean,
+  itemsType?: OptionItemsType
+): undefined | never {
   if (nullable && value === null) {
     return;
   }

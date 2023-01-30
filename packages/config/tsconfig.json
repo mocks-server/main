@@ -14,7 +14,6 @@
     "forceConsistentCasingInFileNames": true,
     "noUnusedParameters": true,
     "isolatedModules": true,
-    "allowJs": true,
     "strictPropertyInitialization": false
   },
   "include": [

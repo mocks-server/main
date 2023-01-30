@@ -1,11 +1,11 @@
 import { cosmiconfig } from "cosmiconfig";
 import { isFunction } from "lodash";
 
-import type { ConfigurationObject, ConfigFunction } from "./CommonTypes";
-import type { FilesInterface, FilesReadOptions } from "./FilesTypes";
+import type { ConfigurationObject, ConfigFunction, ModuleName } from "./CommonTypes";
+import type { FilesConstructor, FilesInterface, FilesReadOptions } from "./FilesTypes";
 
-export class Files implements FilesInterface {
-  private _moduleName: string;
+export const Files: FilesConstructor = class Files implements FilesInterface {
+  private _moduleName: ModuleName;
   private _loadedFrom: null | string;
   private _config: ConfigurationObject;
 
@@ -55,4 +55,4 @@ export class Files implements FilesInterface {
   public get loadedFile(): string | null {
     return this._loadedFrom;
   }
-}
+};

@@ -182,6 +182,7 @@ export interface AdminApiClientEntitiesInterface {
    * @returns API client for an specific Variant {@link ApiEntityInterface}.
    * @example const variantApiClient = adminApiClientEntities.variant(2);
    */
+  variant(id: EntityId): ApiEntityInterface;
   /** Custom route variants entity API client */
   customRouteVariants: ApiEntityInterface;
   /**

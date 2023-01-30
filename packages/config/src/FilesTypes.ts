@@ -1,4 +1,4 @@
-import type { ConfigurationObject, ConfigFunction } from "./CommonTypes";
+import type { ModuleName, ConfigurationObject } from "./CommonTypes";
 
 export interface FilesReadOptions {
   searchPlaces?: string[];
@@ -7,10 +7,7 @@ export interface FilesReadOptions {
 }
 
 export interface FilesConstructor {
-  new (
-    config: ConfigurationObject | ConfigFunction,
-    initConfig: ConfigurationObject
-  ): FilesInterface;
+  new (moduleName: ModuleName): FilesInterface;
 }
 
 export interface FilesInterface {

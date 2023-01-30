@@ -14,13 +14,14 @@ import type {
   SetMethodOptions,
   OptionArrayValue,
   OptionExtraData,
+  OptionConstructor,
 } from "./OptionTypes";
 
 import { addEventListener, CHANGE } from "./events";
 import { typeIsArray, typeIsObject, avoidArraysMerge } from "./typing";
 import { validateOptionAndThrow, validateValueTypeAndThrow } from "./validation";
 
-export class Option implements OptionInterface {
+export const Option: OptionConstructor = class Option implements OptionInterface {
   private _eventEmitter: EventEmitter;
   private _name: string;
   private _nullable: boolean;
@@ -142,4 +143,4 @@ export class Option implements OptionInterface {
   public get hasBeenSet() {
     return this._hasBeenSet;
   }
-}
+};

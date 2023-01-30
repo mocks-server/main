@@ -1,19 +1,33 @@
+import { AdminApiClient as BaseAdminApiClient } from "@mocks-server/admin-api-client";
+import type {
+  AdminApiClientInterface as OriginalAdminApiClientInterface,
+  Protocol,
+  EntityId,
+  BaseUrl,
+} from "@mocks-server/admin-api-client";
+import {
+  HTTPS_PROTOCOL,
+  DEFAULT_PROTOCOL,
+  DEFAULT_PORT,
+  DEFAULT_CLIENT_HOST,
+} from "@mocks-server/admin-api-paths";
 import type { ConfigurationObject } from "@mocks-server/config";
 
-import { AdminApiClient as BaseAdminApiClient } from "@mocks-server/admin-api-client";
-import { HTTPS_PROTOCOL, DEFAULT_PROTOCOL, DEFAULT_PORT, DEFAULT_CLIENT_HOST } from "@mocks-server/admin-api-paths";
-
-import type { AdminApiClientInterface as OriginalAdminApiClientInterface, Protocol, EntityId, BaseUrl } from "@mocks-server/admin-api-client";
+import type {
+  AdminApiClientConfig,
+  AdminApiClientInterface,
+  AdminApiClientConstructor,
+} from "./AdminApiClientTypes";
 
 import { isUndefined, isFalsy } from "./helpers";
-
-import type { AdminApiClientConfig, AdminApiClientInterface } from "./types/AdminApiClient";
 
 function doNothing(): Promise<void> {
   return Promise.resolve();
 }
 
-export class AdminApiClient implements AdminApiClientInterface {
+export const AdminApiClient: AdminApiClientConstructor = class AdminApiClient
+  implements AdminApiClientInterface
+{
   private _enabled: AdminApiClientConfig["enabled"] = true;
   private _apiClient: OriginalAdminApiClientInterface;
   private _port: AdminApiClientConfig["port"] = DEFAULT_PORT;
@@ -74,4 +88,4 @@ export class AdminApiClient implements AdminApiClientInterface {
   public get baseUrl(): BaseUrl {
     return `${this._protocol}://${this._host}:${this._port}`;
   }
-}
+};

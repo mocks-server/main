@@ -5,6 +5,7 @@ import type { JSONSchema7 } from "json-schema";
 import type { CommandLineArgumentsInterface } from "./CommandLineArgumentTypes";
 import type { ConfigurationObject } from "./CommonTypes";
 import type {
+  ConfigConstructor,
   ConfigInterface,
   ConfigOptions,
   ConfigValidationOptions,
@@ -28,7 +29,7 @@ const ROOT_NAMESPACE = "_rootOptions";
 
 const CONFIG_NAMESPACE = "config";
 
-export class Config implements ConfigInterface {
+export const Config: ConfigConstructor = class Config implements ConfigInterface {
   private _initializated: boolean;
   private _deepMergeOptions: deepmerge.Options;
   private _programmaticConfig: ConfigurationObject;
@@ -311,4 +312,4 @@ export class Config implements ConfigInterface {
       }
     });
   }
-}
+};

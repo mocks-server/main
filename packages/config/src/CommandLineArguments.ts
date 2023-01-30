@@ -8,6 +8,7 @@ import type {
   CommandLineArgumentsInterface,
   CommanderOptionsData,
   ReadOptions,
+  CommandLineArgumentsConstructor,
 } from "./CommandLineArgumentTypes";
 import type { ConfigurationObject, AnyObject } from "./CommonTypes";
 import type { NamespaceInterface } from "./ConfigTypes";
@@ -85,7 +86,9 @@ function commanderValueHasToBeIgnored(
   );
 }
 
-export class CommandLineArguments implements CommandLineArgumentsInterface {
+export const CommandLineArguments: CommandLineArgumentsConstructor = class CommandLineArguments
+  implements CommandLineArgumentsInterface
+{
   private _config: ConfigurationObject;
 
   constructor() {
@@ -180,4 +183,4 @@ export class CommandLineArguments implements CommandLineArgumentsInterface {
 
     return this._config;
   }
-}
+};

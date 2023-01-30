@@ -1,4 +1,3 @@
-
 import { commands } from "./commands";
 
 export function register(Cyp: typeof Cypress, CypCy: typeof cy) {

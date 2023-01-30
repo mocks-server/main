@@ -1,13 +1,13 @@
 import type { JSONSchema7 } from "json-schema";
 
-import type { ConfigurationObject, ObjectWithName } from "./CommonTypes";
+import type { ModuleName, ConfigurationObject, ObjectWithName } from "./CommonTypes";
 import type { OptionInterface, SetMethodOptions, OptionProperties } from "./OptionTypes";
 import type { ConfigValidationResult } from "./ValidationTypes";
 
 /** Properties for creating a new config interface */
 export interface ConfigOptions {
   /** Name for the config interface. It will be used as a prefix in configuration files and environment variables */
-  moduleName: string;
+  moduleName: ModuleName;
   /** Determines whether arrays in configuration values should be merged with values defined in other sources or not */
   mergeArrays?: boolean;
 }
@@ -147,7 +147,7 @@ export interface NamespaceConstructor {
    * @returns Config interface {@link NamespaceInterface}.
    * @example const namespace = new Namespace("foo", { root: config, brothers: [namespace_x, namespace_y], isRoot: true })
    */
-  new (name: string, options?: NamespaceProperties): NamespaceInterface;
+  new (name: string, options: NamespaceProperties): NamespaceInterface;
 }
 
 /** Config namespace */

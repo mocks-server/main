@@ -1,9 +1,9 @@
 /// <reference types="cypress" />
 
 import type { EntityId } from "@mocks-server/admin-api-client";
-
 import type { ConfigurationObject } from "@mocks-server/config";
-import type { AdminApiClientInterface, AdminApiClientConfig } from "./AdminApiClient";
+
+import type { AdminApiClientInterface, AdminApiClientConfig } from "./AdminApiClientTypes";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -15,10 +15,7 @@ declare global {
        * @param adminApiClient - custom admin api client to use instead of the default one
        * @example cy.mocksSetCollection("collection-id")
        */
-      mocksSetCollection(
-        collectionId: EntityId,
-        adminApiClient?: AdminApiClientInterface,
-      ): void
+      mocksSetCollection(collectionId: EntityId, adminApiClient?: AdminApiClientInterface): void;
 
       /**
        * Change routes global delay
@@ -26,10 +23,7 @@ declare global {
        * @param adminApiClient - custom admin api client to use instead of the default one
        * @example cy.mocksSetDelay(1000)
        */
-      mocksSetDelay(
-        delayTime: number,
-        adminApiClient?: AdminApiClientInterface,
-      ): Promise<void>
+      mocksSetDelay(delayTime: number, adminApiClient?: AdminApiClientInterface): Promise<void>;
 
       /**
        * Change configuration
@@ -39,8 +33,8 @@ declare global {
        */
       mocksSetConfig(
         mocksServerConfig: ConfigurationObject,
-        adminApiClient?: AdminApiClientInterface,
-      ): Promise<void>
+        adminApiClient?: AdminApiClientInterface
+      ): Promise<void>;
 
       /**
        * Define a route variant to be used instead of the one defined in the current collection.
@@ -50,26 +44,26 @@ declare global {
        */
       mocksUseRouteVariant(
         routeVariantId: EntityId,
-        adminApiClient?: AdminApiClientInterface,
-      ): Promise<void>
+        adminApiClient?: AdminApiClientInterface
+      ): Promise<void>;
 
       /**
        * Restore current collection route variants. It removes all variants defined with the mocksUseRouteVariant command.
        * @param adminApiClient - custom admin api client to use instead of the default one
        * @example cy.mocksRestoreRouteVariants()
        */
-      mocksRestoreRouteVariants(adminApiClient?: AdminApiClientInterface): Promise<void>
+      mocksRestoreRouteVariants(adminApiClient?: AdminApiClientInterface): Promise<void>;
 
       /**
-      * Changes the configuration of the Mocks Server administration API client, used by the plugin commands to communicate with Mocks Server
-      * @param apiClientConfig - Admin API client configuration
-      * @param adminApiClient - custom admin api client to use instead of the default one
-      * @example cy.mocksConfigClient({ port: 3210 })
-      */
+       * Changes the configuration of the Mocks Server administration API client, used by the plugin commands to communicate with Mocks Server
+       * @param apiClientConfig - Admin API client configuration
+       * @param adminApiClient - custom admin api client to use instead of the default one
+       * @example cy.mocksConfigClient({ port: 3210 })
+       */
       mocksConfigClient(
         apiClientConfig: AdminApiClientConfig,
-        adminApiClient?: AdminApiClientInterface,
-      ): Promise<void>
+        adminApiClient?: AdminApiClientInterface
+      ): Promise<void>;
     }
   }
 }

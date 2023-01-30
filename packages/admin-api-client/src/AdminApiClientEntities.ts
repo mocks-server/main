@@ -25,6 +25,9 @@ import type {
   ApiResponseBody,
   ApiEntityInterface,
   AdminApiClientEntitiesInterface,
+  AdminApiClientEntitiesConstructor,
+  ApiEntityContructor,
+  ApiClientContructor,
 } from "./AdminApiClientEntitiesTypes";
 import type { EntityId } from "./CommonTypes";
 
@@ -45,7 +48,7 @@ function handleResponse(res: Response) {
   });
 }
 
-class ApiClient implements ApiClientInterface {
+const ApiClient: ApiClientContructor = class ApiClient implements ApiClientInterface {
   private _host: ApiClientConfig["host"] = DEFAULT_CLIENT_HOST;
   private _port: ApiClientConfig["port"] = DEFAULT_PORT;
   private _protocol: Protocol = DEFAULT_PROTOCOL;
@@ -115,14 +118,14 @@ class ApiClient implements ApiClientInterface {
       })
     ).then(handleResponse);
   }
-}
+};
 
-class ApiEntity implements ApiEntityInterface {
+const ApiEntity: ApiEntityContructor = class ApiEntity implements ApiEntityInterface {
   private _path: ApiPath;
   private _id: EntityId;
-  private _apiClient: ApiClient;
+  private _apiClient: ApiClientInterface;
 
-  constructor(apiClient: ApiClient, path: ApiPath, id?: EntityId) {
+  constructor(apiClient: ApiClientInterface, path: ApiPath, id?: EntityId) {
     this._path = path;
     this._id = id ? `/${encodeURIComponent(id)}` : "";
     this._apiClient = apiClient;
@@ -147,17 +150,19 @@ class ApiEntity implements ApiEntityInterface {
   public create(data: ApiRequestBody): Promise<ApiResponseBody> {
     return this._apiClient.post(this._fullApiPath, data);
   }
-}
+};
 
-export class AdminApiClientEntities implements AdminApiClientEntitiesInterface {
-  private _apiClient: ApiClient;
-  private _about: ApiEntity;
-  private _config: ApiEntity;
-  private _alerts: ApiEntity;
-  private _collections: ApiEntity;
-  private _routes: ApiEntity;
-  private _variants: ApiEntity;
-  private _customRouteVariants: ApiEntity;
+export const AdminApiClientEntities: AdminApiClientEntitiesConstructor = class AdminApiClientEntities
+  implements AdminApiClientEntitiesInterface
+{
+  private _apiClient: ApiClientInterface;
+  private _about: ApiEntityInterface;
+  private _config: ApiEntityInterface;
+  private _alerts: ApiEntityInterface;
+  private _collections: ApiEntityInterface;
+  private _routes: ApiEntityInterface;
+  private _variants: ApiEntityInterface;
+  private _customRouteVariants: ApiEntityInterface;
 
   constructor() {
     this._apiClient = new ApiClient();
@@ -218,4 +223,4 @@ export class AdminApiClientEntities implements AdminApiClientEntitiesInterface {
   public configClient(configuration: ApiClientConfig): void {
     this._apiClient.config(configuration);
   }
-}
+};

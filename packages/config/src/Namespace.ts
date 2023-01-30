@@ -1,7 +1,12 @@
 import EventEmitter from "events";
 
 import type { ConfigurationObject } from "./CommonTypes";
-import type { NamespaceInterface, NamespaceProperties, ConfigInterface } from "./ConfigTypes";
+import type {
+  ConfigInterface,
+  NamespaceInterface,
+  NamespaceProperties,
+  NamespaceConstructor,
+} from "./ConfigTypes";
 import type { OptionProperties, OptionInterface, SetMethodOptions } from "./OptionTypes";
 
 import {
@@ -13,7 +18,7 @@ import {
 } from "./namespaces";
 import { Option } from "./Option";
 
-export class Namespace implements NamespaceInterface {
+export const Namespace: NamespaceConstructor = class Namespace implements NamespaceInterface {
   private _brothers: NamespaceInterface[];
   private _parents: NamespaceInterface[];
   private _root: ConfigInterface;
@@ -123,4 +128,4 @@ export class Namespace implements NamespaceInterface {
   public option(name: OptionInterface["name"]): OptionInterface | undefined {
     return findObjectWithName(this._options, name);
   }
-}
+};

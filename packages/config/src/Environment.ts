@@ -2,7 +2,7 @@ import { isUndefined, isEmpty, snakeCase } from "lodash";
 
 import type { ConfigurationObject } from "./CommonTypes";
 import type { NamespaceInterface } from "./ConfigTypes";
-import type { EnvironmentInterface } from "./EnvironmentTypes";
+import type { EnvironmentConstructor, EnvironmentInterface } from "./EnvironmentTypes";
 
 import { namespaceAndParentNames } from "./namespaces";
 import { getOptionParserWithBooleansAndArrays } from "./typing";
@@ -19,7 +19,9 @@ function envVarName(
   return [moduleName, ...namespaceAndParentNames(namespace), optionName].map(varSegment).join("_");
 }
 
-export class Environment implements EnvironmentInterface {
+export const Environment: EnvironmentConstructor = class Environment
+  implements EnvironmentInterface
+{
   private _config: ConfigurationObject;
   private _moduleName: string;
 
@@ -63,4 +65,4 @@ export class Environment implements EnvironmentInterface {
     this._config = this._readNamespaces(namespaces);
     return this._config;
   }
-}
+};

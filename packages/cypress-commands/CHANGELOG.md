@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - feat: Remove legacy mocksConfigAdminApiClient command. mocksConfigClient has to be used instead
-- refactor: Change exported types. Use a namespace
+- refactor: Change exported types
 
 ## [6.1.1] - 2022-09-14
 

@@ -87,6 +87,8 @@ jobs:
         run: pnpm install
       - name: Generate graph
         run: pnpm run graph -- --file=graph.json
+      - name: Build all
+        run: pnpm run build:all
       - name: Lint
         run: pnpm run lint
   test-unit:

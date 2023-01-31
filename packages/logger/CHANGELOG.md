@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [unreleased]
 
 ### Changed
-- refactor: Refactor types. Export types using LoggerTs and EventsTs namespaces
+- refactor: Refactor types
 
 ### Added
 - feat: Export LEVELS and TRANSPORTS constants

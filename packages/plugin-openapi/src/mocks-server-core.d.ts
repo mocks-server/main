@@ -1,6 +1,6 @@
 declare module "@mocks-server/core" {
   import type { CollectionItem } from "@mocks-server/nested-collections";
-  import { BaseNestedCollections } from "@mocks-server/nested-collections";
+  import { BaseNestedCollections, CollectionFlatItems } from "@mocks-server/nested-collections";
   import type { OpenAPIV3 } from "openapi-types";
 
   enum VariantTypes {
@@ -117,6 +117,7 @@ declare module "@mocks-server/core" {
 
   class Alerts extends BaseNestedCollections {
     set(id: string, value: string, error: Error): CollectionItem
+    flat: CollectionFlatItems;
   }
 
   interface Core {

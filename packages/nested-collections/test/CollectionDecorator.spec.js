@@ -21,7 +21,10 @@ describe("Collection Decorator", () => {
     sandbox = createSandbox();
     class Decorator extends BaseNestedCollections {
       set(value, id) {
-        this._setItem(id, value);
+        this._set(id, value);
+      }
+      get flat() {
+        return this._flat;
       }
     }
     CollectionDecorator = Decorator;

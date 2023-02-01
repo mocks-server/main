@@ -44,16 +44,6 @@ function cleanCollection(collection: CollectionBaseInterface): void {
   collection.clean();
 }
 
-// TODO, revoew protecteds and privates
-// TODO, define flat in a protected method
-// TODO, rename _setItem into _set
-// TODO, rename Interface into BaseInstance
-// TODO, rename Interface2 into Instance
-// TODO, review NestedCollections name
-// TODO, review CollectionTs name
-// TODO, apply these naming changes to all other packages
-// TODO, review which methods have to be overridable (apart from set and flat)
-
 export abstract class BaseNestedCollections implements CollectionBaseInterface {
   private _id: CollectionId;
   private _collections: this[];
@@ -112,7 +102,7 @@ export abstract class BaseNestedCollections implements CollectionBaseInterface {
     this._eventEmitter.emit(CHANGE_EVENT);
   }
 
-  protected _setItem(id: CollectionId, value: CollectionItemValue): CollectionItem {
+  protected _set(id: CollectionId, value: CollectionItemValue): CollectionItem {
     let item = this._findItem(id);
     if (item) {
       item.value = value;
@@ -123,7 +113,7 @@ export abstract class BaseNestedCollections implements CollectionBaseInterface {
     return item;
   }
 
-  private _changeId(id: CollectionId): void {
+  protected _changeId(id: CollectionId): void {
     this._id = id;
     this._emitChange();
   }
@@ -175,7 +165,7 @@ export abstract class BaseNestedCollections implements CollectionBaseInterface {
 
   private _merge(collection: this) {
     [...collection.items].forEach((item: CollectionItem) => {
-      this._setItem(item.id, item.value);
+      this._set(item.id, item.value);
       collection.remove(item.id);
     });
     [...collection.collections].forEach((childCollection: this) => {
@@ -204,13 +194,12 @@ export abstract class BaseNestedCollections implements CollectionBaseInterface {
     return this._id;
   }
 
-  // TODO, use protected
-
-  /**
-   * Sets collection id. Do not use it for changing a child collection id. Use renameCollection instead
-   */
   public set id(id: CollectionId) {
-    this._changeId(id);
+    if (this.parent) {
+      this.parent.renameCollection(this.id, id);
+    } else {
+      this._changeId(id);
+    }
   }
 
   public get path(): CollectionId {
@@ -238,7 +227,7 @@ export abstract class BaseNestedCollections implements CollectionBaseInterface {
           newCollection.merge(collection);
           this._removeCollection(id);
         } else {
-          collection.id = newId;
+          collection._changeId(newId);
         }
       }
     }
@@ -281,10 +270,6 @@ export abstract class BaseNestedCollections implements CollectionBaseInterface {
     this._parent = parent;
   }
 
-  public get flat(): CollectionFlatItems {
-    return this._flat;
-  }
-
   public onChange(listener: EventsListener): EventsListenerRemover {
     return addEventListener(listener, CHANGE_EVENT, this._eventEmitter);
   }
@@ -299,6 +284,10 @@ export const NestedCollections: CollectionConstructor = class NestedCollections
   implements CollectionInterface
 {
   public set(id: CollectionId, value: CollectionItemValue): CollectionItem {
-    return this._setItem(id, value);
+    return this._set(id, value);
+  }
+
+  public get flat(): CollectionFlatItems {
+    return this._flat;
   }
 };

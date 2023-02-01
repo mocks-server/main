@@ -115,9 +115,6 @@ export interface CollectionBaseInterface {
   /** Parent collection */
   parent?: CollectionBaseInterface;
 
-  /** All collection items and children collection items in a flat array. Overwrite this method in the Decorator if you need to implement your own flat method **/
-  flat: CollectionFlatItems;
-
   /**
    * Executes the provided function whenever a change is made in items, children collections or their items
    * @returns function to remove event listener
@@ -144,4 +141,7 @@ export interface CollectionInterface extends CollectionBaseInterface {
    * @returns item {@link CollectionItem}
    */
   set(id: CollectionId, value: CollectionItemValue): CollectionItem;
+
+  /** All collection items and children collection items in a flat array. Overwrite this method in the Decorator if you need to implement your own flat method **/
+  flat: CollectionFlatItems;
 }

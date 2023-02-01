@@ -82,11 +82,11 @@ const collection = new NestedCollections("id");
 * __get `id`__: Returns the collection id. Used as setter, sets collection id. Do not use it for changing a child collection id. Use `renameCollection` instead.
 * __set `id`__: Sets collection id. Do not use it for changing a child collection id. Use `renameCollection` instead.
 * __get `path`__: Returns the collection id joined with all parent collections ids using `:` (`parentCollectionId:parentCollectionId:collectionId`).
-* __`removeCollection(collectionId)`__: Removes children collection, including all of its items and possible children collections.
-  * `collectionId` _(String)_: Id of the collection to be removed.
 * __`collection(collectionId)`__: Returns child collection with provided id or creates a new one if it does not exists.
   * `collectionId` _(String)_: Id of the collection to be returned.
-* __`renameCollection(collectionId, newCollectionId)`__: Changes a collection id. Id id already exists in other collection, then it merges them.
+* __`removeCollection(collectionId)`__: Removes children collection, including all of its items and possible children collections.
+  * `collectionId` _(String)_: Id of the collection to be removed.
+* __`renameCollection(collectionId, newCollectionId)`__: Changes a collection id. If id already exists in other collection, then it merges them.
   * `collectionId` _(String)_: Id of the collection to be changed.
   * `newCollectionId` _(String)_: New id for the collection
 * __`clean()`__: Clean items and items in children collections recursively.
@@ -105,13 +105,22 @@ const collection = new NestedCollections("id");
 
 ## Extending NestedCollections
 
-In order to be able to create `NestedCollections` with your own `set` method, the library also exports a `BaseNestedCollections` class, allowing to define your own `set` method by calling to the original `set` one by using the protected `_setItem` method. For example
+For TypeScript users, in order to be able to create `NestedCollections` with your own `set` and `flat` methods, the library also exports a `BaseNestedCollections` class, allowing to define your own methods by calling to the protected `_set` and `_flat`. For example
 
 ```js
-class Alerts extends BaseNestedCollections {
+export class CustomNestedCollections
+  extends BaseNestedCollections
+  implements CustomNestedCollectionInterface
+{
   // Set method now accepts three arguments, and it always stores an object
-  set(id, message, error) {
-    return this._setItem(id, { message, error });
+  public set(id: CollectionId, message: CollectionItemMessage, error: CollectionItemError): CollectionItem {
+    // Stores messsage and error as an object using the protected _set method
+    return this._set(id, { message, error });
   }
-}
+
+  public get flat(): CollectionFlatItems {
+    // You can parse the collection items here at your convenience before returning them
+    return this._flat;
+  }
+};
 ```

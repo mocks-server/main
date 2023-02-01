@@ -80,7 +80,7 @@ const collection = new NestedCollections("id");
 ### collection instance
 
 * __get `id`__: Returns the collection id. Used as setter, sets collection id. Do not use it for changing a child collection id. Use `renameCollection` instead.
-* __set `id`__: Sets collection id. Do not use it for changing a child collection id. Use `renameCollection` instead.
+* __set `id`__: Sets collection id.
 * __get `path`__: Returns the collection id joined with all parent collections ids using `:` (`parentCollectionId:parentCollectionId:collectionId`).
 * __`collection(collectionId)`__: Returns child collection with provided id or creates a new one if it does not exists.
   * `collectionId` _(String)_: Id of the collection to be returned.

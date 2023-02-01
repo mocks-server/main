@@ -1,8 +1,12 @@
-import type { EventsTs } from "./types/Events";
+import type { EventsListener, EventsEmitter, EventsListenerRemover } from "./EventsTypes";
 
 export const CHANGE_EVENT = "change";
 
-export function addEventListener(listener: EventsTs.Listener, eventName: string, eventEmitter: EventsTs.Emitter): EventsTs.ListenerRemover {
+export function addEventListener(
+  listener: EventsListener,
+  eventName: string,
+  eventEmitter: EventsEmitter
+): EventsListenerRemover {
   const removeCallback = (): void => {
     eventEmitter.removeListener(eventName, listener);
   };

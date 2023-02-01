@@ -105,18 +105,13 @@ const collection = new NestedCollections("id");
 
 ## Extending NestedCollections
 
-In order to be able to decorate the `NestedCollections` methods easily, a `Decorator` option can be passed as second argument to it. When present, it will be used to create children collections, so you can extend the `NestedCollections` methods, while nested collections will be still created with your class. For example:
+In order to be able to create `NestedCollections` with your own `set` method, the library also exports a `BaseNestedCollections` class, allowing to define your own `set` method by calling to the original `set` one by using the protected `_setItem` method. For example
 
 ```js
-class Alerts extends NestedCollections {
-  constructor(id, options) {
-    // Nested collections will be created always using this class
-    super(id, { ...options, Decorator: Alerts });
-  }
-
+class Alerts extends BaseNestedCollections {
   // Set method now accepts three arguments, and it always stores an object
   set(id, message, error) {
-    return super.set(id, { message, error });
+    return this._setItem(id, { message, error });
   }
 }
 ```

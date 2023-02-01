@@ -1,5 +1,5 @@
 declare module "@mocks-server/core" {
-  import type { CollectionTs } from "@mocks-server/nested-collections";
+  import type { CollectionItem } from "@mocks-server/nested-collections";
   import { BaseNestedCollections } from "@mocks-server/nested-collections";
   import type { OpenAPIV3 } from "openapi-types";
 
@@ -116,7 +116,7 @@ declare module "@mocks-server/core" {
   }
 
   class Alerts extends BaseNestedCollections {
-    set(id: string, value: string, error: Error): CollectionTs.Item
+    set(id: string, value: string, error: Error): CollectionItem
   }
 
   interface Core {

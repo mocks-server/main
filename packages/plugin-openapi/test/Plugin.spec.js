@@ -1,4 +1,4 @@
-import Plugin from "../src/Plugin";
+import { Plugin } from "../src/Plugin";
 
 describe("Plugin", () => {
   describe("id", () => {

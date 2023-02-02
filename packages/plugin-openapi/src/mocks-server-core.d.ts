@@ -3,45 +3,39 @@ declare module "@mocks-server/core" {
   import { BaseNestedCollections, CollectionFlatItems } from "@mocks-server/nested-collections";
   import type { OpenAPIV3 } from "openapi-types";
 
-  enum VariantTypes {
-    JSON = "json",
-    TEXT = "text",
-    STATUS = "status"
-  }
-
-  type RouteVariantTypes = VariantTypes
+  type RouteVariantTypes = "json" | "text" | "status";
 
   interface Logger {
-    verbose(message: string): void
-    debug(message: string): void
-    silly(message: string): void
+    verbose(message: string): void;
+    debug(message: string): void;
+    silly(message: string): void;
   }
 
   interface FileContents {
-    path: string,
+    path: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    content: any,
+    content: any;
   }
 
   interface FileErrors {
-    path: string,
-    error: Error,
+    path: string;
+    error: Error;
   }
 
-  type FilesContents = FileContents[]
-  type FilesErrors = FileErrors[]
+  type FilesContents = FileContents[];
+  type FilesErrors = FileErrors[];
 
-  type FilesLoaderOnLoad = (filesContents: FilesContents, filesErrors: FilesErrors) => void
+  type FilesLoaderOnLoad = (filesContents: FilesContents, filesErrors: FilesErrors) => void;
 
   interface FilesLoaderOptions {
-    id: string,
-    src: string,
-    onLoad: FilesLoaderOnLoad,
+    id: string;
+    src: string;
+    onLoad: FilesLoaderOnLoad;
   }
 
   interface Files {
-    createLoader(options: FilesLoaderOptions): void
-    path: string
+    createLoader(options: FilesLoaderOptions): void;
+    path: string;
   }
 
   interface HTTPHeaders {
@@ -49,82 +43,82 @@ declare module "@mocks-server/core" {
   }
 
   interface JsonVariantOptions {
-    status: number,
+    status: number;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    body: object | [],
-    headers?: HTTPHeaders,
+    body: object | [];
+    headers?: HTTPHeaders;
   }
 
   interface TextVariantOptions {
-    status: number,
-    body: string,
-    headers?: HTTPHeaders,
+    status: number;
+    body: string;
+    headers?: HTTPHeaders;
   }
 
   interface StatusVariantOptions {
-    status: number,
+    status: number;
   }
 
   interface RouteVariant {
-    id: string,
-    type: RouteVariantTypes
-    options: JsonVariantOptions | TextVariantOptions | StatusVariantOptions,
+    id: string;
+    type: RouteVariantTypes;
+    options: JsonVariantOptions | TextVariantOptions | StatusVariantOptions;
   }
 
-  type RouteVariants = RouteVariant[] | null
+  type RouteVariants = RouteVariant[] | null;
 
   interface Route {
-    id: string,
-    url: string,
-    method: OpenAPIV3.HttpMethods,
-    variants: RouteVariants,
+    id: string;
+    url: string;
+    method: OpenAPIV3.HttpMethods;
+    variants: RouteVariants;
   }
 
   interface Collection {
-    id: string,
-    from: string,
-    routes: string[],
+    id: string;
+    from: string;
+    routes: string[];
   }
 
   interface OptionProperties {
-    description: string,
-    name: string,
-    type: string,
-    default?: unknown,
-    nullable?: boolean,
+    description: string;
+    name: string;
+    type: string;
+    default?: unknown;
+    nullable?: boolean;
   }
 
   interface ConfigOption {
-    value: unknown
+    value: unknown;
   }
 
   interface Config {
-    addNamespace(name: string): Config
-    addOptions(options: OptionProperties[]): ConfigOption[]
+    addNamespace(name: string): Config;
+    addOptions(options: OptionProperties[]): ConfigOption[];
   }
 
-  type Routes = Route[]
-  type Collections = Collection[]
+  type Routes = Route[];
+  type Collections = Collection[];
 
   interface MockLoaders {
-    loadRoutes(routes: Routes): void,
-    loadCollections(collections: Collections): void
+    loadRoutes(routes: Routes): void;
+    loadCollections(collections: Collections): void;
   }
 
   interface Mock {
-    createLoaders(): MockLoaders
+    createLoaders(): MockLoaders;
   }
 
   class Alerts extends BaseNestedCollections {
-    set(id: string, value: string, error: Error): CollectionItem
+    set(id: string, value: string, error: Error): CollectionItem;
     flat: CollectionFlatItems;
   }
 
   interface Core {
-    logger: Logger
-    alerts: Alerts
-    files: Files
-    mock: Mock,
-    config: Config,
+    logger: Logger;
+    alerts: Alerts;
+    files: Files;
+    mock: Mock;
+    config: Config;
   }
 }

@@ -16,7 +16,8 @@
     "importsNotUsedAsValues": "error",
     "forceConsistentCasingInFileNames": true,
     "noUnusedParameters": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "strictPropertyInitialization": false
   },
   "include": [
     "src/**/*"

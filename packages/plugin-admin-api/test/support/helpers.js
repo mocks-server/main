@@ -15,7 +15,7 @@ const deepMerge = require("deepmerge");
 const crossFetch = require("cross-fetch");
 const waitOn = require("wait-on");
 
-const Core = require("@mocks-server/core");
+const { Core } = require("@mocks-server/core");
 
 const Spawn = require("./Spawn");
 const AdminApiPlugin = require("../../index");

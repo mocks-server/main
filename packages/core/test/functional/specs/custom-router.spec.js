@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 
-const Core = require("../../../index");
+const { Core } = require("../../../src/index");
 const { doFetch, fixturesFolder, waitForServer, removeConfigFile } = require("../support/helpers");
 
 describe("when using custom router", () => {

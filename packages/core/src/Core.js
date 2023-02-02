@@ -255,4 +255,4 @@ class Core {
   }
 }
 
-module.exports = Core;
+module.exports = { Core };

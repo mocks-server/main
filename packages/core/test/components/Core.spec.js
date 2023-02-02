@@ -20,7 +20,7 @@ const FilesLoadersMocks = require("./files/FilesLoaders.mocks.js");
 const ScaffoldMocks = require("./scaffold/Scaffold.mocks.js");
 const UpdateNotifierMock = require("./update-notifier/UpdateNotifier.mock.js");
 
-const Core = require("../../src/Core");
+const { Core } = require("../../src/Core");
 const Alerts = require("../../src/alerts/Alerts");
 const { version } = require("../../package.json");
 

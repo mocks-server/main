@@ -10,9 +10,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-const Json = require("./Json");
-
-class Text extends Json {
+// TODO, extend from common class JSON and this one (or partial from JSON)
+class Text {
   static get id() {
     return "text";
   }
@@ -39,6 +38,27 @@ class Text extends Json {
       },
       required: ["status", "body"],
       additionalProperties: false,
+    };
+  }
+
+  constructor(options, core) {
+    this._options = options;
+    this._logger = core.logger;
+    this._core = core;
+  }
+
+  middleware(req, res) {
+    this._logger.debug(`Setting headers | req: ${req.id}`);
+    res.set({ ...this.defaultHeaders, ...this._options.headers });
+    res.status(this._options.status);
+    this._logger.verbose(`Sending response | req: ${req.id}`);
+    res.send(this._options.body);
+  }
+
+  get preview() {
+    return {
+      body: this._options.body,
+      status: this._options.status,
     };
   }
 }

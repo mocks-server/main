@@ -30,11 +30,14 @@
     "access": "public"
   },
   "files": [
-    "src",
-    "index.js"
+    "dist",
+    "scaffold"
   ],
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsc",
+    "pretest:unit": "npm run build",
     "test:unit": "jest --runInBand"
   },
   "dependencies": {

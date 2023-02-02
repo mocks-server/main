@@ -14,7 +14,7 @@ const crossFetch = require("cross-fetch");
 const waitOn = require("wait-on");
 const fsExtra = require("fs-extra");
 
-const Core = require("../../../index");
+const { Core } = require("../../../src/index");
 
 const SERVER_PORT = 3100;
 const FIXTURES_PATH = path.resolve(__dirname, "..", "fixtures");

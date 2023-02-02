@@ -19,7 +19,7 @@
         "packages/config/index.js"
       ],
       "@mocks-server/core": [
-        "packages/core/index.js"
+        "packages/core/dist/index.js"
       ],
       "@mocks-server/cypress-commands/*": [
         "packages/cypress-commands/*"

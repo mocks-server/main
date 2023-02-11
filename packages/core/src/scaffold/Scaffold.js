@@ -18,11 +18,12 @@ const READ_WRITE_FILE_OPTIONS = {
   encoding: "utf8",
 };
 
+const TEMPLATES_PATH = path.resolve(__dirname, "..", "..", "templates", "scaffold");
 const FILES_SCAFFOLD_PATH = path.resolve(__dirname, "..", "..", "scaffold", "mocks");
 const DEFAULT_CONFIG_FILE = "mocks.config.js";
 
 function readTemplate(fileName) {
-  return fsExtra.readFile(path.resolve(__dirname, fileName), READ_WRITE_FILE_OPTIONS);
+  return fsExtra.readFile(path.resolve(TEMPLATES_PATH, fileName), READ_WRITE_FILE_OPTIONS);
 }
 
 function ensureQuotes(varName) {

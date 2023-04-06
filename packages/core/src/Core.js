@@ -19,7 +19,7 @@ const Mock = require("./mock/Mock");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
 const FilesLoaders = require("./files/FilesLoaders");
-const Scaffold = require("./scaffold/Scaffold");
+const { Scaffold } = require("./scaffold/Scaffold");
 const Alerts = require("./alerts/Alerts");
 const UpdateNotifier = require("./update-notifier/UpdateNotifier");
 const { CHANGE_MOCK, CHANGE_ALERTS } = require("./common/events");
@@ -193,7 +193,7 @@ class Core {
 
     // TODO, add to data model
     await this._scaffold.init({
-      filesLoaderPath: this._filesLoader.path,
+      folderPath: this._filesLoader.path,
     });
 
     await this._loadConfig();

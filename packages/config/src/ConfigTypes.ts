@@ -138,6 +138,8 @@ export interface NamespaceProperties {
   isRoot?: true;
 }
 
+export type NamespaceName = string;
+
 /** Creates a namespace */
 
 export interface NamespaceConstructor {
@@ -147,7 +149,7 @@ export interface NamespaceConstructor {
    * @returns Config interface {@link NamespaceInterface}.
    * @example const namespace = new Namespace("foo", { root: config, brothers: [namespace_x, namespace_y], isRoot: true })
    */
-  new (name: string, options: NamespaceProperties): NamespaceInterface;
+  new (name: NamespaceName, options: NamespaceProperties): NamespaceInterface;
 }
 
 /** Config namespace */

@@ -1,6 +1,12 @@
 import type { ObjectWithName, AnyObject } from "./CommonTypes";
 import type { EventListener, EventListenerRemover } from "./EventsTypes";
 
+/** Option name */
+export type OptionName = string;
+
+/** Option description */
+export type OptionDescription = string;
+
 /** Possible value types */
 export type OptionType = "string" | "number" | "boolean" | "object" | "array" | "null";
 /** Possible value types inside an array */
@@ -21,11 +27,11 @@ export type OptionExtraData = AnyObject;
 /** Properties for creating an option */
 export interface BaseOptionProperties extends ObjectWithName {
   /** Name for the option */
-  name: string;
+  name: OptionName;
   /** Type of the option value */
   type: OptionType;
   /** Option description */
-  description?: string;
+  description?: OptionDescription;
   /** Default value */
   default?: OptionValue;
   /** Value is nullable */

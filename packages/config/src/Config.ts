@@ -22,12 +22,20 @@ import { Environment } from "./Environment";
 import { Files } from "./Files";
 import { Namespace } from "./Namespace";
 import { checkNamespaceName, findObjectWithName, getNamespacesValues } from "./namespaces";
+import {
+  CONFIG_NAMESPACE,
+  READ_FILE_OPTION,
+  READ_ARGUMENTS_OPTION,
+  READ_ENVIRONMENT_OPTION,
+  FILE_SEARCH_PLACES_OPTION,
+  FILE_SEARCH_FROM_OPTION,
+  FILE_SEARCH_STOP_OPTION,
+  ALLOW_UNKNOWN_ARGUMENTS_OPTION,
+} from "./Options";
 import { avoidArraysMerge, STRING_TYPE, BOOLEAN_TYPE, ARRAY_TYPE } from "./typing";
 import { validateConfigAndThrow, validateConfig, getValidationSchema } from "./validation";
 
 const ROOT_NAMESPACE = "_rootOptions";
-
-const CONFIG_NAMESPACE = "config";
 
 export const Config: ConfigConstructor = class Config implements ConfigInterface {
   private _initializated: boolean;
@@ -94,41 +102,41 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
       this._allowUnknownArguments,
     ] = this._configNamespace.addOptions([
       {
-        name: "readFile",
+        name: READ_FILE_OPTION,
         description: "Read configuration file or not",
         type: BOOLEAN_TYPE,
         default: true,
       },
       {
-        name: "readArguments",
+        name: READ_ARGUMENTS_OPTION,
         description: "Read command line arguments or not",
         type: BOOLEAN_TYPE,
         default: true,
       },
       {
-        name: "readEnvironment",
+        name: READ_ENVIRONMENT_OPTION,
         description: "Read environment or not",
         type: BOOLEAN_TYPE,
         default: true,
       },
       {
-        name: "fileSearchPlaces",
+        name: FILE_SEARCH_PLACES_OPTION,
         description: "An array of places to search for the configuration file",
         type: ARRAY_TYPE,
         itemsType: STRING_TYPE,
       },
       {
-        name: "fileSearchFrom",
+        name: FILE_SEARCH_FROM_OPTION,
         description: "Start searching for the configuration file from this folder",
         type: STRING_TYPE,
       },
       {
-        name: "fileSearchStop",
+        name: FILE_SEARCH_STOP_OPTION,
         description: "Directory where the search for the configuration file will stop",
         type: STRING_TYPE,
       },
       {
-        name: "allowUnknownArguments",
+        name: ALLOW_UNKNOWN_ARGUMENTS_OPTION,
         description: "Allow unknown arguments",
         type: BOOLEAN_TYPE,
         default: false,

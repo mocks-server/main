@@ -12,7 +12,7 @@ const sinon = require("sinon");
 
 jest.mock("../../../src/scaffold/Scaffold");
 
-const Scaffold = require("../../../src/scaffold/Scaffold");
+const { Scaffold } = require("../../../src/scaffold/Scaffold");
 
 class Mock {
   constructor() {

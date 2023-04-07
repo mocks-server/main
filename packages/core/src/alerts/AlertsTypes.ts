@@ -1,0 +1,68 @@
+/*
+Copyright 2023 Javier Brea
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+*/
+
+import type { LoggerInterface } from "@mocks-server/logger";
+import type {
+  CollectionBaseInterface,
+  CollectionId,
+  CollectionItem,
+  CollectionOptions,
+} from "@mocks-server/nested-collections";
+
+export type AlertMessage = string;
+export type AlertError = Error;
+export type AlertId = CollectionId;
+export type Alert = CollectionItem;
+export type AlertFlat = CollectionItem & { error?: AlertError };
+export type AlertsFlat = AlertFlat[];
+export type AlertsId = string;
+
+export interface AlertsOptions extends CollectionOptions {
+  /** Logger */
+  logger: LoggerInterface;
+}
+
+/** Options for creating an Alerts interface */
+export interface AlertsOptionsInterface {
+  /**
+   * Creates an Alerts interface
+   * @returns Alerts interface {@link AlertsInterface}.
+   * @example const alerts = new Alerts("foo", { logger });
+   */
+  new (id: AlertsId, options?: AlertsOptions): AlertsInterface;
+}
+
+/** Creates an Alerts interface */
+export interface AlertsConstructorInterface {
+  /**
+   * Creates an Alerts interface
+   * @returns Alerts interface {@link AlertsInterface}.
+   * @example const alerts = new Alerts("foo", { logger });
+   */
+  new (id: AlertsId): AlertsInterface;
+}
+
+/** Alerts interface */
+export interface AlertsInterface extends CollectionBaseInterface {
+  /**
+   * Set an alert. If an alert with the same id already exists, it will be replaced
+   * @example alerts.set("foo", "Foo alert", new Error("Foo alert error")));
+   */
+  set(id: AlertId, message: AlertMessage, error?: AlertError): Alert;
+
+  /**
+   * Removes an alert.
+   * @example alerts.remove("foo");
+   */
+  remove(id: AlertId): void;
+
+  /** All collection items and children collection items in a flat array **/
+  get flat(): AlertsFlat;
+}

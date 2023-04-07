@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const { Logger } = require("@mocks-server/logger");
 
-const Alerts = require("../../../src/alerts/Alerts");
+const { Alerts } = require("../../../src/alerts/Alerts");
 
 describe("Alerts", () => {
   let sandbox;
@@ -29,6 +29,14 @@ describe("Alerts", () => {
 
   afterEach(() => {
     sandbox.restore();
+  });
+
+  describe("constructor", () => {
+    it("should throw an error if no options are provided", async () => {
+      expect(() => {
+        new Alerts("foo");
+      }).toThrow("Alerts options are required");
+    });
   });
 
   describe("set method", () => {

@@ -68,5 +68,8 @@
   },
   "engines": {
     "node": ">=14.x"
+  },
+  "devDependencies": {
+    "@types/update-notifier": "6.0.2"
   }
 }

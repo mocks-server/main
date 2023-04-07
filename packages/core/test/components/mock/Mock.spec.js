@@ -15,7 +15,7 @@ const { Logger } = require("@mocks-server/logger");
 const CollectionMock = require("./Collection.mock");
 const LoadersMock = require("./Loaders.mocks");
 
-const Alerts = require("../../../src/alerts/Alerts");
+const { Alerts } = require("../../../src/alerts/Alerts");
 const Mock = require("../../../src/mock/Mock");
 const ConfigMock = require("../common/Config.mocks");
 

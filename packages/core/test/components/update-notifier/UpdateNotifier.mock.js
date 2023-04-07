@@ -12,7 +12,7 @@ const sinon = require("sinon");
 
 jest.mock("../../../src/update-notifier/UpdateNotifier");
 
-const UpdateNotifier = require("../../../src/update-notifier/UpdateNotifier");
+const { UpdateNotifier } = require("../../../src/update-notifier/UpdateNotifier");
 
 class Mock {
   constructor() {

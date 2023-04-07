@@ -10,8 +10,7 @@ export interface ObjectWithId {
   id: CollectionId;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type CollectionItemValue = any;
+export type CollectionItemValue = unknown;
 
 export interface CollectionItem extends ObjectWithId {
   value: CollectionItemValue;
@@ -142,6 +141,6 @@ export interface CollectionInterface extends CollectionBaseInterface {
    */
   set(id: CollectionId, value: CollectionItemValue): CollectionItem;
 
-  /** All collection items and children collection items in a flat array. Overwrite this method in the Decorator if you need to implement your own flat method **/
+  /** All collection items and children collection items in a flat array. Overwrite this method if you need to implement your own flat method **/
   flat: CollectionFlatItems;
 }

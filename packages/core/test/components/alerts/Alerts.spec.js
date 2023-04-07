@@ -73,6 +73,14 @@ describe("Alerts", () => {
       expect(logger.debug.calledWith("foo-stack")).toEqual(true);
     });
 
+    it("should not trace error stack if error has no stack", async () => {
+      const FOO_ERROR = new Error("Foo error message");
+      FOO_ERROR.stack = null;
+      alerts.set("foo", "Foo message", FOO_ERROR);
+      expect(logger.error.calledWith("Foo message: Foo error message")).toEqual(true);
+      expect(logger.debug.callCount).toEqual(0);
+    });
+
     it("should trace warn if alert is called without error", async () => {
       alerts.set("foo", "Foo message");
       expect(logger.warn.calledWith("Foo message")).toEqual(true);

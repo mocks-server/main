@@ -46,7 +46,9 @@ export const Alerts: AlertsConstructorInterface = class Alerts
     this._logger.silly(`Setting alert with id '${id}'`);
     if (error) {
       this._logger.error(`${message}: ${error.message}`);
-      this._logger.debug(error.stack || "");
+      if (error.stack) {
+        this._logger.debug(error.stack);
+      }
     } else {
       this._logger.warn(message);
     }

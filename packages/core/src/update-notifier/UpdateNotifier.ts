@@ -8,6 +8,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
+import path from "path";
+
+import { readJsonSync } from "fs-extra";
 import updateNotifier from "update-notifier";
 import type { Package } from "update-notifier";
 
@@ -17,7 +20,6 @@ import type {
   UpdateNotifierOptions,
 } from "./UpdateNotifierTypes";
 
-import packageJson from "../../package.json";
 import type { AlertsInterface } from "../alerts/AlertsTypes";
 
 export const UpdateNotifier: UpdateNotifierConstructor = class UpdateNotifier
@@ -33,6 +35,7 @@ export const UpdateNotifier: UpdateNotifierConstructor = class UpdateNotifier
 
   constructor({ alerts, pkg }: UpdateNotifierOptions) {
     this._alerts = alerts;
+    const packageJson = readJsonSync(path.resolve(__dirname, "..", "..", "package.json"));
     this._package = pkg || packageJson;
     this._notifier = updateNotifier({
       pkg: this._package,

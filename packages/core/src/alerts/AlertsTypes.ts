@@ -20,9 +20,21 @@ export type AlertMessage = string;
 export type AlertError = Error;
 export type AlertId = CollectionId;
 export type Alert = CollectionItem;
-export type AlertFlat = CollectionItem & { error?: AlertError };
-export type AlertsFlat = AlertFlat[];
 export type AlertsId = string;
+
+export interface AlertValue {
+  /** Alert message */
+  message: AlertMessage;
+  /** Alert error */
+  error?: AlertError;
+}
+
+export interface AlertFlat extends AlertValue {
+  /** Alert id */
+  id: AlertId;
+}
+
+export type AlertsFlat = AlertFlat[];
 
 export interface AlertsOptions extends CollectionOptions {
   /** Logger */

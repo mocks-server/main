@@ -8,7 +8,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-import type { CollectionInterface } from "@mocks-server/nested-collections";
 import updateNotifier from "update-notifier";
 import type { Package } from "update-notifier";
 
@@ -19,12 +18,13 @@ import type {
 } from "./UpdateNotifierTypes";
 
 import packageJson from "../../package.json";
+import type { AlertsInterface } from "../alerts/AlertsTypes";
 
 export const UpdateNotifier: UpdateNotifierConstructor = class UpdateNotifier
   implements UpdateNotifierInterface
 {
   private _package: Package;
-  private _alerts: CollectionInterface;
+  private _alerts: AlertsInterface;
   private _notifier: ReturnType<typeof updateNotifier>;
 
   static get id() {

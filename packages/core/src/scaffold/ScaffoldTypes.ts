@@ -10,7 +10,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type { ConfigInterface, OptionValue, OptionDescription } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
-import type { CollectionInterface } from "@mocks-server/nested-collections";
+
+import type { AlertsInterface } from "../alerts/AlertsTypes";
 
 export type ConfigVarName = string;
 export type ConfigVarNameWithQuotes = `"${ConfigVarName}"`;
@@ -57,7 +58,7 @@ export interface ScaffoldOptions {
   /** Config */
   config: ConfigInterface;
   /** Alerts */
-  alerts: CollectionInterface;
+  alerts: AlertsInterface;
   /** Logger */
   logger: LoggerInterface;
 }

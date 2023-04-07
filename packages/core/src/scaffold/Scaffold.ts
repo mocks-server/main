@@ -21,7 +21,6 @@ import {
   OptionValue,
 } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
-import type { CollectionInterface } from "@mocks-server/nested-collections";
 import { readFile, writeFile, copy, existsSync } from "fs-extra";
 import handlebars from "handlebars";
 import { isUndefined, compact } from "lodash";
@@ -42,6 +41,7 @@ import type {
   OptionTemplateData,
 } from "./ScaffoldTypes";
 
+import type { AlertsInterface } from "../alerts/AlertsTypes";
 import { FILES_NAMESPACE, ENABLED_OPTION } from "../files/Options";
 import { MOCK_NAMESPACE, COLLECTIONS_NAMESPACE, SELECTED_COLLECTION } from "../mock/Options";
 
@@ -168,7 +168,7 @@ function parseNamespacesForTemplates(
 export const Scaffold: ScaffoldConstructor = class Scaffold implements ScaffoldInterface {
   private _logger: LoggerInterface;
   private _config: ConfigInterface;
-  private _alerts: CollectionInterface;
+  private _alerts: AlertsInterface;
   private _readConfigFileOption: OptionInterface;
   private _filesEnabledOption: OptionInterface;
   private _collectionSelectedOption: OptionInterface;

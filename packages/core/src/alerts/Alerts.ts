@@ -9,7 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 import type { LoggerInterface } from "@mocks-server/logger";
-import { BaseNestedCollections } from "@mocks-server/nested-collections";
+import { BaseNestedCollections, CollectionFlatItem } from "@mocks-server/nested-collections";
 
 import type {
   AlertsId,
@@ -21,6 +21,8 @@ import type {
   Alert,
   AlertsOptions,
   AlertsFlat,
+  AlertValue,
+  AlertFlat,
 } from "./AlertsTypes";
 
 const ALERTS_ROOT_ID = "alerts";
@@ -57,18 +59,18 @@ export const Alerts: AlertsConstructorInterface = class Alerts
   }
 
   get flat(): AlertsFlat {
-    return this._flat.map((item) => {
-      if (item.collection) {
-        const collectionPaths = item.collection.split(ID_SEP);
-        if (collectionPaths[0] === ALERTS_ROOT_ID) {
-          collectionPaths.shift();
-        }
-
-        return {
-          ...item.value,
-          id: [...collectionPaths, item.id].join(ID_SEP),
-        };
+    return this._flat.map((item: CollectionFlatItem): AlertFlat => {
+      const collection = item.collection as string;
+      const collectionPaths = collection.split(ID_SEP);
+      if (collectionPaths[0] === ALERTS_ROOT_ID) {
+        collectionPaths.shift();
       }
+      const value = item.value as AlertValue;
+
+      return {
+        ...value,
+        id: [...collectionPaths, item.id].join(ID_SEP),
+      };
     });
   }
 };

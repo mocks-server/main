@@ -6,7 +6,7 @@ on:
     branches:
       - master
       - release
-      - migrate-config-to-ts
+      - refactor/typescript-migration
   pull_request:
 jobs:
   get-affected:

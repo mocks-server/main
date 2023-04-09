@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/logger",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Namespaced logger",
   "keywords": [
     "log",
@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "chalk": "4.1.1",
-    "winston": "3.8.1",
+    "winston": "3.8.2",
     "winston-array-transport": "1.1.10"
   },
   "engines": {

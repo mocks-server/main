@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/core",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Pluggable mock server supporting multiple route variants and mocks",
   "keywords": [
     "mocks",
@@ -58,7 +58,7 @@
     "lodash": "4.17.21",
     "node-watch": "0.7.3",
     "update-notifier": "5.1.0",
-    "winston": "3.8.1",
+    "winston": "3.8.2",
     "winston-array-transport": "1.1.10",
     "yaml": "2.1.1"
   },

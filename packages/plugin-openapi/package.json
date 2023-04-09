@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/plugin-openapi",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Mocks server plugin allowing to create routes and collections from OpenApi definitions",
   "keywords": [
     "mocks-server-plugin",
@@ -35,7 +35,7 @@
     "@mocks-server/core": ">=4.0.0 <5.x"
   },
   "dependencies": {
-    "openapi-types": "12.0.0",
+    "openapi-types": "12.0.2",
     "json-refs": "3.0.15"
   },
   "devDependencies": {

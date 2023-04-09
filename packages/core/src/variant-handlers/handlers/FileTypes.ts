@@ -22,6 +22,8 @@ export interface VariantHandlerFilePreview {
 export interface VariantHandlerFileOptions extends VariantHandlerBaseConstructorOptions {
   /** Path to the file to be served */
   path: string;
+  /** Response status to send */
+  status: number;
 }
 
 /** Creates a File variant handler interface */

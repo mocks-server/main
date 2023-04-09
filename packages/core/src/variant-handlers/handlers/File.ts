@@ -10,10 +10,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import path from "path";
 
+import type { LoggerInterface } from "@mocks-server/logger";
+
 import type {
   VariantHandlerFileConstructor,
   VariantHandlerFileInterface,
   VariantHandlerFileOptions,
+  VariantHandlerFilePreview,
 } from "./FileTypes";
 
 import type { CoreInterface } from "../../CoreTypes";
@@ -25,6 +28,10 @@ const DEFAULT_EXPRESS_OPTIONS = {
 export const VariantHandlerFile: VariantHandlerFileConstructor = class VariantHandlerFile
   implements VariantHandlerFileInterface
 {
+  private _options: VariantHandlerFileOptions;
+  private _absPath: string;
+  private _logger: LoggerInterface;
+
   static get id() {
     return "file";
   }
@@ -56,7 +63,6 @@ export const VariantHandlerFile: VariantHandlerFileConstructor = class VariantHa
     this._expressOptions = { ...DEFAULT_EXPRESS_OPTIONS, ...this._options.options };
     this._absPath = path.resolve(this._expressOptions.root, this._options.path);
     this._logger = core.logger;
-    this._core = core;
   }
 
   middleware(req, res, next) {
@@ -66,7 +72,7 @@ export const VariantHandlerFile: VariantHandlerFileConstructor = class VariantHa
     }
     res.status(this._options.status);
     this._logger.verbose(`Sending file '${this._absPath}' | req: ${req.id}`);
-    res.sendFile(this._options.path, this._expressOptions, (err) => {
+    res.sendFile(this._options.path, this._expressOptions, (err?: Error) => {
       if (err) {
         this._logger.error(
           `Error sending file '${this._absPath}' | req: ${req.id} | Error: ${err.message}`
@@ -76,7 +82,7 @@ export const VariantHandlerFile: VariantHandlerFileConstructor = class VariantHa
     });
   }
 
-  get preview() {
+  get preview(): VariantHandlerFilePreview {
     return {
       status: this._options.status,
     };

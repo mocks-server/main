@@ -55,7 +55,7 @@
     "cypress": "9.7.0",
     "cypress-fail-fast": "3.4.1",
     "deepmerge": "4.2.2",
-    "eslint": "8.22.0",
+    "eslint": "8.24.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-import-resolver-typescript": "3.5.3",
     "eslint-plugin-import": "2.27.5",

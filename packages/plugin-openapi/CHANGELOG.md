@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - refactor: Refactor types
 
+## [2.0.1] - 2023-04-09
+
+### Fixed
+- fix(#464): Fix conversion of paths with multiple parameters
+
 ## [2.0.0] - 2022-09-14
 
 ### Changed

@@ -15,7 +15,7 @@ function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
 
 function replaceTemplateInPath(path: string): string {
   // /api/users/{userId} -> api/users/:userId
-  return path.replace(/{(\S*)}/gim, ":$1")
+  return path.replace(/{(\S*?)}/gim, ":$1")
 }
 
 function pathToId(path: string): string {

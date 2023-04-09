@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### Breaking change
 
+## [4.0.1] - 2023-04-09
+
+### Fixed
+- chore(deps): Update OpenAPI plugin to 2.0.1. Fix conversion of paths with multiple parameters in OpenAPI plugin. (#464)
+
 ## [4.0.0] - 2022-09-14
 
 ### Changed

@@ -90,6 +90,7 @@ export interface ScaffoldConstructor {
 export interface ScaffoldInterface {
   /**
    * Initializes the scaffold. Creates config files and example files
+   * @param options - Init scaffold options {@link ScaffoldInitOptions}
    * @example scaffold.init({ folderPath: "/path/to/folder" });
    */
   init(options: ScaffoldInitOptions): Promise<void>;

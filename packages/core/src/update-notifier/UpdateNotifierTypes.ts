@@ -27,6 +27,7 @@ export interface UpdateNotifierConstructor {
   id: string;
   /**
    * Creates an UpdateNotifier interface
+   * @param options - Update notifier options {@link UpdateNotifierOptions}
    * @returns UpdateNotifier interface {@link UpdateNotifierInterface}.
    * @example const updateNotifier = new UpdateNotifier({ alerts, pkg });
    */

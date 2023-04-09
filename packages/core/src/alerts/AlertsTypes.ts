@@ -41,20 +41,11 @@ export interface AlertsOptions extends CollectionOptions {
   logger: LoggerInterface;
 }
 
-/** Options for creating an Alerts interface */
-export interface AlertsOptionsInterface {
-  /**
-   * Creates an Alerts interface
-   * @returns Alerts interface {@link AlertsInterface}.
-   * @example const alerts = new Alerts("foo", { logger });
-   */
-  new (id: AlertsId, options?: AlertsOptions): AlertsInterface;
-}
-
 /** Creates an Alerts interface */
 export interface AlertsConstructorInterface {
   /**
    * Creates an Alerts interface
+   * @param id - Id for the alerts collection
    * @returns Alerts interface {@link AlertsInterface}.
    * @example const alerts = new Alerts("foo", { logger });
    */
@@ -65,12 +56,16 @@ export interface AlertsConstructorInterface {
 export interface AlertsInterface extends CollectionBaseInterface {
   /**
    * Set an alert. If an alert with the same id already exists, it will be replaced
+   * @param id - Alert id {@link AlertId}.
+   * @param message - Alert message {@link AlertMessage}.
+   * @param error - Alert error {@link AlertError}.
    * @example alerts.set("foo", "Foo alert", new Error("Foo alert error")));
    */
   set(id: AlertId, message: AlertMessage, error?: AlertError): Alert;
 
   /**
    * Removes an alert.
+   * @param id - Alert id {@link AlertId}.
    * @example alerts.remove("foo");
    */
   remove(id: AlertId): void;

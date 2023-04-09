@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const CoreMocks = require("../../Core.mocks.js");
-const File = require("../../../../src/variant-handlers/handlers/File");
+const { VariantHandlerFile: File } = require("../../../../src/variant-handlers/handlers/File");
 
 describe("File variant handler", () => {
   const FOO_VARIANT = {

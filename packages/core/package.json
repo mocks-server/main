@@ -70,6 +70,7 @@
     "node": ">=14.x"
   },
   "devDependencies": {
+    "@types/express": "4.17.17",
     "@types/update-notifier": "6.0.2"
   }
 }

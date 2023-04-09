@@ -11,15 +11,18 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import path from "path";
 
 import type { LoggerInterface } from "@mocks-server/logger";
+import type { JSONSchema7 } from "json-schema";
 
 import type {
   VariantHandlerFileConstructor,
   VariantHandlerFileInterface,
   VariantHandlerFileOptions,
   VariantHandlerFilePreview,
+  VariantHandlerFileOptionsExpressWithRoot,
 } from "./FileTypes";
 
 import type { CoreInterface } from "../../CoreTypes";
+import type { NextFunction, Request, Response } from "../../server/ServerTypes";
 
 const DEFAULT_EXPRESS_OPTIONS = {
   root: path.resolve(process.cwd()),
@@ -31,12 +34,13 @@ export const VariantHandlerFile: VariantHandlerFileConstructor = class VariantHa
   private _options: VariantHandlerFileOptions;
   private _absPath: string;
   private _logger: LoggerInterface;
+  private _expressOptions: VariantHandlerFileOptionsExpressWithRoot;
 
-  static get id() {
+  static get id(): string {
     return "file";
   }
 
-  static get validationSchema() {
+  static get validationSchema(): JSONSchema7 {
     return {
       type: "object",
       properties: {
@@ -65,14 +69,14 @@ export const VariantHandlerFile: VariantHandlerFileConstructor = class VariantHa
     this._logger = core.logger;
   }
 
-  middleware(req, res, next) {
+  middleware(req: Request, res: Response, next: NextFunction): void {
     if (this._options.headers) {
       this._logger.debug(`Setting headers | req: ${req.id}`);
       res.set(this._options.headers);
     }
     res.status(this._options.status);
     this._logger.verbose(`Sending file '${this._absPath}' | req: ${req.id}`);
-    res.sendFile(this._options.path, this._expressOptions, (err?: Error) => {
+    res.sendFile(this._options.path, this._expressOptions, (err?: Error): void => {
       if (err) {
         this._logger.error(
           `Error sending file '${this._absPath}' | req: ${req.id} | Error: ${err.message}`

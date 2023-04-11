@@ -2,6 +2,7 @@ import type {
   NextFunction as ExpressNextFunction,
   Request as ExpressRequest,
   Response as ExpressResponse,
+  RequestHandler as ExpressRequestHandler,
 } from "express";
 
 /** Express next function */
@@ -15,3 +16,5 @@ export interface Request extends ExpressRequest {
   /** Request id, added by the "express-request-id" middleware */
   id: string;
 }
+
+export type RequestHandler = ExpressRequestHandler;

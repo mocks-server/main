@@ -11,7 +11,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import path from "path";
 
 import type { LoggerInterface } from "@mocks-server/logger";
-import type { JSONSchema7 } from "json-schema";
 
 import type {
   VariantHandlerFileConstructor,
@@ -22,6 +21,7 @@ import type {
 } from "./FileTypes";
 
 import type { CoreInterface } from "../../CoreTypes";
+import type { JSONSchema7WithInstanceof } from "../../mock/ValidationsTypes";
 import type { NextFunction, Request, Response } from "../../server/ServerTypes";
 
 const DEFAULT_EXPRESS_OPTIONS = {
@@ -40,7 +40,7 @@ export const VariantHandlerFile: VariantHandlerFileConstructor = class VariantHa
     return "file";
   }
 
-  static get validationSchema(): JSONSchema7 {
+  static get validationSchema(): JSONSchema7WithInstanceof {
     return {
       type: "object",
       properties: {

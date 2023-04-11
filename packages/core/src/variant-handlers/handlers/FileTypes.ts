@@ -58,14 +58,14 @@ export interface VariantHandlerFileOptions extends VariantHandlerBaseConstructor
   options?: VariantHandlerFileOptionsExpress;
 }
 
-/** Creates a File variant handler interface */
+/** Creates an interface of a variant handler of type file */
 export interface VariantHandlerFileConstructor extends VariantHandlerBaseConstructor {
   /**
-   * Creates a File variant handler interface
+   * Creates an interface of a variant handler of type file
    * @param options - File variant handler options {@link VariantHandlerFileOptions}
    * @param core - Mocks-server core interface {@link CoreInterface}
    * @returns Interface of variant handler of type file {@link VariantHandlerFileInterface}.
-   * @example const fileVariantHandler = new FileVariantHandler();
+   * @example const fileVariantHandler = new FileVariantHandler({path: "path/to/file", status: 200}, core);
    */
   new (options: VariantHandlerFileOptions, core: CoreInterface): VariantHandlerFileInterface;
 }

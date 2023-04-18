@@ -13,7 +13,7 @@ const sinon = require("sinon");
 const LibsMocks = require("../../common/Libs.mocks");
 const CoreMocks = require("../../Core.mocks.js");
 
-const Static = require("../../../../src/variant-handlers/handlers/Static");
+const { VariantHandlerStatic } = require("../../../../src/variant-handlers/handlers/Static");
 
 describe("Static variant handler", () => {
   let sandbox;
@@ -39,7 +39,7 @@ describe("Static variant handler", () => {
         options,
       };
     });
-    routesHandler = new Static({}, coreInstance);
+    routesHandler = new VariantHandlerStatic({}, coreInstance);
   });
 
   afterEach(() => {
@@ -50,31 +50,31 @@ describe("Static variant handler", () => {
 
   describe("id", () => {
     it("should have static value", () => {
-      expect(Static.id).toEqual("static");
+      expect(VariantHandlerStatic.id).toEqual("static");
     });
   });
 
   describe("validationSchema", () => {
     it("should be defined", () => {
-      expect(Static.validationSchema).toBeDefined();
+      expect(VariantHandlerStatic.validationSchema).toBeDefined();
     });
   });
 
   describe("preview", () => {
-    it("should not be defined", () => {
-      expect(routesHandler.preview).toEqual(undefined);
+    it("should be null", () => {
+      expect(routesHandler.preview).toEqual(null);
     });
   });
 
   describe("router", () => {
     it("should pass path option to express static", () => {
-      const handler = new Static({ path: "foo-path" }, coreInstance);
+      const handler = new VariantHandlerStatic({ path: "foo-path" }, coreInstance);
       const router = handler.router;
       expect(router.path).toEqual("foo-path");
     });
 
     it("should add headers from object in options when defined", () => {
-      const handler = new Static({ headers: { foo: "foo" } }, coreInstance);
+      const handler = new VariantHandlerStatic({ headers: { foo: "foo" } }, coreInstance);
       const router = handler.router;
       const staticOptions = router.options;
       staticOptions.setHeaders(expressStubs.res);
@@ -82,7 +82,10 @@ describe("Static variant handler", () => {
     });
 
     it("should add headers from express setHeaders option when defined", () => {
-      const handler = new Static({ options: { setHeaders: "foo-method" } }, coreInstance);
+      const handler = new VariantHandlerStatic(
+        { options: { setHeaders: "foo-method" } },
+        coreInstance
+      );
       const router = handler.router;
       const staticOptions = router.options;
       expect(staticOptions.setHeaders).toEqual("foo-method");

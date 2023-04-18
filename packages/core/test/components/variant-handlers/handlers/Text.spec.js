@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const CoreMocks = require("../../Core.mocks.js");
-const Text = require("../../../../src/variant-handlers/handlers/Text");
+const { VariantHandlerText } = require("../../../../src/variant-handlers/handlers/Text");
 
 describe("Text variant handler", () => {
   const FOO_VARIANT = {
@@ -39,7 +39,7 @@ describe("Text variant handler", () => {
     };
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
-    routesHandler = new Text(FOO_VARIANT, coreInstance);
+    routesHandler = new VariantHandlerText(FOO_VARIANT, coreInstance);
   });
 
   afterEach(() => {
@@ -49,17 +49,17 @@ describe("Text variant handler", () => {
 
   describe("id", () => {
     it("should have text value", () => {
-      expect(Text.id).toEqual("text");
+      expect(VariantHandlerText.id).toEqual("text");
     });
   });
 
   describe("validationSchema", () => {
     it("should be defined", () => {
-      expect(Text.validationSchema).toBeDefined();
+      expect(VariantHandlerText.validationSchema).toBeDefined();
     });
 
     it("should allow strings as body", () => {
-      expect(Text.validationSchema.properties.body.type).toEqual("string");
+      expect(VariantHandlerText.validationSchema.properties.body.type).toEqual("string");
     });
   });
 
@@ -81,14 +81,17 @@ describe("Text variant handler", () => {
 
     it("should add default headers to response", () => {
       const FOO_HEADERS = { "Content-Type": "text/plain; charset=utf-8" };
-      routesHandler = new Text({ ...FOO_VARIANT }, coreInstance);
+      routesHandler = new VariantHandlerText({ ...FOO_VARIANT }, coreInstance);
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
       expect(expressStubs.res.set.getCall(0).args[0]).toEqual(FOO_HEADERS);
     });
 
     it("should add headers to default headers if they are defined in response", () => {
       const FOO_HEADERS = { foo: "foo" };
-      routesHandler = new Text({ ...FOO_VARIANT, headers: FOO_HEADERS }, coreInstance);
+      routesHandler = new VariantHandlerText(
+        { ...FOO_VARIANT, headers: FOO_HEADERS },
+        coreInstance
+      );
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
       expect(expressStubs.res.set.getCall(0).args[0]).toEqual({
         "Content-Type": "text/plain; charset=utf-8",
@@ -98,7 +101,10 @@ describe("Text variant handler", () => {
 
     it("should overwrite default headers if they are defined in response", () => {
       const CUSTOM_HEADERS = { "Content-Type": "text/plain; charset=utf-8", foo: "foo" };
-      routesHandler = new Text({ ...FOO_VARIANT, headers: CUSTOM_HEADERS }, coreInstance);
+      routesHandler = new VariantHandlerText(
+        { ...FOO_VARIANT, headers: CUSTOM_HEADERS },
+        coreInstance
+      );
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
       expect(expressStubs.res.set.getCall(0).args[0]).toEqual(CUSTOM_HEADERS);
     });

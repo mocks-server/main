@@ -28,7 +28,7 @@ const {
 } = require("../../../src/mock/helpers");
 const { compileRouteValidator } = require("../../../src/mock/validations");
 
-const JsonRoutesHandler = require("../../../src/variant-handlers/handlers/Json");
+const { VariantHandlerJson } = require("../../../src/variant-handlers/handlers/Json");
 const { Alerts } = require("../../../src/alerts/Alerts");
 
 describe("mocks helpers", () => {
@@ -70,7 +70,7 @@ describe("mocks helpers", () => {
   let sandbox, alerts, logger, loggerRoutes, alertsRoutes, coreMocks;
 
   beforeAll(() => {
-    compileRouteValidator([JsonRoutesHandler, { id: "foo-handler" }]);
+    compileRouteValidator([VariantHandlerJson, { id: "foo-handler" }]);
   });
 
   beforeEach(() => {
@@ -672,7 +672,7 @@ describe("mocks helpers", () => {
           type: "json",
         },
         variantIndex: 0,
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -695,7 +695,7 @@ describe("mocks helpers", () => {
         route: { id: "foo-route" },
         variant: { id: "foo-variant", type: "json" },
         variantIndex: 0,
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -718,7 +718,7 @@ describe("mocks helpers", () => {
         route: { ...VALID_ROUTE, delay: 3000 },
         variant: VALID_VARIANT,
         variantIndex: 0,
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -726,7 +726,7 @@ describe("mocks helpers", () => {
         loggerRoutes,
       });
 
-      expect(variantHandler).toBeInstanceOf(JsonRoutesHandler);
+      expect(variantHandler).toBeInstanceOf(VariantHandlerJson);
       expect(variantHandler.delay).toEqual(3000);
       expect(variantHandler.id).toEqual("foo-variant");
       expect(variantHandler.variantId).toEqual("foo-route:foo-variant");
@@ -743,7 +743,7 @@ describe("mocks helpers", () => {
           type: "foo-handler",
         },
         variantIndex: 0,
-        routeHandlers: [FooHandler, JsonRoutesHandler],
+        routeHandlers: [FooHandler, VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -761,7 +761,7 @@ describe("mocks helpers", () => {
         route: { ...VALID_ROUTE, delay: 3000 },
         variant: { ...VALID_VARIANT, delay: 5000 },
         variantIndex: 0,
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -778,7 +778,7 @@ describe("mocks helpers", () => {
         route: { ...VALID_ROUTE },
         variant: { ...VALID_VARIANT, disabled: true },
         variantIndex: 0,
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -801,7 +801,7 @@ describe("mocks helpers", () => {
         route: { id: "foo-route" },
         variant: { disabled: true },
         variantIndex: 0,
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -824,7 +824,7 @@ describe("mocks helpers", () => {
         route: { ...VALID_ROUTE, delay: 3000 },
         variant: { id: "foo-variant", disabled: true },
         variantIndex: 0,
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -851,7 +851,7 @@ describe("mocks helpers", () => {
           response: "foo",
         },
         variantIndex: 0,
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -874,7 +874,7 @@ describe("mocks helpers", () => {
         route: { id: "foo-route" },
         variant: { type: "json", id: "foo-variant" },
         variantIndex: 0,
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -897,7 +897,7 @@ describe("mocks helpers", () => {
         route: { ...VALID_ROUTE, delay: 3000 },
         variant: { ...VALID_VARIANT, type: "json" },
         variantIndex: 0,
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -905,7 +905,7 @@ describe("mocks helpers", () => {
         loggerRoutes,
       });
 
-      expect(variantHandler).toBeInstanceOf(JsonRoutesHandler);
+      expect(variantHandler).toBeInstanceOf(VariantHandlerJson);
       expect(variantHandler.delay).toEqual(3000);
       expect(variantHandler.id).toEqual("foo-variant");
       expect(variantHandler.variantId).toEqual("foo-route:foo-variant");
@@ -922,7 +922,7 @@ describe("mocks helpers", () => {
           type: "foo-handler",
         },
         variantIndex: 0,
-        routeHandlers: [FooHandler, JsonRoutesHandler],
+        routeHandlers: [FooHandler, VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -940,7 +940,7 @@ describe("mocks helpers", () => {
         route: { ...VALID_ROUTE, delay: 3000 },
         variant: { ...VALID_VARIANT, type: "json", delay: 5000 },
         variantIndex: 0,
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -959,7 +959,7 @@ describe("mocks helpers", () => {
             id: "foo-route",
           },
         ],
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -983,7 +983,7 @@ describe("mocks helpers", () => {
             variants: [{}],
           },
         ],
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -1007,14 +1007,14 @@ describe("mocks helpers", () => {
             variants: [VALID_VARIANT],
           },
         ],
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
         alertsRoutes,
         loggerRoutes,
       });
-      expect(routeVariants[0]).toBeInstanceOf(JsonRoutesHandler);
+      expect(routeVariants[0]).toBeInstanceOf(VariantHandlerJson);
       expect(routeVariants[0].id).toEqual("foo-variant");
       expect(routeVariants[0].variantId).toEqual("foo-route:foo-variant");
       expect(routeVariants[0].routeId).toEqual("foo-route");
@@ -1036,7 +1036,7 @@ describe("mocks helpers", () => {
           },
           {},
         ],
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -1045,7 +1045,7 @@ describe("mocks helpers", () => {
       });
 
       expect(routeVariants.length).toEqual(1);
-      expect(routeVariants[0]).toBeInstanceOf(JsonRoutesHandler);
+      expect(routeVariants[0]).toBeInstanceOf(VariantHandlerJson);
       expect(routeVariants[0].id).toEqual("foo-variant");
       expect(routeVariants[0].variantId).toEqual("foo-route:foo-variant");
       expect(routeVariants[0].routeId).toEqual("foo-route");
@@ -1065,7 +1065,7 @@ describe("mocks helpers", () => {
             variants: [VALID_VARIANT],
           },
         ],
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -1089,7 +1089,7 @@ describe("mocks helpers", () => {
             variants: [VALID_VARIANT, VALID_VARIANT],
           },
         ],
-        routeHandlers: [JsonRoutesHandler],
+        routeHandlers: [VariantHandlerJson],
         core: coreMocks.stubs.instance,
         alerts,
         logger,
@@ -1106,7 +1106,7 @@ describe("mocks helpers", () => {
     });
 
     it("should omit not valid variants", () => {
-      compileRouteValidator([JsonRoutesHandler, FooHandler]);
+      compileRouteValidator([VariantHandlerJson, FooHandler]);
       const routeVariants = getRouteVariants({
         routesDefinitions: [
           {

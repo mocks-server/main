@@ -12,7 +12,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 
-- refactor: Do not require namespaces to have a name when creating scaffold, because config 2.0.0 do not return root namespace. 
+- refactor: Do not require namespaces to have a name when creating scaffold, because config 2.0.0 do not return root namespace.
+- fix: Support any type of JSON object as body in JSON variant handler
+- fix: Return null in preview of static variant handlers
 
 ## [4.0.1] - 2023-04-09
 

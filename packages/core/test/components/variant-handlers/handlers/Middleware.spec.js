@@ -11,7 +11,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const CoreMocks = require("../../Core.mocks.js");
-const Middleware = require("../../../../src/variant-handlers/handlers/Middleware");
+const {
+  VariantHandlerMiddleware,
+} = require("../../../../src/variant-handlers/handlers/Middleware");
 
 describe("Middleware variant handler", () => {
   const FOO_VARIANT = {
@@ -40,7 +42,7 @@ describe("Middleware variant handler", () => {
     };
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
-    routesHandler = new Middleware(FOO_VARIANT, coreInstance);
+    routesHandler = new VariantHandlerMiddleware(FOO_VARIANT, coreInstance);
   });
 
   afterEach(() => {
@@ -50,13 +52,13 @@ describe("Middleware variant handler", () => {
 
   describe("id", () => {
     it("should have middleware value", () => {
-      expect(Middleware.id).toEqual("middleware");
+      expect(VariantHandlerMiddleware.id).toEqual("middleware");
     });
   });
 
   describe("validationSchema", () => {
     it("should be defined", () => {
-      expect(Middleware.validationSchema).toBeDefined();
+      expect(VariantHandlerMiddleware.validationSchema).toBeDefined();
     });
   });
 
@@ -69,7 +71,7 @@ describe("Middleware variant handler", () => {
   describe("middleware", () => {
     it("should execute middleware function", () => {
       const fooResponseMethod = sandbox.stub();
-      routesHandler = new Middleware(
+      routesHandler = new VariantHandlerMiddleware(
         { ...FOO_VARIANT, middleware: fooResponseMethod },
         coreInstance
       );

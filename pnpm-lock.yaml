@@ -242,6 +242,7 @@ importers:
       '@mocks-server/logger': workspace:*
       '@mocks-server/nested-collections': workspace:*
       '@types/express': 4.17.17
+      '@types/serve-static': 1.15.1
       '@types/update-notifier': 6.0.2
       ajv: 8.11.0
       better-ajv-errors: 1.2.0
@@ -286,6 +287,7 @@ importers:
       yaml: 2.1.1
     devDependencies:
       '@types/express': 4.17.17
+      '@types/serve-static': 1.15.1
       '@types/update-notifier': 6.0.2
 
   packages/cypress-commands:

@@ -10,17 +10,17 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type { LoggerInterface } from "@mocks-server/logger";
 
+import type { UnknownObject } from "../../common/Common.types";
+import type { CoreInterface } from "../../Core.types";
+import type { JSONSchema7WithInstanceof } from "../../mock/Validations.types";
+import type { Request, Response } from "../../server/Server.types";
+
 import type {
   VariantHandlerTextConstructor,
   VariantHandlerTextInterface,
   VariantHandlerTextOptions,
   VariantHandlerTextPreview,
-} from "./TextTypes";
-
-import type { UnknownObject } from "../../common/CommonTypes";
-import type { CoreInterface } from "../../CoreTypes";
-import type { JSONSchema7WithInstanceof } from "../../mock/ValidationsTypes";
-import type { Request, Response } from "../../server/ServerTypes";
+} from "./Text.types";
 
 export const VariantHandlerText: VariantHandlerTextConstructor = class VariantHandlerText
   implements VariantHandlerTextInterface

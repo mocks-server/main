@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type { Package } from "update-notifier";
 
-import type { AlertsInterface } from "../alerts/AlertsTypes";
+import type { AlertsInterface } from "../alerts/Alerts.types";
 
 export interface UpdateNotifierOptions {
   /** Alerts */

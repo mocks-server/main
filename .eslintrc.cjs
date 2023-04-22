@@ -110,6 +110,8 @@ module.exports = {
         "plugin:import/typescript",
       ],
       rules: {
+        "@typescript-eslint/no-shadow": "error",
+        "no-shadow": "off",
         "prettier/prettier": [
           2,
           {

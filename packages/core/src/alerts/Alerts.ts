@@ -23,7 +23,7 @@ import type {
   AlertsFlat,
   AlertValue,
   AlertFlat,
-} from "./AlertsTypes";
+} from "./Alerts.types";
 
 const ALERTS_ROOT_ID = "alerts";
 const ID_SEP = ":";

@@ -12,16 +12,16 @@ import type { LoggerInterface } from "@mocks-server/logger";
 import { static as expressStatic } from "express";
 import type { ServeStaticOptions } from "serve-static";
 
+import type { CoreInterface } from "../../Core.types";
+import type { JSONSchema7WithInstanceof } from "../../mock/Validations.types";
+import type { RequestHandler, Response } from "../../server/Server.types";
+
 import type {
   VariantHandlerStaticConstructor,
   VariantHandlerStaticInterface,
   VariantHandlerStaticOptions,
   VariantHandlerStaticPreview,
-} from "./StaticTypes";
-
-import type { CoreInterface } from "../../CoreTypes";
-import type { JSONSchema7WithInstanceof } from "../../mock/ValidationsTypes";
-import type { RequestHandler, Response } from "../../server/ServerTypes";
+} from "./Static.types";
 
 export const VariantHandlerStatic: VariantHandlerStaticConstructor = class VariantHandlerStatic
   implements VariantHandlerStaticInterface

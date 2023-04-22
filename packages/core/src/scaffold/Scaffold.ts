@@ -25,6 +25,15 @@ import { readFile, writeFile, copy, existsSync } from "fs-extra";
 import handlebars from "handlebars";
 import { isUndefined, compact } from "lodash";
 
+import type { AlertsInterface } from "../alerts/Alerts.types";
+import { FILES_NAMESPACE, ENABLED_OPTION } from "../files/Options";
+import { MOCK_NAMESPACE, COLLECTIONS_NAMESPACE, SELECTED_COLLECTION } from "../mock/Options";
+
+import {
+  SCAFFOLD_OPTION_OMITTED,
+  SCAFFOLD_OPTION_VALUE,
+  SCAFFOLD_OPTION_COMMENTED,
+} from "./Options";
 import type {
   ConfigVarName,
   ConfigVarNameWithQuotes,
@@ -39,17 +48,7 @@ import type {
   ScaffoldOptionOmitted,
   NamespaceTemplateData,
   OptionTemplateData,
-} from "./ScaffoldTypes";
-
-import type { AlertsInterface } from "../alerts/AlertsTypes";
-import { FILES_NAMESPACE, ENABLED_OPTION } from "../files/Options";
-import { MOCK_NAMESPACE, COLLECTIONS_NAMESPACE, SELECTED_COLLECTION } from "../mock/Options";
-
-import {
-  SCAFFOLD_OPTION_OMITTED,
-  SCAFFOLD_OPTION_VALUE,
-  SCAFFOLD_OPTION_COMMENTED,
-} from "./Options";
+} from "./Scaffold.types";
 
 const READ_WRITE_FILE_OPTIONS = {
   encoding: "utf-8",

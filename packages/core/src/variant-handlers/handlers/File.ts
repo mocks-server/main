@@ -12,17 +12,17 @@ import path from "path";
 
 import type { LoggerInterface } from "@mocks-server/logger";
 
+import type { CoreInterface } from "../../Core.types";
+import type { JSONSchema7WithInstanceof } from "../../mock/Validations.types";
+import type { NextFunction, Request, Response } from "../../server/Server.types";
+
 import type {
   VariantHandlerFileConstructor,
   VariantHandlerFileInterface,
   VariantHandlerFileOptions,
   VariantHandlerFilePreview,
   VariantHandlerFileOptionsExpressWithRoot,
-} from "./FileTypes";
-
-import type { CoreInterface } from "../../CoreTypes";
-import type { JSONSchema7WithInstanceof } from "../../mock/ValidationsTypes";
-import type { NextFunction, Request, Response } from "../../server/ServerTypes";
+} from "./File.types";
 
 const DEFAULT_EXPRESS_OPTIONS = {
   root: path.resolve(process.cwd()),

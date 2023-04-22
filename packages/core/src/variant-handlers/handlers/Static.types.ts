@@ -10,13 +10,22 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type { ServeStaticOptions } from "serve-static";
 
-import type { UnknownObject } from "../../common/CommonTypes";
-import type { CoreInterface } from "../../CoreTypes";
+import type { UnknownObject } from "../../common/Common.types";
+import type { CoreInterface } from "../../Core.types";
 import type {
   VariantHandlerBaseConstructorOptions,
   VariantHandlerBaseConstructor,
   VariantHandlerBaseInterfaceWithRouter,
-} from "../VariantHandlersTypes";
+} from "../VariantHandlers.types";
+
+declare global {
+  //eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace MocksServer {
+    enum VariantTypes {
+      STATIC = "static",
+    }
+  }
+}
 
 /** Response preview */
 export type VariantHandlerStaticPreview = null;

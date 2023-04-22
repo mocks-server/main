@@ -10,16 +10,16 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type { LoggerInterface } from "@mocks-server/logger";
 
+import type { CoreInterface } from "../../Core.types";
+import type { JSONSchema7WithInstanceof } from "../../mock/Validations.types";
+import type { NextFunction, Request, Response } from "../../server/Server.types";
+
 import type {
   VariantHandlerMiddlewareConstructor,
   VariantHandlerMiddlewareInterface,
   VariantHandlerMiddlewareOptions,
   VariantHandlerMiddlewarePreview,
-} from "./MiddlewareTypes";
-
-import type { CoreInterface } from "../../CoreTypes";
-import type { JSONSchema7WithInstanceof } from "../../mock/ValidationsTypes";
-import type { NextFunction, Request, Response } from "../../server/ServerTypes";
+} from "./Middleware.types";
 
 export const VariantHandlerMiddleware: VariantHandlerMiddlewareConstructor = class VariantHandlerMiddleware
   implements VariantHandlerMiddlewareInterface

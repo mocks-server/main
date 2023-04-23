@@ -53,7 +53,7 @@ export const VariantHandlerStatus: VariantHandlerStatusConstructor = class Varia
     this._logger = core.logger;
   }
 
-  middleware(req: Request, res: Response): void {
+  public middleware(req: Request, res: Response): void {
     this._logger.debug(`Setting headers | req: ${req.id}`);
     res.set({ ...this.defaultHeaders, ...this._options.headers });
     res.status(this._options.status);
@@ -61,13 +61,13 @@ export const VariantHandlerStatus: VariantHandlerStatusConstructor = class Varia
     res.send();
   }
 
-  get defaultHeaders(): UnknownObject {
+  public get defaultHeaders(): UnknownObject {
     return {
       "Content-Length": "0",
     };
   }
 
-  get preview(): VariantHandlerStatusPreview {
+  public get preview(): VariantHandlerStatusPreview {
     return {
       status: this._options.status,
     };

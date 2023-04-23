@@ -69,7 +69,7 @@ export const VariantHandlerFile: VariantHandlerFileConstructor = class VariantHa
     this._logger = core.logger;
   }
 
-  middleware(req: Request, res: Response, next: NextFunction): void {
+  public middleware(req: Request, res: Response, next: NextFunction): void {
     if (this._options.headers) {
       this._logger.debug(`Setting headers | req: ${req.id}`);
       res.set(this._options.headers);
@@ -86,7 +86,7 @@ export const VariantHandlerFile: VariantHandlerFileConstructor = class VariantHa
     });
   }
 
-  get preview(): VariantHandlerFilePreview {
+  public get preview(): VariantHandlerFilePreview {
     return {
       status: this._options.status,
     };

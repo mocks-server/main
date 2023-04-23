@@ -12,8 +12,8 @@ import type { UnknownObject } from "../../common/Common.types";
 import type { CoreInterface } from "../../Core.types";
 import type {
   VariantHandlerBaseConstructorOptions,
-  VariantHandlerBaseConstructor,
-  VariantHandlerBaseInterfaceWithMiddleware,
+  VariantHandlerConstructor,
+  VariantHandlerInterfaceWithMiddleware,
 } from "../VariantHandlers.types";
 
 /** Text response preview */
@@ -43,7 +43,7 @@ declare global {
 }
 
 /** Creates an interface of a variant handler of type text */
-export interface VariantHandlerTextConstructor extends VariantHandlerBaseConstructor {
+export interface VariantHandlerTextConstructor extends VariantHandlerConstructor {
   /**
    * Creates an interface of a variant handler of type text
    * @param options - text variant handler options {@link VariantHandlerTextOptions}
@@ -55,7 +55,7 @@ export interface VariantHandlerTextConstructor extends VariantHandlerBaseConstru
 }
 
 /** Json variant handler interface */
-export interface VariantHandlerTextInterface extends VariantHandlerBaseInterfaceWithMiddleware {
+export interface VariantHandlerTextInterface extends VariantHandlerInterfaceWithMiddleware {
   /** Response preview */
   get preview(): VariantHandlerTextPreview;
 }

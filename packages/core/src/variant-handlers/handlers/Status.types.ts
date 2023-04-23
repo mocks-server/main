@@ -12,8 +12,8 @@ import type { UnknownObject } from "../../common/Common.types";
 import type { CoreInterface } from "../../Core.types";
 import type {
   VariantHandlerBaseConstructorOptions,
-  VariantHandlerBaseConstructor,
-  VariantHandlerBaseInterfaceWithMiddleware,
+  VariantHandlerConstructor,
+  VariantHandlerInterfaceWithMiddleware,
 } from "../VariantHandlers.types";
 
 /** Response preview */
@@ -39,7 +39,7 @@ declare global {
 }
 
 /** Creates an interface of a variant handler of type status */
-export interface VariantHandlerStatusConstructor extends VariantHandlerBaseConstructor {
+export interface VariantHandlerStatusConstructor extends VariantHandlerConstructor {
   /**
    * Creates an interface of a variant handler of type status
    * @param options - Status variant handler options {@link VariantHandlerStatusOptions}
@@ -51,7 +51,7 @@ export interface VariantHandlerStatusConstructor extends VariantHandlerBaseConst
 }
 
 /** Status variant handler interface */
-export interface VariantHandlerStatusInterface extends VariantHandlerBaseInterfaceWithMiddleware {
+export interface VariantHandlerStatusInterface extends VariantHandlerInterfaceWithMiddleware {
   /** Response preview */
   get preview(): VariantHandlerStatusPreview;
 }

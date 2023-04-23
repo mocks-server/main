@@ -12,8 +12,8 @@ import type { UnknownObject, JSONValue } from "../../common/Common.types";
 import type { CoreInterface } from "../../Core.types";
 import type {
   VariantHandlerBaseConstructorOptions,
-  VariantHandlerBaseConstructor,
-  VariantHandlerBaseInterfaceWithMiddleware,
+  VariantHandlerConstructor,
+  VariantHandlerInterfaceWithMiddleware,
 } from "../VariantHandlers.types";
 
 /** Json response preview */
@@ -43,7 +43,7 @@ declare global {
 }
 
 /** Creates an interface of a variant handler of type json */
-export interface VariantHandlerJsonConstructor extends VariantHandlerBaseConstructor {
+export interface VariantHandlerJsonConstructor extends VariantHandlerConstructor {
   /**
    * Creates an interface of a variant handler of type json
    * @param options - json variant handler options {@link VariantHandlerJsonOptions}
@@ -55,7 +55,7 @@ export interface VariantHandlerJsonConstructor extends VariantHandlerBaseConstru
 }
 
 /** Json variant handler interface */
-export interface VariantHandlerJsonInterface extends VariantHandlerBaseInterfaceWithMiddleware {
+export interface VariantHandlerJsonInterface extends VariantHandlerInterfaceWithMiddleware {
   /** Response preview */
   get preview(): VariantHandlerJsonPreview;
 }

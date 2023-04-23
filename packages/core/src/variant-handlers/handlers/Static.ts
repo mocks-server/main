@@ -59,7 +59,7 @@ export const VariantHandlerStatic: VariantHandlerStaticConstructor = class Varia
     this._logger = core.logger;
   }
 
-  get router(): RequestHandler {
+  public get router(): RequestHandler {
     this._logger.verbose(`Creating router to serve static folder ${this._options.path}`);
 
     let setHeadersOption;
@@ -75,7 +75,7 @@ export const VariantHandlerStatic: VariantHandlerStaticConstructor = class Varia
     });
   }
 
-  get preview(): VariantHandlerStaticPreview {
+  public get preview(): VariantHandlerStaticPreview {
     return null;
   }
 };

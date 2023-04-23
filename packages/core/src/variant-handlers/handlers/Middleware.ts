@@ -51,12 +51,12 @@ export const VariantHandlerMiddleware: VariantHandlerMiddlewareConstructor = cla
     this._core = core;
   }
 
-  middleware(req: Request, res: Response, next: NextFunction): void {
+  public middleware(req: Request, res: Response, next: NextFunction): void {
     this._logger.verbose(`Executing middleware | req: ${req.id}`);
     this._options.middleware(req, res, next, this._core);
   }
 
-  get preview(): VariantHandlerMiddlewarePreview {
+  public get preview(): VariantHandlerMiddlewarePreview {
     return null;
   }
 };

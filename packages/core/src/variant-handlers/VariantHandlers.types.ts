@@ -7,6 +7,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
+import type { ConfigInterface } from "@mocks-server/config";
+import type { LoggerInterface } from "@mocks-server/logger";
 
 import type { UnknownObject, JSONValue } from "../common/Common.types";
 import type { JSONSchema7WithInstanceof } from "../mock/Validations.types";
@@ -25,7 +27,7 @@ export interface VariantHandlerResponsePreview {
 }
 
 /** Common interface of variant handler constructors */
-export interface VariantHandlerBaseConstructor {
+export interface VariantHandlerConstructor {
   /** Schema for validating options */
   validationSchema: JSONSchema7WithInstanceof;
   /** Static id */
@@ -33,7 +35,7 @@ export interface VariantHandlerBaseConstructor {
 }
 
 /** Common interface of variant handlers. Variant handlers should be created extending this interface */
-export interface VariantHandlerBaseInterface {
+export interface VariantHandlerInterface {
   /**
    * Returns a preview of the route response. Returns null if it is not possible to preview the response
    * @returns Variant handler response preview {@link VariantHandlerResponsePreview}.
@@ -43,7 +45,7 @@ export interface VariantHandlerBaseInterface {
 }
 
 /** Common interface of variant handlers of type middleware. Variant handlers providing a middleware should be created extending this interface */
-export interface VariantHandlerBaseInterfaceWithMiddleware extends VariantHandlerBaseInterface {
+export interface VariantHandlerInterfaceWithMiddleware extends VariantHandlerInterface {
   /**
    * Express middleware to be executed when the request is received for a route using this variant handler
    * @param req - Express request with some custom properties added by Mocks Server middlewares {@link Request}
@@ -54,9 +56,49 @@ export interface VariantHandlerBaseInterfaceWithMiddleware extends VariantHandle
 }
 
 /** Common interface of variant handlers of type router. Variant handlers providing a router should be created extending this interface */
-export interface VariantHandlerBaseInterfaceWithRouter extends VariantHandlerBaseInterface {
+export interface VariantHandlerInterfaceWithRouter extends VariantHandlerInterface {
   /**
    * Returns an Express router to be mounted in the route path
    */
   get router(): RequestHandler;
+}
+
+export interface VariantHandlersOptions {
+  /** Config object */
+  config: ConfigInterface;
+  /** Logger object */
+  logger: LoggerInterface;
+}
+
+/** Creates a VariantHandlers interface */
+export interface VariantHandlersConstructor {
+  /**
+   * VariantHandlers class static id
+   */
+  id: string;
+  /**
+   * Creates a variantsHandler interface
+   * @param options - VariantHandlers options {@link VariantHandlersOptions}
+   * @returns VariantHandlers interface {@link VariantHandlersInterface}.
+   * @example const variantHandlers = new VariantHandlers({ config, logger });
+   */
+  new (options: VariantHandlersOptions): VariantHandlersInterface;
+}
+
+/** VariantHandlers interface */
+export interface VariantHandlersInterface {
+  /**
+   * Returns an array of registered variant handlers
+   */
+  get handlers(): VariantHandlerConstructor[];
+  /**
+   * Register variant handlers loaded from config
+   * @example await variantHandlers.registerConfig();
+   */
+  registerFromConfig(): Promise<void>;
+  /**
+   * Register variant handlers
+   * @example await variantHandlers.register([VariantHandlerJson, VariantHandlerText]);
+   */
+  register(variantHandlers: VariantHandlerConstructor[]): void;
 }

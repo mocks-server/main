@@ -67,18 +67,18 @@ export const VariantHandlerJson: VariantHandlerJsonConstructor = class VariantHa
     };
   }
 
-  get defaultHeaders(): UnknownObject {
-    return {
-      "Content-Type": "application/json; charset=utf-8",
-    };
-  }
-
   constructor(options: VariantHandlerJsonOptions, core: CoreInterface) {
     this._options = options;
     this._logger = core.logger;
   }
 
-  middleware(req: Request, res: Response): void {
+  public get defaultHeaders(): UnknownObject {
+    return {
+      "Content-Type": "application/json; charset=utf-8",
+    };
+  }
+
+  public middleware(req: Request, res: Response): void {
     this._logger.debug(`Setting headers | req: ${req.id}`);
     res.set({ ...this.defaultHeaders, ...this._options.headers });
     res.status(this._options.status);
@@ -86,7 +86,7 @@ export const VariantHandlerJson: VariantHandlerJsonConstructor = class VariantHa
     res.send(this._options.body);
   }
 
-  get preview(): VariantHandlerJsonPreview {
+  public get preview(): VariantHandlerJsonPreview {
     return {
       body: this._options.body,
       status: this._options.status,

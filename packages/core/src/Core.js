@@ -14,7 +14,7 @@ const deepMerge = require("deepmerge");
 const Config = require("@mocks-server/config").default;
 const { Logger } = require("@mocks-server/logger");
 
-const VariantHandlers = require("./variant-handlers/VariantHandlers");
+const { VariantHandlers } = require("./variant-handlers/VariantHandlers");
 const Mock = require("./mock/Mock");
 const Plugins = require("./plugins/Plugins");
 const Server = require("./server/Server");
@@ -189,7 +189,8 @@ class Core {
     // Register plugins, let them add their custom config
     await this._plugins.register();
 
-    await this._variantHandlers.registerConfig();
+    // Register variant handlers from configuration
+    await this._variantHandlers.registerFromConfig();
 
     // TODO, add to data model
     await this._scaffold.init({

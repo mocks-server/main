@@ -32,12 +32,6 @@ export const VariantHandlerText: VariantHandlerTextConstructor = class VariantHa
     return "text";
   }
 
-  get defaultHeaders(): UnknownObject {
-    return {
-      "Content-Type": "text/plain; charset=utf-8",
-    };
-  }
-
   static get validationSchema(): JSONSchema7WithInstanceof {
     return {
       type: "object",
@@ -62,7 +56,13 @@ export const VariantHandlerText: VariantHandlerTextConstructor = class VariantHa
     this._logger = core.logger;
   }
 
-  middleware(req: Request, res: Response): void {
+  public get defaultHeaders(): UnknownObject {
+    return {
+      "Content-Type": "text/plain; charset=utf-8",
+    };
+  }
+
+  public middleware(req: Request, res: Response): void {
     this._logger.debug(`Setting headers | req: ${req.id}`);
     res.set({ ...this.defaultHeaders, ...this._options.headers });
     res.status(this._options.status);
@@ -70,7 +70,7 @@ export const VariantHandlerText: VariantHandlerTextConstructor = class VariantHa
     res.send(this._options.body);
   }
 
-  get preview(): VariantHandlerTextPreview {
+  public get preview(): VariantHandlerTextPreview {
     return {
       body: this._options.body,
       status: this._options.status,

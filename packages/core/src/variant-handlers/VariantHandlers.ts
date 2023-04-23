@@ -1,5 +1,5 @@
 /*
-Copyright 2022 Javier Brea
+Copyright 2023 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -7,29 +7,46 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
+import type { ConfigInterface, OptionInterface, OptionProperties } from "@mocks-server/config";
+import type { LoggerInterface } from "@mocks-server/logger";
 
-const { VariantHandlerFile } = require("./handlers/File");
-const { VariantHandlerJson } = require("./handlers/Json");
-const { VariantHandlerMiddleware } = require("./handlers/Middleware");
-const { VariantHandlerStatic } = require("./handlers/Static");
-const { VariantHandlerStatus } = require("./handlers/Status");
-const { VariantHandlerText } = require("./handlers/Text");
+import { VariantHandlerFile } from "./handlers/File";
+import { VariantHandlerJson } from "./handlers/Json";
+import { VariantHandlerMiddleware } from "./handlers/Middleware";
+import { VariantHandlerStatic } from "./handlers/Static";
+import { VariantHandlerStatus } from "./handlers/Status";
+import { VariantHandlerText } from "./handlers/Text";
+import type {
+  VariantHandlerConstructor,
+  VariantHandlersConstructor,
+  VariantHandlersInterface,
+  VariantHandlersOptions,
+} from "./VariantHandlers.types";
 
-const OPTIONS = [
+const OPTIONS: OptionProperties[] = [
   {
     description: "Variant Handlers to be registered",
     name: "register",
     type: "array",
     default: [],
+    itemsType: "object",
   },
 ];
 
-class VariantHandlers {
+export const VariantHandlers: VariantHandlersConstructor = class VariantHandlers
+  implements VariantHandlersInterface
+{
   static get id() {
     return "variantHandlers";
   }
 
-  constructor({ logger, config }) {
+  private _logger: LoggerInterface;
+  private _config: ConfigInterface;
+  private _registerOption: OptionInterface;
+  private _registeredVariantHandlers: VariantHandlerConstructor[];
+  private _coreVariantHandlers: VariantHandlerConstructor[];
+
+  constructor({ logger, config }: VariantHandlersOptions) {
     this._logger = logger;
     this._registeredVariantHandlers = [];
     this._coreVariantHandlers = [
@@ -45,19 +62,19 @@ class VariantHandlers {
     [this._registerOption] = this._config.addOptions(OPTIONS);
   }
 
-  _registerOne(VariantHandler) {
+  private _registerOne(VariantHandler: VariantHandlerConstructor): void {
     // TODO, check id, etc..
     this._logger.debug(`Registering '${VariantHandler.id}' variant handler`);
     this._registeredVariantHandlers.push(VariantHandler);
   }
 
-  register(variantHandlers) {
+  public register(variantHandlers: VariantHandlerConstructor[]): void {
     variantHandlers.forEach((VariantHandler) => {
       this._registerOne(VariantHandler);
     });
   }
 
-  registerConfig() {
+  public async registerFromConfig(): Promise<void> {
     const variantHandlersToRegister = [
       ...this._coreVariantHandlers,
       ...this._registerOption.value,
@@ -70,9 +87,7 @@ class VariantHandlers {
     return Promise.resolve();
   }
 
-  get handlers() {
+  public get handlers(): VariantHandlerConstructor[] {
     return this._registeredVariantHandlers;
   }
-}
-
-module.exports = VariantHandlers;
+};

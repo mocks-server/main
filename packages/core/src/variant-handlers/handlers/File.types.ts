@@ -12,8 +12,8 @@ import type { UnknownObject } from "../../common/Common.types";
 import type { CoreInterface } from "../../Core.types";
 import type {
   VariantHandlerBaseConstructorOptions,
-  VariantHandlerBaseConstructor,
-  VariantHandlerBaseInterfaceWithMiddleware,
+  VariantHandlerConstructor,
+  VariantHandlerInterfaceWithMiddleware,
 } from "../VariantHandlers.types";
 
 /** Response preview */
@@ -68,7 +68,7 @@ declare global {
 }
 
 /** Creates an interface of a variant handler of type file */
-export interface VariantHandlerFileConstructor extends VariantHandlerBaseConstructor {
+export interface VariantHandlerFileConstructor extends VariantHandlerConstructor {
   /**
    * Creates an interface of a variant handler of type file
    * @param options - File variant handler options {@link VariantHandlerFileOptions}
@@ -80,7 +80,7 @@ export interface VariantHandlerFileConstructor extends VariantHandlerBaseConstru
 }
 
 /** File variant handler interface */
-export interface VariantHandlerFileInterface extends VariantHandlerBaseInterfaceWithMiddleware {
+export interface VariantHandlerFileInterface extends VariantHandlerInterfaceWithMiddleware {
   /** Response preview */
   get preview(): VariantHandlerFilePreview;
 }

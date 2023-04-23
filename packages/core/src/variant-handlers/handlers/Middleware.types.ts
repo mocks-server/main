@@ -12,8 +12,8 @@ import type { CoreInterface } from "../../Core.types";
 import type { Request, Response, NextFunction } from "../../server/Server.types";
 import type {
   VariantHandlerBaseConstructorOptions,
-  VariantHandlerBaseConstructor,
-  VariantHandlerBaseInterfaceWithMiddleware,
+  VariantHandlerConstructor,
+  VariantHandlerInterfaceWithMiddleware,
 } from "../VariantHandlers.types";
 
 /** Response preview */
@@ -34,7 +34,7 @@ declare global {
 }
 
 /** Creates an interface of a variant handler of type middleware */
-export interface VariantHandlerMiddlewareConstructor extends VariantHandlerBaseConstructor {
+export interface VariantHandlerMiddlewareConstructor extends VariantHandlerConstructor {
   /**
    * Creates an interface of a variant handler of type middleware
    * @param options - Middleware variant handler options {@link VariantHandlerMiddlewareOptions}
@@ -49,8 +49,7 @@ export interface VariantHandlerMiddlewareConstructor extends VariantHandlerBaseC
 }
 
 /** Middleware variant handler interface */
-export interface VariantHandlerMiddlewareInterface
-  extends VariantHandlerBaseInterfaceWithMiddleware {
+export interface VariantHandlerMiddlewareInterface extends VariantHandlerInterfaceWithMiddleware {
   /** Response preview */
   get preview(): VariantHandlerMiddlewarePreview;
 }

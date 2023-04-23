@@ -18,15 +18,6 @@ import type {
   VariantHandlerBaseInterfaceWithRouter,
 } from "../VariantHandlers.types";
 
-declare global {
-  //eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace MocksServer {
-    enum VariantTypes {
-      STATIC = "static",
-    }
-  }
-}
-
 /** Response preview */
 export type VariantHandlerStaticPreview = null;
 
@@ -36,7 +27,16 @@ export interface VariantHandlerStaticOptions extends VariantHandlerBaseConstruct
   /** Object containing headers to set in the response of all static assets */
   headers?: UnknownObject;
   /** Object containing any of the available express.static method options */
-  options: ServeStaticOptions;
+  options?: ServeStaticOptions;
+}
+
+declare global {
+  //eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace MocksServer {
+    interface VariantHandlerTypeOptions {
+      static: VariantHandlerStaticOptions;
+    }
+  }
 }
 
 /** Creates an interface of a variant handler of type static */

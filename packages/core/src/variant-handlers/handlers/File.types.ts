@@ -16,15 +16,6 @@ import type {
   VariantHandlerBaseInterfaceWithMiddleware,
 } from "../VariantHandlers.types";
 
-declare global {
-  //eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace MocksServer {
-    enum VariantTypes {
-      FILE = "file",
-    }
-  }
-}
-
 /** Response preview */
 export interface VariantHandlerFilePreview {
   /** Response status */
@@ -65,6 +56,15 @@ export interface VariantHandlerFileOptions extends VariantHandlerBaseConstructor
   status: number;
   /** Options for the express.sendFile method */
   options?: VariantHandlerFileOptionsExpress;
+}
+
+declare global {
+  //eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace MocksServer {
+    interface VariantHandlerTypeOptions {
+      file: VariantHandlerFileOptions;
+    }
+  }
 }
 
 /** Creates an interface of a variant handler of type file */

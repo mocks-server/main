@@ -16,15 +16,6 @@ import type {
   VariantHandlerBaseInterfaceWithMiddleware,
 } from "../VariantHandlers.types";
 
-declare global {
-  //eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace MocksServer {
-    enum VariantTypes {
-      STATUS = "status",
-    }
-  }
-}
-
 /** Response preview */
 export interface VariantHandlerStatusPreview {
   /** Response status */
@@ -36,6 +27,15 @@ export interface VariantHandlerStatusOptions extends VariantHandlerBaseConstruct
   status: number;
   /** Object containing HTTP headers to send in the response */
   headers?: UnknownObject;
+}
+
+declare global {
+  //eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace MocksServer {
+    interface VariantHandlerTypeOptions {
+      status: VariantHandlerStatusOptions;
+    }
+  }
 }
 
 /** Creates an interface of a variant handler of type status */

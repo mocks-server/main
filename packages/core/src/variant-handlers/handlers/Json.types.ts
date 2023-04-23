@@ -16,15 +16,6 @@ import type {
   VariantHandlerBaseInterfaceWithMiddleware,
 } from "../VariantHandlers.types";
 
-declare global {
-  //eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace MocksServer {
-    enum VariantTypes {
-      JSON = "json",
-    }
-  }
-}
-
 /** Json response preview */
 export interface VariantHandlerJsonPreview {
   /** Response status */
@@ -40,6 +31,15 @@ export interface VariantHandlerJsonOptions extends VariantHandlerBaseConstructor
   body: JSONValue;
   /** Object containing HTTP headers to send in the response */
   headers?: UnknownObject;
+}
+
+declare global {
+  //eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace MocksServer {
+    interface VariantHandlerTypeOptions {
+      json: VariantHandlerJsonOptions;
+    }
+  }
 }
 
 /** Creates an interface of a variant handler of type json */

@@ -16,21 +16,21 @@ import type {
   VariantHandlerBaseInterfaceWithMiddleware,
 } from "../VariantHandlers.types";
 
-declare global {
-  //eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace MocksServer {
-    enum VariantTypes {
-      MIDDLEWARE = "middleware",
-    }
-  }
-}
-
 /** Response preview */
 export type VariantHandlerMiddlewarePreview = null;
 
 export interface VariantHandlerMiddlewareOptions extends VariantHandlerBaseConstructorOptions {
   /** Middleware to be executed as request handler */
   middleware: (req: Request, res: Response, next: NextFunction, core: CoreInterface) => void;
+}
+
+declare global {
+  //eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace MocksServer {
+    interface VariantHandlerTypeOptions {
+      middleware: VariantHandlerMiddlewareOptions;
+    }
+  }
 }
 
 /** Creates an interface of a variant handler of type middleware */

@@ -16,15 +16,6 @@ import type {
   VariantHandlerBaseInterfaceWithMiddleware,
 } from "../VariantHandlers.types";
 
-declare global {
-  //eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace MocksServer {
-    enum VariantTypes {
-      TEXT = "text",
-    }
-  }
-}
-
 /** Text response preview */
 export interface VariantHandlerTextPreview {
   /** Response status */
@@ -40,6 +31,15 @@ export interface VariantHandlerTextOptions extends VariantHandlerBaseConstructor
   body: string;
   /** Object containing HTTP headers to send in the response */
   headers?: UnknownObject;
+}
+
+declare global {
+  //eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace MocksServer {
+    interface VariantHandlerTypeOptions {
+      text: VariantHandlerTextOptions;
+    }
+  }
 }
 
 /** Creates an interface of a variant handler of type text */

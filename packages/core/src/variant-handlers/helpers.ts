@@ -1,8 +1,8 @@
+import type { UnknownObject } from "../common/Common.types";
+
 import type { VariantHandlerBaseInterface } from "./VariantHandlers.types";
 
-export function getDataFromVariant(
-  variant: MocksServer.VariantDefinition
-): MocksServer.VariantOptions {
+export function getDataFromVariant(variant: MocksServer.VariantDefinition): UnknownObject {
   return variant.options;
 }
 

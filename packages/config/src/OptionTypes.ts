@@ -73,7 +73,7 @@ export interface OptionObjectProperties extends BaseOptionProperties {
 export interface OptionArrayProperties extends BaseOptionProperties {
   type: "array";
   value?: OptionArrayValue;
-  itemsType: OptionItemsType;
+  itemsType?: OptionItemsType;
   default?: OptionArrayValue;
 }
 

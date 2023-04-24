@@ -29,7 +29,6 @@ const OPTIONS: OptionProperties[] = [
     name: "register",
     type: "array",
     default: [],
-    itemsType: "object",
   },
 ];
 

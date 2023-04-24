@@ -48,6 +48,13 @@ module.exports = {
   overrides: [
     {
       files: ["packages/*/test/**/*.js", "test/*/src/**/*.js"],
+      env: {
+        node: true,
+        es6: true,
+      },
+      parserOptions: {
+        sourceType: "module",
+      },
       globals: {
         jest: true,
         beforeAll: true,

@@ -3,6 +3,7 @@ import type {
   Request as ExpressRequest,
   Response as ExpressResponse,
   RequestHandler as ExpressRequestHandler,
+  ErrorRequestHandler as ExpressErrorRequestHandler,
 } from "express";
 
 /** Express next function */
@@ -14,7 +15,13 @@ export type Response = ExpressResponse;
 /** Express request object with custom properties */
 export interface Request extends ExpressRequest {
   /** Request id, added by the "express-request-id" middleware */
-  id: string;
+  id?: string;
 }
 
-export type RequestHandler = ExpressRequestHandler;
+export interface RequestHandler extends ExpressRequestHandler {
+  (req: Request, res: Response, next: NextFunction): void;
+}
+
+export interface ErrorRequestHandler extends ExpressErrorRequestHandler {
+  (error: Error, req: Request, res: Response, next: NextFunction): void;
+}

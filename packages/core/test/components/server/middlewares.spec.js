@@ -9,15 +9,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const sinon = require("sinon");
-const Boom = require("@hapi/boom");
-const { Logger } = require("@mocks-server/logger");
+import sinon from "sinon";
+import { Logger } from "@mocks-server/logger";
 
 jest.mock("body-parser");
+jest.mock("@hapi/boom");
 
-const bodyParser = require("body-parser");
+import * as Boom from "@hapi/boom";
+import bodyParser from "body-parser";
 
-const middlewares = require("../../../src/server/middlewares");
+import * as middlewares from "../../../src/server/middlewares";
 
 describe("middlewares", () => {
   let sandbox;
@@ -90,7 +91,9 @@ describe("middlewares", () => {
 
     beforeEach(() => {
       loggerStub = sandbox.stub(logger, "debug");
-      sandbox.stub(Boom, "notFound").returns(fooNotFoundError);
+      jest.spyOn(Boom, "notFound").mockImplementation(() => {
+        return fooNotFoundError;
+      });
     });
 
     it("should call to tracer debug method, printing the request id", () => {
@@ -122,8 +125,12 @@ describe("middlewares", () => {
       };
       sandbox.stub(logger, "error");
       sandbox.stub(logger, "silly");
-      sandbox.stub(Boom, "isBoom").returns(false);
-      sandbox.stub(Boom, "badImplementation").returns(fooBadImplementationError);
+      jest.spyOn(Boom, "isBoom").mockImplementation(() => {
+        return false;
+      });
+      jest.spyOn(Boom, "badImplementation").mockImplementation(() => {
+        return fooBadImplementationError;
+      });
     });
 
     it("should call to next callback if no error is received", () => {
@@ -138,7 +145,7 @@ describe("middlewares", () => {
 
     it("should convert the received error to a bad implementation error if it is not a Boom error", () => {
       middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
-      expect(Boom.badImplementation.getCall(0).args[0]).toEqual(fooError);
+      expect(Boom.badImplementation.mock.calls[0][0]).toEqual("foo error message");
     });
 
     it("should trace the received error message", () => {
@@ -166,15 +173,15 @@ describe("middlewares", () => {
     });
 
     it("should not trace error stack if error is controlled", () => {
-      Boom.isBoom.returns(true);
+      Boom.isBoom.mockReturnValue(true);
       middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
       expect(logger.silly.callCount).toEqual(0);
     });
 
     it("should not convert the received error if it is controlled", () => {
-      Boom.isBoom.returns(true);
+      Boom.isBoom.mockReturnValue(true);
       middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
-      expect(Boom.badImplementation.callCount).toEqual(0);
+      expect(Boom.badImplementation).not.toHaveBeenCalled();
     });
   });
 

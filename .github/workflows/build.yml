@@ -198,7 +198,7 @@ jobs:
           path: ${{steps.get-project-path.outputs.prop}}/coverage
       - name: SonarCloud Scan
         if: ${{ env.SONAR_TOKEN != '' &&  steps.check-sonar-config.outputs.files_exists == 'true' }}
-        uses: sonarsource/sonarcloud-github-action@master
+        uses: SonarSource/sonarcloud-github-action@v1.9.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

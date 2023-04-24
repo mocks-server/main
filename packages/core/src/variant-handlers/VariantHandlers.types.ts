@@ -75,7 +75,7 @@ export interface VariantHandlersConstructor {
   /**
    * VariantHandlers class static id
    */
-  id: string;
+  get id(): string;
   /**
    * Creates a variantsHandler interface
    * @param options - VariantHandlers options {@link VariantHandlersOptions}

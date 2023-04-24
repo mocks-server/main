@@ -13,7 +13,7 @@ const sinon = require("sinon");
 
 jest.mock("../../../src/server/Server");
 
-const Server = require("../../../src/server/Server");
+const { Server } = require("../../../src/server/Server");
 
 class Mock {
   constructor() {

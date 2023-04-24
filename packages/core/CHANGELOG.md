@@ -15,8 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - refactor: Do not require namespaces to have a name when creating scaffold, because config 2.0.0 do not return root namespace.
 - fix: Support any type of JSON object as body in JSON variant handler
 - fix: Return null in preview of static variant handlers
-
-## [4.0.1] - 2023-04-09
+- feat(BREAKING CHANGE): Do not return server instance on start method. Now, the server instance is returned only on the constructor.
+- fix: Remove error handling in `server.listen` method. According to the node docs, the callback is never called with an error. Instead, the error is emitted on the server object.
 
 ### Changed
 - chore(deps): Update dependencies

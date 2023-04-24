@@ -17,7 +17,7 @@ const { Logger } = require("@mocks-server/logger");
 const { VariantHandlers } = require("./variant-handlers/VariantHandlers");
 const Mock = require("./mock/Mock");
 const Plugins = require("./plugins/Plugins");
-const Server = require("./server/Server");
+const { Server } = require("./server/Server");
 const FilesLoaders = require("./files/FilesLoaders");
 const { Scaffold } = require("./scaffold/Scaffold");
 const { Alerts } = require("./alerts/Alerts");
@@ -105,7 +105,7 @@ class Core {
       config: this._configServer,
       logger: this._logger.namespace(Server.id),
       alerts: this._alerts.collection(Server.id),
-      routesRouter: this._mock.router,
+      mockRouter: this._mock.router,
     });
 
     const fileLoaders = this._mock.createLoaders();

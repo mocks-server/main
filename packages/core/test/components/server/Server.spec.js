@@ -19,7 +19,7 @@ const ConfigMock = require("../common/Config.mocks");
 const { Alerts } = require("../../../src/alerts/Alerts");
 const bodyParser = require("body-parser");
 
-const Server = require("../../../src/server/Server");
+const { Server } = require("../../../src/server/Server");
 
 jest.mock("body-parser");
 
@@ -149,22 +149,33 @@ describe("Server", () => {
       await server.start();
       await server.addRouter("fooPath", fooRouter);
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
-      expect(http.createServer.callCount).toEqual(2);
+      expect(http.createServer.mock.calls.length).toEqual(2);
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
     });
 
     it("should wait for the server to start, then reinit and restart the server if it was already starting", async () => {
       expect.assertions(3);
       const fooRouter = sandbox.spy();
-      libsMocks.stubs.http.createServer.onListen.delay(500);
+      libsMocks.stubs.http.createServer.onListen.delay(1000);
       libsMocks.stubs.http.createServer.onListen.returns(null);
+      await server.start();
+      await server.stop();
+      const waitForServerStarting = async () => {
+        return new Promise((resolve) => {
+          const interval = setInterval(() => {
+            if (server._serverStartingPromise) {
+              clearInterval(interval);
+              resolve();
+            }
+          }, 100);
+        });
+      };
       server.start();
-      server.start();
-      server.start();
+      await waitForServerStarting();
       await server.addRouter("fooPath", fooRouter);
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
-      expect(http.createServer.callCount).toEqual(2);
-      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
+      expect(http.createServer.mock.calls.length).toEqual(2);
+      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(3);
     });
 
     it("should add the router next time server is started if it is stopped", async () => {
@@ -178,7 +189,7 @@ describe("Server", () => {
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(false);
       await server.start();
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
-      expect(http.createServer.callCount).toEqual(2);
+      expect(http.createServer.mock.calls.length).toEqual(2);
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
     });
   });
@@ -203,7 +214,7 @@ describe("Server", () => {
       libsMocks.stubs.express.use.reset();
       await server.removeRouter("fooPath", fooRouter);
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(false);
-      expect(http.createServer.callCount).toEqual(2);
+      expect(http.createServer.mock.calls.length).toEqual(2);
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
     });
 
@@ -216,7 +227,7 @@ describe("Server", () => {
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(true);
       libsMocks.stubs.express.use.reset();
       await server.removeRouter("foooooPath", fooRouter);
-      expect(http.createServer.callCount).toEqual(1);
+      expect(http.createServer.mock.calls.length).toEqual(1);
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(1);
     });
 
@@ -231,7 +242,7 @@ describe("Server", () => {
       await server.removeRouter("fooPath", () => {
         // do nothing
       });
-      expect(http.createServer.callCount).toEqual(1);
+      expect(http.createServer.mock.calls.length).toEqual(1);
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(1);
     });
 
@@ -249,8 +260,8 @@ describe("Server", () => {
       server.start();
       await server.removeRouter("fooPath", fooRouter);
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(false);
-      expect(http.createServer.callCount).toEqual(2);
-      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(3);
+      expect(http.createServer.mock.calls.length).toEqual(2);
+      expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
     });
 
     it("should add the router next time server is started if it is stopped", async () => {
@@ -266,7 +277,7 @@ describe("Server", () => {
       await server.removeRouter("fooPath", fooRouter);
       await server.start();
       expect(libsMocks.stubs.express.use.calledWith("fooPath", fooRouter)).toEqual(false);
-      expect(http.createServer.callCount).toEqual(2);
+      expect(http.createServer.mock.calls.length).toEqual(2);
       expect(libsMocks.stubs.http.createServer.listen.callCount).toEqual(2);
     });
   });
@@ -311,7 +322,7 @@ describe("Server", () => {
       await server.start();
       await server.start();
       await server.start();
-      expect(http.createServer.callCount).toEqual(1);
+      expect(http.createServer.mock.calls.length).toEqual(1);
     });
 
     it("should add cors middleware if cors option is enabled", async () => {
@@ -468,19 +479,7 @@ describe("Server", () => {
 
       await server.init();
 
-      expect(await server.start()).toEqual(server);
-    });
-
-    it("should call to server listen, and rejects the promise when starts throw an error", async () => {
-      const error = new Error();
-      libsMocks.stubs.http.createServer.onListen.returns(new Error());
-      await server.init();
-
-      try {
-        await server.start();
-      } catch (err) {
-        expect(err).toEqual(error);
-      }
+      expect(await server.start()).toEqual(undefined);
     });
   });
 

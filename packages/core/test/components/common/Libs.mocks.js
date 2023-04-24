@@ -10,12 +10,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-const http = require("http");
-const https = require("https");
-
 jest.mock("express");
 jest.mock("node-watch");
 
+const http = require("http");
+const https = require("https");
 const express = require("express");
 const watch = require("node-watch");
 const fsExtra = require("fs-extra");
@@ -146,8 +145,9 @@ class Mock {
 
     express.mockImplementation(() => this._stubs.express);
     watch.mockImplementation(this._stubs.watch);
-    this._sandbox.stub(http, "createServer").returns(this._stubs.http.createServer);
-    this._sandbox.stub(https, "createServer").returns(this._stubs.http.createServer);
+    jest.spyOn(http, "createServer").mockImplementation(() => this._stubs.http.createServer);
+    jest.spyOn(https, "createServer").mockImplementation(() => this._stubs.https.createServer);
+
     this._sandbox.stub(express, "Router").returns(this._stubs.expressRouter);
     this._stubs.express.static = this._sandbox.stub(express, "static");
   }

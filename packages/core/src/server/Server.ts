@@ -18,7 +18,7 @@ import express from "express";
 import type { Application } from "express";
 
 import type { AlertsInterface } from "../alerts/Alerts.types";
-import { readFileSync } from "../common/helpers";
+import { readFileSync } from "../common/Helpers";
 
 import {
   addRequestId,

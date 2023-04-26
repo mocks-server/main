@@ -10,7 +10,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
-const fsExtra = require("fs-extra");
 const http = require("http");
 const { Logger } = require("@mocks-server/logger");
 
@@ -19,6 +18,7 @@ const ConfigMock = require("../common/Config.mocks");
 const { Alerts } = require("../../../src/alerts/Alerts");
 const bodyParser = require("body-parser");
 
+const helpers = require("../../../src/common/Helpers");
 const { Server } = require("../../../src/server/Server");
 
 jest.mock("body-parser");
@@ -62,7 +62,6 @@ describe("Server", () => {
     sandbox.stub(Logger.prototype, "error");
     sandbox.stub(Logger.prototype, "info");
     sandbox.stub(Logger.prototype, "debug");
-    sandbox.stub(fsExtra, "readFileSync");
     bodyParser.json = sandbox.stub();
     bodyParser.urlencoded = sandbox.stub();
 
@@ -73,8 +72,9 @@ describe("Server", () => {
       alerts,
       logger,
     };
+    sandbox.stub(helpers, "readFileSync");
 
-    libsMocks = new LibsMocks();
+    libsMocks = new LibsMocks({ mockFsExtraReadFileSync: true });
     server = new Server(callbacks);
     mockOptions = () => {
       optionHost = { ...server._optionCli, value: true };
@@ -288,7 +288,7 @@ describe("Server", () => {
         expect.assertions(2);
         const error = new Error("foo");
         optionHttpsEnabled.value = true;
-        fsExtra.readFileSync.throws(error);
+        helpers.readFileSync.throws(error);
 
         await server.init();
 

@@ -22,8 +22,8 @@ const FilesLoaders = require("./files/FilesLoaders");
 const { Scaffold } = require("./scaffold/Scaffold");
 const { Alerts } = require("./alerts/Alerts");
 const { UpdateNotifier } = require("./update-notifier/UpdateNotifier");
-const { CHANGE_MOCK, CHANGE_ALERTS } = require("./common/events");
-const { arrayMerge } = require("./common/helpers");
+const { CHANGE_MOCK, CHANGE_ALERTS } = require("./common/Events");
+const { arrayMerge } = require("./common/Helpers");
 const { version } = require("../package.json");
 
 const MODULE_NAME = "mocks";

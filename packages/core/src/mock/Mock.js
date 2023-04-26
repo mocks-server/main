@@ -11,7 +11,7 @@ const EventEmitter = require("events");
 
 const express = require("express");
 
-const { addEventListener, CHANGE_MOCK } = require("../common/events");
+const { addEventListener, CHANGE_MOCK } = require("../common/Events");
 const Loaders = require("./Loaders");
 const Collections = require("./Collections");
 const Routes = require("./Routes");

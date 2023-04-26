@@ -70,7 +70,7 @@ class WatchRunner {
 }
 
 class Mock {
-  constructor() {
+  constructor({ mockFsExtraReadFileSync = false } = {}) {
     this._sandbox = sinon.createSandbox();
 
     const httpCreateServerOnError = new CallBackRunner();
@@ -80,11 +80,12 @@ class Mock {
     const watchStub = this._sandbox.stub().callsFake(watchRunner.runner);
     watchStub.triggerChange = watchRunner.triggerChange;
 
-    const ensureDirSyncStub = this._sandbox.stub(fsExtra, "ensureDirSync");
-    const existsSyncStub = this._sandbox.stub(fsExtra, "existsSync");
-    const copySyncStub = this._sandbox.stub(fsExtra, "copySync");
-    const copyStub = this._sandbox.stub(fsExtra, "copy");
-    const writeStub = this._sandbox.stub(fsExtra, "writeFile");
+    const ensureDirSyncStub = this._sandbox.stub();
+    const existsSyncStub = this._sandbox.stub();
+    const copySyncStub = this._sandbox.stub();
+    const copyStub = this._sandbox.stub();
+    const writeStub = this._sandbox.stub();
+    const readFileSyncStub = this._sandbox.stub();
 
     const readFileStub = this._sandbox
       .stub(fs, "readFile")
@@ -136,6 +137,7 @@ class Mock {
         copySync: copySyncStub,
         copy: copyStub,
         writeFile: writeStub,
+        readFileSync: readFileSyncStub,
       },
       fs: {
         readFile: readFileStub,
@@ -147,6 +149,14 @@ class Mock {
     watch.mockImplementation(this._stubs.watch);
     jest.spyOn(http, "createServer").mockImplementation(() => this._stubs.http.createServer);
     jest.spyOn(https, "createServer").mockImplementation(() => this._stubs.https.createServer);
+    jest.spyOn(fsExtra, "ensureDirSync").mockImplementation(ensureDirSyncStub);
+    jest.spyOn(fsExtra, "existsSync").mockImplementation(existsSyncStub);
+    jest.spyOn(fsExtra, "copySync").mockImplementation(copySyncStub);
+    jest.spyOn(fsExtra, "copy").mockImplementation(copyStub);
+    jest.spyOn(fsExtra, "writeFile").mockImplementation(writeStub);
+    if (mockFsExtraReadFileSync) {
+      jest.spyOn(fsExtra, "readFileSync").mockImplementation(readFileSyncStub);
+    }
 
     this._sandbox.stub(express, "Router").returns(this._stubs.expressRouter);
     this._stubs.express.static = this._sandbox.stub(express, "static");

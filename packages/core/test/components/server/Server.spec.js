@@ -134,7 +134,7 @@ describe("Server", () => {
   });
 
   describe("add custom routers method", () => {
-    it("should be registered when initializating http server", async () => {
+    it("should be registered when initializing http server", async () => {
       const fooRouter = sandbox.spy();
       server.addRouter("fooPath", fooRouter);
       libsMocks.stubs.http.createServer.onListen.returns(null);
@@ -195,7 +195,7 @@ describe("Server", () => {
   });
 
   describe("remove custom routers method", () => {
-    it("should not be registered when initializating http server if called before it is started", async () => {
+    it("should not be registered when initializing http server if called before it is started", async () => {
       const fooRouter = sandbox.spy();
       server.addRouter("fooPath", fooRouter);
       server.removeRouter("fooPath", fooRouter);

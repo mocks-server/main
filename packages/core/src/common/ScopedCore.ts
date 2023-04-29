@@ -13,6 +13,10 @@ import type { LoggerInterface } from "@mocks-server/logger";
 
 import type { AlertsInterface } from "../alerts/Alerts.types";
 import type { CoreInterface } from "../Core.types";
+import type { FilesInterface } from "../files/Files.types";
+import type { MockInterface } from "../mock/Mock.types";
+import type { ServerInterface } from "../server/Server.types";
+import type { VariantHandlersInterface } from "../variant-handlers/VariantHandlers.types";
 
 import type {
   ScopedCoreInterface,
@@ -22,9 +26,9 @@ import type {
 
 export const ScopedCore: ScopedCoreConstructor = class ScopedCore implements ScopedCoreInterface {
   private _core: CoreInterface;
-  private _alerts: AlertsInterface;
-  private _config: NamespaceInterface;
-  private _logger: LoggerInterface;
+  private _alerts: AlertsInterface | undefined;
+  private _config: NamespaceInterface | undefined;
+  private _logger: LoggerInterface | undefined;
 
   constructor({ core, config, alerts, logger }: ScopedCoreOptions) {
     this._core = core;
@@ -37,43 +41,43 @@ export const ScopedCore: ScopedCoreConstructor = class ScopedCore implements Sco
     this.stop = this.stop.bind(this);
   }
 
-  get alerts() {
+  public get alerts(): AlertsInterface | undefined {
     return this._alerts;
   }
 
-  get config() {
+  public get config(): NamespaceInterface | undefined {
     return this._config;
   }
 
-  get files() {
+  public get files(): FilesInterface {
     return this._core.files;
   }
 
-  get logger() {
+  public get logger(): LoggerInterface | undefined {
     return this._logger;
   }
 
-  get mock() {
+  public get mock(): MockInterface {
     return this._core.mock;
   }
 
-  get server() {
+  public get server(): ServerInterface {
     return this._core.server;
   }
 
-  get variantHandlers() {
+  public get variantHandlers(): VariantHandlersInterface {
     return this._core.variantHandlers;
   }
 
-  get version() {
+  public get version(): string {
     return this._core.version;
   }
 
-  async start() {
+  public async start(): Promise<void> {
     return this._core.start();
   }
 
-  async stop() {
+  public async stop(): Promise<void> {
     return this._core.stop();
   }
 };

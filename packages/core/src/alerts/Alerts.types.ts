@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type { LoggerInterface } from "@mocks-server/logger";
 import type {
-  CollectionBaseInterface,
+  BaseNestedCollections,
   CollectionId,
   CollectionItem,
   CollectionOptions,
@@ -53,7 +53,7 @@ export interface AlertsConstructorInterface {
 }
 
 /** Alerts interface */
-export interface AlertsInterface extends CollectionBaseInterface {
+export interface AlertsInterface extends BaseNestedCollections {
   /**
    * Set an alert. If an alert with the same id already exists, it will be replaced
    * @param id - Alert id {@link AlertId}.

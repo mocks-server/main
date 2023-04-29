@@ -96,7 +96,7 @@ describe("loadCollections and loadRoutes methods", () => {
       }
     }
 
-    core = await startCore(null, { plugins: { register: [Plugin] } });
+    core = await startCore(null, { log: "debug", plugins: { register: [Plugin] } });
     changeMockAndWait = async (mockName) => {
       core.config.namespace("mock").namespace("collections").option("selected").value = mockName;
       await new Promise((resolve) => {

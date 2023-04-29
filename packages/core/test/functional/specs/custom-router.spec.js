@@ -23,7 +23,7 @@ describe("when using custom router", () => {
   });
   let core;
 
-  describe("and registering it before initializating the server", () => {
+  describe("and registering it before initializing the server", () => {
     beforeAll(async () => {
       core = new Core();
       core.server.addRouter("/api/custom", customRouter);

@@ -16,7 +16,7 @@ const { Logger } = require("@mocks-server/logger");
 
 const { VariantHandlers } = require("./variant-handlers/VariantHandlers");
 const Mock = require("./mock/Mock");
-const Plugins = require("./plugins/Plugins");
+const { Plugins } = require("./plugins/Plugins");
 const { Server } = require("./server/Server");
 const FilesLoaders = require("./files/FilesLoaders");
 const { Scaffold } = require("./scaffold/Scaffold");

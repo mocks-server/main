@@ -17,12 +17,12 @@ import type { BaseCoreInterface, CoreInterface } from "../Core.types";
 export interface ScopedCoreOptions {
   /** Mocks Server root core instance */
   core: CoreInterface;
-  /** Namespace of the root core config object */
-  config: NamespaceInterface;
-  /** Namespace, or scoped child collection of the root core alerts */
-  alerts: AlertsInterface;
-  /** Namespace of the root core logger */
-  logger: LoggerInterface;
+  /** Namespace of the root core config object. It may be undefined when scoped core is created for a plugin, and its constructor has no static id nor id getter in instance */
+  config?: NamespaceInterface;
+  /** Namespace, or scoped child collection of the root core alerts. It may be undefined when scoped core is created for a plugin, and its constructor has no static id nor id getter in instance */
+  alerts?: AlertsInterface;
+  /** Namespace of the root core logger. It may be undefined when scoped core is created for a plugin, and its constructor has no static id nor id getter in instance */
+  logger?: LoggerInterface;
 }
 
 /**  Mocks-server scoped core constructor */
@@ -39,10 +39,10 @@ export interface ScopedCoreConstructor {
 
 /** Mocks Server Core interface, but containing scoped alerts, config and logger */
 export interface ScopedCoreInterface extends BaseCoreInterface {
-  /** Namespace of the root core config object */
-  get config(): NamespaceInterface;
-  /** Namespace, or scoped child collection of the root core alerts */
-  get alerts(): AlertsInterface;
-  /** Namespace of the root core logger */
-  get logger(): LoggerInterface;
+  /** Namespace of the root core config object. It may be undefined when scoped core is created for a plugin, and its constructor has no static id nor id getter in instance*/
+  config?: NamespaceInterface;
+  /** Namespace, or scoped child collection of the root core alerts. It may be undefined when scoped core is created for a plugin, and its constructor has no static id nor id getter in instance*/
+  alerts?: AlertsInterface;
+  /** Namespace of the root core logger. It may be undefined when scoped core is created for a plugin, and its constructor has no static id nor id getter in instance*/
+  logger?: LoggerInterface;
 }

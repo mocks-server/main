@@ -7,8 +7,11 @@ class Loader {
     this._onLoad = onLoad;
   }
 
-  load(filesContents, fileErrors, tools) {
-    return this._onLoad(filesContents, fileErrors, tools);
+  load(filesContents, fileErrors) {
+    return this._onLoad(filesContents, fileErrors, {
+      alerts: this.alerts,
+      logger: this.logger,
+    });
   }
 
   get logger() {

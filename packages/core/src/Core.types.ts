@@ -50,7 +50,6 @@ export interface CoreAdvancedOptions {
 }
 
 /**  Mocks-server core constructor */
-
 export interface CoreConstructor {
   /**
    * Creates a Mocks Server core interface

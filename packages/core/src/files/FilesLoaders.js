@@ -268,10 +268,7 @@ class FilesLoaders {
     ).then((filesDetails) => {
       const loadedFiles = filesDetails.filter((fileDetails) => !!fileDetails.content);
       const erroredFiles = filesDetails.filter((fileDetails) => !!fileDetails.error);
-      const loadProcess = loader.load(loadedFiles, erroredFiles, {
-        alerts: loader.alerts,
-        logger: loader.logger,
-      });
+      const loadProcess = loader.load(loadedFiles, erroredFiles);
       if (isPromise(loadProcess)) {
         return loadProcess.catch((error) => {
           this._alertsLoad.set(loader.id, `Error proccesing loaded files`, error);

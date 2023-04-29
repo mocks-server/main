@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const isPromise = require("is-promise");
 const { isFunction } = require("lodash");
 
-const CoreApi = require("../common/CoreApi");
+const { ScopedCore } = require("../common/ScopedCore");
 
 const OPTIONS = [
   {
@@ -126,7 +126,7 @@ class Plugins {
         alerts: pluginAlerts,
         logger: pluginLogger,
       };
-      coreApi = new CoreApi(pluginCoreFinalOptions);
+      coreApi = new ScopedCore(pluginCoreFinalOptions);
       pluginInstance = new Plugin(coreApi);
       this._pluginsOptions.push(coreApi);
       this._pluginsInstances.push(pluginInstance);
@@ -158,7 +158,7 @@ class Plugins {
           alerts: pluginAlerts,
           logger: pluginLogger,
         };
-        coreApi = new CoreApi(pluginCoreFinalOptions);
+        coreApi = new ScopedCore(pluginCoreFinalOptions);
         this._pluginsOptions.pop();
         this._pluginsOptions.push(coreApi);
       } else {

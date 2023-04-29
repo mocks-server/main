@@ -38,6 +38,8 @@ describe("plugins", () => {
   let configSpy;
   let startSpy;
   let propertiesSpy;
+  let coreStartMethod;
+  let coreStopMethod;
 
   beforeAll(async () => {
     sandbox = sinon.createSandbox();
@@ -194,6 +196,7 @@ describe("plugins", () => {
         beforeAll(async () => {
           await core.stop();
         });
+
         if (pluginConstructor.id) {
           it("should have removed all alerts", async () => {
             expect(filterPluginAlerts(core.alerts.flat)).toEqual([]);
@@ -209,6 +212,27 @@ describe("plugins", () => {
             filterLogs(core.logger.globalStore, "[plugins:test-plugin] Log from stop method")
               .length
           ).toEqual(1);
+        });
+      });
+
+      describe("when using the start method received in the scoped core", () => {
+        it("should start server and send responses", async () => {
+          await coreStartMethod();
+          const users = await doFetch("/api/users");
+          expect(users.body).toEqual([
+            { id: 1, name: "John Doe modified" },
+            { id: 2, name: "Jane Doe modified" },
+          ]);
+        });
+      });
+
+      describe("when using the stop method received in the scoped core", () => {
+        it("should have executed logger in stop method", async () => {
+          await coreStopMethod();
+          expect(
+            filterLogs(core.logger.globalStore, "[plugins:test-plugin] Log from stop method")
+              .length
+          ).toEqual(2);
         });
       });
     });
@@ -269,7 +293,19 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      constructor({ server, alerts, config, logger, files, version, variantHandlers }) {
+      constructor({
+        start,
+        stop,
+        server,
+        alerts,
+        config,
+        logger,
+        files,
+        version,
+        variantHandlers,
+      }) {
+        coreStartMethod = start;
+        coreStopMethod = stop;
         logger.info("Log from register method");
         server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
@@ -307,7 +343,9 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      register({ server, alerts, config, logger, files, version, variantHandlers }) {
+      register({ start, stop, server, alerts, config, logger, files, version, variantHandlers }) {
+        coreStartMethod = start;
+        coreStopMethod = stop;
         logger.info("Log from register method");
         server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
@@ -341,7 +379,9 @@ describe("plugins", () => {
   testPlugin(
     "created as a Class with register method and without static id",
     class Plugin {
-      register({ server, alerts, config, logger, files, version, variantHandlers }) {
+      register({ start, stop, server, alerts, config, logger, files, version, variantHandlers }) {
+        coreStartMethod = start;
+        coreStopMethod = stop;
         logger.info("Log from register method");
         server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
@@ -382,7 +422,9 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      register({ server, alerts, config, files, version, variantHandlers }) {
+      register({ start, stop, server, alerts, config, files, version, variantHandlers }) {
+        coreStartMethod = start;
+        coreStopMethod = stop;
         server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
         registerSpy();

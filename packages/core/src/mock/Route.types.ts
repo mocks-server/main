@@ -56,10 +56,12 @@ export type RouteDefinitionHTTPMethod =
   | RouteDefinitionHTTPValidMethod
   | RouteDefinitionHTTPValidMethod[];
 
+export type RouteId = string;
+
 /** Route definition */
 export interface RouteDefinition {
   /** Route id */
-  id: string;
+  id: RouteId;
 
   /** HTTP method that this route will handle */
   method: RouteDefinitionHTTPMethod;
@@ -71,7 +73,7 @@ export interface RouteDefinition {
 /** Common properties to all types of route handlers */
 export interface RouteBaseInterface {
   /** Route id */
-  get id(): string;
+  get id(): RouteId;
 
   /** HTTP method */
   get method(): RouteDefinitionHTTPMethod; // TODO, use accepted methods type

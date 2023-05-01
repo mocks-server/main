@@ -13,7 +13,7 @@ const express = require("express");
 
 const { addEventListener, CHANGE_MOCK } = require("../common/Events");
 const { DefinitionsManager } = require("./DefinitionsManager");
-const Collections = require("./Collections");
+const { Collections } = require("./Collections");
 const { Routes } = require("./Routes");
 const {
   getPlainCollections,

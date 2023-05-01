@@ -10,14 +10,14 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type { UnknownObject } from "../common/Common.types";
 
-import type { VariantHandlerInterface } from "./VariantHandlers.types";
+import type { VariantHandlerBaseInterface } from "./VariantHandlers.types";
 
 export function getDataFromVariant(variant: MocksServer.VariantDefinition): UnknownObject {
   return variant.options;
 }
 
 export function getPreview(
-  variantInstance: VariantHandlerInterface
-): VariantHandlerInterface["preview"] {
+  variantInstance: VariantHandlerBaseInterface
+): VariantHandlerBaseInterface["preview"] {
   return variantInstance.preview;
 }

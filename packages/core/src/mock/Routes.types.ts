@@ -12,39 +12,7 @@ import type { NamespaceInterface } from "@mocks-server/config";
 
 import type { EventListener } from "../common/Events.types";
 
-declare global {
-  //eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace MocksServer {
-    //eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface VariantHandlerOptionsByType {}
-
-    /** Common properties to all types of route variants */
-    interface VariantDefinitionCommon {
-      /** Route variant id */
-      id: string;
-    }
-
-    /** Different variant properties by variant handler id */
-    type VariantHandlersDefinitions = {
-      [K in keyof VariantHandlerOptionsByType]: {
-        type: K;
-        options: VariantHandlerOptionsByType[K];
-      };
-    };
-
-    /** Route variant definition */
-    type VariantDefinition = VariantHandlersDefinitions[keyof VariantHandlersDefinitions] &
-      VariantDefinitionCommon;
-  }
-}
-
-/** Route definition */
-export interface RouteDefinition {
-  /** Route id */
-  id: string;
-  /** Route variants */
-  variants: MocksServer.VariantDefinition[];
-}
+import type { RouteDefinition } from "./Route.types";
 
 /** Options for creating a Routes interface */
 export interface RoutesOptions {

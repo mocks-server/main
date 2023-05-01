@@ -13,7 +13,7 @@ import type {
   DefinitionsManagerInterface,
   DefinitionsLoaderInterface,
 } from "./DefinitionsManager.types";
-import type { RouteDefinition } from "./Routes.types";
+import type { RouteDefinition } from "./Route.types";
 
 export type CollectionDefinitionsManager = DefinitionsManagerInterface<CollectionDefinition>;
 export type CollectionDefinitionsLoader = DefinitionsLoaderInterface<CollectionDefinition>["load"];

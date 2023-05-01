@@ -11,6 +11,20 @@ import type {
 
 import type { AlertsInterface } from "../alerts/Alerts.types";
 
+export type AllHttpMethods = "all";
+
+export type HTTPMethod =
+  | "get"
+  | "post"
+  | "patch"
+  | "delete"
+  | "put"
+  | "options"
+  | "head"
+  | "trace";
+
+export type RequestHandlerHttpMethod = HTTPMethod | AllHttpMethods;
+
 export type ProtocolHttps = "https";
 export type ProtocolHttp = "http";
 

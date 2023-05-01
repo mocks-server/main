@@ -10,12 +10,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type { OptionProperties, NamespaceInterface, OptionInterface } from "@mocks-server/config";
 
-import type {
-  RouteDefinition,
-  RoutesConstructor,
-  RoutesInterface,
-  RoutesOptions,
-} from "./Routes.types";
+import type { RouteDefinition } from "./Route.types";
+import type { RoutesConstructor, RoutesInterface, RoutesOptions } from "./Routes.types";
 
 const OPTIONS: OptionProperties[] = [
   {

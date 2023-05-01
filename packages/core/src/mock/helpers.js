@@ -12,7 +12,7 @@ const { flatten, compact, isUndefined } = require("lodash");
 
 const { getDataFromVariant, getPreview } = require("../variant-handlers/helpers");
 const { ScopedCore } = require("../common/ScopedCore");
-const Collection = require("./Collection");
+const { Collection } = require("./Collection");
 const {
   variantValidationErrors,
   routeValidationErrors,

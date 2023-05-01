@@ -12,7 +12,7 @@ const sinon = require("sinon");
 
 jest.mock("../../../src/mock/Collection");
 
-const Collection = require("../../../src/mock/Collection");
+const { Collection } = require("../../../src/mock/Collection");
 
 class CollectionCollection {
   constructor() {

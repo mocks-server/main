@@ -35,7 +35,7 @@ export interface VariantHandlerConstructor {
 }
 
 /** Common interface of variant handlers. Variant handlers should be created extending this interface */
-export interface VariantHandlerInterface {
+export interface VariantHandlerBaseInterface {
   /**
    * Returns a preview of the route response. Returns null if it is not possible to preview the response
    * @returns Variant handler response preview {@link VariantHandlerResponsePreview}.
@@ -45,7 +45,7 @@ export interface VariantHandlerInterface {
 }
 
 /** Common interface of variant handlers of type middleware. Variant handlers providing a middleware should be created extending this interface */
-export interface VariantHandlerInterfaceWithMiddleware extends VariantHandlerInterface {
+export interface VariantHandlerInterfaceWithMiddleware extends VariantHandlerBaseInterface {
   /**
    * Express middleware to be executed when the request is received for a route using this variant handler
    * @param req - Express request with some custom properties added by Mocks Server middlewares {@link Request}
@@ -56,12 +56,16 @@ export interface VariantHandlerInterfaceWithMiddleware extends VariantHandlerInt
 }
 
 /** Common interface of variant handlers of type router. Variant handlers providing a router should be created extending this interface */
-export interface VariantHandlerInterfaceWithRouter extends VariantHandlerInterface {
+export interface VariantHandlerInterfaceWithRouter extends VariantHandlerBaseInterface {
   /**
    * Returns an Express router to be mounted in the route path
    */
   get router(): RequestHandler;
 }
+
+export type VariantHandlerInterface =
+  | VariantHandlerInterfaceWithMiddleware
+  | VariantHandlerInterfaceWithRouter;
 
 export interface VariantHandlersOptions {
   /** Config object */

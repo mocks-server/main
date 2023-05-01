@@ -36,7 +36,7 @@ export interface VariantHandlerJsonOptions extends VariantHandlerBaseConstructor
 declare global {
   //eslint-disable-next-line @typescript-eslint/no-namespace
   namespace MocksServer {
-    interface VariantHandlerTypeOptions {
+    interface VariantHandlerOptionsByType {
       json: VariantHandlerJsonOptions;
     }
   }

@@ -27,7 +27,7 @@ export interface VariantHandlerMiddlewareOptions extends VariantHandlerBaseConst
 declare global {
   //eslint-disable-next-line @typescript-eslint/no-namespace
   namespace MocksServer {
-    interface VariantHandlerTypeOptions {
+    interface VariantHandlerOptionsByType {
       middleware: VariantHandlerMiddlewareOptions;
     }
   }

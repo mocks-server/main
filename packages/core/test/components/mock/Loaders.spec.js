@@ -10,9 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-const { ResourcesManager } = require("../../../src/mock/ResourcesManager");
+const { DefinitionsManager } = require("../../../src/mock/DefinitionsManager");
 
-describe("ResourcesManager", () => {
+describe("DefinitionsManager", () => {
   let sandbox;
   let onLoad;
   let loaders;
@@ -21,7 +21,7 @@ describe("ResourcesManager", () => {
     sandbox = sinon.createSandbox();
     sandbox.spy(console, "log");
     onLoad = sandbox.stub();
-    loaders = new ResourcesManager({ onLoad });
+    loaders = new DefinitionsManager({ onLoad });
   });
 
   afterEach(() => {
@@ -45,9 +45,9 @@ describe("ResourcesManager", () => {
       expect.assertions(2);
       const load = loaders.createLoader();
       load(["foo1", "foo2"]);
-      expect(loaders.resources).toEqual(["foo1", "foo2"]);
+      expect(loaders.definitions).toEqual(["foo1", "foo2"]);
       load(["foo3", "foo4"]);
-      expect(loaders.resources).toEqual(["foo3", "foo4"]);
+      expect(loaders.definitions).toEqual(["foo3", "foo4"]);
     });
 
     it("should not replace contents of other load functions", async () => {
@@ -56,9 +56,9 @@ describe("ResourcesManager", () => {
       const load2 = loaders.createLoader();
       load(["foo1", "foo2"]);
       load2(["foo3", "foo4"]);
-      expect(loaders.resources).toEqual(["foo1", "foo2", "foo3", "foo4"]);
+      expect(loaders.definitions).toEqual(["foo1", "foo2", "foo3", "foo4"]);
       load2(["foo5", "foo6"]);
-      expect(loaders.resources).toEqual(["foo1", "foo2", "foo5", "foo6"]);
+      expect(loaders.definitions).toEqual(["foo1", "foo2", "foo5", "foo6"]);
     });
   });
 });

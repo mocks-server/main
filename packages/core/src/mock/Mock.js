@@ -12,9 +12,9 @@ const EventEmitter = require("events");
 const express = require("express");
 
 const { addEventListener, CHANGE_MOCK } = require("../common/Events");
-const { ResourcesManager } = require("./ResourcesManager");
+const { DefinitionsManager } = require("./DefinitionsManager");
 const Collections = require("./Collections");
-const Routes = require("./Routes");
+const { Routes } = require("./Routes");
 const {
   getPlainCollections,
   getPlainRoutes,
@@ -80,7 +80,7 @@ class Mock {
     });
 
     // Create collections loaders
-    this._collectionLoadersManager = new ResourcesManager({
+    this._collectionLoadersManager = new DefinitionsManager({
       onLoad: () => {
         // First time wait for other loader to have finished
         this._loadedCollections = true;
@@ -91,7 +91,7 @@ class Mock {
     });
 
     // Create routes loaders
-    this._routeLoadersManager = new ResourcesManager({
+    this._routeLoadersManager = new DefinitionsManager({
       onLoad: () => {
         // First time wait for other loader to have finished
         this._loadedRoutes = true;
@@ -171,8 +171,8 @@ class Mock {
   }
 
   load() {
-    this._routesDefinitions = this._routeLoadersManager.resources;
-    this._collectionsDefinitions = this._collectionLoadersManager.resources;
+    this._routesDefinitions = this._routeLoadersManager.definitions;
+    this._collectionsDefinitions = this._collectionLoadersManager.definitions;
     this._processRoutes();
     this._processCollections();
     this._collectionsIds = getIds(this._collections);

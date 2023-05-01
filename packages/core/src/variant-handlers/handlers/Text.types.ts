@@ -36,7 +36,7 @@ export interface VariantHandlerTextOptions extends VariantHandlerBaseConstructor
 declare global {
   //eslint-disable-next-line @typescript-eslint/no-namespace
   namespace MocksServer {
-    interface VariantHandlerTypeOptions {
+    interface VariantHandlerOptionsByType {
       text: VariantHandlerTextOptions;
     }
   }

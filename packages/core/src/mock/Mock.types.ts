@@ -8,24 +8,18 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
+import type { CollectionDefinition } from "./Collection.types";
 import type {
-  ResourcesManagerInterface,
-  ResourcesLoaderInterface,
-} from "./ResourcesManager.types";
+  DefinitionsManagerInterface,
+  DefinitionsLoaderInterface,
+} from "./DefinitionsManager.types";
+import type { RouteDefinition } from "./Routes.types";
 
-export interface CollectionDefinition {
-  id: string;
-}
+export type CollectionDefinitionsManager = DefinitionsManagerInterface<CollectionDefinition>;
+export type CollectionDefinitionsLoader = DefinitionsLoaderInterface<CollectionDefinition>["load"];
 
-export interface RouteDefinition {
-  id: string;
-}
-
-export type CollectionDefinitionsManager = ResourcesManagerInterface<CollectionDefinition>;
-export type RouteDefinitionsManager = ResourcesManagerInterface<RouteDefinition>;
-
-export type CollectionDefinitionsLoader = ResourcesLoaderInterface<CollectionDefinition>["load"];
-export type RouteDefinitionsLoader = ResourcesLoaderInterface<RouteDefinition>["load"];
+export type RouteDefinitionsManager = DefinitionsManagerInterface<RouteDefinition>;
+export type RouteDefinitionsLoader = DefinitionsLoaderInterface<RouteDefinition>["load"];
 
 /** Methods allowing to load routes and collections into the mock */
 export interface MockDefinitionsLoaders {

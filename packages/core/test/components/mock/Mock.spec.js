@@ -55,8 +55,8 @@ describe("Mock", () => {
     };
 
     mock = new Mock(methods, core);
-    mock._routeLoadersManager.resources = [];
-    mock._collectionLoadersManager.resources = [];
+    mock._routeLoadersManager.definitions = [];
+    mock._collectionLoadersManager.definitions = [];
     mock.init([VariantHandlerJson]);
   });
 
@@ -167,7 +167,7 @@ describe("Mock", () => {
 
   describe("when there are valid mocks and routes", () => {
     beforeEach(() => {
-      mock._routeLoadersManager.resources = [
+      mock._routeLoadersManager.definitions = [
         {
           id: "route-1",
           variants: [
@@ -189,7 +189,7 @@ describe("Mock", () => {
           ],
         },
       ];
-      mock._collectionLoadersManager.resources = [
+      mock._collectionLoadersManager.definitions = [
         {
           id: "mock-1",
           routes: ["route-1:variant-1", "route-2:variant-1"],
@@ -279,8 +279,8 @@ describe("Mock", () => {
 
   describe("when there are no valid collections", () => {
     beforeEach(() => {
-      mock._routeLoadersManager.resources = [];
-      mock._collectionLoadersManager.resources = [null];
+      mock._routeLoadersManager.definitions = [];
+      mock._collectionLoadersManager.definitions = [null];
     });
 
     describe("when loaded", () => {

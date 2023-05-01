@@ -32,7 +32,7 @@ export interface VariantHandlerStatusOptions extends VariantHandlerBaseConstruct
 declare global {
   //eslint-disable-next-line @typescript-eslint/no-namespace
   namespace MocksServer {
-    interface VariantHandlerTypeOptions {
+    interface VariantHandlerOptionsByType {
       status: VariantHandlerStatusOptions;
     }
   }

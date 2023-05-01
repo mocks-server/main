@@ -2,7 +2,7 @@ const {
   babelRegisterDefaultOptions,
   babelRegisterOnlyFilter,
   getFilesGlobule,
-} = require("../../../src/files/helpers");
+} = require("../../../src/files/Helpers");
 
 describe("Files helpers", () => {
   describe("babelRegisterDefaultOptions", () => {

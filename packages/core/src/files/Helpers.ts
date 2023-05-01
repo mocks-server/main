@@ -31,7 +31,7 @@ function extensionsGlobulePatterns(srcGlob: string, extensions: string[]): strin
   });
 }
 
-function getGlobulePatterns(src: string, extensions: string[]): string[] {
+function getGlobulePatterns(src: string | string[], extensions: string[]): string[] {
   const srcs = Array.isArray(src) ? src : [src];
   return uniq(
     flatten(
@@ -56,7 +56,7 @@ function getFilesExtensions(
 }
 
 export function getFilesGlobule(
-  src: string,
+  src: string | string[],
   babelRegister: boolean,
   babelRegisterOptions: RegisterOptions
 ) {

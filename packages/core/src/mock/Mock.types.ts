@@ -17,15 +17,15 @@ export interface CollectionDefinition {
   id: string;
 }
 
-export interface RoutesDefinition {
+export interface RouteDefinition {
   id: string;
 }
 
 export type CollectionDefinitionsManager = ResourcesManagerInterface<CollectionDefinition>;
-export type RouteDefinitionsManager = ResourcesManagerInterface<RoutesDefinition>;
+export type RouteDefinitionsManager = ResourcesManagerInterface<RouteDefinition>;
 
-export type CollectionDefinitionsLoader = ResourcesLoaderInterface<RoutesDefinition>["load"];
-export type RouteDefinitionsLoader = ResourcesLoaderInterface<RoutesDefinition>["load"];
+export type CollectionDefinitionsLoader = ResourcesLoaderInterface<CollectionDefinition>["load"];
+export type RouteDefinitionsLoader = ResourcesLoaderInterface<RouteDefinition>["load"];
 
 /** Methods allowing to load routes and collections into the mock */
 export interface MockDefinitionsLoaders {

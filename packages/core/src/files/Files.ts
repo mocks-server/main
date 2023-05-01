@@ -21,6 +21,10 @@ import watch from "node-watch";
 
 import type { AlertsInterface } from "../alerts/Alerts.types";
 
+import { DefaultCollectionsLoader } from "./default-loaders/DefaultCollectionsLoader";
+import type { DefaultCollectionsLoaderInterface } from "./default-loaders/DefaultCollectionsLoader.types";
+import { DefaultRoutesLoader } from "./default-loaders/DefaultRoutesLoader";
+import type { DefaultRoutesLoaderInterface } from "./default-loaders/DefaultRoutesLoader.types";
 import type {
   CreateFilesLoaderOptions,
   FilesConstructor,
@@ -29,6 +33,7 @@ import type {
   FilesOptions,
   FilesLoaders,
 } from "./Files.types";
+import { FilesLoader } from "./FilesLoader";
 import type { FilesLoaderInterface, FileLoaded, ErrorLoadingFile } from "./FilesLoader.types";
 import {
   babelRegisterDefaultOptions,
@@ -38,9 +43,6 @@ import {
   isFileLoaded,
   isErrorLoadingFile,
 } from "./Helpers";
-import Loader from "./Loader";
-import CollectionsLoader from "./loaders/Collections";
-import RoutesLoader from "./loaders/Routes";
 
 const OPTIONS: OptionProperties[] = [
   {
@@ -95,8 +97,8 @@ export const Files: FilesConstructor = class Files implements FilesInterface {
   private _watchOption: OptionInterface;
   private _babelRegisterOption: OptionInterface;
   private _babelRegisterOptionsOption: OptionInterface;
-  private _collectionsLoader: CollectionsLoader;
-  private _routesLoader: RoutesLoader;
+  private _collectionsLoader: DefaultCollectionsLoaderInterface;
+  private _routesLoader: DefaultRoutesLoaderInterface;
   private _enabled: boolean;
   private _watcher: ReturnType<typeof watch> | null;
   private _require: NodeRequire;
@@ -138,12 +140,12 @@ export const Files: FilesConstructor = class Files implements FilesInterface {
   }
 
   public async init(): Promise<void> {
-    this._collectionsLoader = new CollectionsLoader({
+    this._collectionsLoader = new DefaultCollectionsLoader({
       loadCollections: this._loadCollections,
       createLoader: this.createLoader,
       getBasePath: this._getPath.bind(this),
     });
-    this._routesLoader = new RoutesLoader({
+    this._routesLoader = new DefaultRoutesLoader({
       loadRoutes: this._loadRoutes,
       createLoader: this.createLoader,
       getBasePath: this._getPath.bind(this),
@@ -366,7 +368,7 @@ export const Files: FilesConstructor = class Files implements FilesInterface {
 
   public createLoader({ id, src, onLoad }: CreateFilesLoaderOptions): FilesLoaderInterface {
     this._logger.debug(`Creating files loader '${id}'`);
-    this._loaders[id] = new Loader({
+    this._loaders[id] = new FilesLoader({
       id,
       alerts: this._alertsLoaders.collection(id),
       logger: this._loggerLoaders.namespace(id),

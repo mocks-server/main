@@ -64,7 +64,7 @@ export interface FilesLoaderOptions {
   /** Namespaced Mocks Server alerts */
   alerts: AlertsInterface;
   /** Base path where the file loader will load files from (relative to the Mocks Server Files root path) */
-  src: string;
+  src: string | string[];
   /** Callback to be called when files are loaded */
   onLoad: FilesLoaderOnLoadMethod;
 }
@@ -81,17 +81,11 @@ export interface FilesLoaderConstructor {
 }
 
 export interface FilesLoaderInterface {
-  /** Namespaced Mocks Server logger */
-  get logger(): LoggerInterface;
-
-  /** Namespaced Mocks Server alerts */
-  get alerts(): AlertsInterface;
-
   /** Id of the files loader */
   get id(): FilesLoaderId;
 
   /** Base path where the file loader load files from (relative to the Mocks Server Files root path) */
-  get src(): string;
+  get src(): string | string[];
 
   /**
    * Method to call when files are loaded

@@ -25,7 +25,7 @@ export interface CreateFilesLoaderOptions {
   /** Id of the loader */
   id: FilesLoaderId;
   /** Base path where the file loader will load files from (relative to the Mocks Server Files root path) */
-  src: string;
+  src: string | string[];
   /** Callback called when files are loaded */
   onLoad: FilesLoaderOnLoadMethod;
 }

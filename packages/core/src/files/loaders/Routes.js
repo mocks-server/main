@@ -2,7 +2,7 @@ const path = require("path");
 
 const { flatten } = require("lodash");
 
-const { validateFileContent } = require("../helpers");
+const { validateFileContent } = require("../Helpers");
 
 const ID = "routes";
 const FOLDER_NAME = "routes";

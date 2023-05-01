@@ -1,6 +1,6 @@
 const path = require("path");
 
-const { validateFileContent } = require("../helpers");
+const { validateFileContent } = require("../Helpers");
 
 const ID = "collections";
 const FILE_NAME = "collections";

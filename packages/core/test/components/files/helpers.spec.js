@@ -1,6 +1,10 @@
-const { babelRegisterDefaultOptions, getFilesGlobule } = require("../../../src/files/helpers");
+const {
+  babelRegisterDefaultOptions,
+  babelRegisterOnlyFilter,
+  getFilesGlobule,
+} = require("../../../src/files/helpers");
 
-describe("FilesLoader helpers", () => {
+describe("Files helpers", () => {
   describe("babelRegisterDefaultOptions", () => {
     describe("only property", () => {
       it("should return a function returning true if file belongs to provided folder", () => {
@@ -45,6 +49,20 @@ describe("FilesLoader helpers", () => {
         expect(options.cache).toEqual(true);
         expect(options.extensions).toEqual(["foo"]);
       });
+    });
+  });
+
+  describe("babelRegisterOnlyFilter", () => {
+    it("should return true if file belongs to provided folder", () => {
+      expect(babelRegisterOnlyFilter("foo/folder")("foo/folder/file")).toEqual(true);
+    });
+
+    it("should return false if file does not belong to provided folder", () => {
+      expect(babelRegisterOnlyFilter("foo/folder")("var/folder/file")).toEqual(false);
+    });
+
+    it("should return false if file is undefined", () => {
+      expect(babelRegisterOnlyFilter("foo/folder")()).toEqual(false);
     });
   });
 

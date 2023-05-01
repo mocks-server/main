@@ -1,5 +1,5 @@
 /*
-Copyright 2021-2022 Javier Brea
+Copyright 2021-2023 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -9,25 +9,40 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const path = require("path");
-const globule = require("globule");
-const watch = require("node-watch");
-const fsExtra = require("fs-extra");
-const { map, debounce, isFunction } = require("lodash");
-const isPromise = require("is-promise");
+import path from "path";
 
-const CollectionsLoader = require("./loaders/Collections");
-const RoutesLoader = require("./loaders/Routes");
-const Loader = require("./Loader");
+import type { OptionProperties, NamespaceInterface, OptionInterface } from "@mocks-server/config";
+import type { LoggerInterface } from "@mocks-server/logger";
+import { ensureDirSync, existsSync } from "fs-extra";
+import globule from "globule";
+import isPromise from "is-promise";
+import { map, debounce, isFunction } from "lodash";
+import watch from "node-watch";
 
-const {
+import type { AlertsInterface } from "../alerts/Alerts.types";
+
+import type {
+  CreateFilesLoaderOptions,
+  FilesConstructor,
+  FilesExtraOptions,
+  FilesInterface,
+  FilesOptions,
+  FilesLoaders,
+} from "./Files.types";
+import type { FilesLoaderInterface, FileLoaded, ErrorLoadingFile } from "./FilesLoader.types";
+import {
   babelRegisterDefaultOptions,
   getFilesGlobule,
   isYamlFile,
   readYamlFile,
-} = require("./helpers");
+  isFileLoaded,
+  isErrorLoadingFile,
+} from "./Helpers";
+import Loader from "./Loader";
+import CollectionsLoader from "./loaders/Collections";
+import RoutesLoader from "./loaders/Routes";
 
-const OPTIONS = [
+const OPTIONS: OptionProperties[] = [
   {
     name: "enabled",
     description: "Allows to disable files load",
@@ -50,7 +65,7 @@ const OPTIONS = [
 
 const BABEL_REGISTER_NAMESPACE = "babelRegister";
 
-const BABEL_REGISTER_OPTIONS = [
+const BABEL_REGISTER_OPTIONS: OptionProperties[] = [
   {
     name: "enabled",
     description: "Load @babel/register",
@@ -65,17 +80,43 @@ const BABEL_REGISTER_OPTIONS = [
   },
 ];
 
-class FilesLoaders {
-  static get id() {
+export const Files: FilesConstructor = class Files implements FilesInterface {
+  private _loaders: FilesLoaders;
+  private _logger: LoggerInterface;
+  private _alerts: AlertsInterface;
+  private _loadCollections: FilesOptions["loadCollections"];
+  private _loadRoutes: FilesOptions["loadRoutes"];
+  private _loggerLoaders: LoggerInterface;
+  private _alertsLoaders: AlertsInterface;
+  private _alertsLoad: AlertsInterface;
+  private _config: NamespaceInterface;
+  private _enabledOption: OptionInterface;
+  private _pathOption: OptionInterface;
+  private _watchOption: OptionInterface;
+  private _babelRegisterOption: OptionInterface;
+  private _babelRegisterOptionsOption: OptionInterface;
+  private _collectionsLoader: CollectionsLoader;
+  private _routesLoader: RoutesLoader;
+  private _enabled: boolean;
+  private _watcher: ReturnType<typeof watch> | null;
+  private _require: NodeRequire;
+  private _path: string;
+  private _customRequireCache?: FilesExtraOptions["requireCache"];
+
+  static get id(): string {
     return "files";
   }
 
-  constructor({ config, loadCollections, logger, loadRoutes, alerts }, extraOptions = {}) {
+  constructor(
+    { config, loadCollections, logger, loadRoutes, alerts }: FilesOptions,
+    extraOptions: FilesExtraOptions = {}
+  ) {
     this._loaders = {};
     this._logger = logger;
     this._alerts = alerts;
     this._loadCollections = loadCollections;
     this._loadRoutes = loadRoutes;
+    this._watcher = null;
 
     this._loggerLoaders = this._logger.namespace("loader");
     this._alertsLoaders = alerts.collection("loader");
@@ -96,7 +137,7 @@ class FilesLoaders {
     this.createLoader = this.createLoader.bind(this);
   }
 
-  init() {
+  public async init(): Promise<void> {
     this._collectionsLoader = new CollectionsLoader({
       loadCollections: this._loadCollections,
       createLoader: this.createLoader,
@@ -110,7 +151,7 @@ class FilesLoaders {
     this._enabled = this._enabledOption.value;
     if (this._enabled) {
       try {
-        return this._loadFiles();
+        await this._loadFiles();
       } catch (error) {
         return Promise.reject(error);
       }
@@ -118,24 +159,24 @@ class FilesLoaders {
     return Promise.resolve();
   }
 
-  reload() {
-    return this._loadFiles();
+  public async reload(): Promise<void> {
+    await this._loadFiles();
   }
 
-  start() {
+  public start(): void {
     if (this._enabled) {
       this._switchWatch();
     }
   }
 
-  stop() {
+  public stop(): void {
     if (this._enabled && this._watcher) {
       this._logger.debug("Stopping files watch");
       this._watcher.close();
     }
   }
 
-  _readFile(filePath) {
+  private async _readFile(filePath: string): Promise<unknown> {
     if (isYamlFile(filePath)) {
       this._logger.debug(`Reading yaml file ${filePath}`);
       return readYamlFile(filePath);
@@ -154,7 +195,8 @@ class FilesLoaders {
             this._logger.debug(
               `Function in '${filePath}' returned a promise. Waiting for it to resolve its result`
             );
-            exportedContentResult
+            const promiseToWait = exportedContentResult as Promise<unknown>;
+            promiseToWait
               .then((exportedContentPromiseResult) => {
                 this._logger.silly(`Promise in '${filePath}' was resolved`);
                 resolve(exportedContentPromiseResult);
@@ -175,7 +217,7 @@ class FilesLoaders {
     });
   }
 
-  _cleanRequireCacheFolder() {
+  private _cleanRequireCacheFolder(): void {
     map(this._cache(), (_cacheData, filePath) => {
       if (filePath.indexOf(this._path) === 0) {
         this._cleanRequireCache(this._cache()[filePath]);
@@ -183,95 +225,105 @@ class FilesLoaders {
     });
   }
 
-  _cleanRequireCache(requireModule) {
-    if (requireModule) {
-      map(requireModule.children, (moduleData) => {
+  private _cleanRequireCache(nodeModule?: NodeModule): void {
+    if (nodeModule) {
+      map(nodeModule.children, (moduleData) => {
         if (moduleData.id.indexOf(this._path) === 0) {
           this._cleanRequireCache(this._cache()[moduleData.id]);
         }
       });
-      this._cache()[requireModule.id] = undefined;
+      this._cache()[nodeModule.id] = undefined;
     }
   }
 
-  _resolveFolder(folder) {
+  private _resolveFolder(folder: string): string {
     if (path.isAbsolute(folder)) {
       return folder;
     }
     return path.resolve(process.cwd(), folder);
   }
 
-  _getPath() {
+  private _getPath(): string {
     const pathName = this._pathOption.value;
     return this._resolveFolder(pathName);
   }
 
-  get path() {
+  public get path(): string {
     return this._getPath();
   }
 
-  _ensurePath() {
-    if (!fsExtra.existsSync(this._path)) {
+  private _ensurePath(): void {
+    if (!existsSync(this._path)) {
       this._alerts.set("folder", `Created folder '${this._path}'`);
-      fsExtra.ensureDirSync(this._path);
+      ensureDirSync(this._path);
     }
   }
 
-  _loadFiles() {
+  private async _loadFiles(): Promise<void> {
     this._path = this._getPath();
     this._ensurePath();
     this._logger.info(`Loading files from folder ${this._path}`);
-    if (!!this._babelRegisterOption.value) {
+    if (this._babelRegisterOption.value) {
       this._require("@babel/register")(
         babelRegisterDefaultOptions(this._path, this._babelRegisterOptionsOption.value)
       );
     }
     this._cleanRequireCacheFolder();
-    return this._loadLoaders();
+    await this._loadLoaders();
   }
 
-  _loadLoaders() {
+  private async _loadLoaders(): Promise<void> {
     this._alertsLoad.clean();
-    return Promise.all(map(this._loaders, this._loadLoader));
+    await Promise.all(map(this._loaders, this._loadLoader));
   }
 
-  _loadLoader(loader) {
-    const filesToLoad = globule.find({
-      src: getFilesGlobule(
+  private async _loadLoader(loader: FilesLoaderInterface): Promise<void> {
+    const filesToLoad = globule.find(
+      getFilesGlobule(
         loader.src,
         this._babelRegisterOption.value,
         this._babelRegisterOptionsOption.value
       ),
-      srcBase: this._getPath(),
-      prefixBase: true,
-    });
+      {
+        srcBase: this._getPath(),
+        prefixBase: true,
+      }
+    );
 
     this._logger.silly(`Files to load for loader '${loader.id}': ${JSON.stringify(filesToLoad)}`);
 
-    return Promise.all(
+    await Promise.all(
       filesToLoad.map((filePath) => {
         return this._readFile(filePath)
-          .then((fileContent) => {
+          .then((fileContent): FileLoaded => {
             return {
               path: filePath,
               content: fileContent,
             };
           })
-          .catch((error) => {
+          .catch((error): Promise<ErrorLoadingFile> => {
+            const fileError = error as Error;
             this._alertsLoad.set(filePath, `Error loading file ${filePath}`, error);
             return Promise.resolve({
               path: filePath,
-              error,
+              error: fileError,
             });
           });
       })
     ).then((filesDetails) => {
-      const loadedFiles = filesDetails.filter((fileDetails) => !!fileDetails.content);
-      const erroredFiles = filesDetails.filter((fileDetails) => !!fileDetails.error);
-      const loadProcess = loader.load(loadedFiles, erroredFiles);
+      const loadedFiles = filesDetails.filter(isFileLoaded);
+      const erroredFiles = filesDetails.filter(isErrorLoadingFile);
+
+      let loadProcess;
+      try {
+        loadProcess = loader.load(loadedFiles, erroredFiles);
+      } catch (error) {
+        this._alertsLoad.set(loader.id, `Error processing loaded files`, error as Error);
+      }
       if (isPromise(loadProcess)) {
-        return loadProcess.catch((error) => {
-          this._alertsLoad.set(loader.id, `Error proccesing loaded files`, error);
+        const promiseToWait = loadProcess as Promise<unknown>;
+        return promiseToWait.catch((error) => {
+          this._alertsLoad.set(loader.id, `Error processing loaded files`, error);
           return Promise.resolve();
         });
       }
@@ -279,7 +331,7 @@ class FilesLoaders {
     });
   }
 
-  _switchWatch() {
+  private _switchWatch(): void {
     const enabled = this._watchOption.value;
     this.stop();
     if (enabled) {
@@ -299,20 +351,20 @@ class FilesLoaders {
     }
   }
 
-  _onChangePathOption() {
+  private _onChangePathOption(): void {
     this._loadFiles();
     this._switchWatch();
   }
 
-  _onChangeWatchOption() {
+  private _onChangeWatchOption(): void {
     this._switchWatch();
   }
 
-  _cache() {
-    return this._customRequireCache || require.cache;
+  private _cache(): NodeJS.Dict<NodeModule> {
+    return (this._customRequireCache || require.cache) as NodeJS.Require["cache"];
   }
 
-  createLoader({ id, src, onLoad }) {
+  public createLoader({ id, src, onLoad }: CreateFilesLoaderOptions): FilesLoaderInterface {
     this._logger.debug(`Creating files loader '${id}'`);
     this._loaders[id] = new Loader({
       id,
@@ -324,9 +376,7 @@ class FilesLoaders {
     return this._loaders[id];
   }
 
-  get loaders() {
+  public get loaders(): FilesLoaders {
     return { ...this._loaders };
   }
-}
-
-module.exports = FilesLoaders;
+};

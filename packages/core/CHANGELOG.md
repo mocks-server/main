@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - fix: Return null in preview of static variant handlers
 - feat(BREAKING CHANGE): Do not return server instance on start method. Now, the server instance is returned only on the constructor.
 - fix: Remove error handling in `server.listen` method. According to the node docs, the callback is never called with an error. Instead, the error is emitted on the server object.
+- fix: Catch possible errors when loaders process files synchronously
 
 ### Changed
 - chore(deps): Update dependencies

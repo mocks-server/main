@@ -18,7 +18,7 @@ const { VariantHandlers } = require("./variant-handlers/VariantHandlers");
 const Mock = require("./mock/Mock");
 const { Plugins } = require("./plugins/Plugins");
 const { Server } = require("./server/Server");
-const FilesLoaders = require("./files/FilesLoaders");
+const { Files } = require("./files/Files");
 const { Scaffold } = require("./scaffold/Scaffold");
 const { Alerts } = require("./alerts/Alerts");
 const { UpdateNotifier } = require("./update-notifier/UpdateNotifier");
@@ -53,7 +53,7 @@ class Core {
     this._configPlugins = this._config.addNamespace(Plugins.id);
     this._configMock = this._config.addNamespace(Mock.id);
     this._configServer = this._config.addNamespace(Server.id);
-    this._configFilesLoaders = this._config.addNamespace(FilesLoaders.id);
+    this._configFilesLoaders = this._config.addNamespace(Files.id);
 
     [this._logOption] = this._config.addOptions(ROOT_OPTIONS);
     this._logOption.onChange((level) => {
@@ -111,10 +111,10 @@ class Core {
     const fileLoaders = this._mock.createLoaders();
 
     // Create files loaders
-    this._filesLoader = new FilesLoaders({
+    this._filesLoader = new Files({
       config: this._configFilesLoaders,
-      logger: this._logger.namespace(FilesLoaders.id),
-      alerts: this._alerts.collection(FilesLoaders.id),
+      logger: this._logger.namespace(Files.id),
+      alerts: this._alerts.collection(Files.id),
       // TODO, move to another element. Files loader has not to handle specific loaders
       loadCollections: fileLoaders.loadCollections,
       loadRoutes: fileLoaders.loadRoutes,
@@ -127,7 +127,7 @@ class Core {
       logger: this._logger.namespace(Scaffold.id),
     });
 
-    this._inited = false;
+    this._initialized = false;
     this._stopPluginsPromise = null;
     this._startPluginsPromise = null;
   }
@@ -166,11 +166,11 @@ class Core {
   // Public methods
 
   async init(programmaticConfig) {
-    if (this._inited) {
-      // in case it has been initializated manually before
+    if (this._initialized) {
+      // in case it has been initialized manually before
       return Promise.resolve();
     }
-    this._inited = true;
+    this._initialized = true;
 
     if (programmaticConfig) {
       this._programmaticConfig = deepMerge(this._programmaticConfig, programmaticConfig, {

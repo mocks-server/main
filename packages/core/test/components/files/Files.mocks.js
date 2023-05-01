@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2023 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -10,9 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../../src/files/FilesLoaders");
+jest.mock("../../../src/files/Files");
 
-const FilesLoader = require("../../../src/files/FilesLoaders");
+const { Files } = require("../../../src/files/Files");
 
 class Mock {
   constructor() {
@@ -24,12 +24,12 @@ class Mock {
       stop: this._sandbox.stub(),
     };
 
-    FilesLoader.mockImplementation(() => this._stubs);
+    Files.mockImplementation(() => this._stubs);
   }
 
   get stubs() {
     return {
-      Constructor: FilesLoader,
+      Constructor: Files,
       instance: this._stubs,
     };
   }

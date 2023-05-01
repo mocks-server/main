@@ -16,7 +16,7 @@ const MockMock = require("./mock/Mock.mock.js");
 const ServerMocks = require("./server/Server.mocks.js");
 const PluginsMocks = require("./plugins/Plugins.mocks.js");
 const ConfigMocks = require("./common/Config.mocks.js");
-const FilesLoadersMocks = require("./files/FilesLoaders.mocks.js");
+const FilesMocks = require("./files/Files.mocks.js");
 const ScaffoldMocks = require("./scaffold/Scaffold.mocks.js");
 const UpdateNotifierMock = require("./update-notifier/UpdateNotifier.mock.js");
 
@@ -33,7 +33,7 @@ describe("Core", () => {
   let pluginsMocks;
   let pluginsInstance;
   let configMocks;
-  let filesLoadersMocks;
+  let filesMocks;
   let scaffoldMocks;
   let core;
   let updateNotifierMock;
@@ -48,7 +48,7 @@ describe("Core", () => {
     pluginsMocks = new PluginsMocks();
     pluginsInstance = pluginsMocks.stubs.instance;
     configMocks = new ConfigMocks();
-    filesLoadersMocks = new FilesLoadersMocks();
+    filesMocks = new FilesMocks();
     scaffoldMocks = new ScaffoldMocks();
     sandbox.stub(NestedCollections.prototype, "onChange");
     sandbox.stub(Logger.prototype, "onChangeGlobalStore");
@@ -65,7 +65,7 @@ describe("Core", () => {
     serverMocks.restore();
     configMocks.restore();
     pluginsMocks.restore();
-    filesLoadersMocks.restore();
+    filesMocks.restore();
     scaffoldMocks.restore();
     updateNotifierMock.restore();
   });
@@ -248,7 +248,7 @@ describe("Core", () => {
 
   describe("files getter", () => {
     it("should return files instance", () => {
-      expect(core.files).toEqual(filesLoadersMocks.stubs.instance);
+      expect(core.files).toEqual(filesMocks.stubs.instance);
     });
   });
 });

@@ -19,7 +19,7 @@ export interface FileLoaded {
   /** Path of the loaded file */
   path: string;
   /** Content of the loaded file */
-  content: string;
+  content: unknown;
 }
 
 export type FilesLoaded = FileLoaded[];
@@ -99,5 +99,5 @@ export interface FilesLoaderInterface {
    * @param errorsLoadingFiles - Array of errors loading files {@link ErrorsLoadingFiles}.
    * @example filesLoader.load(filesLoaded, errorsLoadingFiles);
    */
-  load(filesLoaded: FilesLoaded, errorsLoadingFiles: ErrorsLoadingFiles): void;
+  load(filesLoaded: FilesLoaded, errorsLoadingFiles: ErrorsLoadingFiles): void | Promise<void>;
 }

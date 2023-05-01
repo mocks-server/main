@@ -24,13 +24,13 @@ const ID = "collections";
 const FILE_NAME = "collections";
 const LEGACY_FILE_NAME = "mocks";
 
-function findFile(filesContents: FileLoaded[], fileName: string) {
+function findFile(filesContents: FileLoaded[], fileName: string): FileLoaded | undefined {
   return filesContents.find((fileDetails) => {
     return path.basename(fileDetails.path).startsWith(fileName);
   });
 }
 
-function getFileToUse(filesContents: FileLoaded[]) {
+function getFileToUse(filesContents: FileLoaded[]): FileLoaded | undefined {
   return findFile(filesContents, FILE_NAME) || findFile(filesContents, LEGACY_FILE_NAME);
 }
 

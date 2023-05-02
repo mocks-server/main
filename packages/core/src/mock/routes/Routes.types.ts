@@ -58,12 +58,20 @@ export interface RoutesInterface {
   /** Get value of delay configuration */
   get delay(): number;
 
-  /** Create routes from definitions **/
+  /**
+   * Create routes from route definitions
+   * @param routeDefinitions - Route definitions {@link RouteDefinition}
+   * @param variantHandlers - Variant Handlers {@link VariantHandlerConstructor}
+   * @example routes.loadDefinitions(routeDefinitions, variantHandlers); const routeInstances = routes.get();
+   */
   loadDefinitions(
     routeDefinitions: RouteDefinition[],
     variantHandlers: VariantHandlerConstructor[]
   ): void;
 
-  /** Return routes */
+  /** Return route interfaces, which are the result of loading route definitions
+   * @returns Route interfaces {@link RouteInterface}
+   * @example const routeInstances = routes.get();
+   */
   get(): RouteInterface[];
 }

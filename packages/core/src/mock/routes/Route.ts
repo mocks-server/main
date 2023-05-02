@@ -1,4 +1,5 @@
 import type { LoggerInterface } from "@mocks-server/logger";
+import { isUndefined } from "lodash";
 
 import type {
   VariantHandlerInterface,
@@ -24,13 +25,13 @@ export const Route: RouteConstructor = class Route implements RouteInterface {
   private _method: RouteDefinitionHTTPMethod;
   private _path: string;
   private _logger: LoggerInterface;
-  private _delay?: number | null;
+  private _delay: number | null;
   private _disabled: boolean;
-  private _handler?: VariantHandlerInterface;
+  private _handler: VariantHandlerInterface | null;
   private _variantId: MocksServer.VariantDefinitionId;
   private _routeId: RouteDefinitionId;
-  private _type?: MocksServer.VariantHandlerTypes;
-  private _preview?: VariantHandlerResponsePreview | null;
+  private _type: MocksServer.VariantHandlerTypes | null;
+  private _preview: VariantHandlerResponsePreview | null;
 
   constructor({
     id,
@@ -51,11 +52,11 @@ export const Route: RouteConstructor = class Route implements RouteInterface {
     this._logger = logger;
     this._delay = delay;
     this._disabled = disabled;
-    this._handler = handler;
+    this._handler = handler || null;
     this._variantId = variantId;
     this._routeId = routeId;
-    this._type = type;
-    this._preview = preview;
+    this._type = type || null;
+    this._preview = preview || null;
   }
 
   public get id(): RouteId {
@@ -82,7 +83,7 @@ export const Route: RouteConstructor = class Route implements RouteInterface {
     return this._path;
   }
 
-  public get delay(): undefined | number | null {
+  public get delay(): number | null {
     return this._delay;
   }
 
@@ -94,15 +95,15 @@ export const Route: RouteConstructor = class Route implements RouteInterface {
     return this._logger;
   }
 
-  public get handler(): VariantHandlerInterface | undefined {
+  public get handler(): VariantHandlerInterface | null {
     return this._handler;
   }
 
-  public get type(): MocksServer.VariantHandlerTypes | undefined {
+  public get type(): MocksServer.VariantHandlerTypes | null {
     return this._type;
   }
 
-  public get preview(): VariantHandlerResponsePreview | undefined | null {
+  public get preview(): VariantHandlerResponsePreview | null {
     return this._preview;
   }
 };

@@ -158,7 +158,7 @@ function getPlainRoutes(routes, routeVariants) {
         id: route.id,
         url: route.url,
         method: parseRouteMethods(route.method),
-        delay: hasDelayProperty(route) ? route.delay : null,
+        delay: isUndefined(route.delay) ? null : route.delay,
         variants: getRoutePlainRouteVariants(route, routeVariants),
       };
     })
@@ -193,10 +193,6 @@ function addCustomVariant(variantId, customVariants) {
     newCustomVariants.push(variantId);
   }
   return newCustomVariants;
-}
-
-function hasDelayProperty(obj) {
-  return obj.hasOwnProperty("delay");
 }
 
 function getCollection({

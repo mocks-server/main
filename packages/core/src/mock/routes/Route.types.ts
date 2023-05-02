@@ -107,7 +107,7 @@ export interface RouteOptions {
   /** Route id */
   id: RouteId;
   /** Route delay */
-  delay?: number | null;
+  delay: number | null;
   /** Route id disabled */
   disabled: boolean;
   /** Route variant definition id */
@@ -166,7 +166,7 @@ export interface RouteBaseInterface {
   get logger(): LoggerInterface;
 
   /** Delay to apply to the response */
-  get delay(): undefined | number | null;
+  get delay(): number | null;
 }
 
 /** Route interface */
@@ -175,13 +175,13 @@ export interface RouteInterface extends RouteBaseInterface {
   get disabled(): boolean;
 
   /** Route handler */
-  get handler(): VariantHandlerInterface | undefined;
+  get handler(): VariantHandlerInterface | null;
 
   /** Variant handler type */
-  get type(): MocksServer.VariantHandlerTypes | undefined;
+  get type(): MocksServer.VariantHandlerTypes | null;
 
   /** Response preview */
-  get preview(): VariantHandlerResponsePreview | undefined | null;
+  get preview(): VariantHandlerResponsePreview | null;
 }
 
 /** Route interface enabled */
@@ -205,11 +205,11 @@ export interface RouteInterfaceDisabled extends RouteBaseInterface {
   get disabled(): true;
 
   /** Route handler */
-  get handler(): undefined;
+  get handler(): null;
 
   /** Variant handler type */
-  get type(): undefined;
+  get type(): null;
 
   /** Response preview */
-  get preview(): undefined;
+  get preview(): null;
 }

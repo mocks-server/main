@@ -75,10 +75,7 @@ export const Collection: CollectionConstructor = class Collection implements Col
         next: NextFunction
       ) => {
         routeVariant.logger.info(`Request ${req.method} => ${req.url} | req: ${req.id}`);
-        const delay =
-          routeVariant.delay !== null && routeVariant.delay !== undefined
-            ? routeVariant.delay
-            : this._getDelay();
+        const delay = routeVariant.delay !== null ? routeVariant.delay : this._getDelay();
         if (delay > 0) {
           this._logger.verbose(`Applying delay of ${delay}ms to route variant '${this._id}'`);
           setTimeout(() => {

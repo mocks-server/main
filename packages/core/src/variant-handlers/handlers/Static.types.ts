@@ -11,9 +11,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import type { ServeStaticOptions } from "serve-static";
 
 import type { UnknownObject } from "../../common/Common.types";
-import type { CoreInterface } from "../../Core.types";
+import type { ScopedCoreInterface } from "../../common/ScopedCore.types";
 import type {
-  VariantHandlerBaseConstructorOptions,
   VariantHandlerConstructor,
   VariantHandlerInterfaceWithRouter,
 } from "../VariantHandlers.types";
@@ -21,7 +20,7 @@ import type {
 /** Response preview */
 export type VariantHandlerStaticPreview = null;
 
-export interface VariantHandlerStaticOptions extends VariantHandlerBaseConstructorOptions {
+export interface VariantHandlerStaticOptions extends MocksServer.VariantHandlerBaseOptions {
   /** Path of the folder to be served. It can be a relative path from process.cwd, or an absolute path. */
   path: string;
   /** Object containing headers to set in the response of all static assets */
@@ -44,11 +43,14 @@ export interface VariantHandlerStaticConstructor extends VariantHandlerConstruct
   /**
    * Creates an interface of a variant handler of type status
    * @param options - Static variant handler options {@link VariantHandlerStaticOptions}
-   * @param core - Mocks-server core interface {@link CoreInterface}
+   * @param core - Mocks-server core interface {@link ScopedCoreInterface}
    * @returns Interface of variant handler of type static {@link VariantHandlerStaticInterface}.
    * @example const variantHandlerStatus = new VariantHandlerStatus({status:200},core);
    */
-  new (options: VariantHandlerStaticOptions, core: CoreInterface): VariantHandlerStaticInterface;
+  new (
+    options: VariantHandlerStaticOptions,
+    core: ScopedCoreInterface
+  ): VariantHandlerStaticInterface;
 }
 
 /** Status variant handler interface */

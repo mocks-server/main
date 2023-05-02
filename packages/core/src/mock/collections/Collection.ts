@@ -19,7 +19,15 @@ import type {
   RequestHandlerHttpMethod,
   Response,
   Router,
-} from "../server/Server.types";
+} from "../../server/Server.types";
+import { handlerIsRouter } from "../../variant-handlers/helpers";
+import { routeIsEnabled } from "../routes/Route";
+import type {
+  RouteInterface,
+  RouteDefinitionHTTPValidMethod,
+  HTTPMethodId,
+} from "../routes/Route.types";
+import { HTTP_METHODS, ALL_HTTP_METHODS_ALIAS } from "../validations";
 
 import type {
   CollectionConstructor,
@@ -27,9 +35,6 @@ import type {
   CollectionOptions,
   CollectionId,
 } from "./Collection.types";
-import { routeHandlerIsRouter } from "./Route";
-import type { RouteInterface, RouteDefinitionHTTPValidMethod, HTTPMethodId } from "./Route.types";
-import { HTTP_METHODS, ALL_HTTP_METHODS_ALIAS } from "./validations";
 
 function getExpressHttpMethod(method: RouteDefinitionHTTPValidMethod): HTTPMethod {
   return HTTP_METHODS[method.toUpperCase() as HTTPMethodId] as HTTPMethod; // TODO, remove as when HTTP_METHODS is typed
@@ -70,7 +75,10 @@ export const Collection: CollectionConstructor = class Collection implements Col
         next: NextFunction
       ) => {
         routeVariant.logger.info(`Request ${req.method} => ${req.url} | req: ${req.id}`);
-        const delay = routeVariant.delay !== null ? routeVariant.delay : this._getDelay();
+        const delay =
+          routeVariant.delay !== null && routeVariant.delay !== undefined
+            ? routeVariant.delay
+            : this._getDelay();
         if (delay > 0) {
           this._logger.verbose(`Applying delay of ${delay}ms to route variant '${this._id}'`);
           setTimeout(() => {
@@ -80,22 +88,26 @@ export const Collection: CollectionConstructor = class Collection implements Col
           next();
         }
       };
-      if (!routeVariant.disabled) {
-        if (routeHandlerIsRouter(routeVariant)) {
-          this._router.use(routeVariant.url, logAndApplyDelay);
-          this._router.use(routeVariant.url, routeVariant.router.bind(routeVariant));
+      if (routeIsEnabled(routeVariant)) {
+        if (handlerIsRouter(routeVariant.handler)) {
+          this._router.use(routeVariant.path, logAndApplyDelay);
+          this._router.use(
+            routeVariant.path,
+            routeVariant.handler.router.bind(routeVariant.handler)
+          );
         } else {
+          const middleware = routeVariant.handler.middleware.bind(routeVariant.handler);
           const methods = getRouteMethods(routeVariant);
           methods.forEach((method) => {
-            this._router[method](routeVariant.url, logAndApplyDelay);
-            this._router[method](routeVariant.url, routeVariant.middleware.bind(routeVariant));
+            this._router[method](routeVariant.path, logAndApplyDelay);
+            this._router[method](routeVariant.path, middleware);
           });
         }
       }
     });
   }
 
-  // TODO, rename to routeHandlers
+  // TODO, rename to routes
   public get routeVariants(): RouteInterface[] {
     return this._routeVariants;
   }

@@ -9,9 +9,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 import type { UnknownObject } from "../../common/Common.types";
-import type { CoreInterface } from "../../Core.types";
+import type { ScopedCoreInterface } from "../../common/ScopedCore.types";
 import type {
-  VariantHandlerBaseConstructorOptions,
   VariantHandlerConstructor,
   VariantHandlerInterfaceWithMiddleware,
 } from "../VariantHandlers.types";
@@ -22,7 +21,7 @@ export interface VariantHandlerStatusPreview {
   status: number;
 }
 
-export interface VariantHandlerStatusOptions extends VariantHandlerBaseConstructorOptions {
+export interface VariantHandlerStatusOptions extends MocksServer.VariantHandlerBaseOptions {
   /** Status to send in the response */
   status: number;
   /** Object containing HTTP headers to send in the response */
@@ -43,11 +42,14 @@ export interface VariantHandlerStatusConstructor extends VariantHandlerConstruct
   /**
    * Creates an interface of a variant handler of type status
    * @param options - Status variant handler options {@link VariantHandlerStatusOptions}
-   * @param core - Mocks-server core interface {@link CoreInterface}
+   * @param core - Mocks-server core interface {@link ScopedCoreInterface}
    * @returns Interface of variant handler of type middleware {@link VariantHandlerStatusInterface}.
    * @example const variantHandlerStatus = new VariantHandlerStatus({status:200},core);
    */
-  new (options: VariantHandlerStatusOptions, core: CoreInterface): VariantHandlerStatusInterface;
+  new (
+    options: VariantHandlerStatusOptions,
+    core: ScopedCoreInterface
+  ): VariantHandlerStatusInterface;
 }
 
 /** Status variant handler interface */

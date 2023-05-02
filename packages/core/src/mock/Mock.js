@@ -13,14 +13,13 @@ const express = require("express");
 
 const { addEventListener, CHANGE_MOCK } = require("../common/Events");
 const { DefinitionsManager } = require("./DefinitionsManager");
-const { Collections } = require("./Collections");
-const { Routes } = require("./Routes");
+const { Collections } = require("./collections/Collections");
+const { Routes } = require("./routes/Routes");
 const {
   getPlainCollections,
   getPlainRoutes,
   getPlainRouteVariants,
   addCustomVariant,
-  getRouteVariants,
   getCollections,
   getCollection,
 } = require("./helpers");
@@ -48,18 +47,8 @@ class Mock {
 
     this._routesConfig = this._config.addNamespace(Routes.id);
     this._routesLogger = logger.namespace(Routes.id);
-    this._loggerLoadRoutes = this._routesLogger.namespace(LOAD_NAMESPACE);
     this._alertsRoutes = alerts.collection(Routes.id);
     this._alertsLoadRoutes = this._alertsRoutes.collection(LOAD_NAMESPACE);
-
-    // TODO, move routes logic to Routes Class
-    this._routes = new Routes({
-      logger: this._routesLogger,
-      config: this._routesConfig,
-      onChangeDelay: this._emitChange.bind(this),
-      getPlainRoutes: this._getPlainRoutes.bind(this),
-      getPlainVariants: this._getPlainVariants.bind(this),
-    });
 
     // TODO, move collections logic to Collections Class
     this._collectionsConfig = this._config.addNamespace(Collections.id);
@@ -99,6 +88,15 @@ class Mock {
           this.load();
         }
       },
+    });
+
+    this._routes = new Routes({
+      alerts: this._alertsRoutes,
+      logger: this._routesLogger,
+      config: this._routesConfig,
+      onChangeDelay: this._emitChange.bind(this),
+      getPlainRoutes: this._getPlainRoutes.bind(this),
+      getPlainVariants: this._getPlainVariants.bind(this),
     });
 
     this._router = null;
@@ -156,18 +154,8 @@ class Mock {
   }
 
   _processRoutes() {
-    this._loggerLoadRoutes.debug("Processing loaded routes");
-    this._loggerLoadRoutes.silly(JSON.stringify(this._routesDefinitions));
-    this._routeVariants = getRouteVariants({
-      routesDefinitions: this._routesDefinitions,
-      alerts: this._alertsLoadRoutes,
-      alertsRoutes: this._alertsRoutes,
-      logger: this._loggerLoadRoutes,
-      loggerRoutes: this._routesLogger,
-      routeHandlers: this._variantHandlers,
-      core: this._core,
-    });
-    this._loggerLoadRoutes.debug(`Processed ${this._routeVariants.length} route variants`);
+    this._routes.loadDefinitions(this._routesDefinitions, this._variantHandlers);
+    this._routeVariants = this._routes.get();
   }
 
   load() {

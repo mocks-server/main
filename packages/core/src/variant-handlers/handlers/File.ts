@@ -12,7 +12,7 @@ import path from "path";
 
 import type { LoggerInterface } from "@mocks-server/logger";
 
-import type { CoreInterface } from "../../Core.types";
+import type { ScopedCoreInterface } from "../../common/ScopedCore.types";
 import type { JSONSchema7WithInstanceof } from "../../mock/Validations.types";
 import type { NextFunction, Request, Response } from "../../server/Server.types";
 
@@ -62,11 +62,11 @@ export const VariantHandlerFile: VariantHandlerFileConstructor = class VariantHa
     };
   }
 
-  constructor(options: VariantHandlerFileOptions, core: CoreInterface) {
+  constructor(options: VariantHandlerFileOptions, core: ScopedCoreInterface) {
     this._options = options;
     this._expressOptions = { ...DEFAULT_EXPRESS_OPTIONS, ...this._options.options };
     this._absPath = path.resolve(this._expressOptions.root, this._options.path);
-    this._logger = core.logger;
+    this._logger = core.logger as LoggerInterface;
   }
 
   public middleware(req: Request, res: Response, next: NextFunction): void {

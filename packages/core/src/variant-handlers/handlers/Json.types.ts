@@ -9,9 +9,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 import type { UnknownObject, JSONValue } from "../../common/Common.types";
-import type { CoreInterface } from "../../Core.types";
+import type { ScopedCoreInterface } from "../../common/ScopedCore.types";
 import type {
-  VariantHandlerBaseConstructorOptions,
   VariantHandlerConstructor,
   VariantHandlerInterfaceWithMiddleware,
 } from "../VariantHandlers.types";
@@ -24,7 +23,7 @@ export interface VariantHandlerJsonPreview {
   body: JSONValue;
 }
 
-export interface VariantHandlerJsonOptions extends VariantHandlerBaseConstructorOptions {
+export interface VariantHandlerJsonOptions extends MocksServer.VariantHandlerBaseOptions {
   /** Status to send in the response */
   status: number;
   /** JSON Body to send in the response */
@@ -47,11 +46,11 @@ export interface VariantHandlerJsonConstructor extends VariantHandlerConstructor
   /**
    * Creates an interface of a variant handler of type json
    * @param options - json variant handler options {@link VariantHandlerJsonOptions}
-   * @param core - Mocks-server core interface {@link CoreInterface}
+   * @param core - Mocks-server core interface {@link ScopedCoreInterface}
    * @returns Interface of variant handler of type json {@link VariantHandlerJsonInterface}.
    * @example const variantHandlerJson = new VariantHandlerJson({ status: 200, body: {foo: 2} },core);
    */
-  new (options: VariantHandlerJsonOptions, core: CoreInterface): VariantHandlerJsonInterface;
+  new (options: VariantHandlerJsonOptions, core: ScopedCoreInterface): VariantHandlerJsonInterface;
 }
 
 /** Json variant handler interface */

@@ -8,10 +8,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-import type { CoreInterface } from "../../Core.types";
+import type { ScopedCoreInterface } from "../../common/ScopedCore.types";
 import type { Request, Response, NextFunction } from "../../server/Server.types";
 import type {
-  VariantHandlerBaseConstructorOptions,
   VariantHandlerConstructor,
   VariantHandlerInterfaceWithMiddleware,
 } from "../VariantHandlers.types";
@@ -19,9 +18,9 @@ import type {
 /** Response preview */
 export type VariantHandlerMiddlewarePreview = null;
 
-export interface VariantHandlerMiddlewareOptions extends VariantHandlerBaseConstructorOptions {
+export interface VariantHandlerMiddlewareOptions extends MocksServer.VariantHandlerBaseOptions {
   /** Middleware to be executed as request handler */
-  middleware: (req: Request, res: Response, next: NextFunction, core: CoreInterface) => void;
+  middleware: (req: Request, res: Response, next: NextFunction, core: ScopedCoreInterface) => void;
 }
 
 declare global {
@@ -38,13 +37,13 @@ export interface VariantHandlerMiddlewareConstructor extends VariantHandlerConst
   /**
    * Creates an interface of a variant handler of type middleware
    * @param options - Middleware variant handler options {@link VariantHandlerMiddlewareOptions}
-   * @param core - Mocks-server core interface {@link CoreInterface}
+   * @param core - Mocks-server core interface {@link ScopedCoreInterface}
    * @returns Interface of variant handler of type middleware {@link VariantHandlerMiddlewareInterface}.
    * @example const variantHandlerMiddleware = new VariantHandlerMiddleware({middleware},core);
    */
   new (
     options: VariantHandlerMiddlewareOptions,
-    core: CoreInterface
+    core: ScopedCoreInterface
   ): VariantHandlerMiddlewareInterface;
 }
 

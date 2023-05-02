@@ -11,9 +11,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import type { NamespaceInterface } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 
-import type { Router } from "../server/Server.types";
-
-import type { RouteInterface } from "./Route.types";
+import type { Router } from "../../server/Server.types";
+import type { RouteInterface } from "../routes/Route.types";
 
 /** Collection id */
 export type CollectionId = string;

@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import type { LoggerInterface } from "@mocks-server/logger";
 
 import type { UnknownObject } from "../../common/Common.types";
-import type { CoreInterface } from "../../Core.types";
+import type { ScopedCoreInterface } from "../../common/ScopedCore.types";
 import type { JSONSchema7WithInstanceof } from "../../mock/Validations.types";
 import type { Request, Response } from "../../server/Server.types";
 
@@ -67,9 +67,9 @@ export const VariantHandlerJson: VariantHandlerJsonConstructor = class VariantHa
     };
   }
 
-  constructor(options: VariantHandlerJsonOptions, core: CoreInterface) {
+  constructor(options: VariantHandlerJsonOptions, core: ScopedCoreInterface) {
     this._options = options;
-    this._logger = core.logger;
+    this._logger = core.logger as LoggerInterface; // TODO, remove cast when plugin id is required
   }
 
   public get defaultHeaders(): UnknownObject {

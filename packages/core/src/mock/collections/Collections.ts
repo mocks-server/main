@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import type { OptionProperties, NamespaceInterface, OptionInterface } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 
-import { resolveWhenConditionPass } from "../common/Helpers";
+import { resolveWhenConditionPass } from "../../common/Helpers";
 
 import type { CollectionId } from "./Collection.types";
 import type {

@@ -246,7 +246,7 @@ describe("mocks validations", () => {
 
   describe("variantValidationErrors", () => {
     it("should return null if Handler has not validationSchema", () => {
-      expect(variantValidationErrors({}, {}, {})).toEqual(null);
+      expect(variantValidationErrors({}, { id: "foo-variant", type: "foo" }, {})).toEqual(null);
     });
   });
 
@@ -410,15 +410,15 @@ describe("mocks validations", () => {
     const ROUTE_VARIANTS = [
       {
         routeId: "foo",
-        variantId: "foo:success",
+        id: "foo:success",
       },
       {
         routeId: "foo",
-        variantId: "foo:error",
+        id: "foo:error",
       },
       {
         routeId: "foo2",
-        variantId: "foo2:error",
+        id: "foo2:error",
       },
     ];
 

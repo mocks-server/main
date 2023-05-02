@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type { LoggerInterface } from "@mocks-server/logger";
 
-import type { CoreInterface } from "../../Core.types";
+import type { ScopedCoreInterface } from "../../common/ScopedCore.types";
 import type { JSONSchema7WithInstanceof } from "../../mock/Validations.types";
 import type { NextFunction, Request, Response } from "../../server/Server.types";
 
@@ -26,7 +26,7 @@ export const VariantHandlerMiddleware: VariantHandlerMiddlewareConstructor = cla
 {
   private _options: VariantHandlerMiddlewareOptions;
   private _logger: LoggerInterface;
-  private _core: CoreInterface;
+  private _core: ScopedCoreInterface;
 
   static get id(): string {
     return "middleware";
@@ -45,9 +45,9 @@ export const VariantHandlerMiddleware: VariantHandlerMiddlewareConstructor = cla
     };
   }
 
-  constructor(options: VariantHandlerMiddlewareOptions, core: CoreInterface) {
+  constructor(options: VariantHandlerMiddlewareOptions, core: ScopedCoreInterface) {
     this._options = options;
-    this._logger = core.logger;
+    this._logger = core.logger as LoggerInterface;
     this._core = core;
   }
 

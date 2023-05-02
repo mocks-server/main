@@ -13,7 +13,7 @@ const sinon = require("sinon");
 const LibsMocks = require("../common/Libs.mocks");
 const { Logger } = require("@mocks-server/logger");
 
-const { Collection } = require("../../../src/mock/Collection");
+const { Collection } = require("../../../src/mock/collections/Collection");
 
 describe("Collection", () => {
   let sandbox;
@@ -30,45 +30,59 @@ describe("Collection", () => {
     routeVariants = [
       {
         method: "GET",
-        url: "url-1",
+        path: "url-1",
         delay: null,
-        middleware: sandbox.stub(),
+        handler: {
+          middleware: sandbox.stub(),
+        },
         logger,
       },
       {
         method: "POST",
-        url: "url-2",
+        path: "url-2",
         delay: 1000,
-        middleware: sandbox.stub(),
+        handler: {
+          middleware: sandbox.stub(),
+        },
         logger,
       },
       {
         method: ["PUT", "PATCH"],
-        url: "url-3",
+        path: "url-3",
         delay: 1000,
-        middleware: sandbox.stub(),
+        handler: {
+          middleware: sandbox.stub(),
+        },
         logger,
       },
       {
-        url: "url-4",
-        middleware: sandbox.stub(),
+        path: "url-4",
+        handler: {
+          middleware: sandbox.stub(),
+        },
         logger,
       },
       {
-        url: "url-5",
+        path: "url-5",
         method: "*",
-        middleware: sandbox.stub(),
+        handler: {
+          middleware: sandbox.stub(),
+        },
         logger,
       },
       {
-        url: "url-6",
+        path: "url-6",
         disabled: true,
-        middleware: sandbox.stub(),
+        handler: {
+          middleware: sandbox.stub(),
+        },
         logger,
       },
       {
-        url: "url-7",
-        router: sandbox.stub(),
+        path: "url-7",
+        handler: {
+          router: sandbox.stub(),
+        },
         logger,
       },
     ];

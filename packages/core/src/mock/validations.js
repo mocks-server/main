@@ -12,7 +12,7 @@ const Ajv = require("ajv");
 const { compact } = require("lodash");
 const betterAjvErrors = require("better-ajv-errors").default;
 
-const { getDataFromVariant } = require("../variant-handlers/helpers");
+const { getOptionsFromVariant } = require("../variant-handlers/helpers");
 
 const ajv = new Ajv({ allErrors: true });
 
@@ -157,20 +157,6 @@ const routesSchema = {
   additionalProperties: false,
 };
 
-const disabledVariantSchema = {
-  type: "object",
-  properties: {
-    id: {
-      type: "string",
-    },
-    disabled: {
-      type: "boolean",
-    },
-  },
-  required: ["id", "disabled"],
-  additionalProperties: false,
-};
-
 const collectionValidator = ajv.compile(collectionsSchema);
 
 let routeValidator, routeSchema;
@@ -230,7 +216,7 @@ function collectionValidationMessage(data, errors) {
 }
 
 function findRouteVariantByVariantId(routeVariants, variantId) {
-  return routeVariants.find((routeVariant) => routeVariant.variantId === variantId);
+  return routeVariants.find((routeVariant) => routeVariant.id === variantId);
 }
 
 function traceId(id) {
@@ -328,31 +314,19 @@ function routeValidationErrors(route) {
   return null;
 }
 
-function variantDisabledValidationErrors(route, variant) {
-  const variantValidator = ajv.compile(disabledVariantSchema);
-  const dataToCheck = variant;
-  const isValid = variantValidator(dataToCheck);
-  if (!isValid) {
-    const validationMessage = validationSingleMessage(
-      disabledVariantSchema,
-      dataToCheck,
-      variantValidator.errors
-    );
-    const idTrace = variant && variant.id ? `${traceId(variant.id)} ` : "";
+function variantValidationErrors(route, variant, Handler) {
+  if (!variant.disabled && !variant.type) {
+    const error = "'type' property is required or 'disabled' property should be true";
     return {
-      message: `Variant ${idTrace}in route ${traceId(route.id)} is invalid: ${validationMessage}`,
-      errors: variantValidator.errors,
+      message: `Variant ${traceId(variant.id)} in route ${traceId(route.id)} is invalid: ${error}`,
+      errors: [error],
     };
   }
-  return null;
-}
-
-function variantValidationErrors(route, variant, Handler) {
-  if (!Handler.validationSchema) {
+  if (Handler && !Handler.validationSchema) {
     return null;
   }
   const variantValidator = ajv.compile(Handler.validationSchema);
-  const dataToCheck = getDataFromVariant(variant);
+  const dataToCheck = getOptionsFromVariant(variant);
   const dataMessage = "Invalid 'options' property:";
   const isValid = variantValidator(dataToCheck);
   if (!isValid) {
@@ -385,7 +359,6 @@ module.exports = {
   collectionValidationErrors,
   routeValidationErrors,
   variantValidationErrors,
-  variantDisabledValidationErrors,
   compileRouteValidator,
   validationSingleMessage,
   findRouteVariantByVariantId,

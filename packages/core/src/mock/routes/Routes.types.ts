@@ -9,13 +9,21 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 import type { NamespaceInterface } from "@mocks-server/config";
+import type { LoggerInterface } from "@mocks-server/logger";
 
-import type { EventListener } from "../common/Events.types";
+import type { AlertsInterface } from "../../alerts/Alerts.types";
+import type { EventListener } from "../../common/Events.types";
+import type { CoreInterface } from "../../Core.types";
+import type { VariantHandlerConstructor } from "../../variant-handlers/VariantHandlers.types";
 
-import type { RouteDefinition } from "./Route.types";
+import type { RouteDefinition, RouteInterface } from "./Route.types";
 
 /** Options for creating a Routes interface */
 export interface RoutesOptions {
+  /** Namespaced Mocks Server alerts interface */
+  alerts: AlertsInterface;
+  /** Namespaced Mocks Server logger interface */
+  logger: LoggerInterface;
   /** Namespaced Mocks Server config */
   config: NamespaceInterface;
   /** Callback to execute when delay changes */
@@ -36,7 +44,7 @@ export interface RoutesConstructor {
    * @returns Routes interface {@link RoutesInterface}.
    * @example const routes = new Routes({ config, loadCollections, logger, loadRoutes, alerts });
    */
-  new (options: RoutesOptions): RoutesInterface;
+  new (options: RoutesOptions, core: CoreInterface): RoutesInterface;
 }
 
 /** Interface for managing Mocks Server routes. Currently it does not have almost responsibility, but this has to be refactored. TODO: Migrate routes responsibility to this interface */
@@ -49,4 +57,13 @@ export interface RoutesInterface {
 
   /** Get value of delay configuration */
   get delay(): number;
+
+  /** Create routes from definitions **/
+  loadDefinitions(
+    routeDefinitions: RouteDefinition[],
+    variantHandlers: VariantHandlerConstructor[]
+  ): void;
+
+  /** Return routes */
+  get(): RouteInterface[];
 }

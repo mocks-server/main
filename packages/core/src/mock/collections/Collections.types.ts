@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import type { NamespaceInterface } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 
-import type { EventListener } from "../common/Events.types";
+import type { EventListener } from "../../common/Events.types";
 
 import type { CollectionId, CollectionDefinition } from "./Collection.types";
 

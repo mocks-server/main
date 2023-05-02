@@ -8,19 +8,15 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const { flatten, compact, isUndefined } = require("lodash");
+const { compact, isUndefined } = require("lodash");
 
-const { getDataFromVariant, getPreview } = require("../variant-handlers/helpers");
-const { ScopedCore } = require("../common/ScopedCore");
-const { Collection } = require("./Collection");
+const { getPreview } = require("../variant-handlers/helpers");
+const { Collection } = require("./collections/Collection");
 const {
-  variantValidationErrors,
-  routeValidationErrors,
   collectionValidationErrors,
   findRouteVariantByVariantId,
   collectionRouteVariantsValidationErrors,
   getCollectionRouteVariantsProperty,
-  variantDisabledValidationErrors,
   ALL_HTTP_METHODS_ALIAS,
   ALL_HTTP_METHODS,
   HTTP_METHODS,
@@ -110,7 +106,7 @@ function getPlainCollections(collections, collectionsDefinitions) {
       from: (collectionDefinition && collectionDefinition.from) || null,
       definedRoutes:
         (collectionDefinition && getCollectionRouteVariantsProperty(collectionDefinition)) || [],
-      routes: collection.routeVariants.map((routeVariant) => routeVariant.variantId),
+      routes: collection.routeVariants.map((routeVariant) => routeVariant.id),
     };
   });
 }
@@ -125,9 +121,7 @@ function getRoutePlainRouteVariants(route, routeVariants) {
         return null;
       }
       const variantId = getVariantId(route.id, variant.id);
-      const variantHandler = routeVariants.find(
-        (routeVariant) => routeVariant.variantId === variantId
-      );
+      const variantHandler = routeVariants.find((routeVariant) => routeVariant.id === variantId);
       if (variantHandler) {
         return variantId;
       }
@@ -175,10 +169,10 @@ function getPlainRouteVariants(routeVariants) {
   return routeVariants.map((routeVariant) => {
     const preview = getPreview(routeVariant);
     return {
-      id: routeVariant.variantId,
+      id: routeVariant.id,
       disabled: routeVariant.disabled,
       route: routeVariant.routeId,
-      type: routeVariant.constructor.id,
+      type: routeVariant.type,
       preview: isUndefined(preview) ? null : preview,
       delay: routeVariant.delay,
     };
@@ -203,181 +197,6 @@ function addCustomVariant(variantId, customVariants) {
 
 function hasDelayProperty(obj) {
   return obj.hasOwnProperty("delay");
-}
-
-function getRouteHandlerDelay(variant, route) {
-  if (hasDelayProperty(variant)) {
-    return variant.delay;
-  }
-  if (hasDelayProperty(route)) {
-    return route.delay;
-  }
-  return null;
-}
-
-function findRouteHandler(routeHandlers, handlerId) {
-  return routeHandlers.find((routeHandlerCandidate) => routeHandlerCandidate.id === handlerId);
-}
-
-function getHandlerId(variant) {
-  return variant.type;
-}
-
-function getDisabledVariantHandler({ logger, route, variant, variantIndex, alerts }) {
-  const variantId = getVariantId(route.id, variant.id);
-  const variantAlerts = alerts.collection(variant.id || variantIndex);
-  const variantErrors = variantDisabledValidationErrors(route, variant);
-
-  variantAlerts.clean();
-
-  if (!!variantErrors) {
-    variantAlerts.set("validation", variantErrors.message);
-    logger.silly(`Variant validation errors: ${JSON.stringify(variantErrors.errors)}`);
-    return null;
-  }
-
-  return {
-    disabled: variant.disabled,
-    id: variant.id,
-    variantId: variantId,
-    routeId: route.id,
-    url: route.url,
-    method: route.method,
-  };
-}
-
-function getVariantHandler({
-  route,
-  variant,
-  variantIndex,
-  routeHandlers,
-  core,
-  logger,
-  loggerRoutes,
-  alerts,
-  alertsRoutes,
-}) {
-  if (variant.disabled) {
-    return getDisabledVariantHandler({
-      logger,
-      route,
-      variant,
-      variantIndex,
-      alerts,
-    });
-  }
-  let routeHandler = null;
-  const variantId = getVariantId(route.id, variant.id);
-  const variantAlerts = alerts.collection(variant.id || variantIndex);
-  const handlerId = getHandlerId(variant);
-  const Handler = findRouteHandler(routeHandlers, handlerId);
-  const variantErrors = variantValidationErrors(route, variant, Handler);
-
-  const variantNamespace = variantId || getVariantId(route.id, variantIndex);
-  const routeVariantLogger = loggerRoutes.namespace(variantNamespace);
-  loggerRoutes.debug(`Creating logger namespace for route variant ${variantNamespace}`);
-  const routeVariantAlerts = alertsRoutes.collection(variantNamespace);
-  const routeVariantScopedCore = new ScopedCore({
-    core,
-    logger: routeVariantLogger,
-    alerts: routeVariantAlerts,
-  });
-
-  variantAlerts.clean();
-
-  if (!!variantErrors) {
-    variantAlerts.set("validation", variantErrors.message);
-    logger.silly(`Variant validation errors: ${JSON.stringify(variantErrors.errors)}`);
-    return null;
-  }
-
-  try {
-    const variantArgument = getDataFromVariant(variant);
-    routeHandler = new Handler(
-      {
-        ...variantArgument,
-        url: route.url,
-        method: route.method,
-      },
-      routeVariantScopedCore
-    );
-    // TODO, do not add properties to handler. Store it in "handler" property
-    routeHandler.delay = getRouteHandlerDelay(variant, route);
-    routeHandler.id = variant.id;
-    routeHandler.disabled = false;
-    routeHandler.variantId = variantId;
-    routeHandler.routeId = route.id;
-    routeHandler.url = route.url;
-    routeHandler.method = route.method;
-    routeHandler.logger = routeVariantLogger;
-  } catch (error) {
-    variantAlerts.set("process", error.message, error);
-  }
-
-  return routeHandler;
-}
-
-function getRouteVariants({
-  routesDefinitions,
-  alerts,
-  alertsRoutes,
-  logger,
-  loggerRoutes,
-  routeHandlers,
-  core,
-}) {
-  let routeIds = [];
-  alerts.clean();
-
-  return compact(
-    flatten(
-      routesDefinitions.map((route, index) => {
-        let routeVariantsIds = [];
-        const routeAlerts = alerts.collection((route && route.id) || index);
-        const routeErrors = routeValidationErrors(route);
-        if (!!routeErrors) {
-          routeAlerts.set("validation", routeErrors.message);
-          logger.silly(`Route validation errors: ${JSON.stringify(routeErrors.errors)}`);
-          return null;
-        }
-        if (routeIds.includes(route.id)) {
-          routeAlerts.set(
-            "duplicated",
-            `Route with duplicated id '${route.id}' detected. It has been ignored`
-          );
-          return null;
-        }
-        routeIds.push(route.id);
-        const variantsAlerts = routeAlerts.collection("variants");
-        return route.variants.map((variant, variantIndex) => {
-          const variantHandler = getVariantHandler({
-            route,
-            variant,
-            variantIndex,
-            routeHandlers,
-            core,
-            logger,
-            alertsRoutes,
-            loggerRoutes,
-            alerts: variantsAlerts,
-          });
-          if (variantHandler) {
-            if (routeVariantsIds.includes(variantHandler.id)) {
-              variantsAlerts
-                .collection(variantHandler.id)
-                .set(
-                  "duplicated",
-                  `Route variant with duplicated id '${variantHandler.id}' detected in route '${route.id}'. It has been ignored`
-                );
-              return null;
-            }
-            routeVariantsIds.push(variantHandler.id);
-          }
-          return variantHandler;
-        });
-      })
-    )
-  );
 }
 
 function getCollection({
@@ -489,15 +308,11 @@ function getCollections({
 
 module.exports = {
   getCollectionRouteVariants,
-  getVariantId,
   getPlainCollections,
   getPlainRoutes,
   getPlainRouteVariants,
   addCustomVariant,
-  getRouteHandlerDelay,
-  getVariantHandler,
-  getRouteVariants,
-  hasDelayProperty,
   getCollection,
   getCollections,
+  getVariantId,
 };

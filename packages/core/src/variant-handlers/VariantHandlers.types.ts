@@ -14,8 +14,6 @@ import type { UnknownObject, JSONValue } from "../common/Common.types";
 import type { JSONSchema7WithInstanceof } from "../mock/Validations.types";
 import type { NextFunction, Request, Response, RequestHandler } from "../server/Server.types";
 
-export type VariantHandlerBaseConstructorOptions = UnknownObject;
-
 /** Response preview */
 export interface VariantHandlerResponsePreview {
   /** Response status */
@@ -26,12 +24,15 @@ export interface VariantHandlerResponsePreview {
   body?: string | JSONValue | null;
 }
 
+/** Unique identifier for Variant handlers */
+export type VariantHandlerId = string;
+
 /** Common interface of variant handler constructors */
 export interface VariantHandlerConstructor {
   /** Schema for validating options */
   validationSchema: JSONSchema7WithInstanceof;
   /** Static id */
-  id: string;
+  id: VariantHandlerId;
 }
 
 /** Common interface of variant handlers. Variant handlers should be created extending this interface */

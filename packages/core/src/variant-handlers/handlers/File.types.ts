@@ -9,9 +9,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 import type { UnknownObject } from "../../common/Common.types";
-import type { CoreInterface } from "../../Core.types";
+import type { ScopedCoreInterface } from "../../common/ScopedCore.types";
 import type {
-  VariantHandlerBaseConstructorOptions,
   VariantHandlerConstructor,
   VariantHandlerInterfaceWithMiddleware,
 } from "../VariantHandlers.types";
@@ -49,11 +48,13 @@ export interface VariantHandlerFileOptionsExpressWithRoot
   root: string;
 }
 
-export interface VariantHandlerFileOptions extends VariantHandlerBaseConstructorOptions {
+export interface VariantHandlerFileOptions extends MocksServer.VariantHandlerBaseOptions {
   /** Path to the file to be served */
   path: string;
   /** Response status to send */
   status: number;
+  /** Object containing HTTP headers to send in the response */
+  headers: UnknownObject;
   /** Options for the express.sendFile method */
   options?: VariantHandlerFileOptionsExpress;
 }
@@ -72,11 +73,14 @@ export interface VariantHandlerFileConstructor extends VariantHandlerConstructor
   /**
    * Creates an interface of a variant handler of type file
    * @param options - File variant handler options {@link VariantHandlerFileOptions}
-   * @param core - Mocks-server core interface {@link CoreInterface}
+   * @param core - Mocks-server core interface {@link ScopedCoreInterface}
    * @returns Interface of variant handler of type file {@link VariantHandlerFileInterface}.
    * @example const fileVariantHandler = new FileVariantHandler({path: "path/to/file", status: 200}, core);
    */
-  new (options: VariantHandlerFileOptions, core: CoreInterface): VariantHandlerFileInterface;
+  new (
+    options: VariantHandlerFileOptions & MocksServer.VariantHandlerBaseOptions,
+    core: ScopedCoreInterface
+  ): VariantHandlerFileInterface;
 }
 
 /** File variant handler interface */

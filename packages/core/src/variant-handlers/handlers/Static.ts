@@ -12,7 +12,7 @@ import type { LoggerInterface } from "@mocks-server/logger";
 import { static as expressStatic } from "express";
 import type { ServeStaticOptions } from "serve-static";
 
-import type { CoreInterface } from "../../Core.types";
+import type { ScopedCoreInterface } from "../../common/ScopedCore.types";
 import type { JSONSchema7WithInstanceof } from "../../mock/Validations.types";
 import type { RequestHandler, Response } from "../../server/Server.types";
 
@@ -53,10 +53,10 @@ export const VariantHandlerStatic: VariantHandlerStaticConstructor = class Varia
     };
   }
 
-  constructor(options: VariantHandlerStaticOptions, core: CoreInterface) {
+  constructor(options: VariantHandlerStaticOptions, core: ScopedCoreInterface) {
     this._options = options;
     this._expressStaticOptions = this._options.options || {};
-    this._logger = core.logger;
+    this._logger = core.logger as LoggerInterface;
   }
 
   public get router(): RequestHandler {

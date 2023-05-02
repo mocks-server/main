@@ -8,12 +8,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-import type { CollectionDefinition } from "./Collection.types";
+import type { CollectionDefinition } from "./collections/Collection.types";
 import type {
   DefinitionsManagerInterface,
   DefinitionsLoaderInterface,
 } from "./DefinitionsManager.types";
-import type { RouteDefinition } from "./Route.types";
+import type { RouteDefinition } from "./routes/Route.types";
 
 export type CollectionDefinitionsManager = DefinitionsManagerInterface<CollectionDefinition>;
 export type CollectionDefinitionsLoader = DefinitionsLoaderInterface<CollectionDefinition>["load"];

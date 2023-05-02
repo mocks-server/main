@@ -9,9 +9,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 import type { UnknownObject } from "../../common/Common.types";
-import type { CoreInterface } from "../../Core.types";
+import type { ScopedCoreInterface } from "../../common/ScopedCore.types";
 import type {
-  VariantHandlerBaseConstructorOptions,
   VariantHandlerConstructor,
   VariantHandlerInterfaceWithMiddleware,
 } from "../VariantHandlers.types";
@@ -24,7 +23,7 @@ export interface VariantHandlerTextPreview {
   body: string;
 }
 
-export interface VariantHandlerTextOptions extends VariantHandlerBaseConstructorOptions {
+export interface VariantHandlerTextOptions extends MocksServer.VariantHandlerBaseOptions {
   /** Status to send in the response */
   status: number;
   /** Text body to send in the response */
@@ -47,11 +46,11 @@ export interface VariantHandlerTextConstructor extends VariantHandlerConstructor
   /**
    * Creates an interface of a variant handler of type text
    * @param options - text variant handler options {@link VariantHandlerTextOptions}
-   * @param core - Mocks-server core interface {@link CoreInterface}
+   * @param core - Mocks-server core interface {@link ScopedCoreInterface}
    * @returns Interface of variant handler of type text {@link VariantHandlerTextInterface}.
    * @example const variantHandlerText = new variantHandlerText({ status: 200, body: "foo" }, core);
    */
-  new (options: VariantHandlerTextOptions, core: CoreInterface): VariantHandlerTextInterface;
+  new (options: VariantHandlerTextOptions, core: ScopedCoreInterface): VariantHandlerTextInterface;
 }
 
 /** Json variant handler interface */

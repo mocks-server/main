@@ -130,7 +130,14 @@ describe("createServer", () => {
           preview: null,
           delay: null,
         },
-        { id: "add-headers:disabled", disabled: true, route: "add-headers", preview: null },
+        {
+          id: "add-headers:disabled",
+          delay: null,
+          type: null,
+          disabled: true,
+          route: "add-headers",
+          preview: null,
+        },
         {
           id: "get-users:success",
           disabled: false,

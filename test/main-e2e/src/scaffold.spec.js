@@ -137,7 +137,14 @@ describe("scaffold", () => {
           preview: null,
           delay: null,
         },
-        { id: "add-headers:disabled", disabled: true, route: "add-headers", preview: null },
+        {
+          id: "add-headers:disabled",
+          preview: null,
+          type: null,
+          disabled: true,
+          route: "add-headers",
+          delay: null,
+        },
         {
           id: "get-users:success",
           disabled: false,

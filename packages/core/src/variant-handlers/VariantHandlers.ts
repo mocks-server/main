@@ -68,6 +68,7 @@ export const VariantHandlers: VariantHandlersConstructor = class VariantHandlers
   }
 
   public register(variantHandlers: VariantHandlerConstructor[]): void {
+    this._logger.info(`Registering ${variantHandlers.length} variant handlers`);
     variantHandlers.forEach((VariantHandler) => {
       this._registerOne(VariantHandler);
     });

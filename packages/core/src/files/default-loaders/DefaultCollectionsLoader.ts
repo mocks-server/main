@@ -91,7 +91,7 @@ export const DefaultCollectionsLoader: DefaultCollectionsLoaderConstructor = cla
           throw new Error(fileErrors);
         }
         this._loadCollections(fileContent as CollectionDefinition[]);
-        logger.debug(`Loaded collections from file '${filePath}'`);
+        logger.verbose(`Loaded collections from file '${filePath}'`);
       } catch (error) {
         this._loadCollections([]);
         alerts.set("error", `Error loading collections from file '${filePath}'`, error as Error);

@@ -92,25 +92,28 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
   public async register(): Promise<void> {
     this._alertsRegister.clean();
     this._plugins = this._pluginsToRegister.value;
+    this._logger.verbose(`Registering ${this._plugins.length} plugins`);
     await this._registerPlugins();
     this._logger.verbose(`Registered ${this._pluginsRegistered} plugins without errors`);
   }
 
   public async init(): Promise<void> {
     this._alertsInit.clean();
-    this._logger.verbose(`Initializing plugins`);
+    this._logger.verbose(`Initializing ${this._plugins.length} plugins`);
     await this._initPlugins();
     this._logger.verbose(`Initialized ${this._pluginsInitialized} plugins without errors`);
   }
 
   public async start(): Promise<void> {
     this._alertsStart.clean();
+    this._logger.info(`Starting ${this._plugins.length} plugins`);
     await this._startPlugins();
     this._logger.verbose(`Started ${this._pluginsStarted} plugins without errors`);
   }
 
   public async stop(): Promise<void> {
     this._alertsStop.clean();
+    this._logger.info(`Stopping ${this._plugins.length} plugins`);
     await this._stopPlugins();
     this._logger.verbose(`Stopped ${this._pluginsStopped} plugins without errors`);
   }

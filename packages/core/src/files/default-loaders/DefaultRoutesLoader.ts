@@ -50,7 +50,7 @@ export const DefaultRoutesLoader: DefaultRoutesLoaderConstructor = class Default
   ) {
     const alertsFiles = alerts.collection("file");
     alerts.clean();
-    logger.debug(`Loading routes. ${filesContents.length} route files found.`);
+    logger.verbose(`Loading routes. ${filesContents.length} route files found.`);
     const routes = flatten(
       filesContents
         .map((fileDetails) => {

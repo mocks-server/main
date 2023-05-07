@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - refactor: Refactor types
+- feat: BREAKING CHANGE. Emit change only when the collection is really changed. Compare the collection flat items with the previous ones and emit change only if they are different.
 
 ### Added
 - feat: Export LEVELS and TRANSPORTS constants

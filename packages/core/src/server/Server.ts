@@ -119,12 +119,12 @@ export const Server: ServerConstructor = class Server implements ServerInterface
 
     this._hostOption.onChange(this.restart);
     this._portOption.onChange(this.restart);
-    this._corsEnabledOption.onChange(this.restart);
-    this._corsOptionsOption.onChange(this.restart);
-    this._jsonBodyParserEnabledOption.onChange(this.restart);
-    this._jsonBodyParserOptionsOption.onChange(this.restart);
-    this._urlEncodedBodyParserEnabledOption.onChange(this.restart);
-    this._urlEncodedBodyParserOptionsOption.onChange(this.restart);
+    this._corsEnabledOption.onChange(this.restart); // TODO, reinitialize server instead of restart
+    this._corsOptionsOption.onChange(this.restart); // TODO, reinitialize server instead of restart
+    this._jsonBodyParserEnabledOption.onChange(this.restart); // TODO, reinitialize server instead of restart
+    this._jsonBodyParserOptionsOption.onChange(this.restart); // TODO, reinitialize server instead of restart
+    this._urlEncodedBodyParserEnabledOption.onChange(this.restart); // TODO, reinitialize server instead of restart
+    this._urlEncodedBodyParserOptionsOption.onChange(this.restart); // TODO, reinitialize server instead of restart
     this._httpsEnabledOption.onChange(this._reinitializeServer);
     this._httpsCertOption.onChange(this._reinitializeServer);
     this._httpsKeyOption.onChange(this._reinitializeServer);

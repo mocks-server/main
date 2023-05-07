@@ -16,7 +16,7 @@ import type { EventListener } from "../../common/Events.types";
 import type { CoreInterface } from "../../Core.types";
 import type { VariantHandlerConstructor } from "../../variant-handlers/VariantHandlers.types";
 
-import type { RouteDefinition, RouteInterface } from "./Route.types";
+import type { RouteDefinition, RouteInterface, RouteId } from "./Route.types";
 
 /** Options for creating a Routes interface */
 export interface RoutesOptions {
@@ -32,6 +32,8 @@ export interface RoutesOptions {
   getPlainRoutes: () => RouteDefinition[];
   /** Method to get plain route variants */
   getPlainVariants: () => MocksServer.VariantDefinition[];
+  /** Callback to execute when routes change. Event is emitted when delay option changes */
+  onChange: EventListener;
 }
 
 /** Creates a Routes interface */
@@ -58,20 +60,27 @@ export interface RoutesInterface {
   /** Get value of delay configuration */
   get delay(): number;
 
+  /** Get logger */
+  get logger(): LoggerInterface;
+
   /**
    * Create routes from route definitions
    * @param routeDefinitions - Route definitions {@link RouteDefinition}
    * @param variantHandlers - Variant Handlers {@link VariantHandlerConstructor}
-   * @example routes.loadDefinitions(routeDefinitions, variantHandlers); const routeInstances = routes.get();
+   * @example routes.load(routeDefinitions, variantHandlers); const routeInstances = routes.get();
    */
-  loadDefinitions(
-    routeDefinitions: RouteDefinition[],
-    variantHandlers: VariantHandlerConstructor[]
-  ): void;
+  load(routeDefinitions: RouteDefinition[], variantHandlers: VariantHandlerConstructor[]): void;
 
   /** Return route interfaces, which are the result of loading route definitions
    * @returns Route interfaces {@link RouteInterface}
    * @example const routeInstances = routes.get();
    */
   get(): RouteInterface[];
+
+  /** Find and return a route interface by id
+   * @param id - Route id {@link RouteId}
+   * @returns Route interface {@link RouteInterface}
+   * @example const route = routes.findById("my-route:variant-id");
+   */
+  findById(id: RouteId): RouteInterface | undefined;
 }

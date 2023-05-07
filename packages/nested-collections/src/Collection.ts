@@ -52,6 +52,7 @@ export abstract class BaseNestedCollections implements CollectionBaseInterface {
   private _options: CollectionOptions;
   private _parent?: this;
   private _root: this;
+  private _previousFlatString: string;
 
   constructor(id: CollectionId = null, options: CollectionOptions = {}) {
     this._options = options;
@@ -99,7 +100,11 @@ export abstract class BaseNestedCollections implements CollectionBaseInterface {
   }
 
   private _emitChange(): void {
-    this._eventEmitter.emit(CHANGE_EVENT);
+    const currentFlatString = JSON.stringify(this._flat);
+    if (currentFlatString !== this._previousFlatString) {
+      this._previousFlatString = currentFlatString;
+      this._eventEmitter.emit(CHANGE_EVENT);
+    }
   }
 
   protected _set(id: CollectionId, value: CollectionItemValue): CollectionItem {

@@ -15,19 +15,8 @@ const { addEventListener, CHANGE_MOCK } = require("../common/Events");
 const { DefinitionsManager } = require("./DefinitionsManager");
 const { Collections } = require("./collections/Collections");
 const { Routes } = require("./routes/Routes");
-const {
-  getPlainCollections,
-  getPlainRoutes,
-  getPlainRouteVariants,
-  addCustomVariant,
-  getCollections,
-  getCollection,
-} = require("./helpers");
-const { getIds, compileRouteValidator } = require("./validations");
-
-const SELECTED_COLLECTION_ID = "selected";
-const EMPTY_ALERT_ID = "empty";
-const LOAD_NAMESPACE = "load";
+const { getPlainCollections, getPlainRoutes, getPlainRouteVariants } = require("./helpers");
+const { compileRouteValidator } = require("./validations");
 
 class Mock {
   static get id() {
@@ -36,40 +25,47 @@ class Mock {
 
   constructor({ config, logger, onChange, alerts }, core) {
     this._eventEmitter = new EventEmitter();
-    this._logger = logger;
-
-    this._config = config;
-
-    this._onChange = onChange;
     this._core = core;
 
     this._alerts = alerts;
+    this._logger = logger;
+    this._config = config;
+    this._onChange = onChange;
 
-    this._routesConfig = this._config.addNamespace(Routes.id);
-    this._routesLogger = logger.namespace(Routes.id);
-    this._alertsRoutes = alerts.collection(Routes.id);
-    this._alertsLoadRoutes = this._alertsRoutes.collection(LOAD_NAMESPACE);
+    this._router = null;
+    this._collectionDefinitions = [];
+    this._collections = [];
+    this._plainCollections = [];
+    this._routesDefinitions = [];
+    this._plainRoutes = [];
+    this._plainVariants = [];
+    this._routes = [];
+    this._customVariants = [];
+    this._customVariantsCollection = null;
 
-    // TODO, move collections logic to Collections Class
-    this._collectionsConfig = this._config.addNamespace(Collections.id);
-    this._collectionsLogger = logger.namespace(Collections.id);
-    this._loggerLoadCollections = this._collectionsLogger.namespace(LOAD_NAMESPACE);
-    this._alertsCollections = alerts.collection(Collections.id);
-    this._alertsLoadCollections = this._alertsCollections.collection(LOAD_NAMESPACE);
+    this.router = this.router.bind(this);
+    this._reloadRouter = this._reloadRouter.bind(this);
 
-    this._collectionsInstance = new Collections({
-      logger: this._collectionsLogger,
-      config: this._collectionsConfig,
-      onChangeSelected: this._setCurrent.bind(this),
-      getIds: this._getCollectionsIds.bind(this),
+    this._routesManager = new Routes({
+      alerts: this._alerts.collection(Routes.id),
+      logger: this._logger.namespace(Routes.id),
+      config: this._config.addNamespace(Routes.id),
+      onChange: this._reloadRouter,
+      getPlainRoutes: this._getPlainRoutes.bind(this),
+      getPlainVariants: this._getPlainVariants.bind(this),
+    });
+
+    this._collectionsManager = new Collections({
+      routesManager: this._routesManager,
+      alerts: this._alerts.collection(Collections.id),
+      logger: this._logger.namespace(Collections.id),
+      config: this._config.addNamespace(Collections.id),
+      onChange: this._reloadRouter,
       getPlainCollections: this._getPlainCollections.bind(this),
-      getSelected: () => {
-        return this._selectedId;
-      },
     });
 
     // Create collections loaders
-    this._collectionLoadersManager = new DefinitionsManager({
+    this._collectionDefinitionsManager = new DefinitionsManager({
       onLoad: () => {
         // First time wait for other loader to have finished
         this._loadedCollections = true;
@@ -89,29 +85,6 @@ class Mock {
         }
       },
     });
-
-    this._routes = new Routes({
-      alerts: this._alertsRoutes,
-      logger: this._routesLogger,
-      config: this._routesConfig,
-      onChangeDelay: this._emitChange.bind(this),
-      getPlainRoutes: this._getPlainRoutes.bind(this),
-      getPlainVariants: this._getPlainVariants.bind(this),
-    });
-
-    this._router = null;
-    this._collectionsDefinitions = [];
-    this._collections = [];
-    this._plainCollections = [];
-    this._routesDefinitions = [];
-    this._plainRoutes = [];
-    this._plainVariants = [];
-    this._routeVariants = [];
-    this._customVariants = [];
-    this._customVariantsCollection = null;
-
-    this.router = this.router.bind(this);
-    this._getDelay = this._getDelay.bind(this);
   }
 
   _emitChange() {
@@ -119,21 +92,9 @@ class Mock {
     this._onChange();
   }
 
-  _getDelay() {
-    return this._routes.delay;
-  }
-
-  // Temportal workaround to know selected collection in this class while it has a deprecated option setting the same value.
-  // TODO, move to Collections class
-  _getCollectionSelected() {
-    return this._collectionsInstance._selectedOption.value;
-  }
-
   _reloadRouter() {
-    if (this._customVariantsCollection) {
-      this._router = this._customVariantsCollection.router;
-    } else if (this._selectedCollection) {
-      this._router = this._selectedCollection.router;
+    if (this._collectionsManager.current) {
+      this._router = this._collectionsManager.current.router;
     } else {
       this._router = express.Router();
     }
@@ -141,33 +102,25 @@ class Mock {
   }
 
   _processCollections() {
-    this._loggerLoadCollections.debug("Processing loaded collections");
-    this._loggerLoadCollections.silly(JSON.stringify(this._collectionsDefinitions));
-    this._collections = getCollections({
-      collectionsDefinitions: this._collectionsDefinitions,
-      alerts: this._alertsLoadCollections,
-      logger: this._loggerLoadCollections,
-      loggerRoutes: this._routesLogger,
-      routeVariants: this._routeVariants,
-      getGlobalDelay: this._getDelay,
-    });
+    this._collectionsManager.load(this._collectionDefinitions);
+    this._collections = this._collectionsManager.get();
   }
 
   _processRoutes() {
-    this._routes.loadDefinitions(this._routesDefinitions, this._variantHandlers);
-    this._routeVariants = this._routes.get();
+    this._routesManager.load(this._routesDefinitions, this._variantHandlers);
+    this._routes = this._routesManager.get();
   }
 
   load() {
     this._routesDefinitions = this._routeLoadersManager.definitions;
-    this._collectionsDefinitions = this._collectionLoadersManager.definitions;
+    this._collectionDefinitions = this._collectionDefinitionsManager.definitions;
     this._processRoutes();
     this._processCollections();
-    this._collectionsIds = getIds(this._collections);
-    this._plainRoutes = getPlainRoutes(this._routesDefinitions, this._routeVariants);
-    this._plainVariants = getPlainRouteVariants(this._routeVariants);
-    this._plainCollections = getPlainCollections(this._collections, this._collectionsDefinitions);
-    this._setCurrent(this._getCollectionSelected());
+    this._plainRoutes = getPlainRoutes(this._routesDefinitions, this._routes);
+    this._plainVariants = getPlainRouteVariants(this._routes);
+    this._plainCollections = getPlainCollections(this._collections, this._collectionDefinitions);
+    // Force emit change because of plain routes and collections. To be removed when they are migrated to managers
+    this._emitChange();
   }
 
   init(variantHandlers) {
@@ -179,83 +132,19 @@ class Mock {
     this._router(req, res, next);
   }
 
-  _setCurrent(id) {
-    this._logger.verbose(`Trying to select collection '${id}'`);
-    let selected;
-    this._alertsCollections.remove(SELECTED_COLLECTION_ID);
-    if (!id) {
-      selected = this._collections[0];
-      if (selected) {
-        this._alertsCollections.set(
-          SELECTED_COLLECTION_ID,
-          "Option 'mock.collections.selected' was not defined. Selecting the first collection found"
-        );
-      } else {
-        this._alertsCollections.set(
-          SELECTED_COLLECTION_ID,
-          "Option 'mock.collections.selected' was not defined"
-        );
-      }
-    } else {
-      selected = this._collections.find((collection) => collection.id === id);
-      if (!selected) {
-        selected = this._collections[0];
-        if (selected) {
-          this._alertsCollections.set(
-            SELECTED_COLLECTION_ID,
-            `Collection '${id}' was not found. Selecting the first one found`
-          );
-        }
-      }
-    }
-    if (!selected) {
-      this._alertsCollections.set(EMPTY_ALERT_ID, "No collections found");
-    } else {
-      this._logger.info(`Selected collection: '${selected.id}'`);
-      this._alertsCollections.remove(EMPTY_ALERT_ID);
-    }
-
-    this._selectedCollection = selected;
-    this._selectedId = (selected && selected.id) || null;
-    this._stopUsingVariants();
-    this._reloadRouter();
-  }
-
-  _stopUsingVariants() {
-    this._customVariants = [];
-    this._customVariantsCollection = null;
-  }
-
-  _createCustomCollection() {
-    // TODO, set custom collection. Reserve "custom" id in collections for this one
-    const selectedCollectionId = this._selectedId;
-    const alerts = this._alertsLoadCollections.collection("custom");
-    alerts.clean();
-    this._customVariantsCollection = getCollection({
-      collectionDefinition: {
-        id: `custom-variants:from:${selectedCollectionId}`,
-        from: selectedCollectionId,
-        routes: this._customVariants,
-      },
-      collectionsDefinitions: this._collectionsDefinitions,
-      routeVariants: this._routeVariants,
-      getGlobalDelay: this._getDelay,
-      alerts,
-      logger: this._loggerLoadCollections,
-      loggerRoutes: this._routesLogger,
-    });
-  }
-
+  // TODO, deprecated
   restoreRouteVariants() {
-    this._stopUsingVariants();
-    this._reloadRouter();
+    this._collectionsManager.current.resetRoutes();
   }
 
-  useRouteVariant(variantId) {
-    // TODO, validate variantId
-    this._customVariants = addCustomVariant(variantId, this._customVariants);
-    this._createCustomCollection();
-    this._reloadRouter();
+  // TODO, deprecated
+  useRouteVariant(routeId) {
+    this._collectionsManager.current.useRoute(routeId);
+  }
+
+  // TODO, deprecated
+  get customRouteVariants() {
+    return this._getPlainCustomRouteVariants();
   }
 
   onChange(listener) {
@@ -265,20 +154,12 @@ class Mock {
   createLoaders() {
     return {
       loadRoutes: this._routeLoadersManager.createLoader(),
-      loadCollections: this._collectionLoadersManager.createLoader(),
+      loadCollections: this._collectionDefinitionsManager.createLoader(),
     };
   }
 
   _getPlainCustomRouteVariants() {
     return [...this._customVariants];
-  }
-
-  get customRouteVariants() {
-    return this._getPlainCustomRouteVariants();
-  }
-
-  _getCollectionsIds() {
-    return [...this._collectionsIds];
   }
 
   _getPlainCollections() {
@@ -294,11 +175,11 @@ class Mock {
   }
 
   get routes() {
-    return this._routes;
+    return this._routesManager;
   }
 
   get collections() {
-    return this._collectionsInstance;
+    return this._collectionsManager;
   }
 }
 

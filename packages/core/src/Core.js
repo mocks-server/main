@@ -61,8 +61,8 @@ class Core {
     });
 
     // Create alerts
-    const alertsLogger = this._logger.namespace("alerts");
-    this._alerts = new Alerts("alerts", { logger: alertsLogger });
+    // const alertsLogger = this._logger.namespace("alerts");
+    this._alerts = new Alerts("alerts", { logger: this._logger });
     this._alerts.onChange(() => {
       this._eventEmitter.emit(CHANGE_ALERTS);
     });
@@ -85,6 +85,7 @@ class Core {
         config: this._configMock,
         alerts: this._alerts.collection(Mock.id),
         logger: this._logger.namespace(Mock.id),
+        // TODO, pass router methods that the collection has to call when routes are set. This is needed to update routes in the server, and it allows to add more types of routers (http interceptors, etc)
         onChange: () => this._eventEmitter.emit(CHANGE_MOCK),
       },
       this // To be used only by routeHandlers
@@ -105,7 +106,7 @@ class Core {
       config: this._configServer,
       logger: this._logger.namespace(Server.id),
       alerts: this._alerts.collection(Server.id),
-      mockRouter: this._mock.router,
+      mockRouter: this._mock.router, // Invert dependencies, mock should need server router when updating routes
     });
 
     const fileLoaders = this._mock.createLoaders();
@@ -115,7 +116,7 @@ class Core {
       config: this._configFilesLoaders,
       logger: this._logger.namespace(Files.id),
       alerts: this._alerts.collection(Files.id),
-      // TODO, move to another element. Files loader has not to handle specific loaders
+      // TODO, move to another element. Files loader has not to create default file loaders
       loadCollections: fileLoaders.loadCollections,
       loadRoutes: fileLoaders.loadRoutes,
     });

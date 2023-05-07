@@ -94,7 +94,7 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
   }
 
   constructor(
-    { alerts, logger, config, onChangeDelay, getPlainRoutes, getPlainVariants }: RoutesOptions,
+    { alerts, logger, config, onChange, getPlainRoutes, getPlainVariants }: RoutesOptions,
     core: CoreInterface
   ) {
     this._routes = [];
@@ -111,7 +111,7 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
     this._getPlainVariants = getPlainVariants;
 
     [this._delayOption] = this._config.addOptions(OPTIONS);
-    this._delayOption.onChange(onChangeDelay);
+    this._delayOption.onChange(onChange);
   }
 
   public get plain(): RouteDefinition[] {
@@ -124,6 +124,10 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
 
   public get delay(): number {
     return this._delayOption.value;
+  }
+
+  public get logger(): LoggerInterface {
+    return this._logger;
   }
 
   private _createRoute({
@@ -141,7 +145,7 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
 
     /** Create alerts, logger and scoped core */
     const routeLogger = this._logger.namespace(routeId);
-    this._loggerLoad.debug(`Creating logger namespace for route variant ${routeId}`);
+    this._loggerLoad.debug(`Creating logger namespace for route ${routeId}`);
     const routeVariantAlerts = this._alerts.collection(routeId);
     const routeVariantScopedCore = new ScopedCore({
       core: this._core,
@@ -211,12 +215,12 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
     return route;
   }
 
-  public loadDefinitions(
+  public load(
     routeDefinitions: RouteDefinition[],
     variantHandlers: VariantHandlerConstructor[]
   ): void {
-    this._loggerLoad.debug("Processing loaded routes");
-    this._loggerLoad.silly(JSON.stringify(routeDefinitions));
+    this._loggerLoad.verbose("Creating routes from route definitions");
+    this._loggerLoad.debug(JSON.stringify(routeDefinitions));
     this._variantHandlers = variantHandlers;
 
     const routeDefinitionIds: RouteDefinitionId[] = [];
@@ -270,10 +274,14 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
       )
     );
 
-    this._loggerLoad.debug(`Processed ${this._routes.length} route variants`);
+    this._loggerLoad.info(`Created ${this._routes.length} routes`);
   }
 
   public get(): RouteInterface[] {
     return [...this._routes];
+  }
+
+  public findById(id: RouteId): RouteInterface | undefined {
+    return this._routes.find((route) => route.id === id);
   }
 };

@@ -11,24 +11,26 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import type { NamespaceInterface } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 
+import type { AlertsInterface } from "../../alerts/Alerts.types";
 import type { EventListener } from "../../common/Events.types";
+import type { RoutesInterface } from "../routes/Routes.types";
 
-import type { CollectionId, CollectionDefinition } from "./Collection.types";
+import type { CollectionId, CollectionInterface, CollectionDefinition } from "./Collection.types";
 
 /** Options for creating a Collections interface */
 export interface CollectionsOptions {
+  /** Namespaced Mocks Server alerts */
+  alerts: AlertsInterface;
   /** Namespaced Mocks Server logger */
   logger: LoggerInterface;
   /** Namespaced Mocks Server config */
   config: NamespaceInterface;
+  /** Routes instance */
+  routesManager: RoutesInterface;
   /** Callback to execute when selected collection changes */
-  onChangeSelected: EventListener;
-  /** Method to get array of collection ids */
-  getIds: () => CollectionId[];
+  onChange: EventListener;
   /** Method to get array of collections in plain format */
   getPlainCollections: () => CollectionDefinition[];
-  /** Method to get currently selected collection id */
-  getSelected: () => CollectionId;
 }
 
 /** Creates a Collections interface */
@@ -61,7 +63,7 @@ export interface SelectCollection {
 /** Interface for managing Mocks Server collections. Currently it does not have almost responsibility, but this has to be refactored. TODO: Migrate routes responsibility to this interface */
 export interface CollectionsInterface {
   /** Return id of currently selected collection */
-  get selected(): CollectionId;
+  get selected(): CollectionId | null;
 
   /** Return array of collection ids */
   get ids(): CollectionId[];
@@ -69,6 +71,29 @@ export interface CollectionsInterface {
   /** Return array of collections in plain format */
   get plain(): CollectionDefinition[];
 
+  /** Return currently selected collection interface */
+  get current(): CollectionInterface | null;
+
   /** Set current collection */
   select: SelectCollection;
+
+  /**
+   * Create collections from collection definitions
+   * @param collectionDefinitions - Collection definitions {@link CollectionDefinition}
+   * @example collections.load(collectionDefinitions); const collectionInstances = collections.get();
+   */
+  load(collectionDefinitions: CollectionDefinition[]): void;
+
+  /** Return collection interfaces, which are the result of loading collection definitions
+   * @returns Collection interfaces {@link CollectionInterface}
+   * @example const collectionInstances = collections.get();
+   */
+  get(): CollectionInterface[];
+
+  /** Find and return a collection interface by id
+   * @param id - Collection id {@link CollectionId}
+   * @returns Collection interface {@link CollectionInterface}
+   * @example const collection = collections.findById("my-collection");
+   */
+  findById(id: CollectionId): CollectionInterface | undefined;
 }

@@ -39,7 +39,7 @@ export const Alerts: AlertsConstructorInterface = class Alerts
       throw new Error("Alerts options are required");
     }
     super(id, options);
-    this._logger = options.logger.namespace(id);
+    this._logger = options.logger.namespace(this.path || id);
   }
 
   set(id: AlertId, message: AlertMessage, error: AlertError): Alert {

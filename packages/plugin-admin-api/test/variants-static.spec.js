@@ -29,7 +29,7 @@ describe("routes with static variants", () => {
         {
           id: "get-users",
           url: "/api/users",
-          method: "get",
+          method: ["get"],
           delay: null,
           variants: ["get-users:1", "get-users:2"],
         },

@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import path from "path";
 
-import type { CollectionDefinition } from "../../mock/collections/Collection.types";
+import type { CollectionDefinition } from "../../mock/definitions/CollectionDefinitions.types";
 import type { CollectionDefinitionsLoader } from "../../mock/Mock.types";
 import type { ErrorLoadingFile, FileLoaded, FilesLoaderCoreTools } from "../FilesLoader.types";
 import { validateFileContent } from "../Helpers";

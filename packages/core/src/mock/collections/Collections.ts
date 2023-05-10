@@ -14,6 +14,10 @@ import { compact } from "lodash";
 
 import type { AlertsInterface } from "../../alerts/Alerts.types";
 import { resolveWhenConditionPass } from "../../common/Helpers";
+import type {
+  CollectionDefinition,
+  CollectionId,
+} from "../definitions/CollectionDefinitions.types";
 import type { RouteId, RouteInterface } from "../routes/Route.types";
 import type { RoutesInterface } from "../routes/Routes.types";
 import {
@@ -24,7 +28,11 @@ import {
 } from "../validations";
 
 import { Collection } from "./Collection";
-import type { CollectionDefinition, CollectionId, CollectionInterface } from "./Collection.types";
+import type {
+  CollectionInterface,
+  CollectionPlainObject,
+  CollectionPlainObjectLegacy,
+} from "./Collection.types";
 import type {
   CollectionsConstructor,
   CollectionsInterface,
@@ -56,7 +64,6 @@ export const Collections: CollectionsConstructor = class Collections
   private _logger: LoggerInterface;
   private _loggerLoad: LoggerInterface;
   private _config: NamespaceInterface;
-  private _getPlainCollections: CollectionsOptions["getPlainCollections"];
   private _selectedOption: OptionInterface;
   private _collections: CollectionInterface[] = [];
   private _routesManager: RoutesInterface;
@@ -68,15 +75,7 @@ export const Collections: CollectionsConstructor = class Collections
     return "collections";
   }
 
-  constructor({
-    alerts,
-    logger,
-    config,
-    routesManager,
-    getPlainCollections,
-    onChange,
-  }: CollectionsOptions) {
-    this._getPlainCollections = getPlainCollections;
+  constructor({ alerts, logger, config, routesManager, onChange }: CollectionsOptions) {
     this._config = config;
     this._routesManager = routesManager;
 
@@ -100,10 +99,6 @@ export const Collections: CollectionsConstructor = class Collections
 
   public get ids(): CollectionId[] {
     return this._collections.map((collection) => collection.id);
-  }
-
-  public get plain() {
-    return this._getPlainCollections();
   }
 
   public select(collection: CollectionId, options: SelectCollectionOptionsPromise): Promise<void>;
@@ -239,6 +234,7 @@ export const Collections: CollectionsConstructor = class Collections
     try {
       collection = new Collection({
         id: collectionDefinition.id,
+        from: collectionDefinition.from,
         logger: this._logger.namespace(collectionDefinition.id),
         alerts: this._alerts.collection(collectionDefinition.id),
         routes: this._getCollectionRoutes({
@@ -246,6 +242,7 @@ export const Collections: CollectionsConstructor = class Collections
           collectionAlerts,
           routes,
         }),
+        specificRouteIds: collectionDefinition.routes,
         routesManager: this._routesManager,
         onChange: this._onChange,
       });
@@ -307,5 +304,21 @@ export const Collections: CollectionsConstructor = class Collections
 
   public findById(id: CollectionId): CollectionInterface | undefined {
     return this._collections.find((collection) => collection.id === id);
+  }
+
+  public toPlainObject(): CollectionPlainObject[] {
+    return this._collections.map((collection) => collection.toPlainObject());
+  }
+
+  public get plain(): CollectionPlainObjectLegacy[] {
+    return this._collections.map((collection) => {
+      const plainCollection = collection.toPlainObject();
+      return {
+        id: plainCollection.id,
+        from: plainCollection.from,
+        definedRoutes: plainCollection.specificRoutes,
+        routes: plainCollection.routes,
+      };
+    });
   }
 };

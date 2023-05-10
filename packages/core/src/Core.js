@@ -15,7 +15,7 @@ const Config = require("@mocks-server/config").default;
 const { Logger } = require("@mocks-server/logger");
 
 const { VariantHandlers } = require("./variant-handlers/VariantHandlers");
-const Mock = require("./mock/Mock");
+const { Mock } = require("./mock/Mock");
 const { Plugins } = require("./plugins/Plugins");
 const { Server } = require("./server/Server");
 const { Files } = require("./files/Files");

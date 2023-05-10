@@ -108,14 +108,14 @@ describe("scaffold", () => {
         {
           id: "get-users",
           url: "/api/users",
-          method: "get",
+          method: ["get"],
           delay: null,
           variants: ["get-users:success", "get-users:all", "get-users:error"],
         },
         {
           id: "get-user",
           url: "/api/users/:id",
-          method: "get",
+          method: ["get"],
           delay: null,
           variants: ["get-user:success", "get-user:id-3", "get-user:real"],
         },

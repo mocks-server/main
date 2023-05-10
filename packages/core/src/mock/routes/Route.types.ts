@@ -10,97 +10,77 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type { LoggerInterface } from "@mocks-server/logger";
 
-import type { HTTPMethod } from "../../server/Server.types";
+import type { RequestHandlerHttpMethod } from "../../server/Server.types";
 import type {
   VariantHandlerInterface,
   VariantHandlerResponsePreview,
 } from "../../variant-handlers/VariantHandlers.types";
-
-declare global {
-  //eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace MocksServer {
-    //eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface VariantHandlerOptionsByType {}
-
-    interface VariantHandlerBaseOptions {
-      /** Route method */
-      method: RouteDefinitionHTTPMethod;
-      /** Route path */
-      url: string; // TODO, deprecate. Use path instead
-    }
-
-    type VariantDefinitionId = string;
-
-    /** Common properties to all types of route variants */
-    interface VariantDefinitionCommon {
-      /** Route variant id */
-      id: VariantDefinitionId;
-      /** Variant is disabled */
-      disabled?: boolean;
-      /** Delay to apply to the response */
-      delay?: number;
-    }
-
-    /** Different variant properties by variant handler id */
-    type VariantHandlersDefinitions = {
-      [K in keyof VariantHandlerOptionsByType]: {
-        type: K;
-        options: VariantHandlerOptionsByType[K];
-      };
-    };
-
-    type VariantHandlerTypes = keyof VariantHandlerOptionsByType;
-
-    /** Route variant definition */
-    type VariantDefinition = VariantHandlersDefinitions[keyof VariantHandlersDefinitions] &
-      VariantDefinitionCommon;
-
-    type VariantHandlerTypeOptions =
-      VariantHandlerOptionsByType[keyof VariantHandlerOptionsByType];
-
-    type VariantHandlerOptions = VariantHandlerBaseOptions &
-      VariantHandlerOptionsByType[keyof VariantHandlerOptionsByType];
-  }
-}
-
-/** Valid express http methods in upperCase */
-export type HTTPMethodId = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD" | "OPTIONS";
-
-/** Alias for all methods */
-export type AllHTTPMethodsAlias = "*";
-
-/** Valid single values for route method */
-export type RouteDefinitionHTTPValidMethod = HTTPMethod | HTTPMethodId | AllHTTPMethodsAlias;
-
-/** Valid value for route method */
-export type RouteDefinitionHTTPMethod =
-  | RouteDefinitionHTTPValidMethod
-  | RouteDefinitionHTTPValidMethod[];
-
-export type RouteDefinitionId = string;
-
-/** Route definition */
-export interface RouteDefinition {
-  /** Route id */
-  id: RouteDefinitionId;
-
-  /** HTTP method that this route will handle */
-  method: RouteDefinitionHTTPMethod;
-
-  /** TODO, deprecate. Use path instead */
-  url: string;
-
-  /** Route path */
-  path?: string;
-
-  /** Delay to apply to the response */
-  delay?: number | null;
-
-  /** Route variants */
-  variants: MocksServer.VariantDefinition[];
-}
+import type {
+  RouteDefinitionId,
+  RouteDefinitionHTTPMethod,
+} from "../definitions/RouteDefinitions.types";
 
 export type RouteId = `${RouteDefinitionId}:${MocksServer.VariantDefinitionId}`;
+
+/** Route variant plain object legacy
+ * @deprecated - Use {@link RoutePlainObject} instead
+ */
+export interface RouteVariantPlainObjectLegacy {
+  id: RouteId;
+  disabled: boolean;
+  route: RouteDefinitionId;
+  type: MocksServer.VariantHandlerTypes | null;
+  preview?: VariantHandlerResponsePreview | null;
+  delay: number | null;
+}
+
+/** Collection plain object legacy
+ * @deprecated - Use {@link RoutePlainObject} instead
+ */
+export interface RoutePlainObjectLegacy {
+  /** Route definition id */
+  id: RouteDefinitionId;
+  /** Url */
+  url: string;
+  /** Method */
+  method: RequestHandlerHttpMethod[];
+  /** Route delay */
+  delay: null | number;
+  /** Ids of other routes created from the same route definition */
+  variants: RouteId[];
+}
+
+/** Plain object representing a route */
+export interface RoutePlainObject {
+  /** Collection id */
+  id: RouteId;
+
+  /** Route method */
+  methods: RequestHandlerHttpMethod[];
+
+  /** Route path */
+  path: string;
+
+  /** Route delay */
+  delay: number | null;
+
+  /** Route id disabled */
+  disabled: boolean;
+
+  /** Variant handler type */
+  type: MocksServer.VariantHandlerTypes | null;
+
+  /** Response preview */
+  preview?: VariantHandlerResponsePreview | null;
+
+  /** Data about the definition used to create this route */
+  definition: {
+    /** Id of the route definition from which the route was created */
+    route: RouteDefinitionId;
+    /** Id of the route variant definition from which the route was created */
+    variant: MocksServer.VariantDefinitionId;
+  };
+}
 
 /** Options for creating a new Route */
 export interface RouteOptions {
@@ -151,7 +131,10 @@ export interface RouteBaseInterface {
   get routeId(): RouteDefinitionId;
 
   /** HTTP method */
-  get method(): RouteDefinitionHTTPMethod; // TODO, use accepted methods type
+  get methods(): RequestHandlerHttpMethod[];
+
+  /** The route handles all HTTP methods */
+  get allMethods(): boolean;
 
   /** Route path */
   get path(): string;
@@ -182,6 +165,12 @@ export interface RouteInterface extends RouteBaseInterface {
 
   /** Response preview */
   get preview(): VariantHandlerResponsePreview | null;
+
+  /**
+   * Returns route representation in a plain object
+   * @example route.toPlainObject();
+   */
+  toPlainObject(): RoutePlainObject;
 }
 
 /** Route interface enabled */
@@ -197,6 +186,12 @@ export interface RouteInterfaceEnabled extends RouteBaseInterface {
 
   /** Response preview */
   get preview(): VariantHandlerResponsePreview | null;
+
+  /**
+   * Returns route representation in a plain object
+   * @example route.toPlainObject();
+   */
+  toPlainObject(): RoutePlainObject;
 }
 
 /** Route interface enabled */
@@ -212,4 +207,10 @@ export interface RouteInterfaceDisabled extends RouteBaseInterface {
 
   /** Response preview */
   get preview(): null;
+
+  /**
+   * Returns route representation in a plain object
+   * @example route.toPlainObject();
+   */
+  toPlainObject(): RoutePlainObject;
 }

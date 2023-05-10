@@ -12,17 +12,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 
+### Added
+- feat: Add `mock.collections.toPlainObject()` method
+
 ### Changed
 - chore(deps): Update dependencies
 - refactor: Do not require namespaces to have a name when creating scaffold, because config 2.0.0 do not return root namespace.
 - feat(BREAKING CHANGE): Do not return server instance on start method. Now, the server instance is returned only on the constructor.
 - feat: Return delay and type as null in plain routes when they are disabled
+- feat(BREAKING CHANGE): Return always an array of methods in routes plain objects get with the `mock.routes.plain` getter
 
 ### Fixed
 - fix: Remove error handling in `server.listen` method. According to the node docs, the callback is never called with an error. Instead, the error is emitted on the server object.
 - fix: Catch possible errors when file loaders process files synchronously
 - fix: Support any type of JSON object as body in JSON variant handler
-- fix: Return null in preview of static variant handlers
+- fix: Return null in preview of static variant handler
+- fix: When an id was duplicated in a route variant, all variants were ignored in the `plain` getter, even when the route was created. Now, only the duplicated variant is ignored.
+- fix: Display proper alerts path in logs when an alert is added
+
+### Deprecated
+- feat: Deprecate `mock.collections.plain` getter. Use `mock.collections.toPlainObject()` instead
+- feat: Deprecate `mock.routes.plain` getter. Use `mock.routes.toPlainObject()` instead
+- feat: Deprecate `mock.routes.plainVariants` getter. Use `mock.routes.toPlainObject()` instead
 
 ## [4.0.0] - 2022-09-14
 

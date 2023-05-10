@@ -41,29 +41,29 @@ export interface DefinitionsLoaderInterface<Type> {
   load(definitions: Type[]): void;
 }
 
-export interface DefinitionsManagerOptions {
+export interface DefinitionLoadersManagerOptions {
   /** Method to execute when definitions are loaded */
   onLoad: OnLoadDefinitions;
 }
 
-/**  Definitions Manager constructor */
-export interface DefinitionsManagerConstructor<Type> {
+/**  Definition Loaders Manager constructor */
+export interface DefinitionLoadersManagerConstructor<Type> {
   /**
-   * Creates a definitions manager interface
-   * @param options - Options {@link DefinitionsManagerOptions}
-   * @returns Resources manager interface {@link DefinitionsManagerInterface}.
-   * @example const definitionsManager = new DefinitionsManager({ onLoad: () => console.log("Definitions loaded")});
+   * Creates a definition loaders manager interface
+   * @param options - Options {@link DefinitionLoadersManagerOptions}
+   * @returns Definition loaders manager interface {@link DefinitionLoadersManagerInterface}.
+   * @example const definitionLoadersManager = new DefinitionLoadersManager({ onLoad: () => console.log("Definitions loaded")});
    */
-  new (options: DefinitionsManagerOptions): DefinitionsManagerInterface<Type>;
+  new (options: DefinitionLoadersManagerOptions): DefinitionLoadersManagerInterface<Type>;
 }
 
 /** Allows to create many definitions loaders and getting all their definitions at a time */
-export interface DefinitionsManagerInterface<Type> {
-  /** Return an array of definitions by concatenating the definitions of all loaders */
+export interface DefinitionLoadersManagerInterface<Type> {
+  /** Return an array of definitions by concatenating the definitions of all loaders created by the manager */
   get definitions(): Type[];
 
   /** Creates a new definitions loader and return it. Each loader can load its own definitions separately
-   * @example const loader = definitionLoaders.createLoader(); loader.load([{foo: "bar"}, {foo: "baz"}]); const definitions = definitionLoaders.definitions;
+   * @example const loader = definitionLoadersManager.createLoader(); loader.load([{foo: "bar"}, {foo: "baz"}]); const definitions = definitionLoadersManager.definitions;
    */
   createLoader(): DefinitionsLoaderInterface<Type>["load"];
 }

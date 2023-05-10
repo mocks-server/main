@@ -148,7 +148,7 @@ describe("AdminApiClient class", () => {
           id: "get-user",
           delay: null,
           url: "/api/user",
-          method: "get",
+          method: ["get"],
           variants: ["get-user:1", "get-user:2"],
         },
       ]);
@@ -162,7 +162,7 @@ describe("AdminApiClient class", () => {
         id: "get-user",
         delay: null,
         url: "/api/user",
-        method: "get",
+        method: ["get"],
         variants: ["get-user:1", "get-user:2"],
       });
     });

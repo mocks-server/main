@@ -204,7 +204,7 @@ describe("files watcher", () => {
       expect.assertions(2);
       expect(mocks.currentScreen).toEqual(expect.not.stringContaining("ALERTS"));
       expect(mocks.currentScreen).toEqual(
-        expect.stringContaining("[error][alerts:load] Error loading file")
+        expect.stringContaining("[error][alerts:files:load] Error loading file")
       );
     });
 

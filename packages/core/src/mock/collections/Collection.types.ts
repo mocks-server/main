@@ -12,20 +12,46 @@ import type { LoggerInterface } from "@mocks-server/logger";
 import type { AlertsInterface } from "../../alerts/Alerts.types";
 import type { EventListener } from "../../common/Events.types";
 import type { Router } from "../../server/Server.types";
+import type { CollectionId } from "../definitions/CollectionDefinitions.types";
 import type { RouteId, RouteInterface } from "../routes/Route.types";
 import type { RoutesInterface } from "../routes/Routes.types";
 
-/** Collection id */
-export type CollectionId = string;
-
-/** Collection definition */
-export interface CollectionDefinition {
+/** Collection plain object legacy
+ * @deprecated - Use {@link CollectionPlainObject} instead
+ */
+export interface CollectionPlainObjectLegacy {
   /** Collection id */
   id: CollectionId;
-  /** Routes */
+
+  /** Base collection from which this one inherits routes */
+  from: CollectionId | null;
+
+  /** Applied routes after calculating inheritance */
   routes: RouteId[];
-  /** Extends from collection */
-  from?: CollectionId;
+
+  /** Routes specifically defined in the collection definition */
+  definedRoutes: RouteId[];
+}
+
+/** Plain object representing a collection */
+export interface CollectionPlainObject {
+  /** Collection id */
+  id: CollectionId;
+
+  /** Base collection from which this one inherits routes */
+  from: CollectionId | null;
+
+  /** Applied routes after calculating inheritance */
+  routes: RouteId[];
+
+  /** Custom routes defined in run time */
+  customRoutes: RouteId[];
+
+  /** Routes specifically defined in the collection definition */
+  specificRoutes: RouteId[];
+
+  /** Routes inherited from other routes */
+  inheritedRoutes: RouteId[];
 }
 
 /** Options for creating a Collection interface */
@@ -36,6 +62,10 @@ export interface CollectionOptions {
   logger: LoggerInterface;
   /** Collection ID */
   id: CollectionId;
+  /** Collection id from which this one extends from */
+  from?: CollectionId | null;
+  /** Route ids specifically defined in the collection definition */
+  specificRouteIds: RouteId[];
   /** Route variants */
   routes: RouteInterface[]; // TODO, rename property to routeHandlers
   /** Method to get current delay */
@@ -64,11 +94,20 @@ export interface CollectionInterface {
   /** Collection id */
   get id(): CollectionId;
 
-  /** Get collection route variants */
-  get routes(): RouteInterface[]; // TODO, rename property to routeHandlers
+  /** Get collection routes */
+  get routes(): RouteInterface[];
 
-  /** Returns express router containing request handlers for all the collection route variants */
+  /** Return routes added using the useRoute method */
+  get customRoutes(): RouteInterface[];
+
+  /** Return ids of custom routes */
+  get customRouteIds(): RouteId[];
+
+  /** Returns express router containing request handlers for all the collection routes */
   get router(): Router;
+
+  /** Collection id from which this one extends from */
+  get from(): CollectionId | null;
 
   /**
    * Set a route id to be used by the collection. The route variant will be placed at the same position as any other route variant belonging to the same route.
@@ -82,5 +121,11 @@ export interface CollectionInterface {
    * @param options - Options for resetting routes {@link ResetRoutesOptions}
    * @example collection.resetRoutes();
    */
-  resetRoutes(options: ResetRoutesOptions): void;
+  resetRoutes(options?: ResetRoutesOptions): void;
+
+  /**
+   * Returns collection representation in a plain object
+   * @example collection.toPlainObject();
+   */
+  toPlainObject(): CollectionPlainObject;
 }

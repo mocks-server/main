@@ -20,21 +20,21 @@ describe("when openapi has refs", () => {
           {
             id: "get-users",
             url: "/api/users",
-            method: "get",
+            method: ["get"],
             delay: null,
             variants: ["get-users:200-json-one-user", "get-users:200-json-two-users"],
           },
           {
             id: "post-users",
             url: "/api/users",
-            method: "post",
+            method: ["post"],
             delay: null,
             variants: ["post-users:201-status", "post-users:400-text-error-message"],
           },
           {
             id: "get-users-id",
             url: "/api/users/:id",
-            method: "get",
+            method: ["get"],
             delay: null,
             variants: ["get-users-id:200-json-success", "get-users-id:404-json-not-found"],
           },
@@ -231,7 +231,7 @@ describe("when openapi has refs", () => {
           {
             id: "get-users-id",
             url: "/api/users/:id",
-            method: "get",
+            method: ["get"],
             delay: null,
             variants: ["get-users-id:200-json-success", "get-users-id:404-json-not-found"],
           },

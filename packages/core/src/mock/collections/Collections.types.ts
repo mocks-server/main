@@ -13,9 +13,17 @@ import type { LoggerInterface } from "@mocks-server/logger";
 
 import type { AlertsInterface } from "../../alerts/Alerts.types";
 import type { EventListener } from "../../common/Events.types";
+import type {
+  CollectionId,
+  CollectionDefinition,
+} from "../definitions/CollectionDefinitions.types";
 import type { RoutesInterface } from "../routes/Routes.types";
 
-import type { CollectionId, CollectionInterface, CollectionDefinition } from "./Collection.types";
+import type {
+  CollectionInterface,
+  CollectionPlainObject,
+  CollectionPlainObjectLegacy,
+} from "./Collection.types";
 
 /** Options for creating a Collections interface */
 export interface CollectionsOptions {
@@ -29,8 +37,6 @@ export interface CollectionsOptions {
   routesManager: RoutesInterface;
   /** Callback to execute when selected collection changes */
   onChange: EventListener;
-  /** Method to get array of collections in plain format */
-  getPlainCollections: () => CollectionDefinition[];
 }
 
 /** Creates a Collections interface */
@@ -68,9 +74,6 @@ export interface CollectionsInterface {
   /** Return array of collection ids */
   get ids(): CollectionId[];
 
-  /** Return array of collections in plain format */
-  get plain(): CollectionDefinition[];
-
   /** Return currently selected collection interface */
   get current(): CollectionInterface | null;
 
@@ -96,4 +99,15 @@ export interface CollectionsInterface {
    * @example const collection = collections.findById("my-collection");
    */
   findById(id: CollectionId): CollectionInterface | undefined;
+
+  /**
+   * Returns an array of collections representations as plain objects
+   * @example collections.toPlainObject();
+   */
+  toPlainObject(): CollectionPlainObject[];
+
+  /** Collection plain object in legacy format
+   * @deprecated - Use collections.toPlainObject instead
+   */
+  get plain(): CollectionPlainObjectLegacy[];
 }

@@ -22,10 +22,17 @@ import type {
   VariantHandlerId,
   VariantHandlerInterface,
 } from "../../variant-handlers/VariantHandlers.types";
+import type { RouteDefinition, RouteDefinitionId } from "../definitions/RouteDefinitions.types";
 import { routeValidationErrors, variantValidationErrors } from "../validations";
 
 import { Route } from "./Route";
-import type { RouteDefinition, RouteDefinitionId, RouteId, RouteInterface } from "./Route.types";
+import type {
+  RouteId,
+  RouteInterface,
+  RoutePlainObject,
+  RoutePlainObjectLegacy,
+  RouteVariantPlainObjectLegacy,
+} from "./Route.types";
 import type { RoutesConstructor, RoutesInterface, RoutesOptions } from "./Routes.types";
 
 const LOAD_NAMESPACE = "load";
@@ -83,20 +90,16 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
   private _alertsLoad: AlertsInterface;
   private _config: NamespaceInterface;
   private _delayOption: OptionInterface;
-  private _getPlainRoutes: RoutesOptions["getPlainRoutes"];
-  private _getPlainVariants: RoutesOptions["getPlainVariants"];
   private _variantHandlers: VariantHandlerConstructor[];
   private _core: CoreInterface;
   private _routes: RouteInterface[];
+  private _routeDefinitions: RouteDefinition[]; // TODO, stored only for creating legacy plain objects, remove when plain getter is removed
 
   static get id(): string {
     return "routes";
   }
 
-  constructor(
-    { alerts, logger, config, onChange, getPlainRoutes, getPlainVariants }: RoutesOptions,
-    core: CoreInterface
-  ) {
+  constructor({ alerts, logger, config, onChange }: RoutesOptions, core: CoreInterface) {
     this._routes = [];
 
     this._core = core; // Used only to create Scoped cores for route handlers
@@ -107,19 +110,8 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
     this._logger = logger;
     this._loggerLoad = this._logger.namespace(LOAD_NAMESPACE);
 
-    this._getPlainRoutes = getPlainRoutes;
-    this._getPlainVariants = getPlainVariants;
-
     [this._delayOption] = this._config.addOptions(OPTIONS);
     this._delayOption.onChange(onChange);
-  }
-
-  public get plain(): RouteDefinition[] {
-    return this._getPlainRoutes();
-  }
-
-  public get plainVariants(): MocksServer.VariantDefinition[] {
-    return this._getPlainVariants();
   }
 
   public get delay(): number {
@@ -161,7 +153,7 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
         variantId: variantDefinition.id,
         routeId: routeDefinition.id,
         path: routeDefinition.path || routeDefinition.url,
-        method: routeDefinition.method, // TODO, normalize method
+        method: routeDefinition.method,
         logger: routeLogger,
       });
     }
@@ -223,6 +215,8 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
     this._loggerLoad.debug(JSON.stringify(routeDefinitions));
     this._variantHandlers = variantHandlers;
 
+    this._routeDefinitions = routeDefinitions; // TODO, stored only for creating the legacy plain routes. Remove when legacy plain getter is removed
+
     const routeDefinitionIds: RouteDefinitionId[] = [];
     this._alertsLoad.clean();
 
@@ -283,5 +277,46 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
 
   public findById(id: RouteId): RouteInterface | undefined {
     return this._routes.find((route) => route.id === id);
+  }
+
+  public toPlainObject(): RoutePlainObject[] {
+    return this._routes.map((route) => route.toPlainObject());
+  }
+
+  public get plain(): RoutePlainObjectLegacy[] {
+    return compact(
+      this._routeDefinitions.map((routeDefinition) => {
+        const route = this._routes.find(
+          (routeCandidate) => routeCandidate.routeId === routeDefinition.id
+        );
+        if (route) {
+          const plainRoute = route.toPlainObject();
+
+          return {
+            id: routeDefinition.id,
+            url: plainRoute.path,
+            method: plainRoute.methods,
+            delay: isUndefined(routeDefinition.delay) ? null : routeDefinition.delay,
+            variants: routeDefinition.variants.map((variant) => {
+              return `${routeDefinition.id}:${variant.id}` as RouteId;
+            }),
+          };
+        }
+      })
+    );
+  }
+
+  public get plainVariants(): RouteVariantPlainObjectLegacy[] {
+    return this._routes.map((route) => {
+      const plainRoute = route.toPlainObject();
+      return {
+        id: plainRoute.id,
+        disabled: plainRoute.disabled,
+        route: plainRoute.definition.route,
+        type: plainRoute.type,
+        preview: plainRoute.preview,
+        delay: plainRoute.delay,
+      };
+    });
   }
 };

@@ -34,7 +34,7 @@ describe("when openapi has not enough properties", () => {
           {
             id: "get-users-id",
             url: "/users/:id",
-            method: "get",
+            method: ["get"],
             delay: null,
             variants: ["get-users-id:200-json-success", "get-users-id:404-json-not-found"],
           },

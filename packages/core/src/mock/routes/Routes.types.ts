@@ -15,8 +15,15 @@ import type { AlertsInterface } from "../../alerts/Alerts.types";
 import type { EventListener } from "../../common/Events.types";
 import type { CoreInterface } from "../../Core.types";
 import type { VariantHandlerConstructor } from "../../variant-handlers/VariantHandlers.types";
+import type { RouteDefinition } from "../definitions/RouteDefinitions.types";
 
-import type { RouteDefinition, RouteInterface, RouteId } from "./Route.types";
+import type {
+  RouteInterface,
+  RouteId,
+  RoutePlainObject,
+  RoutePlainObjectLegacy,
+  RouteVariantPlainObjectLegacy,
+} from "./Route.types";
 
 /** Options for creating a Routes interface */
 export interface RoutesOptions {
@@ -26,12 +33,6 @@ export interface RoutesOptions {
   logger: LoggerInterface;
   /** Namespaced Mocks Server config */
   config: NamespaceInterface;
-  /** Callback to execute when delay changes */
-  onChangeDelay: EventListener;
-  /** Method to get plain routes */
-  getPlainRoutes: () => RouteDefinition[];
-  /** Method to get plain route variants */
-  getPlainVariants: () => MocksServer.VariantDefinition[];
   /** Callback to execute when routes change. Event is emitted when delay option changes */
   onChange: EventListener;
 }
@@ -51,12 +52,6 @@ export interface RoutesConstructor {
 
 /** Interface for managing Mocks Server routes. Currently it does not have almost responsibility, but this has to be refactored. TODO: Migrate routes responsibility to this interface */
 export interface RoutesInterface {
-  /** Get current routes in plain format */
-  get plain(): RouteDefinition[];
-
-  /** Get current route variants in plain format */
-  get plainVariants(): MocksServer.VariantDefinition[];
-
   /** Get value of delay configuration */
   get delay(): number;
 
@@ -83,4 +78,24 @@ export interface RoutesInterface {
    * @example const route = routes.findById("my-route:variant-id");
    */
   findById(id: RouteId): RouteInterface | undefined;
+
+  /**
+   * Returns an array of route representations as plain objects
+   * @example routes.toPlainObject();
+   */
+  toPlainObject(): RoutePlainObject[];
+
+  /**
+   * Returns array of route representations as legacy plain objects
+   * @example routes.plain;
+   * @deprecated Use routes.toPlainObject instead
+   */
+  get plain(): RoutePlainObjectLegacy[];
+
+  /**
+   * Returns array of route variants representations as legacy plain objects
+   * @example routes.plainVariants;
+   * @deprecated Use routes.toPlainObject instead
+   */
+  get plainVariants(): RouteVariantPlainObjectLegacy[];
 }

@@ -12,9 +12,9 @@ import type {
   DefinitionsLoaderInterface,
   DefinitionsLoaderOptions,
   OnLoadDefinitions,
-  DefinitionsManagerInterface,
-  DefinitionsManagerOptions,
-} from "./DefinitionsManager.types";
+  DefinitionLoadersManagerInterface,
+  DefinitionLoadersManagerOptions,
+} from "./DefinitionLoadersManager.types";
 
 class DefinitionsLoader<Type> implements DefinitionsLoaderInterface<Type> {
   private _onLoad: OnLoadDefinitions;
@@ -36,11 +36,11 @@ class DefinitionsLoader<Type> implements DefinitionsLoaderInterface<Type> {
   }
 }
 
-export class DefinitionsManager<Type> implements DefinitionsManagerInterface<Type> {
+export class DefinitionLoadersManager<Type> implements DefinitionLoadersManagerInterface<Type> {
   private _onLoad: OnLoadDefinitions;
   private _loaders: DefinitionsLoaderInterface<Type>[];
 
-  constructor({ onLoad }: DefinitionsManagerOptions) {
+  constructor({ onLoad }: DefinitionLoadersManagerOptions) {
     this._onLoad = onLoad;
     this._loaders = [];
   }

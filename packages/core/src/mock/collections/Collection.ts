@@ -14,66 +14,63 @@ import express from "express";
 import type { AlertsInterface } from "../../alerts/Alerts.types";
 import type { EventListener } from "../../common/Events.types";
 import type {
-  HTTPMethod,
   NextFunction,
   Request,
   RequestHandler,
-  RequestHandlerHttpMethod,
   Response,
   Router,
 } from "../../server/Server.types";
 import { handlerIsRouter } from "../../variant-handlers/helpers";
+import type { CollectionId } from "../definitions/CollectionDefinitions.types";
 import { routeIsEnabled } from "../routes/Route";
-import type {
-  RouteInterface,
-  RouteDefinitionHTTPValidMethod,
-  HTTPMethodId,
-  RouteId,
-} from "../routes/Route.types";
+import type { RouteInterface, RouteId } from "../routes/Route.types";
 import type { RoutesInterface } from "../routes/Routes.types";
-import { HTTP_METHODS, ALL_HTTP_METHODS_ALIAS } from "../validations";
 
 import type {
   CollectionConstructor,
   CollectionInterface,
   CollectionOptions,
-  CollectionId,
+  CollectionPlainObject,
   ResetRoutesOptions,
 } from "./Collection.types";
 import { addRoutesToCollectionRoutes } from "./Helpers";
-
-function getExpressHttpMethod(method: RouteDefinitionHTTPValidMethod): HTTPMethod {
-  return HTTP_METHODS[method.toUpperCase() as HTTPMethodId] as HTTPMethod; // TODO, remove as when HTTP_METHODS is typed
-}
-
-function getRouteMethods(routeVariant: RouteInterface): RequestHandlerHttpMethod[] {
-  const method = routeVariant.method;
-  if (!method || method === ALL_HTTP_METHODS_ALIAS) {
-    return ["all"];
-  }
-  if (Array.isArray(method)) {
-    return method.map(getExpressHttpMethod);
-  }
-  return [getExpressHttpMethod(method)];
-}
 
 export const Collection: CollectionConstructor = class Collection implements CollectionInterface {
   private _id: CollectionId;
   private _routesManager: RoutesInterface;
   private _routes: RouteInterface[];
   private _originalRoutes: RouteInterface[];
-  private _hasCustomRoutes = false;
   private _router: Router;
   private _logger: LoggerInterface;
   private _alerts: AlertsInterface;
   private _alertsUseRoute: AlertsInterface;
   private _onChange: EventListener;
+  private _from: CollectionId | null = null;
+  private _customRoutes: RouteInterface[] = [];
+  private _specificRouteIds: RouteId[] = [];
+  private _inheritedRouteIds: RouteId[] = [];
 
-  constructor({ id, routes, routesManager, logger, alerts, onChange }: CollectionOptions) {
+  constructor({
+    id,
+    from,
+    routes,
+    specificRouteIds,
+    routesManager,
+    logger,
+    alerts,
+    onChange,
+  }: CollectionOptions) {
     this._routesManager = routesManager;
     this._id = id;
+    this._from = from || null;
     this._originalRoutes = [...routes];
     this._routes = [...routes];
+    this._specificRouteIds = [...specificRouteIds];
+    this._inheritedRouteIds = this._routes
+      .map((route) => route.id)
+      .filter((routeId) => {
+        return !this._specificRouteIds.includes(routeId);
+      });
     this._logger = logger;
     this._alerts = alerts;
     this._alerts.clean();
@@ -109,30 +106,46 @@ export const Collection: CollectionConstructor = class Collection implements Col
           this._router.use(route.path, route.handler.router.bind(route.handler));
         } else {
           const middleware = route.handler.middleware.bind(route.handler);
-          const methods = getRouteMethods(route);
-          methods.forEach((method) => {
-            this._router[method](route.path, logAndApplyDelay);
-            this._router[method](route.path, middleware);
-          });
+          if (route.allMethods) {
+            this._router.all(route.path, logAndApplyDelay);
+            this._router.all(route.path, middleware);
+          } else {
+            route.methods.forEach((method) => {
+              this._router[method](route.path, logAndApplyDelay);
+              this._router[method](route.path, middleware);
+            });
+          }
         }
       }
     });
-  }
-
-  public get routes(): RouteInterface[] {
-    return [...this._routes];
   }
 
   public get id(): CollectionId {
     return this._id;
   }
 
-  public get router(): Router {
-    return this._router;
+  public get from(): CollectionId | null {
+    return this._from;
   }
 
-  public get hasCustomRoutes(): boolean {
-    return this._hasCustomRoutes;
+  public get routes(): RouteInterface[] {
+    return [...this._routes];
+  }
+
+  public get customRoutes(): RouteInterface[] {
+    return [...this._customRoutes];
+  }
+
+  private get _customRouteIds(): RouteId[] {
+    return this._customRoutes.map((route) => route.id);
+  }
+
+  public get customRouteIds(): RouteId[] {
+    return this._customRouteIds;
+  }
+
+  public get router(): Router {
+    return this._router;
   }
 
   public useRoute(routeId: RouteId): void {
@@ -140,9 +153,9 @@ export const Collection: CollectionConstructor = class Collection implements Col
     const routeToAdd = this._routesManager.findById(routeId);
     if (routeToAdd) {
       this._routes = addRoutesToCollectionRoutes(this._routes, [routeToAdd]);
+      this._customRoutes.push(routeToAdd);
       this._initRouter();
       this._onChange();
-      this._hasCustomRoutes = true;
     } else {
       this._alertsUseRoute.set(routeId, `Route with id '${routeId}' not found`);
     }
@@ -150,11 +163,22 @@ export const Collection: CollectionConstructor = class Collection implements Col
 
   public resetRoutes({ silent }: ResetRoutesOptions = {}): void {
     this._routes = [...this._originalRoutes];
+    this._customRoutes = [];
     this._alertsUseRoute.clean();
-    this._hasCustomRoutes = false;
     this._initRouter();
     if (!silent) {
       this._onChange();
     }
+  }
+
+  public toPlainObject(): CollectionPlainObject {
+    return {
+      id: this._id,
+      routes: this._routes.map((route) => route.id),
+      from: this._from,
+      customRoutes: this._customRouteIds,
+      specificRoutes: [...this._specificRouteIds],
+      inheritedRoutes: [...this._inheritedRouteIds],
+    };
   }
 };

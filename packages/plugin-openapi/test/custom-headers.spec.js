@@ -18,7 +18,7 @@ describe("when openapi response has headers", () => {
         {
           id: "read-users",
           url: "/api/users",
-          method:["get"],
+          method: ["get"],
           delay: null,
           variants: ["read-users:one-user", "read-users:two-users"],
         },

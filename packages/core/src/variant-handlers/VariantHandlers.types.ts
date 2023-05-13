@@ -11,7 +11,7 @@ import type { ConfigInterface } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 
 import type { UnknownObject, JSONValue } from "../common/Common.types";
-import type { JSONSchema7WithInstanceof } from "../mock/Validations.types";
+import type { JSONSchema7WithInstanceof } from "../mock/Validator.types";
 import type { NextFunction, Request, Response, RequestHandler } from "../server/Server.types";
 
 /** Response preview */

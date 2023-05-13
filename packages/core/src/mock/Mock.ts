@@ -28,7 +28,6 @@ import type { MockInterface, MockConstructor, MockOptions } from "./Mock.types";
 import type { RouteId } from "./routes/Route.types";
 import { Routes } from "./routes/Routes";
 import type { RoutesInterface } from "./routes/Routes.types";
-import { compileRouteValidator } from "./validations";
 
 export const Mock: MockConstructor = class Mock implements MockInterface {
   static get id() {
@@ -100,7 +99,6 @@ export const Mock: MockConstructor = class Mock implements MockInterface {
   }
 
   async init(variantHandlers: VariantHandlerConstructor[]): Promise<void> {
-    compileRouteValidator(variantHandlers);
     this._variantHandlers = variantHandlers;
   }
 

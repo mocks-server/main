@@ -13,7 +13,7 @@ import { static as expressStatic } from "express";
 import type { ServeStaticOptions } from "serve-static";
 
 import type { ScopedCoreInterface } from "../../common/ScopedCore.types";
-import type { JSONSchema7WithInstanceof } from "../../mock/Validations.types";
+import type { JSONSchema7WithInstanceof } from "../../mock/Validator.types";
 import type { RequestHandler, Response } from "../../server/Server.types";
 
 import type {

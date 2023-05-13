@@ -48,3 +48,19 @@ export function readFileSync(filePath: string): string {
   //eslint-disable-next-line import/namespace
   return fs.readFileSync(path.resolve(process.cwd(), filePath), "utf-8");
 }
+
+export function toLowerCase(str: string): string {
+  return str.toLowerCase();
+}
+
+export function arrayToLowerCase(array: string[]): string[] {
+  return array.map(toLowerCase);
+}
+
+export function objectKeys<Type>(obj: object): (keyof Type)[] {
+  return Object.keys(obj) as (keyof Type)[];
+}
+
+export function arrayLowerAndUpper(array: string[]): string[] {
+  return array.concat(arrayToLowerCase(array));
+}

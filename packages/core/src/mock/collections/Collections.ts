@@ -20,12 +20,6 @@ import type {
 } from "../definitions/CollectionDefinitions.types";
 import type { RouteId, RouteInterface } from "../routes/Route.types";
 import type { RoutesInterface } from "../routes/Routes.types";
-import {
-  collectionRouteVariantsValidationErrors,
-  collectionValidationErrors,
-  getCollectionRouteVariantsProperty,
-  findRouteVariantByVariantId,
-} from "../validations";
 
 import { Collection } from "./Collection";
 import type {
@@ -40,6 +34,12 @@ import type {
   SelectCollectionOptionsNoPromise,
   SelectCollectionOptionsPromise,
 } from "./Collections.types";
+import {
+  collectionRouteVariantsValidationErrors,
+  collectionValidationErrors,
+  getCollectionRouteIds,
+  findRouteByVariantId,
+} from "./CollectionsValidator";
 import { addRoutesToCollectionRoutes } from "./Helpers";
 
 const OPTIONS: OptionProperties[] = [
@@ -172,10 +172,10 @@ export const Collections: CollectionsConstructor = class Collections
     routesToAdd: RouteInterface[] = []
   ): RouteInterface[] {
     const collectionRoutes = compact(
-      getCollectionRouteVariantsProperty(collectionDefinition).map((routeId: RouteId) => {
-        return findRouteVariantByVariantId(routes, routeId) as RouteInterface;
-      }) as RouteInterface[]
-    );
+      getCollectionRouteIds(collectionDefinition).map((routeId: RouteId) => {
+        return findRouteByVariantId(routes, routeId);
+      })
+    ) as RouteInterface[];
     if (collectionDefinition.from) {
       const from = this._collectionDefinitions.find(
         (collectionCandidate) => collectionCandidate.id === collectionDefinition.from

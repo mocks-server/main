@@ -19,6 +19,10 @@ export interface CollectionDefinition {
   id: CollectionId;
   /** Routes */
   routes: RouteId[];
+  /** Routes
+   * @deprecated Use routes instead
+   */
+  routeVariants?: RouteId[];
   /** Extends from collection */
   from?: CollectionId;
 }

@@ -23,7 +23,6 @@ import type {
   VariantHandlerInterface,
 } from "../../variant-handlers/VariantHandlers.types";
 import type { RouteDefinition, RouteDefinitionId } from "../definitions/RouteDefinitions.types";
-import { routeValidationErrors, variantValidationErrors } from "../validations";
 
 import { Route } from "./Route";
 import type {
@@ -34,6 +33,11 @@ import type {
   RouteVariantPlainObjectLegacy,
 } from "./Route.types";
 import type { RoutesConstructor, RoutesInterface, RoutesOptions } from "./Routes.types";
+import {
+  routeValidationErrors,
+  variantValidationErrors,
+  compileValidator,
+} from "./RoutesValidator";
 
 const LOAD_NAMESPACE = "load";
 
@@ -94,6 +98,7 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
   private _core: CoreInterface;
   private _routes: RouteInterface[];
   private _routeDefinitions: RouteDefinition[]; // TODO, stored only for creating legacy plain objects, remove when plain getter is removed
+  private _initialized: boolean;
 
   static get id(): string {
     return "routes";
@@ -207,13 +212,22 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
     return route;
   }
 
+  private _init() {
+    if (!this._initialized) {
+      compileValidator(this._variantHandlers);
+      this._initialized = true;
+    }
+  }
+
   public load(
     routeDefinitions: RouteDefinition[],
     variantHandlers: VariantHandlerConstructor[]
   ): void {
+    this._variantHandlers = variantHandlers;
+    this._init();
+
     this._loggerLoad.verbose("Creating routes from route definitions");
     this._loggerLoad.debug(JSON.stringify(routeDefinitions));
-    this._variantHandlers = variantHandlers;
 
     this._routeDefinitions = routeDefinitions; // TODO, stored only for creating the legacy plain routes. Remove when legacy plain getter is removed
 

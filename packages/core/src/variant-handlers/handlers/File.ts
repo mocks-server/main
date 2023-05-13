@@ -13,7 +13,7 @@ import path from "path";
 import type { LoggerInterface } from "@mocks-server/logger";
 
 import type { ScopedCoreInterface } from "../../common/ScopedCore.types";
-import type { JSONSchema7WithInstanceof } from "../../mock/Validations.types";
+import type { JSONSchema7WithInstanceof } from "../../mock/Validator.types";
 import type { NextFunction, Request, Response } from "../../server/Server.types";
 
 import type {

@@ -82,7 +82,8 @@ export const Core: CoreConstructor = class Core implements CoreInterface {
     programmaticConfig: ConfigurationObject = {},
     advancedOptions: CoreAdvancedOptions = {}
   ) {
-    this._version = readJsonSync(path.resolve(__dirname, "..", "package.json"));
+    const packageJson = readJsonSync(path.resolve(__dirname, "..", "package.json"));
+    this._version = packageJson.version;
     this._programmaticConfig = programmaticConfig;
     this._eventEmitter = new EventEmitter();
 

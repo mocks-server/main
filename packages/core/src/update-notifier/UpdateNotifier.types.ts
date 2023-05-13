@@ -16,7 +16,7 @@ export interface UpdateNotifierOptions {
   /** Alerts */
   alerts: AlertsInterface;
   /** Package info */
-  pkg: Package;
+  pkg?: Package;
 }
 
 /** Creates an Update notifier interface */

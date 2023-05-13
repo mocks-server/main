@@ -63,7 +63,7 @@ export interface FilesConstructor {
    * @returns Files interface {@link FilesInterface}.
    * @example const files = new Files({ config, loadCollections, logger, loadRoutes, alerts });
    */
-  new (options: FilesOptions, extraOptions: FilesExtraOptions): FilesInterface;
+  new (options: FilesOptions, extraOptions?: FilesExtraOptions): FilesInterface;
 }
 
 /** Allows to attach loaders that will receive loaded file contents */

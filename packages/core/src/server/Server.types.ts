@@ -1,4 +1,4 @@
-import type { ConfigInterface } from "@mocks-server/config";
+import type { NamespaceInterface } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import type {
   NextFunction as ExpressNextFunction,
@@ -63,13 +63,13 @@ export interface ErrorRequestHandler extends ExpressErrorRequestHandler {
 /** Options for creating a Server interface */
 export interface ServerOptions {
   /** Config interface */
-  config: ConfigInterface;
+  config: NamespaceInterface;
   /** Alerts interface */
   alerts: AlertsInterface;
   /** Logger interface */
   logger: LoggerInterface;
   /** Express router containing mock routes */
-  mockRouter: Router;
+  mockRouter: RequestHandler;
 }
 
 /** Creates a Server interface */

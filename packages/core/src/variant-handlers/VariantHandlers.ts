@@ -7,7 +7,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
-import type { ConfigInterface, OptionInterface, OptionProperties } from "@mocks-server/config";
+import type { NamespaceInterface, OptionInterface, OptionProperties } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 
 import { VariantHandlerFile } from "./handlers/File";
@@ -40,7 +40,7 @@ export const VariantHandlers: VariantHandlersConstructor = class VariantHandlers
   }
 
   private _logger: LoggerInterface;
-  private _config: ConfigInterface;
+  private _config: NamespaceInterface;
   private _registerOption: OptionInterface;
   private _registeredVariantHandlers: VariantHandlerConstructor[];
   private _coreVariantHandlers: VariantHandlerConstructor[];

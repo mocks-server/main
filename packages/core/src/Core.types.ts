@@ -66,19 +66,40 @@ export interface CoreConstructor {
 
 /** Mocks-server base core interface */
 export interface CoreInterface extends BaseCoreInterface {
-  /** Alerts */
+  /** Alerts interface */
   get alerts(): AlertsInterface;
 
-  /** Config */
+  /** Config interface */
   get config(): ConfigInterface;
 
-  /** Logger */
+  /** Logger interface */
   get logger(): LoggerInterface;
+
+  /** Server interface */
+  get server(): ServerInterface;
+
+  /** Mock interface */
+  get mock(): MockInterface;
+
+  /** Variant handlers interface */
+  get variantHandlers(): VariantHandlersInterface;
+
+  /** Files interface */
+  get files(): FilesInterface;
+
+  /** Version */
+  get version(): string;
 
   /** Allows to initialize the core passing custom programmatic options.
    * @deprecated The method should not be used. It will be removed in next major version.
    * @param config - Programmatic configuration {@link ConfigurationObject}
    * @example await core.init({ log: "error" });
    */
-  init(programmaticConfig: ConfigurationObject): Promise<void>;
+  init(programmaticConfig?: ConfigurationObject): Promise<void>;
+
+  /** Start the files handler and the mock server */
+  start(): Promise<void>;
+
+  /** Stop the files handler and the mock server */
+  start(): Promise<void>;
 }

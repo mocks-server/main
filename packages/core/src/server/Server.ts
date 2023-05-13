@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import http from "http";
 import type { Server as HttpServer } from "http";
 
-import type { ConfigInterface, OptionInterface } from "@mocks-server/config";
+import type { NamespaceInterface, OptionInterface } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import cors from "cors";
 import express from "express";
@@ -36,6 +36,7 @@ import type {
   CustomRouter,
   ProtocolHttps,
   ProtocolHttp,
+  RequestHandler,
 } from "./Server.types";
 import {
   CORS_NAMESPACE,
@@ -58,8 +59,8 @@ const SERVER_ALERT_ID = "server";
 
 export const Server: ServerConstructor = class Server implements ServerInterface {
   private _logger: LoggerInterface;
-  private _config: ConfigInterface;
-  private _mockRouter: Router;
+  private _config: NamespaceInterface;
+  private _mockRouter: RequestHandler;
   private _customRouters: CustomRouter[];
   private _alerts: AlertsInterface;
   private _portOption: OptionInterface;

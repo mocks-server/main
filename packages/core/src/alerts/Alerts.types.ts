@@ -49,7 +49,7 @@ export interface AlertsConstructorInterface {
    * @returns Alerts interface {@link AlertsInterface}.
    * @example const alerts = new Alerts("foo", { logger });
    */
-  new (id: AlertsId): AlertsInterface;
+  new (id: AlertsId, options?: AlertsOptions): AlertsInterface;
 }
 
 /** Alerts interface */

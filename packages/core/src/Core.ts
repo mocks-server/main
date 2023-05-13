@@ -1,5 +1,5 @@
 /*
-Copyright 2019-2022 Javier Brea
+Copyright 2019-2023 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -8,27 +8,44 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const EventEmitter = require("events");
+import EventEmitter from "events";
 
-const deepMerge = require("deepmerge");
-const Config = require("@mocks-server/config").default;
-const { Logger } = require("@mocks-server/logger");
+import {
+  Config,
+  ConfigInterface,
+  ConfigurationObject,
+  NamespaceInterface,
+  OptionInterface,
+  OptionProperties,
+} from "@mocks-server/config";
+import { Logger, LoggerInterface, LogLevel } from "@mocks-server/logger";
+import deepMerge from "deepmerge";
 
-const { VariantHandlers } = require("./variant-handlers/VariantHandlers");
-const { Mock } = require("./mock/Mock");
-const { Plugins } = require("./plugins/Plugins");
-const { Server } = require("./server/Server");
-const { Files } = require("./files/Files");
-const { Scaffold } = require("./scaffold/Scaffold");
-const { Alerts } = require("./alerts/Alerts");
-const { UpdateNotifier } = require("./update-notifier/UpdateNotifier");
-const { CHANGE_MOCK, CHANGE_ALERTS } = require("./common/Events");
-const { arrayMerge } = require("./common/Helpers");
-const { version } = require("../package.json");
+import { version } from "../package.json";
+
+import { Alerts } from "./alerts/Alerts";
+import type { AlertsInterface } from "./alerts/Alerts.types";
+import { CHANGE_MOCK, CHANGE_ALERTS } from "./common/Events";
+import { arrayMerge } from "./common/Helpers";
+import type { CoreInterface, CoreConstructor, CoreAdvancedOptions } from "./Core.types";
+import { Files } from "./files/Files";
+import type { FilesInterface } from "./files/Files.types";
+import { Mock } from "./mock/Mock";
+import type { MockInterface } from "./mock/Mock.types";
+import { Plugins } from "./plugins/Plugins";
+import type { PluginsInterface } from "./plugins/Plugins.types";
+import { Scaffold } from "./scaffold/Scaffold";
+import type { ScaffoldInterface } from "./scaffold/Scaffold.types";
+import { Server } from "./server/Server";
+import type { ServerInterface } from "./server/Server.types";
+import { UpdateNotifier } from "./update-notifier/UpdateNotifier";
+import type { UpdateNotifierInterface } from "./update-notifier/UpdateNotifier.types";
+import { VariantHandlers } from "./variant-handlers/VariantHandlers";
+import type { VariantHandlersInterface } from "./variant-handlers/VariantHandlers.types";
 
 const MODULE_NAME = "mocks";
 
-const ROOT_OPTIONS = [
+const ROOT_OPTIONS: OptionProperties[] = [
   {
     description: "Log level. Can be one of silly, debug, verbose, info, warn or error",
     name: "log",
@@ -37,15 +54,38 @@ const ROOT_OPTIONS = [
   },
 ];
 
-class Core {
-  constructor(programmaticConfig = {}, advancedOptions = {}) {
+export const Core: CoreConstructor = class Core implements CoreInterface {
+  private _programmaticConfig: ConfigurationObject;
+  private _eventEmitter: EventEmitter;
+  private _logger: LoggerInterface;
+  private _configLogger: LoggerInterface;
+  private _config: ConfigInterface;
+  private _configPlugins: NamespaceInterface;
+  private _configMock: NamespaceInterface;
+  private _configServer: NamespaceInterface;
+  private _configFilesLoaders: NamespaceInterface;
+  private _logOption: OptionInterface;
+  private _alerts: AlertsInterface;
+  private _updateNotifier: UpdateNotifierInterface;
+  private _files: FilesInterface;
+  private _variantHandlers: VariantHandlersInterface;
+  private _mock: MockInterface;
+  private _plugins: PluginsInterface;
+  private _server: ServerInterface;
+  private _scaffold: ScaffoldInterface;
+  private _initialized: boolean;
+  private _stopPluginsPromise: Promise<void> | null;
+  private _startPluginsPromise: Promise<void> | null;
+
+  constructor(
+    programmaticConfig: ConfigurationObject = {},
+    advancedOptions: CoreAdvancedOptions = {}
+  ) {
     this._programmaticConfig = programmaticConfig;
     this._eventEmitter = new EventEmitter();
-    this._loadedMocks = false;
-    this._loadedRoutes = false;
 
     // Create logger
-    this._logger = new Logger();
+    this._logger = new Logger("");
     this._configLogger = this._logger.namespace("config");
 
     // Create config
@@ -56,12 +96,12 @@ class Core {
     this._configFilesLoaders = this._config.addNamespace(Files.id);
 
     [this._logOption] = this._config.addOptions(ROOT_OPTIONS);
-    this._logOption.onChange((level) => {
+    this._logOption.onChange((data) => {
+      const level = data as LogLevel;
       this._logger.setLevel(level);
     });
 
     // Create alerts
-    // const alertsLogger = this._logger.namespace("alerts");
     this._alerts = new Alerts("alerts", { logger: this._logger });
     this._alerts.onChange(() => {
       this._eventEmitter.emit(CHANGE_ALERTS);
@@ -112,7 +152,7 @@ class Core {
     const fileLoaders = this._mock.createLoaders();
 
     // Create files loaders
-    this._filesLoader = new Files({
+    this._files = new Files({
       config: this._configFilesLoaders,
       logger: this._logger.namespace(Files.id),
       alerts: this._alerts.collection(Files.id),
@@ -133,7 +173,7 @@ class Core {
     this._startPluginsPromise = null;
   }
 
-  async _startPlugins() {
+  async _startPlugins(): Promise<void> {
     if (!this._startPluginsPromise) {
       this._startPluginsPromise = this._plugins.start();
     }
@@ -142,7 +182,7 @@ class Core {
     });
   }
 
-  async _stopPlugins() {
+  async _stopPlugins(): Promise<void> {
     if (!this._stopPluginsPromise) {
       this._stopPluginsPromise = this._plugins.stop();
     }
@@ -151,7 +191,7 @@ class Core {
     });
   }
 
-  async _loadConfig() {
+  async _loadConfig(): Promise<void> {
     await this._config.load();
 
     this._configLogger.debug(
@@ -164,9 +204,7 @@ class Core {
     this._configLogger.info(`Configuration loaded`);
   }
 
-  // Public methods
-
-  async init(programmaticConfig) {
+  public async init(programmaticConfig: ConfigurationObject = {}): Promise<void> {
     if (this._initialized) {
       // in case it has been initialized manually before
       return Promise.resolve();
@@ -195,7 +233,7 @@ class Core {
 
     // TODO, add to data model
     await this._scaffold.init({
-      folderPath: this._filesLoader.path,
+      folderPath: this._files.path,
     });
 
     await this._loadConfig();
@@ -203,58 +241,56 @@ class Core {
     // Config is ready, init all
     this._mock.init(this._variantHandlers.handlers);
     await this._server.init();
-    await this._filesLoader.init();
+    await this._files.init();
     return this._plugins.init();
   }
 
-  async start() {
+  public async start(): Promise<void> {
     await this.init();
     await this._server.start();
-    this._filesLoader.start();
+    this._files.start();
     return this._startPlugins();
   }
 
-  async stop() {
+  public async stop(): Promise<void> {
     await this._server.stop();
-    this._filesLoader.stop();
+    this._files.stop();
     return this._stopPlugins();
   }
 
   // Expose Server methods and getters
 
-  get alerts() {
+  public get alerts(): AlertsInterface {
     return this._alerts;
   }
 
-  get logger() {
-    return this._logger;
-  }
-
-  get config() {
+  public get config(): ConfigInterface {
     return this._config;
   }
 
-  get server() {
+  public get logger(): LoggerInterface {
+    return this._logger;
+  }
+
+  public get server(): ServerInterface {
     return this._server;
   }
 
-  get mock() {
+  public get mock(): MockInterface {
     return this._mock;
   }
 
   // TODO, move to mock
-  get variantHandlers() {
+  public get variantHandlers(): VariantHandlersInterface {
     return this._variantHandlers;
   }
 
-  get files() {
-    return this._filesLoader;
+  public get files(): FilesInterface {
+    return this._files;
   }
 
   // TODO, move to about module
-  get version() {
+  public get version(): string {
     return version;
   }
-}
-
-module.exports = { Core };
+};

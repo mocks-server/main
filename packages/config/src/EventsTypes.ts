@@ -3,7 +3,7 @@ export interface EventListener {
   /**
    * Function executed when the event is triggered
    */
-  (): void;
+  (data?: unknown): void;
 }
 
 /** Function that removes the event listener */

@@ -9,6 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 import EventEmitter from "events";
+import path from "path";
 
 import {
   Config,
@@ -20,8 +21,7 @@ import {
 } from "@mocks-server/config";
 import { Logger, LoggerInterface, LogLevel } from "@mocks-server/logger";
 import deepMerge from "deepmerge";
-
-import { version } from "../package.json";
+import { readJsonSync } from "fs-extra";
 
 import { Alerts } from "./alerts/Alerts";
 import type { AlertsInterface } from "./alerts/Alerts.types";
@@ -76,11 +76,13 @@ export const Core: CoreConstructor = class Core implements CoreInterface {
   private _initialized: boolean;
   private _stopPluginsPromise: Promise<void> | null;
   private _startPluginsPromise: Promise<void> | null;
+  private _version: string;
 
   constructor(
     programmaticConfig: ConfigurationObject = {},
     advancedOptions: CoreAdvancedOptions = {}
   ) {
+    this._version = readJsonSync(path.resolve(__dirname, "..", "package.json"));
     this._programmaticConfig = programmaticConfig;
     this._eventEmitter = new EventEmitter();
 
@@ -291,6 +293,6 @@ export const Core: CoreConstructor = class Core implements CoreInterface {
 
   // TODO, move to about module
   public get version(): string {
-    return version;
+    return this._version;
   }
 };

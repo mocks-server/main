@@ -1,12 +1,8 @@
 {
   "compilerOptions": {
-    /* Visit https://aka.ms/tsconfig.json to read more about this file */
     "outDir": "./dist",
-    // "declaration": true,
+    "declaration": true,
     "target": "es6",
-    "lib": [
-      "es2019"
-    ],
     "strict": true,
     "strictNullChecks": true,
     "esModuleInterop": true,
@@ -14,12 +10,10 @@
     "module": "CommonJS",
     "useDefineForClassFields": true,
     "importsNotUsedAsValues": "error",
-    // "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
     "noUnusedParameters": true,
-    // "isolatedModules": true,
-    "strictPropertyInitialization": false,
-    "allowJs": true,
+    "isolatedModules": true,
+    "strictPropertyInitialization": false
   },
   "include": [
     "src/**/*"

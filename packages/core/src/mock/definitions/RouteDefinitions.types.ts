@@ -8,8 +8,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-import type { UnknownObject } from "../../common/Common.types";
-import type { HTTPMethod } from "../../server/Server.types";
+import type { UnknownObject } from "../../common/types";
+import type { HTTPMethod } from "../../server/types";
 
 declare global {
   //eslint-disable-next-line @typescript-eslint/no-namespace
@@ -57,6 +57,10 @@ declare global {
       VariantHandlerOptionsByType[keyof VariantHandlerOptionsByType];
   }
 }
+
+export type VariantDefinition = MocksServer.VariantDefinition;
+export type VariantDefinitionTypes = MocksServer.VariantHandlerTypes;
+export type VariantHandlerTypes = MocksServer.VariantHandlerTypes;
 
 /** Valid express http methods in upperCase */
 export type HTTPMethodId = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD" | "OPTIONS";

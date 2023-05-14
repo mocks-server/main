@@ -8,16 +8,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-import type { NamespaceInterface } from "@mocks-server/config";
+import type { ConfigNamespaceInterface } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 
-import type { AlertsInterface } from "../../alerts/Alerts.types";
-import type { EventListener } from "../../common/Events.types";
-import type {
-  CollectionId,
-  CollectionDefinition,
-} from "../definitions/CollectionDefinitions.types";
-import type { RoutesInterface } from "../routes/Routes.types";
+import type { AlertsInterface } from "../../alerts/types";
+import type { EventListener } from "../../common/types";
+import type { CollectionId, CollectionDefinition } from "../definitions/types";
+import type { RoutesInterface } from "../routes/types";
 
 import type {
   CollectionInterface,
@@ -32,7 +29,7 @@ export interface CollectionsOptions {
   /** Namespaced Mocks Server logger */
   logger: LoggerInterface;
   /** Namespaced Mocks Server config */
-  config: NamespaceInterface;
+  config: ConfigNamespaceInterface;
   /** Routes instance */
   routesManager: RoutesInterface;
   /** Callback to execute when selected collection changes */

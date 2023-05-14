@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import type { ConfigInterface, OptionValue, OptionDescription } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 
-import type { AlertsInterface } from "../alerts/Alerts.types";
+import type { AlertsInterface } from "../alerts/types";
 
 export type ConfigVarName = string;
 export type ConfigVarNameWithQuotes = `"${ConfigVarName}"`;

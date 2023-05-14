@@ -1,2 +1,2 @@
-export * from "./CollectionTypes";
-export * from "./EventsTypes";
+export * from "./Collection.types";
+export * from "./Events.types";

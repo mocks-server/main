@@ -1,4 +1,4 @@
-import type { AnyObject } from "./CommonTypes";
+import type { AnyObject } from "./Common.types";
 
 export interface ValueParser {
   (value: unknown): unknown;

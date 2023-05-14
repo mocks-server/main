@@ -1,4 +1,4 @@
-import type { ModuleName, ConfigurationObject } from "./CommonTypes";
+import type { ModuleName, ConfigurationObject } from "./Common.types";
 
 export interface FilesReadOptions {
   searchPlaces?: string[];

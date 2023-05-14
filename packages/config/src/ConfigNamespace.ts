@@ -1,35 +1,36 @@
 import EventEmitter from "events";
 
-import type { ConfigurationObject } from "./CommonTypes";
+import type { ConfigurationObject } from "./Common.types";
 import type {
   ConfigInterface,
-  NamespaceInterface,
-  NamespaceProperties,
-  NamespaceConstructor,
-} from "./ConfigTypes";
-import type { OptionProperties, OptionInterface, SetMethodOptions } from "./OptionTypes";
-
+  ConfigNamespaceInterface,
+  ConfigNamespaceProperties,
+  ConfigNamespaceConstructor,
+} from "./Config.types";
 import {
   checkNamespaceName,
   checkOptionName,
   findObjectWithName,
   getNamespacesValues,
   getOptionsValues,
-} from "./namespaces";
+} from "./ConfigNamespaceHelpers";
 import { Option } from "./Option";
+import type { OptionProperties, OptionInterface, SetMethodOptions } from "./Option.types";
 
-export const Namespace: NamespaceConstructor = class Namespace implements NamespaceInterface {
-  private _brothers: NamespaceInterface[];
-  private _parents: NamespaceInterface[];
+export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
+  implements ConfigNamespaceInterface
+{
+  private _brothers: ConfigNamespaceInterface[];
+  private _parents: ConfigNamespaceInterface[];
   private _root: ConfigInterface;
   private _eventEmitter: EventEmitter;
   private _name: string;
-  private _namespaces: NamespaceInterface[];
+  private _namespaces: ConfigNamespaceInterface[];
   private _options: OptionInterface[];
   private _started: boolean;
   private _isRoot: true | undefined;
 
-  constructor(name: string, { parents = [], brothers, root, isRoot }: NamespaceProperties) {
+  constructor(name: string, { parents = [], brothers, root, isRoot }: ConfigNamespaceProperties) {
     this._brothers = brothers;
     this._parents = parents;
     this._root = root;
@@ -75,9 +76,9 @@ export const Namespace: NamespaceConstructor = class Namespace implements Namesp
     this._started = true;
   }
 
-  public addNamespace(name: NamespaceInterface["name"]): NamespaceInterface {
+  public addNamespace(name: ConfigNamespaceInterface["name"]): ConfigNamespaceInterface {
     checkNamespaceName(name, { namespaces: this._namespaces, options: this._options });
-    const namespace = new Namespace(name, {
+    const namespace = new ConfigNamespace(name, {
       parents: [...this._parents, this],
       root: this._root,
       brothers: this._namespaces,
@@ -90,11 +91,11 @@ export const Namespace: NamespaceConstructor = class Namespace implements Namesp
     return Boolean(this._isRoot);
   }
 
-  public get name(): NamespaceInterface["name"] {
+  public get name(): ConfigNamespaceInterface["name"] {
     return this._name;
   }
 
-  public get parents(): NamespaceInterface[] {
+  public get parents(): ConfigNamespaceInterface[] {
     return [...this._parents];
   }
 
@@ -102,7 +103,7 @@ export const Namespace: NamespaceConstructor = class Namespace implements Namesp
     return this._root;
   }
 
-  public get namespaces(): NamespaceInterface[] {
+  public get namespaces(): ConfigNamespaceInterface[] {
     return [...this._namespaces];
   }
 
@@ -121,7 +122,7 @@ export const Namespace: NamespaceConstructor = class Namespace implements Namesp
     this.set(configuration);
   }
 
-  public namespace(name: NamespaceInterface["name"]): NamespaceInterface | undefined {
+  public namespace(name: ConfigNamespaceInterface["name"]): ConfigNamespaceInterface | undefined {
     return findObjectWithName(this._namespaces, name);
   }
 

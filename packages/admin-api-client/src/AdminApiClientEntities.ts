@@ -28,8 +28,8 @@ import type {
   AdminApiClientEntitiesConstructor,
   ApiEntityContructor,
   ApiClientContructor,
-} from "./AdminApiClientEntitiesTypes";
-import type { EntityId } from "./CommonTypes";
+} from "./AdminApiClientEntities.types";
+import type { EntityId } from "./Common.types";
 
 const JSON_HEADERS = {
   "Content-Type": "application/json",

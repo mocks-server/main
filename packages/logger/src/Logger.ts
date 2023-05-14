@@ -4,7 +4,8 @@ import chalk from "chalk";
 import * as winston from "winston";
 import ArrayTransport from "winston-array-transport";
 
-import type { EventsListener, EventsListenerRemover } from "./EventsTypes";
+import { observableStore, CHANGE_EVENT, addEventListener } from "./Events";
+import type { EventsListener, EventsListenerRemover } from "./Events.types";
 import {
   LEVEL_SILLY,
   LEVEL_DEBUG,
@@ -17,7 +18,7 @@ import {
   TRANSPORT_STORE,
   TRANSPORT_GLOBAL_STORE,
   LoggerConstructor,
-} from "./LoggerTypes";
+} from "./Logger.types";
 import type {
   LoggerNamespaceLabel,
   LogLevel,
@@ -29,9 +30,7 @@ import type {
   LoggerSetLevel,
   LoggerOptions,
   LoggerPrivateOptions,
-} from "./LoggerTypes";
-
-import { observableStore, CHANGE_EVENT, addEventListener } from "./events";
+} from "./Logger.types";
 
 const DEFAULT_STORE_LIMIT = 1000;
 const TIME_FORMAT = "HH:mm:ss:SS";

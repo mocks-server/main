@@ -64,6 +64,7 @@ importers:
       start-server-and-test: 1.14.0
       strip-ansi: 6.0.0
       tree-kill: 1.2.2
+      tslib: 2.5.0
       typescript: 4.7.4
       wait-on: 6.0.1
       webpack: 5.74.0
@@ -81,7 +82,7 @@ importers:
       '@rollup/plugin-babel': 5.3.1_803b71eb8edcf0cb2053421f359ef373
       '@rollup/plugin-commonjs': 21.1.0_rollup@2.79.0
       '@rollup/plugin-node-resolve': 13.3.0_rollup@2.79.0
-      '@rollup/plugin-typescript': 8.5.0_rollup@2.79.0+typescript@4.7.4
+      '@rollup/plugin-typescript': 8.5.0_120c47e83efe3ad03aff6b4ab814546f
       '@testing-library/cypress': 8.0.3_cypress@9.7.0
       '@types/fs-extra': 11.0.1
       '@types/json-schema': 7.0.11
@@ -128,6 +129,7 @@ importers:
       start-server-and-test: 1.14.0
       strip-ansi: 6.0.0
       tree-kill: 1.2.2
+      tslib: 2.5.0
       typescript: 4.7.4
       wait-on: 6.0.1
       webpack: 5.74.0
@@ -381,7 +383,9 @@ importers:
 
   packages/plugin-openapi:
     specifiers:
+      '@mocks-server/config': workspace:*
       '@mocks-server/core': workspace:*
+      '@mocks-server/logger': workspace:*
       '@mocks-server/nested-collections': workspace:*
       json-refs: 3.0.15
       openapi-types: 12.0.2
@@ -389,7 +393,9 @@ importers:
       json-refs: 3.0.15
       openapi-types: 12.0.2
     devDependencies:
+      '@mocks-server/config': link:../config
       '@mocks-server/core': link:../core
+      '@mocks-server/logger': link:../logger
       '@mocks-server/nested-collections': link:../nested-collections
 
   packages/plugin-proxy:
@@ -2863,7 +2869,7 @@ packages:
       ignore: 5.2.0
       rxjs: 6.6.7
       semver: 7.3.4
-      tslib: 2.3.1
+      tslib: 2.5.0
     dev: true
 
   /@nrwl/eslint-plugin-nx/13.8.3_6d9b42330df4b23aa21b718301d0cca0:
@@ -2914,7 +2920,7 @@ packages:
       jest-util: 27.2.0
       resolve.exports: 1.1.0
       rxjs: 6.6.7
-      tslib: 2.3.1
+      tslib: 2.5.0
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -2937,7 +2943,7 @@ packages:
       '@phenomnomnominal/tsquery': 4.1.1_typescript@4.7.4
       eslint: 8.24.0
       tmp: 0.2.1
-      tslib: 2.3.1
+      tslib: 2.5.0
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -2963,7 +2969,7 @@ packages:
       rxjs-for-await: 0.0.2_rxjs@6.6.7
       semver: 7.3.4
       tmp: 0.2.1
-      tslib: 2.3.1
+      tslib: 2.5.0
       yargs-parser: 20.0.0
     dev: true
 
@@ -2998,7 +3004,7 @@ packages:
       rxjs: 6.6.7
       semver: 7.3.4
       tmp: 0.2.1
-      tslib: 2.3.1
+      tslib: 2.5.0
       yargs: 15.4.1
       yargs-parser: 20.0.0
     transitivePeerDependencies:
@@ -3151,7 +3157,7 @@ packages:
       rollup: 1.32.1
     dev: true
 
-  /@rollup/plugin-typescript/8.5.0_rollup@2.79.0+typescript@4.7.4:
+  /@rollup/plugin-typescript/8.5.0_120c47e83efe3ad03aff6b4ab814546f:
     resolution: {integrity: sha512-wMv1/scv0m/rXx21wD2IsBbJFba8wGF3ErJIr6IKRfRj49S85Lszbxb4DCo8iILpluTjk2GAAu9CoZt4G3ppgQ==}
     engines: {node: '>=8.0.0'}
     peerDependencies:
@@ -3165,6 +3171,7 @@ packages:
       '@rollup/pluginutils': 3.1.0_rollup@2.79.0
       resolve: 1.22.0
       rollup: 2.79.0
+      tslib: 2.5.0
       typescript: 4.7.4
     dev: true
 
@@ -3378,7 +3385,7 @@ packages:
       chalk: 4.1.2
       debug: 4.3.4
       pirates: 4.0.5
-      tslib: 2.3.1
+      tslib: 2.5.0
       typescript: 4.7.4
     transitivePeerDependencies:
       - supports-color
@@ -5999,7 +6006,7 @@ packages:
     resolution: {integrity: sha512-gxGWBrTT1JuMx6R+o5PTXMmUnhnVzLQ9SNutD4YqKtI6ap897t3tKECYla6gCWEkplXnlNybEkZg9GEGxKFCgw==}
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.3.1
+      tslib: 2.5.0
     dev: true
 
   /camelcase/5.3.1:
@@ -13203,7 +13210,7 @@ packages:
     resolution: {integrity: sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A==}
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.3.1
+      tslib: 2.5.0
     dev: true
 
   /parent-module/1.0.1:
@@ -15200,13 +15207,13 @@ packages:
   /rxjs/7.5.4:
     resolution: {integrity: sha512-h5M3Hk78r6wAheJF0a5YahB1yRQKCsZ4MsGdZ5O9ETbVtjPcScGfrMmoOq7EBsCRzd4BDkvDJ7ogP8Sz5tTFiQ==}
     dependencies:
-      tslib: 2.3.1
+      tslib: 2.5.0
     dev: true
 
   /rxjs/7.5.5:
     resolution: {integrity: sha512-sy+H0pQofO95VDmFLzyaw9xNJU4KTRSwQIGM6+iG3SypAtCiLDzpeG8sJrNCWn2Up9km+KhkvTdbkrdy+yzZdw==}
     dependencies:
-      tslib: 2.3.1
+      tslib: 2.5.0
 
   /safe-buffer/5.1.2:
     resolution: {integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==}
@@ -16658,12 +16665,8 @@ packages:
   /tslib/1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
 
-  /tslib/2.3.1:
-    resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
-
   /tslib/2.5.0:
     resolution: {integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==}
-    dev: true
 
   /tsutils/3.21.0_typescript@4.7.4:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}

@@ -1,6 +1,6 @@
 import type { OpenAPIV3 as OriginalOpenApiV3 } from "openapi-types";
 
-import { MOCKS_SERVER_ROUTE_ID, MOCKS_SERVER_VARIANT_ID } from "./constants";
+import { MOCKS_SERVER_ROUTE_ID, MOCKS_SERVER_VARIANT_ID } from "./Constants";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace MocksServerOpenAPIV3 {

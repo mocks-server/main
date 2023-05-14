@@ -2,26 +2,28 @@ import deepMerge from "deepmerge";
 import type deepmerge from "deepmerge";
 import type { JSONSchema7 } from "json-schema";
 
-import type { CommandLineArgumentsInterface } from "./CommandLineArgumentTypes";
-import type { ConfigurationObject } from "./CommonTypes";
+import type { CommandLineArgumentsInterface } from "./CommandLineArgument.types";
+import { CommandLineArguments } from "./CommandLineArguments";
+import type { ConfigurationObject } from "./Common.types";
 import type {
   ConfigConstructor,
   ConfigInterface,
   ConfigOptions,
   ConfigValidationOptions,
   LoadArgumentsOptions,
-  NamespaceInterface,
-} from "./ConfigTypes";
-import type { EnvironmentInterface } from "./EnvironmentTypes";
-import type { FilesInterface } from "./FilesTypes";
-import type { OptionInterface, SetMethodOptions } from "./OptionTypes";
-import type { GetValidationSchemaOptions, ConfigValidationResult } from "./ValidationTypes";
-
-import { CommandLineArguments } from "./CommandLineArguments";
+  ConfigNamespaceInterface,
+} from "./Config.types";
+import { ConfigNamespace } from "./ConfigNamespace";
+import {
+  checkNamespaceName,
+  findObjectWithName,
+  getNamespacesValues,
+} from "./ConfigNamespaceHelpers";
 import { Environment } from "./Environment";
+import type { EnvironmentInterface } from "./Environment.types";
 import { Files } from "./Files";
-import { Namespace } from "./Namespace";
-import { checkNamespaceName, findObjectWithName, getNamespacesValues } from "./namespaces";
+import type { FilesInterface } from "./Files.types";
+import type { OptionInterface, SetMethodOptions } from "./Option.types";
 import {
   CONFIG_NAMESPACE,
   READ_FILE_OPTION,
@@ -32,8 +34,9 @@ import {
   FILE_SEARCH_STOP_OPTION,
   ALLOW_UNKNOWN_ARGUMENTS_OPTION,
 } from "./Options";
-import { avoidArraysMerge, STRING_TYPE, BOOLEAN_TYPE, ARRAY_TYPE } from "./typing";
-import { validateConfigAndThrow, validateConfig, getValidationSchema } from "./validation";
+import { avoidArraysMerge, STRING_TYPE, BOOLEAN_TYPE, ARRAY_TYPE } from "./Typing";
+import { validateConfigAndThrow, validateConfig, getValidationSchema } from "./Validation";
+import type { GetValidationSchemaOptions, ConfigValidationResult } from "./Validation.types";
 
 const ROOT_NAMESPACE = "_rootOptions";
 
@@ -47,9 +50,9 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
   private _files: FilesInterface;
   private _args: CommandLineArgumentsInterface;
   private _environment: EnvironmentInterface;
-  private _namespaces: NamespaceInterface[];
-  private _rootNamespace: NamespaceInterface;
-  private _configNamespace: NamespaceInterface;
+  private _namespaces: ConfigNamespaceInterface[];
+  private _rootNamespace: ConfigNamespaceInterface;
+  private _configNamespace: ConfigNamespaceInterface;
   private _readFile: OptionInterface;
   private _readArguments: OptionInterface;
   private _readEnvironment: OptionInterface;
@@ -58,8 +61,8 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
   private _fileSearchStop: OptionInterface;
   private _config: ConfigurationObject;
   private _allowUnknownArguments: OptionInterface;
-  public addOption: NamespaceInterface["addOption"];
-  public addOptions: NamespaceInterface["addOptions"];
+  public addOption: ConfigNamespaceInterface["addOption"];
+  public addOptions: ConfigNamespaceInterface["addOptions"];
 
   constructor(
     { moduleName, mergeArrays = true }: ConfigOptions = { moduleName: "", mergeArrays: true }
@@ -82,7 +85,7 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
     this._environment = new Environment(moduleName);
 
     this._namespaces = [];
-    this._rootNamespace = new Namespace(ROOT_NAMESPACE, {
+    this._rootNamespace = new ConfigNamespace(ROOT_NAMESPACE, {
       brothers: this._namespaces,
       root: this,
       isRoot: true,
@@ -253,17 +256,17 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
     this._startNamespacesEvents();
   }
 
-  public addNamespace(name: NamespaceInterface["name"]): NamespaceInterface {
+  public addNamespace(name: ConfigNamespaceInterface["name"]): ConfigNamespaceInterface {
     checkNamespaceName(name, {
       namespaces: this._namespaces,
       options: this._rootNamespace && this._rootNamespace.options,
     });
-    const namespace = new Namespace(name, { brothers: this._namespaces, root: this });
+    const namespace = new ConfigNamespace(name, { brothers: this._namespaces, root: this });
     this._namespaces.push(namespace);
     return namespace;
   }
 
-  public namespace(name: NamespaceInterface["name"]): NamespaceInterface | undefined {
+  public namespace(name: ConfigNamespaceInterface["name"]): ConfigNamespaceInterface | undefined {
     return findObjectWithName(this._namespaces, name);
   }
 
@@ -299,7 +302,7 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
     return this._files.loadedFile;
   }
 
-  public get namespaces(): NamespaceInterface[] {
+  public get namespaces(): ConfigNamespaceInterface[] {
     return this._namespaces.filter((namespace) => !namespace.isRoot);
   }
 

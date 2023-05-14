@@ -1,16 +1,20 @@
 import type {
-  Route,
-  Routes,
-  Collections,
-  Collection,
-  Core,
-  MockLoaders,
-  FilesContents,
-  ConfigOption,
   OptionProperties,
+  OptionInterface,
+  ConfigNamespaceInterface,
+} from "@mocks-server/config";
+import type {
+  RouteDefinition,
+  ScopedCoreInterface,
+  DefinitionsLoaders,
+  FilesLoaded,
+  CollectionDefinition,
+  AlertsInterface,
+  FilesInterface,
 } from "@mocks-server/core";
+import type { LoggerInterface } from "@mocks-server/logger";
 
-import { openApiRoutes } from "./openapi";
+import { openApiRoutes } from "./OpenApi";
 import type { OpenApiDefinition, PluginConstructor, PluginInterface } from "./types";
 
 const PLUGIN_ID = "openapi";
@@ -34,25 +38,29 @@ const COLLECTION_OPTIONS: OptionProperties[] = [
 ];
 
 interface RoutesAndCollections {
-  routes: Routes;
-  collections: Collections;
+  routes: RouteDefinition[];
+  collections: CollectionDefinition[];
 }
 
 function getRoutesCollection(
-  routes: Routes,
+  routes: RouteDefinition[],
   collectionOptions?: OpenApiDefinition.Collection
-): Collection | null {
+): CollectionDefinition | null {
   if (!collectionOptions) {
     return null;
   }
   return routes.reduce(
-    (collection, route: Route) => {
+    (collection: CollectionDefinition, route: RouteDefinition) => {
       if (route.variants && route.variants.length) {
         collection.routes.push(`${route.id}:${route.variants[0].id}`);
       }
       return collection;
     },
-    { id: collectionOptions.id, from: collectionOptions.from || null, routes: [] } as Collection
+    {
+      id: collectionOptions.id,
+      from: collectionOptions.from || null,
+      routes: [],
+    } as CollectionDefinition
   );
 }
 
@@ -61,20 +69,20 @@ export const Plugin: PluginConstructor = class Plugin implements PluginInterface
     return PLUGIN_ID;
   }
 
-  private _config: Core["config"];
-  private _logger: Core["logger"];
-  private _alerts: Core["alerts"];
-  private _files: Core["files"];
-  private _loadRoutes: MockLoaders["loadRoutes"];
-  private _loadCollections: MockLoaders["loadCollections"];
-  private _documentsAlerts: Core["alerts"];
-  private _collectionIdOption: ConfigOption;
-  private _collectionFromOption: ConfigOption;
+  private _config: ConfigNamespaceInterface;
+  private _logger: LoggerInterface;
+  private _alerts: AlertsInterface;
+  private _files: FilesInterface;
+  private _loadRoutes: DefinitionsLoaders["loadRoutes"];
+  private _loadCollections: DefinitionsLoaders["loadCollections"];
+  private _documentsAlerts: AlertsInterface;
+  private _collectionIdOption: OptionInterface;
+  private _collectionFromOption: OptionInterface;
 
-  constructor({ logger, alerts, mock, files, config }: Core) {
-    this._config = config;
-    this._logger = logger;
-    this._alerts = alerts;
+  constructor({ logger, alerts, mock, files, config }: ScopedCoreInterface) {
+    this._config = config as ConfigNamespaceInterface; // TODO, remove cast when core ensures config
+    this._logger = logger as LoggerInterface; // TODO, remove cast when core ensures logger
+    this._alerts = alerts as AlertsInterface; // TODO, remove cast when core ensures alerts
     this._files = files;
 
     const configCollection = this._config.addNamespace(COLLECTION_NAMESPACE);
@@ -94,12 +102,12 @@ export const Plugin: PluginConstructor = class Plugin implements PluginInterface
   }
 
   async _getRoutesAndCollectionsFromFilesContents(
-    filesContents: FilesContents
+    filesContents: FilesLoaded
   ): Promise<RoutesAndCollections> {
     const openApiRoutesAndCollections = await Promise.all(
       filesContents
         .map((fileDetails) => {
-          const fileContent = fileDetails.content;
+          const fileContent = fileDetails.content as OpenApiDefinition.Definition[];
           return fileContent.map((openAPIDefinition: OpenApiDefinition.Definition) => {
             this._logger.debug(
               `Creating routes from openApi definition: '${JSON.stringify(openAPIDefinition)}'`
@@ -131,7 +139,7 @@ export const Plugin: PluginConstructor = class Plugin implements PluginInterface
         }
         return allRoutesAndCollections;
       },
-      { routes: [], collections: [] }
+      { routes: [], collections: [] } as RoutesAndCollections
     );
   }
 
@@ -149,7 +157,7 @@ export const Plugin: PluginConstructor = class Plugin implements PluginInterface
     return options;
   }
 
-  private async _onLoadFiles(filesContents: FilesContents) {
+  private async _onLoadFiles(filesContents: FilesLoaded) {
     if (filesContents.length) {
       let collectionsToLoad;
       this._documentsAlerts.clean();
@@ -172,7 +180,7 @@ export const Plugin: PluginConstructor = class Plugin implements PluginInterface
         this._logger.debug(
           `Collection created from all OpenAPI definitions: '${JSON.stringify(defaultCollection)}'`
         );
-        collectionsToLoad = collections.concat([defaultCollection as Collection]);
+        collectionsToLoad = collections.concat([defaultCollection as CollectionDefinition]);
       } else {
         collectionsToLoad = collections;
       }

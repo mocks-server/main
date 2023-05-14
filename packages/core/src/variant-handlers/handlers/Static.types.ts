@@ -10,8 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type { ServeStaticOptions } from "serve-static";
 
-import type { UnknownObject } from "../../common/Common.types";
-import type { ScopedCoreInterface } from "../../common/ScopedCore.types";
+import type { UnknownObject, ScopedCoreInterface } from "../../common/types";
 import type {
   VariantHandlerConstructor,
   VariantHandlerInterfaceWithRouter,

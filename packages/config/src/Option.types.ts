@@ -1,5 +1,5 @@
-import type { ObjectWithName, AnyObject } from "./CommonTypes";
-import type { EventListener, EventListenerRemover } from "./EventsTypes";
+import type { ObjectWithName, AnyObject } from "./Common.types";
+import type { EventListener, EventListenerRemover } from "./Events.types";
 
 /** Option name */
 export type OptionName = string;

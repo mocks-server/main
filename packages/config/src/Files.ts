@@ -1,8 +1,8 @@
 import { cosmiconfig } from "cosmiconfig";
 import { isFunction } from "lodash";
 
-import type { ConfigurationObject, ConfigFunction, ModuleName } from "./CommonTypes";
-import type { FilesConstructor, FilesInterface, FilesReadOptions } from "./FilesTypes";
+import type { ConfigurationObject, ConfigFunction, ModuleName } from "./Common.types";
+import type { FilesConstructor, FilesInterface, FilesReadOptions } from "./Files.types";
 
 export const Files: FilesConstructor = class Files implements FilesInterface {
   private _moduleName: ModuleName;

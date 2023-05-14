@@ -10,10 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type { LoggerInterface } from "@mocks-server/logger";
 
-import type { UnknownObject } from "../../common/Common.types";
-import type { ScopedCoreInterface } from "../../common/ScopedCore.types";
-import type { JSONSchema7WithInstanceof } from "../../mock/Validator.types";
-import type { Request, Response } from "../../server/Server.types";
+import type { UnknownObject, ScopedCoreInterface } from "../../common/types";
+import type { JSONSchema7WithInstanceof } from "../../mock/types";
+import type { Request, Response } from "../../server/types";
 
 import type {
   VariantHandlerTextConstructor,

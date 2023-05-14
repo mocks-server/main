@@ -1,4 +1,4 @@
-import { commands } from "./commands";
+import { commands } from "./Commands";
 
 export function register(Cyp: typeof Cypress, CypCy: typeof cy) {
   const {

@@ -2,7 +2,7 @@ export * from "./types";
 
 export { AdminApiClient } from "./AdminApiClient";
 
-import { register as registerer } from "./register";
+import { register as registerer } from "./Register";
 
 /**
  * Register Mocks Server Cypress commands

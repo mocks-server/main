@@ -8,14 +8,18 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-import type { OptionProperties, NamespaceInterface, OptionInterface } from "@mocks-server/config";
+import type {
+  OptionProperties,
+  ConfigNamespaceInterface,
+  OptionInterface,
+} from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import isPromise from "is-promise";
 import { isFunction } from "lodash";
 
-import type { AlertsInterface } from "../alerts/Alerts.types";
-import { ScopedCore } from "../common/ScopedCore";
-import type { ScopedCoreInterface } from "../common/ScopedCore.types";
+import type { AlertsInterface } from "../alerts/types";
+import { ScopedCore } from "../common";
+import type { ScopedCoreInterface } from "../common/types";
 import type { CoreInterface } from "../Core.types";
 
 import type {
@@ -44,7 +48,7 @@ const OPTIONS: OptionProperties[] = [
 ];
 
 export const Plugins: PluginsConstructor = class Plugins implements PluginsInterface {
-  private _config: NamespaceInterface;
+  private _config: ConfigNamespaceInterface;
   private _logger: LoggerInterface;
   private _alerts: AlertsInterface;
   private _pluginsToRegister: OptionInterface;
@@ -141,7 +145,7 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
     pluginIndex: number
   ): Promise<PluginInterface> {
     let pluginInstance,
-      pluginConfig: NamespaceInterface | undefined,
+      pluginConfig: ConfigNamespaceInterface | undefined,
       pluginAlerts,
       pluginLogger,
       coreApi;

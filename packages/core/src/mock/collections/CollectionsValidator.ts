@@ -10,9 +10,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import type { ErrorObject } from "ajv";
 import { compact } from "lodash";
 
-import type { CollectionDefinition } from "../definitions/CollectionDefinitions.types";
-import type { RouteDefinitionId } from "../definitions/RouteDefinitions.types";
-import type { RouteId, RouteInterface } from "../routes/Route.types";
+import type { CollectionDefinition, RouteDefinitionId } from "../definitions/types";
+import type { RouteId, RouteInterface } from "../routes/types";
 import {
   validator,
   withIdMessage,

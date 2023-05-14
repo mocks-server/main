@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import "./CypressTypes";
+import "./Cypress.types";
 
-export * from "./AdminApiClientTypes";
-export * from "./CommandsTypes";
-export * from "./HelpersTypes";
+export * from "./AdminApiClient.types";
+export * from "./Commands.types";
+export * from "./Helpers.types";

@@ -11,20 +11,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import type { LoggerInterface } from "@mocks-server/logger";
 import express from "express";
 
-import type { AlertsInterface } from "../../alerts/Alerts.types";
-import type { EventListener } from "../../common/Events.types";
-import type {
-  NextFunction,
-  Request,
-  RequestHandler,
-  Response,
-  Router,
-} from "../../server/Server.types";
-import { handlerIsRouter } from "../../variant-handlers/helpers";
-import type { CollectionId } from "../definitions/CollectionDefinitions.types";
-import { routeIsEnabled } from "../routes/Route";
-import type { RouteInterface, RouteId } from "../routes/Route.types";
-import type { RoutesInterface } from "../routes/Routes.types";
+import type { AlertsInterface } from "../../alerts/types";
+import type { EventListener } from "../../common/types";
+import type { NextFunction, Request, RequestHandler, Response, Router } from "../../server/types";
+import { handlerIsRouter } from "../../variant-handlers";
+import type { CollectionId } from "../definitions/types";
+import { routeIsEnabled } from "../routes";
+import type { RouteInterface, RouteId, RoutesInterface } from "../routes/types";
 
 import type {
   CollectionConstructor,

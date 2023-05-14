@@ -9,13 +9,12 @@ import type {
   CommanderOptionsData,
   ReadOptions,
   CommandLineArgumentsConstructor,
-} from "./CommandLineArgumentTypes";
-import type { ConfigurationObject, AnyObject } from "./CommonTypes";
-import type { NamespaceInterface } from "./ConfigTypes";
-import type { OptionInterface } from "./OptionTypes";
-
-import { namespaceAndParentNames } from "./namespaces";
-import { getOptionParserWithArrayContents, BOOLEAN_TYPE, OBJECT_TYPE, ARRAY_TYPE } from "./typing";
+} from "./CommandLineArgument.types";
+import type { ConfigurationObject, AnyObject } from "./Common.types";
+import type { ConfigNamespaceInterface } from "./Config.types";
+import { namespaceAndParentNames } from "./ConfigNamespaceHelpers";
+import type { OptionInterface } from "./Option.types";
+import { getOptionParserWithArrayContents, BOOLEAN_TYPE, OBJECT_TYPE, ARRAY_TYPE } from "./Typing";
 
 const NAMESPACE_SEPARATOR = ".";
 const COMMANDER_VALUE_GETTER = ` <value>`;
@@ -68,7 +67,7 @@ function getCommanderOptionProperties(
   };
 }
 
-function getCommanderOptionName(namespace: NamespaceInterface, optionName: string): string {
+function getCommanderOptionName(namespace: ConfigNamespaceInterface, optionName: string): string {
   return [...namespaceAndParentNames(namespace), optionName].join(NAMESPACE_SEPARATOR);
 }
 
@@ -96,7 +95,7 @@ export const CommandLineArguments: CommandLineArgumentsConstructor = class Comma
   }
 
   private _createNamespaceInterfaceOptions(
-    namespace: NamespaceInterface,
+    namespace: ConfigNamespaceInterface,
     command: Command,
     optionsData: CommanderOptionsData
   ) {
@@ -115,7 +114,7 @@ export const CommandLineArguments: CommandLineArgumentsConstructor = class Comma
   }
 
   private _createNamespaceOptions(
-    namespaces: NamespaceInterface[],
+    namespaces: ConfigNamespaceInterface[],
     command: Command,
     optionsData: CommanderOptionsData
   ) {
@@ -160,7 +159,7 @@ export const CommandLineArguments: CommandLineArgumentsConstructor = class Comma
   }
 
   public read(
-    namespaces: NamespaceInterface[],
+    namespaces: ConfigNamespaceInterface[],
     { allowUnknownOption }: ReadOptions
   ): ConfigurationObject {
     const config = {};

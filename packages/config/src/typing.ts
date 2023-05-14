@@ -1,17 +1,17 @@
-import type { AnyObject } from "./CommonTypes";
+import type { AnyObject } from "./Common.types";
 import type {
   OptionInterface,
   OptionType,
   OptionInterfaceArray,
   OptionInterfaceBoolean,
   OptionItemsType,
-} from "./OptionTypes";
+} from "./Option.types";
 import type {
   ValueParser,
   StringObjectParser,
   BooleanParser,
   ArrayValueParser,
-} from "./TypingTypes";
+} from "./Typing.types";
 
 const FALSY_VALUES = ["false", "0", 0];
 

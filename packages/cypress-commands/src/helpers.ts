@@ -1,4 +1,4 @@
-import type { CypressEnvVarValue, ArrayOfValues } from "./HelpersTypes";
+import type { CypressEnvVarValue, ArrayOfValues } from "./Helpers.types";
 
 export const LOG_ENVIRONMENT_VAR = "MOCKS_SERVER_LOGS";
 export const ENABLED_ENVIRONMENT_VAR = "MOCKS_SERVER_ENABLED";

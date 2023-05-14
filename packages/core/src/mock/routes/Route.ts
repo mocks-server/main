@@ -1,16 +1,16 @@
 import type { LoggerInterface } from "@mocks-server/logger";
 
-import type { HTTPMethod, RequestHandlerHttpMethod } from "../../server/Server.types";
+import type { HTTPMethod, RequestHandlerHttpMethod } from "../../server/types";
 import type {
   VariantHandlerInterface,
   VariantHandlerResponsePreview,
-} from "../../variant-handlers/VariantHandlers.types";
+} from "../../variant-handlers/types";
 import type {
   RouteDefinitionHTTPMethod,
   RouteDefinitionId,
   RouteDefinitionHTTPValidMethod,
   HTTPMethodId,
-} from "../definitions/RouteDefinitions.types";
+} from "../definitions/types";
 
 import type {
   RouteConstructor,

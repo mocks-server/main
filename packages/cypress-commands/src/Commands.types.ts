@@ -1,7 +1,7 @@
 import type { EntityId } from "@mocks-server/admin-api-client";
 import type { ConfigurationObject } from "@mocks-server/config";
 
-import type { AdminApiClientConfig, AdminApiClientInterface } from "./AdminApiClientTypes";
+import type { AdminApiClientConfig, AdminApiClientInterface } from "./AdminApiClient.types";
 
 /* Cypress log */
 export type Log = string;

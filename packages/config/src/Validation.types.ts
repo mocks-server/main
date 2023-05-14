@@ -1,6 +1,6 @@
 import type { DefinedError } from "ajv";
 
-import type { NamespaceInterface } from "./ConfigTypes";
+import type { ConfigNamespaceInterface } from "./Config.types";
 
 /** Validation result */
 export interface ConfigValidationResult {
@@ -11,6 +11,6 @@ export interface ConfigValidationResult {
 }
 
 export interface GetValidationSchemaOptions {
-  namespaces: NamespaceInterface[];
+  namespaces: ConfigNamespaceInterface[];
   allowAdditionalProperties: boolean;
 }

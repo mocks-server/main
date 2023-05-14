@@ -1,4 +1,4 @@
-import type { RouteInterface } from "../routes/Route.types";
+import type { RouteInterface } from "../routes/types";
 
 function findBrotherRoute(
   routes: RouteInterface[],

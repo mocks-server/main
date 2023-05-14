@@ -39,7 +39,9 @@
     "json-refs": "3.0.15"
   },
   "devDependencies": {
+    "@mocks-server/config": "workspace:*",
     "@mocks-server/core": "workspace:*",
+    "@mocks-server/logger": "workspace:*",
     "@mocks-server/nested-collections": "workspace:*"
   },
   "engines": {

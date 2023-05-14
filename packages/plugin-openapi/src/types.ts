@@ -1,2 +1,2 @@
-export * from "./OpenApiTypes";
-export * from "./PluginTypes";
+export * from "./OpenApi.types";
+export * from "./Plugin.types";

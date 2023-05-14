@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
-import type { EventsListener, EventsListenerRemover } from "./EventsTypes";
+import type { EventsListener, EventsListenerRemover } from "./Events.types";
 
 export type CollectionId = string | null;
 

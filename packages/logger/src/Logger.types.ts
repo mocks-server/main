@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import type * as winston from "winston";
 
-import type { EventsListenerRemover, EventsListener } from "./EventsTypes";
+import type { EventsListenerRemover, EventsListener } from "./Events.types";
 
 export const LEVEL_SILLY: LogLevels.Silly = "silly";
 export const LEVEL_DEBUG: LogLevels.Debug = "debug";

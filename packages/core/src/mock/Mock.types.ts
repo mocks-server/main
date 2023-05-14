@@ -8,25 +8,25 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-import type { NamespaceInterface } from "@mocks-server/config";
+import type { ConfigNamespaceInterface } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 
-import type { AlertsInterface } from "../alerts/Alerts.types";
-import type { EventListener, EventListenerRemover } from "../common/Events.types";
+import type { AlertsInterface } from "../alerts/types";
+import type { EventListener, EventListenerRemover } from "../common/types";
 import type { CoreInterface } from "../Core.types";
-import type { NextFunction, Request, Response } from "../server/Server.types";
-import type { VariantHandlerConstructor } from "../variant-handlers/VariantHandlers.types";
+import type { NextFunction, Request, Response } from "../server/types";
+import type { VariantHandlerConstructor } from "../variant-handlers/types";
 
-import type { CollectionsInterface } from "./collections/Collections.types";
-import type { CollectionDefinition } from "./definitions/CollectionDefinitions.types";
+import type { CollectionsInterface } from "./collections/types";
 import type {
+  CollectionDefinition,
   DefinitionLoadersManagerInterface,
   DefinitionsLoaderInterface,
-} from "./definitions/DefinitionLoadersManager.types";
-import type { DefinitionsInterface, DefinitionsLoaders } from "./definitions/Definitions.types";
-import type { RouteDefinition } from "./definitions/RouteDefinitions.types";
-import type { RouteId } from "./routes/Route.types";
-import type { RoutesInterface } from "./routes/Routes.types";
+  DefinitionsInterface,
+  DefinitionsLoaders,
+  RouteDefinition,
+} from "./definitions/types";
+import type { RouteId, RoutesInterface } from "./routes/types";
 
 export type CollectionDefinitionsManager = DefinitionLoadersManagerInterface<CollectionDefinition>;
 export type CollectionDefinitionsLoader = DefinitionsLoaderInterface<CollectionDefinition>["load"];
@@ -49,7 +49,7 @@ export interface MockOptions {
   /** Namespaced Mocks Server logger interface */
   logger: LoggerInterface;
   /** Namespaced Mocks Server config */
-  config: NamespaceInterface;
+  config: ConfigNamespaceInterface;
   /**
    * Callback to execute when the mock changes
    * @deprecated Use onChange instead

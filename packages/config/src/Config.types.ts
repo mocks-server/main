@@ -1,8 +1,8 @@
 import type { JSONSchema7 } from "json-schema";
 
-import type { ModuleName, ConfigurationObject, ObjectWithName } from "./CommonTypes";
-import type { OptionInterface, SetMethodOptions, OptionProperties } from "./OptionTypes";
-import type { ConfigValidationResult } from "./ValidationTypes";
+import type { ModuleName, ConfigurationObject, ObjectWithName } from "./Common.types";
+import type { OptionInterface, SetMethodOptions, OptionProperties } from "./Option.types";
+import type { ConfigValidationResult } from "./Validation.types";
 
 /** Properties for creating a new config interface */
 export interface ConfigOptions {
@@ -67,17 +67,17 @@ export interface ConfigInterface {
   /**
    * Adds a configuration namespace, or returns an existing one in case the name already exists
    * @param name - Name for the new namespace
-   * @returns Configuration namespace {@link NamespaceInterface}.
+   * @returns Configuration namespace {@link ConfigNamespaceInterface}.
    * @example const namespace = config.addNamespace("foo")
    */
-  addNamespace(name: NamespaceInterface["name"]): NamespaceInterface;
+  addNamespace(name: ConfigNamespaceInterface["name"]): ConfigNamespaceInterface;
   /**
    * Returns a configuration namespace
    * @param name - Name of the namespace to return
-   * @returns Configuration namespace {@link NamespaceInterface}
+   * @returns Configuration namespace {@link ConfigNamespaceInterface}
    * @example const namespace = config.namespace("foo")
    */
-  namespace(name: NamespaceInterface["name"]): NamespaceInterface | undefined;
+  namespace(name: ConfigNamespaceInterface["name"]): ConfigNamespaceInterface | undefined;
   /**
    * Returns a configuration option
    * @param name - Name of the option to return
@@ -112,7 +112,7 @@ export interface ConfigInterface {
   /** Returns the path of the configuration file loaded, or null in case no file was loaded */
   loadedFile: string | null;
   /** Returns an array containing all current namespaces */
-  namespaces: NamespaceInterface[];
+  namespaces: ConfigNamespaceInterface[];
   /** Returns an array containing all current options */
   options: OptionInterface[];
   /** Returns the root config interface */
@@ -127,39 +127,39 @@ export interface ConfigInterface {
 }
 
 /** Properties for creating a new namespace */
-export interface NamespaceProperties {
+export interface ConfigNamespaceProperties {
   /** Array containing parent namespaces */
-  parents?: NamespaceInterface[];
+  parents?: ConfigNamespaceInterface[];
   /** Array containing brother namespaces */
-  brothers: NamespaceInterface[];
+  brothers: ConfigNamespaceInterface[];
   /** Root config interface */
   root: ConfigInterface;
   /** Is root namespace or not. Root namespace must be unique in a config interface and it delegates its options to it */
   isRoot?: true;
 }
 
-export type NamespaceName = string;
+export type ConfigNamespaceLabel = string;
 
 /** Creates a namespace */
 
-export interface NamespaceConstructor {
+export interface ConfigNamespaceConstructor {
   /**
    * Creates a namespace interface
    * @param name - Name for the namespace
-   * @returns Config interface {@link NamespaceInterface}.
+   * @returns Config interface {@link ConfigNamespaceInterface}.
    * @example const namespace = new Namespace("foo", { root: config, brothers: [namespace_x, namespace_y], isRoot: true })
    */
-  new (name: NamespaceName, options: NamespaceProperties): NamespaceInterface;
+  new (name: ConfigNamespaceLabel, options: ConfigNamespaceProperties): ConfigNamespaceInterface;
 }
 
 /** Config namespace */
-export interface NamespaceInterface extends ObjectWithName {
+export interface ConfigNamespaceInterface extends ObjectWithName {
   /** Array containing namespace options */
   options: OptionInterface[];
   /** Array containing child namespaces */
-  namespaces: NamespaceInterface[];
+  namespaces: ConfigNamespaceInterface[];
   /** Array containing parent namespaces up to the root configuration */
-  parents: NamespaceInterface[];
+  parents: ConfigNamespaceInterface[];
   /** Returns current options values and values from all child namespaces */
   value: ConfigurationObject;
   /** Returns the root config interface */
@@ -197,17 +197,17 @@ export interface NamespaceInterface extends ObjectWithName {
   /**
    * Adds a child namespace, or returns an existing one in case the name already exists
    * @param name - Name for the new namespace
-   * @returns Configuration namespace {@link NamespaceInterface}.
+   * @returns Configuration namespace {@link ConfigNamespaceInterface}.
    * @example const child_namespace = namespace.addNamespace("foo")
    */
-  addNamespace(name?: NamespaceInterface["name"]): NamespaceInterface;
+  addNamespace(name?: ConfigNamespaceInterface["name"]): ConfigNamespaceInterface;
   /**
    * Returns a child namespace
    * @param name - Name of the namespace to return
-   * @returns Namespace {@link NamespaceInterface} or undefined.
+   * @returns Namespace {@link ConfigNamespaceInterface} or undefined.
    * @example const child_namespace = namespace.namespace("foo")
    */
-  namespace(name: NamespaceInterface["name"]): NamespaceInterface | undefined;
+  namespace(name: ConfigNamespaceInterface["name"]): ConfigNamespaceInterface | undefined;
   /**
    * Returns a namespace option
    * @param name - Name of the option to return

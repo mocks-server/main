@@ -8,21 +8,25 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-import type { OptionProperties, NamespaceInterface, OptionInterface } from "@mocks-server/config";
+import type {
+  OptionProperties,
+  ConfigNamespaceInterface,
+  OptionInterface,
+} from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import { flatten, compact, isUndefined } from "lodash";
 
-import type { AlertsInterface } from "../../alerts/Alerts.types";
-import { ScopedCore } from "../../common/ScopedCore";
-import type { ScopedCoreInterface } from "../../common/ScopedCore.types";
+import type { AlertsInterface } from "../../alerts/types";
+import { ScopedCore } from "../../common";
+import type { ScopedCoreInterface } from "../../common/types";
 import type { CoreInterface } from "../../Core.types";
-import { getHandlerId, getOptionsFromVariant } from "../../variant-handlers/helpers";
+import { getHandlerId, getOptionsFromVariant } from "../../variant-handlers";
 import type {
   VariantHandlerConstructor,
   VariantHandlerId,
   VariantHandlerInterface,
-} from "../../variant-handlers/VariantHandlers.types";
-import type { RouteDefinition, RouteDefinitionId } from "../definitions/RouteDefinitions.types";
+} from "../../variant-handlers/types";
+import type { RouteDefinition, RouteDefinitionId } from "../definitions/types";
 
 import { Route } from "./Route";
 import type {
@@ -92,7 +96,7 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
   private _loggerLoad: LoggerInterface;
   private _alerts: AlertsInterface;
   private _alertsLoad: AlertsInterface;
-  private _config: NamespaceInterface;
+  private _config: ConfigNamespaceInterface;
   private _delayOption: OptionInterface;
   private _variantHandlers: VariantHandlerConstructor[];
   private _core: CoreInterface;

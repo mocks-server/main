@@ -17,9 +17,8 @@ import type {
   AdminApiClientConfig,
   AdminApiClientInterface,
   AdminApiClientConstructor,
-} from "./AdminApiClientTypes";
-
-import { isUndefined, isFalsy } from "./helpers";
+} from "./AdminApiClient.types";
+import { isUndefined, isFalsy } from "./Helpers";
 
 function doNothing(): Promise<void> {
   return Promise.resolve();

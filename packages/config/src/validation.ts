@@ -3,16 +3,14 @@ import betterAjvErrors from "better-ajv-errors";
 import type { JSONSchema7TypeName, JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { isString, isNumber, isObject, isBoolean } from "lodash";
 
-import type { AnyObject } from "./CommonTypes";
-import type { NamespaceInterface } from "./ConfigTypes";
+import type { AnyObject } from "./Common.types";
+import type { ConfigNamespaceInterface } from "./Config.types";
 import type {
   OptionProperties,
   OptionInterface,
   OptionType,
   OptionItemsType,
-} from "./OptionTypes";
-import type { ConfigValidationResult, GetValidationSchemaOptions } from "./ValidationTypes";
-
+} from "./Option.types";
 import {
   optionIsArray,
   NUMBER_TYPE,
@@ -21,7 +19,8 @@ import {
   OBJECT_TYPE,
   ARRAY_TYPE,
   NULL_TYPE,
-} from "./typing";
+} from "./Typing";
+import type { ConfigValidationResult, GetValidationSchemaOptions } from "./Validation.types";
 
 const ajv = new Ajv({ allErrors: true });
 
@@ -205,7 +204,7 @@ function validateSchemaAndThrow(
 }
 
 function addNamespaceSchema(
-  namespace: NamespaceInterface,
+  namespace: ConfigNamespaceInterface,
   {
     rootSchema,
     allowAdditionalProperties,
@@ -246,13 +245,13 @@ function addNamespaceSchema(
 }
 
 function addNamespacesSchema(
-  namespaces: NamespaceInterface[],
+  namespaces: ConfigNamespaceInterface[],
   {
     rootSchema,
     allowAdditionalProperties,
   }: { rootSchema: JSONSchema7; allowAdditionalProperties: boolean }
 ): JSONSchema7 {
-  return namespaces.reduce((currentSchema: JSONSchema7, namespace: NamespaceInterface) => {
+  return namespaces.reduce((currentSchema: JSONSchema7, namespace: ConfigNamespaceInterface) => {
     const properties: { [key: string]: JSONSchema7 } = {};
     if (!namespace.isRoot) {
       properties[namespace.name] = addNamespaceSchema(namespace, {
@@ -273,7 +272,7 @@ function getConfigValidationSchema({
   namespaces,
   allowAdditionalProperties,
 }: {
-  namespaces: NamespaceInterface[];
+  namespaces: ConfigNamespaceInterface[];
   allowAdditionalProperties: boolean;
 }): JSONSchema7 {
   return addNamespacesSchema(namespaces, {
@@ -287,7 +286,7 @@ export function validateConfigAndThrow(
   {
     namespaces,
     allowAdditionalProperties,
-  }: { namespaces: NamespaceInterface[]; allowAdditionalProperties: boolean }
+  }: { namespaces: ConfigNamespaceInterface[]; allowAdditionalProperties: boolean }
 ): void | never {
   validateSchemaAndThrow(
     config,
@@ -300,7 +299,7 @@ export function validateConfig(
   {
     namespaces,
     allowAdditionalProperties,
-  }: { namespaces: NamespaceInterface[]; allowAdditionalProperties: boolean }
+  }: { namespaces: ConfigNamespaceInterface[]; allowAdditionalProperties: boolean }
 ): ConfigValidationResult {
   return validateSchema(
     config,

@@ -8,18 +8,18 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-import type { OptionProperties, NamespaceInterface, OptionInterface } from "@mocks-server/config";
+import type {
+  OptionProperties,
+  ConfigNamespaceInterface,
+  OptionInterface,
+} from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import { compact } from "lodash";
 
-import type { AlertsInterface } from "../../alerts/Alerts.types";
-import { resolveWhenConditionPass } from "../../common/Helpers";
-import type {
-  CollectionDefinition,
-  CollectionId,
-} from "../definitions/CollectionDefinitions.types";
-import type { RouteId, RouteInterface } from "../routes/Route.types";
-import type { RoutesInterface } from "../routes/Routes.types";
+import type { AlertsInterface } from "../../alerts/types";
+import { resolveWhenConditionPass } from "../../common";
+import type { CollectionDefinition, CollectionId } from "../definitions/types";
+import type { RouteId, RouteInterface, RoutesInterface } from "../routes/types";
 
 import { Collection } from "./Collection";
 import type {
@@ -63,7 +63,7 @@ export const Collections: CollectionsConstructor = class Collections
   private _alertsLoad: AlertsInterface;
   private _logger: LoggerInterface;
   private _loggerLoad: LoggerInterface;
-  private _config: NamespaceInterface;
+  private _config: ConfigNamespaceInterface;
   private _selectedOption: OptionInterface;
   private _collections: CollectionInterface[] = [];
   private _routesManager: RoutesInterface;

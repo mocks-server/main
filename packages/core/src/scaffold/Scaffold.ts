@@ -17,7 +17,7 @@ import {
   CONFIG_NAMESPACE,
   READ_FILE_OPTION,
   ALLOW_UNKNOWN_ARGUMENTS_OPTION,
-  NamespaceInterface,
+  ConfigNamespaceInterface,
   OptionValue,
 } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
@@ -25,9 +25,9 @@ import { readFile, writeFile, copy, existsSync } from "fs-extra";
 import handlebars from "handlebars";
 import { isUndefined, compact } from "lodash";
 
-import type { AlertsInterface } from "../alerts/Alerts.types";
-import { FILES_NAMESPACE, ENABLED_OPTION } from "../files/Options";
-import { MOCK_NAMESPACE, COLLECTIONS_NAMESPACE, SELECTED_COLLECTION } from "../mock/Options";
+import type { AlertsInterface } from "../alerts/types";
+import { FILES_NAMESPACE, ENABLED_OPTION } from "../files";
+import { MOCK_NAMESPACE, COLLECTIONS_NAMESPACE, SELECTED_COLLECTION } from "../mock";
 
 import {
   SCAFFOLD_OPTION_OMITTED,
@@ -98,7 +98,7 @@ function isOptionCommented(option: OptionInterface) {
 
 function isOptionOmitted(
   option: OptionInterface,
-  namespace?: NamespaceInterface
+  namespace?: ConfigNamespaceInterface
 ): ScaffoldOptionOmitted {
   // Exclude config options that has no sense to define in file
   if (
@@ -135,7 +135,7 @@ function parseOptionForTemplate(option: OptionInterface) {
 
 function parseOptionsForTemplate(
   options: OptionInterface[],
-  namespace?: NamespaceInterface
+  namespace?: ConfigNamespaceInterface
 ): OptionTemplateData[] | undefined {
   if (options) {
     return compact(
@@ -148,7 +148,7 @@ function parseOptionsForTemplate(
   }
 }
 
-function parseNamespaceForTemplate(namespace: NamespaceInterface): NamespaceTemplateData {
+function parseNamespaceForTemplate(namespace: ConfigNamespaceInterface): NamespaceTemplateData {
   return {
     name: ensureQuotes(namespace.name),
     options: parseOptionsForTemplate(namespace.options, namespace),
@@ -157,7 +157,7 @@ function parseNamespaceForTemplate(namespace: NamespaceInterface): NamespaceTemp
 }
 
 function parseNamespacesForTemplates(
-  namespaces?: NamespaceInterface[]
+  namespaces?: ConfigNamespaceInterface[]
 ): NamespaceTemplateData[] | undefined {
   if (namespaces) {
     return namespaces.map(parseNamespaceForTemplate);

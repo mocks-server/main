@@ -9,12 +9,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 import type { LoggerInterface } from "@mocks-server/logger";
 
-import type { AlertsInterface } from "../../alerts/Alerts.types";
-import type { EventListener } from "../../common/Events.types";
-import type { Router } from "../../server/Server.types";
-import type { CollectionId } from "../definitions/CollectionDefinitions.types";
-import type { RouteId, RouteInterface } from "../routes/Route.types";
-import type { RoutesInterface } from "../routes/Routes.types";
+import type { AlertsInterface } from "../../alerts/types";
+import type { EventListener } from "../../common/types";
+import type { Router } from "../../server/types";
+import type { CollectionId } from "../definitions/types";
+import type { RouteId, RouteInterface, RoutesInterface } from "../routes/types";
 
 /** Collection plain object legacy
  * @deprecated - Use {@link CollectionPlainObject} instead

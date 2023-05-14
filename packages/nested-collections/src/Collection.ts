@@ -15,10 +15,9 @@ import type {
   CollectionFlatItem,
   CollectionBaseInterface,
   CollectionConstructor,
-} from "./CollectionTypes";
-import type { EventsListener, EventsListenerRemover } from "./EventsTypes";
-
-import { CHANGE_EVENT, addEventListener } from "./events";
+} from "./Collection.types";
+import { CHANGE_EVENT, addEventListener } from "./Events";
+import type { EventsListener, EventsListenerRemover } from "./Events.types";
 
 function elementIdIsEqualTo(element: CollectionElement, id: CollectionId): boolean {
   return element.id === id;

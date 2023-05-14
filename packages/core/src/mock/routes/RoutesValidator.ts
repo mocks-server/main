@@ -10,14 +10,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type { ValidateFunction, ErrorObject } from "ajv";
 
-import { objectKeys, arrayLowerAndUpper } from "../../common/Helpers";
-import type { HTTPMethod } from "../../server/Server.types";
-import { getOptionsFromVariant } from "../../variant-handlers/helpers";
-import type {
-  VariantHandlerConstructor,
-  VariantHandlerId,
-} from "../../variant-handlers/VariantHandlers.types";
-import type { RouteDefinition } from "../definitions/RouteDefinitions.types";
+import { objectKeys, arrayLowerAndUpper } from "../../common";
+import type { HTTPMethod } from "../../server/types";
+import { getOptionsFromVariant } from "../../variant-handlers";
+import type { VariantHandlerConstructor, VariantHandlerId } from "../../variant-handlers/types";
+import type { RouteDefinition } from "../definitions/types";
 import { validator, withIdMessage, validationSingleMessage, ajvErrorLike } from "../Validator";
 import type {
   JSONSchema7WithInstanceofDefinition,

@@ -10,15 +10,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type { LoggerInterface } from "@mocks-server/logger";
 
-import type { RequestHandlerHttpMethod } from "../../server/Server.types";
+import type { RequestHandlerHttpMethod } from "../../server/types";
 import type {
   VariantHandlerInterface,
   VariantHandlerResponsePreview,
-} from "../../variant-handlers/VariantHandlers.types";
-import type {
-  RouteDefinitionId,
-  RouteDefinitionHTTPMethod,
-} from "../definitions/RouteDefinitions.types";
+} from "../../variant-handlers/types";
+import type { RouteDefinitionId, RouteDefinitionHTTPMethod } from "../definitions/types";
 
 export type RouteId = `${RouteDefinitionId}:${MocksServer.VariantDefinitionId}`;
 

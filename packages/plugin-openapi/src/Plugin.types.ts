@@ -1,6 +1,4 @@
-import type { Core } from "@mocks-server/core";
-
-type PluginId = string;
+import type { ScopedCoreInterface, PluginId } from "@mocks-server/core";
 
 /** Plugin constructor */
 export interface PluginConstructor {
@@ -10,7 +8,7 @@ export interface PluginConstructor {
    * @returns Root collection
    * @example const collection = new Collection("id")
    */
-  new (core: Core): PluginInterface;
+  new (core: ScopedCoreInterface): PluginInterface;
   get id(): PluginId;
 }
 

@@ -1,4 +1,4 @@
-import type { EventsListener, EventsEmitter, EventsListenerRemover } from "./EventsTypes";
+import type { EventsListener, EventsEmitter, EventsListenerRemover } from "./Events.types";
 
 export const CHANGE_EVENT = "change";
 

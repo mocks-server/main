@@ -11,7 +11,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import path from "path";
 
-import type { OptionProperties, NamespaceInterface, OptionInterface } from "@mocks-server/config";
+import type {
+  OptionProperties,
+  ConfigNamespaceInterface,
+  OptionInterface,
+} from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import { ensureDirSync, existsSync } from "fs-extra";
 import globule from "globule";
@@ -19,12 +23,13 @@ import isPromise from "is-promise";
 import { map, debounce, isFunction } from "lodash";
 import watch from "node-watch";
 
-import type { AlertsInterface } from "../alerts/Alerts.types";
+import type { AlertsInterface } from "../alerts/types";
 
-import { DefaultCollectionsLoader } from "./default-loaders/DefaultCollectionsLoader";
-import type { DefaultCollectionsLoaderInterface } from "./default-loaders/DefaultCollectionsLoader.types";
-import { DefaultRoutesLoader } from "./default-loaders/DefaultRoutesLoader";
-import type { DefaultRoutesLoaderInterface } from "./default-loaders/DefaultRoutesLoader.types";
+import { DefaultCollectionsLoader, DefaultRoutesLoader } from "./default-loaders";
+import type {
+  DefaultCollectionsLoaderInterface,
+  DefaultRoutesLoaderInterface,
+} from "./default-loaders/types";
 import type {
   CreateFilesLoaderOptions,
   FilesConstructor,
@@ -91,7 +96,7 @@ export const Files: FilesConstructor = class Files implements FilesInterface {
   private _loggerLoaders: LoggerInterface;
   private _alertsLoaders: AlertsInterface;
   private _alertsLoad: AlertsInterface;
-  private _config: NamespaceInterface;
+  private _config: ConfigNamespaceInterface;
   private _enabledOption: OptionInterface;
   private _pathOption: OptionInterface;
   private _watchOption: OptionInterface;

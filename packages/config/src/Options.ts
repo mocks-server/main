@@ -1,7 +1,7 @@
-import type { NamespaceName } from "./ConfigTypes";
-import type { OptionName } from "./OptionTypes";
+import type { ConfigNamespaceLabel } from "./Config.types";
+import type { OptionName } from "./Option.types";
 
-export const CONFIG_NAMESPACE: NamespaceName = "config";
+export const CONFIG_NAMESPACE: ConfigNamespaceLabel = "config";
 export const READ_FILE_OPTION: OptionName = "readFile";
 export const READ_ARGUMENTS_OPTION: OptionName = "readArguments";
 export const READ_ENVIRONMENT_OPTION: OptionName = "readEnvironment";

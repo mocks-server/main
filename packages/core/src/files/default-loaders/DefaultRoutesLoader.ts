@@ -12,8 +12,7 @@ import path from "path";
 
 import { flatten } from "lodash";
 
-import type { RouteDefinition } from "../../mock/definitions/RouteDefinitions.types";
-import type { RouteDefinitionsLoader } from "../../mock/Mock.types";
+import type { RouteDefinition, RouteDefinitionsLoader } from "../../mock/types";
 import type { ErrorLoadingFile, FileLoaded, FilesLoaderCoreTools } from "../FilesLoader.types";
 import { validateFileContent } from "../Helpers";
 

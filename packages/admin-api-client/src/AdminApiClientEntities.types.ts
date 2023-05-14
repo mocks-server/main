@@ -2,7 +2,7 @@ import type https from "https";
 
 import type { BASE_PATH } from "@mocks-server/admin-api-paths";
 
-import type { AnyObject, EntityId } from "./CommonTypes";
+import type { AnyObject, EntityId } from "./Common.types";
 
 /** API path */
 export type ApiPath = string;

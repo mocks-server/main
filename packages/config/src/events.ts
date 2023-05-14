@@ -2,7 +2,7 @@ import type EventEmitter from "events";
 
 export const CHANGE = "change";
 
-import type { EventListener, EventListenerRemover } from "./EventsTypes";
+import type { EventListener, EventListenerRemover } from "./Events.types";
 
 export function addEventListener(
   listener: EventListener,

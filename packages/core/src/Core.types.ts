@@ -12,11 +12,11 @@ import type { ConfigInterface, ConfigurationObject } from "@mocks-server/config"
 import type { LoggerInterface } from "@mocks-server/logger";
 import type { Package } from "update-notifier";
 
-import type { AlertsInterface } from "./alerts/Alerts.types";
-import type { FilesInterface } from "./files/Files.types";
-import type { MockInterface } from "./mock/Mock.types";
-import type { ServerInterface } from "./server/Server.types";
-import type { VariantHandlersInterface } from "./variant-handlers/VariantHandlers.types";
+import type { AlertsInterface } from "./alerts/types";
+import type { FilesInterface } from "./files/types";
+import type { MockInterface } from "./mock/types";
+import type { ServerInterface } from "./server/types";
+import type { VariantHandlersInterface } from "./variant-handlers/types";
 
 /** Mocks-server base core interface */
 export interface BaseCoreInterface {

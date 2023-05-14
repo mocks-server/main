@@ -3,8 +3,9 @@ import EventEmitter from "events";
 import deepMerge from "deepmerge";
 import { isUndefined, isEqual } from "lodash";
 
-import type { AnyObject } from "./CommonTypes";
-import type { EventListener, EventListenerRemover } from "./EventsTypes";
+import type { AnyObject } from "./Common.types";
+import { addEventListener, CHANGE } from "./Events";
+import type { EventListener, EventListenerRemover } from "./Events.types";
 import type {
   OptionInterface,
   OptionProperties,
@@ -15,11 +16,9 @@ import type {
   OptionArrayValue,
   OptionExtraData,
   OptionConstructor,
-} from "./OptionTypes";
-
-import { addEventListener, CHANGE } from "./events";
-import { typeIsArray, typeIsObject, avoidArraysMerge } from "./typing";
-import { validateOptionAndThrow, validateValueTypeAndThrow } from "./validation";
+} from "./Option.types";
+import { typeIsArray, typeIsObject, avoidArraysMerge } from "./Typing";
+import { validateOptionAndThrow, validateValueTypeAndThrow } from "./Validation";
 
 export const Option: OptionConstructor = class Option implements OptionInterface {
   private _eventEmitter: EventEmitter;

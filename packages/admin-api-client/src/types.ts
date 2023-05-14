@@ -1,3 +1,3 @@
-export * from "./AdminApiClientEntitiesTypes";
-export * from "./AdminApiClientTypes";
-export * from "./CommonTypes";
+export * from "./AdminApiClientEntities.types";
+export * from "./AdminApiClient.types";
+export * from "./Common.types";

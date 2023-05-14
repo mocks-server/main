@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type { LoggerInterface } from "@mocks-server/logger";
 
-import type { AlertsInterface } from "../alerts/Alerts.types";
+import type { AlertsInterface } from "../alerts/types";
 
 import type {
   FilesLoaderConstructor,

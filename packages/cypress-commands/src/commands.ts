@@ -2,10 +2,9 @@ import type { EntityId } from "@mocks-server/admin-api-client";
 import type { ConfigurationObject } from "@mocks-server/config";
 import type Bluebird from "cypress/types/bluebird";
 
-import type { AdminApiClientConfig, AdminApiClientInterface } from "./AdminApiClientTypes";
-import type { CypressCommandsMethods, Log } from "./CommandsTypes";
-
 import { AdminApiClient } from "./AdminApiClient";
+import type { AdminApiClientConfig, AdminApiClientInterface } from "./AdminApiClient.types";
+import type { CypressCommandsMethods, Log } from "./Commands.types";
 import {
   ENABLED_ENVIRONMENT_VAR,
   ADMIN_API_PORT_ENVIRONMENT_VAR,
@@ -14,7 +13,7 @@ import {
   LOG_ENVIRONMENT_VAR,
   isFalsy,
   isTruthy,
-} from "./helpers";
+} from "./Helpers";
 
 /**
  * Creates methods to be used by Cypress commands

@@ -14,13 +14,13 @@ import { readJsonSync } from "fs-extra";
 import updateNotifier from "update-notifier";
 import type { Package } from "update-notifier";
 
-import type { AlertsInterface } from "../alerts/Alerts.types";
+import type { AlertsInterface } from "../alerts/types";
 
 import type {
   UpdateNotifierInterface,
   UpdateNotifierConstructor,
   UpdateNotifierOptions,
-} from "./UpdateNotifier.types";
+} from "./types";
 
 export const UpdateNotifier: UpdateNotifierConstructor = class UpdateNotifier
   implements UpdateNotifierInterface

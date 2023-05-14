@@ -1,5 +1,5 @@
-import type { EventsEmitter, EventsListener, EventsListenerRemover } from "./EventsTypes";
-import type { LogsStoreLimit, LogsStore } from "./LoggerTypes";
+import type { EventsEmitter, EventsListener, EventsListenerRemover } from "./Events.types";
+import type { LogsStoreLimit, LogsStore } from "./Logger.types";
 
 export const CHANGE_EVENT = "change";
 

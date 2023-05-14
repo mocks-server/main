@@ -9,25 +9,24 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 import EventEmitter from "events";
 
-import type { NamespaceInterface } from "@mocks-server/config";
+import type { ConfigNamespaceInterface } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import express from "express";
 
-import type { AlertsInterface } from "../alerts/Alerts.types";
-import { addEventListener, CHANGE_MOCK } from "../common/Events";
-import type { EventListener, EventListenerRemover } from "../common/Events.types";
+import type { AlertsInterface } from "../alerts/types";
+import { addEventListener, CHANGE_MOCK } from "../common";
+import type { EventListener, EventListenerRemover } from "../common/types";
 import type { CoreInterface } from "../Core.types";
-import type { NextFunction, Request, Response, Router } from "../server/Server.types";
-import type { VariantHandlerConstructor } from "../variant-handlers/VariantHandlers.types";
+import type { NextFunction, Request, Response, Router } from "../server/types";
+import type { VariantHandlerConstructor } from "../variant-handlers/types";
 
-import { Collections } from "./collections/Collections";
-import type { CollectionsInterface } from "./collections/Collections.types";
-import { Definitions } from "./definitions/Definitions";
-import type { DefinitionsInterface, DefinitionsLoaders } from "./definitions/Definitions.types";
+import { Collections } from "./collections";
+import type { CollectionsInterface } from "./collections/types";
+import { Definitions } from "./definitions";
+import type { DefinitionsInterface, DefinitionsLoaders } from "./definitions/types";
 import type { MockInterface, MockConstructor, MockOptions } from "./Mock.types";
-import type { RouteId } from "./routes/Route.types";
-import { Routes } from "./routes/Routes";
-import type { RoutesInterface } from "./routes/Routes.types";
+import { Routes } from "./routes";
+import type { RouteId, RoutesInterface } from "./routes/types";
 
 export const Mock: MockConstructor = class Mock implements MockInterface {
   static get id() {
@@ -37,7 +36,7 @@ export const Mock: MockConstructor = class Mock implements MockInterface {
   private _eventEmitter: EventEmitter;
   private _alerts: AlertsInterface;
   private _logger: LoggerInterface;
-  private _config: NamespaceInterface;
+  private _config: ConfigNamespaceInterface;
   private _onChange: EventListener;
   private _router: Router = express.Router();
   private _definitions: DefinitionsInterface;

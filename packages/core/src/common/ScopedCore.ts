@@ -8,15 +8,15 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-import type { NamespaceInterface } from "@mocks-server/config";
+import type { ConfigNamespaceInterface } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 
-import type { AlertsInterface } from "../alerts/Alerts.types";
+import type { AlertsInterface } from "../alerts/types";
 import type { CoreInterface } from "../Core.types";
-import type { FilesInterface } from "../files/Files.types";
-import type { MockInterface } from "../mock/Mock.types";
-import type { ServerInterface } from "../server/Server.types";
-import type { VariantHandlersInterface } from "../variant-handlers/VariantHandlers.types";
+import type { FilesInterface } from "../files/types";
+import type { MockInterface } from "../mock/types";
+import type { ServerInterface } from "../server/types";
+import type { VariantHandlersInterface } from "../variant-handlers/types";
 
 import type {
   ScopedCoreInterface,
@@ -27,7 +27,7 @@ import type {
 export const ScopedCore: ScopedCoreConstructor = class ScopedCore implements ScopedCoreInterface {
   private _core: CoreInterface;
   private _alerts: AlertsInterface | undefined;
-  private _config: NamespaceInterface | undefined;
+  private _config: ConfigNamespaceInterface | undefined;
   private _logger: LoggerInterface | undefined;
 
   constructor({ core, config, alerts, logger }: ScopedCoreOptions) {
@@ -45,7 +45,7 @@ export const ScopedCore: ScopedCoreConstructor = class ScopedCore implements Sco
     return this._alerts;
   }
 
-  public get config(): NamespaceInterface | undefined {
+  public get config(): ConfigNamespaceInterface | undefined {
     return this._config;
   }
 

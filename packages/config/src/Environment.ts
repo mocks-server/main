@@ -1,11 +1,10 @@
 import { isUndefined, isEmpty, snakeCase } from "lodash";
 
-import type { ConfigurationObject } from "./CommonTypes";
-import type { NamespaceInterface } from "./ConfigTypes";
-import type { EnvironmentConstructor, EnvironmentInterface } from "./EnvironmentTypes";
-
-import { namespaceAndParentNames } from "./namespaces";
-import { getOptionParserWithBooleansAndArrays } from "./typing";
+import type { ConfigurationObject } from "./Common.types";
+import type { ConfigNamespaceInterface } from "./Config.types";
+import { namespaceAndParentNames } from "./ConfigNamespaceHelpers";
+import type { EnvironmentConstructor, EnvironmentInterface } from "./Environment.types";
+import { getOptionParserWithBooleansAndArrays } from "./Typing";
 
 function varSegment(segment: string): string {
   return snakeCase(segment).toUpperCase();
@@ -13,7 +12,7 @@ function varSegment(segment: string): string {
 
 function envVarName(
   moduleName: string,
-  namespace: NamespaceInterface,
+  namespace: ConfigNamespaceInterface,
   optionName: string
 ): string {
   return [moduleName, ...namespaceAndParentNames(namespace), optionName].map(varSegment).join("_");
@@ -30,11 +29,14 @@ export const Environment: EnvironmentConstructor = class Environment
     this._config = {};
   }
 
-  private _loadFromEnv(namespace: NamespaceInterface, optionName: string): string | undefined {
+  private _loadFromEnv(
+    namespace: ConfigNamespaceInterface,
+    optionName: string
+  ): string | undefined {
     return process.env[envVarName(this._moduleName, namespace, optionName)];
   }
 
-  private _readNamespace(namespace: NamespaceInterface): ConfigurationObject {
+  private _readNamespace(namespace: ConfigNamespaceInterface): ConfigurationObject {
     const values = namespace.options.reduce((optionsValues, option) => {
       const value = this._loadFromEnv(namespace, option.name);
       if (!isUndefined(value)) {
@@ -47,8 +49,8 @@ export const Environment: EnvironmentConstructor = class Environment
     return { ...values, ...namespacesConfig };
   }
 
-  private _readNamespaces(namespaces: NamespaceInterface[]): ConfigurationObject {
-    return namespaces.reduce((config, namespace: NamespaceInterface) => {
+  private _readNamespaces(namespaces: ConfigNamespaceInterface[]): ConfigurationObject {
+    return namespaces.reduce((config, namespace: ConfigNamespaceInterface) => {
       const namespaceConfig = this._readNamespace(namespace);
       if (!isEmpty(namespaceConfig)) {
         if (!namespace.isRoot) {
@@ -61,7 +63,7 @@ export const Environment: EnvironmentConstructor = class Environment
     }, {} as ConfigurationObject);
   }
 
-  public read(namespaces: NamespaceInterface[]): ConfigurationObject {
+  public read(namespaces: ConfigNamespaceInterface[]): ConfigurationObject {
     this._config = this._readNamespaces(namespaces);
     return this._config;
   }

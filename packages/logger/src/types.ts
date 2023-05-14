@@ -1,2 +1,2 @@
-export * from "./EventsTypes";
-export * from "./LoggerTypes";
+export * from "./Events.types";
+export * from "./Logger.types";

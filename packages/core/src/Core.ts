@@ -15,7 +15,7 @@ import {
   Config,
   ConfigInterface,
   ConfigurationObject,
-  NamespaceInterface,
+  ConfigNamespaceInterface,
   OptionInterface,
   OptionProperties,
 } from "@mocks-server/config";
@@ -23,25 +23,24 @@ import { Logger, LoggerInterface, LogLevel } from "@mocks-server/logger";
 import deepMerge from "deepmerge";
 import { readJsonSync } from "fs-extra";
 
-import { Alerts } from "./alerts/Alerts";
-import type { AlertsInterface } from "./alerts/Alerts.types";
-import { CHANGE_MOCK, CHANGE_ALERTS } from "./common/Events";
-import { arrayMerge } from "./common/Helpers";
+import { Alerts } from "./alerts";
+import type { AlertsInterface } from "./alerts/types";
+import { CHANGE_MOCK, CHANGE_ALERTS, arrayMerge } from "./common";
 import type { CoreInterface, CoreConstructor, CoreAdvancedOptions } from "./Core.types";
-import { Files } from "./files/Files";
-import type { FilesInterface } from "./files/Files.types";
-import { Mock } from "./mock/Mock";
-import type { MockInterface } from "./mock/Mock.types";
-import { Plugins } from "./plugins/Plugins";
-import type { PluginsInterface } from "./plugins/Plugins.types";
-import { Scaffold } from "./scaffold/Scaffold";
-import type { ScaffoldInterface } from "./scaffold/Scaffold.types";
-import { Server } from "./server/Server";
-import type { ServerInterface } from "./server/Server.types";
-import { UpdateNotifier } from "./update-notifier/UpdateNotifier";
-import type { UpdateNotifierInterface } from "./update-notifier/UpdateNotifier.types";
-import { VariantHandlers } from "./variant-handlers/VariantHandlers";
-import type { VariantHandlersInterface } from "./variant-handlers/VariantHandlers.types";
+import { Files } from "./files";
+import type { FilesInterface } from "./files/types";
+import { Mock } from "./mock";
+import type { MockInterface } from "./mock/types";
+import { Plugins } from "./plugins";
+import type { PluginsInterface } from "./plugins/types";
+import { Scaffold } from "./scaffold";
+import type { ScaffoldInterface } from "./scaffold/types";
+import { Server } from "./server";
+import type { ServerInterface } from "./server/types";
+import { UpdateNotifier } from "./update-notifier";
+import type { UpdateNotifierInterface } from "./update-notifier/types";
+import { VariantHandlers } from "./variant-handlers";
+import type { VariantHandlersInterface } from "./variant-handlers/types";
 
 const MODULE_NAME = "mocks";
 
@@ -60,10 +59,10 @@ export const Core: CoreConstructor = class Core implements CoreInterface {
   private _logger: LoggerInterface;
   private _configLogger: LoggerInterface;
   private _config: ConfigInterface;
-  private _configPlugins: NamespaceInterface;
-  private _configMock: NamespaceInterface;
-  private _configServer: NamespaceInterface;
-  private _configFilesLoaders: NamespaceInterface;
+  private _configPlugins: ConfigNamespaceInterface;
+  private _configMock: ConfigNamespaceInterface;
+  private _configServer: ConfigNamespaceInterface;
+  private _configFilesLoaders: ConfigNamespaceInterface;
   private _logOption: OptionInterface;
   private _alerts: AlertsInterface;
   private _updateNotifier: UpdateNotifierInterface;
@@ -82,6 +81,7 @@ export const Core: CoreConstructor = class Core implements CoreInterface {
     programmaticConfig: ConfigurationObject = {},
     advancedOptions: CoreAdvancedOptions = {}
   ) {
+    // TODO, move to about. Do not read on constructor
     const packageJson = readJsonSync(path.resolve(__dirname, "..", "package.json"));
     this._version = packageJson.version;
     this._programmaticConfig = programmaticConfig;

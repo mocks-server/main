@@ -3,7 +3,7 @@
 import type { EntityId } from "@mocks-server/admin-api-client";
 import type { ConfigurationObject } from "@mocks-server/config";
 
-import type { AdminApiClientInterface, AdminApiClientConfig } from "./AdminApiClientTypes";
+import type { AdminApiClientInterface, AdminApiClientConfig } from "./AdminApiClient.types";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

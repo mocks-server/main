@@ -8,6 +8,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
+import type { VariantDefinition, VariantHandlerTypeOptions } from "../mock/types";
+
 import type {
   VariantHandlerBaseInterface,
   VariantHandlerInterface,
@@ -15,9 +17,7 @@ import type {
   VariantHandlerInterfaceWithRouter,
 } from "./VariantHandlers.types";
 
-export function getOptionsFromVariant(
-  variant: MocksServer.VariantDefinition
-): MocksServer.VariantHandlerTypeOptions {
+export function getOptionsFromVariant(variant: VariantDefinition): VariantHandlerTypeOptions {
   return variant.options;
 }
 
@@ -27,7 +27,7 @@ export function getPreview(
   return variantInstance.preview;
 }
 
-export function getHandlerId(variant: MocksServer.VariantDefinition): VariantHandlerId {
+export function getHandlerId(variant: VariantDefinition): VariantHandlerId {
   return variant.type;
 }
 

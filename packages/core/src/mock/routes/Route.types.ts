@@ -15,9 +15,14 @@ import type {
   VariantHandlerInterface,
   VariantHandlerResponsePreview,
 } from "../../variant-handlers/types";
-import type { RouteDefinitionId, RouteDefinitionHTTPMethod } from "../definitions/types";
+import type {
+  RouteDefinitionId,
+  RouteDefinitionHTTPMethod,
+  VariantDefinitionId,
+  VariantHandlerTypes,
+} from "../definitions/types";
 
-export type RouteId = `${RouteDefinitionId}:${MocksServer.VariantDefinitionId}`;
+export type RouteId = `${RouteDefinitionId}:${VariantDefinitionId}`;
 
 /** Route variant plain object legacy
  * @deprecated - Use {@link RoutePlainObject} instead
@@ -26,7 +31,7 @@ export interface RouteVariantPlainObjectLegacy {
   id: RouteId;
   disabled: boolean;
   route: RouteDefinitionId;
-  type: MocksServer.VariantHandlerTypes | null;
+  type: VariantHandlerTypes | null;
   preview?: VariantHandlerResponsePreview | null;
   delay: number | null;
 }
@@ -65,7 +70,7 @@ export interface RoutePlainObject {
   disabled: boolean;
 
   /** Variant handler type */
-  type: MocksServer.VariantHandlerTypes | null;
+  type: VariantHandlerTypes | null;
 
   /** Response preview */
   preview?: VariantHandlerResponsePreview | null;
@@ -75,7 +80,7 @@ export interface RoutePlainObject {
     /** Id of the route definition from which the route was created */
     route: RouteDefinitionId;
     /** Id of the route variant definition from which the route was created */
-    variant: MocksServer.VariantDefinitionId;
+    variant: VariantDefinitionId;
   };
 }
 
@@ -88,7 +93,7 @@ export interface RouteOptions {
   /** Route id disabled */
   disabled: boolean;
   /** Route variant definition id */
-  variantId: MocksServer.VariantDefinitionId;
+  variantId: VariantDefinitionId;
   /** Route definition id */
   routeId: RouteDefinitionId;
   /** Route path */
@@ -100,7 +105,7 @@ export interface RouteOptions {
   /** Route variant handler */
   handler?: VariantHandlerInterface;
   /** Variant handler type */
-  type?: MocksServer.VariantHandlerTypes;
+  type?: VariantHandlerTypes;
   /** Response preview */
   preview?: VariantHandlerResponsePreview | null;
 }
@@ -122,7 +127,7 @@ export interface RouteBaseInterface {
   get id(): RouteId;
 
   /** Id of the route variant definition from which the route was created */
-  get variantId(): MocksServer.VariantDefinitionId;
+  get variantId(): VariantDefinitionId;
 
   /** Id of the route definition from which the route was created */
   get routeId(): RouteDefinitionId;
@@ -158,7 +163,7 @@ export interface RouteInterface extends RouteBaseInterface {
   get handler(): VariantHandlerInterface | null;
 
   /** Variant handler type */
-  get type(): MocksServer.VariantHandlerTypes | null;
+  get type(): VariantHandlerTypes | null;
 
   /** Response preview */
   get preview(): VariantHandlerResponsePreview | null;
@@ -179,7 +184,7 @@ export interface RouteInterfaceEnabled extends RouteBaseInterface {
   get handler(): VariantHandlerInterface;
 
   /** Variant handler type */
-  get type(): MocksServer.VariantHandlerTypes;
+  get type(): VariantHandlerTypes;
 
   /** Response preview */
   get preview(): VariantHandlerResponsePreview | null;

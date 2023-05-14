@@ -14,7 +14,7 @@ import { objectKeys, arrayLowerAndUpper } from "../../common";
 import type { HTTPMethod } from "../../server/types";
 import { getOptionsFromVariant } from "../../variant-handlers";
 import type { VariantHandlerConstructor, VariantHandlerId } from "../../variant-handlers/types";
-import type { RouteDefinition } from "../definitions/types";
+import type { RouteDefinition, VariantDefinition } from "../definitions/types";
 import { validator, withIdMessage, validationSingleMessage, ajvErrorLike } from "../Validator";
 import type {
   JSONSchema7WithInstanceofDefinition,
@@ -178,7 +178,7 @@ export function routeValidationErrors(route: RouteDefinition): ValidationErrors 
 
 export function variantValidationErrors(
   route: RouteDefinition,
-  variant: MocksServer.VariantDefinition,
+  variant: VariantDefinition,
   Handler?: VariantHandlerConstructor
 ): ValidationErrors | null {
   const variantId = variant.id || "";

@@ -26,7 +26,13 @@ import type {
   VariantHandlerId,
   VariantHandlerInterface,
 } from "../../variant-handlers/types";
-import type { RouteDefinition, RouteDefinitionId } from "../definitions/types";
+import type {
+  RouteDefinition,
+  RouteDefinitionId,
+  VariantDefinitionId,
+  VariantDefinition,
+  VariantHandlerOptions,
+} from "../definitions/types";
 
 import { Route } from "./Route";
 import type {
@@ -56,7 +62,7 @@ const OPTIONS: OptionProperties[] = [
 
 function getRouteId(
   routeDefinitionId: RouteDefinitionId,
-  variantDefinitionId: MocksServer.VariantDefinitionId
+  variantDefinitionId: VariantDefinitionId
 ): RouteId {
   return `${routeDefinitionId}:${variantDefinitionId}`;
 }
@@ -70,14 +76,12 @@ function findVariantHandler(
   );
 }
 
-function hasDelayProperty(
-  routeOrVariantDefinition: RouteDefinition | MocksServer.VariantDefinition
-): boolean {
+function hasDelayProperty(routeOrVariantDefinition: RouteDefinition | VariantDefinition): boolean {
   return routeOrVariantDefinition.hasOwnProperty("delay"); // eslint-disable-line no-prototype-builtins
 }
 
 function getRouteDelay(
-  variantDefinition: MocksServer.VariantDefinition,
+  variantDefinition: VariantDefinition,
   routeDefinition: RouteDefinition
 ): number | null {
   if (hasDelayProperty(variantDefinition) && !isUndefined(variantDefinition.delay)) {
@@ -137,7 +141,7 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
     loadRouteVariantsAlerts,
   }: {
     routeDefinition: RouteDefinition;
-    variantDefinition: MocksServer.VariantDefinition;
+    variantDefinition: VariantDefinition;
     loadRouteVariantsAlerts: AlertsInterface;
   }): RouteInterface | null {
     let route = null;
@@ -185,7 +189,7 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
       const HandlerToCreate = Handler as VariantHandlerConstructor;
 
       const handler: VariantHandlerInterface = new (HandlerToCreate as unknown as new (
-        options: MocksServer.VariantHandlerOptions,
+        options: VariantHandlerOptions,
         core: ScopedCoreInterface
       ) => VariantHandlerInterface)(
         {

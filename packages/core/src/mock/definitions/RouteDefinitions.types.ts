@@ -61,6 +61,9 @@ declare global {
 export type VariantDefinition = MocksServer.VariantDefinition;
 export type VariantDefinitionTypes = MocksServer.VariantHandlerTypes;
 export type VariantHandlerTypes = MocksServer.VariantHandlerTypes;
+export type VariantHandlerOptions = MocksServer.VariantHandlerOptions;
+export type VariantHandlerTypeOptions = MocksServer.VariantHandlerTypeOptions;
+export type VariantDefinitionId = MocksServer.VariantDefinitionId;
 
 /** Valid express http methods in upperCase */
 export type HTTPMethodId = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD" | "OPTIONS";
@@ -97,19 +100,19 @@ export interface RouteDefinition {
   delay?: number | null;
 
   /** Route variants */
-  variants: MocksServer.VariantDefinition[];
+  variants: VariantDefinition[];
 }
 
 /** Normalized variant definition */
 export interface VariantDefinitionNormalized {
   /** Route variant id */
-  id: MocksServer.VariantDefinitionId;
+  id: VariantDefinitionId;
   /** Variant is disabled */
   disabled: boolean;
   /** Delay to apply to the response */
   delay?: number;
   /** Variant handler type */
-  type: MocksServer.VariantHandlerTypes;
+  type: VariantHandlerTypes;
   /** Variant handler options */
   options: UnknownObject; // TODO, define options depending on type. It would require to define normalized types in variant handlers, and probably a mechanism to convert from non normalized to normalized, as well as a schema (to be able to declare the openApi schema, for example)
 }

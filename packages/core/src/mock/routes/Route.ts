@@ -10,6 +10,8 @@ import type {
   RouteDefinitionId,
   RouteDefinitionHTTPValidMethod,
   HTTPMethodId,
+  VariantDefinitionId,
+  VariantHandlerTypes,
 } from "../definitions/types";
 
 import type {
@@ -49,9 +51,9 @@ export const Route: RouteConstructor = class Route implements RouteInterface {
   private _delay: number | null;
   private _disabled: boolean;
   private _handler: VariantHandlerInterface | null;
-  private _variantId: MocksServer.VariantDefinitionId;
+  private _variantId: VariantDefinitionId;
   private _routeId: RouteDefinitionId;
-  private _type: MocksServer.VariantHandlerTypes | null;
+  private _type: VariantHandlerTypes | null;
   private _preview: VariantHandlerResponsePreview | null;
   private _allMethods: boolean;
 
@@ -86,7 +88,7 @@ export const Route: RouteConstructor = class Route implements RouteInterface {
     return this._id;
   }
 
-  public get variantId(): MocksServer.VariantDefinitionId {
+  public get variantId(): VariantDefinitionId {
     return this._variantId;
   }
 
@@ -126,7 +128,7 @@ export const Route: RouteConstructor = class Route implements RouteInterface {
     return this._handler;
   }
 
-  public get type(): MocksServer.VariantHandlerTypes | null {
+  public get type(): VariantHandlerTypes | null {
     return this._type;
   }
 

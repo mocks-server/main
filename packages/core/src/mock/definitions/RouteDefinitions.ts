@@ -18,6 +18,8 @@ import type {
   RouteDefinitionId,
   RouteDefinitionNormalized,
   VariantDefinitionNormalized,
+  VariantHandlerTypeOptions,
+  VariantDefinition,
 } from "./RouteDefinitions.types";
 
 export const RouteDefinitions: RouteDefinitionsConstructor = class RouteDefinitions
@@ -41,12 +43,12 @@ export const RouteDefinitions: RouteDefinitionsConstructor = class RouteDefiniti
     return this._routeDefinitions.find((routeDefinition) => routeDefinition.id === id);
   }
 
-  private _normalizeVariantOptions(variantOptions: MocksServer.VariantHandlerTypeOptions) {
+  private _normalizeVariantOptions(variantOptions: VariantHandlerTypeOptions) {
     const options = variantOptions as unknown;
     return replaceNonSerializableValues(options as UnknownObject);
   }
 
-  private _normalizeVariant(variant: MocksServer.VariantDefinition): VariantDefinitionNormalized {
+  private _normalizeVariant(variant: VariantDefinition): VariantDefinitionNormalized {
     return {
       id: variant.id,
       disabled: variant.disabled || false,
@@ -56,9 +58,7 @@ export const RouteDefinitions: RouteDefinitionsConstructor = class RouteDefiniti
     };
   }
 
-  private _normalizeVariants(
-    variants: MocksServer.VariantDefinition[]
-  ): VariantDefinitionNormalized[] {
+  private _normalizeVariants(variants: VariantDefinition[]): VariantDefinitionNormalized[] {
     return variants.map(this._normalizeVariant);
   }
 

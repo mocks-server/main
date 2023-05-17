@@ -15,7 +15,12 @@ import {
   getOptionsValues,
 } from "./ConfigNamespaceHelpers";
 import { Option } from "./Option";
-import type { OptionProperties, OptionInterface, SetMethodOptions } from "./Option.types";
+import type {
+  OptionInterface,
+  OptionInterfaceGeneric,
+  SetMethodOptions,
+  OptionDefinition,
+} from "./Option.types";
 
 export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
   implements ConfigNamespaceInterface
@@ -26,7 +31,7 @@ export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
   private _eventEmitter: EventEmitter;
   private _name: string;
   private _namespaces: ConfigNamespaceInterface[];
-  private _options: OptionInterface[];
+  private _options: OptionInterfaceGeneric[];
   private _started: boolean;
   private _isRoot: true | undefined;
 
@@ -42,23 +47,24 @@ export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
     this._isRoot = isRoot;
   }
 
-  public addOption(optionProperties: OptionProperties): OptionInterface {
+  public addOption<T extends OptionDefinition>(optionProperties: T): OptionInterface<T> {
     checkOptionName(optionProperties.name, {
       options: this._options,
       namespaces: this._isRoot ? this._brothers : this._namespaces,
     });
-    const option = new Option(optionProperties);
+    const option = new Option(optionProperties) as OptionInterface<T>;
     this._options.push(option);
     return option;
   }
 
-  public addOptions(options: OptionProperties[]) {
+  public addOptions(options: [...OptionDefinition[]]): [...OptionInterface<OptionDefinition>[]] {
     return options.map((option) => this.addOption(option));
   }
 
   private _setOptions(configuration: ConfigurationObject, options: SetMethodOptions): void {
-    this._options.forEach((option) => {
-      option.set(configuration[option.name], options);
+    this._options.forEach(<T extends OptionInterfaceGeneric>(option: T) => {
+      const optionValue = configuration[option.name] as T["value"];
+      option.set(optionValue, options);
     });
   }
 
@@ -107,7 +113,7 @@ export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
     return [...this._namespaces];
   }
 
-  public get options(): OptionInterface[] {
+  public get options(): OptionInterfaceGeneric[] {
     return [...this._options];
   }
 
@@ -126,7 +132,7 @@ export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
     return findObjectWithName(this._namespaces, name);
   }
 
-  public option(name: OptionInterface["name"]): OptionInterface | undefined {
+  public option(name: OptionInterfaceGeneric["name"]): OptionInterfaceGeneric | undefined {
     return findObjectWithName(this._options, name);
   }
 };

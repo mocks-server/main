@@ -10,7 +10,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import type {
   ConfigNamespaceInterface,
   OptionInterface,
-  OptionProperties,
+  OptionArrayObject,
+  WithDefault,
 } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 
@@ -29,7 +30,7 @@ import type {
   VariantHandlersOptions,
 } from "./types";
 
-const OPTIONS: OptionProperties[] = [
+const OPTIONS: [WithDefault<OptionArrayObject>] = [
   {
     description: "Variant Handlers to be registered",
     name: "register",
@@ -47,7 +48,7 @@ export const VariantHandlers: VariantHandlersConstructor = class VariantHandlers
 
   private _logger: LoggerInterface;
   private _config: ConfigNamespaceInterface;
-  private _registerOption: OptionInterface;
+  private _registerOption: OptionInterface<WithDefault<OptionArrayObject>>;
   private _registeredVariantHandlers: VariantHandlerConstructor[];
   private _coreVariantHandlers: VariantHandlerConstructor[];
 
@@ -64,7 +65,9 @@ export const VariantHandlers: VariantHandlersConstructor = class VariantHandlers
     ];
     this._config = config;
 
-    [this._registerOption] = this._config.addOptions(OPTIONS);
+    [this._registerOption] = this._config.addOptions(OPTIONS) as [
+      OptionInterface<WithDefault<OptionArrayObject>>
+    ];
   }
 
   private _registerOne(VariantHandler: VariantHandlerConstructor): void {
@@ -85,7 +88,7 @@ export const VariantHandlers: VariantHandlersConstructor = class VariantHandlers
       ...this._coreVariantHandlers,
       ...this._registerOption.value,
     ];
-    this.register(variantHandlersToRegister);
+    this.register(variantHandlersToRegister as VariantHandlerConstructor[]);
     this._logger.verbose(
       `Registered ${variantHandlersToRegister.length} variant handlers without errors`
     );

@@ -1,4 +1,4 @@
-export type AnyObject = Record<string, unknown>;
+export type UnknownObject = Record<string, unknown>;
 
 export type ModuleName = string;
 
@@ -10,4 +10,4 @@ export interface ConfigFunction {
   (initialConfig: ConfigurationObject): ConfigurationObject;
 }
 
-export type ConfigurationObject = Partial<AnyObject>;
+export type ConfigurationObject = Partial<UnknownObject>;

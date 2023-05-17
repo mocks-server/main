@@ -13,12 +13,12 @@ import path from "path";
 
 import {
   ConfigInterface,
-  OptionInterface,
   CONFIG_NAMESPACE,
   READ_FILE_OPTION,
   ALLOW_UNKNOWN_ARGUMENTS_OPTION,
   ConfigNamespaceInterface,
   OptionValue,
+  OptionInterfaceGeneric,
 } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import { readFile, writeFile, copy, existsSync } from "fs-extra";
@@ -73,18 +73,18 @@ function ensureQuotes(varName: ConfigVarName | ConfigVarNameWithQuotes): ConfigV
   return varName as ConfigVarNameWithQuotes;
 }
 
-function getExtraDataValue(value: OptionValue, defaultValue?: OptionValue): OptionValue {
-  return isUndefined(value) ? defaultValue : value;
+function getExtraDataValue(value: unknown, defaultValue?: OptionValue): OptionValue {
+  return isUndefined(value) ? defaultValue : (value as unknown as OptionValue);
 }
 
 function getExtraDataProperty(
-  option: OptionInterface,
+  option: OptionInterfaceGeneric,
   property:
     | OptionScaffoldOmitProperty
     | OptionScaffoldCommentedProperty
     | OptionScaffoldValueProperty,
   defaultValue?: OptionValue
-): unknown {
+): OptionValue {
   const scaffoldData: OptionsScaffoldExtraData | undefined = option.extraData?.scaffold as
     | OptionsScaffoldExtraData
     | undefined;
@@ -92,12 +92,12 @@ function getExtraDataProperty(
   return getExtraDataValue(value, defaultValue);
 }
 
-function isOptionCommented(option: OptionInterface) {
+function isOptionCommented(option: OptionInterfaceGeneric) {
   return !!getExtraDataProperty(option, SCAFFOLD_OPTION_COMMENTED, true);
 }
 
 function isOptionOmitted(
-  option: OptionInterface,
+  option: OptionInterfaceGeneric,
   namespace?: ConfigNamespaceInterface
 ): ScaffoldOptionOmitted {
   // Exclude config options that has no sense to define in file
@@ -111,11 +111,11 @@ function isOptionOmitted(
   return !!getExtraDataProperty(option, SCAFFOLD_OPTION_OMITTED, false);
 }
 
-function optionScaffoldValue(option: OptionInterface): OptionValue {
+function optionScaffoldValue(option: OptionInterfaceGeneric): OptionValue {
   return getExtraDataProperty(option, SCAFFOLD_OPTION_VALUE);
 }
 
-function getOptionValue(option: OptionInterface): OptionValue {
+function getOptionValue(option: OptionInterfaceGeneric): OptionValue {
   const scaffoldValue = optionScaffoldValue(option);
   const value = !isUndefined(scaffoldValue) ? scaffoldValue : option.value;
   if (isUndefined(value)) {
@@ -124,7 +124,7 @@ function getOptionValue(option: OptionInterface): OptionValue {
   return JSON.stringify(value);
 }
 
-function parseOptionForTemplate(option: OptionInterface) {
+function parseOptionForTemplate(option: OptionInterfaceGeneric) {
   return {
     name: ensureQuotes(option.name),
     value: getOptionValue(option),
@@ -134,12 +134,12 @@ function parseOptionForTemplate(option: OptionInterface) {
 }
 
 function parseOptionsForTemplate(
-  options: OptionInterface[],
+  options: OptionInterfaceGeneric[],
   namespace?: ConfigNamespaceInterface
 ): OptionTemplateData[] | undefined {
   if (options) {
     return compact(
-      options.map((option: OptionInterface) => {
+      options.map((option: OptionInterfaceGeneric) => {
         if (!isOptionOmitted(option, namespace)) {
           return parseOptionForTemplate(option);
         }
@@ -168,9 +168,9 @@ export const Scaffold: ScaffoldConstructor = class Scaffold implements ScaffoldI
   private _logger: LoggerInterface;
   private _config: ConfigInterface;
   private _alerts: AlertsInterface;
-  private _readConfigFileOption: OptionInterface;
-  private _filesEnabledOption: OptionInterface;
-  private _collectionSelectedOption: OptionInterface;
+  private _readConfigFileOption: OptionInterfaceGeneric;
+  private _filesEnabledOption: OptionInterfaceGeneric;
+  private _collectionSelectedOption: OptionInterfaceGeneric;
 
   static get id() {
     return "scaffold";
@@ -181,14 +181,14 @@ export const Scaffold: ScaffoldConstructor = class Scaffold implements ScaffoldI
     this._config = config;
     this._readConfigFileOption = this._config
       .namespace(CONFIG_NAMESPACE)
-      ?.option(READ_FILE_OPTION) as OptionInterface;
+      ?.option(READ_FILE_OPTION) as OptionInterfaceGeneric;
     this._filesEnabledOption = this._config
       .namespace(FILES_NAMESPACE)
-      ?.option(ENABLED_OPTION) as OptionInterface;
+      ?.option(ENABLED_OPTION) as OptionInterfaceGeneric;
     this._collectionSelectedOption = this._config
       .namespace(MOCK_NAMESPACE)
       ?.namespace(COLLECTIONS_NAMESPACE)
-      ?.option(SELECTED_COLLECTION) as OptionInterface;
+      ?.option(SELECTED_COLLECTION) as OptionInterfaceGeneric;
     this._alerts = alerts;
   }
 

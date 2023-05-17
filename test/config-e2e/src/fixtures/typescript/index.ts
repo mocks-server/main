@@ -2,12 +2,10 @@ import Config from "@mocks-server/config";
 import type {
   ConfigInterface,
   ConfigNamespaceInterface,
-  OptionInterface,
   ConfigOptions,
   ConfigurationObject,
   OptionType,
   OptionValue,
-  OptionProperties,
   OptionExtraData,
   OptionItemsType,
   SetMethodOptions,
@@ -16,19 +14,24 @@ import type {
   ConfigValidationOptions,
   ConfigValidationResult,
   ConfigValidationSchema,
+  OptionArrayString,
+  OptionInterfaceGeneric,
+  OptionString,
+  OptionInterface,
+  WithDefault,
 } from "@mocks-server/config";
 
 const configOptions: ConfigOptions = { moduleName: "mocks", mergeArrays: true };
 
 const config: ConfigInterface = new Config(configOptions);
 
-const rootOptionsOptions: OptionProperties[] = [
+const rootOptionsOptions: [OptionArrayString] = [
   { name: "rootOption1", type: "array", default: ["foo-value"], itemsType: "string" }
-];
+] as [OptionInterface<OptionArrayString>]
 
-const rootOption: OptionInterface = config.addOption(rootOptionsOptions[0]);
+const rootOption: OptionInterface<OptionArrayString> = config.addOption(rootOptionsOptions[0]);
 
-const rootOption1: OptionInterface | undefined = config.option("rootOption1");
+const rootOption1 = config.option("rootOption1") as OptionInterface<OptionArrayString>;
 
 if (rootOption !== rootOption1) {
   throw new Error("Option is different!");
@@ -53,12 +56,15 @@ config.options.forEach((option) => {
 })
 
 const configNamespace: ConfigNamespaceInterface = config.addNamespace("name");
-const namespaceOptionOptions: OptionProperties = { name: "fooOption", type: "string", default: "foo-value" };
-const namespaceOption: OptionInterface = configNamespace.addOption(namespaceOptionOptions);
-const namespaceOptions: OptionInterface[] = configNamespace.addOptions([{
+const namespaceOptionOptions: WithDefault<OptionString> = { name: "fooOption", type: "string", default: "foo" };
+
+const namespaceOption: OptionInterface<WithDefault<OptionString>> = configNamespace.addOption(namespaceOptionOptions);
+
+const namespaceOptions = configNamespace.addOptions([{
   name: "foo",
   type: "string"
 }]);
+
 
 const firstNamespace: ConfigNamespaceInterface | undefined = config.namespace("firstNamespace");
 
@@ -77,12 +83,12 @@ namespaces.forEach((namespace: ConfigNamespaceInterface) => {
   const subNamespace: ConfigNamespaceInterface = namespace.addNamespace("foo");
   const isRoot: boolean = namespace.isRoot;
   const childNamespaces: ConfigNamespaceInterface[] = namespace.namespaces;
-  const namespaceOptions: OptionInterface[] = namespace.options;
+  const namespaceOptions: OptionInterfaceGeneric[] = namespace.options;
   const name: string = namespace.name;
   const parents: ConfigNamespaceInterface[] = namespace.parents;
   const value: ConfigurationObject = namespace.value;
   const childNamespace: ConfigNamespaceInterface | undefined = namespace.namespace("firstNamespace");
-  const childOption: OptionInterface | undefined = namespace.option("firstOption");
+  const childOption: OptionInterfaceGeneric | undefined = namespace.option("firstOption");
   const root: ConfigInterface = namespace.root;
 });
 
@@ -122,7 +128,7 @@ config.init(initialConfig).then(() => {
     const envLoadedValues: ConfigurationObject =  config.envLoadedValues;
 
     const childNamespaces: ConfigNamespaceInterface[] = config.namespaces;
-    const configOptions: OptionInterface[] = config.options;
+    const configOptions: OptionInterfaceGeneric[] = config.options;
 
     const loadedFile: string | null = config.loadedFile
 

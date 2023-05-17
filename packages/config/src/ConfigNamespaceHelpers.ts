@@ -1,8 +1,8 @@
 import { compact } from "lodash";
 
-import type { AnyObject, ObjectWithName } from "./Common.types";
+import type { UnknownObject, ObjectWithName } from "./Common.types";
 import type { ConfigNamespaceInterface } from "./Config.types";
-import type { OptionInterface } from "./Option.types";
+import type { OptionInterfaceGeneric } from "./Option.types";
 
 export function namespaceAndParentNames(namespace: ConfigNamespaceInterface): string[] {
   const namespaceName = namespace.name;
@@ -16,11 +16,11 @@ export function findObjectWithName(
   name: string
 ): ConfigNamespaceInterface | undefined;
 export function findObjectWithName(
-  objects: OptionInterface[],
+  objects: OptionInterfaceGeneric[],
   name: string
-): OptionInterface | undefined;
+): OptionInterfaceGeneric | undefined;
 export function findObjectWithName(
-  objects: OptionInterface[] | ConfigNamespaceInterface[],
+  objects: OptionInterfaceGeneric[] | ConfigNamespaceInterface[],
   name: string
 ) {
   const objectsToSearch = objects as ObjectWithName[];
@@ -41,7 +41,10 @@ function throwNamespaceAlreadyExists(name: string): never {
 
 export function checkNamespaceName(
   name: string,
-  { options, namespaces }: { options: OptionInterface[]; namespaces: ConfigNamespaceInterface[] }
+  {
+    options,
+    namespaces,
+  }: { options: OptionInterfaceGeneric[]; namespaces: ConfigNamespaceInterface[] }
 ): void | never {
   if (!name) {
     throw new Error("Please provide a name for the namespace");
@@ -56,7 +59,10 @@ export function checkNamespaceName(
 
 export function checkOptionName(
   name: string,
-  { options, namespaces }: { options: OptionInterface[]; namespaces: ConfigNamespaceInterface[] }
+  {
+    options,
+    namespaces,
+  }: { options: OptionInterfaceGeneric[]; namespaces: ConfigNamespaceInterface[] }
 ): void | never {
   if (options && findObjectWithName(options, name)) {
     throwOptionAlreadyExists(name);
@@ -66,14 +72,14 @@ export function checkOptionName(
   }
 }
 
-export function getOptionsValues(options: OptionInterface[]) {
+export function getOptionsValues(options: OptionInterfaceGeneric[]) {
   return options.reduce((values, option) => {
     values[option.name] = option.value;
     return values;
-  }, {} as AnyObject);
+  }, {} as UnknownObject);
 }
 
-export function getNamespacesValues(namespaces: ConfigNamespaceInterface[]): AnyObject {
+export function getNamespacesValues(namespaces: ConfigNamespaceInterface[]): UnknownObject {
   return namespaces.reduce((values, namespace) => {
     const namespaceValues = namespace.value;
     if (!namespace.isRoot) {
@@ -85,5 +91,5 @@ export function getNamespacesValues(namespaces: ConfigNamespaceInterface[]): Any
       };
     }
     return values;
-  }, {} as AnyObject);
+  }, {} as UnknownObject);
 }

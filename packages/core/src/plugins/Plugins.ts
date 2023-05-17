@@ -9,9 +9,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 import type {
-  OptionProperties,
   ConfigNamespaceInterface,
   OptionInterface,
+  OptionArrayObject,
+  WithDefault,
 } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import isPromise from "is-promise";
@@ -33,7 +34,7 @@ import type {
   PluginLifeCycleMethod,
 } from "./Plugins.types";
 
-const OPTIONS: OptionProperties[] = [
+const OPTIONS: [OptionArrayObject] = [
   {
     description: "Plugins to be registered",
     name: "register",
@@ -51,7 +52,7 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
   private _config: ConfigNamespaceInterface;
   private _logger: LoggerInterface;
   private _alerts: AlertsInterface;
-  private _pluginsToRegister: OptionInterface;
+  private _pluginsToRegister: OptionInterface<WithDefault<OptionArrayObject>>;
   private _alertsRegister: AlertsInterface;
   private _alertsInit: AlertsInterface;
   private _alertsStart: AlertsInterface;
@@ -74,7 +75,9 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
     this._config = config;
     this._logger = logger;
 
-    [this._pluginsToRegister] = this._config.addOptions(OPTIONS);
+    [this._pluginsToRegister] = this._config.addOptions(OPTIONS) as [
+      OptionInterface<WithDefault<OptionArrayObject>>
+    ];
 
     this._alerts = alerts;
 
@@ -95,7 +98,7 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
 
   public async register(): Promise<void> {
     this._alertsRegister.clean();
-    this._plugins = this._pluginsToRegister.value;
+    this._plugins = this._pluginsToRegister.value as unknown as PluginConstructor[];
     this._logger.verbose(`Registering ${this._plugins.length} plugins`);
     await this._registerPlugins();
     this._logger.verbose(`Registered ${this._pluginsRegistered} plugins without errors`);

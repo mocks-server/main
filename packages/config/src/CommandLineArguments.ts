@@ -10,10 +10,10 @@ import type {
   ReadOptions,
   CommandLineArgumentsConstructor,
 } from "./CommandLineArgument.types";
-import type { ConfigurationObject, AnyObject } from "./Common.types";
+import type { ConfigurationObject, UnknownObject } from "./Common.types";
 import type { ConfigNamespaceInterface } from "./Config.types";
 import { namespaceAndParentNames } from "./ConfigNamespaceHelpers";
-import type { OptionInterface } from "./Option.types";
+import type { OptionInterfaceGeneric } from "./Option.types";
 import { getOptionParserWithArrayContents, BOOLEAN_TYPE, OBJECT_TYPE, ARRAY_TYPE } from "./Typing";
 
 const NAMESPACE_SEPARATOR = ".";
@@ -48,7 +48,7 @@ function getOptionGetter({
 
 function getCommanderOptionProperties(
   commanderOptionName: string,
-  option: OptionInterface
+  option: OptionInterfaceGeneric
 ): BaseCommanderOptionProperties {
   const isBoolean = option.type === BOOLEAN_TYPE;
   const isArray = option.type === ARRAY_TYPE;
@@ -140,7 +140,7 @@ export const CommandLineArguments: CommandLineArgumentsConstructor = class Comma
   }
 
   private _commanderResultsToConfigObject(
-    results: AnyObject,
+    results: UnknownObject,
     config: ConfigurationObject,
     commanderOptionsData: CommanderOptionsData
   ) {

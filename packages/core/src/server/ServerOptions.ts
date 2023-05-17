@@ -1,8 +1,14 @@
-import type { OptionProperties } from "@mocks-server/config";
+import type {
+  WithDefault,
+  OptionBoolean,
+  OptionNumber,
+  OptionObject,
+  OptionString,
+} from "@mocks-server/config";
 
 export const ALL_HOSTS = "0.0.0.0";
 
-export const OPTIONS: OptionProperties[] = [
+export const OPTIONS: [WithDefault<OptionNumber>, WithDefault<OptionString>] = [
   {
     description: "Port number for the server to be listening at",
     name: "port",
@@ -19,7 +25,7 @@ export const OPTIONS: OptionProperties[] = [
 
 export const HTTPS_NAMESPACE = "https";
 
-export const HTTPS_OPTIONS: OptionProperties[] = [
+export const HTTPS_OPTIONS: [WithDefault<OptionBoolean>, OptionString, OptionString] = [
   {
     description: "Use https protocol or not",
     name: "enabled",
@@ -40,7 +46,7 @@ export const HTTPS_OPTIONS: OptionProperties[] = [
 
 export const CORS_NAMESPACE = "cors";
 
-export const CORS_OPTIONS: OptionProperties[] = [
+export const CORS_OPTIONS: [WithDefault<OptionBoolean>, WithDefault<OptionObject>] = [
   {
     description: "Use CORS middleware or not",
     name: "enabled",
@@ -60,7 +66,7 @@ export const CORS_OPTIONS: OptionProperties[] = [
 
 export const JSON_BODY_PARSER_NAMESPACE = "jsonBodyParser";
 
-export const JSON_BODY_PARSER_OPTIONS: OptionProperties[] = [
+export const JSON_BODY_PARSER_OPTIONS: [WithDefault<OptionBoolean>, WithDefault<OptionObject>] = [
   {
     description: "Use json body-parser middleware or not",
     name: "enabled",
@@ -78,7 +84,10 @@ export const JSON_BODY_PARSER_OPTIONS: OptionProperties[] = [
 
 export const URL_ENCODED_BODY_PARSER_NAMESPACE = "urlEncodedBodyParser";
 
-export const URL_ENCODED_BODY_PARSER_OPTIONS: OptionProperties[] = [
+export const URL_ENCODED_BODY_PARSER_OPTIONS: [
+  WithDefault<OptionBoolean>,
+  WithDefault<OptionObject>
+] = [
   {
     description: "Use urlencoded body-parser middleware or not",
     name: "enabled",

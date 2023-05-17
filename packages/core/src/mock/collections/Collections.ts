@@ -9,9 +9,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 import type {
-  OptionProperties,
   ConfigNamespaceInterface,
   OptionInterface,
+  OptionString,
 } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import { compact } from "lodash";
@@ -42,7 +42,7 @@ import {
 } from "./CollectionsValidator";
 import { addRoutesToCollectionRoutes } from "./Helpers";
 
-const OPTIONS: OptionProperties[] = [
+const OPTIONS: [OptionString] = [
   {
     description: "Selected collection",
     name: "selected",
@@ -64,7 +64,7 @@ export const Collections: CollectionsConstructor = class Collections
   private _logger: LoggerInterface;
   private _loggerLoad: LoggerInterface;
   private _config: ConfigNamespaceInterface;
-  private _selectedOption: OptionInterface;
+  private _selectedOption: OptionInterface<OptionString>;
   private _collections: CollectionInterface[] = [];
   private _routesManager: RoutesInterface;
   private _selected: CollectionInterface | null = null;
@@ -84,7 +84,7 @@ export const Collections: CollectionsConstructor = class Collections
     this._logger = logger;
     this._loggerLoad = this._logger.namespace(LOAD_NAMESPACE);
 
-    [this._selectedOption] = this._config.addOptions(OPTIONS);
+    [this._selectedOption] = this._config.addOptions(OPTIONS) as [OptionInterface<OptionString>];
     this._selectedOption.onChange(this._setCurrent.bind(this));
     this._onChange = onChange;
   }

@@ -1,15 +1,22 @@
 import type { Option as CommanderOption } from "commander";
 
-import type { AnyObject, ConfigurationObject } from "./Common.types";
+import type { UnknownObject, ConfigurationObject } from "./Common.types";
 import type { ConfigNamespaceInterface } from "./Config.types";
-import type { OptionArrayValue, OptionInterface } from "./Option.types";
+import type { OptionArrayValueContent, OptionInterfaceGeneric } from "./Option.types";
 
 export interface ReadOptions {
   allowUnknownOption: boolean;
 }
 
 export interface BaseCommanderOptionProperties {
-  default: string | number | boolean | AnyObject | OptionArrayValue | null | undefined;
+  default:
+    | string
+    | number
+    | boolean
+    | UnknownObject
+    | OptionArrayValueContent[]
+    | null
+    | undefined;
   isBoolean: boolean;
   isObject: boolean;
   Option: CommanderOption;
@@ -17,7 +24,7 @@ export interface BaseCommanderOptionProperties {
 
 export interface CommanderOptionProperties extends BaseCommanderOptionProperties {
   namespace: ConfigNamespaceInterface;
-  option: OptionInterface;
+  option: OptionInterfaceGeneric;
 }
 
 export interface CommanderOptionsData {

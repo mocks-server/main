@@ -16,8 +16,9 @@ import {
   ConfigInterface,
   ConfigurationObject,
   ConfigNamespaceInterface,
+  OptionString,
   OptionInterface,
-  OptionProperties,
+  WithDefault,
 } from "@mocks-server/config";
 import { Logger, LoggerInterface, LogLevel } from "@mocks-server/logger";
 import deepMerge from "deepmerge";
@@ -44,7 +45,7 @@ import type { VariantHandlersInterface } from "./variant-handlers/types";
 
 const MODULE_NAME = "mocks";
 
-const ROOT_OPTIONS: OptionProperties[] = [
+const ROOT_OPTIONS: [WithDefault<OptionString>] = [
   {
     description: "Log level. Can be one of silly, debug, verbose, info, warn or error",
     name: "log",
@@ -63,7 +64,7 @@ export const Core: CoreConstructor = class Core implements CoreInterface {
   private _configMock: ConfigNamespaceInterface;
   private _configServer: ConfigNamespaceInterface;
   private _configFilesLoaders: ConfigNamespaceInterface;
-  private _logOption: OptionInterface;
+  private _logOption: OptionInterface<OptionString>;
   private _alerts: AlertsInterface;
   private _updateNotifier: UpdateNotifierInterface;
   private _files: FilesInterface;
@@ -98,7 +99,10 @@ export const Core: CoreConstructor = class Core implements CoreInterface {
     this._configServer = this._config.addNamespace(Server.id);
     this._configFilesLoaders = this._config.addNamespace(Files.id);
 
-    [this._logOption] = this._config.addOptions(ROOT_OPTIONS);
+    [this._logOption] = this._config.addOptions(ROOT_OPTIONS) as [
+      OptionInterface<WithDefault<OptionString>>
+    ];
+
     this._logOption.onChange((data) => {
       const level = data as LogLevel;
       this._logger.setLevel(level);
@@ -226,7 +230,7 @@ export const Core: CoreConstructor = class Core implements CoreInterface {
 
     // Init config
     await this._config.init(this._programmaticConfig);
-    this._logger.setLevel(this._logOption.value);
+    this._logger.setLevel(this._logOption.value as LogLevel);
 
     // Register plugins, let them add their custom config
     await this._plugins.register();

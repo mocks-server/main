@@ -1,11 +1,11 @@
-import type { AnyObject } from "./Common.types";
+import type { UnknownObject } from "./Common.types";
 
 export interface ValueParser {
   (value: unknown): unknown;
 }
 
 export interface StringObjectParser {
-  (value: string): AnyObject | string;
+  (value: string): UnknownObject | string;
 }
 
 export interface BooleanParser {

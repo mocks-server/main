@@ -23,7 +23,15 @@ import { Environment } from "./Environment";
 import type { EnvironmentInterface } from "./Environment.types";
 import { Files } from "./Files";
 import type { FilesInterface } from "./Files.types";
-import type { OptionInterface, SetMethodOptions } from "./Option.types";
+import type {
+  OptionInterface,
+  SetMethodOptions,
+  OptionDefinition,
+  OptionString,
+  OptionArrayString,
+  WithDefault,
+  OptionBoolean,
+} from "./Option.types";
 import {
   CONFIG_NAMESPACE,
   READ_FILE_OPTION,
@@ -53,14 +61,14 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
   private _namespaces: ConfigNamespaceInterface[];
   private _rootNamespace: ConfigNamespaceInterface;
   private _configNamespace: ConfigNamespaceInterface;
-  private _readFile: OptionInterface;
-  private _readArguments: OptionInterface;
-  private _readEnvironment: OptionInterface;
-  private _fileSearchPlaces: OptionInterface;
-  private _fileSearchFrom: OptionInterface;
-  private _fileSearchStop: OptionInterface;
+  private _readFile: OptionInterface<WithDefault<OptionBoolean>>;
+  private _readArguments: OptionInterface<WithDefault<OptionBoolean>>;
+  private _readEnvironment: OptionInterface<WithDefault<OptionBoolean>>;
+  private _fileSearchPlaces: OptionInterface<OptionArrayString>;
+  private _fileSearchFrom: OptionInterface<OptionString>;
+  private _fileSearchStop: OptionInterface<OptionString>;
+  private _allowUnknownArguments: OptionInterface<WithDefault<OptionBoolean>>;
   private _config: ConfigurationObject;
-  private _allowUnknownArguments: OptionInterface;
   public addOption: ConfigNamespaceInterface["addOption"];
   public addOptions: ConfigNamespaceInterface["addOptions"];
 
@@ -95,12 +103,13 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
     this.addOptions = this._rootNamespace.addOptions.bind(this._rootNamespace);
 
     this._configNamespace = this.addNamespace(CONFIG_NAMESPACE);
+
     [
       this._readFile,
       this._readArguments,
       this._readEnvironment,
-      this._fileSearchPlaces,
       this._fileSearchFrom,
+      this._fileSearchPlaces,
       this._fileSearchStop,
       this._allowUnknownArguments,
     ] = this._configNamespace.addOptions([
@@ -123,15 +132,15 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
         default: true,
       },
       {
+        name: FILE_SEARCH_FROM_OPTION,
+        description: "Start searching for the configuration file from this folder",
+        type: STRING_TYPE,
+      },
+      {
         name: FILE_SEARCH_PLACES_OPTION,
         description: "An array of places to search for the configuration file",
         type: ARRAY_TYPE,
         itemsType: STRING_TYPE,
-      },
-      {
-        name: FILE_SEARCH_FROM_OPTION,
-        description: "Start searching for the configuration file from this folder",
-        type: STRING_TYPE,
       },
       {
         name: FILE_SEARCH_STOP_OPTION,
@@ -144,7 +153,15 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
         type: BOOLEAN_TYPE,
         default: false,
       },
-    ]);
+    ]) as [
+      OptionInterface<WithDefault<OptionBoolean>>,
+      OptionInterface<WithDefault<OptionBoolean>>,
+      OptionInterface<WithDefault<OptionBoolean>>,
+      OptionInterface<WithDefault<OptionString>>,
+      OptionInterface<WithDefault<OptionArrayString>>,
+      OptionInterface<WithDefault<OptionString>>,
+      OptionInterface<WithDefault<OptionBoolean>>
+    ];
   }
 
   private async _loadFromFile(): Promise<ConfigurationObject> {
@@ -270,7 +287,7 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
     return findObjectWithName(this._namespaces, name);
   }
 
-  public option(name: OptionInterface["name"]): OptionInterface | undefined {
+  public option(name: OptionDefinition["name"]): OptionInterface<OptionDefinition> | undefined {
     return findObjectWithName(this._rootNamespace.options, name);
   }
 
@@ -306,7 +323,7 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
     return this._namespaces.filter((namespace) => !namespace.isRoot);
   }
 
-  public get options(): OptionInterface[] {
+  public get options(): OptionInterface<OptionDefinition>[] {
     return this._rootNamespace.options;
   }
 

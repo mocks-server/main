@@ -12,8 +12,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import path from "path";
 
 import type {
-  OptionProperties,
   ConfigNamespaceInterface,
+  OptionObject,
+  WithDefault,
+  OptionString,
+  OptionBoolean,
   OptionInterface,
 } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
@@ -49,7 +52,11 @@ import {
   isErrorLoadingFile,
 } from "./Helpers";
 
-const OPTIONS: OptionProperties[] = [
+const OPTIONS: [
+  WithDefault<OptionBoolean>,
+  WithDefault<OptionString>,
+  WithDefault<OptionBoolean>
+] = [
   {
     name: "enabled",
     description: "Allows to disable files load",
@@ -72,7 +79,7 @@ const OPTIONS: OptionProperties[] = [
 
 const BABEL_REGISTER_NAMESPACE = "babelRegister";
 
-const BABEL_REGISTER_OPTIONS: OptionProperties[] = [
+const BABEL_REGISTER_OPTIONS: [WithDefault<OptionBoolean>, WithDefault<OptionObject>] = [
   {
     name: "enabled",
     description: "Load @babel/register",
@@ -97,11 +104,11 @@ export const Files: FilesConstructor = class Files implements FilesInterface {
   private _alertsLoaders: AlertsInterface;
   private _alertsLoad: AlertsInterface;
   private _config: ConfigNamespaceInterface;
-  private _enabledOption: OptionInterface;
-  private _pathOption: OptionInterface;
-  private _watchOption: OptionInterface;
-  private _babelRegisterOption: OptionInterface;
-  private _babelRegisterOptionsOption: OptionInterface;
+  private _enabledOption: OptionInterface<WithDefault<OptionBoolean>>;
+  private _pathOption: OptionInterface<WithDefault<OptionString>>;
+  private _watchOption: OptionInterface<WithDefault<OptionBoolean>>;
+  private _babelRegisterOption: OptionInterface<WithDefault<OptionBoolean>>;
+  private _babelRegisterOptionsOption: OptionInterface<WithDefault<OptionObject>>;
   private _collectionsLoader: DefaultCollectionsLoaderInterface;
   private _routesLoader: DefaultRoutesLoaderInterface;
   private _enabled: boolean;
@@ -133,10 +140,19 @@ export const Files: FilesConstructor = class Files implements FilesInterface {
     this._require = extraOptions.require || require;
     this._config = config;
 
-    [this._enabledOption, this._pathOption, this._watchOption] = this._config.addOptions(OPTIONS);
+    [this._enabledOption, this._pathOption, this._watchOption] = this._config.addOptions(
+      OPTIONS
+    ) as [
+      OptionInterface<WithDefault<OptionBoolean>>,
+      OptionInterface<WithDefault<OptionString>>,
+      OptionInterface<WithDefault<OptionBoolean>>
+    ];
     [this._babelRegisterOption, this._babelRegisterOptionsOption] = this._config
       .addNamespace(BABEL_REGISTER_NAMESPACE)
-      .addOptions(BABEL_REGISTER_OPTIONS);
+      .addOptions(BABEL_REGISTER_OPTIONS) as [
+      OptionInterface<WithDefault<OptionBoolean>>,
+      OptionInterface<WithDefault<OptionObject>>
+    ];
     this._pathOption.onChange(this._onChangePathOption.bind(this));
     this._watchOption.onChange(this._onChangeWatchOption.bind(this));
 

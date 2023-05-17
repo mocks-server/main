@@ -3,13 +3,13 @@ import betterAjvErrors from "better-ajv-errors";
 import type { JSONSchema7TypeName, JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { isString, isNumber, isObject, isBoolean } from "lodash";
 
-import type { AnyObject } from "./Common.types";
+import type { UnknownObject } from "./Common.types";
 import type { ConfigNamespaceInterface } from "./Config.types";
 import type {
-  OptionProperties,
-  OptionInterface,
+  OptionDefinition,
   OptionType,
   OptionItemsType,
+  OptionInterfaceGeneric,
 } from "./Option.types";
 import {
   optionIsArray,
@@ -169,7 +169,7 @@ const typeAndThrowValidators: TypeAndThrowValidators = {
 };
 
 function validateSchema(
-  config: AnyObject | OptionProperties,
+  config: UnknownObject | OptionDefinition,
   schema: JSONSchema7,
   validator?: ValidateFunction
 ): ConfigValidationResult {
@@ -183,7 +183,7 @@ function validateSchema(
 
 function formatErrors(
   schema: JSONSchema7,
-  data: AnyObject | OptionProperties,
+  data: UnknownObject | OptionDefinition,
   errors: DefinedError[]
 ): string {
   const formattedJson = betterAjvErrors(schema, data, errors, {
@@ -193,7 +193,7 @@ function formatErrors(
 }
 
 function validateSchemaAndThrow(
-  object: AnyObject | OptionProperties,
+  object: UnknownObject | OptionDefinition,
   schema: JSONSchema7,
   validator?: ValidateFunction
 ): void | never {
@@ -212,7 +212,7 @@ function addNamespaceSchema(
 ): JSONSchema7 {
   const initialSchema = rootSchema || emptySchema({ allowAdditionalProperties });
   const schema = namespace.options.reduce(
-    (currentSchema: JSONSchema7, option: OptionInterface) => {
+    (currentSchema: JSONSchema7, option: OptionInterfaceGeneric) => {
       const properties: { [key: string]: JSONSchema7 } = {};
       if (option.nullable) {
         properties[option.name] = {
@@ -282,7 +282,7 @@ function getConfigValidationSchema({
 }
 
 export function validateConfigAndThrow(
-  config: AnyObject,
+  config: UnknownObject,
   {
     namespaces,
     allowAdditionalProperties,
@@ -295,7 +295,7 @@ export function validateConfigAndThrow(
 }
 
 export function validateConfig(
-  config: AnyObject,
+  config: UnknownObject,
   {
     namespaces,
     allowAdditionalProperties,
@@ -314,7 +314,7 @@ export function getValidationSchema({
   return getConfigValidationSchema({ namespaces, allowAdditionalProperties });
 }
 
-export function validateOptionAndThrow(option: OptionProperties): void | never {
+export function validateOptionAndThrow(option: OptionDefinition): void | never {
   validateSchemaAndThrow(option, optionSchema, optionValidator);
 }
 

@@ -1,6 +1,6 @@
 import CypressMock from "./Cypress.mock";
 
-import { register } from "../src/register";
+import { register } from "../src/Register";
 
 describe("register", () => {
   let cypressMock;

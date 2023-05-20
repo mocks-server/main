@@ -19,7 +19,7 @@ import type {
   OptionInterface,
   OptionInterfaceGeneric,
   SetMethodOptions,
-  OptionDefinition,
+  OptionDefinitionGeneric,
 } from "./Option.types";
 
 export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
@@ -47,7 +47,7 @@ export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
     this._isRoot = isRoot;
   }
 
-  public addOption<T extends OptionDefinition>(optionProperties: T): OptionInterface<T> {
+  public addOption<T extends OptionDefinitionGeneric>(optionProperties: T): OptionInterface<T> {
     checkOptionName(optionProperties.name, {
       options: this._options,
       namespaces: this._isRoot ? this._brothers : this._namespaces,
@@ -57,7 +57,9 @@ export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
     return option;
   }
 
-  public addOptions(options: [...OptionDefinition[]]): [...OptionInterface<OptionDefinition>[]] {
+  public addOptions(
+    options: [...OptionDefinitionGeneric[]]
+  ): [...OptionInterface<OptionDefinitionGeneric>[]] {
     return options.map((option) => this.addOption(option));
   }
 

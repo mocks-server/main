@@ -26,11 +26,8 @@ import type { FilesInterface } from "./Files.types";
 import type {
   OptionInterface,
   SetMethodOptions,
+  OptionDefinitionGeneric,
   OptionDefinition,
-  OptionString,
-  OptionArrayString,
-  WithDefault,
-  OptionBoolean,
 } from "./Option.types";
 import {
   CONFIG_NAMESPACE,
@@ -61,13 +58,13 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
   private _namespaces: ConfigNamespaceInterface[];
   private _rootNamespace: ConfigNamespaceInterface;
   private _configNamespace: ConfigNamespaceInterface;
-  private _readFile: OptionInterface<WithDefault<OptionBoolean>>;
-  private _readArguments: OptionInterface<WithDefault<OptionBoolean>>;
-  private _readEnvironment: OptionInterface<WithDefault<OptionBoolean>>;
-  private _fileSearchPlaces: OptionInterface<OptionArrayString>;
-  private _fileSearchFrom: OptionInterface<OptionString>;
-  private _fileSearchStop: OptionInterface<OptionString>;
-  private _allowUnknownArguments: OptionInterface<WithDefault<OptionBoolean>>;
+  private _readFile: OptionInterface<OptionDefinition<boolean, true>>;
+  private _readArguments: OptionInterface<OptionDefinition<boolean, true>>;
+  private _readEnvironment: OptionInterface<OptionDefinition<boolean, true>>;
+  private _fileSearchPlaces: OptionInterface<OptionDefinition<Array<string>>>;
+  private _fileSearchFrom: OptionInterface<OptionDefinition<string>>;
+  private _fileSearchStop: OptionInterface<OptionDefinition<string>>;
+  private _allowUnknownArguments: OptionInterface<OptionDefinition<boolean, true>>;
   private _config: ConfigurationObject;
   public addOption: ConfigNamespaceInterface["addOption"];
   public addOptions: ConfigNamespaceInterface["addOptions"];
@@ -154,13 +151,13 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
         default: false,
       },
     ]) as [
-      OptionInterface<WithDefault<OptionBoolean>>,
-      OptionInterface<WithDefault<OptionBoolean>>,
-      OptionInterface<WithDefault<OptionBoolean>>,
-      OptionInterface<WithDefault<OptionString>>,
-      OptionInterface<WithDefault<OptionArrayString>>,
-      OptionInterface<WithDefault<OptionString>>,
-      OptionInterface<WithDefault<OptionBoolean>>
+      OptionInterface<OptionDefinition<boolean, true>>,
+      OptionInterface<OptionDefinition<boolean, true>>,
+      OptionInterface<OptionDefinition<boolean, true>>,
+      OptionInterface<OptionDefinition<string>>,
+      OptionInterface<OptionDefinition<Array<string>>>,
+      OptionInterface<OptionDefinition<string>>,
+      OptionInterface<OptionDefinition<boolean, true>>
     ];
   }
 
@@ -287,7 +284,9 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
     return findObjectWithName(this._namespaces, name);
   }
 
-  public option(name: OptionDefinition["name"]): OptionInterface<OptionDefinition> | undefined {
+  public option(
+    name: OptionDefinitionGeneric["name"]
+  ): OptionInterface<OptionDefinitionGeneric> | undefined {
     return findObjectWithName(this._rootNamespace.options, name);
   }
 
@@ -323,7 +322,7 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
     return this._namespaces.filter((namespace) => !namespace.isRoot);
   }
 
-  public get options(): OptionInterface<OptionDefinition>[] {
+  public get options(): OptionInterface<OptionDefinitionGeneric>[] {
     return this._rootNamespace.options;
   }
 

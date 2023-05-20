@@ -6,7 +6,7 @@ import { isString, isNumber, isObject, isBoolean } from "lodash";
 import type { UnknownObject } from "./Common.types";
 import type { ConfigNamespaceInterface } from "./Config.types";
 import type {
-  OptionDefinition,
+  OptionDefinitionGeneric,
   OptionType,
   OptionItemsType,
   OptionInterfaceGeneric,
@@ -169,7 +169,7 @@ const typeAndThrowValidators: TypeAndThrowValidators = {
 };
 
 function validateSchema(
-  config: UnknownObject | OptionDefinition,
+  config: UnknownObject | OptionDefinitionGeneric,
   schema: JSONSchema7,
   validator?: ValidateFunction
 ): ConfigValidationResult {
@@ -183,7 +183,7 @@ function validateSchema(
 
 function formatErrors(
   schema: JSONSchema7,
-  data: UnknownObject | OptionDefinition,
+  data: UnknownObject | OptionDefinitionGeneric,
   errors: DefinedError[]
 ): string {
   const formattedJson = betterAjvErrors(schema, data, errors, {
@@ -193,7 +193,7 @@ function formatErrors(
 }
 
 function validateSchemaAndThrow(
-  object: UnknownObject | OptionDefinition,
+  object: UnknownObject | OptionDefinitionGeneric,
   schema: JSONSchema7,
   validator?: ValidateFunction
 ): void | never {
@@ -314,7 +314,7 @@ export function getValidationSchema({
   return getConfigValidationSchema({ namespaces, allowAdditionalProperties });
 }
 
-export function validateOptionAndThrow(option: OptionDefinition): void | never {
+export function validateOptionAndThrow(option: OptionDefinitionGeneric): void | never {
   validateSchemaAndThrow(option, optionSchema, optionValidator);
 }
 

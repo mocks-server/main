@@ -8,7 +8,7 @@ import { addEventListener, CHANGE } from "./Events";
 import type { EventListener, EventListenerRemover } from "./Events.types";
 import type {
   OptionInterface,
-  OptionDefinition,
+  OptionDefinitionGeneric,
   SetMethodOptions,
   GetOptionValueTypeFromDefinition,
   GetOptionTypeFromDefinition,
@@ -16,7 +16,9 @@ import type {
 import { typeIsArray, typeIsObject, optionIsObject, avoidArraysMerge } from "./Typing";
 import { validateOptionAndThrow, validateValueTypeAndThrow } from "./Validation";
 
-export class Option<T extends OptionDefinition> implements OptionInterface<T> {
+export class Option<T extends OptionDefinitionGeneric, TypeOfValue = void>
+  implements OptionInterface<T, TypeOfValue>
+{
   private _eventEmitter: EventEmitter;
   private _name: T["name"];
   private _nullable: boolean;
@@ -24,8 +26,8 @@ export class Option<T extends OptionDefinition> implements OptionInterface<T> {
   private _type: GetOptionTypeFromDefinition<T>["type"];
   private _description: T["description"];
   private _itemsType?: T["itemsType"];
-  private _default: GetOptionValueTypeFromDefinition<T>;
-  private _value: GetOptionValueTypeFromDefinition<T>;
+  private _default: GetOptionValueTypeFromDefinition<T, TypeOfValue>;
+  private _value: GetOptionValueTypeFromDefinition<T, TypeOfValue>;
   private _eventsStarted: boolean;
   private _hasBeenSet: boolean;
 
@@ -37,12 +39,17 @@ export class Option<T extends OptionDefinition> implements OptionInterface<T> {
     this._type = optionProperties.type;
     this._description = optionProperties.description;
     this._itemsType = optionProperties.itemsType;
-    this._default = this._clone(optionProperties.default as GetOptionValueTypeFromDefinition<T>);
+    this._default = this._clone(
+      optionProperties.default as GetOptionValueTypeFromDefinition<T, TypeOfValue>
+    );
     this._value = this._default;
     this._eventsStarted = false;
     this._hasBeenSet = false;
 
-    validateOptionAndThrow({ ...optionProperties, nullable: this._nullable } as OptionDefinition);
+    validateOptionAndThrow({
+      ...optionProperties,
+      nullable: this._nullable,
+    } as OptionDefinitionGeneric);
   }
 
   public get name(): string {
@@ -57,15 +64,15 @@ export class Option<T extends OptionDefinition> implements OptionInterface<T> {
     return this._description;
   }
 
-  public get default(): GetOptionValueTypeFromDefinition<T> {
+  public get default(): GetOptionValueTypeFromDefinition<T, TypeOfValue> {
     return this._clone(this._default);
   }
 
-  public get value(): GetOptionValueTypeFromDefinition<T> {
+  public get value(): GetOptionValueTypeFromDefinition<T, TypeOfValue> {
     return this._clone(this._value);
   }
 
-  public set value(value: GetOptionValueTypeFromDefinition<T>) {
+  public set value(value: GetOptionValueTypeFromDefinition<T, TypeOfValue>) {
     this.set(value);
   }
 
@@ -81,28 +88,30 @@ export class Option<T extends OptionDefinition> implements OptionInterface<T> {
     return this._itemsType;
   }
 
-  private _clone(value: GetOptionValueTypeFromDefinition<T>): GetOptionValueTypeFromDefinition<T> {
+  private _clone(
+    value: GetOptionValueTypeFromDefinition<T, TypeOfValue>
+  ): GetOptionValueTypeFromDefinition<T, TypeOfValue> {
     if (isUndefined(value)) {
       return value;
     }
     if (typeIsArray(this._type)) {
       const clonedValue = [...(value as unknown[])];
-      return clonedValue as GetOptionValueTypeFromDefinition<T>;
+      return clonedValue as GetOptionValueTypeFromDefinition<T, TypeOfValue>;
     }
-    if (optionIsObject(this as unknown as OptionInterface<OptionDefinition>)) {
+    if (optionIsObject(this as unknown as OptionInterface<OptionDefinitionGeneric>)) {
       const clonedValue = { ...(value as unknown as UnknownObject) };
-      return clonedValue as GetOptionValueTypeFromDefinition<T>;
+      return clonedValue as GetOptionValueTypeFromDefinition<T, TypeOfValue>;
     }
     return value;
   }
 
-  private _validateAndThrow(value: GetOptionValueTypeFromDefinition<T>) {
+  private _validateAndThrow(value: GetOptionValueTypeFromDefinition<T, TypeOfValue>) {
     validateValueTypeAndThrow(value, this._type, this._nullable, this._itemsType);
   }
 
   private _emitChange(
-    previousValue: GetOptionValueTypeFromDefinition<T>,
-    value: GetOptionValueTypeFromDefinition<T>
+    previousValue: GetOptionValueTypeFromDefinition<T, TypeOfValue>,
+    value: GetOptionValueTypeFromDefinition<T, TypeOfValue>
   ) {
     if (this._eventsStarted && !isEqual(previousValue, value)) {
       this._eventEmitter.emit(CHANGE, this._clone(value));
@@ -113,17 +122,17 @@ export class Option<T extends OptionDefinition> implements OptionInterface<T> {
     return addEventListener(listener, CHANGE, this._eventEmitter);
   }
 
-  private _merge(value: GetOptionValueTypeFromDefinition<T>) {
+  private _merge(value: GetOptionValueTypeFromDefinition<T, TypeOfValue>) {
     const previousValue = this._value;
     this._validateAndThrow(value);
     this._value = deepMerge((this._value || {}) as UnknownObject, value as UnknownObject, {
       arrayMerge: avoidArraysMerge,
-    }) as GetOptionValueTypeFromDefinition<T>;
+    }) as GetOptionValueTypeFromDefinition<T, TypeOfValue>;
     this._emitChange(previousValue, this._value);
   }
 
   public set(
-    value: GetOptionValueTypeFromDefinition<T>,
+    value: GetOptionValueTypeFromDefinition<T, TypeOfValue>,
     { merge = false }: SetMethodOptions = {}
   ): void {
     if (!isUndefined(value)) {
@@ -147,3 +156,11 @@ export class Option<T extends OptionDefinition> implements OptionInterface<T> {
     return this._hasBeenSet;
   }
 }
+
+/* const foo: OptionInterface<> = new Option({
+  name: "foo",
+  type: "string",
+  default: "bar",
+  nullable: true,
+  description: "foo description",
+}); */

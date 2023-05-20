@@ -5,7 +5,7 @@ import type {
   OptionInterface,
   SetMethodOptions,
   OptionInterfaceGeneric,
-  OptionDefinition,
+  OptionDefinitionGeneric,
 } from "./Option.types";
 import type { ConfigValidationResult } from "./Validation.types";
 
@@ -92,18 +92,20 @@ export interface ConfigInterface {
   option(name: OptionInterfaceGeneric["name"]): OptionInterfaceGeneric | undefined;
   /**
    * Adds a configuration option, or throw an error in case it already exists
-   * @param optionDefinition - Properties of the new option {@link OptionDefinition}
+   * @param optionDefinition - Properties of the new option {@link OptionDefinitionGeneric}
    * @returns Configuration option {@link OptionInterface}
    * @example const option = config.addOption({ name: "foo", type: "number"})
    */
-  addOption<Type extends OptionDefinition>(optionDefinition: Type): OptionInterface<Type>;
+  addOption<Type extends OptionDefinitionGeneric>(optionDefinition: Type): OptionInterface<Type>;
   /**
    * Adds several configuration options, or throw an error in case any of them already exist
-   * @param options - Array of option properties {@link OptionDefinition}
+   * @param options - Array of option properties {@link OptionDefinitionGeneric}
    * @returns Array of configuration options {@link OptionInterface}
    * @example const [option1, option2] = config.addOptions([{ name: "foo", type: "number"}, { name: "foo2", type: "string"}])
    */
-  addOptions(options: [...OptionDefinition[]]): [...OptionInterface<OptionDefinition>[]];
+  addOptions(
+    options: [...OptionDefinitionGeneric[]]
+  ): [...OptionInterface<OptionDefinitionGeneric>[]];
 
   /** Returns current options values and values from all child namespaces */
   value: ConfigurationObject;
@@ -161,7 +163,7 @@ export interface ConfigNamespaceConstructor {
 /** Config namespace */
 export interface ConfigNamespaceInterface extends ObjectWithName {
   /** Array containing namespace options */
-  options: OptionInterface<OptionDefinition>[];
+  options: OptionInterface<OptionDefinitionGeneric>[];
   /** Array containing child namespaces */
   namespaces: ConfigNamespaceInterface[];
   /** Array containing parent namespaces up to the root configuration */
@@ -181,18 +183,20 @@ export interface ConfigNamespaceInterface extends ObjectWithName {
   startEvents(): void;
   /**
    * Adds an option to the namespace, or throw an error in case it already exists
-   * @param optionProperties - Properties of the new option {@link OptionDefinition}
+   * @param optionProperties - Properties of the new option {@link OptionDefinitionGeneric}
    * @returns Configuration option {@link OptionInterface}
    * @example const option = namespace.addOption({ name: "foo", type: "number"})
    */
-  addOption<Type extends OptionDefinition>(optionProperties: Type): OptionInterface<Type>;
+  addOption<Type extends OptionDefinitionGeneric>(optionProperties: Type): OptionInterface<Type>;
   /**
    * Adds several namespace options, or throw an error in case any of them already exist
-   * @param options - Array of option properties {@link OptionDefinition}
+   * @param options - Array of option properties {@link OptionDefinitionGeneric}
    * @returns Array of options {@link OptionInterface}
    * @example const [option1, option2] = namespace.addOptions([{ name: "foo", type: "number"}, { name: "foo2", type: "string"}])
    */
-  addOptions(options: [...OptionDefinition[]]): [...OptionInterface<OptionDefinition>[]];
+  addOptions(
+    options: [...OptionDefinitionGeneric[]]
+  ): [...OptionInterface<OptionDefinitionGeneric>[]];
   /**
    * Set the value of the options, including child namespaces, using the values in the provided configuration object
    * @param configuration - Configuration object {@link ConfigurationObject}

@@ -1,5 +1,3 @@
-import type { Option } from "commander";
-
 import type { ObjectWithName, UnknownObject } from "./Common.types";
 import type { EventListener, EventListenerRemover } from "./Events.types";
 
@@ -10,17 +8,24 @@ export type OptionName = string;
 export type OptionDescription = string;
 
 /** Possible value types */
-export type OptionType = "string" | "number" | "boolean" | "object" | "array" | "null";
+export type OptionType = "string" | "number" | "boolean" | "object" | "array" | "null" | "unknown";
 /** Possible value types inside an array */
-export type OptionItemsType = "string" | "number" | "boolean" | "object";
+export type OptionItemsType = "string" | "number" | "boolean" | "object" | "unknown";
 
 /** Possible types for the value of an option not being of type array */
-export type OptionSingleValue = boolean | number | string | UnknownObject | null | undefined;
+export type OptionSingleValue =
+  | boolean
+  | number
+  | string
+  | UnknownObject
+  | null
+  | undefined
+  | unknown;
 
 /** Possible types for the value of an option of type array */
-export type OptionArrayValueContent = boolean | number | string | UnknownObject;
+export type OptionArrayValueContent = boolean | number | string | UnknownObject | unknown;
 
-export type OptionArrayValue = boolean[] | number[] | string[] | UnknownObject[];
+export type OptionArrayValue = boolean[] | number[] | string[] | UnknownObject[] | unknown[];
 
 export type OptionValue = OptionSingleValue | OptionArrayValue;
 
@@ -28,7 +33,7 @@ export type OptionValue = OptionSingleValue | OptionArrayValue;
 export type OptionExtraData = UnknownObject;
 
 /** Properties for creating an option */
-export interface OptionBase extends ObjectWithName {
+interface OptionBase extends ObjectWithName {
   /** Name for the option */
   name: OptionName;
   /** Option description */
@@ -41,87 +46,78 @@ export interface OptionBase extends ObjectWithName {
   default?: OptionValue;
 }
 
-export type AddDefaultToOption<T, TValue> = T & {
+type AddDefaultToOption<T, TValue> = T & {
   default: TValue;
 };
 
-export interface OptionBooleanProps {
-  type: "boolean";
+type TypeToStringType<T> = T extends boolean
+  ? "boolean"
+  : T extends number
+  ? "number"
+  : T extends string
+  ? "string"
+  : T extends UnknownObject
+  ? "object"
+  : "unknown";
+
+interface OptionBaseProps<T extends OptionSingleValue> {
+  type: TypeToStringType<T>;
   itemsType?: undefined;
 }
 
-export type OptionBooleanPropsWithDefault = AddDefaultToOption<OptionBooleanProps, boolean>;
+type OptionBooleanProps = OptionBaseProps<boolean>;
 
-export interface OptionNumberProps {
-  type: "number";
-  itemsType?: undefined;
-}
+type OptionBooleanPropsWithDefault = AddDefaultToOption<OptionBooleanProps, boolean>;
 
-export type OptionNumberPropsWithDefault = AddDefaultToOption<OptionNumberProps, number>;
+type OptionNumberProps = OptionBaseProps<number>;
 
-export interface OptionStringProps {
-  type: "string";
-  itemsType?: undefined;
-}
+type OptionNumberPropsWithDefault = AddDefaultToOption<OptionNumberProps, number>;
 
-export type OptionStringPropsWithDefault = AddDefaultToOption<OptionStringProps, string>;
+type OptionStringProps = OptionBaseProps<string>;
 
-export interface OptionObjectProps {
-  type: "object";
-  itemsType?: undefined;
-}
+type OptionStringPropsWithDefault = AddDefaultToOption<OptionStringProps, string>;
 
-export type OptionObjectPropsWithDefault = AddDefaultToOption<OptionObjectProps, UnknownObject>;
+type OptionObjectProps = OptionBaseProps<UnknownObject>;
 
-export interface OptionNullProps {
-  type: "null";
-  itemsType?: undefined;
-}
+type OptionObjectPropsWithDefault = AddDefaultToOption<OptionObjectProps, UnknownObject>;
 
-export type OptionNullPropsWithDefault = AddDefaultToOption<OptionNullProps, null>;
+type OptionNullProps = OptionBaseProps<null>;
 
-export interface OptionArrayBaseProps<T extends OptionArrayValueContent> {
+type OptionNullPropsWithDefault = AddDefaultToOption<OptionNullProps, null>;
+
+type OptionUnknownProps = OptionBaseProps<unknown>;
+
+type OptionUnknownPropsWithDefault = AddDefaultToOption<OptionNullProps, unknown>;
+
+interface OptionArrayBaseProps<T extends OptionArrayValueContent> {
   type: "array";
-  itemsType?: T extends boolean
-    ? "boolean"
-    : T extends number
-    ? "number"
-    : T extends string
-    ? "string"
-    : T extends UnknownObject
-    ? "object"
-    : never;
+  itemsType?: TypeToStringType<T>;
 }
 
-export type OptionArrayBooleanProps = OptionArrayBaseProps<boolean>;
+type OptionArrayBooleanProps = OptionArrayBaseProps<boolean>;
 
-export type OptionArrayBooleanPropsWithDefault = AddDefaultToOption<
-  OptionArrayBooleanProps,
-  boolean[]
->;
+type OptionArrayBooleanPropsWithDefault = AddDefaultToOption<OptionArrayBooleanProps, boolean[]>;
 
-export type OptionArrayNumberProps = OptionArrayBaseProps<number>;
+type OptionArrayNumberProps = OptionArrayBaseProps<number>;
 
-export type OptionArrayNumberPropsWithDefault = AddDefaultToOption<
-  OptionArrayNumberProps,
-  number[]
->;
+type OptionArrayNumberPropsWithDefault = AddDefaultToOption<OptionArrayNumberProps, number[]>;
 
-export type OptionArrayStringProps = OptionArrayBaseProps<string>;
+type OptionArrayStringProps = OptionArrayBaseProps<string>;
 
-export type OptionArrayStringPropsWithDefault = AddDefaultToOption<
-  OptionArrayStringProps,
-  string[]
->;
+type OptionArrayStringPropsWithDefault = AddDefaultToOption<OptionArrayStringProps, string[]>;
 
-export type OptionArrayObjectProps = OptionArrayBaseProps<UnknownObject>;
+type OptionArrayObjectProps = OptionArrayBaseProps<UnknownObject>;
 
-export type OptionArrayObjectPropsWithDefault = AddDefaultToOption<
+type OptionArrayObjectPropsWithDefault = AddDefaultToOption<
   OptionArrayObjectProps,
   UnknownObject[]
 >;
 
-export type OptionGenericProps =
+type OptionArrayUnknownProps = OptionArrayBaseProps<unknown>;
+
+type OptionArrayUnknownPropsWithDefault = AddDefaultToOption<OptionArrayUnknownProps, unknown[]>;
+
+type OptionGenericProps =
   | OptionBooleanProps
   | OptionBooleanPropsWithDefault
   | OptionNumberProps
@@ -131,9 +127,11 @@ export type OptionGenericProps =
   | OptionObjectProps
   | OptionObjectPropsWithDefault
   | OptionNullProps
-  | OptionNullPropsWithDefault;
+  | OptionNullPropsWithDefault
+  | OptionUnknownProps
+  | OptionUnknownPropsWithDefault;
 
-export type OptionArrayGenericProps =
+type OptionArrayGenericProps =
   | OptionArrayBooleanProps
   | OptionArrayBooleanPropsWithDefault
   | OptionArrayNumberProps
@@ -141,9 +139,11 @@ export type OptionArrayGenericProps =
   | OptionArrayStringProps
   | OptionArrayStringPropsWithDefault
   | OptionArrayObjectProps
-  | OptionArrayObjectPropsWithDefault;
+  | OptionArrayObjectPropsWithDefault
+  | OptionArrayUnknownProps
+  | OptionArrayUnknownPropsWithDefault;
 
-export type OptionDefinition = OptionBase & (OptionGenericProps | OptionArrayGenericProps);
+export type OptionDefinitionGeneric = OptionBase & (OptionGenericProps | OptionArrayGenericProps);
 
 export type OptionBoolean = OptionBase & OptionBooleanProps;
 export type OptionBooleanWithDefault = OptionBase & OptionBooleanPropsWithDefault;
@@ -155,6 +155,8 @@ export type OptionObject = OptionBase & OptionObjectProps;
 export type OptionObjectWithDefault = OptionBase & OptionObjectPropsWithDefault;
 export type OptionNull = OptionBase & OptionNullProps;
 export type OptionNullWithDefault = OptionBase & OptionNullPropsWithDefault;
+export type OptionUnknown = OptionBase & OptionUnknownProps;
+export type OptionUnknownWithDefault = OptionBase & OptionUnknownPropsWithDefault;
 export type OptionArrayBoolean = OptionBase & OptionArrayBooleanProps;
 export type OptionArrayBooleanWithDefault = OptionBase & OptionArrayBooleanPropsWithDefault;
 export type OptionArrayNumber = OptionBase & OptionArrayNumberProps;
@@ -163,18 +165,22 @@ export type OptionArrayString = OptionBase & OptionArrayStringProps;
 export type OptionArrayStringWithDefault = OptionBase & OptionArrayStringPropsWithDefault;
 export type OptionArrayObject = OptionBase & OptionArrayObjectProps;
 export type OptionArrayObjectWithDefault = OptionBase & OptionArrayObjectPropsWithDefault;
+type OptionArrayUnknown = OptionBase & OptionArrayUnknownProps;
+type OptionArrayUnknownWithDefault = OptionBase & OptionArrayUnknownPropsWithDefault;
 
 export type OptionArrayGeneric =
   | OptionArrayBoolean
   | OptionArrayNumber
   | OptionArrayString
   | OptionArrayObject
+  | OptionArrayUnknown
   | OptionArrayBooleanWithDefault
   | OptionArrayNumberWithDefault
   | OptionArrayStringWithDefault
-  | OptionArrayObjectWithDefault;
+  | OptionArrayObjectWithDefault
+  | OptionArrayUnknownWithDefault;
 
-export type GetOptionTypeFromDefinition<T extends OptionDefinition> =
+export type GetOptionTypeFromDefinition<T extends OptionDefinitionGeneric> =
   T extends OptionBooleanWithDefault
     ? OptionBooleanWithDefault
     : T extends OptionBoolean
@@ -189,12 +195,12 @@ export type GetOptionTypeFromDefinition<T extends OptionDefinition> =
     ? OptionString
     : T extends OptionObjectWithDefault
     ? OptionObjectWithDefault
-    : T extends OptionObjectProps
-    ? OptionObjectProps
+    : T extends OptionObject
+    ? OptionObject
     : T extends OptionNullWithDefault
     ? OptionNullWithDefault
-    : T extends OptionNullProps
-    ? OptionNullProps
+    : T extends OptionNull
+    ? OptionNull
     : T extends OptionArrayBooleanWithDefault
     ? OptionArrayBooleanWithDefault
     : T extends OptionArrayBoolean
@@ -211,10 +217,21 @@ export type GetOptionTypeFromDefinition<T extends OptionDefinition> =
     ? OptionArrayObjectWithDefault
     : T extends OptionArrayObject
     ? OptionArrayObject
+    : T extends OptionArrayUnknownWithDefault
+    ? OptionArrayUnknownWithDefault
+    : T extends OptionArrayUnknown
+    ? OptionArrayUnknown
+    : T extends OptionUnknownWithDefault
+    ? OptionUnknownWithDefault
+    : T extends OptionUnknown
+    ? OptionUnknown
     : never;
 
-export type GetOptionValueTypeFromDefinition<T extends OptionDefinition> =
-  T extends OptionBooleanWithDefault
+export type GetOptionValueTypeFromDefinition<
+  T extends OptionDefinitionGeneric,
+  TypeOfValue = void
+> = TypeOfValue extends void
+  ? T extends OptionBooleanWithDefault
     ? boolean
     : T extends OptionBoolean
     ? boolean | undefined
@@ -250,41 +267,80 @@ export type GetOptionValueTypeFromDefinition<T extends OptionDefinition> =
     ? UnknownObject[]
     : T extends OptionArrayObject
     ? UnknownObject[] | undefined
-    : never;
+    : T extends OptionArrayUnknownWithDefault
+    ? unknown[]
+    : T extends OptionArrayUnknown
+    ? unknown[] | undefined
+    : T extends OptionUnknownWithDefault
+    ? unknown
+    : T extends OptionUnknown
+    ? unknown | undefined
+    : never
+  : TypeOfValue;
 
-export type WithDefault<T extends OptionDefinition> = T extends OptionBoolean
+export type WithDefault<T> = T extends boolean
   ? OptionBooleanWithDefault
-  : T extends OptionNumber
+  : T extends number
   ? OptionNumberWithDefault
-  : T extends OptionString
+  : T extends string
   ? OptionStringWithDefault
-  : T extends OptionObject
+  : T extends UnknownObject
   ? OptionObjectWithDefault
-  : T extends OptionNull
+  : T extends null
   ? OptionNullWithDefault
-  : T extends OptionArrayBoolean
+  : T extends Array<boolean>
   ? OptionArrayBooleanWithDefault
-  : T extends OptionArrayNumber
+  : T extends Array<number>
   ? OptionArrayNumberWithDefault
-  : T extends OptionArrayString
+  : T extends Array<string>
   ? OptionArrayStringWithDefault
-  : T extends OptionArrayObject
+  : T extends Array<UnknownObject>
   ? OptionArrayObjectWithDefault
+  : T extends Array<unknown>
+  ? OptionArrayUnknownWithDefault
+  : T extends unknown
+  ? OptionUnknownWithDefault
+  : never;
+
+export type OptionDefinition<T, TypeOfDefault = void> = TypeOfDefault extends true
+  ? WithDefault<T>
+  : T extends boolean
+  ? OptionBoolean
+  : T extends number
+  ? OptionNumber
+  : T extends string
+  ? OptionString
+  : T extends UnknownObject
+  ? OptionObject
+  : T extends null
+  ? OptionNull
+  : T extends Array<boolean>
+  ? OptionArrayBoolean
+  : T extends Array<number>
+  ? OptionArrayNumber
+  : T extends Array<string>
+  ? OptionArrayString
+  : T extends Array<UnknownObject>
+  ? OptionArrayObject
+  : T extends Array<unknown>
+  ? OptionArrayUnknown
+  : T extends unknown
+  ? OptionUnknown
   : never;
 
 /** Creates an option interface */
 export interface OptionConstructor {
   /**
    * Creates an option interface
-   * @param option - Option properties {@link OptionDefinition}
+   * @param option - Option properties {@link OptionDefinitionGeneric}
    * @returns Option interface {@link OptionInterface}.
    * @example const option = new Option({ name: "foo", type: "string" })
    */
-  new (option: OptionDefinition): OptionInterface<OptionDefinition>;
+  new (option: OptionDefinitionGeneric): OptionInterface<OptionDefinitionGeneric>;
 }
 
 /** Option interface */
-export interface OptionInterface<T extends OptionDefinition> {
+export interface OptionInterface<T extends OptionDefinitionGeneric, TypeOfValue = void> {
   get name(): T["name"];
 
   get description(): T["description"];
@@ -300,13 +356,13 @@ export interface OptionInterface<T extends OptionDefinition> {
   get type(): GetOptionTypeFromDefinition<T>["type"];
 
   /** Current value */
-  get value(): GetOptionValueTypeFromDefinition<T>;
+  get value(): GetOptionValueTypeFromDefinition<T, TypeOfValue>;
 
-  set value(value: GetOptionValueTypeFromDefinition<T>);
+  set value(value: GetOptionValueTypeFromDefinition<T, TypeOfValue>);
 
   get itemsType(): GetOptionTypeFromDefinition<T>["itemsType"];
 
-  get default(): GetOptionValueTypeFromDefinition<T> | undefined;
+  get default(): GetOptionValueTypeFromDefinition<T, TypeOfValue>;
   /**
    * Allows to execute a function whenever the option value changes
    * @param eventListener - Function to execute when the option value changes {@link EventListener}
@@ -320,7 +376,7 @@ export interface OptionInterface<T extends OptionDefinition> {
    * @param options - Options {@link SetMethodOptions}
    * @example option.set({ foo: 2 }, { merge: false })
    */
-  set(value: GetOptionValueTypeFromDefinition<T>, options: SetMethodOptions): void;
+  set(value: GetOptionValueTypeFromDefinition<T, TypeOfValue>, options: SetMethodOptions): void;
 
   /**
    * Start emitting events
@@ -329,7 +385,7 @@ export interface OptionInterface<T extends OptionDefinition> {
   startEvents(): void;
 }
 
-export type OptionInterfaceGeneric = OptionInterface<OptionDefinition>;
+export type OptionInterfaceGeneric = OptionInterface<OptionDefinitionGeneric>;
 
 /** Options of the set method */
 export interface SetMethodOptions {

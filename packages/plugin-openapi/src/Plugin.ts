@@ -1,8 +1,6 @@
 import type {
-  OptionString,
-  OptionInterfaceGeneric,
-  WithDefault,
-  OptionInterface,
+  OptionInterfaceOfType,
+  OptionDefinition,
   ConfigNamespaceInterface,
 } from "@mocks-server/config";
 import type {
@@ -24,7 +22,10 @@ const DEFAULT_FOLDER = "openapi";
 
 const COLLECTION_NAMESPACE = "collection";
 
-const COLLECTION_OPTIONS: [WithDefault<OptionString>, OptionString] = [
+const COLLECTION_OPTIONS: [
+  OptionDefinition<string, { hasDefault: true }>,
+  OptionDefinition<string>
+] = [
   {
     description: "Name for the collection created from OpenAPI definitions",
     name: "id",
@@ -78,8 +79,8 @@ export const Plugin: PluginConstructor = class Plugin implements PluginInterface
   private _loadRoutes: DefinitionsLoaders["loadRoutes"];
   private _loadCollections: DefinitionsLoaders["loadCollections"];
   private _documentsAlerts: AlertsInterface;
-  private _collectionIdOption: OptionInterface<WithDefault<OptionString>>;
-  private _collectionFromOption: OptionInterface<OptionString>;
+  private _collectionIdOption: OptionInterfaceOfType<string, { hasDefault: true }>;
+  private _collectionFromOption: OptionInterfaceOfType<string>;
 
   constructor({ logger, alerts, mock, files, config }: ScopedCoreInterface) {
     this._config = config as ConfigNamespaceInterface; // TODO, remove cast when core ensures config
@@ -90,7 +91,7 @@ export const Plugin: PluginConstructor = class Plugin implements PluginInterface
     const configCollection = this._config.addNamespace(COLLECTION_NAMESPACE);
     [this._collectionIdOption, this._collectionFromOption] = configCollection.addOptions(
       COLLECTION_OPTIONS
-    ) as [OptionInterface<WithDefault<OptionString>>, OptionInterface<OptionString>];
+    ) as [OptionInterfaceOfType<string, { hasDefault: true }>, OptionInterfaceOfType<string>];
 
     this._documentsAlerts = this._alerts.collection("documents");
 

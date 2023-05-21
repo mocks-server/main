@@ -65,9 +65,15 @@ interface OptionBaseProps<T extends OptionSingleValue> {
   itemsType?: undefined;
 }
 
+type SetNullable<T> = T & { nullable: true };
+
 type OptionBooleanProps = OptionBaseProps<boolean>;
 
+type OptionBooleanPropsNullable = SetNullable<OptionBooleanProps>;
+
 type OptionBooleanPropsWithDefault = AddDefaultToOption<OptionBooleanProps, boolean>;
+
+type OptionBooleanPropsWithDefaultNullable = SetNullable<OptionBooleanPropsWithDefault>;
 
 type OptionNumberProps = OptionBaseProps<number>;
 
@@ -226,6 +232,31 @@ export type GetOptionTypeFromDefinition<T extends OptionDefinitionGeneric> =
     : T extends OptionUnknown
     ? OptionUnknown
     : never;
+
+export type GetOptionHasDefaultFromDefinition<T extends OptionDefinitionGeneric> =
+  T extends OptionBooleanWithDefault
+    ? true
+    : T extends OptionNumberWithDefault
+    ? true
+    : T extends OptionStringWithDefault
+    ? true
+    : T extends OptionObjectWithDefault
+    ? true
+    : T extends OptionNullWithDefault
+    ? true
+    : T extends OptionArrayBooleanWithDefault
+    ? true
+    : T extends OptionArrayNumberWithDefault
+    ? true
+    : T extends OptionArrayStringWithDefault
+    ? true
+    : T extends OptionArrayObjectWithDefault
+    ? true
+    : T extends OptionArrayUnknownWithDefault
+    ? true
+    : T extends OptionUnknownWithDefault
+    ? true
+    : void;
 
 export type GetOptionValueTypeFromDefinition<
   T extends OptionDefinitionGeneric,
@@ -392,3 +423,10 @@ export interface SetMethodOptions {
   /** When passed value is an object, determines whether it has to be merged with previous value or not */
   merge?: boolean;
 }
+
+export type OptionInterfaceOfType<TypeOfValue, HasDefault = void> = OptionInterface<
+  OptionDefinition<TypeOfValue, HasDefault>,
+  GetOptionHasDefaultFromDefinition<OptionDefinition<TypeOfValue, HasDefault>> extends true
+    ? TypeOfValue
+    : TypeOfValue | undefined
+>;

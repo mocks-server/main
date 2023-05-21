@@ -12,6 +12,8 @@ import type {
   SetMethodOptions,
   GetOptionValueTypeFromDefinition,
   GetOptionTypeFromDefinition,
+  OptionInterfaceOfType,
+  OptionDefinition,
 } from "./Option.types";
 import { typeIsArray, typeIsObject, optionIsObject, avoidArraysMerge } from "./Typing";
 import { validateOptionAndThrow, validateValueTypeAndThrow } from "./Validation";
@@ -156,11 +158,3 @@ export class Option<T extends OptionDefinitionGeneric, TypeOfValue = void>
     return this._hasBeenSet;
   }
 }
-
-/* const foo: OptionInterface<> = new Option({
-  name: "foo",
-  type: "string",
-  default: "bar",
-  nullable: true,
-  description: "foo description",
-}); */

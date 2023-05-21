@@ -6,6 +6,9 @@ import type {
   SetMethodOptions,
   OptionInterfaceGeneric,
   OptionDefinitionGeneric,
+  OptionInterfaceOfType,
+  GetOptionValueTypeFromDefinition,
+  GetOptionHasDefaultFromDefinition,
 } from "./Option.types";
 import type { ConfigValidationResult } from "./Validation.types";
 
@@ -96,16 +99,26 @@ export interface ConfigInterface {
    * @returns Configuration option {@link OptionInterface}
    * @example const option = config.addOption({ name: "foo", type: "number"})
    */
-  addOption<Type extends OptionDefinitionGeneric>(optionDefinition: Type): OptionInterface<Type>;
+  addOption<Type extends OptionDefinitionGeneric>(
+    optionDefinition: Type
+  ): OptionInterfaceOfType<
+    GetOptionValueTypeFromDefinition<Type>,
+    GetOptionHasDefaultFromDefinition<Type>
+  >;
   /**
    * Adds several configuration options, or throw an error in case any of them already exist
    * @param options - Array of option properties {@link OptionDefinitionGeneric}
    * @returns Array of configuration options {@link OptionInterface}
    * @example const [option1, option2] = config.addOptions([{ name: "foo", type: "number"}, { name: "foo2", type: "string"}])
    */
-  addOptions(
+  addOptions<Type extends OptionDefinitionGeneric[]>(
     options: [...OptionDefinitionGeneric[]]
-  ): [...OptionInterface<OptionDefinitionGeneric>[]];
+  ): [
+    ...OptionInterfaceOfType<
+      GetOptionValueTypeFromDefinition<Type[number]>,
+      GetOptionHasDefaultFromDefinition<Type[number]>
+    >[]
+  ];
 
   /** Returns current options values and values from all child namespaces */
   value: ConfigurationObject;
@@ -187,16 +200,26 @@ export interface ConfigNamespaceInterface extends ObjectWithName {
    * @returns Configuration option {@link OptionInterface}
    * @example const option = namespace.addOption({ name: "foo", type: "number"})
    */
-  addOption<Type extends OptionDefinitionGeneric>(optionProperties: Type): OptionInterface<Type>;
+  addOption<Type extends OptionDefinitionGeneric>(
+    optionDefinition: Type
+  ): OptionInterfaceOfType<
+    GetOptionValueTypeFromDefinition<Type>,
+    GetOptionHasDefaultFromDefinition<Type>
+  >;
   /**
    * Adds several namespace options, or throw an error in case any of them already exist
    * @param options - Array of option properties {@link OptionDefinitionGeneric}
    * @returns Array of options {@link OptionInterface}
    * @example const [option1, option2] = namespace.addOptions([{ name: "foo", type: "number"}, { name: "foo2", type: "string"}])
    */
-  addOptions(
+  addOptions<Type extends OptionDefinitionGeneric[]>(
     options: [...OptionDefinitionGeneric[]]
-  ): [...OptionInterface<OptionDefinitionGeneric>[]];
+  ): [
+    ...OptionInterfaceOfType<
+      GetOptionValueTypeFromDefinition<Type[number]>,
+      GetOptionHasDefaultFromDefinition<Type[number]>
+    >[]
+  ];
   /**
    * Set the value of the options, including child namespaces, using the values in the provided configuration object
    * @param configuration - Configuration object {@link ConfigurationObject}

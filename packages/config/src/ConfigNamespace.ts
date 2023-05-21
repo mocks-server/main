@@ -16,10 +16,12 @@ import {
 } from "./ConfigNamespaceHelpers";
 import { Option } from "./Option";
 import type {
-  OptionInterface,
   OptionInterfaceGeneric,
   SetMethodOptions,
   OptionDefinitionGeneric,
+  OptionInterfaceOfType,
+  GetOptionValueTypeFromDefinition,
+  GetOptionHasDefaultFromDefinition,
 } from "./Option.types";
 
 export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
@@ -47,20 +49,38 @@ export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
     this._isRoot = isRoot;
   }
 
-  public addOption<T extends OptionDefinitionGeneric>(optionProperties: T): OptionInterface<T> {
+  public addOption<Type extends OptionDefinitionGeneric>(
+    optionProperties: Type
+  ): OptionInterfaceOfType<
+    GetOptionValueTypeFromDefinition<Type>,
+    GetOptionHasDefaultFromDefinition<Type>
+  > {
     checkOptionName(optionProperties.name, {
       options: this._options,
       namespaces: this._isRoot ? this._brothers : this._namespaces,
     });
-    const option = new Option(optionProperties) as OptionInterface<T>;
+    const option = new Option(optionProperties);
     this._options.push(option);
-    return option;
+    return option as OptionInterfaceOfType<
+      GetOptionValueTypeFromDefinition<Type>,
+      GetOptionHasDefaultFromDefinition<Type>
+    >;
   }
 
-  public addOptions(
+  public addOptions<Type extends OptionDefinitionGeneric[]>(
     options: [...OptionDefinitionGeneric[]]
-  ): [...OptionInterface<OptionDefinitionGeneric>[]] {
-    return options.map((option) => this.addOption(option));
+  ): [
+    ...OptionInterfaceOfType<
+      GetOptionValueTypeFromDefinition<Type[number]>,
+      GetOptionHasDefaultFromDefinition<Type[number]>
+    >[]
+  ] {
+    return options.map((option) => this.addOption(option)) as [
+      ...OptionInterfaceOfType<
+        GetOptionValueTypeFromDefinition<Type[number]>,
+        GetOptionHasDefaultFromDefinition<Type[number]>
+      >[]
+    ];
   }
 
   private _setOptions(configuration: ConfigurationObject, options: SetMethodOptions): void {

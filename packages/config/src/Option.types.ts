@@ -77,15 +77,27 @@ type OptionBooleanPropsWithDefaultNullable = SetNullable<OptionBooleanPropsWithD
 
 type OptionNumberProps = OptionBaseProps<number>;
 
+type OptionNumberPropsNullable = SetNullable<OptionNumberProps>;
+
 type OptionNumberPropsWithDefault = AddDefaultToOption<OptionNumberProps, number>;
+
+type OptionNumberPropsWithDefaultNullable = SetNullable<OptionNumberPropsWithDefault>;
 
 type OptionStringProps = OptionBaseProps<string>;
 
+type OptionStringPropsNullable = SetNullable<OptionStringProps>;
+
 type OptionStringPropsWithDefault = AddDefaultToOption<OptionStringProps, string>;
+
+type OptionStringPropsWithDefaultNullable = SetNullable<OptionStringPropsWithDefault>;
 
 type OptionObjectProps = OptionBaseProps<UnknownObject>;
 
+type OptionObjectPropsNullable = SetNullable<OptionObjectProps>;
+
 type OptionObjectPropsWithDefault = AddDefaultToOption<OptionObjectProps, UnknownObject>;
+
+type OptionObjectPropsWithDefaultNullable = SetNullable<OptionObjectPropsWithDefault>;
 
 type OptionNullProps = OptionBaseProps<null>;
 
@@ -93,7 +105,11 @@ type OptionNullPropsWithDefault = AddDefaultToOption<OptionNullProps, null>;
 
 type OptionUnknownProps = OptionBaseProps<unknown>;
 
+type OptionUnknownPropsNullable = SetNullable<OptionUnknownProps>;
+
 type OptionUnknownPropsWithDefault = AddDefaultToOption<OptionNullProps, unknown>;
+
+type OptionUnknownPropsWithDefaultNullable = SetNullable<OptionUnknownPropsWithDefault>;
 
 interface OptionArrayBaseProps<T extends OptionArrayValueContent> {
   type: "array";
@@ -102,212 +118,419 @@ interface OptionArrayBaseProps<T extends OptionArrayValueContent> {
 
 type OptionArrayBooleanProps = OptionArrayBaseProps<boolean>;
 
+type OptionArrayBooleanPropsNullable = SetNullable<OptionArrayBooleanProps>;
+
 type OptionArrayBooleanPropsWithDefault = AddDefaultToOption<OptionArrayBooleanProps, boolean[]>;
+
+type OptionArrayBooleanPropsWithDefaultNullable = SetNullable<OptionArrayBooleanPropsWithDefault>;
 
 type OptionArrayNumberProps = OptionArrayBaseProps<number>;
 
+type OptionArrayNumberPropsNullable = SetNullable<OptionArrayNumberProps>;
+
 type OptionArrayNumberPropsWithDefault = AddDefaultToOption<OptionArrayNumberProps, number[]>;
+
+type OptionArrayNumberPropsWithDefaultNullable = SetNullable<OptionArrayNumberPropsWithDefault>;
 
 type OptionArrayStringProps = OptionArrayBaseProps<string>;
 
+type OptionArrayStringPropsNullable = SetNullable<OptionArrayStringProps>;
+
 type OptionArrayStringPropsWithDefault = AddDefaultToOption<OptionArrayStringProps, string[]>;
 
+type OptionArrayStringPropsWithDefaultNullable = SetNullable<OptionArrayStringPropsWithDefault>;
+
 type OptionArrayObjectProps = OptionArrayBaseProps<UnknownObject>;
+
+type OptionArrayObjectPropsNullable = SetNullable<OptionArrayObjectProps>;
 
 type OptionArrayObjectPropsWithDefault = AddDefaultToOption<
   OptionArrayObjectProps,
   UnknownObject[]
 >;
 
+type OptionArrayObjectPropsWithDefaultNullable = SetNullable<OptionArrayObjectPropsWithDefault>;
+
 type OptionArrayUnknownProps = OptionArrayBaseProps<unknown>;
+
+type OptionArrayUnknownPropsNullable = SetNullable<OptionArrayUnknownProps>;
 
 type OptionArrayUnknownPropsWithDefault = AddDefaultToOption<OptionArrayUnknownProps, unknown[]>;
 
+type OptionArrayUnknownPropsWithDefaultNullable = SetNullable<OptionArrayUnknownPropsWithDefault>;
+
 type OptionGenericProps =
   | OptionBooleanProps
+  | OptionBooleanPropsNullable
   | OptionBooleanPropsWithDefault
+  | OptionBooleanPropsWithDefaultNullable
   | OptionNumberProps
+  | OptionNumberPropsNullable
   | OptionNumberPropsWithDefault
+  | OptionNumberPropsWithDefaultNullable
   | OptionStringProps
+  | OptionStringPropsNullable
   | OptionStringPropsWithDefault
+  | OptionStringPropsWithDefaultNullable
   | OptionObjectProps
+  | OptionObjectPropsNullable
   | OptionObjectPropsWithDefault
+  | OptionObjectPropsWithDefaultNullable
   | OptionNullProps
   | OptionNullPropsWithDefault
   | OptionUnknownProps
-  | OptionUnknownPropsWithDefault;
+  | OptionUnknownPropsNullable
+  | OptionUnknownPropsWithDefault
+  | OptionUnknownPropsWithDefaultNullable;
 
 type OptionArrayGenericProps =
   | OptionArrayBooleanProps
+  | OptionArrayBooleanPropsNullable
   | OptionArrayBooleanPropsWithDefault
+  | OptionArrayBooleanPropsWithDefaultNullable
   | OptionArrayNumberProps
+  | OptionArrayNumberPropsNullable
   | OptionArrayNumberPropsWithDefault
+  | OptionArrayNumberPropsWithDefaultNullable
   | OptionArrayStringProps
+  | OptionArrayStringPropsNullable
   | OptionArrayStringPropsWithDefault
+  | OptionArrayStringPropsWithDefaultNullable
   | OptionArrayObjectProps
+  | OptionArrayObjectPropsNullable
   | OptionArrayObjectPropsWithDefault
+  | OptionArrayObjectPropsWithDefaultNullable
   | OptionArrayUnknownProps
-  | OptionArrayUnknownPropsWithDefault;
+  | OptionArrayUnknownPropsNullable
+  | OptionArrayUnknownPropsWithDefault
+  | OptionArrayUnknownPropsWithDefaultNullable;
 
 export type OptionDefinitionGeneric = OptionBase & (OptionGenericProps | OptionArrayGenericProps);
 
 export type OptionBoolean = OptionBase & OptionBooleanProps;
-export type OptionBooleanWithDefault = OptionBase & OptionBooleanPropsWithDefault;
-export type OptionNumber = OptionBase & OptionNumberProps;
-export type OptionNumberWithDefault = OptionBase & OptionNumberPropsWithDefault;
-export type OptionString = OptionBase & OptionStringProps;
-export type OptionStringWithDefault = OptionBase & OptionStringPropsWithDefault;
+type OptionBooleanNullable = OptionBase & OptionBooleanPropsNullable;
+type OptionBooleanWithDefault = OptionBase & OptionBooleanPropsWithDefault;
+type OptionBooleanWithDefaultNullable = OptionBase & OptionBooleanPropsWithDefaultNullable;
+type OptionNumber = OptionBase & OptionNumberProps;
+type OptionNumberNullable = OptionBase & OptionNumberPropsNullable;
+type OptionNumberWithDefault = OptionBase & OptionNumberPropsWithDefault;
+type OptionNumberWithDefaultNullable = OptionBase & OptionNumberPropsWithDefaultNullable;
+type OptionString = OptionBase & OptionStringProps;
+type OptionStringNullable = OptionBase & OptionStringPropsNullable;
+type OptionStringWithDefault = OptionBase & OptionStringPropsWithDefault;
+type OptionStringWithDefaultNullable = OptionBase & OptionStringPropsWithDefaultNullable;
 export type OptionObject = OptionBase & OptionObjectProps;
-export type OptionObjectWithDefault = OptionBase & OptionObjectPropsWithDefault;
-export type OptionNull = OptionBase & OptionNullProps;
-export type OptionNullWithDefault = OptionBase & OptionNullPropsWithDefault;
-export type OptionUnknown = OptionBase & OptionUnknownProps;
-export type OptionUnknownWithDefault = OptionBase & OptionUnknownPropsWithDefault;
-export type OptionArrayBoolean = OptionBase & OptionArrayBooleanProps;
-export type OptionArrayBooleanWithDefault = OptionBase & OptionArrayBooleanPropsWithDefault;
-export type OptionArrayNumber = OptionBase & OptionArrayNumberProps;
-export type OptionArrayNumberWithDefault = OptionBase & OptionArrayNumberPropsWithDefault;
-export type OptionArrayString = OptionBase & OptionArrayStringProps;
-export type OptionArrayStringWithDefault = OptionBase & OptionArrayStringPropsWithDefault;
-export type OptionArrayObject = OptionBase & OptionArrayObjectProps;
-export type OptionArrayObjectWithDefault = OptionBase & OptionArrayObjectPropsWithDefault;
+type OptionObjectNullable = OptionBase & OptionObjectPropsNullable;
+type OptionObjectWithDefault = OptionBase & OptionObjectPropsWithDefault;
+type OptionObjectWithDefaultNullable = OptionBase & OptionObjectPropsWithDefaultNullable;
+type OptionNull = OptionBase & OptionNullProps;
+type OptionNullWithDefault = OptionBase & OptionNullPropsWithDefault;
+type OptionUnknown = OptionBase & OptionUnknownProps;
+type OptionUnknownNullable = OptionBase & OptionUnknownPropsNullable;
+type OptionUnknownWithDefault = OptionBase & OptionUnknownPropsWithDefault;
+type OptionUnknownWithDefaultNullable = OptionBase & OptionUnknownPropsWithDefaultNullable;
+type OptionArrayBoolean = OptionBase & OptionArrayBooleanProps;
+type OptionArrayBooleanNullable = OptionBase & OptionArrayBooleanPropsNullable;
+type OptionArrayBooleanWithDefault = OptionBase & OptionArrayBooleanPropsWithDefault;
+type OptionArrayBooleanWithDefaultNullable = OptionBase &
+  OptionArrayBooleanPropsWithDefaultNullable;
+type OptionArrayNumber = OptionBase & OptionArrayNumberProps;
+type OptionArrayNumberNullable = OptionBase & OptionArrayNumberPropsNullable;
+type OptionArrayNumberWithDefault = OptionBase & OptionArrayNumberPropsWithDefault;
+type OptionArrayNumberWithDefaultNullable = OptionBase & OptionArrayNumberPropsWithDefaultNullable;
+type OptionArrayString = OptionBase & OptionArrayStringProps;
+type OptionArrayStringNullable = OptionBase & OptionArrayStringPropsNullable;
+type OptionArrayStringWithDefault = OptionBase & OptionArrayStringPropsWithDefault;
+type OptionArrayStringWithDefaultNullable = OptionBase & OptionArrayStringPropsWithDefaultNullable;
+type OptionArrayObject = OptionBase & OptionArrayObjectProps;
+type OptionArrayObjectNullable = OptionBase & OptionArrayObjectPropsNullable;
+type OptionArrayObjectWithDefault = OptionBase & OptionArrayObjectPropsWithDefault;
+type OptionArrayObjectWithDefaultNullable = OptionBase & OptionArrayObjectPropsWithDefaultNullable;
 type OptionArrayUnknown = OptionBase & OptionArrayUnknownProps;
+type OptionArrayUnknownNullable = OptionBase & OptionArrayUnknownPropsNullable;
 type OptionArrayUnknownWithDefault = OptionBase & OptionArrayUnknownPropsWithDefault;
+type OptionArrayUnknownWithDefaultNullable = OptionBase &
+  OptionArrayUnknownPropsWithDefaultNullable;
 
 export type OptionArrayGeneric =
   | OptionArrayBoolean
+  | OptionArrayBooleanNullable
   | OptionArrayNumber
+  | OptionArrayNumberNullable
   | OptionArrayString
+  | OptionArrayStringNullable
   | OptionArrayObject
+  | OptionArrayObjectNullable
   | OptionArrayUnknown
+  | OptionArrayUnknownNullable
   | OptionArrayBooleanWithDefault
+  | OptionArrayBooleanWithDefaultNullable
   | OptionArrayNumberWithDefault
+  | OptionArrayNumberWithDefaultNullable
   | OptionArrayStringWithDefault
+  | OptionArrayStringWithDefaultNullable
   | OptionArrayObjectWithDefault
-  | OptionArrayUnknownWithDefault;
+  | OptionArrayObjectWithDefaultNullable
+  | OptionArrayUnknownWithDefault
+  | OptionArrayUnknownWithDefaultNullable;
 
 export type GetOptionTypeFromDefinition<T extends OptionDefinitionGeneric> =
-  T extends OptionBooleanWithDefault
+  T extends OptionBooleanWithDefaultNullable
+    ? OptionBooleanWithDefaultNullable
+    : T extends OptionBooleanWithDefault
     ? OptionBooleanWithDefault
+    : T extends OptionBooleanNullable
+    ? OptionBooleanNullable
     : T extends OptionBoolean
     ? OptionBoolean
+    : T extends OptionNumberWithDefaultNullable
+    ? OptionNumberWithDefaultNullable
     : T extends OptionNumberWithDefault
     ? OptionNumberWithDefault
+    : T extends OptionNumberNullable
+    ? OptionNumberNullable
     : T extends OptionNumber
     ? OptionNumber
+    : T extends OptionStringWithDefaultNullable
+    ? OptionStringWithDefaultNullable
     : T extends OptionStringWithDefault
     ? OptionStringWithDefault
+    : T extends OptionStringNullable
+    ? OptionStringNullable
     : T extends OptionString
     ? OptionString
+    : T extends OptionObjectWithDefaultNullable
+    ? OptionObjectWithDefaultNullable
     : T extends OptionObjectWithDefault
     ? OptionObjectWithDefault
+    : T extends OptionObjectNullable
+    ? OptionObjectNullable
     : T extends OptionObject
     ? OptionObject
     : T extends OptionNullWithDefault
     ? OptionNullWithDefault
     : T extends OptionNull
     ? OptionNull
+    : T extends OptionArrayBooleanWithDefaultNullable
+    ? OptionArrayBooleanWithDefaultNullable
     : T extends OptionArrayBooleanWithDefault
     ? OptionArrayBooleanWithDefault
+    : T extends OptionArrayBooleanNullable
+    ? OptionArrayBooleanNullable
     : T extends OptionArrayBoolean
     ? OptionArrayBoolean
+    : T extends OptionArrayNumberWithDefaultNullable
+    ? OptionArrayNumberWithDefaultNullable
     : T extends OptionArrayNumberWithDefault
     ? OptionArrayNumberWithDefault
+    : T extends OptionArrayNumberNullable
+    ? OptionArrayNumberNullable
     : T extends OptionArrayNumber
     ? OptionArrayNumber
+    : T extends OptionArrayStringWithDefaultNullable
+    ? OptionArrayStringWithDefaultNullable
     : T extends OptionArrayStringWithDefault
     ? OptionArrayStringWithDefault
+    : T extends OptionArrayStringNullable
+    ? OptionArrayStringNullable
     : T extends OptionArrayString
     ? OptionArrayString
+    : T extends OptionArrayObjectWithDefaultNullable
+    ? OptionArrayObjectWithDefaultNullable
     : T extends OptionArrayObjectWithDefault
     ? OptionArrayObjectWithDefault
+    : T extends OptionArrayObjectNullable
+    ? OptionArrayObjectNullable
     : T extends OptionArrayObject
     ? OptionArrayObject
+    : T extends OptionArrayUnknownWithDefaultNullable
+    ? OptionArrayUnknownWithDefaultNullable
     : T extends OptionArrayUnknownWithDefault
     ? OptionArrayUnknownWithDefault
+    : T extends OptionArrayUnknownNullable
+    ? OptionArrayUnknownNullable
     : T extends OptionArrayUnknown
     ? OptionArrayUnknown
+    : T extends OptionUnknownWithDefaultNullable
+    ? OptionUnknownWithDefaultNullable
     : T extends OptionUnknownWithDefault
     ? OptionUnknownWithDefault
+    : T extends OptionUnknownNullable
+    ? OptionUnknownNullable
     : T extends OptionUnknown
     ? OptionUnknown
     : never;
 
+export type GetOptionIsNullableFromDefinition<T extends OptionDefinitionGeneric> =
+  T extends OptionBooleanWithDefaultNullable
+    ? true
+    : T extends OptionNumberWithDefaultNullable
+    ? true
+    : T extends OptionStringWithDefaultNullable
+    ? true
+    : T extends OptionObjectWithDefaultNullable
+    ? true
+    : T extends OptionArrayBooleanWithDefaultNullable
+    ? true
+    : T extends OptionArrayNumberWithDefaultNullable
+    ? true
+    : T extends OptionArrayStringWithDefaultNullable
+    ? true
+    : T extends OptionArrayObjectWithDefaultNullable
+    ? true
+    : T extends OptionArrayUnknownWithDefaultNullable
+    ? true
+    : T extends OptionUnknownWithDefaultNullable
+    ? true
+    : false;
+
 export type GetOptionHasDefaultFromDefinition<T extends OptionDefinitionGeneric> =
-  T extends OptionBooleanWithDefault
+  T extends OptionBooleanWithDefaultNullable
+    ? true
+    : T extends OptionBooleanWithDefault
+    ? true
+    : T extends OptionNumberWithDefaultNullable
     ? true
     : T extends OptionNumberWithDefault
     ? true
+    : T extends OptionStringWithDefaultNullable
+    ? true
     : T extends OptionStringWithDefault
+    ? true
+    : T extends OptionObjectWithDefaultNullable
     ? true
     : T extends OptionObjectWithDefault
     ? true
     : T extends OptionNullWithDefault
     ? true
+    : T extends OptionArrayBooleanWithDefaultNullable
+    ? true
     : T extends OptionArrayBooleanWithDefault
+    ? true
+    : T extends OptionArrayNumberWithDefaultNullable
     ? true
     : T extends OptionArrayNumberWithDefault
     ? true
+    : T extends OptionArrayStringWithDefaultNullable
+    ? true
     : T extends OptionArrayStringWithDefault
+    ? true
+    : T extends OptionArrayObjectWithDefaultNullable
     ? true
     : T extends OptionArrayObjectWithDefault
     ? true
+    : T extends OptionArrayUnknownWithDefaultNullable
+    ? true
     : T extends OptionArrayUnknownWithDefault
+    ? true
+    : T extends OptionUnknownWithDefaultNullable
     ? true
     : T extends OptionUnknownWithDefault
     ? true
-    : void;
+    : false;
+
+type AllowNullOrNotFromDefinition<
+  T extends OptionDefinitionGeneric,
+  TypeOfValue
+> = GetOptionIsNullableFromDefinition<T> extends true ? TypeOfValue | null : TypeOfValue;
+
+type AllowUndefinedOrNotFromDefinition<
+  T extends OptionDefinitionGeneric,
+  TypeOfValue
+> = GetOptionHasDefaultFromDefinition<T> extends true
+  ? AllowNullOrNotFromDefinition<T, TypeOfValue>
+  : AllowNullOrNotFromDefinition<T, TypeOfValue | undefined>;
 
 export type GetOptionValueTypeFromDefinition<
   T extends OptionDefinitionGeneric,
   TypeOfValue = void
 > = TypeOfValue extends void
-  ? T extends OptionBooleanWithDefault
-    ? boolean
+  ? T extends OptionBooleanWithDefaultNullable
+    ? AllowUndefinedOrNotFromDefinition<T, boolean>
+    : T extends OptionBooleanWithDefault
+    ? AllowUndefinedOrNotFromDefinition<T, boolean>
+    : T extends OptionBooleanNullable
+    ? AllowUndefinedOrNotFromDefinition<T, boolean>
     : T extends OptionBoolean
-    ? boolean | undefined
+    ? AllowUndefinedOrNotFromDefinition<T, boolean>
+    : T extends OptionNumberWithDefaultNullable
+    ? AllowUndefinedOrNotFromDefinition<T, number>
     : T extends OptionNumberWithDefault
-    ? number
+    ? AllowUndefinedOrNotFromDefinition<T, number>
+    : T extends OptionNumberNullable
+    ? AllowUndefinedOrNotFromDefinition<T, number>
     : T extends OptionNumber
-    ? number | undefined
+    ? AllowUndefinedOrNotFromDefinition<T, number>
+    : T extends OptionStringWithDefaultNullable
+    ? AllowUndefinedOrNotFromDefinition<T, string>
     : T extends OptionStringWithDefault
-    ? string
+    ? AllowUndefinedOrNotFromDefinition<T, string>
+    : T extends OptionStringNullable
+    ? AllowUndefinedOrNotFromDefinition<T, string>
     : T extends OptionString
-    ? string | undefined
+    ? AllowUndefinedOrNotFromDefinition<T, string>
+    : T extends OptionObjectWithDefaultNullable
+    ? AllowUndefinedOrNotFromDefinition<T, UnknownObject>
     : T extends OptionObjectWithDefault
-    ? UnknownObject
+    ? AllowUndefinedOrNotFromDefinition<T, UnknownObject>
+    : T extends OptionObjectNullable
+    ? AllowUndefinedOrNotFromDefinition<T, UnknownObject>
     : T extends OptionObject
-    ? UnknownObject | undefined
+    ? AllowUndefinedOrNotFromDefinition<T, UnknownObject>
     : T extends OptionNullWithDefault
-    ? null
+    ? AllowUndefinedOrNotFromDefinition<T, null>
     : T extends OptionNull
-    ? null | undefined
+    ? AllowUndefinedOrNotFromDefinition<T, null>
+    : T extends OptionArrayBooleanWithDefaultNullable
+    ? AllowUndefinedOrNotFromDefinition<T, boolean[]>
     : T extends OptionArrayBooleanWithDefault
-    ? boolean[]
+    ? AllowUndefinedOrNotFromDefinition<T, boolean[]>
+    : T extends OptionArrayBooleanNullable
+    ? AllowUndefinedOrNotFromDefinition<T, boolean[]>
     : T extends OptionArrayBoolean
-    ? boolean[] | undefined
+    ? AllowUndefinedOrNotFromDefinition<T, boolean[]>
+    : T extends OptionArrayNumberWithDefaultNullable
+    ? AllowUndefinedOrNotFromDefinition<T, number[]>
     : T extends OptionArrayNumberWithDefault
-    ? number[]
+    ? AllowUndefinedOrNotFromDefinition<T, number[]>
+    : T extends OptionArrayNumberNullable
+    ? AllowUndefinedOrNotFromDefinition<T, number[]>
     : T extends OptionArrayNumber
-    ? number[] | undefined
+    ? AllowUndefinedOrNotFromDefinition<T, number[]>
+    : T extends OptionArrayStringWithDefaultNullable
+    ? AllowUndefinedOrNotFromDefinition<T, string[]>
     : T extends OptionArrayStringWithDefault
-    ? string[]
+    ? AllowUndefinedOrNotFromDefinition<T, string[]>
+    : T extends OptionArrayStringNullable
+    ? AllowUndefinedOrNotFromDefinition<T, string[]>
     : T extends OptionArrayString
-    ? string[] | undefined
+    ? AllowUndefinedOrNotFromDefinition<T, string[]>
+    : T extends OptionArrayObjectWithDefaultNullable
+    ? AllowUndefinedOrNotFromDefinition<T, UnknownObject[]>
     : T extends OptionArrayObjectWithDefault
-    ? UnknownObject[]
+    ? AllowUndefinedOrNotFromDefinition<T, UnknownObject[]>
+    : T extends OptionArrayObjectNullable
+    ? AllowUndefinedOrNotFromDefinition<T, UnknownObject[]>
     : T extends OptionArrayObject
-    ? UnknownObject[] | undefined
+    ? AllowUndefinedOrNotFromDefinition<T, UnknownObject[]>
+    : T extends OptionArrayUnknownWithDefaultNullable
+    ? AllowUndefinedOrNotFromDefinition<T, unknown[]>
     : T extends OptionArrayUnknownWithDefault
-    ? unknown[]
+    ? AllowUndefinedOrNotFromDefinition<T, unknown[]>
+    : T extends OptionArrayUnknownNullable
+    ? AllowUndefinedOrNotFromDefinition<T, unknown[]>
     : T extends OptionArrayUnknown
-    ? unknown[] | undefined
+    ? AllowUndefinedOrNotFromDefinition<T, unknown[]>
+    : T extends OptionUnknownWithDefaultNullable
+    ? AllowUndefinedOrNotFromDefinition<T, unknown>
     : T extends OptionUnknownWithDefault
-    ? unknown
+    ? AllowUndefinedOrNotFromDefinition<T, unknown>
+    : T extends OptionUnknownNullable
+    ? AllowUndefinedOrNotFromDefinition<T, unknown>
     : T extends OptionUnknown
-    ? unknown | undefined
+    ? AllowUndefinedOrNotFromDefinition<T, unknown>
     : never
-  : TypeOfValue;
+  : AllowUndefinedOrNotFromDefinition<T, TypeOfValue>;
 
 export type WithDefault<T> = T extends boolean
   ? OptionBooleanWithDefault
@@ -333,9 +556,55 @@ export type WithDefault<T> = T extends boolean
   ? OptionUnknownWithDefault
   : never;
 
-export type OptionDefinition<T, TypeOfDefault = void> = TypeOfDefault extends true
-  ? WithDefault<T>
-  : T extends boolean
+export type WithNullable<T> = T extends boolean
+  ? OptionBooleanNullable
+  : T extends number
+  ? OptionNumberNullable
+  : T extends string
+  ? OptionStringNullable
+  : T extends UnknownObject
+  ? OptionObjectNullable
+  : T extends null
+  ? OptionNull
+  : T extends Array<boolean>
+  ? OptionArrayBooleanNullable
+  : T extends Array<number>
+  ? OptionArrayNumberNullable
+  : T extends Array<string>
+  ? OptionArrayStringNullable
+  : T extends Array<UnknownObject>
+  ? OptionArrayObjectNullable
+  : T extends Array<unknown>
+  ? OptionArrayUnknownNullable
+  : T extends unknown
+  ? OptionUnknownNullable
+  : never;
+
+export type WithDefaultAndNullable<T> = T extends boolean
+  ? OptionBooleanWithDefaultNullable
+  : T extends number
+  ? OptionNumberWithDefaultNullable
+  : T extends string
+  ? OptionStringWithDefaultNullable
+  : T extends UnknownObject
+  ? OptionObjectWithDefaultNullable
+  : T extends null
+  ? OptionNullWithDefault
+  : T extends Array<boolean>
+  ? OptionArrayBooleanWithDefaultNullable
+  : T extends Array<number>
+  ? OptionArrayNumberWithDefaultNullable
+  : T extends Array<string>
+  ? OptionArrayStringWithDefaultNullable
+  : T extends Array<UnknownObject>
+  ? OptionArrayObjectWithDefaultNullable
+  : T extends Array<unknown>
+  ? OptionArrayUnknownWithDefaultNullable
+  : T extends unknown
+  ? OptionUnknownWithDefaultNullable
+  : never;
+
+export type WithoutDefaultNotNullable<T> = T extends boolean
   ? OptionBoolean
   : T extends number
   ? OptionNumber
@@ -358,6 +627,25 @@ export type OptionDefinition<T, TypeOfDefault = void> = TypeOfDefault extends tr
   : T extends unknown
   ? OptionUnknown
   : never;
+
+interface OptionDefinitionOptions {
+  hasDefault?: boolean;
+  nullable?: boolean;
+}
+
+type GetHasDefaultFromOptions<T> = T extends { hasDefault: true } ? true : false;
+type GetIsNullableFromOptions<T> = T extends { nullable: true } ? true : false;
+
+export type OptionDefinition<
+  T,
+  Options extends OptionDefinitionOptions | void = void
+> = GetIsNullableFromOptions<Options> extends true
+  ? GetHasDefaultFromOptions<Options> extends true
+    ? WithDefaultAndNullable<T>
+    : WithNullable<T>
+  : GetHasDefaultFromOptions<Options> extends true
+  ? WithDefault<T>
+  : WithoutDefaultNotNullable<T>;
 
 /** Creates an option interface */
 export interface OptionConstructor {
@@ -424,9 +712,7 @@ export interface SetMethodOptions {
   merge?: boolean;
 }
 
-export type OptionInterfaceOfType<TypeOfValue, HasDefault = void> = OptionInterface<
-  OptionDefinition<TypeOfValue, HasDefault>,
-  GetOptionHasDefaultFromDefinition<OptionDefinition<TypeOfValue, HasDefault>> extends true
-    ? TypeOfValue
-    : TypeOfValue | undefined
->;
+export type OptionInterfaceOfType<
+  TypeOfValue,
+  Options extends OptionDefinitionOptions | void = void
+> = OptionInterface<OptionDefinition<TypeOfValue, Options>, TypeOfValue>;

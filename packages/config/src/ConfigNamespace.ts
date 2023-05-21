@@ -22,6 +22,7 @@ import type {
   OptionInterfaceOfType,
   GetOptionValueTypeFromDefinition,
   GetOptionHasDefaultFromDefinition,
+  GetOptionIsNullableFromDefinition,
 } from "./Option.types";
 
 export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
@@ -53,7 +54,10 @@ export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
     optionProperties: Type
   ): OptionInterfaceOfType<
     GetOptionValueTypeFromDefinition<Type>,
-    GetOptionHasDefaultFromDefinition<Type>
+    {
+      hasDefault: GetOptionHasDefaultFromDefinition<Type>;
+      nullable: GetOptionIsNullableFromDefinition<Type>;
+    }
   > {
     checkOptionName(optionProperties.name, {
       options: this._options,
@@ -63,7 +67,10 @@ export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
     this._options.push(option);
     return option as OptionInterfaceOfType<
       GetOptionValueTypeFromDefinition<Type>,
-      GetOptionHasDefaultFromDefinition<Type>
+      {
+        hasDefault: GetOptionHasDefaultFromDefinition<Type>;
+        nullable: GetOptionIsNullableFromDefinition<Type>;
+      }
     >;
   }
 
@@ -72,13 +79,19 @@ export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
   ): [
     ...OptionInterfaceOfType<
       GetOptionValueTypeFromDefinition<Type[number]>,
-      GetOptionHasDefaultFromDefinition<Type[number]>
+      {
+        hasDefault: GetOptionHasDefaultFromDefinition<Type[number]>;
+        nullable: GetOptionIsNullableFromDefinition<Type[number]>;
+      }
     >[]
   ] {
     return options.map((option) => this.addOption(option)) as [
       ...OptionInterfaceOfType<
         GetOptionValueTypeFromDefinition<Type[number]>,
-        GetOptionHasDefaultFromDefinition<Type[number]>
+        {
+          hasDefault: GetOptionHasDefaultFromDefinition<Type[number]>;
+          nullable: GetOptionIsNullableFromDefinition<Type[number]>;
+        }
       >[]
     ];
   }

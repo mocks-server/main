@@ -9,6 +9,7 @@ import type {
   OptionInterfaceOfType,
   GetOptionValueTypeFromDefinition,
   GetOptionHasDefaultFromDefinition,
+  GetOptionIsNullableFromDefinition,
 } from "./Option.types";
 import type { ConfigValidationResult } from "./Validation.types";
 
@@ -100,10 +101,13 @@ export interface ConfigInterface {
    * @example const option = config.addOption({ name: "foo", type: "number"})
    */
   addOption<Type extends OptionDefinitionGeneric>(
-    optionDefinition: Type
+    optionProperties: Type
   ): OptionInterfaceOfType<
     GetOptionValueTypeFromDefinition<Type>,
-    GetOptionHasDefaultFromDefinition<Type>
+    {
+      hasDefault: GetOptionHasDefaultFromDefinition<Type>;
+      nullable: GetOptionIsNullableFromDefinition<Type>;
+    }
   >;
   /**
    * Adds several configuration options, or throw an error in case any of them already exist
@@ -116,7 +120,10 @@ export interface ConfigInterface {
   ): [
     ...OptionInterfaceOfType<
       GetOptionValueTypeFromDefinition<Type[number]>,
-      GetOptionHasDefaultFromDefinition<Type[number]>
+      {
+        hasDefault: GetOptionHasDefaultFromDefinition<Type[number]>;
+        nullable: GetOptionIsNullableFromDefinition<Type[number]>;
+      }
     >[]
   ];
 
@@ -201,10 +208,13 @@ export interface ConfigNamespaceInterface extends ObjectWithName {
    * @example const option = namespace.addOption({ name: "foo", type: "number"})
    */
   addOption<Type extends OptionDefinitionGeneric>(
-    optionDefinition: Type
+    optionProperties: Type
   ): OptionInterfaceOfType<
     GetOptionValueTypeFromDefinition<Type>,
-    GetOptionHasDefaultFromDefinition<Type>
+    {
+      hasDefault: GetOptionHasDefaultFromDefinition<Type>;
+      nullable: GetOptionIsNullableFromDefinition<Type>;
+    }
   >;
   /**
    * Adds several namespace options, or throw an error in case any of them already exist
@@ -217,7 +227,10 @@ export interface ConfigNamespaceInterface extends ObjectWithName {
   ): [
     ...OptionInterfaceOfType<
       GetOptionValueTypeFromDefinition<Type[number]>,
-      GetOptionHasDefaultFromDefinition<Type[number]>
+      {
+        hasDefault: GetOptionHasDefaultFromDefinition<Type[number]>;
+        nullable: GetOptionIsNullableFromDefinition<Type[number]>;
+      }
     >[]
   ];
   /**

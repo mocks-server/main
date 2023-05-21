@@ -28,7 +28,6 @@ import type {
   OptionInterfaceOfType,
   SetMethodOptions,
   OptionDefinitionGeneric,
-  OptionDefinition,
 } from "./Option.types";
 import {
   CONFIG_NAMESPACE,
@@ -59,13 +58,13 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
   private _namespaces: ConfigNamespaceInterface[];
   private _rootNamespace: ConfigNamespaceInterface;
   private _configNamespace: ConfigNamespaceInterface;
-  private _readFile: OptionInterfaceOfType<boolean, true>;
-  private _readArguments: OptionInterfaceOfType<boolean, true>;
-  private _readEnvironment: OptionInterfaceOfType<boolean, true>;
+  private _readFile: OptionInterfaceOfType<boolean, { hasDefault: true }>;
+  private _readArguments: OptionInterfaceOfType<boolean, { hasDefault: true }>;
+  private _readEnvironment: OptionInterfaceOfType<boolean, { hasDefault: true }>;
   private _fileSearchPlaces: OptionInterfaceOfType<Array<string>>;
   private _fileSearchFrom: OptionInterfaceOfType<string>;
   private _fileSearchStop: OptionInterfaceOfType<string>;
-  private _allowUnknownArguments: OptionInterfaceOfType<boolean, true>;
+  private _allowUnknownArguments: OptionInterfaceOfType<boolean, { hasDefault: true }>;
   private _config: ConfigurationObject;
   public addOption: ConfigNamespaceInterface["addOption"];
   public addOptions: ConfigNamespaceInterface["addOptions"];
@@ -152,13 +151,13 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
         default: false,
       },
     ]) as [
-      OptionInterfaceOfType<boolean, true>,
-      OptionInterfaceOfType<boolean, true>,
-      OptionInterfaceOfType<boolean, true>,
+      OptionInterfaceOfType<boolean, { hasDefault: true }>,
+      OptionInterfaceOfType<boolean, { hasDefault: true }>,
+      OptionInterfaceOfType<boolean, { hasDefault: true }>,
       OptionInterfaceOfType<string>,
       OptionInterfaceOfType<Array<string>>,
       OptionInterfaceOfType<string>,
-      OptionInterfaceOfType<boolean, true>
+      OptionInterfaceOfType<boolean, { hasDefault: true }>
     ];
   }
 

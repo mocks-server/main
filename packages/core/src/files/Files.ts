@@ -11,13 +11,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import path from "path";
 
+import type { RegisterOptions } from "@babel/register";
 import type {
   ConfigNamespaceInterface,
-  OptionObject,
-  WithDefault,
-  OptionString,
-  OptionBoolean,
-  OptionInterface,
+  OptionInterfaceOfType,
+  OptionDefinition,
+  UnknownObject,
 } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import { ensureDirSync, existsSync } from "fs-extra";
@@ -53,9 +52,9 @@ import {
 } from "./Helpers";
 
 const OPTIONS: [
-  WithDefault<OptionBoolean>,
-  WithDefault<OptionString>,
-  WithDefault<OptionBoolean>
+  OptionDefinition<boolean, { hasDefault: true }>,
+  OptionDefinition<string, { hasDefault: true }>,
+  OptionDefinition<boolean, { hasDefault: true }>
 ] = [
   {
     name: "enabled",
@@ -79,7 +78,10 @@ const OPTIONS: [
 
 const BABEL_REGISTER_NAMESPACE = "babelRegister";
 
-const BABEL_REGISTER_OPTIONS: [WithDefault<OptionBoolean>, WithDefault<OptionObject>] = [
+const BABEL_REGISTER_OPTIONS: [
+  OptionDefinition<boolean, { hasDefault: true }>,
+  OptionDefinition<UnknownObject, { hasDefault: true }>
+] = [
   {
     name: "enabled",
     description: "Load @babel/register",
@@ -104,11 +106,14 @@ export const Files: FilesConstructor = class Files implements FilesInterface {
   private _alertsLoaders: AlertsInterface;
   private _alertsLoad: AlertsInterface;
   private _config: ConfigNamespaceInterface;
-  private _enabledOption: OptionInterface<WithDefault<OptionBoolean>>;
-  private _pathOption: OptionInterface<WithDefault<OptionString>>;
-  private _watchOption: OptionInterface<WithDefault<OptionBoolean>>;
-  private _babelRegisterOption: OptionInterface<WithDefault<OptionBoolean>>;
-  private _babelRegisterOptionsOption: OptionInterface<WithDefault<OptionObject>>;
+  private _enabledOption: OptionInterfaceOfType<boolean, { hasDefault: true }>;
+  private _pathOption: OptionInterfaceOfType<string, { hasDefault: true }>;
+  private _watchOption: OptionInterfaceOfType<boolean, { hasDefault: true }>;
+  private _babelRegisterOption: OptionInterfaceOfType<boolean, { hasDefault: true }>;
+  private _babelRegisterOptionsOption: OptionInterfaceOfType<
+    RegisterOptions,
+    { hasDefault: true }
+  >;
   private _collectionsLoader: DefaultCollectionsLoaderInterface;
   private _routesLoader: DefaultRoutesLoaderInterface;
   private _enabled: boolean;
@@ -143,15 +148,15 @@ export const Files: FilesConstructor = class Files implements FilesInterface {
     [this._enabledOption, this._pathOption, this._watchOption] = this._config.addOptions(
       OPTIONS
     ) as [
-      OptionInterface<WithDefault<OptionBoolean>>,
-      OptionInterface<WithDefault<OptionString>>,
-      OptionInterface<WithDefault<OptionBoolean>>
+      OptionInterfaceOfType<boolean, { hasDefault: true }>,
+      OptionInterfaceOfType<string, { hasDefault: true }>,
+      OptionInterfaceOfType<boolean, { hasDefault: true }>
     ];
     [this._babelRegisterOption, this._babelRegisterOptionsOption] = this._config
       .addNamespace(BABEL_REGISTER_NAMESPACE)
       .addOptions(BABEL_REGISTER_OPTIONS) as [
-      OptionInterface<WithDefault<OptionBoolean>>,
-      OptionInterface<WithDefault<OptionObject>>
+      OptionInterfaceOfType<boolean, { hasDefault: true }>,
+      OptionInterfaceOfType<RegisterOptions, { hasDefault: true }>
     ];
     this._pathOption.onChange(this._onChangePathOption.bind(this));
     this._watchOption.onChange(this._onChangeWatchOption.bind(this));

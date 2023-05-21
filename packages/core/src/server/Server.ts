@@ -11,18 +11,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import http from "http";
 import type { Server as HttpServer } from "http";
 
-import type {
-  ConfigNamespaceInterface,
-  OptionBoolean,
-  OptionString,
-  OptionNumber,
-  OptionInterface,
-  WithDefault,
-  OptionObject,
-} from "@mocks-server/config";
+import type { ConfigNamespaceInterface, OptionInterfaceOfType } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import type { OptionsJson, OptionsUrlencoded } from "body-parser";
 import cors from "cors";
+import type { CorsOptions } from "cors";
 import express from "express";
 import type { Application } from "express";
 
@@ -72,17 +65,20 @@ export const Server: ServerConstructor = class Server implements ServerInterface
   private _mockRouter: RequestHandler;
   private _customRouters: CustomRouter[];
   private _alerts: AlertsInterface;
-  private _portOption: OptionInterface<WithDefault<OptionNumber>>;
-  private _hostOption: OptionInterface<WithDefault<OptionString>>;
-  private _corsEnabledOption: OptionInterface<WithDefault<OptionBoolean>>;
-  private _corsOptionsOption: OptionInterface<OptionObject>;
-  private _jsonBodyParserEnabledOption: OptionInterface<WithDefault<OptionBoolean>>;
-  private _jsonBodyParserOptionsOption: OptionInterface<OptionObject>;
-  private _urlEncodedBodyParserEnabledOption: OptionInterface<WithDefault<OptionBoolean>>;
-  private _urlEncodedBodyParserOptionsOption: OptionInterface<WithDefault<OptionObject>>;
-  private _httpsEnabledOption: OptionInterface<WithDefault<OptionBoolean>>;
-  private _httpsCertOption: OptionInterface<OptionString>;
-  private _httpsKeyOption: OptionInterface<OptionString>;
+  private _portOption: OptionInterfaceOfType<number, { hasDefault: true }>;
+  private _hostOption: OptionInterfaceOfType<string, { hasDefault: true }>;
+  private _corsEnabledOption: OptionInterfaceOfType<boolean, { hasDefault: true }>;
+  private _corsOptionsOption: OptionInterfaceOfType<CorsOptions, { hasDefault: true }>;
+  private _jsonBodyParserEnabledOption: OptionInterfaceOfType<boolean, { hasDefault: true }>;
+  private _jsonBodyParserOptionsOption: OptionInterfaceOfType<OptionsJson, { hasDefault: true }>;
+  private _urlEncodedBodyParserEnabledOption: OptionInterfaceOfType<boolean, { hasDefault: true }>;
+  private _urlEncodedBodyParserOptionsOption: OptionInterfaceOfType<
+    OptionsUrlencoded,
+    { hasDefault: true }
+  >;
+  private _httpsEnabledOption: OptionInterfaceOfType<boolean, { hasDefault: true }>;
+  private _httpsCertOption: OptionInterfaceOfType<string>;
+  private _httpsKeyOption: OptionInterfaceOfType<string>;
   private _express: Application;
   private _serverInitialized: boolean;
   private _server?: HttpServer;
@@ -110,31 +106,34 @@ export const Server: ServerConstructor = class Server implements ServerInterface
     const httpsConfigNamespace = this._config.addNamespace(HTTPS_NAMESPACE);
 
     [this._portOption, this._hostOption] = this._config.addOptions(OPTIONS) as [
-      OptionInterface<WithDefault<OptionNumber>>,
-      OptionInterface<WithDefault<OptionString>>
+      OptionInterfaceOfType<number, { hasDefault: true }>,
+      OptionInterfaceOfType<string, { hasDefault: true }>
     ];
 
     [this._corsEnabledOption, this._corsOptionsOption] = corsConfigNamespace.addOptions(
       CORS_OPTIONS
-    ) as [OptionInterface<WithDefault<OptionBoolean>>, OptionInterface<WithDefault<OptionObject>>];
+    ) as [
+      OptionInterfaceOfType<boolean, { hasDefault: true }>,
+      OptionInterfaceOfType<CorsOptions, { hasDefault: true }>
+    ];
 
     [this._jsonBodyParserEnabledOption, this._jsonBodyParserOptionsOption] =
       jsonBodyParserConfigNamespace.addOptions(JSON_BODY_PARSER_OPTIONS) as [
-        OptionInterface<WithDefault<OptionBoolean>>,
-        OptionInterface<WithDefault<OptionObject>>
+        OptionInterfaceOfType<boolean, { hasDefault: true }>,
+        OptionInterfaceOfType<OptionsJson, { hasDefault: true }>
       ];
 
     [this._urlEncodedBodyParserEnabledOption, this._urlEncodedBodyParserOptionsOption] =
       formBodyParserConfigNamespace.addOptions(URL_ENCODED_BODY_PARSER_OPTIONS) as [
-        OptionInterface<WithDefault<OptionBoolean>>,
-        OptionInterface<WithDefault<OptionObject>>
+        OptionInterfaceOfType<boolean, { hasDefault: true }>,
+        OptionInterfaceOfType<OptionsUrlencoded, { hasDefault: true }>
       ];
 
     [this._httpsEnabledOption, this._httpsCertOption, this._httpsKeyOption] =
       httpsConfigNamespace.addOptions(HTTPS_OPTIONS) as [
-        OptionInterface<WithDefault<OptionBoolean>>,
-        OptionInterface<OptionString>,
-        OptionInterface<OptionString>
+        OptionInterfaceOfType<boolean, { hasDefault: true }>,
+        OptionInterfaceOfType<string>,
+        OptionInterfaceOfType<string>
       ];
 
     this.restart = this.restart.bind(this);
@@ -181,12 +180,10 @@ export const Server: ServerConstructor = class Server implements ServerInterface
 
     // TODO, move to middleware variant handler. Add options to variant to configure it
     if (this._jsonBodyParserEnabledOption.value) {
-      this._express.use(jsonBodyParser(this._jsonBodyParserOptionsOption.value as OptionsJson));
+      this._express.use(jsonBodyParser(this._jsonBodyParserOptionsOption.value));
     }
     if (this._urlEncodedBodyParserEnabledOption.value) {
-      this._express.use(
-        urlEncodedBodyParser(this._urlEncodedBodyParserOptionsOption.value as OptionsUrlencoded)
-      );
+      this._express.use(urlEncodedBodyParser(this._urlEncodedBodyParserOptionsOption.value));
     }
 
     // TODO, move to variants router. Add options to routes to configure it

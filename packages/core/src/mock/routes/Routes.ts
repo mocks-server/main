@@ -10,9 +10,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type {
   ConfigNamespaceInterface,
-  OptionInterface,
-  OptionNumber,
-  WithDefault,
+  OptionInterfaceOfType,
+  OptionDefinition,
 } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import { flatten, compact, isUndefined } from "lodash";
@@ -52,7 +51,7 @@ import {
 
 const LOAD_NAMESPACE = "load";
 
-const OPTIONS: [WithDefault<OptionNumber>] = [
+const OPTIONS: [OptionDefinition<number, { hasDefault: true }>] = [
   {
     description: "Global delay to apply to routes",
     name: "delay",
@@ -102,7 +101,7 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
   private _alerts: AlertsInterface;
   private _alertsLoad: AlertsInterface;
   private _config: ConfigNamespaceInterface;
-  private _delayOption: OptionInterface<WithDefault<OptionNumber>>;
+  private _delayOption: OptionInterfaceOfType<number, { hasDefault: true }>;
   private _variantHandlers: VariantHandlerConstructor[];
   private _core: CoreInterface;
   private _routes: RouteInterface[];
@@ -125,7 +124,7 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
     this._loggerLoad = this._logger.namespace(LOAD_NAMESPACE);
 
     [this._delayOption] = this._config.addOptions(OPTIONS) as [
-      OptionInterface<WithDefault<OptionNumber>>
+      OptionInterfaceOfType<number, { hasDefault: true }>
     ];
     this._delayOption.onChange(onChange);
   }

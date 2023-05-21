@@ -10,9 +10,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type {
   ConfigNamespaceInterface,
-  OptionInterface,
-  OptionArrayObject,
-  WithDefault,
+  OptionInterfaceOfType,
+  OptionDefinition,
 } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import isPromise from "is-promise";
@@ -34,11 +33,12 @@ import type {
   PluginLifeCycleMethod,
 } from "./Plugins.types";
 
-const OPTIONS: [OptionArrayObject] = [
+const OPTIONS: [OptionDefinition<PluginConstructor[], { hasDefault: true }>] = [
   {
     description: "Plugins to be registered",
     name: "register",
     type: "array",
+    itemsType: "unknown",
     default: [],
     extraData: {
       scaffold: {
@@ -52,7 +52,7 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
   private _config: ConfigNamespaceInterface;
   private _logger: LoggerInterface;
   private _alerts: AlertsInterface;
-  private _pluginsToRegister: OptionInterface<WithDefault<OptionArrayObject>>;
+  private _pluginsToRegister: OptionInterfaceOfType<PluginConstructor[], { hasDefault: true }>;
   private _alertsRegister: AlertsInterface;
   private _alertsInit: AlertsInterface;
   private _alertsStart: AlertsInterface;
@@ -76,7 +76,7 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
     this._logger = logger;
 
     [this._pluginsToRegister] = this._config.addOptions(OPTIONS) as [
-      OptionInterface<WithDefault<OptionArrayObject>>
+      OptionInterfaceOfType<PluginConstructor[], { hasDefault: true }>
     ];
 
     this._alerts = alerts;
@@ -98,7 +98,7 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
 
   public async register(): Promise<void> {
     this._alertsRegister.clean();
-    this._plugins = this._pluginsToRegister.value as unknown as PluginConstructor[];
+    this._plugins = this._pluginsToRegister.value;
     this._logger.verbose(`Registering ${this._plugins.length} plugins`);
     await this._registerPlugins();
     this._logger.verbose(`Registered ${this._pluginsRegistered} plugins without errors`);

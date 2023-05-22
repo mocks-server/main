@@ -178,9 +178,6 @@ const typeAndThrowValidators: TypeAndThrowValidators = {
   [NUMBER_TYPE]: validateNumberAndThrow,
   [OBJECT_TYPE]: validateObjectAndThrow,
   [ARRAY_TYPE]: validateArrayAndThrow,
-  [UNKNOWN_TYPE]: () => {
-    /* Do nothing */
-  },
 };
 
 function validateSchema(
@@ -344,7 +341,7 @@ export function validateValueTypeAndThrow(
   nullable?: boolean,
   itemsType?: OptionItemsType
 ): undefined | never {
-  if (nullable && value === null) {
+  if ((nullable && value === null) || type === UNKNOWN_TYPE) {
     return;
   }
   typeAndThrowValidators[type](value, itemsType);

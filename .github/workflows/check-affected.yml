@@ -3,6 +3,7 @@ on:
   pull_request:
     branches:
       - master
+      - pre-release
 jobs:
   check-affected:
     runs-on: ubuntu-latest

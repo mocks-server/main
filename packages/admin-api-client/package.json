@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/admin-api-client",
-  "version": "7.0.0",
+  "version": "8.0.0-beta.1",
   "description": "Client of @mocks-server/plugin-admin-api",
   "keywords": [
     "mocks-server",

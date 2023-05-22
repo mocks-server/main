@@ -18,6 +18,6 @@ jobs:
         cache: 'pnpm'
     - run: pnpm install
     - run: pnpm run build:all
-    - run: pnpm -r publish --no-git-checks
+    - run: pnpm -r publish --no-git-checks --tag beta
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

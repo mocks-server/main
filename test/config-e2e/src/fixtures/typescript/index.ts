@@ -14,24 +14,23 @@ import type {
   ConfigValidationOptions,
   ConfigValidationResult,
   ConfigValidationSchema,
-  OptionArrayString,
+  OptionDefinition,
   OptionInterfaceGeneric,
-  OptionString,
+  OptionInterfaceOfType,
   OptionInterface,
-  WithDefault,
 } from "@mocks-server/config";
 
 const configOptions: ConfigOptions = { moduleName: "mocks", mergeArrays: true };
 
 const config: ConfigInterface = new Config(configOptions);
 
-const rootOptionsOptions: [OptionArrayString] = [
+const rootOptionsOptions: [OptionDefinition<string[], { hasDefault: true}>] = [
   { name: "rootOption1", type: "array", default: ["foo-value"], itemsType: "string" }
-] as [OptionInterface<OptionArrayString>]
+] as [OptionDefinition<string[], { hasDefault: true}>]
 
-const rootOption: OptionInterface<OptionArrayString> = config.addOption(rootOptionsOptions[0]);
+const rootOption: OptionInterfaceOfType<string[]> = config.addOption(rootOptionsOptions[0]);
 
-const rootOption1 = config.option("rootOption1") as OptionInterface<OptionArrayString>;
+const rootOption1 = config.option("rootOption1") as OptionInterfaceOfType<string[]>;
 
 if (rootOption !== rootOption1) {
   throw new Error("Option is different!");
@@ -52,13 +51,13 @@ config.options.forEach((option) => {
 
   const newValue: OptionValue = { foo: "foo" };
   const setOptions: SetMethodOptions = { merge: false };
-  option.value = newValue;
+  // option.value = newValue;
 })
 
 const configNamespace: ConfigNamespaceInterface = config.addNamespace("name");
-const namespaceOptionOptions: WithDefault<OptionString> = { name: "fooOption", type: "string", default: "foo" };
+const namespaceOptionOptions: OptionDefinition<string, { hasDefault: true}> = { name: "fooOption", type: "string", default: "foo" };
 
-const namespaceOption: OptionInterface<WithDefault<OptionString>> = configNamespace.addOption(namespaceOptionOptions);
+const namespaceOption: OptionInterfaceOfType<string, { hasDefault: true}> = configNamespace.addOption(namespaceOptionOptions);
 
 const namespaceOptions = configNamespace.addOptions([{
   name: "foo",

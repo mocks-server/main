@@ -23,6 +23,7 @@ export const BOOLEAN_TYPE = "boolean";
 export const OBJECT_TYPE = "object";
 export const ARRAY_TYPE = "array";
 export const NULL_TYPE = "null";
+export const UNKNOWN_TYPE = "unknown";
 
 function typeIsNumber(type?: OptionType): boolean {
   return type === NUMBER_TYPE;

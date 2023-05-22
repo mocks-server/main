@@ -107,5 +107,45 @@ describe("getValidationSchema method", () => {
         additionalProperties: true,
       });
     });
+
+    it("should return a valid validation schema when unknown type is used", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      namespace.addOption({ name: "fooOption", type: "unknown" });
+      namespace.addOption({ name: "fooOption2", type: "array", itemsType: "unknown" });
+      namespace.addOption({ name: "fooOption3", type: "unknown", nullable: true });
+      const validationSchema = config.getValidationSchema({ allowAdditionalProperties: true });
+      expect(validationSchema).toEqual({
+        type: "object",
+        properties: {
+          config: {
+            type: "object",
+            properties: {
+              readFile: { type: "boolean" },
+              readArguments: { type: "boolean" },
+              readEnvironment: { type: "boolean" },
+              fileSearchPlaces: { type: "array", items: { type: "string" } },
+              fileSearchFrom: { type: "string" },
+              fileSearchStop: { type: "string" },
+              allowUnknownArguments: { type: "boolean" },
+            },
+            additionalProperties: true,
+          },
+          foo: {
+            type: "object",
+            properties: {
+              fooOption: { type: ["boolean", "number", "string", "object", "array"] },
+              fooOption2: {
+                type: "array",
+                items: { type: ["boolean", "number", "string", "object", "array"] },
+              },
+              fooOption3: { type: ["boolean", "number", "string", "object", "array", "null"] },
+            },
+            additionalProperties: true,
+          },
+        },
+        additionalProperties: true,
+      });
+    });
   });
 });

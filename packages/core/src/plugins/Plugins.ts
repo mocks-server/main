@@ -38,7 +38,6 @@ const OPTIONS: [OptionDefinition<PluginConstructor[], { hasDefault: true }>] = [
     description: "Plugins to be registered",
     name: "register",
     type: "array",
-    itemsType: "unknown",
     default: [],
     extraData: {
       scaffold: {

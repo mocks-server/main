@@ -19,10 +19,13 @@ import {
   OBJECT_TYPE,
   ARRAY_TYPE,
   NULL_TYPE,
+  UNKNOWN_TYPE,
 } from "./Typing";
 import type { ConfigValidationResult, GetValidationSchemaOptions } from "./Validation.types";
 
-const ajv = new Ajv({ allErrors: true });
+const ajv = new Ajv({ allErrors: true, allowUnionTypes: true });
+
+const UNKNOWN_TYPE_SCHEMA = [BOOLEAN_TYPE, NUMBER_TYPE, STRING_TYPE, OBJECT_TYPE, ARRAY_TYPE];
 
 type AnySingleValue = unknown;
 type AnyArrayValue = unknown[];
@@ -55,18 +58,24 @@ function enforceDefaultTypeSchema({
 
   const defaultProperty: JSONSchema7 = {};
 
+  const allowedType = type === UNKNOWN_TYPE ? UNKNOWN_TYPE_SCHEMA : type;
+
   if (nullable) {
-    defaultProperty.type = [type as JSONSchema7TypeName, NULL_TYPE as JSONSchema7TypeName];
+    defaultProperty.type = Array.isArray(allowedType)
+      ? ([...allowedType, NULL_TYPE] as JSONSchema7TypeName[])
+      : [allowedType as JSONSchema7TypeName, NULL_TYPE as JSONSchema7TypeName];
     properties.nullable = { enum: [true] };
   } else {
-    defaultProperty.type = type as JSONSchema7TypeName;
+    defaultProperty.type = allowedType as JSONSchema7TypeName;
   }
 
   if (itemsType) {
+    const allowedItemsType = itemsType === UNKNOWN_TYPE ? UNKNOWN_TYPE_SCHEMA : itemsType;
     properties.itemsType = { enum: [itemsType] };
     defaultProperty.items = {
-      type: itemsType as JSONSchema7TypeName,
+      type: allowedItemsType as JSONSchema7TypeName,
     };
+
     schema.required = ["name", "type", "nullable", "itemsType"];
   }
 
@@ -86,11 +95,14 @@ const optionSchema: JSONSchema7 = {
     enforceDefaultTypeSchema({ type: BOOLEAN_TYPE }),
     enforceDefaultTypeSchema({ type: BOOLEAN_TYPE, nullable: true }),
     enforceDefaultTypeSchema({ type: OBJECT_TYPE }),
+    enforceDefaultTypeSchema({ type: UNKNOWN_TYPE }),
+    enforceDefaultTypeSchema({ type: UNKNOWN_TYPE, nullable: true }),
     enforceDefaultTypeSchema({ type: ARRAY_TYPE }),
     enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: NUMBER_TYPE }),
     enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: STRING_TYPE }),
     enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: BOOLEAN_TYPE }),
     enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: OBJECT_TYPE }),
+    enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: UNKNOWN_TYPE }),
   ],
 };
 
@@ -166,6 +178,9 @@ const typeAndThrowValidators: TypeAndThrowValidators = {
   [NUMBER_TYPE]: validateNumberAndThrow,
   [OBJECT_TYPE]: validateObjectAndThrow,
   [ARRAY_TYPE]: validateArrayAndThrow,
+  [UNKNOWN_TYPE]: () => {
+    /* Do nothing */
+  },
 };
 
 function validateSchema(
@@ -214,19 +229,24 @@ function addNamespaceSchema(
   const schema = namespace.options.reduce(
     (currentSchema: JSONSchema7, option: OptionInterfaceGeneric) => {
       const properties: { [key: string]: JSONSchema7 } = {};
+      const allowedType = option.type === UNKNOWN_TYPE ? UNKNOWN_TYPE_SCHEMA : option.type;
       if (option.nullable) {
         properties[option.name] = {
-          type: [option.type as JSONSchema7TypeName, NULL_TYPE as JSONSchema7TypeName],
+          type: Array.isArray(allowedType)
+            ? ([...allowedType, NULL_TYPE] as JSONSchema7TypeName[])
+            : [allowedType as JSONSchema7TypeName, NULL_TYPE as JSONSchema7TypeName],
         };
       } else {
         properties[option.name] = {
-          type: option.type as JSONSchema7TypeName,
+          type: allowedType as JSONSchema7TypeName,
         };
       }
 
       if (optionIsArray(option)) {
+        const allowedItemsType =
+          option.itemsType === UNKNOWN_TYPE ? UNKNOWN_TYPE_SCHEMA : option.itemsType;
         properties[option.name].items = {
-          type: option.itemsType,
+          type: allowedItemsType,
         } as JSONSchema7Definition;
       }
       currentSchema.properties = {

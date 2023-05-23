@@ -1,2 +1,5 @@
-export * from "./Collection";
-export { default as NestedCollections } from "./Collection";
+import { NestedCollections } from "./Collection";
+export { BaseNestedCollections, NestedCollections } from "./Collection";
+export * from "./types";
+
+export default NestedCollections;

@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## [unreleased]
+
+### Changed
+- refactor: Refactor and document types. Change exported types
+- style: Use prettier
+
 ## [7.0.0] - 2022-09-14
 
 ### Removed

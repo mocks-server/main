@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/core",
-  "version": "4.0.1",
+  "version": "5.0.0-beta.1",
   "description": "Pluggable mock server supporting multiple route variants and mocks",
   "keywords": [
     "mocks",
@@ -30,11 +30,15 @@
     "access": "public"
   },
   "files": [
-    "src",
-    "index.js"
+    "dist",
+    "scaffold",
+    "templates"
   ],
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsc",
+    "pretest:unit": "npm run build",
     "test:unit": "jest --runInBand"
   },
   "dependencies": {
@@ -64,5 +68,13 @@
   },
   "engines": {
     "node": ">=14.x"
+  },
+  "devDependencies": {
+    "@types/babel__register": "^7.17.0",
+    "@types/cors": "2.8.13",
+    "@types/express": "4.17.17",
+    "@types/globule": "1.1.6",
+    "@types/serve-static": "1.15.1",
+    "@types/update-notifier": "6.0.2"
   }
 }

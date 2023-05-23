@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/cypress-commands",
-  "version": "6.1.1",
+  "version": "7.0.0-beta.1",
   "description": "Extends Cypress' cy commands with methods for administrating Mocks Server",
   "keywords": [
     "cypress",
@@ -36,6 +36,7 @@
     "test:unit": "jest"
   },
   "dependencies": {
+    "@mocks-server/config": "workspace:*",
     "@mocks-server/admin-api-paths": "workspace:*",
     "@mocks-server/admin-api-client": "workspace:*"
   },

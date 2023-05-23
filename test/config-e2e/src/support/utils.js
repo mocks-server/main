@@ -35,8 +35,9 @@ function fixtureRunner(name, indexName, options = {}) {
 
 function logScope(namespace, optionName) {
   const namespaceName = namespace.name;
+  const isRoot = namespace.isRoot;
   const parentNamespaces = namespace.parents.map((parent) => parent.name);
-  return compact([...parentNamespaces, namespaceName, optionName]).join(".");
+  return compact([...parentNamespaces, isRoot ? undefined : namespaceName, optionName]).join(".");
 }
 
 function getValueType(option) {

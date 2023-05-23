@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 "use strict";
 
-const Core = require("@mocks-server/core");
+const { Core } = require("@mocks-server/core");
 const { createCore } = require("./src/createCore");
 
 module.exports = Core;

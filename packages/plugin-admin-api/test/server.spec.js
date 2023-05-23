@@ -129,11 +129,11 @@ describe("server", () => {
     let routes;
     beforeAll(() => {
       routes = server.mock.routes.plain;
-      server.mock._plainRoutes = null;
+      server.mock._routes = null;
     });
 
     afterAll(() => {
-      server.mock._plainRoutes = routes;
+      server.mock._routes = routes;
     });
 
     it("should respond with error 500", async () => {

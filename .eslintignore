@@ -10,3 +10,4 @@
 /test/core-e2e/src/fixtures
 /packages/core/test/functional/fixtures
 /test/main-e2e/src/fixtures
+/test/config-e2e/src/fixtures/ts-dist

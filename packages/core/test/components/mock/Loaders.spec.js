@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Javier Brea
+Copyright 2023 Javier Brea
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -10,9 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-const Loaders = require("../../../src/mock/Loaders");
+const { DefinitionsManager } = require("../../../src/mock/DefinitionsManager");
 
-describe("Loaders", () => {
+describe("DefinitionsManager", () => {
   let sandbox;
   let onLoad;
   let loaders;
@@ -21,44 +21,44 @@ describe("Loaders", () => {
     sandbox = sinon.createSandbox();
     sandbox.spy(console, "log");
     onLoad = sandbox.stub();
-    loaders = new Loaders({ onLoad });
+    loaders = new DefinitionsManager({ onLoad });
   });
 
   afterEach(() => {
     sandbox.restore();
   });
 
-  describe("new method", () => {
+  describe("createLoader method", () => {
     it("should return a load function", async () => {
-      expect(typeof loaders.new()).toEqual("function");
+      expect(typeof loaders.createLoader()).toEqual("function");
     });
   });
 
   describe("load function", () => {
     it("should call to onLoad callback", async () => {
-      const load = loaders.new();
+      const load = loaders.createLoader();
       load(["foo1", "foo2"]);
       expect(onLoad.callCount).toEqual(1);
     });
 
     it("should replace all previously loaded contents", async () => {
       expect.assertions(2);
-      const load = loaders.new();
+      const load = loaders.createLoader();
       load(["foo1", "foo2"]);
-      expect(loaders.contents).toEqual(["foo1", "foo2"]);
+      expect(loaders.definitions).toEqual(["foo1", "foo2"]);
       load(["foo3", "foo4"]);
-      expect(loaders.contents).toEqual(["foo3", "foo4"]);
+      expect(loaders.definitions).toEqual(["foo3", "foo4"]);
     });
 
     it("should not replace contents of other load functions", async () => {
       expect.assertions(2);
-      const load = loaders.new();
-      const load2 = loaders.new();
+      const load = loaders.createLoader();
+      const load2 = loaders.createLoader();
       load(["foo1", "foo2"]);
       load2(["foo3", "foo4"]);
-      expect(loaders.contents).toEqual(["foo1", "foo2", "foo3", "foo4"]);
+      expect(loaders.definitions).toEqual(["foo1", "foo2", "foo3", "foo4"]);
       load2(["foo5", "foo6"]);
-      expect(loaders.contents).toEqual(["foo1", "foo2", "foo5", "foo6"]);
+      expect(loaders.definitions).toEqual(["foo1", "foo2", "foo5", "foo6"]);
     });
   });
 });

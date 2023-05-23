@@ -1,4 +1,4 @@
-const Config = require("@mocks-server/config");
+const Config = require("@mocks-server/config").default;
 
 const { logConfig } = require("../../support/utils");
 

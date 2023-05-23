@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const express = require("express");
 
-const Core = require("../../../index");
+const { Core } = require("../../../src/index");
 const { doFetch, fixturesFolder, waitForServer, removeConfigFile } = require("../support/helpers");
 
 describe("when using custom router", () => {
@@ -23,7 +23,7 @@ describe("when using custom router", () => {
   });
   let core;
 
-  describe("and registering it before initializating the server", () => {
+  describe("and registering it before initializing the server", () => {
     beforeAll(async () => {
       core = new Core();
       core.server.addRouter("/api/custom", customRouter);

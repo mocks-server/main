@@ -1,14 +1,31 @@
-import type { Route, Routes, Collections, Collection, Core, MockLoaders, FilesContents, ConfigOption } from "@mocks-server/core";
+import type {
+  OptionInterfaceOfType,
+  OptionDefinition,
+  ConfigNamespaceInterface,
+} from "@mocks-server/config";
+import type {
+  RouteDefinition,
+  ScopedCoreInterface,
+  DefinitionsLoaders,
+  FilesLoaded,
+  CollectionDefinition,
+  AlertsInterface,
+  FilesInterface,
+} from "@mocks-server/core";
+import type { LoggerInterface } from "@mocks-server/logger";
 
-import { openApiRoutes } from "./openapi";
-import type { OpenApiDefinition } from "./types";
+import { openApiRoutes } from "./OpenApi";
+import type { OpenApiDefinition, PluginConstructor, PluginInterface } from "./types";
 
 const PLUGIN_ID = "openapi";
 const DEFAULT_FOLDER = "openapi";
 
 const COLLECTION_NAMESPACE = "collection";
 
-const COLLECTION_OPTIONS = [
+const COLLECTION_OPTIONS: [
+  OptionDefinition<string, { hasDefault: true }>,
+  OptionDefinition<string>
+] = [
   {
     description: "Name for the collection created from OpenAPI definitions",
     name: "id",
@@ -19,50 +36,62 @@ const COLLECTION_OPTIONS = [
   {
     description: "Name of the collection to extend from",
     name: "from",
-    type: "string"
+    type: "string",
   },
 ];
 
 interface RoutesAndCollections {
-  routes: Routes,
-  collections: Collections,
+  routes: RouteDefinition[];
+  collections: CollectionDefinition[];
 }
 
-function getRoutesCollection(routes: Routes, collectionOptions?: OpenApiDefinition.Collection): Collection | null {
+function getRoutesCollection(
+  routes: RouteDefinition[],
+  collectionOptions?: OpenApiDefinition.Collection
+): CollectionDefinition | null {
   if (!collectionOptions) {
     return null;
   }
-  return routes.reduce((collection, route: Route) => {
-    if (route.variants && route.variants.length) {
-      collection.routes.push(`${route.id}:${route.variants[0].id}`)
-    }
-    return collection;
-  }, { id: collectionOptions.id, from: collectionOptions.from || null, routes: [] } as Collection);
+  return routes.reduce(
+    (collection: CollectionDefinition, route: RouteDefinition) => {
+      if (route.variants && route.variants.length) {
+        collection.routes.push(`${route.id}:${route.variants[0].id}`);
+      }
+      return collection;
+    },
+    {
+      id: collectionOptions.id,
+      from: collectionOptions.from || null,
+      routes: [],
+    } as CollectionDefinition
+  );
 }
 
-class Plugin {
+export const Plugin: PluginConstructor = class Plugin implements PluginInterface {
   static get id() {
     return PLUGIN_ID;
   }
 
-  private _config: Core["config"]
-  private _logger: Core["logger"]
-  private _alerts: Core["alerts"]
-  private _files: Core["files"]
-  private _loadRoutes: MockLoaders["loadRoutes"]
-  private _loadCollections: MockLoaders["loadCollections"]
-  private _documentsAlerts: Core["alerts"]
-  private _collectionIdOption: ConfigOption
-  private _collectionFromOption: ConfigOption
+  private _config: ConfigNamespaceInterface;
+  private _logger: LoggerInterface;
+  private _alerts: AlertsInterface;
+  private _files: FilesInterface;
+  private _loadRoutes: DefinitionsLoaders["loadRoutes"];
+  private _loadCollections: DefinitionsLoaders["loadCollections"];
+  private _documentsAlerts: AlertsInterface;
+  private _collectionIdOption: OptionInterfaceOfType<string, { hasDefault: true }>;
+  private _collectionFromOption: OptionInterfaceOfType<string>;
 
-  constructor({ logger, alerts, mock, files, config }: Core) {
-    this._config = config;
-    this._logger = logger;
-    this._alerts = alerts;
+  constructor({ logger, alerts, mock, files, config }: ScopedCoreInterface) {
+    this._config = config as ConfigNamespaceInterface; // TODO, remove cast when core ensures config
+    this._logger = logger as LoggerInterface; // TODO, remove cast when core ensures logger
+    this._alerts = alerts as AlertsInterface; // TODO, remove cast when core ensures alerts
     this._files = files;
 
     const configCollection = this._config.addNamespace(COLLECTION_NAMESPACE);
-    [this._collectionIdOption, this._collectionFromOption] = configCollection.addOptions(COLLECTION_OPTIONS);
+    [this._collectionIdOption, this._collectionFromOption] = configCollection.addOptions(
+      COLLECTION_OPTIONS
+    ) as [OptionInterfaceOfType<string, { hasDefault: true }>, OptionInterfaceOfType<string>];
 
     this._documentsAlerts = this._alerts.collection("documents");
 
@@ -73,57 +102,72 @@ class Plugin {
       id: PLUGIN_ID,
       src: `${DEFAULT_FOLDER}/**/*`,
       onLoad: this._onLoadFiles.bind(this),
-    })
+    });
   }
 
-  async _getRoutesAndCollectionsFromFilesContents(filesContents: FilesContents): Promise<RoutesAndCollections> {
+  async _getRoutesAndCollectionsFromFilesContents(
+    filesContents: FilesLoaded
+  ): Promise<RoutesAndCollections> {
     const openApiRoutesAndCollections = await Promise.all(
-      filesContents.map((fileDetails) => {
-        const fileContent = fileDetails.content;
-        return fileContent.map((openAPIDefinition: OpenApiDefinition.Definition) => {
-          this._logger.debug(`Creating routes from openApi definition: '${JSON.stringify(openAPIDefinition)}'`);
-          return openApiRoutes(openAPIDefinition, {
-            defaultLocation: fileDetails.path,
-            logger: this._logger,
-            alerts: this._documentsAlerts
-          }).then((routes) => {
-            return {
-              routes,
-              collection: getRoutesCollection(routes, openAPIDefinition.collection)
-            }
+      filesContents
+        .map((fileDetails) => {
+          const fileContent = fileDetails.content as OpenApiDefinition.Definition[];
+          return fileContent.map((openAPIDefinition: OpenApiDefinition.Definition) => {
+            this._logger.debug(
+              `Creating routes from openApi definition: '${JSON.stringify(openAPIDefinition)}'`
+            );
+            return openApiRoutes(openAPIDefinition, {
+              defaultLocation: fileDetails.path,
+              logger: this._logger,
+              alerts: this._documentsAlerts,
+            }).then((routes) => {
+              return {
+                routes,
+                collection: getRoutesCollection(routes, openAPIDefinition.collection),
+              };
+            });
           });
-        });
-      }).flat()
+        })
+        .flat()
     );
 
-    return openApiRoutesAndCollections.reduce((allRoutesAndCollections, definitionRoutesAndCollections) => {
-      allRoutesAndCollections.routes = allRoutesAndCollections.routes.concat(definitionRoutesAndCollections.routes);
-      if(definitionRoutesAndCollections.collection) {
-        allRoutesAndCollections.collections = allRoutesAndCollections.collections.concat(definitionRoutesAndCollections.collection);
-      }
-      return allRoutesAndCollections;
-    }, { routes: [], collections: []});
+    return openApiRoutesAndCollections.reduce(
+      (allRoutesAndCollections, definitionRoutesAndCollections) => {
+        allRoutesAndCollections.routes = allRoutesAndCollections.routes.concat(
+          definitionRoutesAndCollections.routes
+        );
+        if (definitionRoutesAndCollections.collection) {
+          allRoutesAndCollections.collections = allRoutesAndCollections.collections.concat(
+            definitionRoutesAndCollections.collection
+          );
+        }
+        return allRoutesAndCollections;
+      },
+      { routes: [], collections: [] } as RoutesAndCollections
+    );
   }
 
   private get _defaultCollectionOptions(): OpenApiDefinition.Collection | null {
-    if(!this._collectionIdOption.value) {
+    if (!this._collectionIdOption.value) {
       return null;
     }
     const options = {
       id: this._collectionIdOption.value as string,
     } as OpenApiDefinition.Collection;
 
-    if(this._collectionFromOption.value) {
-      options.from = this._collectionFromOption.value as string
+    if (this._collectionFromOption.value) {
+      options.from = this._collectionFromOption.value as string;
     }
     return options;
   }
 
-  async _onLoadFiles(filesContents: FilesContents) {
+  private async _onLoadFiles(filesContents: FilesLoaded) {
     if (filesContents.length) {
       let collectionsToLoad;
       this._documentsAlerts.clean();
-      const { routes, collections } = await this._getRoutesAndCollectionsFromFilesContents(filesContents);
+      const { routes, collections } = await this._getRoutesAndCollectionsFromFilesContents(
+        filesContents
+      );
       const folderTrace = `from OpenAPI definitions found in folder '${this._files.path}/${DEFAULT_FOLDER}'`;
 
       this._logger.debug(`Routes to load from openApi definitions: '${JSON.stringify(routes)}'`);
@@ -131,21 +175,23 @@ class Plugin {
 
       this._loadRoutes(routes);
 
-      this._logger.debug(`Collections created from OpenAPI definitions: '${JSON.stringify(collections)}'`);
+      this._logger.debug(
+        `Collections created from OpenAPI definitions: '${JSON.stringify(collections)}'`
+      );
 
       if (this._defaultCollectionOptions) {
         const defaultCollection = getRoutesCollection(routes, this._defaultCollectionOptions);
-        this._logger.debug(`Collection created from all OpenAPI definitions: '${JSON.stringify(defaultCollection)}'`);
-        collectionsToLoad = collections.concat([defaultCollection as Collection]);
+        this._logger.debug(
+          `Collection created from all OpenAPI definitions: '${JSON.stringify(defaultCollection)}'`
+        );
+        collectionsToLoad = collections.concat([defaultCollection as CollectionDefinition]);
       } else {
         collectionsToLoad = collections;
       }
-      
+
       this._logger.verbose(`Loading ${collectionsToLoad.length} collections ${folderTrace}`);
 
       this._loadCollections(collectionsToLoad);
     }
   }
-}
-
-export default Plugin;
+};

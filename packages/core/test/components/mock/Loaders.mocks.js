@@ -11,9 +11,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const sinon = require("sinon");
 
-jest.mock("../../../src/mock/Loaders");
+jest.mock("../../../src/mock/DefinitionsManager");
 
-const Loaders = require("../../../src/mock/Loaders");
+const { DefinitionsManager } = require("../../../src/mock/DefinitionsManager");
 
 const INITIAL_FILES = {
   file1: {
@@ -43,15 +43,15 @@ class Mock {
     this._loader = this._sandbox.stub();
 
     this._stubs = {
-      new: this._sandbox.stub().returns(this._loader),
+      createLoader: this._sandbox.stub().returns(this._loader),
     };
 
-    Loaders.mockImplementation(() => this._stubs);
+    DefinitionsManager.mockImplementation(() => this._stubs);
   }
 
   get stubs() {
     return {
-      Constructor: Loaders,
+      Constructor: DefinitionsManager,
       instance: this._stubs,
       loader: this._loader,
     };

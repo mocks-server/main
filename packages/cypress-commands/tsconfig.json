@@ -14,7 +14,8 @@
     "forceConsistentCasingInFileNames": true,
     "noUnusedParameters": true,
     "isolatedModules": true,
-    "types": ["cypress", "node"]
+    "types": ["cypress", "node"],
+    "strictPropertyInitialization": false
   },
   "include": [
     "src/**/*"

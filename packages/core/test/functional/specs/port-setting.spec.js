@@ -14,7 +14,7 @@ describe("port setting", () => {
   let core;
 
   beforeAll(async () => {
-    core = await startCore();
+    core = await startCore(null, { log: "debug" });
     await waitForServer();
   });
 

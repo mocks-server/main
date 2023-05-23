@@ -14,7 +14,7 @@ const crossFetch = require("cross-fetch");
 const waitOn = require("wait-on");
 const fsExtra = require("fs-extra");
 
-const Core = require("@mocks-server/core");
+const Core = require("@mocks-server/core").default;
 const CliRunner = require("@mocks-server/cli-runner");
 
 const SERVER_PORT = 3100;

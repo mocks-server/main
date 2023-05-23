@@ -80,10 +80,10 @@ const logger = new Logger();
 
 * __`error(message)`__: The message will be logged always except if the current `level` is `silent`.
 * __`warn(message)`__: The message will be logged always except if the current `level` is `error` or `silent`.
-* __`info(message`__: The message will be logged whenever the current `level` is not `error`, `warn` or `silent`.
-* __`verbose(message)`__: The message will be logged whenever the current `level` is upper or equal than `verbose`.
-* __`debug(message)`__: The message will be logged whenever the current `level` is upper or equal than `debug`.
-* __`silly(message)`__: The message will be logged whenever the current `level` is upper or equal than `silly`.
+* __`info(message`__: The message will be logged if the current `level` is not `error`, `warn` or `silent`.
+* __`verbose(message)`__: The message will be logged if the current `level` is `debug`, `silly` or `verbose`.
+* __`debug(message)`__: The message will be logged if the current `level` is `debug` or `silly`.
+* __`silly(message)`__: The message will be logged if the current `level` is `silly`.
 * __`setLevel(level, [options])`__: Sets the logger current log level for the current namespace and all children namespaces recursively.
   * `level` _(String)_: Level can be one of `silent`, `error`, `warn`, `info`, `verbose`, `debug` or `silly`.
   * `options` _(Object)_:

@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const CoreMocks = require("../../Core.mocks.js");
-const Status = require("../../../../src/variant-handlers/handlers/Status");
+const { VariantHandlerStatus } = require("../../../../src/variant-handlers/handlers/Status");
 
 describe("Status variant handler", () => {
   const FOO_VARIANT = {
@@ -38,7 +38,7 @@ describe("Status variant handler", () => {
     };
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
-    routesHandler = new Status(FOO_VARIANT, coreInstance);
+    routesHandler = new VariantHandlerStatus(FOO_VARIANT, coreInstance);
   });
 
   afterEach(() => {
@@ -48,13 +48,13 @@ describe("Status variant handler", () => {
 
   describe("id", () => {
     it("should have status value", () => {
-      expect(Status.id).toEqual("status");
+      expect(VariantHandlerStatus.id).toEqual("status");
     });
   });
 
   describe("validationSchema", () => {
     it("should be defined", () => {
-      expect(Status.validationSchema).toBeDefined();
+      expect(VariantHandlerStatus.validationSchema).toBeDefined();
     });
   });
 
@@ -75,14 +75,17 @@ describe("Status variant handler", () => {
 
     it("should add default headers to response", () => {
       const FOO_HEADERS = { "Content-Length": "0" };
-      routesHandler = new Status({ ...FOO_VARIANT }, coreInstance);
+      routesHandler = new VariantHandlerStatus({ ...FOO_VARIANT }, coreInstance);
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
       expect(expressStubs.res.set.getCall(0).args[0]).toEqual(FOO_HEADERS);
     });
 
     it("should add headers to default headers if they are defined in response", () => {
       const FOO_HEADERS = { foo: "foo" };
-      routesHandler = new Status({ ...FOO_VARIANT, headers: FOO_HEADERS }, coreInstance);
+      routesHandler = new VariantHandlerStatus(
+        { ...FOO_VARIANT, headers: FOO_HEADERS },
+        coreInstance
+      );
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
       expect(expressStubs.res.set.getCall(0).args[0]).toEqual({
         "Content-Length": "0",

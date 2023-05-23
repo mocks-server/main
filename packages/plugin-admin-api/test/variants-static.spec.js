@@ -29,7 +29,7 @@ describe("routes with static variants", () => {
         {
           id: "get-users",
           url: "/api/users",
-          method: "get",
+          method: ["get"],
           delay: null,
           variants: ["get-users:1", "get-users:2"],
         },
@@ -71,7 +71,14 @@ describe("routes with static variants", () => {
           preview: { body: [{ email: "foo2@foo2.com" }], status: 200 },
           delay: null,
         },
-        { id: "get-web:disabled", disabled: true, route: "get-web", preview: null },
+        {
+          id: "get-web:disabled",
+          disabled: true,
+          route: "get-web",
+          preview: null,
+          type: null,
+          delay: null,
+        },
         {
           id: "get-web:fast",
           disabled: false,
@@ -96,7 +103,14 @@ describe("routes with static variants", () => {
           preview: null,
           delay: null,
         },
-        { id: "get-web-error:disabled", disabled: true, route: "get-web-error", preview: null },
+        {
+          id: "get-web-error:disabled",
+          disabled: true,
+          delay: null,
+          type: null,
+          route: "get-web-error",
+          preview: null,
+        },
         {
           id: "get-web-error:error",
           disabled: false,

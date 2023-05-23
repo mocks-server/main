@@ -17,8 +17,8 @@ const {
   collectionValidationErrors,
   collectionRouteVariantsValidationErrors,
 } = require("../../../src/mock/validations");
-const JsonRoutesHandler = require("../../../src/variant-handlers/handlers/Json");
-const MiddlewareRoutesHandler = require("../../../src/variant-handlers/handlers/Middleware");
+const { VariantHandlerJson } = require("../../../src/variant-handlers/handlers/Json");
+const { VariantHandlerMiddleware } = require("../../../src/variant-handlers/handlers/Middleware");
 
 describe("mocks validations", () => {
   const VALID_ROUTE = {
@@ -246,14 +246,14 @@ describe("mocks validations", () => {
 
   describe("variantValidationErrors", () => {
     it("should return null if Handler has not validationSchema", () => {
-      expect(variantValidationErrors({}, {}, {})).toEqual(null);
+      expect(variantValidationErrors({}, { id: "foo-variant", type: "foo" }, {})).toEqual(null);
     });
   });
 
   describe("variantValidationErrors using Json handler schema", () => {
     it("should return null if variant is valid", () => {
       expect(
-        variantValidationErrors({ id: "foo-route" }, VALID_VARIANT, JsonRoutesHandler)
+        variantValidationErrors({ id: "foo-route" }, VALID_VARIANT, VariantHandlerJson)
       ).toEqual(null);
     });
 
@@ -261,7 +261,7 @@ describe("mocks validations", () => {
       const errors = variantValidationErrors(
         { id: "foo-route" },
         { ...VALID_VARIANT, id: undefined, options: undefined },
-        JsonRoutesHandler
+        VariantHandlerJson
       );
       expect(errors.message).toEqual(
         "Variant in route with id 'foo-route' is invalid: Invalid 'options' property:: type must be object"
@@ -272,7 +272,7 @@ describe("mocks validations", () => {
       const errors = variantValidationErrors(
         { id: "foo-route" },
         { ...VALID_VARIANT, options: undefined },
-        JsonRoutesHandler
+        VariantHandlerJson
       );
       expect(errors.message).toEqual(
         "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'options' property:: type must be object"
@@ -288,7 +288,7 @@ describe("mocks validations", () => {
             headers: "foo",
           },
         },
-        JsonRoutesHandler
+        VariantHandlerJson
       );
       expect(errors.message).toEqual(
         "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'options' property: must have required property 'body'. /headers: type must be object"
@@ -304,7 +304,7 @@ describe("mocks validations", () => {
             // do nothing
           },
         },
-        JsonRoutesHandler
+        VariantHandlerJson
       );
       expect(errors.message).toEqual(
         "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'options' property: Wrong type"
@@ -322,7 +322,7 @@ describe("mocks validations", () => {
         variantValidationErrors(
           { id: "foo-route" },
           { ...VALID_VARIANT, options: { middleware: EMPTY_MIDDLEWARE } },
-          MiddlewareRoutesHandler
+          VariantHandlerMiddleware
         )
       ).toEqual(null);
     });
@@ -331,7 +331,7 @@ describe("mocks validations", () => {
       const errors = variantValidationErrors(
         { id: "foo-route" },
         { ...VALID_VARIANT, id: undefined, options: undefined },
-        MiddlewareRoutesHandler
+        VariantHandlerMiddleware
       );
       expect(errors.message).toEqual(
         "Variant in route with id 'foo-route' is invalid: Invalid 'options' property:: type must be object"
@@ -342,7 +342,7 @@ describe("mocks validations", () => {
       const errors = variantValidationErrors(
         { id: "foo-route" },
         { ...VALID_VARIANT, options: undefined },
-        MiddlewareRoutesHandler
+        VariantHandlerMiddleware
       );
       expect(errors.message).toEqual(
         "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'options' property:: type must be object"
@@ -353,7 +353,7 @@ describe("mocks validations", () => {
       const errors = variantValidationErrors(
         { id: "foo-route" },
         VALID_VARIANT,
-        MiddlewareRoutesHandler
+        VariantHandlerMiddleware
       );
       expect(errors.message).toEqual(
         "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'options' property: must have required property 'middleware'"
@@ -410,15 +410,15 @@ describe("mocks validations", () => {
     const ROUTE_VARIANTS = [
       {
         routeId: "foo",
-        variantId: "foo:success",
+        id: "foo:success",
       },
       {
         routeId: "foo",
-        variantId: "foo:error",
+        id: "foo:error",
       },
       {
         routeId: "foo2",
-        variantId: "foo2:error",
+        id: "foo2:error",
       },
     ];
 

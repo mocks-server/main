@@ -1,5 +1,5 @@
 import { createSandbox } from "sinon";
-import Collection from "../src/Collection.ts";
+import { BaseNestedCollections } from "../src/Collection.ts";
 
 const COLLECTION_ID = "foo-collection";
 const ITEM_ID = "foo-item";
@@ -19,13 +19,12 @@ describe("Collection Decorator", () => {
 
   beforeEach(() => {
     sandbox = createSandbox();
-    class Decorator extends Collection {
-      constructor(id, options = {}) {
-        super(id, { ...options, Decorator: CollectionDecorator });
-      }
-
+    class Decorator extends BaseNestedCollections {
       set(value, id) {
-        super.set(id, value);
+        this._set(id, value);
+      }
+      get flat() {
+        return this._flat;
       }
     }
     CollectionDecorator = Decorator;

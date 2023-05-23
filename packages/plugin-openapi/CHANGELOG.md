@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 ### BREAKING CHANGE
 
+## [unreleased]
+
+### Changed
+- refactor: Refactor types
+
 ## [2.0.1] - 2023-04-09
 
 ### Fixed

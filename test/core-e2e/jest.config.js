@@ -6,7 +6,7 @@ module.exports = {
   clearMocks: true,
 
   testMatch: ["<rootDir>/src/**/*.spec.js"],
-  // testMatch: ["<rootDir>/src/**/cjs.spec.js"],
+  // testMatch: ["<rootDir>/src/**/config-file-with-plugins.spec.js"],
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: false,
@@ -15,4 +15,5 @@ module.exports = {
   testEnvironment: "node",
 
   setupFilesAfterEnv: ["./jest.setup.js"],
+  verbose: true,
 };

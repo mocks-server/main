@@ -1,6 +1,0 @@
-{
-  "sonarlint.connectedMode.project": {
-      "connectionId": "mocks-server",
-      "projectKey": "mocks-server_main_admin-api-client"
-  }
-}

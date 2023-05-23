@@ -14,7 +14,8 @@
     "forceConsistentCasingInFileNames": true,
     "noUnusedParameters": true,
     "isolatedModules": true,
-    "types": ["node"]
+    "types": ["node"],
+    "strictPropertyInitialization": false
   },
   "include": [
     "src/**/*"

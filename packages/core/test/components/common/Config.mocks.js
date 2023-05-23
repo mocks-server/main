@@ -12,7 +12,7 @@ const sinon = require("sinon");
 
 jest.mock("@mocks-server/config");
 
-const Config = require("@mocks-server/config");
+const Config = require("@mocks-server/config").default;
 
 class ConfigMock {
   constructor() {

@@ -15,11 +15,11 @@ const { Logger } = require("@mocks-server/logger");
 const CollectionMock = require("./Collection.mock");
 const LoadersMock = require("./Loaders.mocks");
 
-const Alerts = require("../../../src/alerts/Alerts");
+const { Alerts } = require("../../../src/alerts/Alerts");
 const Mock = require("../../../src/mock/Mock");
 const ConfigMock = require("../common/Config.mocks");
 
-const JsonRoutesHandler = require("../../../src/variant-handlers/handlers/Json");
+const { VariantHandlerJson } = require("../../../src/variant-handlers/handlers/Json");
 
 describe("Mock", () => {
   let configMock;
@@ -55,9 +55,9 @@ describe("Mock", () => {
     };
 
     mock = new Mock(methods, core);
-    mock._routesLoaders.contents = [];
-    mock._collectionsLoaders.contents = [];
-    mock.init([JsonRoutesHandler]);
+    mock._routeLoadersManager.definitions = [];
+    mock._collectionLoadersManager.definitions = [];
+    mock.init([VariantHandlerJson]);
   });
 
   afterEach(() => {
@@ -167,7 +167,7 @@ describe("Mock", () => {
 
   describe("when there are valid mocks and routes", () => {
     beforeEach(() => {
-      mock._routesLoaders.contents = [
+      mock._routeLoadersManager.definitions = [
         {
           id: "route-1",
           variants: [
@@ -189,7 +189,7 @@ describe("Mock", () => {
           ],
         },
       ];
-      mock._collectionsLoaders.contents = [
+      mock._collectionLoadersManager.definitions = [
         {
           id: "mock-1",
           routes: ["route-1:variant-1", "route-2:variant-1"],
@@ -279,8 +279,8 @@ describe("Mock", () => {
 
   describe("when there are no valid collections", () => {
     beforeEach(() => {
-      mock._routesLoaders.contents = [];
-      mock._collectionsLoaders.contents = [null];
+      mock._routeLoadersManager.definitions = [];
+      mock._collectionLoadersManager.definitions = [null];
     });
 
     describe("when loaded", () => {

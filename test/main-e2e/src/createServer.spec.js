@@ -101,14 +101,14 @@ describe("createServer", () => {
         {
           id: "get-users",
           url: "/api/users",
-          method: "get",
+          method: ["get"],
           delay: null,
           variants: ["get-users:success", "get-users:all", "get-users:error"],
         },
         {
           id: "get-user",
           url: "/api/users/:id",
-          method: "get",
+          method: ["get"],
           delay: null,
           variants: ["get-user:success", "get-user:id-3", "get-user:real"],
         },
@@ -130,7 +130,14 @@ describe("createServer", () => {
           preview: null,
           delay: null,
         },
-        { id: "add-headers:disabled", disabled: true, route: "add-headers", preview: null },
+        {
+          id: "add-headers:disabled",
+          delay: null,
+          type: null,
+          disabled: true,
+          route: "add-headers",
+          preview: null,
+        },
         {
           id: "get-users:success",
           disabled: false,

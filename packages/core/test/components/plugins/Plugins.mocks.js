@@ -13,7 +13,7 @@ const sinon = require("sinon");
 
 jest.mock("../../../src/plugins/Plugins");
 
-const Plugins = require("../../../src/plugins/Plugins");
+import { Plugins } from "../../../src/plugins/Plugins";
 
 class Mock {
   constructor() {

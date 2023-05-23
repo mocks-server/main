@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/admin-api-client",
-  "version": "7.0.0",
+  "version": "8.0.0-beta.1",
   "description": "Client of @mocks-server/plugin-admin-api",
   "keywords": [
     "mocks-server",
@@ -36,6 +36,7 @@
     "test:unit": "start-server-and-test mocks:ci tcp:127.0.0.1:3110 test"
   },
   "dependencies": {
+    "@mocks-server/config": "workspace:*",
     "@mocks-server/admin-api-paths": "workspace:*",
     "cross-fetch": "3.1.5"
   },

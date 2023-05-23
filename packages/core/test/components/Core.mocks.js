@@ -12,7 +12,7 @@ const sinon = require("sinon");
 
 jest.mock("../../src/Core");
 
-const Core = require("../../src/Core");
+const { Core } = require("../../src/Core");
 
 class CoreMock {
   constructor() {

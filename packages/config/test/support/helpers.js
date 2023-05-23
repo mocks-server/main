@@ -1,8 +1,10 @@
-const Config = require("../../src/Config");
+jest.mock("cosmiconfig");
 
-const cosmiconfig = require("cosmiconfig");
-const commander = require("commander");
-const sinon = require("sinon");
+import { Config } from "../../src/Config";
+
+import { cosmiconfig } from "cosmiconfig";
+import commander from "commander";
+import sinon from "sinon";
 
 function createConfigBeforeElements({ createNamespace = false } = {}) {
   let config, namespace, parentNamespace, option;
@@ -11,7 +13,7 @@ function createConfigBeforeElements({ createNamespace = false } = {}) {
     search: sandbox.stub(),
   };
 
-  sandbox.stub(cosmiconfig, "cosmiconfig").returns(cosmiconfigStub);
+  cosmiconfig.mockImplementation(() => cosmiconfigStub);
 
   sandbox.stub(commander.Option.prototype, "argParser");
   sandbox.stub(commander.Command.prototype, "addOption");

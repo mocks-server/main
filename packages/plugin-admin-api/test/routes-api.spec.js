@@ -30,14 +30,14 @@ describe("routes api", () => {
           id: "get-user",
           delay: null,
           url: "/api/users/:id",
-          method: "get",
+          method: ["get"],
           variants: ["get-user:1", "get-user:2", "get-user:real"],
         },
         {
           id: "get-users",
           delay: null,
           url: "/api/users",
-          method: "get",
+          method: ["get"],
           variants: ["get-users:success", "get-users:error"],
         },
       ]);
@@ -51,7 +51,7 @@ describe("routes api", () => {
         id: "get-user",
         delay: null,
         url: "/api/users/:id",
-        method: "get",
+        method: ["get"],
         variants: ["get-user:1", "get-user:2", "get-user:real"],
       });
     });
@@ -64,7 +64,7 @@ describe("routes api", () => {
         id: "get-users",
         delay: null,
         url: "/api/users",
-        method: "get",
+        method: ["get"],
         variants: ["get-users:success", "get-users:error"],
       });
     });

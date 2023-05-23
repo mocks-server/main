@@ -8,12 +8,7 @@
 
 # tests
 /coverage
-/mocks
-/mocks-ts
-/testing.js
-/mocks.config.js
-/babel.config.js
-/_babel.config.js
+/dist
 
 # misc
 .DS_Store

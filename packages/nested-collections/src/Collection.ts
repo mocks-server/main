@@ -1,88 +1,62 @@
 import EventEmitter from "events";
 
-import { CHANGE_EVENT, EventListener, addEventListener } from "./events";
+import type {
+  CollectionId,
+  CollectionElement,
+  CollectionIdComparer,
+  CollectionItem,
+  CollectionInterface,
+  Collections,
+  CollectionElements,
+  CollectionItems,
+  CollectionOptions,
+  CollectionItemValue,
+  CollectionFlatItems,
+  CollectionFlatItem,
+  CollectionBaseInterface,
+  CollectionConstructor,
+} from "./Collection.types";
+import { CHANGE_EVENT, addEventListener } from "./Events";
+import type { EventsListener, EventsListenerRemover } from "./Events.types";
 
-export type { EventListener } from "./events";
-
-export type elementId = string | null;
-
-export interface ElementBasics {
-  id: elementId;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type itemValue = any;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface CollectionOptions {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Decorator?: any;
-  parent?: Collection,
-  root?: Collection,
-  [x: string | number | symbol]: unknown;
-}
-
-export interface Item extends ElementBasics {
-  value: itemValue;
-}
-
-export interface FlatItem extends Item {
-  collection: elementId,
-}
-
-export type items = Item[];
-export type flatItems = FlatItem[];
-export type collections = Collection[];
-export type element = Item | Collection;
-export type elements = element[];
-export interface IdComparer {
-  (element: element): boolean
-}
-
-function elementIdIsEqualTo(element: element, id: elementId): boolean {
+function elementIdIsEqualTo(element: CollectionElement, id: CollectionId): boolean {
   return element.id === id;
 }
 
-function ElementIdIsEqualToId(id: elementId): IdComparer {
-  return function (element: element) {
+function ElementIdIsEqualToId(id: CollectionId): CollectionIdComparer {
+  return function (element: CollectionElement) {
     return elementIdIsEqualTo(element, id);
   };
 }
 
-function findById(elements: items, id: elementId): Item | null;
-function findById(elements: collections, id: elementId): Collection | null;
-function findById(elements: elements, id: elementId) {
+function findById(elements: CollectionItems, id: CollectionId): CollectionItem | null;
+function findById(elements: Collections, id: CollectionId): CollectionInterface | null;
+function findById(elements: CollectionElements, id: CollectionId) {
   return elements.find(ElementIdIsEqualToId(id)) || null;
 }
 
-function findIndexById(elements: elements, id: elementId): number {
+function findIndexById(elements: CollectionElements, id: CollectionId): number {
   return elements.findIndex(ElementIdIsEqualToId(id));
 }
 
-function cleanCollection(collection: Collection): void {
+function cleanCollection(collection: CollectionBaseInterface): void {
   collection.clean();
 }
 
-export default class Collection implements ElementBasics {
-  private _id: elementId;
-  private _collections: collections;
-  private _items: items;
+export abstract class BaseNestedCollections implements CollectionBaseInterface {
+  private _id: CollectionId;
+  private _collections: this[];
+  private _items: CollectionItems;
   private _eventEmitter: EventEmitter;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _Decorator: any;
   private _options: CollectionOptions;
-  private _parent?: Collection;
-  private _root: Collection;
+  private _parent?: this;
+  private _root: this;
+  private _previousFlatString: string;
 
-  /**
-   * Creates a root collection
-   * @example const collection = new Collection("id")
-   * @returns Root collection
-  */
-  constructor(id: elementId = null, options: CollectionOptions = {}) {
+  constructor(id: CollectionId = null, options: CollectionOptions = {}) {
     this._options = options;
-    this._Decorator = options.Decorator || Collection;
-    this._parent = options.parent;
-    this._root = options.root || this;
+    this._parent = options.parent ? (options.parent as this) : undefined;
+    this._root = (options.root as this) || this;
     this._eventEmitter = new EventEmitter();
     this._id = id;
     this._collections = [];
@@ -90,26 +64,32 @@ export default class Collection implements ElementBasics {
     this._emitChange = this._emitChange.bind(this);
   }
 
-  private _findCollection(id: elementId = null) {
-    return findById(this._collections, id);
+  private _findCollection(id: CollectionId = null): this | undefined {
+    const collectionFound = findById(this._collections, id) as unknown;
+    if (collectionFound) {
+      return collectionFound as this;
+    }
   }
 
-  private _createCollection(id: elementId): Collection {
-    const collection = new this._Decorator(id, {...this._options, parent: this, root: this._root });
+  private _createCollection(collectionId: CollectionId): this {
+    const collection = new (this.constructor as new (
+      id: CollectionId,
+      options: CollectionOptions
+    ) => this)(collectionId, { ...this._options, parent: this, root: this._root });
     collection.onChange(this._emitChange);
     this._collections.push(collection);
     return collection;
   }
 
-  private _findItem(id: elementId) {
+  private _findItem(id: CollectionId) {
     return findById(this._items, id);
   }
 
-  private _findElementIndex(id: elementId, elements: elements) {
+  private _findElementIndex(id: CollectionId, elements: CollectionElements) {
     return findIndexById(elements, id);
   }
 
-  private _createItem(id: elementId, value: itemValue): Item {
+  private _createItem(id: CollectionId, value: CollectionItemValue): CollectionItem {
     const item = {
       id,
       value,
@@ -118,11 +98,15 @@ export default class Collection implements ElementBasics {
     return item;
   }
 
-  private _emitChange() {
-    this._eventEmitter.emit(CHANGE_EVENT);
+  private _emitChange(): void {
+    const currentFlatString = JSON.stringify(this._flat);
+    if (currentFlatString !== this._previousFlatString) {
+      this._previousFlatString = currentFlatString;
+      this._eventEmitter.emit(CHANGE_EVENT);
+    }
   }
 
-  private _setItem(id: elementId, value: itemValue): Item {
+  protected _set(id: CollectionId, value: CollectionItemValue): CollectionItem {
     let item = this._findItem(id);
     if (item) {
       item.value = value;
@@ -133,12 +117,12 @@ export default class Collection implements ElementBasics {
     return item;
   }
 
-  private _changeId(id: elementId) {
+  protected _changeId(id: CollectionId): void {
     this._id = id;
     this._emitChange();
   }
 
-  private _removeElement(id: elementId, elements: elements) {
+  private _removeElement(id: CollectionId, elements: CollectionElements): void {
     const elementIndex = this._findElementIndex(id, elements);
     if (elementIndex > -1) {
       elements.splice(elementIndex, 1);
@@ -146,51 +130,56 @@ export default class Collection implements ElementBasics {
     }
   }
 
-  private _removeCollection(id: elementId) {
+  private _removeCollection(id: CollectionId): void {
     this._removeElement(id, this._collections);
   }
 
-  private _remove(id: elementId): void {
+  private _remove(id: CollectionId): void {
     this._removeElement(id, this._items);
   }
 
-  private get _path(): elementId {
-    if(this._parent) {
-      return `${this._parent._path}:${this._id}`;
+  protected get _path(): CollectionId {
+    if (this.parent) {
+      return `${this.parent.path}:${this._id}`;
     }
     return this._id;
   }
 
-  private get _flat(): flatItems {
-    const items = this._items.map((item: Item): FlatItem => {
+  protected get _flat(): CollectionFlatItems {
+    const items = this._items.map((item: CollectionItem): CollectionFlatItem => {
       return {
         ...item,
         collection: this._path,
       };
     });
-    const collections = this._collections.reduce((allItems: flatItems, collection: Collection): flatItems => {
-      const collectionItems = collection._flat.map((collectionFlatItem: FlatItem): FlatItem => {
-        return collectionFlatItem;
-      });
-      return [...allItems, ...collectionItems];
-    }, []);
+    const collections = this._collections.reduce(
+      (allItems: CollectionFlatItems, collection: this): CollectionFlatItems => {
+        const collectionItems = collection._flat.map(
+          (collectionFlatItem: CollectionFlatItem): CollectionFlatItem => {
+            return collectionFlatItem;
+          }
+        );
+        return [...allItems, ...collectionItems];
+      },
+      []
+    );
 
     return [...items, ...collections];
   }
 
-  private _merge(collection: Collection) {
-    [...collection._items].forEach((item: Item) => {
-      this._setItem(item.id, item.value);
-      collection._remove(item.id);
+  private _merge(collection: this) {
+    [...collection.items].forEach((item: CollectionItem) => {
+      this._set(item.id, item.value);
+      collection.remove(item.id);
     });
-    [...collection._collections].forEach((childCollection: Collection) => {
+    [...collection.collections].forEach((childCollection: this) => {
       const sameCollection = this._findCollection(childCollection.id);
       if (sameCollection) {
-        sameCollection._merge(childCollection);
+        sameCollection.merge(childCollection);
       } else {
         this._collections.push(childCollection);
-        childCollection._parent = this;
-        collection._removeCollection(childCollection.id);
+        childCollection.parent = this;
+        collection.removeCollection(childCollection.id);
         this._emitChange();
       }
     });
@@ -205,61 +194,41 @@ export default class Collection implements ElementBasics {
     this._emitChange();
   }
 
-  /**
-   * @returns collection id
-  */
-  public get id(): elementId {
+  public get id(): CollectionId {
     return this._id;
   }
 
-  /**
-   * Sets collection id. Do not use it for changing a child collection id. Use renameCollection instead
-  */
-  public set id(id: elementId) {
-    this._changeId(id);
+  public set id(id: CollectionId) {
+    if (this.parent) {
+      this.parent.renameCollection(this.id, id);
+    } else {
+      this._changeId(id);
+    }
   }
 
-  /**
-   * @returns collection id joined with parent collections ids
-  */
-   public get path(): elementId {
+  public get path(): CollectionId {
     return this._path;
   }
 
-  /**
-   * Removes a collection
-   * @example myCollection.removeCollection("id");
-  */
-  public removeCollection(id: elementId) {
+  public removeCollection(id: CollectionId) {
     this._removeCollection(id);
   }
 
-  /**
-   * Returns child collection with provided id or creates a new one
-   * @example myCollection.collection("id");
-   * @returns Child collection
-  */
-  public collection(id: elementId): Collection {
+  public collection(id: CollectionId): this {
     return this._findCollection(id) || this._createCollection(id);
   }
 
-  /**
-   * Merges current collection with the received one recursively
-  */
-  public merge(collection: Collection) {
+  public merge(collection: this) {
     this._merge(collection);
   }
 
-  /**
-   * Changes a collection id. Id id already exists in other collection, then it merges them
-  */
-  public renameCollection(id: elementId, newId: elementId) {
-    if( id !== newId ){
+  public renameCollection(id: CollectionId, newId: CollectionId) {
+    if (id !== newId) {
       const collection = this._findCollection(id);
       const newCollection = this._findCollection(newId);
       if (collection) {
-        if(newCollection) {
-          newCollection._merge(collection);
+        if (newCollection) {
+          newCollection.merge(collection);
           this._removeCollection(id);
         } else {
           collection._changeId(newId);
@@ -268,79 +237,61 @@ export default class Collection implements ElementBasics {
     }
   }
 
-  /**
-   * Clean items and items in children collections recursively
-   * @example myCollection.clean();
-  */
   public clean(): void {
     this._cleanCollections();
     this._cleanItems();
   }
 
-  /**
-   * Sets the value for the collection item with the provided id or creates a new one
-   * @example myCollection.set("id", "value");
-   * @returns item
-  */
-  public set(id: elementId, value: itemValue): Item {
-    return this._setItem(id, value);
-  }
-
-  /**
-   * Returns the value of a collection item
-   * @example myCollection.get("id");
-   * @returns item value
-  */
-  public get(id: elementId): itemValue {
+  public get(id: CollectionId): CollectionItemValue {
     const item = this._findItem(id);
-    if(!item) {
+    if (!item) {
       return null;
     }
     return item?.value;
   }
 
-  /**
-   * Removes a collection item
-   * @example myCollection.remove("id");
-  */
-  public remove(id: elementId): void {
+  public remove(id: CollectionId): void {
     this._remove(id);
   }
 
-  /**
-   * Removes all collection items
-   * @example myCollection.cleanItems();
-  */
   public cleanItems(): void {
     this._cleanItems();
   }
 
-  /**
-   * @returns collection items
-  */
-  public get items(): items {
+  public get items(): CollectionItems {
     return this._items;
   }
 
-  /**
-   * @returns collection items and children collection items in a flat array
-  */
-  public get flat(): flatItems {
-    return this._flat;
+  public get collections(): this[] {
+    return this._collections;
   }
 
-  /**
-   * Executes the provided function whenever a change is made in items, children collections or their items
-   * @returns function to remove event listener
-  */
-  public onChange(listener: EventListener) {
+  public get parent(): this | undefined {
+    return this._parent;
+  }
+
+  protected set parent(parent: this | undefined) {
+    this._parent = parent;
+  }
+
+  public onChange(listener: EventsListener): EventsListenerRemover {
     return addEventListener(listener, CHANGE_EVENT, this._eventEmitter);
   }
 
-  /**
-   * @returns root collection
-  */
-   public get root(): Collection {
+  public get root(): this {
     return this._root;
   }
 }
+
+export const NestedCollections: CollectionConstructor = class NestedCollections
+  extends BaseNestedCollections
+  implements CollectionInterface
+{
+  public set(id: CollectionId, value: CollectionItemValue): CollectionItem {
+    return this._set(id, value);
+  }
+
+  public get flat(): CollectionFlatItems {
+    return this._flat;
+  }
+};

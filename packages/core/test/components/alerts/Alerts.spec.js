@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 const { Logger } = require("@mocks-server/logger");
 
-const Alerts = require("../../../src/alerts/Alerts");
+const { Alerts } = require("../../../src/alerts/Alerts");
 
 describe("Alerts", () => {
   let sandbox;
@@ -29,6 +29,14 @@ describe("Alerts", () => {
 
   afterEach(() => {
     sandbox.restore();
+  });
+
+  describe("constructor", () => {
+    it("should throw an error if no options are provided", async () => {
+      expect(() => {
+        new Alerts("foo");
+      }).toThrow("Alerts options are required");
+    });
   });
 
   describe("set method", () => {
@@ -63,6 +71,14 @@ describe("Alerts", () => {
       alerts.set("foo", "Foo message", FOO_ERROR);
       expect(logger.error.calledWith("Foo message: Foo error message")).toEqual(true);
       expect(logger.debug.calledWith("foo-stack")).toEqual(true);
+    });
+
+    it("should not trace error stack if error has no stack", async () => {
+      const FOO_ERROR = new Error("Foo error message");
+      FOO_ERROR.stack = null;
+      alerts.set("foo", "Foo message", FOO_ERROR);
+      expect(logger.error.calledWith("Foo message: Foo error message")).toEqual(true);
+      expect(logger.debug.callCount).toEqual(0);
     });
 
     it("should trace warn if alert is called without error", async () => {

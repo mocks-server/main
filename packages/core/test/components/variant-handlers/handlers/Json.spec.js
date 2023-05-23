@@ -11,9 +11,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const CoreMocks = require("../../Core.mocks.js");
-const Json = require("../../../../src/variant-handlers/handlers/Json");
+const { VariantHandlerJson } = require("../../../../src/variant-handlers/handlers/Json");
 
-describe("Json variant handler", () => {
+describe("VariantHandlerJson variant handler", () => {
   const FOO_VARIANT = {
     status: 200,
     body: {},
@@ -39,7 +39,7 @@ describe("Json variant handler", () => {
     };
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
-    routesHandler = new Json(FOO_VARIANT, coreInstance);
+    routesHandler = new VariantHandlerJson(FOO_VARIANT, coreInstance);
   });
 
   afterEach(() => {
@@ -49,17 +49,26 @@ describe("Json variant handler", () => {
 
   describe("id", () => {
     it("should have json value", () => {
-      expect(Json.id).toEqual("json");
+      expect(VariantHandlerJson.id).toEqual("json");
     });
   });
 
   describe("validationSchema", () => {
     it("should be defined", () => {
-      expect(Json.validationSchema).toBeDefined();
+      expect(VariantHandlerJson.validationSchema).toBeDefined();
     });
 
-    it("should allow arrays and objects as body", () => {
-      expect(Json.validationSchema.properties.body.oneOf).toEqual([
+    it("should allow JSON values as body", () => {
+      expect(VariantHandlerJson.validationSchema.properties.body.oneOf).toEqual([
+        {
+          type: "boolean",
+        },
+        {
+          type: "null",
+        },
+        {
+          type: "number",
+        },
         {
           type: "object",
         },
@@ -88,14 +97,17 @@ describe("Json variant handler", () => {
 
     it("should add default headers to response", () => {
       const FOO_HEADERS = { "Content-Type": "application/json; charset=utf-8" };
-      routesHandler = new Json({ ...FOO_VARIANT }, coreInstance);
+      routesHandler = new VariantHandlerJson({ ...FOO_VARIANT }, coreInstance);
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
       expect(expressStubs.res.set.getCall(0).args[0]).toEqual(FOO_HEADERS);
     });
 
     it("should add headers to default headers if they are defined in response", () => {
       const FOO_HEADERS = { "Content-Type": "application/json; charset=utf-8", foo: "foo" };
-      routesHandler = new Json({ ...FOO_VARIANT, headers: FOO_HEADERS }, coreInstance);
+      routesHandler = new VariantHandlerJson(
+        { ...FOO_VARIANT, headers: FOO_HEADERS },
+        coreInstance
+      );
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
       expect(expressStubs.res.set.getCall(0).args[0]).toEqual(FOO_HEADERS);
     });

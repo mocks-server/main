@@ -15,8 +15,8 @@ const CoreMocks = require("../Core.mocks.js");
 const ConfigMocks = require("../common/Config.mocks.js");
 const LibsMocks = require("../common/Libs.mocks");
 
-const Plugins = require("../../../src/plugins/Plugins");
-const Alerts = require("../../../src/alerts/Alerts");
+const { Plugins } = require("../../../src/plugins/Plugins");
+const { Alerts } = require("../../../src/alerts/Alerts");
 
 const NATIVE_PLUGINS_QUANTITY = 0;
 
@@ -246,7 +246,7 @@ describe("Plugins", () => {
   });
 
   describe("init method", () => {
-    const METHOD = "Initializat";
+    const METHOD = "Initializ";
     it("should do nothing if there are no plugins to register", async () => {
       pluginsOption.value = [];
       await plugins.register();
@@ -310,7 +310,7 @@ describe("Plugins", () => {
       await plugins.register();
       await plugins.init();
       expect(alerts.flat.length).toEqual(4);
-      expect(alerts.flat[0].message).toEqual("Error initializating plugin '0'");
+      expect(alerts.flat[0].message).toEqual("Error initializing plugin '0'");
       expect(logger.verbose.calledWith(pluginsTraceAddingNative(METHOD, 2))).toEqual(true);
     });
 

@@ -66,14 +66,14 @@ describe("mocks and routes", () => {
         {
           id: "get-user",
           url: "/api/users/:id",
-          method: "get",
+          method: ["get"],
           delay: null,
           variants: ["get-user:1", "get-user:2", "get-user:real"],
         },
         {
           id: "get-users",
           url: "/api/users",
-          method: "get",
+          method: ["get"],
           delay: null,
           variants: ["get-users:success", "get-users:error"],
         },

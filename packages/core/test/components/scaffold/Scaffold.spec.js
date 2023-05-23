@@ -17,7 +17,7 @@ const { Logger } = require("@mocks-server/logger");
 const LibsMocks = require("../common/Libs.mocks");
 const ConfigMock = require("../common/Config.mocks");
 
-const Scaffold = require("../../../src/scaffold/Scaffold");
+const { Scaffold } = require("../../../src/scaffold/Scaffold");
 
 function readSnapshot(fileName) {
   return fsExtra.readFile(path.resolve(__dirname, "snapshots", fileName), {
@@ -68,57 +68,57 @@ describe("Scaffold", () => {
     it("should create the mocks folder if it does not exists and neither config file", async () => {
       configMock.stubs.instance.loadedFile = false;
       libsMocks.stubs.fsExtra.existsSync.returns(false);
-      await scaffold.init({ filesLoaderPath: "foo" });
+      await scaffold.init({ folderPath: "foo" });
       expect(libsMocks.stubs.fsExtra.copy.callCount).toEqual(1);
     });
 
-    it("should create the mocks folder in provided filesLoaderPath", async () => {
+    it("should create the mocks folder in provided folderPath", async () => {
       configMock.stubs.instance.loadedFile = false;
       libsMocks.stubs.fsExtra.existsSync.returns(false);
-      await scaffold.init({ filesLoaderPath: "foo" });
+      await scaffold.init({ folderPath: "foo" });
       expect(libsMocks.stubs.fsExtra.copy.getCall(0).args[1]).toEqual("foo");
     });
 
     it("should not create the mocks scaffold if mocks folder exists", async () => {
       libsMocks.stubs.fsExtra.existsSync.returns(true);
-      await scaffold.init({ filesLoaderPath: "foo" });
+      await scaffold.init({ folderPath: "foo" });
       expect(libsMocks.stubs.fsExtra.copy.callCount).toEqual(0);
     });
 
     it("should create the mocks scaffold even if config file was loaded", async () => {
       configMock.stubs.instance.loadedFile = true;
-      await scaffold.init({ filesLoaderPath: "foo" });
+      await scaffold.init({ folderPath: "foo" });
       expect(libsMocks.stubs.fsExtra.copy.callCount).toEqual(1);
     });
 
     it("should not create the config scaffold if file was loaded", async () => {
       configMock.stubs.instance.loadedFile = true;
-      await scaffold.init({ filesLoaderPath: "foo" });
+      await scaffold.init({ folderPath: "foo" });
       expect(libsMocks.stubs.fsExtra.writeFile.callCount).toEqual(0);
     });
 
     it("should not create the config scaffold if config file was disabled", async () => {
       scaffold._readConfigFileOption.value = false;
-      await scaffold.init({ filesLoaderPath: "foo" });
+      await scaffold.init({ folderPath: "foo" });
       expect(libsMocks.stubs.fsExtra.writeFile.callCount).toEqual(0);
     });
 
     it("should set the selected collection value if it has not value before creating config", async () => {
       scaffold._collectionSelectedOption.value = null;
-      await scaffold.init({ filesLoaderPath: "foo" });
+      await scaffold.init({ folderPath: "foo" });
       expect(scaffold._collectionSelectedOption.value).toEqual("base");
     });
 
     it("should not set the selected mock value if it has value", async () => {
       scaffold._collectionSelectedOption.hasBeenSet = true;
       scaffold._collectionSelectedOption.value = "base2";
-      await scaffold.init({ filesLoaderPath: "foo" });
+      await scaffold.init({ folderPath: "foo" });
       expect(scaffold._collectionSelectedOption.value).toEqual("base2");
     });
 
     it("should create the config scaffold even if mocks folder exists", async () => {
       libsMocks.stubs.fsExtra.existsSync.returns(true);
-      await scaffold.init({ filesLoaderPath: "foo" });
+      await scaffold.init({ folderPath: "foo" });
       expect(libsMocks.stubs.fsExtra.writeFile.callCount).toEqual(1);
     });
   });
@@ -126,7 +126,7 @@ describe("Scaffold", () => {
   describe("create config file", () => {
     it("should write default config file in current process working directory", async () => {
       configMock.stubs.instance.loadedFile = false;
-      await scaffold.init({ filesLoaderPath: "foo" });
+      await scaffold.init({ folderPath: "foo" });
       expect(libsMocks.stubs.fsExtra.writeFile.getCall(0).args[0]).toEqual(
         path.resolve(process.cwd(), "mocks.config.js")
       );
@@ -225,28 +225,6 @@ describe("Scaffold", () => {
           ],
         },
         {
-          // simulate namespace with no name (root one)
-          options: [
-            {
-              description: "It contains a string",
-              name: "log",
-              type: "string",
-              value: "info",
-              extraData: {
-                scaffold: {
-                  commented: false,
-                },
-              },
-            },
-            {
-              description: "It contains undefined",
-              name: "secondValue",
-              type: "string",
-              value: undefined,
-            },
-          ],
-        },
-        {
           // simulate config namespace
           name: "config",
           options: [
@@ -290,7 +268,7 @@ describe("Scaffold", () => {
         },
       ];
       configMock.stubs.instance.loadedFile = false;
-      await scaffold.init({ filesLoaderPath: "foo" });
+      await scaffold.init({ folderPath: "foo" });
       expect(libsMocks.stubs.fsExtra.writeFile.getCall(0).args[1]).toEqual(expectedContent);
     });
   });

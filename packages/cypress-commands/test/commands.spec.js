@@ -45,7 +45,7 @@ jest.mock("@mocks-server/admin-api-client", () => {
 
 import CypressMock from "./Cypress.mock";
 
-import { commands } from "../src/commands";
+import { commands } from "../src/Commands";
 import { AdminApiClient } from "../src/AdminApiClient";
 
 const FOO_ERROR_MESSAGE = "foo error message";

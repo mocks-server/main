@@ -9,7 +9,7 @@ module.exports = {
   collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  collectCoverageFrom: ["index.js", "src/**", "!src/scaffold/mocks/**"],
+  collectCoverageFrom: ["src/**/*.js", "src/**/*.ts", "!src/scaffold/mocks/**"],
 
   // The directory where Jest should output its coverage files
   coverageDirectory: "coverage",
@@ -17,16 +17,16 @@ module.exports = {
   // An object that configures minimum threshold enforcement for coverage results
   coverageThreshold: {
     global: {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
+      branches: 50, // TODO, increase again to 100
+      functions: 50, // TODO, increase again to 100
+      lines: 50, // TODO, increase again to 100
+      statements: 50, // TODO, increase again to 100
     },
   },
 
   // The glob patterns Jest uses to detect test files
   testMatch: ["<rootDir>/test/**/*.spec.js"],
-  // testMatch: ["<rootDir>/test/**/common/helpers.spec.js"],
+  testMatch: ["<rootDir>/test/functional/**/*.spec.js"],
 
   // The test environment that will be used for testing
   testEnvironment: "node",

@@ -6,14 +6,17 @@
 # dependencies
 /node_modules
 
+# build
+/dist
+
 # tests
 /coverage
 /mocks
 /mocks-ts
 /testing.js
 /mocks.config.js
-/babel.config.js
-/_babel.config.js
+#/babel.config.js
+#/_babel.config.js
 
 /test/functional/fixtures/temp
 /test/functional/fixtures/unexistant

@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig.json to read more about this file */
+    "outDir": "./src/fixtures/ts-dist",
+    "declaration": true,
+    "target": "es6",
+    "strict": true,
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "module": "CommonJS",
+    "useDefineForClassFields": true,
+    "importsNotUsedAsValues": "error",
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedParameters": true,
+    "allowJs": true,
+    "types": ["../../packages/config"],
+    "paths": {
+      "@mocks-server/config": ["../../packages/config"]
+    }
+  },
+  "include": [
+    "src/fixtures/typescript/**/*"
+  ]
+}

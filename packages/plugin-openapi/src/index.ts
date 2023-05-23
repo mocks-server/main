@@ -1,5 +1,7 @@
-import Plugin from "./Plugin";
+import { Plugin } from "./Plugin";
+
 export * from "./types";
-export * from "./openapi";
+export { openApiRoutes } from "./OpenApi";
+export { Plugin } from "./Plugin";
 
 export default Plugin;

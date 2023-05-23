@@ -1,1 +1,1 @@
-declare module 'winston-array-transport';
+declare module "winston-array-transport";

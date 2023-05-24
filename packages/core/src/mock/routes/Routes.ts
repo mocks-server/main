@@ -8,11 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-import type {
-  ConfigNamespaceInterface,
-  OptionInterfaceOfType,
-  OptionDefinition,
-} from "@mocks-server/config";
+import type { ConfigNamespaceInterface, OptionInterfaceOfType } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import { flatten, compact, isUndefined } from "lodash";
 
@@ -42,7 +38,12 @@ import type {
   RoutePlainObjectLegacy,
   RouteVariantPlainObjectLegacy,
 } from "./Route.types";
-import type { RoutesConstructor, RoutesInterface, RoutesOptions } from "./Routes.types";
+import type {
+  DelayOptionDefinition,
+  RoutesConstructor,
+  RoutesInterface,
+  RoutesOptions,
+} from "./Routes.types";
 import {
   routeValidationErrors,
   variantValidationErrors,
@@ -51,7 +52,7 @@ import {
 
 const LOAD_NAMESPACE = "load";
 
-const OPTIONS: [OptionDefinition<number, { hasDefault: true }>] = [
+const OPTIONS: [DelayOptionDefinition] = [
   {
     description: "Global delay to apply to routes",
     name: "delay",

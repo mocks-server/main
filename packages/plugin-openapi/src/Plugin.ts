@@ -15,26 +15,29 @@ import type {
 import type { LoggerInterface } from "@mocks-server/logger";
 
 import { openApiRoutes } from "./OpenApi";
-import type { OpenApiDefinition, PluginConstructor, PluginInterface } from "./types";
+import type {
+  CollectionFromOptionDefinition,
+  CollectionIdOptionDefinition,
+  OpenApiDefinition,
+  PluginConstructor,
+  PluginInterface,
+} from "./types";
 
 const PLUGIN_ID = "openapi";
 const DEFAULT_FOLDER = "openapi";
 
 const COLLECTION_NAMESPACE = "collection";
 
-const COLLECTION_OPTIONS: [
-  OptionDefinition<string, { hasDefault: true }>,
-  OptionDefinition<string>
-] = [
+const COLLECTION_OPTIONS: [CollectionIdOptionDefinition, CollectionFromOptionDefinition] = [
   {
-    description: "Name for the collection created from OpenAPI definitions",
+    description: "Id for the collection created from OpenAPI definitions",
     name: "id",
     type: "string",
     nullable: true,
     default: "openapi",
   },
   {
-    description: "Name of the collection to extend from",
+    description: "Id of the collection to extend from",
     name: "from",
     type: "string",
   },

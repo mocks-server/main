@@ -1,11 +1,20 @@
-import type { OptionDefinition, UnknownObject } from "@mocks-server/config";
+import type {
+  CorsEnabledOptionDefinition,
+  CorsOptionsOptionDefinition,
+  HostOptionDefinition,
+  HttpsCertOptionDefinition,
+  HttpsKeyOptionDefinition,
+  HttpsProtocolOptionDefinition,
+  JsonBodyParserEnabledOptionDefinition,
+  JsonBodyParserOptionsOptionDefinition,
+  PortNumberOptionDefinition,
+  UrlEncodedBodyParserEnabledOptionDefinition,
+  UrlEncodedBodyParserOptionsOptionDefinition,
+} from "./ServerOptions.types";
 
 export const ALL_HOSTS = "0.0.0.0";
 
-export const OPTIONS: [
-  OptionDefinition<number, { hasDefault: true }>,
-  OptionDefinition<string, { hasDefault: true }>
-] = [
+export const OPTIONS: [PortNumberOptionDefinition, HostOptionDefinition] = [
   {
     description: "Port number for the server to be listening at",
     name: "port",
@@ -23,9 +32,9 @@ export const OPTIONS: [
 export const HTTPS_NAMESPACE = "https";
 
 export const HTTPS_OPTIONS: [
-  OptionDefinition<boolean, { hasDefault: true }>,
-  OptionDefinition<string>,
-  OptionDefinition<string>
+  HttpsProtocolOptionDefinition,
+  HttpsCertOptionDefinition,
+  HttpsKeyOptionDefinition
 ] = [
   {
     description: "Use https protocol or not",
@@ -47,10 +56,7 @@ export const HTTPS_OPTIONS: [
 
 export const CORS_NAMESPACE = "cors";
 
-export const CORS_OPTIONS: [
-  OptionDefinition<boolean>,
-  OptionDefinition<UnknownObject, { hasDefault: true }>
-] = [
+export const CORS_OPTIONS: [CorsEnabledOptionDefinition, CorsOptionsOptionDefinition] = [
   {
     description: "Use CORS middleware or not",
     name: "enabled",
@@ -71,8 +77,8 @@ export const CORS_OPTIONS: [
 export const JSON_BODY_PARSER_NAMESPACE = "jsonBodyParser";
 
 export const JSON_BODY_PARSER_OPTIONS: [
-  OptionDefinition<boolean, { hasDefault: true }>,
-  OptionDefinition<UnknownObject, { hasDefault: true }>
+  JsonBodyParserEnabledOptionDefinition,
+  JsonBodyParserOptionsOptionDefinition
 ] = [
   {
     description: "Use json body-parser middleware or not",
@@ -92,8 +98,8 @@ export const JSON_BODY_PARSER_OPTIONS: [
 export const URL_ENCODED_BODY_PARSER_NAMESPACE = "urlEncodedBodyParser";
 
 export const URL_ENCODED_BODY_PARSER_OPTIONS: [
-  OptionDefinition<boolean, { hasDefault: true }>,
-  OptionDefinition<UnknownObject, { hasDefault: true }>
+  UrlEncodedBodyParserEnabledOptionDefinition,
+  UrlEncodedBodyParserOptionsOptionDefinition
 ] = [
   {
     description: "Use urlencoded body-parser middleware or not",

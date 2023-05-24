@@ -9,3 +9,4 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 export * from "./Server.types";
+export * from "./ServerOptions.types";

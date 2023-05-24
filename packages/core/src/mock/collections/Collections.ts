@@ -8,11 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-import type {
-  ConfigNamespaceInterface,
-  OptionInterfaceOfType,
-  OptionDefinition,
-} from "@mocks-server/config";
+import type { ConfigNamespaceInterface, OptionInterfaceOfType } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import { compact } from "lodash";
 
@@ -33,6 +29,7 @@ import type {
   CollectionsOptions,
   SelectCollectionOptionsNoPromise,
   SelectCollectionOptionsPromise,
+  SelectedCollectionOptionDefinition,
 } from "./Collections.types";
 import {
   collectionRouteVariantsValidationErrors,
@@ -42,7 +39,7 @@ import {
 } from "./CollectionsValidator";
 import { addRoutesToCollectionRoutes } from "./Helpers";
 
-const OPTIONS: [OptionDefinition<string>] = [
+const OPTIONS: [SelectedCollectionOptionDefinition] = [
   {
     description: "Selected collection",
     name: "selected",

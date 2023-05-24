@@ -21,11 +21,19 @@ import {
   NULL_TYPE,
   UNKNOWN_TYPE,
 } from "./Typing";
-import type { ConfigValidationResult, GetValidationSchemaOptions } from "./Validation.types";
+import type {
+  ConfigValidationResult,
+  GetValidationSchemaOptions,
+  JSONSchema7WithUnknown,
+} from "./Validation.types";
 
 const ajv = new Ajv({ allErrors: true, allowUnionTypes: true });
 
-const UNKNOWN_TYPE_SCHEMA = [BOOLEAN_TYPE, NUMBER_TYPE, STRING_TYPE, OBJECT_TYPE, ARRAY_TYPE];
+ajv.addKeyword({
+  keyword: "isUnknown",
+  compile: (schema: boolean) => () => schema === true,
+  errors: false,
+});
 
 type AnySingleValue = unknown;
 type AnyArrayValue = unknown[];
@@ -39,7 +47,7 @@ function enforceDefaultTypeSchema({
   type: OptionType;
   itemsType?: OptionItemsType;
   nullable?: boolean;
-}): JSONSchema7 {
+}): JSONSchema7WithUnknown {
   const properties: { [key: string]: JSONSchema7 } = {
     name: { type: STRING_TYPE as JSONSchema7TypeName },
     type: { enum: [type] },
@@ -58,24 +66,24 @@ function enforceDefaultTypeSchema({
 
   const defaultProperty: JSONSchema7 = {};
 
-  const allowedType = type === UNKNOWN_TYPE ? UNKNOWN_TYPE_SCHEMA : type;
-
   if (nullable) {
-    defaultProperty.type = Array.isArray(allowedType)
-      ? ([...allowedType, NULL_TYPE] as JSONSchema7TypeName[])
-      : [allowedType as JSONSchema7TypeName, NULL_TYPE as JSONSchema7TypeName];
+    if (type !== UNKNOWN_TYPE) {
+      defaultProperty.type = [type as JSONSchema7TypeName, NULL_TYPE as JSONSchema7TypeName];
+    }
     properties.nullable = { enum: [true] };
   } else {
-    defaultProperty.type = allowedType as JSONSchema7TypeName;
+    if (type !== UNKNOWN_TYPE) {
+      defaultProperty.type = type as JSONSchema7TypeName;
+    }
   }
 
   if (itemsType) {
-    const allowedItemsType = itemsType === UNKNOWN_TYPE ? UNKNOWN_TYPE_SCHEMA : itemsType;
     properties.itemsType = { enum: [itemsType] };
-    defaultProperty.items = {
-      type: allowedItemsType as JSONSchema7TypeName,
-    };
-
+    if (itemsType !== UNKNOWN_TYPE) {
+      defaultProperty.items = {
+        type: itemsType as JSONSchema7TypeName,
+      };
+    }
     schema.required = ["name", "type", "nullable", "itemsType"];
   }
 
@@ -85,7 +93,7 @@ function enforceDefaultTypeSchema({
   return schema;
 }
 
-const optionSchema: JSONSchema7 = {
+const optionSchema: JSONSchema7WithUnknown = {
   type: OBJECT_TYPE as JSONSchema7TypeName,
   oneOf: [
     enforceDefaultTypeSchema({ type: NUMBER_TYPE }),
@@ -95,14 +103,21 @@ const optionSchema: JSONSchema7 = {
     enforceDefaultTypeSchema({ type: BOOLEAN_TYPE }),
     enforceDefaultTypeSchema({ type: BOOLEAN_TYPE, nullable: true }),
     enforceDefaultTypeSchema({ type: OBJECT_TYPE }),
+    enforceDefaultTypeSchema({ type: OBJECT_TYPE, nullable: true }),
     enforceDefaultTypeSchema({ type: UNKNOWN_TYPE }),
     enforceDefaultTypeSchema({ type: UNKNOWN_TYPE, nullable: true }),
     enforceDefaultTypeSchema({ type: ARRAY_TYPE }),
+    enforceDefaultTypeSchema({ type: ARRAY_TYPE, nullable: true }),
     enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: NUMBER_TYPE }),
+    enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: NUMBER_TYPE, nullable: true }),
     enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: STRING_TYPE }),
+    enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: STRING_TYPE, nullable: true }),
     enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: BOOLEAN_TYPE }),
+    enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: BOOLEAN_TYPE, nullable: true }),
     enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: OBJECT_TYPE }),
+    enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: OBJECT_TYPE, nullable: true }),
     enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: UNKNOWN_TYPE }),
+    enforceDefaultTypeSchema({ type: ARRAY_TYPE, itemsType: UNKNOWN_TYPE, nullable: true }),
   ],
 };
 
@@ -112,7 +127,7 @@ function emptySchema({
   allowAdditionalProperties,
 }: {
   allowAdditionalProperties: boolean;
-}): JSONSchema7 {
+}): JSONSchema7WithUnknown {
   return {
     type: OBJECT_TYPE as JSONSchema7TypeName,
     properties: {},
@@ -220,31 +235,49 @@ function addNamespaceSchema(
   {
     rootSchema,
     allowAdditionalProperties,
-  }: { rootSchema?: JSONSchema7; allowAdditionalProperties: boolean }
-): JSONSchema7 {
+    removeCustomProperties,
+  }: {
+    rootSchema?: JSONSchema7;
+    allowAdditionalProperties: boolean;
+    removeCustomProperties?: boolean;
+  }
+): JSONSchema7WithUnknown {
   const initialSchema = rootSchema || emptySchema({ allowAdditionalProperties });
   const schema = namespace.options.reduce(
-    (currentSchema: JSONSchema7, option: OptionInterfaceGeneric) => {
-      const properties: { [key: string]: JSONSchema7 } = {};
-      const allowedType = option.type === UNKNOWN_TYPE ? UNKNOWN_TYPE_SCHEMA : option.type;
-      if (option.nullable) {
-        properties[option.name] = {
-          type: Array.isArray(allowedType)
-            ? ([...allowedType, NULL_TYPE] as JSONSchema7TypeName[])
-            : [allowedType as JSONSchema7TypeName, NULL_TYPE as JSONSchema7TypeName],
-        };
+    (currentSchema: JSONSchema7WithUnknown, option: OptionInterfaceGeneric) => {
+      const properties: { [key: string]: JSONSchema7WithUnknown } = {};
+      if (option.type !== UNKNOWN_TYPE) {
+        if (option.nullable) {
+          properties[option.name] = {
+            type: [option.type, NULL_TYPE] as JSONSchema7TypeName[],
+          };
+        } else {
+          properties[option.name] = {
+            type: option.type as JSONSchema7TypeName,
+          };
+        }
       } else {
-        properties[option.name] = {
-          type: allowedType as JSONSchema7TypeName,
-        };
+        if (!removeCustomProperties) {
+          properties[option.name] = {
+            isUnknown: true,
+          };
+        } else {
+          properties[option.name] = {};
+        }
       }
 
       if (optionIsArray(option)) {
-        const allowedItemsType =
-          option.itemsType === UNKNOWN_TYPE ? UNKNOWN_TYPE_SCHEMA : option.itemsType;
-        properties[option.name].items = {
-          type: allowedItemsType,
-        } as JSONSchema7Definition;
+        if (option.itemsType !== UNKNOWN_TYPE) {
+          properties[option.name].items = {
+            type: option.itemsType,
+          } as JSONSchema7Definition;
+        } else {
+          if (!removeCustomProperties) {
+            properties[option.name].items = {
+              isUnknown: true,
+            };
+          }
+        }
       }
       currentSchema.properties = {
         ...currentSchema.properties,
@@ -257,6 +290,7 @@ function addNamespaceSchema(
   addNamespacesSchema(namespace.namespaces, {
     rootSchema: initialSchema,
     allowAdditionalProperties,
+    removeCustomProperties,
   });
   return schema;
 }
@@ -266,16 +300,26 @@ function addNamespacesSchema(
   {
     rootSchema,
     allowAdditionalProperties,
-  }: { rootSchema: JSONSchema7; allowAdditionalProperties: boolean }
-): JSONSchema7 {
+    removeCustomProperties,
+  }: {
+    rootSchema: JSONSchema7;
+    allowAdditionalProperties: boolean;
+    removeCustomProperties?: boolean;
+  }
+): JSONSchema7WithUnknown {
   return namespaces.reduce((currentSchema: JSONSchema7, namespace: ConfigNamespaceInterface) => {
-    const properties: { [key: string]: JSONSchema7 } = {};
+    const properties: { [key: string]: JSONSchema7WithUnknown } = {};
     if (!namespace.isRoot) {
       properties[namespace.name] = addNamespaceSchema(namespace, {
         allowAdditionalProperties,
+        removeCustomProperties,
       });
     } else {
-      addNamespaceSchema(namespace, { rootSchema: currentSchema, allowAdditionalProperties });
+      addNamespaceSchema(namespace, {
+        rootSchema: currentSchema,
+        allowAdditionalProperties,
+        removeCustomProperties,
+      });
     }
     currentSchema.properties = {
       ...currentSchema.properties,
@@ -288,13 +332,16 @@ function addNamespacesSchema(
 function getConfigValidationSchema({
   namespaces,
   allowAdditionalProperties,
+  removeCustomProperties,
 }: {
   namespaces: ConfigNamespaceInterface[];
   allowAdditionalProperties: boolean;
-}): JSONSchema7 {
+  removeCustomProperties?: boolean;
+}): JSONSchema7WithUnknown {
   return addNamespacesSchema(namespaces, {
     rootSchema: emptySchema({ allowAdditionalProperties }),
     allowAdditionalProperties,
+    removeCustomProperties,
   });
 }
 
@@ -303,11 +350,16 @@ export function validateConfigAndThrow(
   {
     namespaces,
     allowAdditionalProperties,
-  }: { namespaces: ConfigNamespaceInterface[]; allowAdditionalProperties: boolean }
+    removeCustomProperties,
+  }: {
+    namespaces: ConfigNamespaceInterface[];
+    allowAdditionalProperties: boolean;
+    removeCustomProperties?: boolean;
+  }
 ): void | never {
   validateSchemaAndThrow(
     config,
-    getConfigValidationSchema({ namespaces, allowAdditionalProperties })
+    getConfigValidationSchema({ namespaces, allowAdditionalProperties, removeCustomProperties })
   );
 }
 
@@ -316,19 +368,29 @@ export function validateConfig(
   {
     namespaces,
     allowAdditionalProperties,
-  }: { namespaces: ConfigNamespaceInterface[]; allowAdditionalProperties: boolean }
+    removeCustomProperties,
+  }: {
+    namespaces: ConfigNamespaceInterface[];
+    allowAdditionalProperties: boolean;
+    removeCustomProperties?: boolean;
+  }
 ): ConfigValidationResult {
   return validateSchema(
     config,
-    getConfigValidationSchema({ namespaces, allowAdditionalProperties })
+    getConfigValidationSchema({ namespaces, allowAdditionalProperties, removeCustomProperties })
   );
 }
 
 export function getValidationSchema({
   namespaces,
   allowAdditionalProperties,
-}: GetValidationSchemaOptions): JSONSchema7 {
-  return getConfigValidationSchema({ namespaces, allowAdditionalProperties });
+  removeCustomProperties,
+}: GetValidationSchemaOptions): JSONSchema7WithUnknown {
+  return getConfigValidationSchema({
+    namespaces,
+    allowAdditionalProperties,
+    removeCustomProperties,
+  });
 }
 
 export function validateOptionAndThrow(option: OptionDefinitionGeneric): void | never {

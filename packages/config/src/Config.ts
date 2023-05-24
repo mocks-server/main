@@ -213,6 +213,7 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
     return getValidationSchema({
       namespaces: this._namespaces,
       allowAdditionalProperties,
+      removeCustomProperties: true,
     });
   }
 

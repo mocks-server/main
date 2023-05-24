@@ -34,6 +34,7 @@ const OPTIONS: [OptionDefinition<VariantHandlerConstructor[], { hasDefault: true
     description: "Variant Handlers to be registered",
     name: "register",
     type: "array",
+    itemsType: "unknown",
     default: [],
   },
 ];

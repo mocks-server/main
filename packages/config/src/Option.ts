@@ -1,7 +1,7 @@
 import EventEmitter from "events";
 
 import deepMerge from "deepmerge";
-import { isUndefined, isEqual } from "lodash";
+import { isUndefined, isEqual, isNull } from "lodash";
 
 import type { UnknownObject } from "./Common.types";
 import { addEventListener, CHANGE } from "./Events";
@@ -12,8 +12,6 @@ import type {
   SetMethodOptions,
   GetOptionValueTypeFromDefinition,
   GetOptionTypeFromDefinition,
-  OptionInterfaceOfType,
-  OptionDefinition,
 } from "./Option.types";
 import { typeIsArray, typeIsObject, optionIsObject, avoidArraysMerge } from "./Typing";
 import { validateOptionAndThrow, validateValueTypeAndThrow } from "./Validation";
@@ -93,7 +91,7 @@ export class Option<T extends OptionDefinitionGeneric, TypeOfValue = void>
   private _clone(
     value: GetOptionValueTypeFromDefinition<T, TypeOfValue>
   ): GetOptionValueTypeFromDefinition<T, TypeOfValue> {
-    if (isUndefined(value)) {
+    if (isUndefined(value) || (this._nullable === true && isNull(value))) {
       return value;
     }
     if (typeIsArray(this._type)) {

@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/plugin-inquirer-cli",
-  "version": "5.0.0-beta.1",
+  "version": "5.0.0-beta.2",
   "description": "Mocks server plugin providing an interactive CLI",
   "keywords": [
     "mocks-server-plugin",
@@ -32,7 +32,7 @@
     "test:unit": "jest"
   },
   "peerDependencies": {
-    "@mocks-server/core": ">=5.0.0 <6.x"
+    "@mocks-server/core": "5.0.0-beta.1"
   },
   "dependencies": {
     "chalk": "4.1.1",

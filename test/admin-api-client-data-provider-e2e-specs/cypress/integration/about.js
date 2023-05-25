@@ -11,12 +11,12 @@ describe("About section", () => {
   it("should display current core version", () => {
     cy.findByTestId(SELECTORS.CORE_VERSION)
       .invoke("text")
-      .should("match", /^(?:\d+\.)(?:\d+\.)(?:\*|\d+)-beta.1$/);
+      .should("match", /^(?:\d+\.)(?:\d+\.)(?:\*|\d+)-beta.\d$/);
   });
 
   it("should display current admin api version", () => {
     cy.findByTestId(SELECTORS.ADMINAPI_VERSION)
       .invoke("text")
-      .should("match", /^(?:\d+\.)(?:\d+\.)(?:\*|\d+)-beta.1$/);
+      .should("match", /^(?:\d+\.)(?:\d+\.)(?:\*|\d+)-beta.\d$/);
   });
 });

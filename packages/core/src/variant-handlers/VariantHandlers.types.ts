@@ -7,12 +7,35 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
-import type { ConfigNamespaceInterface } from "@mocks-server/config";
+import type {
+  ConfigNamespaceInterface,
+  GetOptionValueTypeFromDefinition,
+  OptionDefinition,
+} from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 
 import type { UnknownObject, JSONValue } from "../common/types";
 import type { JSONSchema7WithInstanceof } from "../mock/types";
 import type { NextFunction, Request, Response, RequestHandler } from "../server/types";
+
+export type VariantHandlersOptionDefinition = OptionDefinition<
+  VariantHandlerConstructor[],
+  { hasDefault: true }
+>;
+
+declare global {
+  //eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace MocksServer {
+    interface Config {
+      variantHandlers?: {
+        register?: GetOptionValueTypeFromDefinition<
+          VariantHandlersOptionDefinition,
+          VariantHandlerConstructor[]
+        >;
+      };
+    }
+  }
+}
 
 /** Response preview */
 export interface VariantHandlerResponsePreview {

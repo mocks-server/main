@@ -268,6 +268,168 @@ describe("options", () => {
       ).toThrowError("default");
     });
 
+    it("should not throw when type is unknown and default is string", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({ name: "fooOption", type: "unknown", default: "foo" })
+      ).not.toThrow();
+    });
+
+    it("should not throw when type is unknown and default is number", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({ name: "fooOption", type: "unknown", default: 5 })
+      ).not.toThrow();
+    });
+
+    it("should not throw when type is unknown and default is array", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({ name: "fooOption", type: "unknown", default: [] })
+      ).not.toThrow();
+    });
+
+    it("should not throw when type is unknown and default is object", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({ name: "fooOption", type: "unknown", default: {} })
+      ).not.toThrow();
+    });
+
+    it("should not throw when type is unknown and default is function", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({
+          name: "fooOption",
+          type: "unknown",
+          default: () => {
+            // do nothing
+          },
+        })
+      ).not.toThrow();
+    });
+
+    it("should not throw when type is unknown and default is boolean", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({
+          name: "fooOption",
+          type: "unknown",
+          default: false,
+        })
+      ).not.toThrow();
+    });
+
+    it("should not throw when itemsType is unknown and default is array of strings", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({
+          name: "fooOption",
+          type: "array",
+          itemsType: "unknown",
+          default: ["foo"],
+        })
+      ).not.toThrow();
+    });
+
+    it("should not throw when itemsType is unknown and default is array number", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({
+          name: "fooOption",
+          type: "array",
+          itemsType: "unknown",
+          default: [5],
+        })
+      ).not.toThrow();
+    });
+
+    it("should not throw when itemsType is unknown and default is array of arrays", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({
+          name: "fooOption",
+          type: "array",
+          itemsType: "unknown",
+          default: [[]],
+        })
+      ).not.toThrow();
+    });
+
+    it("should not throw when itemsType is unknown and default is array object", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({
+          name: "fooOption",
+          type: "array",
+          itemsType: "unknown",
+          default: [{}],
+        })
+      ).not.toThrow();
+    });
+
+    it("should not throw when itemsType is unknown and default is array of functions", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({
+          name: "fooOption",
+          type: "array",
+          itemsType: "unknown",
+          default: [
+            () => {
+              // do nothing
+            },
+          ],
+        })
+      ).not.toThrow();
+    });
+
+    it("should not throw when itemsType is unknown and default is array of boolean", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({
+          name: "fooOption",
+          type: "array",
+          itemsType: "unknown",
+          default: [false],
+        })
+      ).not.toThrow();
+    });
+
+    it("should not throw when itemsType is unknown and default is a mix of types", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      expect(() =>
+        namespace.addOption({
+          name: "fooOption",
+          type: "array",
+          itemsType: "unknown",
+          default: [
+            false,
+            5,
+            "foo",
+            {},
+            [],
+            () => {
+              // do nothing
+            },
+          ],
+        })
+      ).not.toThrow();
+    });
+
     it("should throw when type is not array and itemsType property is added", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
@@ -300,6 +462,143 @@ describe("options", () => {
           default: [1, "foo", 3],
         })
       ).toThrowError("default");
+    });
+
+    it("should not throw when setting value if type is unknown and value is string", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      const opt = namespace.addOption({ name: "fooOption", type: "unknown" });
+      expect(() => (opt.value = "bar")).not.toThrow();
+    });
+
+    it("should not throw when setting value if type is unknown and value is number", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      const opt = namespace.addOption({ name: "fooOption", type: "unknown" });
+      expect(() => (opt.value = 10)).not.toThrow();
+    });
+
+    it("should not throw when setting value if type is unknown and value is array", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      const opt = namespace.addOption({ name: "fooOption", type: "unknown" });
+      expect(() => (opt.value = ["foo"])).not.toThrow();
+    });
+
+    it("should not throw when setting value if type is unknown and value is object", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      const opt = namespace.addOption({ name: "fooOption", type: "unknown" });
+      expect(() => (opt.value = { foo: "bar" })).not.toThrow();
+    });
+
+    it("should not throw when setting value if type is unknown and value is function", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      const opt = namespace.addOption({
+        name: "fooOption",
+        type: "unknown",
+      });
+      expect(
+        () =>
+          (opt.value = () => {
+            // do nothing
+          })
+      ).not.toThrow();
+    });
+
+    it("should not throw when setting value if type is unknown and value is boolean", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      const opt = namespace.addOption({
+        name: "fooOption",
+        type: "unknown",
+      });
+      expect(() => (opt.value = true)).not.toThrow();
+    });
+
+    it("should not throw when setting value if itemsType is unknown and value is array of strings", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      const opt = namespace.addOption({
+        name: "fooOption",
+        type: "array",
+        itemsType: "unknown",
+      });
+      expect(() => (opt.value = ["foo"])).not.toThrow();
+    });
+
+    it("should not throw when setting value if itemsType is unknown and value is array number", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      const opt = namespace.addOption({
+        name: "fooOption",
+        type: "array",
+        itemsType: "unknown",
+      });
+      expect(() => (opt.value = [1])).not.toThrow();
+    });
+
+    it("should not throw when setting value if itemsType is unknown and value is array of arrays", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      const opt = namespace.addOption({
+        name: "fooOption",
+        type: "array",
+        itemsType: "unknown",
+      });
+      expect(() => (opt.value = [[1]])).not.toThrow();
+    });
+
+    it("should not throw when setting value if itemsType is unknown and value is array of functions", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      const opt = namespace.addOption({
+        name: "fooOption",
+        type: "array",
+        itemsType: "unknown",
+      });
+      expect(() => {
+        opt.value = [
+          () => {
+            // do nothing }
+          },
+        ];
+      }).not.toThrow();
+    });
+
+    it("should not throw when setting value if itemsType is unknown and value is array of boolean", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      const opt = namespace.addOption({
+        name: "fooOption",
+        type: "array",
+        itemsType: "unknown",
+        default: [false],
+      });
+      expect(() => (opt.value = [true, false])).not.toThrow();
+    });
+
+    it("should not throw when setting value if itemsType is unknown and value is a mix of types", async () => {
+      config = new Config();
+      namespace = config.addNamespace("foo");
+      const opt = namespace.addOption({
+        name: "fooOption",
+        type: "array",
+        itemsType: "unknown",
+      });
+      expect(() => {
+        opt.value = [
+          false,
+          5,
+          "foo",
+          {},
+          [],
+          () => {
+            // do nothing
+          },
+        ];
+      }).not.toThrow();
     });
 
     it("should throw when setting value if type is array and value does not match type", async () => {

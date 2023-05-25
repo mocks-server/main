@@ -28,6 +28,18 @@ import type {
 } from "./definitions/types";
 import type { RouteId, RoutesInterface } from "./routes/types";
 
+declare global {
+  //eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace MocksServer {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface ConfigMockNamespace {}
+
+    interface Config {
+      mock?: ConfigMockNamespace;
+    }
+  }
+}
+
 export type CollectionDefinitionsManager = DefinitionLoadersManagerInterface<CollectionDefinition>;
 export type CollectionDefinitionsLoader = DefinitionsLoaderInterface<CollectionDefinition>["load"];
 

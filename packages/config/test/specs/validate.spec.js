@@ -14,23 +14,50 @@ describe("validate method", () => {
   });
 
   describe("when option is created in root", () => {
-    function testTypeValidation({ type, validValue, invalidValue, default: defaultValue }) {
+    function testTypeValidation({
+      type,
+      itemsType,
+      validValue,
+      invalidValue,
+      default: defaultValue,
+      checkInvalid = true,
+      extraDescription = "",
+    }) {
       const name = "fooOption";
 
-      describe(`${type} type`, () => {
-        it("should not pass validation when value does not match type", async () => {
-          config = new Config();
-          config.addOption({
-            name,
-            type,
-            default: defaultValue,
+      describe(`${type} type${extraDescription ? ` ${extraDescription}` : ""}`, () => {
+        if (!itemsType && checkInvalid) {
+          it("should not pass validation when value does not match type", async () => {
+            config = new Config();
+            config.addOption({
+              name,
+              type,
+              default: defaultValue,
+            });
+            const validation = config.validate({
+              [name]: invalidValue,
+            });
+            expect(validation.valid).toEqual(false);
+            expect(validation.errors.length).toEqual(1);
           });
-          const validation = config.validate({
-            [name]: invalidValue,
+        }
+
+        if (itemsType && checkInvalid) {
+          it("should not pass validation when option is array and value does not match itemsType", async () => {
+            config = new Config();
+            config.addOption({
+              name,
+              type,
+              itemsType,
+              default: defaultValue,
+            });
+            const validation = config.validate({
+              [name]: invalidValue,
+            });
+            expect(validation.valid).toEqual(false);
+            expect(validation.errors.length).toEqual(1);
           });
-          expect(validation.valid).toEqual(false);
-          expect(validation.errors.length).toEqual(1);
-        });
+        }
 
         it("should pass validation when is nullable and value is null", async () => {
           config = new Config();
@@ -59,7 +86,7 @@ describe("validate method", () => {
           expect(config.option(name).value).toEqual(null);
         });
 
-        it("should pass validation when is nullable string and default value is null", async () => {
+        it("should pass validation when is nullable and default value is null", async () => {
           config = new Config();
           config.addOption({
             name,
@@ -74,19 +101,38 @@ describe("validate method", () => {
           expect(validation.errors).toEqual(null);
         });
 
-        it("should pass validation when value matches type", async () => {
-          config = new Config();
-          config.addOption({
-            name,
-            type,
-            default: defaultValue,
+        if (!itemsType) {
+          it("should pass validation when value matches type", async () => {
+            config = new Config();
+            config.addOption({
+              name,
+              type,
+              default: defaultValue,
+            });
+            const validation = config.validate({
+              [name]: validValue,
+            });
+            expect(validation.valid).toEqual(true);
+            expect(validation.errors).toEqual(null);
           });
-          const validation = config.validate({
-            [name]: validValue,
+        }
+
+        if (itemsType) {
+          it("should pass validation when option is array and value matches itemsType", async () => {
+            config = new Config();
+            config.addOption({
+              name,
+              type,
+              itemsType,
+              default: defaultValue,
+            });
+            const validation = config.validate({
+              [name]: validValue,
+            });
+            expect(validation.valid).toEqual(true);
+            expect(validation.errors).toEqual(null);
           });
-          expect(validation.valid).toEqual(true);
-          expect(validation.errors).toEqual(null);
-        });
+        }
       });
     }
 
@@ -98,6 +144,22 @@ describe("validate method", () => {
     });
 
     testTypeValidation({
+      type: "object",
+      invalidValue: 2,
+      validValue: { foo: "bar" },
+      default: { foo: "baz" },
+    });
+
+    testTypeValidation({
+      type: "array",
+      itemsType: "string",
+      invalidValue: [2],
+      validValue: ["2"],
+      default: ["default-str"],
+      extraDescription: "with itemsType string",
+    });
+
+    testTypeValidation({
       type: "number",
       invalidValue: "2",
       validValue: 2,
@@ -105,10 +167,70 @@ describe("validate method", () => {
     });
 
     testTypeValidation({
+      type: "array",
+      itemsType: "number",
+      invalidValue: ["2"],
+      validValue: [2],
+      default: [3],
+      extraDescription: "with itemsType number",
+    });
+
+    testTypeValidation({
       type: "boolean",
       invalidValue: "2",
       validValue: true,
       default: false,
+    });
+
+    testTypeValidation({
+      type: "unknown",
+      validValue: true,
+      default: false,
+      checkInvalid: false,
+      extraDescription: "with boolean value",
+    });
+
+    testTypeValidation({
+      type: "array",
+      itemsType: "unknown",
+      validValue: [true],
+      default: [false],
+      checkInvalid: false,
+      extraDescription: "with itemsType unknown and boolean value",
+    });
+
+    testTypeValidation({
+      type: "unknown",
+      validValue: "foo",
+      default: 5,
+      checkInvalid: false,
+      extraDescription: "with string value and number default",
+    });
+
+    testTypeValidation({
+      type: "unknown",
+      validValue: "foo",
+      default: "var",
+      checkInvalid: false,
+      extraDescription: "with string value",
+    });
+
+    testTypeValidation({
+      type: "unknown",
+      validValue: 4,
+      default: 2,
+      checkInvalid: false,
+      extraDescription: "with number value",
+    });
+
+    testTypeValidation({
+      type: "unknown",
+      validValue: () => {
+        // do nothing
+      },
+      default: 2,
+      checkInvalid: false,
+      extraDescription: "with function value",
     });
   });
 

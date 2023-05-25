@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: Do not return root namespace in config.namespaces
 - feat: Throw an error when creating namespace if it already exists, as creating an option does
 - feat: Make itemsType property in options of type 'array' not mandatory
+- feat: Support nullable in options of type 'array' and 'object'
+- feat: Add `unknown` type to options. They support any type and are not validated
 
 ## [1.4.0] - 2022-09-01
 

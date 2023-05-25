@@ -134,12 +134,11 @@ describe("getValidationSchema method", () => {
           foo: {
             type: "object",
             properties: {
-              fooOption: { type: ["boolean", "number", "string", "object", "array"] },
+              fooOption: {},
               fooOption2: {
                 type: "array",
-                items: { type: ["boolean", "number", "string", "object", "array"] },
               },
-              fooOption3: { type: ["boolean", "number", "string", "object", "array", "null"] },
+              fooOption3: {},
             },
             additionalProperties: true,
           },

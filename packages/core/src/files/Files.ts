@@ -39,6 +39,11 @@ import type {
   FilesInterface,
   FilesOptions,
   FilesLoaders,
+  FilesEnabledOptionDefinition,
+  FilesPathOptionDefinition,
+  FilesWatchOptionDefinition,
+  BabelEnabledOptionDefinition,
+  BabelConfigOptionDefinition,
 } from "./Files.types";
 import { FilesLoader } from "./FilesLoader";
 import type { FilesLoaderInterface, FileLoaded, ErrorLoadingFile } from "./FilesLoader.types";
@@ -52,9 +57,9 @@ import {
 } from "./Helpers";
 
 const OPTIONS: [
-  OptionDefinition<boolean, { hasDefault: true }>,
-  OptionDefinition<string, { hasDefault: true }>,
-  OptionDefinition<boolean, { hasDefault: true }>
+  FilesEnabledOptionDefinition,
+  FilesPathOptionDefinition,
+  FilesWatchOptionDefinition
 ] = [
   {
     name: "enabled",
@@ -78,10 +83,7 @@ const OPTIONS: [
 
 const BABEL_REGISTER_NAMESPACE = "babelRegister";
 
-const BABEL_REGISTER_OPTIONS: [
-  OptionDefinition<boolean, { hasDefault: true }>,
-  OptionDefinition<UnknownObject, { hasDefault: true }>
-] = [
+const BABEL_REGISTER_OPTIONS: [BabelEnabledOptionDefinition, BabelConfigOptionDefinition] = [
   {
     name: "enabled",
     description: "Load @babel/register",

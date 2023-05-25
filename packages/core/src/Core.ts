@@ -16,7 +16,6 @@ import {
   ConfigInterface,
   ConfigurationObject,
   ConfigNamespaceInterface,
-  OptionDefinition,
   OptionInterfaceOfType,
 } from "@mocks-server/config";
 import { Logger, LoggerInterface, LogLevel } from "@mocks-server/logger";
@@ -26,7 +25,12 @@ import { readJsonSync } from "fs-extra";
 import { Alerts } from "./alerts";
 import type { AlertsInterface } from "./alerts/types";
 import { CHANGE_MOCK, CHANGE_ALERTS, arrayMerge } from "./common";
-import type { CoreInterface, CoreConstructor, CoreAdvancedOptions } from "./Core.types";
+import type {
+  CoreInterface,
+  CoreConstructor,
+  CoreAdvancedOptions,
+  LogOptionDefinition,
+} from "./Core.types";
 import { Files } from "./files";
 import type { FilesInterface } from "./files/types";
 import { Mock } from "./mock";
@@ -44,7 +48,7 @@ import type { VariantHandlersInterface } from "./variant-handlers/types";
 
 const MODULE_NAME = "mocks";
 
-const ROOT_OPTIONS: [OptionDefinition<string, { hasDefault: true }>] = [
+const ROOT_OPTIONS: [LogOptionDefinition] = [
   {
     description: "Log level. Can be one of silly, debug, verbose, info, warn or error",
     name: "log",

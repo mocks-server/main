@@ -22,7 +22,6 @@ export const Files: FilesConstructor = class Files implements FilesInterface {
     if (isFunction(config)) {
       return config(initConfig);
     }
-    console.log(config);
     return config;
   }
 

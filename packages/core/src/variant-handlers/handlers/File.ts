@@ -66,7 +66,7 @@ export const VariantHandlerFile: VariantHandlerFileConstructor = class VariantHa
     this._options = options;
     this._expressOptions = { ...DEFAULT_EXPRESS_OPTIONS, ...this._options.options };
     this._absPath = path.resolve(this._expressOptions.root, this._options.path);
-    this._logger = core.logger as LoggerInterface;
+    this._logger = core.logger;
   }
 
   public middleware(req: Request, res: Response, next: NextFunction): void {

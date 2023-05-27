@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat(BREAKING CHANGE): Do not return server instance on start method. Now, the server instance is returned only on the constructor.
 - feat: Return delay and type as null in plain routes when they are disabled
 - feat(BREAKING CHANGE): Return always an array of methods in routes plain objects get with the `mock.routes.plain` getter
+- feat(BREAKING CHANGE): Id static property in plugins is now mandatory. The core will be passed only to plugin constructors, not no any other plugin method. If the plugin has not an id static property, it will not be registered.
 
 ### Fixed
 - fix: Remove error handling in `server.listen` method. According to the node docs, the callback is never called with an error. Instead, the error is emitted on the server object.

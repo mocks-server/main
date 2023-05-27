@@ -80,7 +80,7 @@ export interface SelectCollection {
   (id: CollectionId, options: SelectCollectionOptionsPromise): Promise<void>;
 }
 
-/** Interface for managing Mocks Server collections. Currently it does not have almost responsibility, but this has to be refactored. TODO: Migrate routes responsibility to this interface */
+/** Interface for managing Mocks Server collections.*/
 export interface CollectionsInterface {
   /** Return id of currently selected collection */
   get selected(): CollectionId | null;

@@ -67,7 +67,7 @@ export interface RoutesConstructor {
   new (options: RoutesOptions, core: CoreInterface): RoutesInterface;
 }
 
-/** Interface for managing Mocks Server routes. Currently it does not have almost responsibility, but this has to be refactored. TODO: Migrate routes responsibility to this interface */
+/** Interface for managing Mocks Server routes.*/
 export interface RoutesInterface {
   /** Get value of delay configuration */
   get delay(): number;

@@ -24,7 +24,7 @@ describe("loadCollections and loadRoutes methods", () => {
       static get id() {
         return "test-plugin";
       }
-      register({ mock }) {
+      constructor({ mock }) {
         this._mock = mock;
       }
       start() {

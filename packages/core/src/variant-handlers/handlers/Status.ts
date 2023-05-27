@@ -49,7 +49,7 @@ export const VariantHandlerStatus: VariantHandlerStatusConstructor = class Varia
 
   constructor(options: VariantHandlerStatusOptions, core: ScopedCoreInterface) {
     this._options = options;
-    this._logger = core.logger as LoggerInterface;
+    this._logger = core.logger;
   }
 
   public middleware(req: Request, res: Response): void {

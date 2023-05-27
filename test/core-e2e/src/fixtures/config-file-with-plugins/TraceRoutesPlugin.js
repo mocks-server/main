@@ -21,10 +21,10 @@ class Plugin {
     return "trace-routes";
   }
 
-  init({ mock, logger }) {
+  init() {
     this._enabled = this._traceRoutes.value;
-    this._removeChangeMocksListener = mock.onChange(this._onChangeMock);
-    logger.debug(`traceRoutes initial value is ${this._traceRoutes.value}`);
+    this._removeChangeMocksListener = this._mock.onChange(this._onChangeMock);
+    this._logger.debug(`traceRoutes initial value is ${this._traceRoutes.value}`);
   }
 
   traceRoutes() {

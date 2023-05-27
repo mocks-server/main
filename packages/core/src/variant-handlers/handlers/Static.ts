@@ -56,7 +56,7 @@ export const VariantHandlerStatic: VariantHandlerStaticConstructor = class Varia
   constructor(options: VariantHandlerStaticOptions, core: ScopedCoreInterface) {
     this._options = options;
     this._expressStaticOptions = this._options.options || {};
-    this._logger = core.logger as LoggerInterface;
+    this._logger = core.logger;
   }
 
   public get router(): RequestHandler {

@@ -47,7 +47,7 @@ export const VariantHandlerMiddleware: VariantHandlerMiddlewareConstructor = cla
 
   constructor(options: VariantHandlerMiddlewareOptions, core: ScopedCoreInterface) {
     this._options = options;
-    this._logger = core.logger as LoggerInterface;
+    this._logger = core.logger;
     this._core = core;
   }
 

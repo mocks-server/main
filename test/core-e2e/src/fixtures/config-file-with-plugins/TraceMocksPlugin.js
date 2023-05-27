@@ -21,10 +21,10 @@ class Plugin {
     return "trace-mocks";
   }
 
-  init({ mock, logger }) {
+  init() {
     this._enabled = this._traceMocks.value;
-    this._removeChangeMockListener = mock.onChange(this._onChangeMock);
-    logger.debug(`traceMocks initial value is ${this._traceMocks.value}`);
+    this._removeChangeMockListener = this._mock.onChange(this._onChangeMock);
+    this._logger.debug(`traceMocks initial value is ${this._traceMocks.value}`);
   }
 
   traceMocks() {

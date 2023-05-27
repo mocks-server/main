@@ -303,9 +303,14 @@ describe("plugins", () => {
         files,
         version,
         variantHandlers,
+        mock,
       }) {
         coreStartMethod = start;
         coreStopMethod = stop;
+        this._logger = logger;
+        this._alerts = alerts;
+        this._config = config;
+        this._mock = mock;
         logger.info("Log from register method");
         server.addRouter("/foo-path", customRouter);
         alerts.set("test-register", "Warning registering plugin");
@@ -313,25 +318,25 @@ describe("plugins", () => {
         configSpy(config);
         propertiesSpy(files, version, variantHandlers);
       }
-      init({ alerts, mock, logger, config }) {
-        logger.info("Log from init method");
+      init() {
+        this._logger.info("Log from init method");
         initSpy(
-          config.root.namespace("files").option("path").value,
-          config.root.namespace("server").option("port").value,
-          config.root.namespace("mock").namespace("routes").option("delay").value
+          this._config.root.namespace("files").option("path").value,
+          this._config.root.namespace("server").option("port").value,
+          this._config.root.namespace("mock").namespace("routes").option("delay").value
         );
-        config.root.option("log").value = "silly";
-        alerts.onChange(changeAlertsSpy);
-        mock.onChange(mocksLoadedSpy);
+        this._config.root.option("log").value = "silly";
+        this._alerts.onChange(changeAlertsSpy);
+        this._mock.onChange(mocksLoadedSpy);
       }
-      start({ alerts, logger }) {
-        logger.info("Log from start method");
-        alerts.set("test-start", "Warning starting plugin");
+      start() {
+        this._logger.info("Log from start method");
+        this._alerts.set("test-start", "Warning starting plugin");
         startSpy();
       }
-      stop({ alerts, logger }) {
-        logger.info("Log from stop method");
-        alerts.clean();
+      stop() {
+        this._logger.info("Log from stop method");
+        this._alerts.clean();
       }
     }
   );
@@ -343,74 +348,57 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      register({ start, stop, server, alerts, config, logger, files, version, variantHandlers }) {
+      constructor({
+        start,
+        stop,
+        server,
+        alerts,
+        config,
+        logger,
+        files,
+        version,
+        variantHandlers,
+        mock,
+      }) {
         coreStartMethod = start;
         coreStopMethod = stop;
-        logger.info("Log from register method");
-        server.addRouter("/foo-path", customRouter);
-        alerts.set("test-register", "Warning registering plugin");
-        registerSpy();
-        configSpy(config);
-        propertiesSpy(files, version, variantHandlers);
+        this._server = server;
+        this._files = files;
+        this._version = version;
+        this._variantHandlers = variantHandlers;
+        this._logger = logger;
+        this._alerts = alerts;
+        this._config = config;
+        this._mock = mock;
       }
-      init({ logger, config, alerts, mock }) {
-        logger.info("Log from init method");
-        initSpy(
-          config.root.namespace("files").option("path").value,
-          config.root.namespace("server").option("port").value,
-          config.root.namespace("mock").namespace("routes").option("delay").value
-        );
-        config.root.option("log").value = "silly";
-        alerts.onChange(changeAlertsSpy);
-        mock.onChange(mocksLoadedSpy);
-      }
-      start({ alerts, logger }) {
-        logger.info("Log from start method");
-        alerts.set("test-start", "Warning starting plugin");
-        startSpy();
-      }
-      stop({ alerts, logger }) {
-        logger.info("Log from stop method");
-        alerts.clean();
-      }
-    }
-  );
 
-  testPlugin(
-    "created as a Class with register method and without static id",
-    class Plugin {
-      register({ start, stop, server, alerts, config, logger, files, version, variantHandlers }) {
-        coreStartMethod = start;
-        coreStopMethod = stop;
-        logger.info("Log from register method");
-        server.addRouter("/foo-path", customRouter);
-        alerts.set("test-register", "Warning registering plugin");
+      register() {
+        this._logger.info("Log from register method");
+        this._server.addRouter("/foo-path", customRouter);
+        this._alerts.set("test-register", "Warning registering plugin");
         registerSpy();
-        configSpy(config);
-        propertiesSpy(files, version, variantHandlers);
+        configSpy(this._config);
+        propertiesSpy(this._files, this._version, this._variantHandlers);
       }
-      init({ logger, config, alerts, mock }) {
-        logger.info("Log from init method");
+      init() {
+        this._logger.info("Log from init method");
         initSpy(
-          config.root.namespace("files").option("path").value,
-          config.root.namespace("server").option("port").value,
-          config.root.namespace("mock").namespace("routes").option("delay").value
+          this._config.root.namespace("files").option("path").value,
+          this._config.root.namespace("server").option("port").value,
+          this._config.root.namespace("mock").namespace("routes").option("delay").value
         );
-        config.root.option("log").value = "silly";
-        alerts.onChange(changeAlertsSpy);
-        mock.onChange(mocksLoadedSpy);
+        this._config.root.option("log").value = "silly";
+        this._alerts.onChange(changeAlertsSpy);
+        this._mock.onChange(mocksLoadedSpy);
       }
-      start({ alerts, logger }) {
-        logger.info("Log from start method");
-        alerts.set("test-start", "Warning starting plugin");
+      start() {
+        this._logger.info("Log from start method");
+        this._alerts.set("test-start", "Warning starting plugin");
         startSpy();
       }
-      stop({ alerts, logger }) {
-        logger.info("Log from stop method");
-        alerts.clean();
-      }
-      get id() {
-        return "test-plugin";
+      stop() {
+        this._logger.info("Log from stop method");
+        this._alerts.clean();
       }
     }
   );
@@ -422,20 +410,42 @@ describe("plugins", () => {
         return "test-plugin";
       }
 
-      register({ start, stop, server, alerts, config, files, version, variantHandlers }) {
+      constructor({
+        start,
+        stop,
+        server,
+        alerts,
+        config,
+        logger,
+        files,
+        version,
+        variantHandlers,
+        mock,
+      }) {
         coreStartMethod = start;
         coreStopMethod = stop;
-        server.addRouter("/foo-path", customRouter);
-        alerts.set("test-register", "Warning registering plugin");
+        this._server = server;
+        this._files = files;
+        this._version = version;
+        this._variantHandlers = variantHandlers;
+        this._logger = logger;
+        this._alerts = alerts;
+        this._config = config;
+        this._mock = mock;
+      }
+
+      register() {
+        this._server.addRouter("/foo-path", customRouter);
+        this._alerts.set("test-register", "Warning registering plugin");
         registerSpy();
-        configSpy(config);
-        propertiesSpy(files, version, variantHandlers);
+        configSpy(this._config);
+        propertiesSpy(this._files, this._version, this._variantHandlers);
       }
       async init() {
         await wait(2000);
       }
-      async start({ alerts }) {
-        alerts.set("test-start", "Warning starting plugin");
+      async start() {
+        this._alerts.set("test-start", "Warning starting plugin");
         await wait(1000);
       }
     }

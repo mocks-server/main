@@ -26,9 +26,9 @@ import type {
 
 export const ScopedCore: ScopedCoreConstructor = class ScopedCore implements ScopedCoreInterface {
   private _core: CoreInterface;
-  private _alerts: AlertsInterface | undefined;
-  private _config: ConfigNamespaceInterface | undefined;
-  private _logger: LoggerInterface | undefined;
+  private _alerts: AlertsInterface;
+  private _config: ConfigNamespaceInterface;
+  private _logger: LoggerInterface;
 
   constructor({ core, config, alerts, logger }: ScopedCoreOptions) {
     this._core = core;
@@ -41,11 +41,11 @@ export const ScopedCore: ScopedCoreConstructor = class ScopedCore implements Sco
     this.stop = this.stop.bind(this);
   }
 
-  public get alerts(): AlertsInterface | undefined {
+  public get alerts(): AlertsInterface {
     return this._alerts;
   }
 
-  public get config(): ConfigNamespaceInterface | undefined {
+  public get config(): ConfigNamespaceInterface {
     return this._config;
   }
 
@@ -53,7 +53,7 @@ export const ScopedCore: ScopedCoreConstructor = class ScopedCore implements Sco
     return this._core.files;
   }
 
-  public get logger(): LoggerInterface | undefined {
+  public get logger(): LoggerInterface {
     return this._logger;
   }
 

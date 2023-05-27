@@ -52,7 +52,7 @@ export const VariantHandlerText: VariantHandlerTextConstructor = class VariantHa
 
   constructor(options: VariantHandlerTextOptions, core: ScopedCoreInterface) {
     this._options = options;
-    this._logger = core.logger as LoggerInterface;
+    this._logger = core.logger;
   }
 
   public get defaultHeaders(): UnknownObject {

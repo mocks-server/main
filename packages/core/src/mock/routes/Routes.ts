@@ -159,6 +159,7 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
       core: this._core,
       logger: routeLogger,
       alerts: routeVariantAlerts,
+      config: this._config,
     });
 
     if (variantDefinition.disabled) {

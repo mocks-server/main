@@ -68,7 +68,7 @@ export const VariantHandlerJson: VariantHandlerJsonConstructor = class VariantHa
 
   constructor(options: VariantHandlerJsonOptions, core: ScopedCoreInterface) {
     this._options = options;
-    this._logger = core.logger as LoggerInterface; // TODO, remove cast when plugin id is required
+    this._logger = core.logger;
   }
 
   public get defaultHeaders(): UnknownObject {

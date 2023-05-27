@@ -105,37 +105,29 @@ export interface PluginConstructor {
 
 /** Plugin method used by Mocks Server to manage its lifecycle */
 export interface PluginLifeCycleMethod {
-  (core: ScopedCoreInterface): Promise<void>;
+  (): Promise<void>;
 }
 
 /** Common Interface to be implemented by plugins */
 export interface PluginInterface {
   /**
-   * Plugin static id. Used for logging purposes, and to create scoped alerts, config and logger for the plugin. It can be also defined as a static property in the constructor function
-   */
-  id?: PluginId;
-  /**
    * Register plugin configuration, etc. Use it if you need to make async stuff for registering your settings. Otherwise, use the constructor. https://www.mocks-server.org/docs/plugins/development/#constructorcore
-   * @param core - Mocks Server core with scoped config, alerts and logger {@link ScopedCoreInterface}
-   * @example await plugin.register(core);
+   * @example await plugin.register();
    */
   register?: PluginLifeCycleMethod;
   /**
    * Init the plugin. Here you should read options, add listeners to core events, etc. https://www.mocks-server.org/docs/plugins/development/#initcore
-   * @param core - Mocks Server core with scoped config, alerts and logger {@link ScopedCoreInterface}
-   * @example await plugin.init(core);
+   * @example await plugin.init();
    */
   init?: PluginLifeCycleMethod;
   /**
    * Start the plugin. Here you should start the plugin processes in case there are. https://www.mocks-server.org/docs/plugins/development/#startcore
-   * @param core - Mocks Server core with scoped config, alerts and logger {@link ScopedCoreInterface}
-   * @example await plugin.start(core);
+   * @example await plugin.start();
    */
   start?: PluginLifeCycleMethod;
   /**
    * Stop the plugin. Here you should stop all the plugin processes that you started in the start method. https://www.mocks-server.org/docs/plugins/development/#stopcore
-   * @param core - Mocks Server core with scoped config, alerts and logger {@link ScopedCoreInterface}
-   * @example await plugin.stop(core);
+   * @example await plugin.stop();
    */
   stop?: PluginLifeCycleMethod;
 }

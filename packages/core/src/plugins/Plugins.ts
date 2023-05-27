@@ -124,14 +124,11 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
 
   private _pluginId(index: number): PluginId {
     const plugin = this._pluginsInstances[index];
-    if (!plugin) {
-      return `${index}`;
-    }
     const pluginConstructor = plugin.constructor as PluginConstructor;
     if (pluginConstructor.id) {
       return pluginConstructor.id;
     }
-    return plugin.id || `${index}`;
+    return `${index}`;
   }
 
   private _catchRegisterError(error: Error, index: number): PluginWithError {
@@ -151,16 +148,12 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
       coreApi;
     const pluginCoreOptions = { core: this._core };
     try {
-      // TODO, throw an error if plugin has no id. legacy. Require config, logger and alerts in ScopedCore
       if (Plugin.id) {
         pluginConfig = this._config.addNamespace(Plugin.id);
         pluginAlerts = this._alerts.collection(Plugin.id);
         pluginLogger = this._logger.namespace(Plugin.id);
       } else {
-        this._alertsFormat.set(
-          this._pluginId(pluginIndex),
-          "Plugins must have a static id property"
-        );
+        throw new Error("Plugins must have a static id property");
       }
       const pluginCoreFinalOptions = {
         ...pluginCoreOptions,
@@ -170,50 +163,17 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
       };
       coreApi = new ScopedCore(pluginCoreFinalOptions);
       pluginInstance = new Plugin(coreApi);
-      this._pluginsScopedCores.push(coreApi);
-      this._pluginsInstances.push(pluginInstance);
+      this._pluginsInstances.push(pluginInstance as PluginInterface);
       this._pluginsRegistered++;
     } catch (error) {
       return this._catchRegisterError(error as Error, pluginIndex);
     }
-    if (
-      isFunction(pluginInstance.register) ||
-      isFunction(pluginInstance.init) ||
-      isFunction(pluginInstance.start) ||
-      isFunction(pluginInstance.stop)
-    ) {
-      let pluginCoreFinalOptions = {
-        ...pluginCoreOptions,
-        config: pluginConfig,
-        alerts: pluginAlerts,
-        logger: pluginLogger,
-      };
-      // If plugin has not static id, custom core API is passed only to methods
-      // Legacy, remove when plugin static id is mandatory
-      if (!pluginConfig && pluginInstance.id) {
-        pluginConfig = this._config.addNamespace(pluginInstance.id);
-        pluginAlerts = this._alerts.collection(pluginInstance.id);
-        pluginLogger = this._logger.namespace(pluginInstance.id);
-        pluginCoreFinalOptions = {
-          ...pluginCoreOptions,
-          config: pluginConfig,
-          alerts: pluginAlerts,
-          logger: pluginLogger,
-        };
-        coreApi = new ScopedCore(pluginCoreFinalOptions);
-        this._pluginsScopedCores.pop();
-        this._pluginsScopedCores.push(coreApi);
-      } else {
-        this._pluginsScopedCores.push(coreApi);
-      }
-
-      if (isFunction(pluginInstance.register)) {
-        try {
-          await pluginInstance.register(coreApi);
-        } catch (error) {
-          this._pluginsRegistered = this._pluginsRegistered - 1;
-          return this._catchRegisterError(error as Error, pluginIndex);
-        }
+    if (isFunction(pluginInstance.register)) {
+      try {
+        await pluginInstance.register();
+      } catch (error) {
+        this._pluginsRegistered = this._pluginsRegistered - 1;
+        return this._catchRegisterError(error as Error, pluginIndex);
       }
     }
     return pluginInstance;
@@ -254,9 +214,7 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
     let pluginInit;
     try {
       const pluginInitMethod = this._pluginsInstances[pluginIndex].init as PluginLifeCycleMethod;
-      pluginInit = pluginInitMethod.bind(this._pluginsInstances[pluginIndex])(
-        this._pluginsScopedCores[pluginIndex]
-      );
+      pluginInit = pluginInitMethod.bind(this._pluginsInstances[pluginIndex])();
     } catch (error) {
       return this._catchInitError(error as Error, pluginIndex).then(initNextPlugin);
     }
@@ -298,9 +256,7 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
     let pluginStart;
     try {
       const pluginStartMethod = this._pluginsInstances[pluginIndex].start as PluginLifeCycleMethod;
-      pluginStart = pluginStartMethod.bind(this._pluginsInstances[pluginIndex])(
-        this._pluginsScopedCores[pluginIndex]
-      );
+      pluginStart = pluginStartMethod.bind(this._pluginsInstances[pluginIndex])();
     } catch (error) {
       return this._catchStartError(error as Error, pluginIndex).then(startNextPlugin);
     }
@@ -343,9 +299,7 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
     let pluginStop;
     try {
       const pluginStopMethod = this._pluginsInstances[pluginIndex].stop as PluginLifeCycleMethod;
-      pluginStop = pluginStopMethod.bind(this._pluginsInstances[pluginIndex])(
-        this._pluginsScopedCores[pluginIndex]
-      );
+      pluginStop = pluginStopMethod.bind(this._pluginsInstances[pluginIndex])();
     } catch (error) {
       return this._catchStopError(error as Error, pluginIndex).then(stopNextPlugin);
     }

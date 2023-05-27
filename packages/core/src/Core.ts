@@ -14,17 +14,15 @@ import path from "path";
 import {
   Config,
   ConfigInterface,
-  ConfigurationObject,
   ConfigNamespaceInterface,
   OptionInterfaceOfType,
 } from "@mocks-server/config";
 import { Logger, LoggerInterface, LogLevel } from "@mocks-server/logger";
-import deepMerge from "deepmerge";
 import { readJsonSync } from "fs-extra";
 
 import { Alerts } from "./alerts";
 import type { AlertsInterface } from "./alerts/types";
-import { CHANGE_MOCK, CHANGE_ALERTS, arrayMerge } from "./common";
+import { CHANGE_MOCK, CHANGE_ALERTS } from "./common";
 import type {
   CoreInterface,
   CoreConstructor,
@@ -58,7 +56,7 @@ const ROOT_OPTIONS: [LogOptionDefinition] = [
 ];
 
 export const Core: CoreConstructor = class Core implements CoreInterface {
-  private _programmaticConfig: ConfigurationObject;
+  private _programmaticConfig: MocksServer.Config;
   private _eventEmitter: EventEmitter;
   private _logger: LoggerInterface;
   private _configLogger: LoggerInterface;
@@ -82,7 +80,7 @@ export const Core: CoreConstructor = class Core implements CoreInterface {
   private _version: string;
 
   constructor(
-    programmaticConfig: ConfigurationObject = {},
+    programmaticConfig: MocksServer.Config = {},
     advancedOptions: CoreAdvancedOptions = {}
   ) {
     // TODO, move to about. Do not read on constructor
@@ -214,18 +212,12 @@ export const Core: CoreConstructor = class Core implements CoreInterface {
     this._configLogger.info(`Configuration loaded`);
   }
 
-  public async init(programmaticConfig: ConfigurationObject = {}): Promise<void> {
+  public async init(): Promise<void> {
     if (this._initialized) {
       // in case it has been initialized manually before
       return Promise.resolve();
     }
     this._initialized = true;
-
-    if (programmaticConfig) {
-      this._programmaticConfig = deepMerge(this._programmaticConfig, programmaticConfig, {
-        arrayMerge,
-      });
-    }
 
     // Update notifier
     // TODO, move to about module

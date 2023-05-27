@@ -99,23 +99,6 @@ describe("Core", () => {
       expect(configMocks.stubs.instance.init.getCall(1).args[0]).toEqual(fooConfig);
     });
 
-    it("should extend config from constructor with config from init", async () => {
-      core = new Core({ foo: "foo" });
-      await core.init({ foo2: "foo2" });
-      expect(configMocks.stubs.instance.init.getCall(1).args[0]).toEqual({
-        foo: "foo",
-        foo2: "foo2",
-      });
-    });
-
-    it("should not extend arrays in config", async () => {
-      core = new Core({ foo: ["foo", "foo2"] });
-      await core.init({ foo: ["foo3", "foo4"] });
-      expect(configMocks.stubs.instance.init.getCall(1).args[0]).toEqual({
-        foo: ["foo3", "foo4"],
-      });
-    });
-
     it("should register plugins", () => {
       expect(pluginsInstance.register.callCount).toEqual(1);
     });

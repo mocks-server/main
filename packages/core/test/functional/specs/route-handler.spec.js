@@ -10,7 +10,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 const {
   createCore,
-  startExistingCore,
   doFetch,
   fixturesFolder,
   findTrace,
@@ -24,11 +23,15 @@ describe("when registering route handlers", () => {
     let core;
 
     beforeAll(async () => {
-      core = createCore();
-      core.variantHandlers.register([RouteHandler]);
-      await startExistingCore(core, fixturesFolder("custom-routes-handler"), {
+      core = createCore({
         mock: { collections: { selected: "custom-users" } },
+        files: {
+          watch: false,
+          path: fixturesFolder("custom-routes-handler"),
+        },
       });
+      core.variantHandlers.register([RouteHandler]);
+      await core.start();
       core.logger.setLevel("debug", { transport: "store" });
     });
 

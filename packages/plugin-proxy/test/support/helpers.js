@@ -19,6 +19,11 @@ const defaultOptions = {
     watch: false,
   },
   log: "silly",
+  config: {
+    readArguments: false,
+    readFile: false,
+    readEnvironment: false,
+  },
 };
 
 const defaultRequestOptions = {
@@ -32,52 +37,51 @@ const fixturesFolder = (folderName) => {
   return path.resolve(__dirname, "..", "fixtures", folderName);
 };
 
-const createCore = ({ loadPlugin = true } = {}) => {
-  return new Core({
-    config: {
-      readArguments: false,
-      readFile: false,
-      readEnvironment: false,
-    },
-    plugins: { register: loadPlugin ? [Plugin] : [] },
-  });
+const createCore = (options) => {
+  return new Core(deepMerge.all([defaultOptions, options]));
 };
 
-const startExistingCore = (core, mocksPath, options = {}) => {
+const startCore = async (mocksPath, options = {}, { loadPlugin = true } = {}) => {
   const mocks = mocksPath || "docs-example";
-  return core
-    .init(
-      deepMerge.all([
-        defaultOptions,
-        {
-          files: {
-            path: fixturesFolder(mocks),
-          },
+  const core = createCore(
+    deepMerge.all([
+      {
+        files: {
+          path: fixturesFolder(mocks),
         },
-        options,
-      ])
-    )
-    .then(() => {
-      return core.start().then(() => {
-        return Promise.resolve(core);
-      });
-    });
+      },
+      {
+        plugins: { register: loadPlugin ? [Plugin] : [] },
+      },
+      options,
+    ])
+  );
+  await core.start();
+  return core;
 };
 
 const startHost = () => {
-  return startExistingCore(createCore({ loadPlugin: false }), "host", {
-    server: { port: HOST_PORT },
-  });
+  return startCore(
+    "host",
+    {
+      server: { port: HOST_PORT },
+    },
+    { loadPlugin: false }
+  );
 };
 
 const startHost2 = () => {
-  return startExistingCore(createCore({ loadPlugin: false }), "host-2", {
-    server: { port: HOST_PORT_2 },
-  });
+  return startCore(
+    "host-2",
+    {
+      server: { port: HOST_PORT_2 },
+    },
+    { loadPlugin: false }
+  );
 };
 
 const startServer = (mocksPath, options = {}) => {
-  return startExistingCore(createCore(), mocksPath, options);
+  return startCore(mocksPath, options);
 };
 
 const serverUrl = (port) => {
@@ -162,7 +166,6 @@ const findTrace = (traceFragment, traces) => {
 
 module.exports = {
   createCore,
-  startExistingCore,
   startServer,
   doFetch,
   TimeCounter,

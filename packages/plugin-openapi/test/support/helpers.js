@@ -17,6 +17,15 @@ const defaultOptions = {
   files: {
     watch: false,
   },
+  config: {
+    allowUnknownArguments: true,
+    readFile: false,
+    readArguments: false,
+    readEnvironment: false,
+  },
+  plugins: {
+    register: [Plugin],
+  },
 };
 
 export const defaultRequestOptions = {
@@ -32,38 +41,8 @@ export function fixturesPath(folderName) {
   return path.resolve(FIXTURES_PATH, folderName);
 }
 
-export function createCore() {
-  return new Core({
-    config: {
-      allowUnknownArguments: true,
-      readFile: false,
-      readArguments: false,
-      readEnvironment: false,
-    },
-    plugins: {
-      register: [Plugin],
-    },
-  });
-}
-
-export function startExistingCore(core, fixturePath, options = {}) {
-  return core
-    .init(
-      deepMerge.all([
-        defaultOptions,
-        {
-          files: {
-            path: fixturesPath(fixturePath),
-          },
-        },
-        options,
-      ])
-    )
-    .then(() => {
-      return core.start().then(() => {
-        return Promise.resolve(core);
-      });
-    });
+export function createCore(options) {
+  return new Core(deepMerge.all([defaultOptions, options]));
 }
 
 export function serverUrl(port, protocol) {
@@ -71,8 +50,19 @@ export function serverUrl(port, protocol) {
   return `${protocolToUse}://127.0.0.1:${port || DEFAULT_SERVER_PORT}`;
 }
 
-export function startServer(fixturePath, options = {}) {
-  return startExistingCore(createCore(), fixturePath, options);
+export async function startServer(fixturePath, options = {}) {
+  const core = createCore(
+    deepMerge.all([
+      {
+        files: {
+          path: fixturesPath(fixturePath),
+        },
+      },
+      options,
+    ])
+  );
+  await core.start();
+  return core;
 }
 
 export function doFetch(uri, options = {}) {

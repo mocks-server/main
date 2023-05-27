@@ -13,10 +13,6 @@ import path from "path";
 
 import type { ResolveWhenConditionPassOptions } from "./Helpers.types";
 
-export function arrayMerge(_destinationArray: unknown[], sourceArray: unknown[]) {
-  return sourceArray;
-}
-
 export function docsUrl(url: string): string {
   return `https://www.mocks-server.org/docs/${url}`;
 }

@@ -27,7 +27,7 @@ declare global {
   //eslint-disable-next-line @typescript-eslint/no-namespace
   namespace MocksServer {
     //eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface Config {}
+    interface Config extends ConfigurationObject {}
   }
 }
 
@@ -114,12 +114,10 @@ export interface CoreInterface extends BaseCoreInterface {
   /** Version */
   get version(): string;
 
-  /** Allows to initialize the core passing custom programmatic options.
-   * @deprecated The method should not be used. It will be removed in next major version.
-   * @param config - Programmatic configuration {@link ConfigurationObject}
-   * @example await core.init({ log: "error" });
+  /** Allows to initialize manually the core. It is automatically called when calling start method
+   * @example await core.init();
    */
-  init(programmaticConfig?: ConfigurationObject): Promise<void>;
+  init(): Promise<void>;
 
   /** Start the files handler and the mock server */
   start(): Promise<void>;

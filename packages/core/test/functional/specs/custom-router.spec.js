@@ -25,9 +25,7 @@ describe("when using custom router", () => {
 
   describe("and registering it before initializing the server", () => {
     beforeAll(async () => {
-      core = new Core();
-      core.server.addRouter("/api/custom", customRouter);
-      await core.init({
+      core = new Core({
         config: {
           readFile: false,
           readArguments: false,
@@ -39,6 +37,7 @@ describe("when using custom router", () => {
           watch: false,
         },
       });
+      core.server.addRouter("/api/custom", customRouter);
       await core.start();
       await waitForServer();
     });
@@ -70,8 +69,7 @@ describe("when using custom router", () => {
 
   describe("and registering it after server is started", () => {
     beforeAll(async () => {
-      core = new Core();
-      await core.init({
+      core = new Core({
         config: {
           readFile: false,
           readArguments: false,

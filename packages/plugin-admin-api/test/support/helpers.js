@@ -31,6 +31,15 @@ const defaultOptions = {
   files: {
     watch: false,
   },
+  config: {
+    allowUnknownArguments: true,
+    readFile: false,
+    readArguments: false,
+    readEnvironment: false,
+  },
+  plugins: {
+    register: [AdminApiPlugin],
+  },
 };
 
 const defaultRequestOptions = {
@@ -49,43 +58,24 @@ const fixturesFolder = (folderName) => {
 const certFile = fixturesFolder("localhost.cert");
 const keyFile = fixturesFolder("localhost.key");
 
-const createCore = () => {
-  return new Core({
-    config: {
-      allowUnknownArguments: true,
-      readFile: false,
-      readArguments: false,
-      readEnvironment: false,
-    },
-    plugins: {
-      register: [AdminApiPlugin],
-    },
-  });
+const createCore = (options = {}) => {
+  return new Core(deepMerge.all([defaultOptions, options]));
 };
 
-const startExistingCore = (core, mocksPath, options = {}) => {
+const startServer = async (mocksPath, options = {}) => {
   const mocks = mocksPath || "web-tutorial";
-  return core
-    .init(
-      deepMerge.all([
-        defaultOptions,
-        {
-          files: {
-            path: fixturesFolder(mocks),
-          },
+  const core = createCore(
+    deepMerge.all([
+      {
+        files: {
+          path: fixturesFolder(mocks),
         },
-        options,
-      ])
-    )
-    .then(() => {
-      return core.start().then(() => {
-        return Promise.resolve(core);
-      });
-    });
-};
-
-const startServer = (mocksPath, options = {}) => {
-  return startExistingCore(createCore(), mocksPath, options);
+      },
+      options,
+    ])
+  );
+  await core.start();
+  return core;
 };
 
 const serverUrl = (port, protocol) => {
@@ -196,7 +186,6 @@ module.exports = {
   keyFile,
   removeCertFiles,
   createCore,
-  startExistingCore,
   startServer,
   doFetch,
   doServerFetch,

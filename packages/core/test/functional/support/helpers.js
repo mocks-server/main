@@ -58,30 +58,21 @@ const createCore = (options = {}) => {
   );
 };
 
-const startExistingCore = (core, mocksPath, options = {}) => {
+const startCore = async (mocksPath, options = {}) => {
   const mocks = mocksPath || "web-tutorial";
-  return core
-    .init(
-      deepMerge.all([
-        defaultOptions,
-        {
-          files: {
-            ...defaultOptions.files,
-            path: fixturesFolder(mocks),
-          },
+  const core = createCore(
+    deepMerge.all([
+      options,
+      {
+        files: {
+          ...defaultOptions.files,
+          path: fixturesFolder(mocks),
         },
-        options,
-      ])
-    )
-    .then(() => {
-      return core.start().then(() => {
-        return Promise.resolve(core);
-      });
-    });
-};
-
-const startCore = (mocksPath, options = {}) => {
-  return startExistingCore(createCore(options), mocksPath, options);
+      },
+    ])
+  );
+  await core.start();
+  return core;
 };
 
 const serverUrl = (port, protocol) => {
@@ -180,7 +171,6 @@ const removeNewLines = (str) => {
 
 module.exports = {
   createCore,
-  startExistingCore,
   startCore,
   doFetch,
   doTextFetch,

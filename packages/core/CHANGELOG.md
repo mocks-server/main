@@ -36,6 +36,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - feat: Deprecate `mock.routes.plain` getter. Use `mock.routes.toPlainObject()` instead
 - feat: Deprecate `mock.routes.plainVariants` getter. Use `mock.routes.toPlainObject()` instead
 
+### Removed
+- feat: Do not support passing configuration in core init method any more. Now, the configuration can be passed only in the constructor.
+
 ## [4.0.0] - 2022-09-14
 
 ### Removed

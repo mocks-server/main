@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 
+## [4.0.2] - 2023-05-29
+
 ### Changed
 
 - chore(deps): Update dependencies

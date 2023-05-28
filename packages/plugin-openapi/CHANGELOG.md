@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 
+## [2.1.0] - 2023-04-09
+
+### Added
+- feat: Generate variants from responses with a single example key (#472). Thanks @davidmhewitt!
+
 ### Changed
 
 - chore(deps): Update dependencies

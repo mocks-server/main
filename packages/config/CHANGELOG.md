@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [1.4.1] - 2023-05-29
+
 ### Changed
 
 - chore(deps): Update dependencies

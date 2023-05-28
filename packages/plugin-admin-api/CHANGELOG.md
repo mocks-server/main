@@ -6,11 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [To be deprecated]
 
-## [unreleased]
 ### Added
 ### Changed
 ### Fixed
 ### Removed
+
+## [unreleased]
+
+### Changed
+
+- chore(deps): Update dependencies
 
 ## [4.0.0] - 2022-09-14
 

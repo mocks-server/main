@@ -139,10 +139,10 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2
       react-redux: 7.2.8
-      redux: 4.2.0
+      redux: 4.2.1
     dependencies:
       '@data-provider/axios': 5.0.1_@data-provider+core@4.0.0
-      '@data-provider/core': 4.0.0_redux@4.2.0
+      '@data-provider/core': 4.0.0_redux@4.2.1
       '@data-provider/react': 1.6.0_fc988d86fd515d7f7711b36b3facbcfb
       '@mocks-server/admin-api-client-data-provider': link:../../packages/admin-api-client-data-provider
       '@mocks-server/admin-api-paths': link:../../packages/admin-api-paths
@@ -150,7 +150,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-redux: 7.2.8_react-dom@17.0.2+react@17.0.2
-      redux: 4.2.0
+      redux: 4.2.1
 
   mocks/admin-api-client-data-provider-e2e-vanilla-app:
     specifiers: {}
@@ -2389,17 +2389,6 @@ packages:
     transitivePeerDependencies:
       - debug
 
-  /@data-provider/core/4.0.0_redux@4.2.0:
-    resolution: {integrity: sha512-dzlzYFCex7xlfQq5p2i36KyN23vu7ivpJtDcgiFAFhJsiZvQVDbS0u9IQUXIcZMHPsjghoTjovYH1SAKlyyHAQ==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      redux: 4.x
-    dependencies:
-      is-promise: 4.0.0
-      lodash.isplainobject: 4.0.6
-      redux: 4.2.0
-    dev: false
-
   /@data-provider/core/4.0.0_redux@4.2.1:
     resolution: {integrity: sha512-dzlzYFCex7xlfQq5p2i36KyN23vu7ivpJtDcgiFAFhJsiZvQVDbS0u9IQUXIcZMHPsjghoTjovYH1SAKlyyHAQ==}
     engines: {node: '>=14.0.0'}
@@ -2418,7 +2407,7 @@ packages:
       react: '>=16.8.0'
       react-redux: '>=7.1.0'
     dependencies:
-      '@data-provider/core': 4.0.0_redux@4.2.0
+      '@data-provider/core': 4.0.0_redux@4.2.1
       hoist-non-react-statics: 3.3.2
       react: 17.0.2
       react-redux: 7.2.8_react-dom@17.0.2+react@17.0.2
@@ -3956,7 +3945,7 @@ packages:
       '@types/hoist-non-react-statics': 3.3.1
       '@types/react': 17.0.43
       hoist-non-react-statics: 3.3.2
-      redux: 4.2.0
+      redux: 4.2.1
     dev: false
 
   /@types/react/17.0.43:
@@ -14679,12 +14668,6 @@ packages:
     dependencies:
       minimatch: 3.0.4
     dev: true
-
-  /redux/4.2.0:
-    resolution: {integrity: sha512-oSBmcKKIuIR4ME29/AeNUnl5L+hvBq7OaJWzaptTQJAntaPvxIJqfnjbaEiCzzaIz+XmVILfqAM3Ob0aXLPfjA==}
-    dependencies:
-      '@babel/runtime': 7.17.8
-    dev: false
 
   /redux/4.2.1:
     resolution: {integrity: sha512-LAUYz4lc+Do8/g7aeRa8JkyDErK6ekstQaqWQrNRW//MY1TvCEpMtpTWvlQ+FPbWCx+Xixu/6SHt5N0HR+SB4w==}

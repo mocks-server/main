@@ -7,12 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [To be removed]
 - Do not export deprecated Behavior Class
 
-## [unreleased]
 ### Added
 ### Changed
 ### Fixed
 ### Removed
 ### Breaking change
+
+## [unreleased]
+
+### Changed
+
+- chore(deps): Update dependencies
 
 ## [4.0.1] - 2023-04-09
 

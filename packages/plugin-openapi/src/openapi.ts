@@ -114,12 +114,16 @@ function openApiResponseNoContentToVariant(code: number, openApiResponse: OpenAP
 
 function openApiResponseExamplesToVariants(code: number, variantType: RouteVariantTypes, mediaType: string, openApiResponseMediaType: OpenAPIV3.MediaTypeObject, openApiResponseHeaders?: OpenAPIV3.ResponseHeaders): RouteVariants {
   const examples = openApiResponseMediaType.examples;
-  if(!notEmpty(examples)) {
-    return null;
+  const example = openApiResponseMediaType.example;
+
+  if(notEmpty(examples)) {
+    return Object.keys(examples).map((exampleId: string) => {
+      return openApiResponseExampleToVariant(exampleId, code, variantType, mediaType, examples[exampleId] as OpenAPIV3.ExampleObject, openApiResponseHeaders);
+    }).filter(notEmpty);
   }
-  return Object.keys(examples).map((exampleId: string) => {
-    return openApiResponseExampleToVariant(exampleId, code, variantType, mediaType, examples[exampleId] as OpenAPIV3.ExampleObject , openApiResponseHeaders);
-  }).filter(notEmpty);
+
+  const res = openApiResponseExampleToVariant("example", code, variantType, mediaType, { value: example }, openApiResponseHeaders);
+  return res ? [res] : null;
 }
 
 function openApiResponseMediaToVariants(code: number, mediaType: string, openApiResponseMediaType?: OpenAPIV3.MediaTypeObject, openApiResponseHeaders?: OpenAPIV3.ResponseHeaders): RouteVariants  {

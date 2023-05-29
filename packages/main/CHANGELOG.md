@@ -7,12 +7,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [To be removed]
 - Do not export deprecated Behavior Class
 
-## [unreleased]
 ### Added
 ### Changed
 ### Fixed
 ### Removed
 ### Breaking change
+
+## [unreleased]
+
+## [4.1.0] - 2023-05-29
+
+### Added
+
+- feat: Update OpenAPI plugin to 2.1.0. Support example property. (#472)
+
+### Changed
+
+- chore(deps): Update dependencies
 
 ## [4.0.1] - 2023-04-09
 

@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/plugin-admin-api",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Mocks Server plugin providing an administration REST API",
   "keywords": [
     "mocks-server-plugin",
@@ -37,11 +37,11 @@
   "dependencies": {
     "@hapi/boom": "9.1.4",
     "@mocks-server/admin-api-paths": "workspace:*",
-    "swagger-ui-dist": "4.14.0",
-    "body-parser": "1.20.0",
+    "body-parser": "1.20.2",
     "cors": "2.8.5",
-    "express": "4.18.1",
-    "express-request-id": "1.4.1"
+    "express": "4.18.2",
+    "express-request-id": "1.4.1",
+    "swagger-ui-dist": "4.14.0"
   },
   "devDependencies": {
     "@mocks-server/core": "workspace:*"

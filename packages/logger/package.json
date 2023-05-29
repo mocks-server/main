@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/logger",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Namespaced logger",
   "keywords": [
     "log",
@@ -25,13 +25,13 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc", 
+    "build": "tsc",
     "test:unit": "jest"
   },
   "dependencies": {
     "chalk": "4.1.1",
-    "winston": "3.8.2",
-    "winston-array-transport": "1.1.10"
+    "winston": "3.9.0",
+    "winston-array-transport": "1.1.11"
   },
   "engines": {
     "node": ">=14.x"

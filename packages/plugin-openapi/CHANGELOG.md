@@ -4,12 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [unreleased]
 ### Added
 ### Changed
 ### Fixed
 ### Removed
 ### BREAKING CHANGE
+
+## [unreleased]
+
+## [2.1.0] - 2023-05-29
+
+### Added
+- feat: Generate variants from responses with a single example key (#472). Thanks @davidmhewitt!
+
+### Changed
+
+- chore(deps): Update dependencies
 
 ## [2.0.1] - 2023-04-09
 

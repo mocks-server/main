@@ -4,12 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [unreleased]
 ### Added
 ### Changed
 ### Fixed
 ### Removed
 ### BREAKING CHANGES
+
+## [unreleased]
+
+## [6.1.3] - 2023-05-29
+
+### Changed
+
+- chore(deps): Update dependencies
 
 ## [6.1.2] - 2023-04-09
 

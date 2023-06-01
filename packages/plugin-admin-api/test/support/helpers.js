@@ -18,7 +18,7 @@ const waitOn = require("wait-on");
 const { Core } = require("@mocks-server/core");
 
 const Spawn = require("./Spawn");
-const AdminApiPlugin = require("../../index");
+const { Plugin: AdminApiPlugin } = require("../../src/index");
 
 const SERVER_PORT = 3100;
 const API_SERVER_PORT = 3110;

@@ -10,9 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const sinon = require("sinon");
-const PluginProxy = require("@mocks-server/plugin-proxy");
+const PluginProxy = require("@mocks-server/plugin-proxy").default;
 const AdminApi = require("@mocks-server/plugin-admin-api").default;
-const InquirerCli = require("@mocks-server/plugin-inquirer-cli");
+const InquirerCli = require("@mocks-server/plugin-inquirer-cli").default;
 const OpenApi = require("@mocks-server/plugin-openapi").default;
 
 const CoreMocks = require("./Core.mocks.js");

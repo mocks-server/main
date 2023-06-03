@@ -110,9 +110,7 @@ describe("scaffold", () => {
           route: "proxy-all",
           type: "proxy",
           disabled: false,
-          preview: {
-            host: "http://127.0.0.1:3200",
-          },
+          preview: null,
           delay: null,
         },
         {

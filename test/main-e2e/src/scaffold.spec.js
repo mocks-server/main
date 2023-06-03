@@ -366,7 +366,7 @@ describe("scaffold", () => {
       const response = await doFetch("/api/mock/custom-route-variants", {
         port: 3110,
       });
-      expect(response.body).toEqual(["get-user:real"]);
+      expect(response.body).toEqual([{ id: "get-user:real" }]);
     });
 
     it("should serve user 1 under the /api/users/1 path", async () => {

@@ -24,12 +24,13 @@
     "access": "public"
   },
   "files": [
-    "src",
-    "index.js"
+    "dist"
   ],
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test:unit": "jest"
+    "build": "tsc",
+    "test:unit": "jest --runInBand"
   },
   "peerDependencies": {
     "@mocks-server/core": "5.0.0-beta.2"
@@ -42,7 +43,12 @@
     "node-emoji": "1.11.0"
   },
   "devDependencies": {
-    "@mocks-server/core": "workspace:*"
+    "@mocks-server/core": "workspace:*",
+    "@mocks-server/config": "workspace:*",
+    "@mocks-server/logger": "workspace:*",
+    "@types/node-emoji": "1.8.2",
+    "@types/inquirer-autocomplete-prompt": "1.3.0",
+    "@types/inquirer": "8.2.6"
   },
   "engines": {
     "node": ">=14.0.0"

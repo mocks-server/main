@@ -16,7 +16,7 @@ const CoreMocks = require("../Core.mocks.js");
 const InquirerMocks = require("./Inquirer.mocks.js");
 const ConfigMocks = require("../Config.mocks.js");
 
-const Cli = require("../../src/Cli");
+const { Plugin: Cli } = require("../../src/Plugin");
 
 function wait(time = 250) {
   return new Promise((resolve) => {

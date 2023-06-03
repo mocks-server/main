@@ -1,5 +1,5 @@
 /*
-Copyright 2019-2022 Javier Brea
+Copyright 2019-2023 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -14,7 +14,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const { Core } = require("@mocks-server/core");
 const PluginProxy = require("@mocks-server/plugin-proxy").default;
 const AdminApi = require("@mocks-server/plugin-admin-api").default;
-const InquirerCli = require("@mocks-server/plugin-inquirer-cli");
+const InquirerCli = require("@mocks-server/plugin-inquirer-cli").default;
 const OpenApi = require("@mocks-server/plugin-openapi").default;
 const deepMerge = require("deepmerge");
 

@@ -42,10 +42,13 @@
     "body-parser": "1.20.0",
     "cors": "2.8.5",
     "express": "4.18.1",
-    "express-request-id": "1.4.1"
+    "express-request-id": "1.4.1",
+    "openapi-types": "12.0.2"
   },
   "devDependencies": {
-    "@mocks-server/core": "workspace:*"
+    "@types/swagger-ui-dist": "3.30.1",
+    "@mocks-server/core": "workspace:*",
+    "@mocks-server/config": "workspace:*"
   },
   "engines": {
     "node": ">=14.0.0"

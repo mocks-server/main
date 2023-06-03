@@ -124,8 +124,8 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
 
   private _pluginId(index: number): PluginId {
     const plugin = this._pluginsInstances[index];
-    const pluginConstructor = plugin.constructor as PluginConstructor;
-    if (pluginConstructor.id) {
+    const pluginConstructor = plugin?.constructor as PluginConstructor;
+    if (pluginConstructor?.id) {
       return pluginConstructor.id;
     }
     return `${index}`;

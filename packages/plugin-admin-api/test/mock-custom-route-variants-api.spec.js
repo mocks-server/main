@@ -40,7 +40,7 @@ describe("mock custom routes variants api", () => {
         },
       });
       const response = await doApiFetch("/mock/custom-route-variants");
-      expect(response.body).toEqual(["get-user:2"]);
+      expect(response.body).toEqual([{ id: "get-user:2" }]);
     });
 
     it("should have changed user response", async () => {

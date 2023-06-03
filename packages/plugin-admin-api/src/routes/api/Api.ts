@@ -1,5 +1,5 @@
 /*
-Copyright 2019-2022 Javier Brea
+Copyright 2019-2023 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -9,9 +9,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-const express = require("express");
-
-const {
+import {
   ABOUT,
   CONFIG,
   ALERTS,
@@ -19,55 +17,53 @@ const {
   ROUTES,
   VARIANTS,
   CUSTOM_ROUTE_VARIANTS,
-} = require("@mocks-server/admin-api-paths");
+} from "@mocks-server/admin-api-paths";
+import type { ScopedCoreInterface } from "@mocks-server/core";
+import { Router } from "express";
 
-const About = require("./About");
-const Settings = require("./Settings");
-const Alerts = require("./Alerts");
-const CustomRoutesVariants = require("./CustomRoutesVariants");
+import { readCollectionAndModelRouter } from "../../support/Routers";
 
-const { readCollectionAndModelRouter } = require("./support/routers");
-const { version } = require("../package.json");
+import { About } from "./About";
+import type { AboutInterface } from "./About.types";
+import { Alerts } from "./Alerts";
+import type { AlertsInterface } from "./Alerts.types";
+import type { ApiConstructor, ApiInterface, ApiOptions } from "./Api.types";
+import { Config } from "./Config";
+import type { ConfigInterface } from "./Config.types";
+import { CustomRouteVariants } from "./CustomRouteVariants";
+import type { CustomRouteVariantsInterface } from "./CustomRouteVariants.types";
 
-class Api {
-  constructor({ logger, config, mock, alerts, coreVersion }) {
+export const Api: ApiConstructor = class Api implements ApiInterface {
+  private _logger: ScopedCoreInterface["logger"];
+  private _router: Router;
+  private _coreVersion: string;
+  private _configApi: ConfigInterface;
+  private _alertsApi: AlertsInterface;
+  private _aboutApi: AboutInterface;
+  private _customRoutesVariantsApi: CustomRouteVariantsInterface;
+  private _collectionsApi: Router;
+  private _routesApi: Router;
+  private _routeVariantsApi: Router;
+
+  constructor({ logger, config, mock, alerts, coreVersion }: ApiOptions) {
     this._logger = logger;
-    this._router = express.Router();
+    this._router = Router();
     this._coreVersion = coreVersion;
 
-    this._configApi = new Settings({
+    this._configApi = new Config({
       logger: this._logger.namespace("config"),
       config,
     });
     this._alertsApi = new Alerts({
       alerts,
       logger: this._logger.namespace("alerts"),
-      parseAlert: (alert) => {
-        return {
-          id: alert.id,
-          message: alert.message,
-          error: alert.error
-            ? {
-                name: alert.error.name,
-                message: alert.error.message,
-                stack: alert.error.stack,
-              }
-            : null,
-        };
-      },
     });
     this._aboutApi = new About({
+      coreVersion: this._coreVersion,
       logger: this._logger.namespace("about"),
-      getResponse: () => ({
-        versions: {
-          adminApi: version,
-          core: this._coreVersion,
-        },
-      }),
     });
-    this._customRoutesVariantsApi = new CustomRoutesVariants({
+    this._customRoutesVariantsApi = new CustomRouteVariants({
       logger: this._logger.namespace("customRouteVariants"),
-      getRouteVariants: () => mock.routes.plainVariants,
       mock,
     });
 
@@ -78,15 +74,10 @@ class Api {
       logger: this._logger.namespace("collections"),
     });
 
-    const parseRoute = (route) => {
-      return route;
-    };
-
     this._routesApi = readCollectionAndModelRouter({
       collectionName: "routes",
       modelName: "route",
-      getItems: () => mock.routes.plain.map(parseRoute),
-      parseItem: parseRoute,
+      getItems: () => mock.routes.plain,
       logger: this._logger.namespace("routes"),
     });
 
@@ -106,9 +97,7 @@ class Api {
     this._router.use(CUSTOM_ROUTE_VARIANTS, this._customRoutesVariantsApi.router);
   }
 
-  get router() {
+  public get router() {
     return this._router;
   }
-}
-
-module.exports = Api;
+};

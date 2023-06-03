@@ -6,11 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [To be deprecated]
 
-## [unreleased]
 ### Added
 ### Changed
 ### Fixed
 ### Removed
+
+## TODO
+- Add types of responses
+
+## [unreleased]
+
+### Changed
+- feat(BREAKING): Return an array of objects with id property in custom route variants API
 
 ## [4.0.0] - 2022-09-14
 

@@ -10,11 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed
 
+## TODO
+- Do not support id as null
+
 ## [unreleased]
 
 ### Changed
 - refactor: Refactor types
 - feat: BREAKING CHANGE. Emit change only when the collection is really changed. Compare the collection flat items with the previous ones and emit change only if they are different.
+- feat: BREAKING CHANGE. Do not allow collection id as null
 
 ### Added
 - feat: Export LEVELS and TRANSPORTS constants

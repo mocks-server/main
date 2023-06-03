@@ -349,7 +349,6 @@ importers:
       '@mocks-server/admin-api-paths': workspace:*
       '@mocks-server/config': workspace:*
       '@mocks-server/core': workspace:*
-      '@mocks-server/logger': workspace:*
       '@types/swagger-ui-dist': 3.30.1
       body-parser: 1.20.0
       cors: 2.8.5
@@ -369,7 +368,6 @@ importers:
     devDependencies:
       '@mocks-server/config': link:../config
       '@mocks-server/core': link:../core
-      '@mocks-server/logger': link:../logger
       '@types/swagger-ui-dist': 3.30.1
 
   packages/plugin-inquirer-cli:

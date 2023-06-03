@@ -207,7 +207,7 @@ describe("admin api client methods", () => {
     it("should be able to add one", async () => {
       await adminApiClient.useRouteVariant("get-user:2");
       const data = await adminApiClient.readCustomRouteVariants();
-      expect(data).toEqual(["get-user:2"]);
+      expect(data).toEqual([{ id: "get-user:2" }]);
     });
 
     it("should reject if route variant don't exist", async () => {

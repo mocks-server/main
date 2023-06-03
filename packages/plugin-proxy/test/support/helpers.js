@@ -5,7 +5,7 @@ const crossFetch = require("cross-fetch");
 const waitOn = require("wait-on");
 
 const { Core } = require("@mocks-server/core");
-const Plugin = require("../../index");
+const { Plugin } = require("../../src/index");
 
 const SERVER_PORT = 3100;
 const HOST_PORT = 3200;

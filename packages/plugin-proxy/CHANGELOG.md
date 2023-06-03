@@ -12,6 +12,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Removed
 
+## TODO
+- Do not use plugin. Publish as variant handler
+
+## [unreleased]
+
+### Changed
+- feat(BREAKING): Return null in response preview
+- feat(BREAKING): Change plugin id
+
+### Added
+- feat: Log request in debug mode
+
 ## [4.0.0] - 2022-09-14
 
 ### Changed

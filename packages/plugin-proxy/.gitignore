@@ -6,6 +6,9 @@
 # dependencies
 /node_modules
 
+# build
+/dist
+
 # tests
 /coverage
 /mocks

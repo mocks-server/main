@@ -25,11 +25,13 @@
     "access": "public"
   },
   "files": [
-    "src",
-    "index.js"
+    "dist",
+    "static"
   ],
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsc",
     "test:unit": "jest --runInBand"
   },
   "peerDependencies": {
@@ -39,7 +41,8 @@
     "express-http-proxy": "1.6.3"
   },
   "devDependencies": {
-    "@mocks-server/core": "workspace:*"
+    "@mocks-server/core": "workspace:*",
+    "@types/express-http-proxy": "1.6.3"
   },
   "engines": {
     "node": ">=14.0.0"

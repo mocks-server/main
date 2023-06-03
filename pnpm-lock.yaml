@@ -407,11 +407,13 @@ importers:
   packages/plugin-proxy:
     specifiers:
       '@mocks-server/core': workspace:*
+      '@types/express-http-proxy': 1.6.3
       express-http-proxy: 1.6.3
     dependencies:
       express-http-proxy: 1.6.3
     devDependencies:
       '@mocks-server/core': link:../core
+      '@types/express-http-proxy': 1.6.3
 
   test/admin-api-client-data-provider-e2e-specs:
     specifiers: {}
@@ -3678,6 +3680,12 @@ packages:
 
   /@types/estree/0.0.51:
     resolution: {integrity: sha512-CuPgU6f3eT/XgKKPqKd/gLZV1Xmvf1a2R5POBOGQa6uv82xpls89HU5zKeVoyR8XzHd1RGNOlQlvUe3CFkjWNQ==}
+    dev: true
+
+  /@types/express-http-proxy/1.6.3:
+    resolution: {integrity: sha512-dX3+Cb0HNPtqhC5JUWzzuODHRlgJRZx7KvwKVVwkOvm+8vOtpsh3qy8+qLv5X1hs4vdVHWKyXf86DwJot5H8pg==}
+    dependencies:
+      '@types/express': 4.17.17
     dev: true
 
   /@types/express-serve-static-core/4.17.33:

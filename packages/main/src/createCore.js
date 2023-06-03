@@ -12,7 +12,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 "use strict";
 
 const { Core } = require("@mocks-server/core");
-const PluginProxy = require("@mocks-server/plugin-proxy");
+const PluginProxy = require("@mocks-server/plugin-proxy").default;
 const AdminApi = require("@mocks-server/plugin-admin-api").default;
 const InquirerCli = require("@mocks-server/plugin-inquirer-cli");
 const OpenApi = require("@mocks-server/plugin-openapi").default;

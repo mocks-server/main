@@ -4,8 +4,8 @@ export const CHANGE = "change";
 
 import type { EventListener, EventListenerRemover } from "./Events.types";
 
-export function addEventListener(
-  listener: EventListener,
+export function addEventListener<DataType>(
+  listener: EventListener<DataType>,
   eventName: string,
   eventEmitter: EventEmitter
 ): EventListenerRemover {

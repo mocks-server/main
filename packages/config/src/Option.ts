@@ -118,8 +118,14 @@ export class Option<T extends OptionDefinitionGeneric, TypeOfValue = void>
     }
   }
 
-  public onChange(listener: EventListener): EventListenerRemover {
-    return addEventListener(listener, CHANGE, this._eventEmitter);
+  public onChange(
+    listener: EventListener<GetOptionValueTypeFromDefinition<T, TypeOfValue>>
+  ): EventListenerRemover {
+    return addEventListener<GetOptionValueTypeFromDefinition<T, TypeOfValue>>(
+      listener,
+      CHANGE,
+      this._eventEmitter
+    );
   }
 
   private _merge(value: GetOptionValueTypeFromDefinition<T, TypeOfValue>) {

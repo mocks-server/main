@@ -688,7 +688,9 @@ export interface OptionInterface<T extends OptionDefinitionGeneric, TypeOfValue 
    * @returns Function allowing to remove the event listener. Once executed, the eventListener won't be executed any more {@link EventListenerRemover}
    * @example const removeOnChangeListener = option.onChange(() => console.log("option value changed"))
    */
-  onChange(eventListener: EventListener): EventListenerRemover;
+  onChange(
+    eventListener: EventListener<GetOptionValueTypeFromDefinition<T, TypeOfValue>>
+  ): EventListenerRemover;
   /**
    * Set the value of the option
    * @param value - New value for the option

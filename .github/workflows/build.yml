@@ -8,6 +8,9 @@ on:
       - release
       - refactor/typescript-migration
   pull_request:
+concurrency:  
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   get-affected:
     runs-on: ubuntu-latest

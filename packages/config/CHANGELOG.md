@@ -10,9 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed
 
-## TODO
-- Callback type depending on option type
-
 ## [Unreleased]
 
 ### Changed

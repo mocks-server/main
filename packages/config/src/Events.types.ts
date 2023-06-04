@@ -1,9 +1,9 @@
 /** Function to execute when the event is triggered */
-export interface EventListener {
+export interface EventListener<DataType> {
   /**
    * Function executed when the event is triggered
    */
-  (data?: unknown): void;
+  (data: DataType): void;
 }
 
 /** Function that removes the event listener */

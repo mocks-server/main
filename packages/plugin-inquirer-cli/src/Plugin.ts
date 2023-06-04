@@ -268,29 +268,23 @@ export const Plugin: PluginConstructor = class Plugin implements PluginInterface
     }
   }
 
-  private async _onChangeOptionCli(enabled: unknown): Promise<void> {
-    // TODO: remove cast when config onChange is typed
-    const data = enabled as boolean;
+  private async _onChangeOptionCli(enabled: boolean): Promise<void> {
     if (this._started && !enabled) {
       return this.stop();
-    } else if (!this._started && !!data) {
+    } else if (!this._started && !!enabled) {
       return this.start();
     }
   }
 
-  private _onChangeOptionEmojis(enabled: unknown): void {
-    // TODO: remove cast when config onChange is typed
-    const data = enabled as boolean;
-    this._cli.emojis = data;
+  private _onChangeOptionEmojis(enabled: boolean): void {
+    this._cli.emojis = enabled;
     this._refreshMenuIfStarted();
   }
 
-  private async _onChangeOptionLog(log: unknown): Promise<void> {
-    // TODO: remove cast when config onChange is typed
-    const data = log as LogLevel;
+  private async _onChangeOptionLog(log: LogLevel): Promise<void> {
     if (this._started) {
       if (!this._isOverwritingLogLevel) {
-        this._logLevel = data;
+        this._logLevel = log;
         if (this._currentScreen !== SCREENS.LOGS) {
           this._silentTraces();
         }

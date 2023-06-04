@@ -92,9 +92,8 @@ jobs:
         run: pnpm run graph -- --file=graph.json
       - name: Build all
         run: pnpm run build:all
-      # TODO, enable when linting is fixed
-      # - name: Lint
-        # run: pnpm run lint
+      - name: Lint
+        run: pnpm run lint
   test-unit:
     runs-on: ubuntu-latest
     needs: [lint, get-affected]

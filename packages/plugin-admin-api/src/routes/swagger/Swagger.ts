@@ -1,8 +1,8 @@
 import path from "path";
 
 import type { ConfigNamespaceInterface } from "@mocks-server/config";
-import express from "express";
-import type { Router, Request, Response } from "express";
+import { Router, static as expressStatic } from "express";
+import type { Request, Response } from "express";
 import type { OpenAPIV3 } from "openapi-types";
 import { absolutePath } from "swagger-ui-dist";
 
@@ -29,10 +29,10 @@ export const Swagger: SwaggerConstructor = class Swagger implements SwaggerInter
     this._openApi = openapiDocument;
     this._config = config;
 
-    this._router = express.Router();
+    this._router = Router();
     this._router.get("/openapi.json", this._openApiMiddleware);
-    this._router.use(express.static(path.resolve(ROOT_PATH, "static", "swagger")));
-    this._router.use(express.static(absolutePath()));
+    this._router.use(expressStatic(path.resolve(ROOT_PATH, "static", "swagger")));
+    this._router.use(expressStatic(absolutePath()));
   }
 
   public get router() {

@@ -12,7 +12,7 @@ import EventEmitter from "events";
 
 import type { ConfigNamespaceInterface } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
-import express from "express";
+import { Router as ExpressRouter } from "express";
 
 import type { AlertsInterface } from "../alerts/types";
 import { addEventListener, CHANGE_MOCK } from "../common";
@@ -37,7 +37,7 @@ export const Mock: MockConstructor = class Mock implements MockInterface {
   private _logger: LoggerInterface;
   private _config: ConfigNamespaceInterface;
   private _onChange: EventListener;
-  private _router: Router = express.Router();
+  private _router: Router = ExpressRouter();
   private _definitions: DefinitionsInterface;
   private _routes: RoutesInterface;
   private _collections: CollectionsInterface;
@@ -130,7 +130,7 @@ export const Mock: MockConstructor = class Mock implements MockInterface {
     if (this._collections.current) {
       this._router = this._collections.current.router;
     } else {
-      this._router = express.Router();
+      this._router = ExpressRouter();
     }
     this._emitChange();
   }

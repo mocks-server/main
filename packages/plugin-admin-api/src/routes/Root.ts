@@ -10,8 +10,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import path from "path";
 
-import express, { Request, Response } from "express";
-import type { Router } from "express";
+import { static as expressStatic, Router } from "express";
+import type { Request, Response } from "express";
 
 import { ROOT_PATH } from "../common/Paths";
 
@@ -21,8 +21,8 @@ export const Root: RootConstructor = class Root implements RootInterface {
   private _router: Router;
 
   constructor({ redirectUrl }: RootOptions) {
-    this._router = express.Router();
-    this._router.use(express.static(path.resolve(ROOT_PATH, "static", "root")));
+    this._router = Router();
+    this._router.use(expressStatic(path.resolve(ROOT_PATH, "static", "root")));
     const redirect = (_req: Request, res: Response): void => {
       res.redirect(redirectUrl);
     };

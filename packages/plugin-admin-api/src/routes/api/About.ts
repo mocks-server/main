@@ -10,8 +10,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 import type { ScopedCoreInterface } from "@mocks-server/core";
-import express from "express";
-import type { Router, Response } from "express";
+import { Router } from "express";
+import type { Response } from "express";
 
 import { readPackageVersion } from "../../common/Helpers";
 import type { RequestWithId } from "../../server/Server.types";
@@ -28,7 +28,7 @@ export const About: AboutConstructor = class About implements AboutInterface {
     this._version = readPackageVersion();
     this._coreVersion = coreVersion;
     this._logger = logger;
-    this._router = express.Router();
+    this._router = Router();
     this._router.get("/", this._getAbout.bind(this));
   }
 

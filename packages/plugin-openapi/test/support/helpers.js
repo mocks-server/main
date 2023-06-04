@@ -1,11 +1,11 @@
 import path from "path";
 
-import Core from "@mocks-server/core";
+import { Core } from "@mocks-server/core";
 import crossFetch from "cross-fetch";
 import deepMerge from "deepmerge";
 import waitOn from "wait-on";
 
-import Plugin from "../../src/index";
+import { Plugin } from "../../src/index";
 
 const DEFAULT_SERVER_PORT = 3100;
 

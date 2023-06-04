@@ -9,7 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 import type { LoggerInterface } from "@mocks-server/logger";
-import express from "express";
+import { Router as ExpressRouter } from "express";
 
 import type { AlertsInterface } from "../../alerts/types";
 import type { EventListener } from "../../common/types";
@@ -136,7 +136,7 @@ export const Collection: CollectionConstructor = class Collection implements Col
   }
 
   private _initRouter() {
-    this._router = express.Router();
+    this._router = ExpressRouter();
     this._routes.forEach((route) => {
       const logAndApplyDelay: RequestHandler = (
         req: Request,

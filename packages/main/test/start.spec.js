@@ -17,7 +17,7 @@ const OpenApi = require("@mocks-server/plugin-openapi").default;
 
 const CoreMocks = require("./Core.mocks.js");
 
-const { start } = require("../src/start");
+const { start } = require("../src/Start");
 
 describe("start method", () => {
   let sandbox;

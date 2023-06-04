@@ -9,19 +9,17 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
-"use strict";
+import { createServer } from "./CreateServer";
 
-const { createCore } = require("./createCore");
-
-const handleError = (error) => {
+function handleError(error: Error) {
   console.error(`Error: ${error.message}`);
   console.log(error);
   process.exitCode = 1;
-};
+}
 
-const start = () => {
+export async function start(): Promise<void> {
   try {
-    const mocksServer = createCore({
+    const mocksServer = createServer({
       config: {
         readArguments: true,
         readEnvironment: true,
@@ -36,12 +34,8 @@ const start = () => {
         enabled: true,
       },
     });
-    return mocksServer.start().catch(handleError);
+    await mocksServer.start().catch(handleError);
   } catch (error) {
-    return handleError(error);
+    handleError(error as Error);
   }
-};
-
-module.exports = {
-  start,
-};
+}

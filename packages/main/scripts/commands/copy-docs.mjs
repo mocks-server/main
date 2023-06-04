@@ -1,7 +1,7 @@
 import { PROJECT_NAME } from "../constants.mjs";
 import { copyWorkspaceFileToProject } from "../../../../scripts/projects/utils.js";
 
-async function build() {
+async function copyDocs() {
   await Promise.all([
     copyWorkspaceFileToProject(PROJECT_NAME, "README.md"),
     copyWorkspaceFileToProject(PROJECT_NAME, "LICENSE"),
@@ -9,4 +9,4 @@ async function build() {
   ]);
 }
 
-build();
+copyDocs();

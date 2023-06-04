@@ -1,5 +1,5 @@
 /*
-Copyright 2019-present Javier Brea
+Copyright 2019-2023 Javier Brea
 Copyright 2019 XbyOrange
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -10,10 +10,18 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 const { Core } = require("@mocks-server/core");
-const index = require("../index");
+const index = require("../src/index");
 
 describe("index", () => {
   it("should export Core constructor", () => {
-    expect(index).toBe(Core);
+    expect(index.default).toBe(Core);
+  });
+
+  it("should export Core constructor as property", () => {
+    expect(index.Core).toBe(Core);
+  });
+
+  it("should export createServer method", () => {
+    expect(index.createServer).toBeDefined();
   });
 });

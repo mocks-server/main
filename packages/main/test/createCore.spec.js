@@ -17,7 +17,7 @@ const OpenApi = require("@mocks-server/plugin-openapi").default;
 
 const CoreMocks = require("./Core.mocks.js");
 
-const { createCore } = require("../src/createCore");
+const { createServer } = require("../src/CreateServer");
 
 describe("createCore method", () => {
   let sandbox;
@@ -35,7 +35,7 @@ describe("createCore method", () => {
   });
 
   it("should create a new Core, passing to it default options", async () => {
-    createCore();
+    createServer();
     expect(coreMocks.stubs.Constructor.mock.calls[0][0]).toEqual({
       config: {
         readArguments: false,
@@ -56,7 +56,7 @@ describe("createCore method", () => {
 
   it("should merge provided config", async () => {
     class FooPlugin {}
-    createCore({
+    createServer({
       plugins: {
         register: [FooPlugin],
       },

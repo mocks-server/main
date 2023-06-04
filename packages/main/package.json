@@ -27,18 +27,20 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "bin",
-    "src",
-    "index.js"
-  ],
-  "main": "index.js",
   "bin": {
     "mocks-server": "./bin/mocks-server"
   },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test:unit": "jest",
-    "build": "cross-env node scripts/commands/build.mjs"
+    "copy:docs": "cross-env node scripts/commands/copy-docs.mjs",
+    "build:tsc": "tsc",
+    "build": "pnpm run copy:docs && pnpm run build:tsc",
+    "test:unit": "jest --runInBand"
   },
   "dependencies": {
     "@mocks-server/core": "workspace:*",

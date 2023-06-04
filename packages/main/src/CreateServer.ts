@@ -8,19 +8,18 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
+import { readFileSync } from "fs";
+import path from "path";
 
-"use strict";
+import { Core } from "@mocks-server/core";
+import type { CoreInterface } from "@mocks-server/core";
+import { Plugin as AdminApi } from "@mocks-server/plugin-admin-api";
+import { Plugin as InquirerCli } from "@mocks-server/plugin-inquirer-cli";
+import { Plugin as OpenApi } from "@mocks-server/plugin-openapi";
+import { Plugin as PluginProxy } from "@mocks-server/plugin-proxy";
+import deepMerge from "deepmerge";
 
-const { Core } = require("@mocks-server/core");
-const PluginProxy = require("@mocks-server/plugin-proxy").default;
-const AdminApi = require("@mocks-server/plugin-admin-api").default;
-const InquirerCli = require("@mocks-server/plugin-inquirer-cli").default;
-const OpenApi = require("@mocks-server/plugin-openapi").default;
-const deepMerge = require("deepmerge");
-
-const pkg = require("../package.json");
-
-const DEFAULT_CONFIG = {
+const DEFAULT_CONFIG: MocksServer.Config = {
   config: {
     readArguments: false,
     readEnvironment: false,
@@ -37,13 +36,10 @@ const DEFAULT_CONFIG = {
   },
 };
 
-const createCore = (userConfig) => {
+export function createServer(userConfig: MocksServer.Config): CoreInterface {
+  const pkg = JSON.parse(readFileSync(path.resolve(__dirname, "..", "package.json"), "utf8"));
   const config = userConfig ? deepMerge(DEFAULT_CONFIG, userConfig) : DEFAULT_CONFIG;
   return new Core(config, {
     pkg,
   });
-};
-
-module.exports = {
-  createCore,
-};
+}

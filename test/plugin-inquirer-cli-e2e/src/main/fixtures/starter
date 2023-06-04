@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 "use strict";
 
-const Core = require("@mocks-server/core").default;
-const InquirerCli = require("@mocks-server/plugin-inquirer-cli").default;
+const { Core } = require("@mocks-server/core");
+const { Plugin } = require("@mocks-server/plugin-inquirer-cli");
 
 const handleError = (error) => {
   console.error(`Error: ${error.message}`);
@@ -12,7 +12,7 @@ const handleError = (error) => {
 const start = () => {
   try {
     const mocksServer = new Core({
-      plugins: { register: [InquirerCli] },
+      plugins: { register: [Plugin] },
     });
 
     return mocksServer.start().catch(handleError);

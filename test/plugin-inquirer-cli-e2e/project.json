@@ -2,7 +2,7 @@
   "root": "test/plugin-inquirer-cli-e2e/",
   "projectType": "application",
   "implicitDependencies": [
-    "core"
+    "plugin-inquirer-cli"
   ],
   "tags": ["type:test"]
 }

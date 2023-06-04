@@ -1,5 +1,8 @@
 {
   "root": "packages/plugin-inquirer-cli/",
   "projectType": "library",
+  "implicitDependencies": [
+    "core"
+  ],
   "tags": ["type:lib"]
 }

@@ -6,7 +6,7 @@ on:
     branches:
       - master
       - release
-      # - refactor/typescript-migration
+      - refactor/typescript-migration
   pull_request:
 concurrency:  
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -35,7 +35,7 @@ jobs:
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
       - uses: actions/cache@v3
         name: Setup pnpm cache
         with:
@@ -49,13 +49,13 @@ jobs:
         id: get-projects-arrays
         run: |
             if [[ "${{github.event.pull_request.base.ref}}" != "" ]]; then
-              echo "::set-output name=test-unit::$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} test:unit)"
-              echo "::set-output name=test-e2e::$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} test:e2e)"
-              echo "::set-output name=sonar::$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} sonar)"
+              echo "test-unit=$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} test:unit)" >> $GITHUB_OUTPUT
+              echo "test-e2e=$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} test:e2e)" >> $GITHUB_OUTPUT
+              echo "sonar=$(./scripts/commands/affected-target-print-array.sh origin/${{github.event.pull_request.base.ref}} sonar)" >> $GITHUB_OUTPUT
             else
-              echo "::set-output name=test-unit::$(./scripts/commands/projects-target-print-array.sh test:unit)"
-              echo "::set-output name=test-e2e::$(./scripts/commands/projects-target-print-array.sh test:e2e)"
-              echo "::set-output name=sonar::$(./scripts/commands/projects-target-print-array.sh sonar)"
+              echo "test-unit=$(./scripts/commands/projects-target-print-array.sh test:unit)" >> $GITHUB_OUTPUT
+              echo "test-e2e=$(./scripts/commands/projects-target-print-array.sh test:e2e)" >> $GITHUB_OUTPUT
+              echo "sonar=$(./scripts/commands/projects-target-print-array.sh sonar)" >> $GITHUB_OUTPUT
             fi
     outputs:
       test-unit: ${{ steps.get-projects-arrays.outputs.test-unit }}
@@ -78,7 +78,7 @@ jobs:
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
       - uses: actions/cache@v3
         name: Setup pnpm cache
         with:
@@ -127,7 +127,7 @@ jobs:
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
       - uses: actions/cache@v3
         name: Setup pnpm cache
         with:
@@ -232,7 +232,7 @@ jobs:
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
       - uses: actions/cache@v3
         name: Setup pnpm cache
         with:
@@ -272,7 +272,7 @@ jobs:
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
       - uses: actions/cache@v3
         name: Setup pnpm cache
         with:
@@ -308,7 +308,7 @@ jobs:
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
       - uses: actions/cache@v3
         name: Setup pnpm cache
         with:

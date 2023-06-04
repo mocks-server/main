@@ -5,8 +5,8 @@ module.exports = {
   // Automatically clear mock calls and instances between every test
   clearMocks: true,
 
-  // testMatch: ["<rootDir>/src/**/*.spec.js"],
-  testMatch: ["<rootDir>/src/**/interactive-cli.spec.js"],
+  testMatch: ["<rootDir>/src/**/*.spec.js"],
+  // testMatch: ["<rootDir>/src/**/interactive-cli.spec.js"],
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: false,

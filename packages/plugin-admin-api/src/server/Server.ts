@@ -135,6 +135,64 @@ export const Server: ServerConstructor = class Server implements ServerInterface
     this._httpsKeyOption.onChange(this._optionsChanged);
   }
 
+  public get protocol() {
+    return this._httpsEnabledOption.value ? HTTPS_PROTOCOL : HTTP_PROTOCOL;
+  }
+
+  public get url() {
+    return serverUrl({
+      host: this._hostOption.value,
+      port: this._portOption.value,
+      protocol: this.protocol,
+    });
+  }
+
+  public init() {
+    this._emitOptionsChange();
+  }
+
+  public async restart(): Promise<void> {
+    await this.stop();
+    return this.start();
+  }
+
+  public async start(): Promise<void> {
+    if (this._serverStarting) {
+      this._logger.debug("Server is already starting, returning same promise");
+      return this._serverStarting;
+    }
+    await this._initServer();
+    this._serverStarting = new Promise(this._startServer);
+    return this._serverStarting;
+  }
+
+  public addRouter(router: ServerRouter): void {
+    this._routers.push(router);
+  }
+
+  public async stop() {
+    if (this._serverStopping) {
+      this._logger.debug("Server is already stopping, returning same promise");
+      return this._serverStopping;
+    }
+    this._serverStopping = new Promise((resolve) => {
+      this._logger.verbose("Stopping server");
+      if (this._server) {
+        this._server.close(() => {
+          this._logger.info("Server stopped");
+          this._serverStopping = null;
+          resolve();
+        });
+      } else {
+        setTimeout(() => {
+          resolve();
+          this._serverStopping = null;
+        }, 200);
+      }
+    });
+    return this._serverStopping;
+  }
+
   private async _initServer() {
     this._express = express();
     this._server = await this._createServer();
@@ -240,63 +298,5 @@ export const Server: ServerConstructor = class Server implements ServerInterface
   private _optionsChanged(): void {
     this._emitOptionsChange();
     this.restart();
-  }
-
-  public init() {
-    this._emitOptionsChange();
-  }
-
-  public async restart(): Promise<void> {
-    await this.stop();
-    return this.start();
-  }
-
-  public async start(): Promise<void> {
-    if (this._serverStarting) {
-      this._logger.debug("Server is already starting, returning same promise");
-      return this._serverStarting;
-    }
-    await this._initServer();
-    this._serverStarting = new Promise(this._startServer);
-    return this._serverStarting;
-  }
-
-  public addRouter(router: ServerRouter): void {
-    this._routers.push(router);
-  }
-
-  public async stop() {
-    if (this._serverStopping) {
-      this._logger.debug("Server is already stopping, returning same promise");
-      return this._serverStopping;
-    }
-    this._serverStopping = new Promise((resolve) => {
-      this._logger.verbose("Stopping server");
-      if (this._server) {
-        this._server.close(() => {
-          this._logger.info("Server stopped");
-          this._serverStopping = null;
-          resolve();
-        });
-      } else {
-        setTimeout(() => {
-          resolve();
-          this._serverStopping = null;
-        }, 200);
-      }
-    });
-    return this._serverStopping;
-  }
-
-  public get protocol() {
-    return this._httpsEnabledOption.value ? HTTPS_PROTOCOL : HTTP_PROTOCOL;
-  }
-
-  public get url() {
-    return serverUrl({
-      host: this._hostOption.value,
-      port: this._portOption.value,
-      protocol: this.protocol,
-    });
   }
 };

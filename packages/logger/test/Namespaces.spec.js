@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import { createSandbox } from "sinon";
 import { Logger } from "../src/Logger.ts";
 

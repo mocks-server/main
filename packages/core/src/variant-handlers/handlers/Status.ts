@@ -27,11 +27,16 @@ export const VariantHandlerStatus: VariantHandlerStatusConstructor = class Varia
   private _options: VariantHandlerStatusOptions;
   private _logger: LoggerInterface;
 
-  static get id(): string {
+  constructor(options: VariantHandlerStatusOptions, core: ScopedCoreInterface) {
+    this._options = options;
+    this._logger = core.logger;
+  }
+
+  public static get id(): string {
     return "status";
   }
 
-  static get validationSchema(): JSONSchema7WithInstanceof {
+  public static get validationSchema(): JSONSchema7WithInstanceof {
     return {
       type: "object",
       properties: {
@@ -47,19 +52,6 @@ export const VariantHandlerStatus: VariantHandlerStatusConstructor = class Varia
     };
   }
 
-  constructor(options: VariantHandlerStatusOptions, core: ScopedCoreInterface) {
-    this._options = options;
-    this._logger = core.logger;
-  }
-
-  public middleware(req: Request, res: Response): void {
-    this._logger.debug(`Setting headers | req: ${req.id}`);
-    res.set({ ...this.defaultHeaders, ...this._options.headers });
-    res.status(this._options.status);
-    this._logger.verbose(`Sending response with empty body | req: ${req.id}`);
-    res.send();
-  }
-
   public get defaultHeaders(): UnknownObject {
     return {
       "Content-Length": "0",
@@ -70,5 +62,13 @@ export const VariantHandlerStatus: VariantHandlerStatusConstructor = class Varia
     return {
       status: this._options.status,
     };
+  }
+
+  public middleware(req: Request, res: Response): void {
+    this._logger.debug(`Setting headers | req: ${req.id}`);
+    res.set({ ...this.defaultHeaders, ...this._options.headers });
+    res.status(this._options.status);
+    this._logger.verbose(`Sending response with empty body | req: ${req.id}`);
+    res.send();
   }
 };

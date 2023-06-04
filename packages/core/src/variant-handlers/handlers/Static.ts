@@ -30,11 +30,17 @@ export const VariantHandlerStatic: VariantHandlerStaticConstructor = class Varia
   private _logger: LoggerInterface;
   private _expressStaticOptions: ServeStaticOptions;
 
-  static get id(): string {
+  constructor(options: VariantHandlerStaticOptions, core: ScopedCoreInterface) {
+    this._options = options;
+    this._expressStaticOptions = this._options.options || {};
+    this._logger = core.logger;
+  }
+
+  public static get id(): string {
     return "static";
   }
 
-  static get validationSchema(): JSONSchema7WithInstanceof {
+  public static get validationSchema(): JSONSchema7WithInstanceof {
     return {
       type: "object",
       properties: {
@@ -53,10 +59,8 @@ export const VariantHandlerStatic: VariantHandlerStaticConstructor = class Varia
     };
   }
 
-  constructor(options: VariantHandlerStaticOptions, core: ScopedCoreInterface) {
-    this._options = options;
-    this._expressStaticOptions = this._options.options || {};
-    this._logger = core.logger;
+  public get preview(): VariantHandlerStaticPreview {
+    return null;
   }
 
   public get router(): RequestHandler {
@@ -73,9 +77,5 @@ export const VariantHandlerStatic: VariantHandlerStaticConstructor = class Varia
       ...this._expressStaticOptions,
       setHeaders: this._expressStaticOptions.setHeaders || setHeadersOption,
     });
-  }
-
-  public get preview(): VariantHandlerStaticPreview {
-    return null;
   }
 };

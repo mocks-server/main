@@ -156,7 +156,6 @@ describe("Plugins", () => {
       let receivedCore;
       class FooPlugin {
         constructor(core) {
-          console.log("Created class");
           receivedCore = core;
           instantiated = true;
         }
@@ -187,7 +186,7 @@ describe("Plugins", () => {
       let receivedCore;
       class FooPlugin {
         constructor() {
-          console.log("Created class");
+          // do nothing
         }
         register(core) {
           receivedCore = core;
@@ -205,7 +204,7 @@ describe("Plugins", () => {
       expect.assertions(1);
       class FooPlugin {
         constructor() {
-          console.log("Created class");
+          // do nothing
         }
         register() {
           throw new Error();

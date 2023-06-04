@@ -142,10 +142,6 @@ const OPTIONS: [PluginEnabledOptionDefinition, EmojisOptionDefinition] = [
 ];
 
 export const Plugin: PluginConstructor = class Plugin implements PluginInterface {
-  static get id() {
-    return "inquirerCli";
-  }
-
   private _alerts: ScopedCoreInterface["alerts"];
   private _server: ScopedCoreInterface["server"];
   private _config: ScopedCoreInterface["config"];
@@ -206,6 +202,17 @@ export const Plugin: PluginConstructor = class Plugin implements PluginInterface
       ?.namespace("https")
       ?.option("enabled") as HttpsEnabledOption;
     this._optionWatch = this._config.root?.namespace("files")?.option("watch") as WatchOption;
+  }
+
+  public static get id() {
+    return "inquirerCli";
+  }
+
+  private get _serverUrl(): string {
+    const hostSetting = this._optionHost.value;
+    const host = hostSetting === "0.0.0.0" ? "localhost" : hostSetting;
+    const protocol = this._optionHttps.value === true ? "https" : "http";
+    return `${protocol}://${host}:${this._optionPort.value}`;
   }
 
   public async init(): Promise<void> {
@@ -300,13 +307,6 @@ export const Plugin: PluginConstructor = class Plugin implements PluginInterface
     if (this._started) {
       return this._refreshMainMenu();
     }
-  }
-
-  private get _serverUrl(): string {
-    const hostSetting = this._optionHost.value;
-    const host = hostSetting === "0.0.0.0" ? "localhost" : hostSetting;
-    const protocol = this._optionHttps.value === true ? "https" : "http";
-    return `${protocol}://${host}:${this._optionPort.value}`;
   }
 
   private _header(): string[] {

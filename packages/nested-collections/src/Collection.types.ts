@@ -30,9 +30,9 @@ export interface CollectionIdComparer {
 }
 
 export interface CollectionOptions {
+  [x: string | number | symbol]: unknown;
   parent?: CollectionBaseInterface;
   root?: CollectionBaseInterface;
-  [x: string | number | symbol]: unknown;
 }
 
 /** Collection constructor */
@@ -49,10 +49,24 @@ export interface CollectionConstructor {
 
 /** Collection interface */
 export interface CollectionBaseInterface {
+  /** Root collection */
+  root: CollectionBaseInterface;
+
+  /** All collection items */
+  items: CollectionItems;
+
+  /** All collection children collections */
+  collections: Collections;
+
+  /** Parent collection */
+  parent?: CollectionBaseInterface;
+
   /** collection id */
   id: CollectionId;
+
   /** Collection id joined with parent collections ids */
   path: CollectionPathId;
+
   /**
    * Removes a collection
    * @param id - Id of the collection to be removed {@link Id}
@@ -105,15 +119,6 @@ export interface CollectionBaseInterface {
    */
   cleanItems(): void;
 
-  /** All collection items */
-  items: CollectionItems;
-
-  /** All collection children collections */
-  collections: Collections;
-
-  /** Parent collection */
-  parent?: CollectionBaseInterface;
-
   /**
    * Executes the provided function whenever a change is made in items, children collections or their items
    * @returns function to remove event listener
@@ -125,13 +130,13 @@ export interface CollectionBaseInterface {
    * @example const removeOnChangeListener = collection.onChange(() => console.log("Collection items have changed"))
    */
   onChange(listener: EventsListener): EventsListenerRemover;
-
-  /** Root collection */
-  root: CollectionBaseInterface;
 }
 
 /** Collection interface */
 export interface CollectionInterface extends CollectionBaseInterface {
+  /** All collection items and children collection items in a flat array. Overwrite this method if you need to implement your own flat method **/
+  flat: CollectionFlatItems;
+
   /**
    * Sets the value for the collection item with the provided id or creates a new one and assign the value to it
    * @param id - Id of the item {@link Id}
@@ -140,7 +145,4 @@ export interface CollectionInterface extends CollectionBaseInterface {
    * @returns item {@link CollectionItem}
    */
   set(id: CollectionId, value: CollectionItemValue): CollectionItem;
-
-  /** All collection items and children collection items in a flat array. Overwrite this method if you need to implement your own flat method **/
-  flat: CollectionFlatItems;
 }

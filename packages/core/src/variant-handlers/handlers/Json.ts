@@ -27,11 +27,16 @@ export const VariantHandlerJson: VariantHandlerJsonConstructor = class VariantHa
   private _options: VariantHandlerJsonOptions;
   private _logger: LoggerInterface;
 
-  static get id(): string {
+  constructor(options: VariantHandlerJsonOptions, core: ScopedCoreInterface) {
+    this._options = options;
+    this._logger = core.logger;
+  }
+
+  public static get id(): string {
     return "json";
   }
 
-  static get validationSchema(): JSONSchema7WithInstanceof {
+  public static get validationSchema(): JSONSchema7WithInstanceof {
     return {
       type: "object",
       properties: {
@@ -66,14 +71,16 @@ export const VariantHandlerJson: VariantHandlerJsonConstructor = class VariantHa
     };
   }
 
-  constructor(options: VariantHandlerJsonOptions, core: ScopedCoreInterface) {
-    this._options = options;
-    this._logger = core.logger;
-  }
-
   public get defaultHeaders(): UnknownObject {
     return {
       "Content-Type": "application/json; charset=utf-8",
+    };
+  }
+
+  public get preview(): VariantHandlerJsonPreview {
+    return {
+      body: this._options.body,
+      status: this._options.status,
     };
   }
 
@@ -83,12 +90,5 @@ export const VariantHandlerJson: VariantHandlerJsonConstructor = class VariantHa
     res.status(this._options.status);
     this._logger.verbose(`Sending response | req: ${req.id}`);
     res.send(this._options.body);
-  }
-
-  public get preview(): VariantHandlerJsonPreview {
-    return {
-      body: this._options.body,
-      status: this._options.status,
-    };
   }
 };

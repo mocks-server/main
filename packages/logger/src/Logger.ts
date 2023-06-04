@@ -178,107 +178,24 @@ export const Logger: LoggerConstructor = class Logger implements LoggerInterface
     this._logger = this._container.get(label);
   }
 
-  private _setWinstonTransportLevel(
-    level: LogLevel,
-    transport: LoggerTransports.WinstonType
-  ): void {
-    if (level === LEVEL_SILENT) {
-      this._transports[transport].silent = true;
-    } else {
-      this._transports[transport].silent = false;
-      this._transports[transport].level = level;
-    }
-  }
-
-  private _setTransportLevel(
-    level: LogLevel,
-    transport: LoggerTransports.Type,
-    {
-      pinned = false,
-      fromBaseLevel = false,
-      forcePropagation = false,
-    }: LoggerSetLevel.TransportOptions
-  ): void {
-    if (
-      forcePropagation ||
-      !fromBaseLevel ||
-      (fromBaseLevel && !this._transportsPinnedLevels[transport])
-    ) {
-      this._transportsPinnedLevels[transport] = pinned;
-      this._setWinstonTransportLevel(level, transport);
-      if (transport === TRANSPORT_STORE && !this._parent) {
-        this._setWinstonTransportLevel(level, TRANSPORT_GLOBAL_STORE);
-      }
-    }
-  }
-
-  private _setBaseLevel(
-    level: LogLevel,
-    { pinned = false, forcePropagation }: LoggerSetLevel.BaseOptions
-  ): void {
-    this._level = level;
-    this._pinnedLevel = pinned;
-
-    this._setTransportLevel(level, TRANSPORT_CONSOLE, { fromBaseLevel: true, forcePropagation });
-    this._setTransportLevel(level, TRANSPORT_STORE, { fromBaseLevel: true, forcePropagation });
-  }
-
-  public _setLevelFromParent(
-    level: LogLevel,
-    { transport, forcePropagation = false }: LoggerSetLevel.Options
-  ): void {
-    if (!this._pinnedLevel || forcePropagation) {
-      this._set(level, { transport, forcePropagation });
-    }
-  }
-
-  private _set(
-    level: LogLevel,
-    { transport, propagate = true, forcePropagation, pinned }: LoggerSetLevel.Options = {}
-  ): void {
-    if (transport) {
-      this._setTransportLevel(level, transport, { pinned, forcePropagation });
-    } else {
-      this._setBaseLevel(level, { pinned, forcePropagation });
-    }
-    if (propagate) {
-      this._namespaces.forEach((namespace: LoggerInterface) => {
-        namespace._setLevelFromParent(level, { transport, forcePropagation });
-      });
-    }
-  }
-
-  private _getNamespace(label: LoggerNamespaceLabel): LoggerInterface | undefined {
-    return this._namespaces.find((namespace: LoggerInterface) => {
-      return namespace.label === label;
-    });
-  }
-
-  private _createNamespace(label: LoggerNamespaceLabel, options?: LoggerOptions): LoggerInterface {
-    const namespace = new Logger(label, options, {
-      parent: this,
-      root: this._root,
-      globalStoreTransport: this._globalStoreTransport,
-      globalStore: this._globalStore,
-    });
-    this._namespaces.push(namespace);
-    return namespace;
-  }
-
-  get store(): LogsStore {
+  public get store(): LogsStore {
     return this._store;
   }
 
-  get globalStore(): LogsStore {
+  public get globalStore(): LogsStore {
     return this._globalStore;
   }
 
-  get label(): LoggerNamespaceLabel {
+  public get label(): LoggerNamespaceLabel {
     return this._label;
   }
 
-  get level(): LogLevel {
+  public get level(): LogLevel {
     return this._level;
+  }
+
+  public get root(): LoggerInterface {
+    return this._root;
   }
 
   public [LEVEL_SILLY](message: LogMessage): void {
@@ -325,8 +242,91 @@ export const Logger: LoggerConstructor = class Logger implements LoggerInterface
     return addEventListener(listener, CHANGE_EVENT, this._globalStoreEmitter);
   }
 
-  public get root(): LoggerInterface {
-    return this._root;
+  public _setLevelFromParent(
+    level: LogLevel,
+    { transport, forcePropagation = false }: LoggerSetLevel.Options
+  ): void {
+    if (!this._pinnedLevel || forcePropagation) {
+      this._set(level, { transport, forcePropagation });
+    }
+  }
+
+  private _setWinstonTransportLevel(
+    level: LogLevel,
+    transport: LoggerTransports.WinstonType
+  ): void {
+    if (level === LEVEL_SILENT) {
+      this._transports[transport].silent = true;
+    } else {
+      this._transports[transport].silent = false;
+      this._transports[transport].level = level;
+    }
+  }
+
+  private _setTransportLevel(
+    level: LogLevel,
+    transport: LoggerTransports.Type,
+    {
+      pinned = false,
+      fromBaseLevel = false,
+      forcePropagation = false,
+    }: LoggerSetLevel.TransportOptions
+  ): void {
+    if (
+      forcePropagation ||
+      !fromBaseLevel ||
+      (fromBaseLevel && !this._transportsPinnedLevels[transport])
+    ) {
+      this._transportsPinnedLevels[transport] = pinned;
+      this._setWinstonTransportLevel(level, transport);
+      if (transport === TRANSPORT_STORE && !this._parent) {
+        this._setWinstonTransportLevel(level, TRANSPORT_GLOBAL_STORE);
+      }
+    }
+  }
+
+  private _setBaseLevel(
+    level: LogLevel,
+    { pinned = false, forcePropagation }: LoggerSetLevel.BaseOptions
+  ): void {
+    this._level = level;
+    this._pinnedLevel = pinned;
+
+    this._setTransportLevel(level, TRANSPORT_CONSOLE, { fromBaseLevel: true, forcePropagation });
+    this._setTransportLevel(level, TRANSPORT_STORE, { fromBaseLevel: true, forcePropagation });
+  }
+
+  private _set(
+    level: LogLevel,
+    { transport, propagate = true, forcePropagation, pinned }: LoggerSetLevel.Options = {}
+  ): void {
+    if (transport) {
+      this._setTransportLevel(level, transport, { pinned, forcePropagation });
+    } else {
+      this._setBaseLevel(level, { pinned, forcePropagation });
+    }
+    if (propagate) {
+      this._namespaces.forEach((namespace: LoggerInterface) => {
+        namespace._setLevelFromParent(level, { transport, forcePropagation });
+      });
+    }
+  }
+
+  private _getNamespace(label: LoggerNamespaceLabel): LoggerInterface | undefined {
+    return this._namespaces.find((namespace: LoggerInterface) => {
+      return namespace.label === label;
+    });
+  }
+
+  private _createNamespace(label: LoggerNamespaceLabel, options?: LoggerOptions): LoggerInterface {
+    const namespace = new Logger(label, options, {
+      parent: this,
+      root: this._root,
+      globalStoreTransport: this._globalStoreTransport,
+      globalStore: this._globalStore,
+    });
+    this._namespaces.push(namespace);
+    return namespace;
   }
 };
 

@@ -32,6 +32,10 @@ export const About: AboutConstructor = class About implements AboutInterface {
     this._router.get("/", this._getAbout.bind(this));
   }
 
+  public get router() {
+    return this._router;
+  }
+
   private _getAbout(req: RequestWithId, res: Response): void {
     this._logger.verbose(`Sending about | ${req.id}`);
     res.status(200);
@@ -41,9 +45,5 @@ export const About: AboutConstructor = class About implements AboutInterface {
         core: this._coreVersion,
       },
     });
-  }
-
-  public get router() {
-    return this._router;
   }
 };

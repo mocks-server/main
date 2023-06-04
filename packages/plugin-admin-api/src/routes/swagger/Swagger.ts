@@ -35,18 +35,18 @@ export const Swagger: SwaggerConstructor = class Swagger implements SwaggerInter
     this._router.use(express.static(absolutePath()));
   }
 
-  setOptions({ version, port, host, protocol }: SwaggerUiOptions): void {
+  public get router() {
+    return this._router;
+  }
+
+  public setOptions({ version, port, host, protocol }: SwaggerUiOptions): void {
     this._openApi.info.version = version;
     this._openApi.servers[0].url = `${serverUrl({ host, port, protocol })}/api`;
     this._openApi.components.schemas.Config =
       this._config.root.getValidationSchema() as OpenAPIV3.SchemaObject;
   }
 
-  _openApiMiddleware(_req: Request, res: Response): void {
+  private _openApiMiddleware(_req: Request, res: Response): void {
     res.status(200).send(this._openApi);
-  }
-
-  get router() {
-    return this._router;
   }
 };

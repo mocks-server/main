@@ -43,7 +43,11 @@ export const CustomRouteVariants: CustomRouteVariantsConstructor = class CustomR
     this._router.delete("/", this._delete.bind(this));
   }
 
-  _getCollection() {
+  public get router() {
+    return this._router;
+  }
+
+  private _getCollection() {
     return this._mock.customRouteVariants.map((routeVariant) => ({
       id: routeVariant,
     }));
@@ -67,9 +71,5 @@ export const CustomRouteVariants: CustomRouteVariantsConstructor = class CustomR
     this._mock.restoreRouteVariants();
     res.status(204);
     res.send();
-  }
-
-  public get router() {
-    return this._router;
   }
 };

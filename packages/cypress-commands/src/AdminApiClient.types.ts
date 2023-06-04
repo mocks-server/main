@@ -18,6 +18,8 @@ export interface AdminApiClientConstructor {
 
 /** Admin API client */
 export interface AdminApiClientInterface {
+  /** Mocks Server admin API base url */
+  get baseUrl(): BaseUrl;
   /**
    * Updates Mocks Server configuration
    * @param mocksServerConfig - Partial Mocks Server configuration object to be updated {@link ConfigurationObject}
@@ -44,6 +46,4 @@ export interface AdminApiClientInterface {
    * @example adminApiClient.configClient({ host: "192.168.1.1", enabled: true, port: 3200, https: true, agent: new https.Agent({ rejectUnauthorized: false })});
    */
   configClient(configuration: AdminApiClientConfig): void;
-  /** Mocks Server admin API base url */
-  baseUrl: BaseUrl;
 }

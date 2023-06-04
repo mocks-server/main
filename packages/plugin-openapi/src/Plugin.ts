@@ -1,8 +1,4 @@
-import type {
-  OptionInterfaceOfType,
-  OptionDefinition,
-  ConfigNamespaceInterface,
-} from "@mocks-server/config";
+import type { OptionInterfaceOfType, ConfigNamespaceInterface } from "@mocks-server/config";
 import type {
   RouteDefinition,
   ScopedCoreInterface,
@@ -71,10 +67,6 @@ function getRoutesCollection(
 }
 
 export const Plugin: PluginConstructor = class Plugin implements PluginInterface {
-  static get id() {
-    return PLUGIN_ID;
-  }
-
   private _config: ConfigNamespaceInterface;
   private _logger: LoggerInterface;
   private _alerts: AlertsInterface;
@@ -108,7 +100,25 @@ export const Plugin: PluginConstructor = class Plugin implements PluginInterface
     });
   }
 
-  async _getRoutesAndCollectionsFromFilesContents(
+  public static get id() {
+    return PLUGIN_ID;
+  }
+
+  private get _defaultCollectionOptions(): OpenApiDefinition.Collection | null {
+    if (!this._collectionIdOption.value) {
+      return null;
+    }
+    const options = {
+      id: this._collectionIdOption.value as string,
+    } as OpenApiDefinition.Collection;
+
+    if (this._collectionFromOption.value) {
+      options.from = this._collectionFromOption.value as string;
+    }
+    return options;
+  }
+
+  private async _getRoutesAndCollectionsFromFilesContents(
     filesContents: FilesLoaded
   ): Promise<RoutesAndCollections> {
     const openApiRoutesAndCollections = await Promise.all(
@@ -148,20 +158,6 @@ export const Plugin: PluginConstructor = class Plugin implements PluginInterface
       },
       { routes: [], collections: [] } as RoutesAndCollections
     );
-  }
-
-  private get _defaultCollectionOptions(): OpenApiDefinition.Collection | null {
-    if (!this._collectionIdOption.value) {
-      return null;
-    }
-    const options = {
-      id: this._collectionIdOption.value as string,
-    } as OpenApiDefinition.Collection;
-
-    if (this._collectionFromOption.value) {
-      options.from = this._collectionFromOption.value as string;
-    }
-    return options;
   }
 
   private async _onLoadFiles(filesContents: FilesLoaded) {

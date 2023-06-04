@@ -3,7 +3,7 @@ import handlebars from "handlebars";
 
 import { pnpmRun } from "../pnpm/run.js";
 import { SONAR_TARGET } from "../common/constants.js";
-import { dirName, readFile, getJsonFromStdout, uniqueArray } from "../common/utils.js";
+import { dirName, readFile, getJsonFromStdout, uniqueArray, log } from "../common/utils.js";
 import { REPORT_FORMAT_TEXT } from "../cli/commands.js";
 import {
   projectsAreReadyToPublish,
@@ -56,7 +56,7 @@ export async function printAffectedProjectsWithSonarConfigArray({
   const affectedProjectsWithSonar = affectedProjects.filter((project) =>
     projectsWithSonarConfig.includes(project)
   );
-  console.log(stringifyObjectWithPrefix(affectedProjectsWithSonar, prepend));
+  log(stringifyObjectWithPrefix(affectedProjectsWithSonar, prepend));
 }
 
 export async function printAffectedTargetArrayUsingNx({
@@ -73,7 +73,7 @@ export async function printAffectedTargetArrayUsingNx({
       return taskInfo.target.project;
     })
   );
-  console.log(stringifyObjectWithPrefix(affectedProjects, prepend));
+  log(stringifyObjectWithPrefix(affectedProjects, prepend));
 }
 
 export async function printAffectedTargetArray({ prepend = "", base = DEFAULT_BASE, target }) {
@@ -85,17 +85,17 @@ export async function printAffectedTargetArray({ prepend = "", base = DEFAULT_BA
 
 export async function printAffectedArray({ prepend = "", base = DEFAULT_BASE }) {
   const affectedProjects = await affected(base);
-  console.log(stringifyObjectWithPrefix(affectedProjects, prepend));
+  log(stringifyObjectWithPrefix(affectedProjects, prepend));
 }
 
 export async function printProjectsArray({ prepend = "" }) {
   const allProjects = await allProjectNames();
-  console.log(stringifyObjectWithPrefix(allProjects, prepend));
+  log(stringifyObjectWithPrefix(allProjects, prepend));
 }
 
 export async function printProjectsTargetArray({ prepend = "", target }) {
   const allProjects = await allProjectNamesWithTarget(target);
-  console.log(stringifyObjectWithPrefix(allProjects, prepend));
+  log(stringifyObjectWithPrefix(allProjects, prepend));
 }
 
 export async function printAffectedReport({ format, prepend = "", base = DEFAULT_BASE }) {
@@ -118,7 +118,7 @@ export async function printAffectedReport({ format, prepend = "", base = DEFAULT
     libraries,
     librariesArePlural: arrayHasMany(libraries),
   });
-  console.log(report);
+  log(report);
 }
 
 export async function printAffectedCheckReport({ format, prepend = "", base = DEFAULT_BASE }) {
@@ -144,7 +144,7 @@ export async function printAffectedCheckReport({ format, prepend = "", base = DE
     statuses: templateStatuses,
     ok,
   });
-  console.log(report);
+  log(report);
 }
 
 export async function checkAffected({ base = DEFAULT_BASE }) {

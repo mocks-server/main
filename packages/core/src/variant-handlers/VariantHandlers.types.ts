@@ -101,16 +101,16 @@ export interface VariantHandlersOptions {
 /** Creates a VariantHandlers interface */
 export interface VariantHandlersConstructor {
   /**
-   * VariantHandlers class static id
-   */
-  get id(): string;
-  /**
    * Creates a variantsHandler interface
    * @param options - VariantHandlers options {@link VariantHandlersOptions}
    * @returns VariantHandlers interface {@link VariantHandlersInterface}.
    * @example const variantHandlers = new VariantHandlers({ config, logger });
    */
   new (options: VariantHandlersOptions): VariantHandlersInterface;
+  /**
+   * VariantHandlers class static id
+   */
+  get id(): string;
 }
 
 /** VariantHandlers interface */

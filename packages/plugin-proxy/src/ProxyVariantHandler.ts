@@ -24,11 +24,19 @@ export const ProxyVariantHandler: VariantHandlerProxyConstructor = class ProxyVa
   private _optionsProxy: ProxyOptions;
   private _middleware: ReturnType<typeof httpProxy>;
 
-  static get id(): string {
+  constructor(options: VariantHandlerProxyOptions, core: ScopedCoreInterface) {
+    this._options = options;
+    this._logger = core.logger;
+    this._host = this._options.host;
+    this._optionsProxy = this._options.options;
+    this._middleware = httpProxy(this._host, this._optionsProxy);
+  }
+
+  public static get id(): string {
     return "proxy";
   }
 
-  static get validationSchema(): JSONSchema7WithInstanceof {
+  public static get validationSchema(): JSONSchema7WithInstanceof {
     return {
       type: "object",
       properties: {
@@ -50,21 +58,13 @@ export const ProxyVariantHandler: VariantHandlerProxyConstructor = class ProxyVa
     };
   }
 
-  constructor(options: VariantHandlerProxyOptions, core: ScopedCoreInterface) {
-    this._options = options;
-    this._logger = core.logger;
-    this._host = this._options.host;
-    this._optionsProxy = this._options.options;
-    this._middleware = httpProxy(this._host, this._optionsProxy);
+  public get preview(): VariantHandlerProxyResponsePreview {
+    return null;
   }
 
-  middleware(req: Request, res: Response, next: NextFunction): void {
+  public middleware(req: Request, res: Response, next: NextFunction): void {
     const host = this._host instanceof Function ? this._host(req) : this._host;
     this._logger.verbose(`Proxy redirecting request to ${host} | req: ${req.id}`);
     this._middleware(req, res, next);
-  }
-
-  get preview(): VariantHandlerProxyResponsePreview {
-    return null;
   }
 };

@@ -24,10 +24,6 @@ import type { ServerInterface } from "./server/Server.types";
 import { PLUGIN_NAME } from "./support/Constants";
 
 export const Plugin: PluginConstructor = class Plugin implements PluginInterface {
-  static get id() {
-    return PLUGIN_NAME;
-  }
-
   private _version: string;
   private _logger: ScopedCoreInterface["logger"];
   private _server: ServerInterface;
@@ -70,6 +66,10 @@ export const Plugin: PluginConstructor = class Plugin implements PluginInterface
     this._server.addRouter({ path: BASE_PATH, router: this._apiRouter.router });
     this._server.addRouter({ path: "/docs", router: this._swagger.router });
     this._server.addRouter({ path: "/", router: this._root.router });
+  }
+
+  public static get id() {
+    return PLUGIN_NAME;
   }
 
   public async init() {

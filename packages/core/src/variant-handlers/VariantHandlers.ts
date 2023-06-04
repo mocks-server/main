@@ -39,10 +39,6 @@ const OPTIONS: [VariantHandlersOptionDefinition] = [
 export const VariantHandlers: VariantHandlersConstructor = class VariantHandlers
   implements VariantHandlersInterface
 {
-  static get id() {
-    return "variantHandlers";
-  }
-
   private _logger: LoggerInterface;
   private _config: ConfigNamespaceInterface;
   private _registerOption: OptionInterfaceOfType<
@@ -70,10 +66,12 @@ export const VariantHandlers: VariantHandlersConstructor = class VariantHandlers
     ];
   }
 
-  private _registerOne(VariantHandler: VariantHandlerConstructor): void {
-    // TODO, check id, etc..
-    this._logger.debug(`Registering '${VariantHandler.id}' variant handler`);
-    this._registeredVariantHandlers.push(VariantHandler);
+  public static get id() {
+    return "variantHandlers";
+  }
+
+  public get handlers(): VariantHandlerConstructor[] {
+    return this._registeredVariantHandlers;
   }
 
   public register(variantHandlers: VariantHandlerConstructor[]): void {
@@ -96,7 +94,9 @@ export const VariantHandlers: VariantHandlersConstructor = class VariantHandlers
     return Promise.resolve();
   }
 
-  public get handlers(): VariantHandlerConstructor[] {
-    return this._registeredVariantHandlers;
+  private _registerOne(VariantHandler: VariantHandlerConstructor): void {
+    // TODO, check id, etc..
+    this._logger.debug(`Registering '${VariantHandler.id}' variant handler`);
+    this._registeredVariantHandlers.push(VariantHandler);
   }
 };

@@ -19,9 +19,14 @@ export function ensureArray(value) {
   return Array.isArray(value) ? value : [value];
 }
 
+export function log(...args) {
+  // eslint-disable-next-line no-console
+  console.log(...args);
+}
+
 export function catchCommandError(command) {
   return command.catch((error) => {
-    console.log(error);
+    log(error);
     process.exit(1);
   });
 }

@@ -79,16 +79,8 @@ export const Inquirer: InquirerConstructor = class Inquirer implements InquirerI
     this._currentInquirers = new Set();
   }
 
-  private _initQuestions(questions: InquirerQuestionsMap): InquirerQuestionsMap {
-    const clonedQuestions = cloneDeep(questions);
-    if (clonedQuestions[MAIN_MENU_ID] && isListQuestion(clonedQuestions[MAIN_MENU_ID])) {
-      const questionChoices = (clonedQuestions[MAIN_MENU_ID] as ListQuestion)?.choices as [
-        unknown
-      ];
-      questionChoices.push(new Separator());
-      questionChoices.push(QUIT_QUESTION);
-    }
-    return clonedQuestions;
+  public set emojis(enabled: boolean) {
+    this._emojisEnabled = enabled;
   }
 
   public set questions(questions: InquirerQuestionsMap) {
@@ -106,13 +98,6 @@ export const Inquirer: InquirerConstructor = class Inquirer implements InquirerI
       this._logModeExit();
       this._logModeExit = null;
     }
-  }
-
-  private _exitLogsMode(key: string): void {
-    if (key === CTRL_C) {
-      process.exit();
-    }
-    this.exitLogsMode();
   }
 
   public async logsMode(startLogs?: () => void): Promise<void> {
@@ -133,10 +118,27 @@ export const Inquirer: InquirerConstructor = class Inquirer implements InquirerI
     });
   }
 
-  private _resolvePreviousInquirers() {
-    this._currentInquirers.forEach((inquirerPromise) => {
-      inquirerPromise();
-      this._currentInquirers.delete(inquirerPromise);
+  public clearScreen(options: ClearScreenOptions = {}): void {
+    clearScreen();
+    if (options.header !== false) {
+      const headers = (this._header && this._header()) || [];
+      const alerts = (this._alertsHeader && this._alertsHeader()) || [];
+      if (alerts.length) {
+        renderSectionHeader("ALERTS", this._emojiKey(":warning:"));
+        alerts.forEach((alert) => log(alert));
+        renderSectionFooter();
+      }
+      renderSectionHeader("CURRENT SETTINGS", this._emojiKey(":information_source:"));
+      headers.forEach((header) => log(header));
+      renderSectionFooter();
+      renderSectionHeader("ACTIONS", this._emojiKey(":arrow_up_down:"));
+    }
+  }
+
+  public removeListeners(): void {
+    const listeners = process.stdin.listeners(EVENT_LISTENER);
+    listeners.forEach((listener) => {
+      process.stdin.removeListener(EVENT_LISTENER, listener as () => void);
     });
   }
 
@@ -172,31 +174,29 @@ export const Inquirer: InquirerConstructor = class Inquirer implements InquirerI
     }
   }
 
-  public clearScreen(options: ClearScreenOptions = {}): void {
-    clearScreen();
-    if (options.header !== false) {
-      const headers = (this._header && this._header()) || [];
-      const alerts = (this._alertsHeader && this._alertsHeader()) || [];
-      if (alerts.length) {
-        renderSectionHeader("ALERTS", this._emojiKey(":warning:"));
-        alerts.forEach((alert) => log(alert));
-        renderSectionFooter();
-      }
-      renderSectionHeader("CURRENT SETTINGS", this._emojiKey(":information_source:"));
-      headers.forEach((header) => log(header));
-      renderSectionFooter();
-      renderSectionHeader("ACTIONS", this._emojiKey(":arrow_up_down:"));
+  private _exitLogsMode(key: string): void {
+    if (key === CTRL_C) {
+      process.exit();
     }
+    this.exitLogsMode();
   }
 
-  public removeListeners(): void {
-    const listeners = process.stdin.listeners(EVENT_LISTENER);
-    listeners.forEach((listener) => {
-      process.stdin.removeListener(EVENT_LISTENER, listener as () => void);
+  private _initQuestions(questions: InquirerQuestionsMap): InquirerQuestionsMap {
+    const clonedQuestions = cloneDeep(questions);
+    if (clonedQuestions[MAIN_MENU_ID] && isListQuestion(clonedQuestions[MAIN_MENU_ID])) {
+      const questionChoices = (clonedQuestions[MAIN_MENU_ID] as ListQuestion)?.choices as [
+        unknown
+      ];
+      questionChoices.push(new Separator());
+      questionChoices.push(QUIT_QUESTION);
+    }
+    return clonedQuestions;
+  }
+
+  private _resolvePreviousInquirers() {
+    this._currentInquirers.forEach((inquirerPromise) => {
+      inquirerPromise();
+      this._currentInquirers.delete(inquirerPromise);
     });
-  }
-
-  public set emojis(enabled: boolean) {
-    this._emojisEnabled = enabled;
   }
 };

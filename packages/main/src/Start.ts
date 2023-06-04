@@ -13,6 +13,7 @@ import { createServer } from "./CreateServer";
 
 function handleError(error: Error) {
   console.error(`Error: ${error.message}`);
+  // eslint-disable-next-line no-console
   console.log(error);
   process.exitCode = 1;
 }

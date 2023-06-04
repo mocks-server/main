@@ -57,6 +57,7 @@ function parseValue(valueType, value) {
 function logNamespace(namespace) {
   namespace.options.forEach((option) => {
     const valueType = getValueType(option);
+    // eslint-disable-next-line no-console
     console.log(
       `${LOG_OPTION_START}${logScope(namespace, option.name)}:${option.type}:${parseValue(
         valueType,
@@ -76,6 +77,7 @@ function logConfig(config) {
 }
 
 function optionsFromLogs(joinedLogs) {
+  // eslint-disable-next-line no-useless-escape
   const matches = joinedLogs.match(/\[\-\->(.*)<\-\-\]/gim) || [];
   return matches.map((option) => option.replace(LOG_OPTION_START, "").replace(LOG_OPTION_END, ""));
 }

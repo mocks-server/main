@@ -39,8 +39,8 @@ export const AdminApiClient: AdminApiClientConstructor = class AdminApiClient
     this.configClient(clientConfig);
   }
 
-  private _isDisabled(): boolean {
-    return isFalsy(this._enabled);
+  public get baseUrl(): BaseUrl {
+    return `${this._protocol}://${this._host}:${this._port}`;
   }
 
   public updateConfig(mocksServerConfig: ConfigurationObject): Promise<void> {
@@ -85,7 +85,7 @@ export const AdminApiClient: AdminApiClientConstructor = class AdminApiClient
     });
   }
 
-  public get baseUrl(): BaseUrl {
-    return `${this._protocol}://${this._host}:${this._port}`;
+  private _isDisabled(): boolean {
+    return isFalsy(this._enabled);
   }
 };

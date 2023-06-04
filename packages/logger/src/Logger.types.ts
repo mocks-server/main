@@ -131,17 +131,20 @@ export interface LoggerConstructor {
 
 /** Logger interface */
 export interface LoggerInterface {
+  /** Root logger instance */
+  get root(): LoggerInterface;
+
   /** Logs store, one by namespace */
-  store: LogsStore;
+  get store(): LogsStore;
 
   /** Logs global store, unique by Logger instance, created by the root namespace */
-  globalStore: LogsStore;
+  get globalStore(): LogsStore;
 
   /** Namespace label */
-  label: LoggerNamespaceLabel;
+  get label(): LoggerNamespaceLabel;
 
   /** Namespace level */
-  level: LogLevel;
+  get level(): LogLevel;
 
   /**
    * Log a message if the current level is silly.
@@ -230,7 +233,4 @@ export interface LoggerInterface {
    * @example const removeOnChangeListener = logger.onChangeGlobalStore(() => console.log("New log was added"))
    */
   onChangeGlobalStore(listener: EventsListener): EventsListenerRemover;
-
-  /** Root logger instance */
-  root: LoggerInterface;
 }

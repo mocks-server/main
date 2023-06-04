@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 /*
 Copyright 2019-2022 Javier Brea
 Copyright 2019 XbyOrange

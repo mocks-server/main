@@ -42,6 +42,7 @@ const MyCli = class MyCli {
 
   async displayLogs() {
     await this._cli.logsMode(() => {
+      // eslint-disable-next-line no-console
       console.log("This is a foo log");
       setTimeout(() => {
         this._cli.exitLogsMode();

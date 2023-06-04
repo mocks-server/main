@@ -65,78 +65,20 @@ export abstract class BaseNestedCollections implements CollectionBaseInterface {
     this._emitChange = this._emitChange.bind(this);
   }
 
-  private _findCollection(id: CollectionId = null): this | undefined {
-    const collectionFound = findById(this._collections, id) as unknown;
-    if (collectionFound) {
-      return collectionFound as this;
-    }
+  public get path(): CollectionId {
+    return this._path;
   }
 
-  private _createCollection(collectionId: CollectionId): this {
-    const collection = new (this.constructor as new (
-      id: CollectionId,
-      options: CollectionOptions
-    ) => this)(collectionId, { ...this._options, parent: this, root: this._root });
-    collection.onChange(this._emitChange);
-    this._collections.push(collection);
-    return collection;
+  public get root(): this {
+    return this._root;
   }
 
-  private _findItem(id: CollectionId) {
-    return findById(this._items, id);
+  public get items(): CollectionItems {
+    return this._items;
   }
 
-  private _findElementIndex(id: CollectionId, elements: CollectionElements) {
-    return findIndexById(elements, id);
-  }
-
-  private _createItem(id: CollectionId, value: CollectionItemValue): CollectionItem {
-    const item = {
-      id,
-      value,
-    };
-    this._items.push(item);
-    return item;
-  }
-
-  private _emitChange(): void {
-    const currentFlatString = JSON.stringify(this._flat);
-    if (currentFlatString !== this._previousFlatString) {
-      this._previousFlatString = currentFlatString;
-      this._eventEmitter.emit(CHANGE_EVENT);
-    }
-  }
-
-  protected _set(id: CollectionId, value: CollectionItemValue): CollectionItem {
-    let item = this._findItem(id);
-    if (item) {
-      item.value = value;
-    } else {
-      item = this._createItem(id, value);
-    }
-    this._emitChange();
-    return item;
-  }
-
-  protected _changeId(id: CollectionId): void {
-    this._id = id;
-    this._emitChange();
-  }
-
-  private _removeElement(id: CollectionId, elements: CollectionElements): void {
-    const elementIndex = this._findElementIndex(id, elements);
-    if (elementIndex > -1) {
-      elements.splice(elementIndex, 1);
-      this._emitChange();
-    }
-  }
-
-  private _removeCollection(id: CollectionId): void {
-    this._removeElement(id, this._collections);
-  }
-
-  private _remove(id: CollectionId): void {
-    this._removeElement(id, this._items);
+  public get collections(): this[] {
+    return this._collections;
   }
 
   protected get _path(): CollectionId {
@@ -168,33 +110,7 @@ export abstract class BaseNestedCollections implements CollectionBaseInterface {
     return [...items, ...collections];
   }
 
-  private _merge(collection: this) {
-    [...collection.items].forEach((item: CollectionItem) => {
-      this._set(item.id, item.value);
-      collection.remove(item.id);
-    });
-    [...collection.collections].forEach((childCollection: this) => {
-      const sameCollection = this._findCollection(childCollection.id);
-      if (sameCollection) {
-        sameCollection.merge(childCollection);
-      } else {
-        this._collections.push(childCollection);
-        childCollection.parent = this;
-        collection.removeCollection(childCollection.id);
-        this._emitChange();
-      }
-    });
-  }
-
-  private _cleanCollections(): void {
-    this._collections.forEach(cleanCollection);
-  }
-
-  private _cleanItems(): void {
-    this._items = [];
-    this._emitChange();
-  }
-
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   public get id(): CollectionId {
     return this._id;
   }
@@ -207,8 +123,13 @@ export abstract class BaseNestedCollections implements CollectionBaseInterface {
     }
   }
 
-  public get path(): CollectionId {
-    return this._path;
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public get parent(): this | undefined {
+    return this._parent;
+  }
+
+  protected set parent(parent: this | undefined) {
+    this._parent = parent;
   }
 
   public removeCollection(id: CollectionId) {
@@ -259,28 +180,109 @@ export abstract class BaseNestedCollections implements CollectionBaseInterface {
     this._cleanItems();
   }
 
-  public get items(): CollectionItems {
-    return this._items;
-  }
-
-  public get collections(): this[] {
-    return this._collections;
-  }
-
-  public get parent(): this | undefined {
-    return this._parent;
-  }
-
-  protected set parent(parent: this | undefined) {
-    this._parent = parent;
-  }
-
   public onChange(listener: EventsListener): EventsListenerRemover {
     return addEventListener(listener, CHANGE_EVENT, this._eventEmitter);
   }
 
-  public get root(): this {
-    return this._root;
+  protected _set(id: CollectionId, value: CollectionItemValue): CollectionItem {
+    let item = this._findItem(id);
+    if (item) {
+      item.value = value;
+    } else {
+      item = this._createItem(id, value);
+    }
+    this._emitChange();
+    return item;
+  }
+
+  protected _changeId(id: CollectionId): void {
+    this._id = id;
+    this._emitChange();
+  }
+
+  private _findCollection(id: CollectionId = null): this | undefined {
+    const collectionFound = findById(this._collections, id) as unknown;
+    if (collectionFound) {
+      return collectionFound as this;
+    }
+  }
+
+  private _createCollection(collectionId: CollectionId): this {
+    const collection = new (this.constructor as new (
+      id: CollectionId,
+      options: CollectionOptions
+    ) => this)(collectionId, { ...this._options, parent: this, root: this._root });
+    collection.onChange(this._emitChange);
+    this._collections.push(collection);
+    return collection;
+  }
+
+  private _findItem(id: CollectionId) {
+    return findById(this._items, id);
+  }
+
+  private _findElementIndex(id: CollectionId, elements: CollectionElements) {
+    return findIndexById(elements, id);
+  }
+
+  private _createItem(id: CollectionId, value: CollectionItemValue): CollectionItem {
+    const item = {
+      id,
+      value,
+    };
+    this._items.push(item);
+    return item;
+  }
+
+  private _emitChange(): void {
+    const currentFlatString = JSON.stringify(this._flat);
+    if (currentFlatString !== this._previousFlatString) {
+      this._previousFlatString = currentFlatString;
+      this._eventEmitter.emit(CHANGE_EVENT);
+    }
+  }
+
+  private _removeElement(id: CollectionId, elements: CollectionElements): void {
+    const elementIndex = this._findElementIndex(id, elements);
+    if (elementIndex > -1) {
+      elements.splice(elementIndex, 1);
+      this._emitChange();
+    }
+  }
+
+  private _removeCollection(id: CollectionId): void {
+    this._removeElement(id, this._collections);
+  }
+
+  private _remove(id: CollectionId): void {
+    this._removeElement(id, this._items);
+  }
+
+  private _merge(collection: this) {
+    [...collection.items].forEach((item: CollectionItem) => {
+      this._set(item.id, item.value);
+      collection.remove(item.id);
+    });
+    [...collection.collections].forEach((childCollection: this) => {
+      const sameCollection = this._findCollection(childCollection.id);
+      if (sameCollection) {
+        sameCollection.merge(childCollection);
+      } else {
+        this._collections.push(childCollection);
+        childCollection.parent = this;
+        collection.removeCollection(childCollection.id);
+        this._emitChange();
+      }
+    });
+  }
+
+  private _cleanCollections(): void {
+    this._collections.forEach(cleanCollection);
+  }
+
+  private _cleanItems(): void {
+    this._items = [];
+    this._emitChange();
   }
 }
 
@@ -288,11 +290,11 @@ export const NestedCollections: CollectionConstructor = class NestedCollections
   extends BaseNestedCollections
   implements CollectionInterface
 {
-  public set(id: CollectionId, value: CollectionItemValue): CollectionItem {
-    return this._set(id, value);
-  }
-
   public get flat(): CollectionFlatItems {
     return this._flat;
+  }
+
+  public set(id: CollectionId, value: CollectionItemValue): CollectionItem {
+    return this._set(id, value);
   }
 };

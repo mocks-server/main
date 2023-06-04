@@ -31,7 +31,7 @@ export const Root: RootConstructor = class Root implements RootInterface {
     this._router.get("/index.htm", redirect);
   }
 
-  get router() {
+  public get router() {
     return this._router;
   }
 };

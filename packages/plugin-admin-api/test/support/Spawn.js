@@ -44,7 +44,9 @@ module.exports = class CliRunner {
         this._resolveExitPromise();
       });
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.log("Error starting process");
+      // eslint-disable-next-line no-console
       console.log(error);
       this._exitCode = 1;
       this._resolveExitPromise();

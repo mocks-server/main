@@ -27,11 +27,16 @@ export const VariantHandlerText: VariantHandlerTextConstructor = class VariantHa
   private _options: VariantHandlerTextOptions;
   private _logger: LoggerInterface;
 
-  static get id() {
+  constructor(options: VariantHandlerTextOptions, core: ScopedCoreInterface) {
+    this._options = options;
+    this._logger = core.logger;
+  }
+
+  public static get id() {
     return "text";
   }
 
-  static get validationSchema(): JSONSchema7WithInstanceof {
+  public static get validationSchema(): JSONSchema7WithInstanceof {
     return {
       type: "object",
       properties: {
@@ -50,9 +55,11 @@ export const VariantHandlerText: VariantHandlerTextConstructor = class VariantHa
     };
   }
 
-  constructor(options: VariantHandlerTextOptions, core: ScopedCoreInterface) {
-    this._options = options;
-    this._logger = core.logger;
+  public get preview(): VariantHandlerTextPreview {
+    return {
+      body: this._options.body,
+      status: this._options.status,
+    };
   }
 
   public get defaultHeaders(): UnknownObject {
@@ -67,12 +74,5 @@ export const VariantHandlerText: VariantHandlerTextConstructor = class VariantHa
     res.status(this._options.status);
     this._logger.verbose(`Sending response | req: ${req.id}`);
     res.send(this._options.body);
-  }
-
-  public get preview(): VariantHandlerTextPreview {
-    return {
-      body: this._options.body,
-      status: this._options.status,
-    };
   }
 };

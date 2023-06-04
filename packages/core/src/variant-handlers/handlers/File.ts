@@ -36,11 +36,18 @@ export const VariantHandlerFile: VariantHandlerFileConstructor = class VariantHa
   private _logger: LoggerInterface;
   private _expressOptions: VariantHandlerFileOptionsExpressWithRoot;
 
-  static get id(): string {
+  constructor(options: VariantHandlerFileOptions, core: ScopedCoreInterface) {
+    this._options = options;
+    this._expressOptions = { ...DEFAULT_EXPRESS_OPTIONS, ...this._options.options };
+    this._absPath = path.resolve(this._expressOptions.root, this._options.path);
+    this._logger = core.logger;
+  }
+
+  public static get id(): string {
     return "file";
   }
 
-  static get validationSchema(): JSONSchema7WithInstanceof {
+  public static get validationSchema(): JSONSchema7WithInstanceof {
     return {
       type: "object",
       properties: {
@@ -62,11 +69,10 @@ export const VariantHandlerFile: VariantHandlerFileConstructor = class VariantHa
     };
   }
 
-  constructor(options: VariantHandlerFileOptions, core: ScopedCoreInterface) {
-    this._options = options;
-    this._expressOptions = { ...DEFAULT_EXPRESS_OPTIONS, ...this._options.options };
-    this._absPath = path.resolve(this._expressOptions.root, this._options.path);
-    this._logger = core.logger;
+  public get preview(): VariantHandlerFilePreview {
+    return {
+      status: this._options.status,
+    };
   }
 
   public middleware(req: Request, res: Response, next: NextFunction): void {
@@ -84,11 +90,5 @@ export const VariantHandlerFile: VariantHandlerFileConstructor = class VariantHa
         next(err);
       }
     });
-  }
-
-  public get preview(): VariantHandlerFilePreview {
-    return {
-      status: this._options.status,
-    };
   }
 };

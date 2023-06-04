@@ -38,7 +38,11 @@ export const Alerts: AlertsConstructor = class Alerts implements AlertsInterface
     });
   }
 
-  _parseModel(alert: ScopedCoreInterface["alerts"]["root"]["flat"][0]): AlertItem {
+  public get router() {
+    return this._router;
+  }
+
+  private _parseModel(alert: ScopedCoreInterface["alerts"]["root"]["flat"][0]): AlertItem {
     return {
       id: alert.id as string,
       message: alert.message,
@@ -52,18 +56,14 @@ export const Alerts: AlertsConstructor = class Alerts implements AlertsInterface
     };
   }
 
-  _parseCollection() {
+  private _parseCollection() {
     return this._alerts.root.flat.map(this._parseModel.bind(this));
   }
 
-  _getCollection() {
+  private _getCollection() {
     return this._alerts.root.flat.map((alert) => ({
       ...alert,
       id: alert.id as string,
     }));
-  }
-
-  get router() {
-    return this._router;
   }
 };

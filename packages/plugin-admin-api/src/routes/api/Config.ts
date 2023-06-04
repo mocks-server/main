@@ -30,6 +30,10 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
     this._router.get("/", this._get.bind(this));
   }
 
+  public get router() {
+    return this._router;
+  }
+
   private _validateNewConfig(newConfig: MocksServer.Config) {
     return this._config.validate(newConfig);
   }
@@ -50,9 +54,5 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
     this._logger.verbose(`Sending settings | ${req.id}`);
     res.status(200);
     res.send(this._config.value);
-  }
-
-  public get router() {
-    return this._router;
   }
 };

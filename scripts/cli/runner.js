@@ -1,6 +1,6 @@
 import spawn from "cross-spawn";
 
-import { ensureArray } from "../common/utils.js";
+import { ensureArray, log } from "../common/utils.js";
 import { ROOT_PATH } from "../common/paths.js";
 
 const ENCODING_TYPE = "utf8";
@@ -12,11 +12,11 @@ class Logger {
     this.log = this.log.bind(this);
   }
 
-  log(log) {
-    const cleanLog = log.trim();
+  log(message) {
+    const cleanLog = message.trim();
     if (cleanLog.length) {
       if (!this._silent) {
-        console.log(cleanLog);
+        log(cleanLog);
       }
       this._logs.push(cleanLog);
     }

@@ -33,6 +33,7 @@ function renderWithStatusColor(
 }
 
 export function log(...args: string[]) {
+  // eslint-disable-next-line no-console
   console.log(...args);
 }
 

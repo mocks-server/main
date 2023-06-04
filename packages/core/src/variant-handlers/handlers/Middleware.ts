@@ -28,11 +28,17 @@ export const VariantHandlerMiddleware: VariantHandlerMiddlewareConstructor = cla
   private _logger: LoggerInterface;
   private _core: ScopedCoreInterface;
 
-  static get id(): string {
+  constructor(options: VariantHandlerMiddlewareOptions, core: ScopedCoreInterface) {
+    this._options = options;
+    this._logger = core.logger;
+    this._core = core;
+  }
+
+  public static get id(): string {
     return "middleware";
   }
 
-  static get validationSchema(): JSONSchema7WithInstanceof {
+  public static get validationSchema(): JSONSchema7WithInstanceof {
     return {
       type: "object",
       properties: {
@@ -45,18 +51,12 @@ export const VariantHandlerMiddleware: VariantHandlerMiddlewareConstructor = cla
     };
   }
 
-  constructor(options: VariantHandlerMiddlewareOptions, core: ScopedCoreInterface) {
-    this._options = options;
-    this._logger = core.logger;
-    this._core = core;
+  public get preview(): VariantHandlerMiddlewarePreview {
+    return null;
   }
 
   public middleware(req: Request, res: Response, next: NextFunction): void {
     this._logger.verbose(`Executing middleware | req: ${req.id}`);
     this._options.middleware(req, res, next, this._core);
-  }
-
-  public get preview(): VariantHandlerMiddlewarePreview {
-    return null;
   }
 };

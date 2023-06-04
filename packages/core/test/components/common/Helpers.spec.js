@@ -30,7 +30,6 @@ describe("common helpers", () => {
       const fileContent = "file content";
       readFileSyncStub.returns(fileContent);
       expect(readFileSync("file-path")).toEqual(fileContent);
-      console.log(readFileSyncStub.callCount);
       expect(readFileSyncStub.getCall(0).args[0]).toEqual(
         path.resolve(process.cwd(), "file-path")
       );

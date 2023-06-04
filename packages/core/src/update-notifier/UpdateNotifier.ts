@@ -29,10 +29,6 @@ export const UpdateNotifier: UpdateNotifierConstructor = class UpdateNotifier
   private _alerts: AlertsInterface;
   private _notifier: ReturnType<typeof updateNotifier>;
 
-  static get id() {
-    return "update-notifier";
-  }
-
   constructor({ alerts, pkg }: UpdateNotifierOptions) {
     this._alerts = alerts;
     const packageJson = readJsonSync(path.resolve(__dirname, "..", "..", "package.json"));
@@ -43,7 +39,11 @@ export const UpdateNotifier: UpdateNotifierConstructor = class UpdateNotifier
     });
   }
 
-  init() {
+  public static get id() {
+    return "update-notifier";
+  }
+
+  public init() {
     this._notifier.notify();
     if (this._notifier.update) {
       this._alerts.set(

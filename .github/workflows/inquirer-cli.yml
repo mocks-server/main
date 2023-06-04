@@ -36,5 +36,5 @@ jobs:
         run: pnpm install
       - name: Generate graph
         run: pnpm run graph -- --file=graph.json
-      - name: Build all
+      - name: Inquirer CLI E2E
         run: pnpm nx test:e2e plugin-inquirer-cli-e2e

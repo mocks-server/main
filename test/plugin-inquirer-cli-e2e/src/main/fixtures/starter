@@ -2,7 +2,7 @@
 "use strict";
 
 const Core = require("@mocks-server/core").default;
-const InquirerCli = require("@mocks-server/plugin-inquirer-cli");
+const InquirerCli = require("@mocks-server/plugin-inquirer-cli").default;
 
 const handleError = (error) => {
   console.error(`Error: ${error.message}`);

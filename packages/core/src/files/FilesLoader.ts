@@ -39,18 +39,18 @@ export const FilesLoader: FilesLoaderConstructor = class FilesLoader
     this._onLoad = onLoad;
   }
 
-  public load(filesContents: FilesLoaded, fileErrors: ErrorsLoadingFiles): void {
-    return this._onLoad(filesContents, fileErrors, {
-      alerts: this._alerts,
-      logger: this._logger,
-    });
-  }
-
   public get id(): FilesLoaderId {
     return this._id;
   }
 
   public get src(): FilesLoaderOptions["src"] {
     return this._src;
+  }
+
+  public load(filesContents: FilesLoaded, fileErrors: ErrorsLoadingFiles): void {
+    return this._onLoad(filesContents, fileErrors, {
+      alerts: this._alerts,
+      logger: this._logger,
+    });
   }
 };

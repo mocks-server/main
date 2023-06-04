@@ -69,10 +69,6 @@ export const Collections: CollectionsConstructor = class Collections
   private _onChange: CollectionsOptions["onChange"];
   private _collectionDefinitions: CollectionDefinition[] = [];
 
-  static get id() {
-    return "collections";
-  }
-
   constructor({ alerts, logger, config, routesManager, onChange }: CollectionsOptions) {
     this._config = config;
     this._routesManager = routesManager;
@@ -89,6 +85,10 @@ export const Collections: CollectionsConstructor = class Collections
     this._onChange = onChange;
   }
 
+  public static get id() {
+    return "collections";
+  }
+
   public get selected(): CollectionId | null {
     return this._selected ? this._selected.id : null;
   }
@@ -101,6 +101,18 @@ export const Collections: CollectionsConstructor = class Collections
     return this._collections.map((collection) => collection.id);
   }
 
+  public get plain(): CollectionPlainObjectLegacy[] {
+    return this._collections.map((collection) => {
+      const plainCollection = collection.toPlainObject();
+      return {
+        id: plainCollection.id,
+        from: plainCollection.from,
+        definedRoutes: plainCollection.specificRoutes,
+        routes: plainCollection.routes,
+      };
+    });
+  }
+
   public select(collection: CollectionId, options: SelectCollectionOptionsPromise): Promise<void>;
   public select(collection: CollectionId, options: SelectCollectionOptionsNoPromise): void;
   public select(collection: CollectionId, { check = false } = {}) {
@@ -110,6 +122,64 @@ export const Collections: CollectionsConstructor = class Collections
         return this.selected === collection;
       });
     }
+  }
+
+  public load(collectionDefinitions: CollectionDefinition[]): void {
+    this._loggerLoad.verbose("Creating collections from collection definitions");
+    this._loggerLoad.debug(JSON.stringify(collectionDefinitions));
+    this._collectionDefinitions = collectionDefinitions;
+    this._alertsLoad.clean();
+    let errorsProcessing = 0;
+
+    const ids: CollectionId[] = [];
+    this._collections = compact(
+      collectionDefinitions.map((collectionDefinition, index) => {
+        const collectionDefinitionId = collectionDefinition && collectionDefinition.id;
+        const alertsCollectionId =
+          !collectionDefinitionId || ids.includes(collectionDefinitionId)
+            ? `${index}`
+            : collectionDefinitionId;
+        const collectionAlerts = this._alertsLoad.collection(alertsCollectionId);
+        const collection = this._createCollection({
+          collectionDefinition,
+          collectionAlerts,
+        });
+        if (!collection) {
+          errorsProcessing++;
+          return null;
+        }
+        if (ids.includes(collection.id)) {
+          collectionAlerts.set(
+            "duplicated",
+            `Collection with duplicated id '${collection.id}' detected. It has been ignored`
+          );
+          return null;
+        }
+
+        ids.push(collection.id);
+        return collection;
+      })
+    );
+    if (errorsProcessing > 0) {
+      this._alertsLoad.set(
+        "critical-error",
+        `Critical errors found while loading collections: ${errorsProcessing}`
+      );
+    }
+    this._loggerLoad.info(`Created ${this._collections.length} collections`);
+    this._setCurrent();
+  }
+
+  public get(): CollectionInterface[] {
+    return [...this._collections];
+  }
+
+  public findById(id: CollectionId): CollectionInterface | undefined {
+    return this._collections.find((collection) => collection.id === id);
+  }
+
+  public toPlainObject(): CollectionPlainObject[] {
+    return this._collections.map((collection) => collection.toPlainObject());
   }
 
   private _setCurrent(): void {
@@ -250,75 +320,5 @@ export const Collections: CollectionsConstructor = class Collections
       collectionAlerts.set("process", "Error processing collection", error as Error);
     }
     return collection;
-  }
-
-  public load(collectionDefinitions: CollectionDefinition[]): void {
-    this._loggerLoad.verbose("Creating collections from collection definitions");
-    this._loggerLoad.debug(JSON.stringify(collectionDefinitions));
-    this._collectionDefinitions = collectionDefinitions;
-    this._alertsLoad.clean();
-    let errorsProcessing = 0;
-
-    const ids: CollectionId[] = [];
-    this._collections = compact(
-      collectionDefinitions.map((collectionDefinition, index) => {
-        const collectionDefinitionId = collectionDefinition && collectionDefinition.id;
-        const alertsCollectionId =
-          !collectionDefinitionId || ids.includes(collectionDefinitionId)
-            ? `${index}`
-            : collectionDefinitionId;
-        const collectionAlerts = this._alertsLoad.collection(alertsCollectionId);
-        const collection = this._createCollection({
-          collectionDefinition,
-          collectionAlerts,
-        });
-        if (!collection) {
-          errorsProcessing++;
-          return null;
-        }
-        if (ids.includes(collection.id)) {
-          collectionAlerts.set(
-            "duplicated",
-            `Collection with duplicated id '${collection.id}' detected. It has been ignored`
-          );
-          return null;
-        }
-
-        ids.push(collection.id);
-        return collection;
-      })
-    );
-    if (errorsProcessing > 0) {
-      this._alertsLoad.set(
-        "critical-error",
-        `Critical errors found while loading collections: ${errorsProcessing}`
-      );
-    }
-    this._loggerLoad.info(`Created ${this._collections.length} collections`);
-    this._setCurrent();
-  }
-
-  public get(): CollectionInterface[] {
-    return [...this._collections];
-  }
-
-  public findById(id: CollectionId): CollectionInterface | undefined {
-    return this._collections.find((collection) => collection.id === id);
-  }
-
-  public toPlainObject(): CollectionPlainObject[] {
-    return this._collections.map((collection) => collection.toPlainObject());
-  }
-
-  public get plain(): CollectionPlainObjectLegacy[] {
-    return this._collections.map((collection) => {
-      const plainCollection = collection.toPlainObject();
-      return {
-        id: plainCollection.id,
-        from: plainCollection.from,
-        definedRoutes: plainCollection.specificRoutes,
-        routes: plainCollection.routes,
-      };
-    });
   }
 };

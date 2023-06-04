@@ -73,6 +73,68 @@ export const Collection: CollectionConstructor = class Collection implements Col
     this._initRouter();
   }
 
+  public get id(): CollectionId {
+    return this._id;
+  }
+
+  public get from(): CollectionId | null {
+    return this._from;
+  }
+
+  public get routes(): RouteInterface[] {
+    return [...this._routes];
+  }
+
+  public get customRoutes(): RouteInterface[] {
+    return [...this._customRoutes];
+  }
+
+  public get customRouteIds(): RouteId[] {
+    return this._customRouteIds;
+  }
+
+  public get router(): Router {
+    return this._router;
+  }
+
+  private get _customRouteIds(): RouteId[] {
+    return this._customRoutes.map((route) => route.id);
+  }
+
+  public useRoute(routeId: RouteId): void {
+    this._logger.info(`Adding route '${routeId}'`);
+    const routeToAdd = this._routesManager.findById(routeId);
+    if (routeToAdd) {
+      this._routes = addRoutesToCollectionRoutes(this._routes, [routeToAdd]);
+      this._customRoutes.push(routeToAdd);
+      this._initRouter();
+      this._onChange();
+    } else {
+      this._alertsUseRoute.set(routeId, `Route with id '${routeId}' not found`);
+    }
+  }
+
+  public resetRoutes({ silent }: ResetRoutesOptions = {}): void {
+    this._routes = [...this._originalRoutes];
+    this._customRoutes = [];
+    this._alertsUseRoute.clean();
+    this._initRouter();
+    if (!silent) {
+      this._onChange();
+    }
+  }
+
+  public toPlainObject(): CollectionPlainObject {
+    return {
+      id: this._id,
+      routes: this._routes.map((route) => route.id),
+      from: this._from,
+      customRoutes: this._customRouteIds,
+      specificRoutes: [...this._specificRouteIds],
+      inheritedRoutes: [...this._inheritedRouteIds],
+    };
+  }
+
   private _initRouter() {
     this._router = express.Router();
     this._routes.forEach((route) => {
@@ -112,67 +174,5 @@ export const Collection: CollectionConstructor = class Collection implements Col
         }
       }
     });
-  }
-
-  public get id(): CollectionId {
-    return this._id;
-  }
-
-  public get from(): CollectionId | null {
-    return this._from;
-  }
-
-  public get routes(): RouteInterface[] {
-    return [...this._routes];
-  }
-
-  public get customRoutes(): RouteInterface[] {
-    return [...this._customRoutes];
-  }
-
-  private get _customRouteIds(): RouteId[] {
-    return this._customRoutes.map((route) => route.id);
-  }
-
-  public get customRouteIds(): RouteId[] {
-    return this._customRouteIds;
-  }
-
-  public get router(): Router {
-    return this._router;
-  }
-
-  public useRoute(routeId: RouteId): void {
-    this._logger.info(`Adding route '${routeId}'`);
-    const routeToAdd = this._routesManager.findById(routeId);
-    if (routeToAdd) {
-      this._routes = addRoutesToCollectionRoutes(this._routes, [routeToAdd]);
-      this._customRoutes.push(routeToAdd);
-      this._initRouter();
-      this._onChange();
-    } else {
-      this._alertsUseRoute.set(routeId, `Route with id '${routeId}' not found`);
-    }
-  }
-
-  public resetRoutes({ silent }: ResetRoutesOptions = {}): void {
-    this._routes = [...this._originalRoutes];
-    this._customRoutes = [];
-    this._alertsUseRoute.clean();
-    this._initRouter();
-    if (!silent) {
-      this._onChange();
-    }
-  }
-
-  public toPlainObject(): CollectionPlainObject {
-    return {
-      id: this._id,
-      routes: this._routes.map((route) => route.id),
-      from: this._from,
-      customRoutes: this._customRouteIds,
-      specificRoutes: [...this._specificRouteIds],
-      inheritedRoutes: [...this._inheritedRouteIds],
-    };
   }
 };

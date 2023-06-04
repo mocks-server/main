@@ -86,14 +86,14 @@ export type FilesLoaders = Record<string, FilesLoaderInterface>;
 
 /** Creates a Files interface */
 export interface FilesConstructor {
-  /** Unique identifier of Files class. Used for logging and alerts namespaces */
-  get id(): string;
   /** Returns a Files interface
    * @param options - Options to create the files interface {@link FilesOptions}.
    * @returns Files interface {@link FilesInterface}.
    * @example const files = new Files({ config, loadCollections, logger, loadRoutes, alerts });
    */
   new (options: FilesOptions, extraOptions?: FilesExtraOptions): FilesInterface;
+  /** Unique identifier of Files class. Used for logging and alerts namespaces */
+  get id(): string;
 }
 
 /** Allows to attach loaders that will receive loaded file contents */

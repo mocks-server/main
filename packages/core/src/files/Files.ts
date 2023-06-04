@@ -12,12 +12,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import path from "path";
 
 import type { RegisterOptions } from "@babel/register";
-import type {
-  ConfigNamespaceInterface,
-  OptionInterfaceOfType,
-  OptionDefinition,
-  UnknownObject,
-} from "@mocks-server/config";
+import type { ConfigNamespaceInterface, OptionInterfaceOfType } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 import { ensureDirSync, existsSync } from "fs-extra";
 import globule from "globule";
@@ -125,10 +120,6 @@ export const Files: FilesConstructor = class Files implements FilesInterface {
   private _path: string;
   private _customRequireCache?: FilesExtraOptions["requireCache"];
 
-  static get id(): string {
-    return "files";
-  }
-
   constructor(
     { config, loadCollections, logger, loadRoutes, alerts }: FilesOptions,
     extraOptions: FilesExtraOptions = {}
@@ -168,6 +159,18 @@ export const Files: FilesConstructor = class Files implements FilesInterface {
     this.createLoader = this.createLoader.bind(this);
   }
 
+  public static get id(): string {
+    return "files";
+  }
+
+  public get path(): string {
+    return this._getPath();
+  }
+
+  public get loaders(): FilesLoaders {
+    return { ...this._loaders };
+  }
+
   public async init(): Promise<void> {
     this._collectionsLoader = new DefaultCollectionsLoader({
       loadCollections: this._loadCollections,
@@ -205,6 +208,18 @@ export const Files: FilesConstructor = class Files implements FilesInterface {
       this._logger.debug("Stopping files watch");
       this._watcher.close();
     }
+  }
+
+  public createLoader({ id, src, onLoad }: CreateFilesLoaderOptions): FilesLoaderInterface {
+    this._logger.debug(`Creating files loader '${id}'`);
+    this._loaders[id] = new FilesLoader({
+      id,
+      alerts: this._alertsLoaders.collection(id),
+      logger: this._loggerLoaders.namespace(id),
+      src,
+      onLoad,
+    });
+    return this._loaders[id];
   }
 
   private async _readFile(filePath: string): Promise<unknown> {
@@ -277,10 +292,6 @@ export const Files: FilesConstructor = class Files implements FilesInterface {
   private _getPath(): string {
     const pathName = this._pathOption.value;
     return this._resolveFolder(pathName);
-  }
-
-  public get path(): string {
-    return this._getPath();
   }
 
   private _ensurePath(): void {
@@ -393,21 +404,5 @@ export const Files: FilesConstructor = class Files implements FilesInterface {
 
   private _cache(): NodeJS.Dict<NodeModule> {
     return (this._customRequireCache || require.cache) as NodeJS.Require["cache"];
-  }
-
-  public createLoader({ id, src, onLoad }: CreateFilesLoaderOptions): FilesLoaderInterface {
-    this._logger.debug(`Creating files loader '${id}'`);
-    this._loaders[id] = new FilesLoader({
-      id,
-      alerts: this._alertsLoaders.collection(id),
-      logger: this._loggerLoaders.namespace(id),
-      src,
-      onLoad,
-    });
-    return this._loaders[id];
-  }
-
-  public get loaders(): FilesLoaders {
-    return { ...this._loaders };
   }
 };

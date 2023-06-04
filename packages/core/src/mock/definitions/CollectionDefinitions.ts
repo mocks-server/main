@@ -25,6 +25,17 @@ export const CollectionDefinitions: CollectionDefinitionsConstructor = class Col
     this._collectionDefinitions = [];
   }
 
+  public getNormalized(): CollectionDefinitionNormalized[] {
+    return this._collectionDefinitions.map(this._normalizeCollection);
+  }
+
+  public findByIdAndNormalize(id: CollectionId): CollectionDefinitionNormalized | undefined {
+    const collection = this.findById(id);
+    if (collection) {
+      return this._normalizeCollection(collection);
+    }
+  }
+
   public get(): CollectionDefinition[] {
     return this._collectionDefinitions;
   }
@@ -46,16 +57,5 @@ export const CollectionDefinitions: CollectionDefinitionsConstructor = class Col
       ...collectionDefinition,
       from: collectionDefinition.from || null,
     };
-  }
-
-  public getNormalized(): CollectionDefinitionNormalized[] {
-    return this._collectionDefinitions.map(this._normalizeCollection);
-  }
-
-  public findByIdAndNormalize(id: CollectionId): CollectionDefinitionNormalized | undefined {
-    const collection = this.findById(id);
-    if (collection) {
-      return this._normalizeCollection(collection);
-    }
   }
 };

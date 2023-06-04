@@ -47,10 +47,6 @@ export interface PluginsOptions {
 /** Creates a Plugins interface */
 export interface PluginsConstructor {
   /**
-   * Plugins class static id
-   */
-  get id(): string;
-  /**
    * Creates a plugins interface
    * @param options - Plugins options {@link PluginsOptions}
    * @param core - Mocks Server root core interface {@link CoreInterface}
@@ -58,6 +54,11 @@ export interface PluginsConstructor {
    * @example const plugins = new Plugins({ config, logger });
    */
   new (options: PluginsOptions, core: CoreInterface): PluginsInterface;
+
+  /**
+   * Plugins class static id
+   */
+  get id(): string;
 }
 
 /** Plugins interface */
@@ -92,16 +93,17 @@ export type PluginId = string;
 /** Expected constructor function in plugins */
 export interface PluginConstructor {
   /**
-   * Plugin static id. Used for logging purposes, and to create scoped alerts, config and logger for the plugin
-   */
-  get id(): PluginId;
-  /**
    * Register plugin configuration, etc. https://www.mocks-server.org/docs/plugins/development/#constructorcore
    * @param core - Mocks Server core with scoped config, alerts and logger {@link ScopedCoreInterface}
    * @example await new Plugin(core);
    * @returns Plugin interface {@link PluginInterface}.
    */
   new (core: ScopedCoreInterface): PluginInterface;
+
+  /**
+   * Plugin static id. Used for logging purposes, and to create scoped alerts, config and logger for the plugin
+   */
+  get id(): PluginId;
 }
 
 /** Plugin method used by Mocks Server to manage its lifecycle */

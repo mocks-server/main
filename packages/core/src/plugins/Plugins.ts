@@ -65,10 +65,6 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
   private _pluginsStopped: number;
   private _plugins: PluginConstructor[];
 
-  static get id(): string {
-    return "plugins";
-  }
-
   constructor({ config, alerts, logger }: PluginsOptions, core: CoreInterface) {
     this._config = config;
     this._logger = logger;
@@ -92,6 +88,10 @@ export const Plugins: PluginsConstructor = class Plugins implements PluginsInter
     this._pluginsInitialized = 0;
     this._pluginsStarted = 0;
     this._pluginsStopped = 0;
+  }
+
+  public static get id(): string {
+    return "plugins";
   }
 
   public async register(): Promise<void> {

@@ -55,15 +55,14 @@ export interface CollectionsOptions {
 
 /** Creates a Collections interface */
 export interface CollectionsConstructor {
-  /** Unique identifier of Collections class. Used for logging and alerts namespaces */
-  get id(): string;
-
   /** Returns a Collections interface
    * @param options - Options to create the collections interface {@link CollectionsOptions}.
    * @returns Collections interface {@link CollectionsInterface}.
    * @example const collections = new Collections({ logger, config, onChangeSelected, getIds, getPlainCollections, getSelected });
    */
   new (options: CollectionsOptions): CollectionsInterface;
+  /** Unique identifier of Collections class. Used for logging and alerts namespaces */
+  get id(): string;
 }
 
 export interface SelectCollectionOptionsNoPromise {
@@ -82,6 +81,9 @@ export interface SelectCollection {
 
 /** Interface for managing Mocks Server collections.*/
 export interface CollectionsInterface {
+  /** Set current collection */
+  select: SelectCollection;
+
   /** Return id of currently selected collection */
   get selected(): CollectionId | null;
 
@@ -90,9 +92,6 @@ export interface CollectionsInterface {
 
   /** Return currently selected collection interface */
   get current(): CollectionInterface | null;
-
-  /** Set current collection */
-  select: SelectCollection;
 
   /**
    * Create collections from collection definitions

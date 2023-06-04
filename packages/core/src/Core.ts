@@ -182,35 +182,38 @@ export const Core: CoreConstructor = class Core implements CoreInterface {
     this._startPluginsPromise = null;
   }
 
-  async _startPlugins(): Promise<void> {
-    if (!this._startPluginsPromise) {
-      this._startPluginsPromise = this._plugins.start();
-    }
-    return this._startPluginsPromise.then(() => {
-      this._startPluginsPromise = null;
-    });
+  public get alerts(): AlertsInterface {
+    return this._alerts;
   }
 
-  async _stopPlugins(): Promise<void> {
-    if (!this._stopPluginsPromise) {
-      this._stopPluginsPromise = this._plugins.stop();
-    }
-    return this._stopPluginsPromise.then(() => {
-      this._stopPluginsPromise = null;
-    });
+  public get config(): ConfigInterface {
+    return this._config;
   }
 
-  async _loadConfig(): Promise<void> {
-    await this._config.load();
+  public get logger(): LoggerInterface {
+    return this._logger;
+  }
 
-    this._configLogger.debug(
-      `Programmatic config: ${JSON.stringify(this._config.programmaticLoadedValues)}`
-    );
-    this._configLogger.debug(`Config from file: ${JSON.stringify(this._config.fileLoadedValues)}`);
-    this._configLogger.debug(`Config from env: ${JSON.stringify(this._config.envLoadedValues)}`);
-    this._configLogger.debug(`Config from args: ${JSON.stringify(this._config.argsLoadedValues)}`);
-    this._configLogger.verbose(`Config: ${JSON.stringify(this._config.value)}`);
-    this._configLogger.info(`Configuration loaded`);
+  public get server(): ServerInterface {
+    return this._server;
+  }
+
+  public get mock(): MockInterface {
+    return this._mock;
+  }
+
+  // TODO, move to mock
+  public get variantHandlers(): VariantHandlersInterface {
+    return this._variantHandlers;
+  }
+
+  public get files(): FilesInterface {
+    return this._files;
+  }
+
+  // TODO, move to about module
+  public get version(): string {
+    return this._version;
   }
 
   public async init(): Promise<void> {
@@ -261,39 +264,34 @@ export const Core: CoreConstructor = class Core implements CoreInterface {
     return this._stopPlugins();
   }
 
-  // Expose Server methods and getters
-
-  public get alerts(): AlertsInterface {
-    return this._alerts;
+  private async _startPlugins(): Promise<void> {
+    if (!this._startPluginsPromise) {
+      this._startPluginsPromise = this._plugins.start();
+    }
+    return this._startPluginsPromise.then(() => {
+      this._startPluginsPromise = null;
+    });
   }
 
-  public get config(): ConfigInterface {
-    return this._config;
+  private async _stopPlugins(): Promise<void> {
+    if (!this._stopPluginsPromise) {
+      this._stopPluginsPromise = this._plugins.stop();
+    }
+    return this._stopPluginsPromise.then(() => {
+      this._stopPluginsPromise = null;
+    });
   }
 
-  public get logger(): LoggerInterface {
-    return this._logger;
-  }
+  private async _loadConfig(): Promise<void> {
+    await this._config.load();
 
-  public get server(): ServerInterface {
-    return this._server;
-  }
-
-  public get mock(): MockInterface {
-    return this._mock;
-  }
-
-  // TODO, move to mock
-  public get variantHandlers(): VariantHandlersInterface {
-    return this._variantHandlers;
-  }
-
-  public get files(): FilesInterface {
-    return this._files;
-  }
-
-  // TODO, move to about module
-  public get version(): string {
-    return this._version;
+    this._configLogger.debug(
+      `Programmatic config: ${JSON.stringify(this._config.programmaticLoadedValues)}`
+    );
+    this._configLogger.debug(`Config from file: ${JSON.stringify(this._config.fileLoadedValues)}`);
+    this._configLogger.debug(`Config from env: ${JSON.stringify(this._config.envLoadedValues)}`);
+    this._configLogger.debug(`Config from args: ${JSON.stringify(this._config.argsLoadedValues)}`);
+    this._configLogger.verbose(`Config: ${JSON.stringify(this._config.value)}`);
+    this._configLogger.info(`Configuration loaded`);
   }
 };

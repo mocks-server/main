@@ -64,10 +64,6 @@ export const Definitions: DefinitionsConstructor = class Definitions
     });
   }
 
-  private _onLoad(): void {
-    this._onLoadCallback();
-  }
-
   public get collections(): CollectionDefinitionsInterface {
     return this._collectionDefinitions;
   }
@@ -81,5 +77,9 @@ export const Definitions: DefinitionsConstructor = class Definitions
       loadRoutes: this._routeDefinitionsManager.createLoader(),
       loadCollections: this._collectionDefinitionsManager.createLoader(),
     };
+  }
+
+  private _onLoad(): void {
+    this._onLoadCallback();
   }
 };

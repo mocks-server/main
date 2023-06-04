@@ -72,15 +72,14 @@ export interface MockOptions {
 
 /** Creates a Mock interface */
 export interface MockConstructor {
-  /** Unique identifier of Routes class. Used for logging and alerts namespaces */
-  get id(): string;
-
   /** Returns a Routes interface
    * @param options - Options to create the mock interface {@link MockOptions}.
    * @returns Mock interface {@link MockInterface}.
    * @example const mock = new Mock({ config, loadCollections, logger, loadRoutes, alerts });
    */
   new (options: MockOptions, core: CoreInterface): MockInterface;
+  /** Unique identifier of Routes class. Used for logging and alerts namespaces */
+  get id(): string;
 }
 
 export interface MockInterface {

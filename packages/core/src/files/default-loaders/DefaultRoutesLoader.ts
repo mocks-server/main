@@ -43,7 +43,7 @@ export const DefaultRoutesLoader: DefaultRoutesLoaderConstructor = class Default
     this._loadRoutes = loadRoutes;
   }
 
-  _onLoad(
+  private _onLoad(
     filesContents: FileLoaded[],
     _filesErrors: ErrorLoadingFile[],
     { logger, alerts }: FilesLoaderCoreTools

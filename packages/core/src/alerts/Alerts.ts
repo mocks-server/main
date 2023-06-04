@@ -42,25 +42,7 @@ export const Alerts: AlertsConstructorInterface = class Alerts
     this._logger = options.logger.namespace(this.path || id);
   }
 
-  set(id: AlertId, message: AlertMessage, error: AlertError): Alert {
-    this._logger.silly(`Setting alert with id '${id}': '${message}'`);
-    if (error) {
-      this._logger.error(`${message}: ${error.message}`);
-      if (error.stack) {
-        this._logger.debug(error.stack);
-      }
-    } else {
-      this._logger.warn(message);
-    }
-    return this._set(id, { message, error });
-  }
-
-  remove(id: AlertId): void {
-    this._logger.silly(`Removing alert with id '${id}'`);
-    super.remove(id);
-  }
-
-  get flat(): AlertsFlat {
+  public get flat(): AlertsFlat {
     return this._flat.map((item: CollectionFlatItem): AlertFlat => {
       const collection = item.collection as string;
       const collectionPaths = collection.split(ID_SEP);
@@ -74,5 +56,23 @@ export const Alerts: AlertsConstructorInterface = class Alerts
         id: [...collectionPaths, item.id].join(ID_SEP),
       };
     });
+  }
+
+  public set(id: AlertId, message: AlertMessage, error: AlertError): Alert {
+    this._logger.silly(`Setting alert with id '${id}': '${message}'`);
+    if (error) {
+      this._logger.error(`${message}: ${error.message}`);
+      if (error.stack) {
+        this._logger.debug(error.stack);
+      }
+    } else {
+      this._logger.warn(message);
+    }
+    return this._set(id, { message, error });
+  }
+
+  public remove(id: AlertId): void {
+    this._logger.silly(`Removing alert with id '${id}'`);
+    super.remove(id);
   }
 };

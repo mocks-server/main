@@ -95,8 +95,6 @@ function getRouteDelay(
   return null;
 }
 
-// TODO, add to data model, migrate routes logic here
-
 export const Routes: RoutesConstructor = class Routes implements RoutesInterface {
   private _logger: LoggerInterface;
   private _loggerLoad: LoggerInterface;
@@ -109,10 +107,6 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
   private _routes: RouteInterface[];
   private _routeDefinitions: RouteDefinition[]; // TODO, stored only for creating legacy plain objects, remove when plain getter is removed
   private _initialized: boolean;
-
-  static get id(): string {
-    return "routes";
-  }
 
   constructor({ alerts, logger, config, onChange }: RoutesOptions, core: CoreInterface) {
     this._routes = [];
@@ -131,12 +125,131 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
     this._delayOption.onChange(onChange);
   }
 
+  public static get id(): string {
+    return "routes";
+  }
+
   public get delay(): number {
     return this._delayOption.value;
   }
 
   public get logger(): LoggerInterface {
     return this._logger;
+  }
+
+  public get plain(): RoutePlainObjectLegacy[] {
+    return compact(
+      this._routeDefinitions.map((routeDefinition) => {
+        const route = this._routes.find(
+          (routeCandidate) => routeCandidate.routeId === routeDefinition.id
+        );
+        if (route) {
+          const plainRoute = route.toPlainObject();
+
+          return {
+            id: routeDefinition.id,
+            url: plainRoute.path,
+            method: plainRoute.methods,
+            delay: isUndefined(routeDefinition.delay) ? null : routeDefinition.delay,
+            variants: routeDefinition.variants.map((variant) => {
+              return `${routeDefinition.id}:${variant.id}` as RouteId;
+            }),
+          };
+        }
+      })
+    );
+  }
+
+  public get plainVariants(): RouteVariantPlainObjectLegacy[] {
+    return this._routes.map((route) => {
+      const plainRoute = route.toPlainObject();
+      return {
+        id: plainRoute.id,
+        disabled: plainRoute.disabled,
+        route: plainRoute.definition.route,
+        type: plainRoute.type,
+        preview: plainRoute.preview,
+        delay: plainRoute.delay,
+      };
+    });
+  }
+
+  public load(
+    routeDefinitions: RouteDefinition[],
+    variantHandlers: VariantHandlerConstructor[]
+  ): void {
+    this._variantHandlers = variantHandlers;
+    this._init();
+
+    this._loggerLoad.verbose("Creating routes from route definitions");
+    this._loggerLoad.debug(JSON.stringify(routeDefinitions));
+
+    this._routeDefinitions = routeDefinitions; // TODO, stored only for creating the legacy plain routes. Remove when legacy plain getter is removed
+
+    const routeDefinitionIds: RouteDefinitionId[] = [];
+    this._alertsLoad.clean();
+
+    this._routes = compact(
+      flatten(
+        routeDefinitions.map((routeDefinition, index) => {
+          const routeIds: RouteId[] = [];
+          const loadRouteAlerts = this._alertsLoad.collection(
+            `${(routeDefinition && routeDefinition.id) || index}`
+          );
+          const routeErrors = routeValidationErrors(routeDefinition);
+          if (routeErrors) {
+            loadRouteAlerts.set("validation", routeErrors.message);
+            this._loggerLoad.silly(
+              `Route validation errors: ${JSON.stringify(routeErrors.errors)}`
+            );
+            return null;
+          }
+          if (routeDefinitionIds.includes(routeDefinition.id)) {
+            loadRouteAlerts.set(
+              "duplicated",
+              `Route with duplicated id '${routeDefinition.id}' detected. It has been ignored`
+            );
+            return null;
+          }
+          routeDefinitionIds.push(routeDefinition.id);
+          const loadRouteVariantsAlerts = loadRouteAlerts.collection("variants");
+          return routeDefinition.variants.map((variantDefinition) => {
+            const route = this._createRoute({
+              routeDefinition,
+              variantDefinition,
+              loadRouteVariantsAlerts,
+            });
+            if (route) {
+              if (routeIds.includes(route.id)) {
+                loadRouteVariantsAlerts
+                  .collection(route.variantId)
+                  .set(
+                    "duplicated",
+                    `Route variant with duplicated id '${route.variantId}' detected in route '${routeDefinition.id}'. It has been ignored`
+                  );
+                return null;
+              }
+              routeIds.push(route.id);
+            }
+            return route;
+          });
+        })
+      )
+    );
+
+    this._loggerLoad.info(`Created ${this._routes.length} routes`);
+  }
+
+  public get(): RouteInterface[] {
+    return [...this._routes];
+  }
+
+  public findById(id: RouteId): RouteInterface | undefined {
+    return this._routes.find((route) => route.id === id);
+  }
+
+  public toPlainObject(): RoutePlainObject[] {
+    return this._routes.map((route) => route.toPlainObject());
   }
 
   private _createRoute({
@@ -230,120 +343,5 @@ export const Routes: RoutesConstructor = class Routes implements RoutesInterface
       compileValidator(this._variantHandlers);
       this._initialized = true;
     }
-  }
-
-  public load(
-    routeDefinitions: RouteDefinition[],
-    variantHandlers: VariantHandlerConstructor[]
-  ): void {
-    this._variantHandlers = variantHandlers;
-    this._init();
-
-    this._loggerLoad.verbose("Creating routes from route definitions");
-    this._loggerLoad.debug(JSON.stringify(routeDefinitions));
-
-    this._routeDefinitions = routeDefinitions; // TODO, stored only for creating the legacy plain routes. Remove when legacy plain getter is removed
-
-    const routeDefinitionIds: RouteDefinitionId[] = [];
-    this._alertsLoad.clean();
-
-    this._routes = compact(
-      flatten(
-        routeDefinitions.map((routeDefinition, index) => {
-          const routeIds: RouteId[] = [];
-          const loadRouteAlerts = this._alertsLoad.collection(
-            `${(routeDefinition && routeDefinition.id) || index}`
-          );
-          const routeErrors = routeValidationErrors(routeDefinition);
-          if (routeErrors) {
-            loadRouteAlerts.set("validation", routeErrors.message);
-            this._loggerLoad.silly(
-              `Route validation errors: ${JSON.stringify(routeErrors.errors)}`
-            );
-            return null;
-          }
-          if (routeDefinitionIds.includes(routeDefinition.id)) {
-            loadRouteAlerts.set(
-              "duplicated",
-              `Route with duplicated id '${routeDefinition.id}' detected. It has been ignored`
-            );
-            return null;
-          }
-          routeDefinitionIds.push(routeDefinition.id);
-          const loadRouteVariantsAlerts = loadRouteAlerts.collection("variants");
-          return routeDefinition.variants.map((variantDefinition) => {
-            const route = this._createRoute({
-              routeDefinition,
-              variantDefinition,
-              loadRouteVariantsAlerts,
-            });
-            if (route) {
-              if (routeIds.includes(route.id)) {
-                loadRouteVariantsAlerts
-                  .collection(route.variantId)
-                  .set(
-                    "duplicated",
-                    `Route variant with duplicated id '${route.variantId}' detected in route '${routeDefinition.id}'. It has been ignored`
-                  );
-                return null;
-              }
-              routeIds.push(route.id);
-            }
-            return route;
-          });
-        })
-      )
-    );
-
-    this._loggerLoad.info(`Created ${this._routes.length} routes`);
-  }
-
-  public get(): RouteInterface[] {
-    return [...this._routes];
-  }
-
-  public findById(id: RouteId): RouteInterface | undefined {
-    return this._routes.find((route) => route.id === id);
-  }
-
-  public toPlainObject(): RoutePlainObject[] {
-    return this._routes.map((route) => route.toPlainObject());
-  }
-
-  public get plain(): RoutePlainObjectLegacy[] {
-    return compact(
-      this._routeDefinitions.map((routeDefinition) => {
-        const route = this._routes.find(
-          (routeCandidate) => routeCandidate.routeId === routeDefinition.id
-        );
-        if (route) {
-          const plainRoute = route.toPlainObject();
-
-          return {
-            id: routeDefinition.id,
-            url: plainRoute.path,
-            method: plainRoute.methods,
-            delay: isUndefined(routeDefinition.delay) ? null : routeDefinition.delay,
-            variants: routeDefinition.variants.map((variant) => {
-              return `${routeDefinition.id}:${variant.id}` as RouteId;
-            }),
-          };
-        }
-      })
-    );
-  }
-
-  public get plainVariants(): RouteVariantPlainObjectLegacy[] {
-    return this._routes.map((route) => {
-      const plainRoute = route.toPlainObject();
-      return {
-        id: plainRoute.id,
-        disabled: plainRoute.disabled,
-        route: plainRoute.definition.route,
-        type: plainRoute.type,
-        preview: plainRoute.preview,
-        delay: plainRoute.delay,
-      };
-    });
   }
 };

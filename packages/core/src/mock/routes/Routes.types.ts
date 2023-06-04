@@ -56,15 +56,15 @@ export interface RoutesOptions {
 
 /** Creates a Routes interface */
 export interface RoutesConstructor {
-  /** Unique identifier of Routes class. Used for logging and alerts namespaces */
-  get id(): string;
-
   /** Returns a Routes interface
    * @param options - Options to create the routes interface {@link RoutesOptions}.
    * @returns Routes interface {@link RoutesInterface}.
    * @example const routes = new Routes({ config, loadCollections, logger, loadRoutes, alerts });
    */
   new (options: RoutesOptions, core: CoreInterface): RoutesInterface;
+
+  /** Unique identifier of Routes class. Used for logging and alerts namespaces */
+  get id(): string;
 }
 
 /** Interface for managing Mocks Server routes.*/

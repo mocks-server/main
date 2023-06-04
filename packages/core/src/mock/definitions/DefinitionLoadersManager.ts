@@ -26,13 +26,13 @@ class DefinitionsLoader<Type> implements DefinitionsLoaderInterface<Type> {
     this._definitions = [];
   }
 
-  load(definitions: Type[]): void {
-    this._definitions = definitions;
-    this._onLoad();
+  public get definitions(): Type[] {
+    return this._definitions;
   }
 
-  get definitions(): Type[] {
-    return this._definitions;
+  public load(definitions: Type[]): void {
+    this._definitions = definitions;
+    this._onLoad();
   }
 }
 
@@ -45,17 +45,17 @@ export class DefinitionLoadersManager<Type> implements DefinitionLoadersManagerI
     this._loaders = [];
   }
 
-  createLoader(): DefinitionsLoaderInterface<Type>["load"] {
-    const loader = new DefinitionsLoader<Type>({ onLoad: this._onLoad });
-    this._loaders.push(loader);
-    return loader.load;
-  }
-
-  get definitions(): Type[] {
+  public get definitions(): Type[] {
     let allResources: Type[] = [];
     this._loaders.forEach((loader) => {
       allResources = allResources.concat(loader.definitions);
     });
     return allResources;
+  }
+
+  public createLoader(): DefinitionsLoaderInterface<Type>["load"] {
+    const loader = new DefinitionsLoader<Type>({ onLoad: this._onLoad });
+    this._loaders.push(loader);
+    return loader.load;
   }
 }

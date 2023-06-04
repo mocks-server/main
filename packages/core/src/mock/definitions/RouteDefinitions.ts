@@ -44,6 +44,17 @@ export const RouteDefinitions: RouteDefinitionsConstructor = class RouteDefiniti
     return this._routeDefinitions.find((routeDefinition) => routeDefinition.id === id);
   }
 
+  public getNormalized(): RouteDefinitionNormalized[] {
+    return this._routeDefinitions.map(this._normalizeRoute);
+  }
+
+  public findByIdAndNormalize(id: RouteDefinitionId): RouteDefinitionNormalized | undefined {
+    const routeDefinition = this.findById(id);
+    if (routeDefinition) {
+      return this._normalizeRoute(routeDefinition);
+    }
+  }
+
   private _normalizeVariantOptions(variantOptions: VariantHandlerTypeOptions) {
     const options = variantOptions as unknown;
     return replaceNonSerializableValues(options as UnknownObject);
@@ -71,16 +82,5 @@ export const RouteDefinitions: RouteDefinitionsConstructor = class RouteDefiniti
       delay: routeDefinition.delay,
       variants: this._normalizeVariants(routeDefinition.variants),
     };
-  }
-
-  public getNormalized(): RouteDefinitionNormalized[] {
-    return this._routeDefinitions.map(this._normalizeRoute);
-  }
-
-  public findByIdAndNormalize(id: RouteDefinitionId): RouteDefinitionNormalized | undefined {
-    const routeDefinition = this.findById(id);
-    if (routeDefinition) {
-      return this._normalizeRoute(routeDefinition);
-    }
   }
 };

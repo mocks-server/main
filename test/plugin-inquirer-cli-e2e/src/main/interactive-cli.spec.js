@@ -21,7 +21,11 @@ describe("interactive CLI", () => {
   let mocks;
 
   beforeAll(async () => {
-    mocks = mocksRunner(["--files.path=web-tutorial", "--mock.collections.selected=foo"]);
+    mocks = mocksRunner(["--files.path=web-tutorial", "--mock.collections.selected=foo"], {
+      logs: {
+        silent: false,
+      },
+    });
     await waitForServerAndCli();
   });
 

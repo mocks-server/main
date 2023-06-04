@@ -37,6 +37,7 @@ describe("when files watch is disabled", () => {
   describe("When started", () => {
     it("should serve users", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -52,6 +53,7 @@ describe("when files watch is disabled", () => {
 
     it("should serve users in /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },

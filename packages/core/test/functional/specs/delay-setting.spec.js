@@ -34,6 +34,7 @@ describe("delay setting", () => {
       const timeCounter = new TimeCounter();
       await doFetch("/api/users");
       timeCounter.stop();
+
       expect(timeCounter.total).toBeLessThan(400);
     });
   });
@@ -44,6 +45,7 @@ describe("delay setting", () => {
       const timeCounter = new TimeCounter();
       await doFetch("/api/users");
       timeCounter.stop();
+
       expect(timeCounter.total).toBeGreaterThan(999);
     });
   });
@@ -54,6 +56,7 @@ describe("delay setting", () => {
       const timeCounter = new TimeCounter();
       await doFetch("/api/users");
       timeCounter.stop();
+
       expect(timeCounter.total).toBeGreaterThan(1999);
     });
 
@@ -62,6 +65,7 @@ describe("delay setting", () => {
       const timeCounter = new TimeCounter();
       await doFetch("/api/users");
       timeCounter.stop();
+
       expect(timeCounter.total).toBeGreaterThan(1999);
     });
 
@@ -70,6 +74,7 @@ describe("delay setting", () => {
       const timeCounter = new TimeCounter();
       await doFetch("/api/users");
       timeCounter.stop();
+
       expect(timeCounter.total).toBeGreaterThan(1999);
     });
   });
@@ -79,6 +84,7 @@ describe("delay setting", () => {
       const timeCounter = new TimeCounter();
       await doFetch("/api/users/1");
       timeCounter.stop();
+
       expect(timeCounter.total).toBeGreaterThan(999);
     });
 
@@ -87,6 +93,7 @@ describe("delay setting", () => {
       const timeCounter = new TimeCounter();
       await doFetch("/api/users/1");
       timeCounter.stop();
+
       expect(timeCounter.total).toBeGreaterThan(999);
     });
   });
@@ -97,6 +104,7 @@ describe("delay setting", () => {
       const timeCounter = new TimeCounter();
       await doFetch("/api/users/1");
       timeCounter.stop();
+
       expect(timeCounter.total).toBeGreaterThan(1999);
     });
   });
@@ -111,6 +119,7 @@ describe("delay setting", () => {
       const timeCounter = new TimeCounter();
       await doFetch("/api/users/1");
       timeCounter.stop();
+
       expect(timeCounter.total).toBeLessThan(500);
     });
 
@@ -143,6 +152,7 @@ describe("delay setting", () => {
       const timeCounter = new TimeCounter();
       await doFetch("/api/users/1");
       timeCounter.stop();
+
       expect(timeCounter.total).toBeGreaterThan(2999);
     });
 

@@ -28,6 +28,7 @@ describe("AdminApiClient class", () => {
   describe("when reading about", () => {
     it("should return current version", async () => {
       const about = await apiClient.readAbout();
+
       expect(about.versions.adminApi).toBeDefined();
     });
   });
@@ -44,6 +45,7 @@ describe("AdminApiClient class", () => {
         });
         await wait(3000);
         const alerts = await apiClient.readAlerts();
+
         expect(alerts.length).toEqual(0);
       });
     });
@@ -51,11 +53,13 @@ describe("AdminApiClient class", () => {
     describe("when there are alerts about files with error", () => {
       it("should return 2 alerts", async () => {
         expect.assertions(1);
+
         await apiClient.updateConfig({
           files: { path: "mocks-with-error" },
         });
         await wait(3000);
         const alerts = await apiClient.readAlerts();
+
         expect(alerts.length).toEqual(2);
       });
 
@@ -63,6 +67,7 @@ describe("AdminApiClient class", () => {
         const alerts = await apiClient.readAlerts();
         const alertId = alerts[0].id;
         const alert = await apiClient.readAlert(alertId);
+
         expect(alert.id).toEqual(alertId);
         expect(alert.message).toEqual(expect.stringContaining("No collections found"));
       });
@@ -71,6 +76,7 @@ describe("AdminApiClient class", () => {
         const alerts = await apiClient.readAlerts();
         const alertId = alerts[1].id;
         const alert = await apiClient.readAlert(alertId);
+
         expect(alert.id).toEqual(alertId);
         expect(alert.message).toEqual(expect.stringContaining("Error loading file"));
         expect(alert.message).toEqual(expect.stringContaining("collections.js"));
@@ -89,6 +95,7 @@ describe("AdminApiClient class", () => {
         });
         await wait(2000);
         const alerts = await apiClient.readAlerts();
+
         expect(alerts.length).toEqual(0);
       });
     });
@@ -104,6 +111,7 @@ describe("AdminApiClient class", () => {
         },
       });
       const settings = await apiClient.readConfig();
+
       expect(settings.mock.routes.delay).toEqual(2000);
     });
   });
@@ -111,6 +119,7 @@ describe("AdminApiClient class", () => {
   describe("when reading collections", () => {
     it("should return collections", async () => {
       const collections = await apiClient.readCollections();
+
       expect(collections).toEqual([
         {
           id: "base",
@@ -131,6 +140,7 @@ describe("AdminApiClient class", () => {
   describe("when reading collection", () => {
     it("should return collection data", async () => {
       const collection = await apiClient.readCollection("base");
+
       expect(collection).toEqual({
         id: "base",
         from: null,
@@ -143,6 +153,7 @@ describe("AdminApiClient class", () => {
   describe("when reading routes", () => {
     it("should return routes", async () => {
       const data = await apiClient.readRoutes();
+
       expect(data).toEqual([
         {
           id: "get-user",
@@ -158,6 +169,7 @@ describe("AdminApiClient class", () => {
   describe("when reading route", () => {
     it("should return route data", async () => {
       const data = await apiClient.readRoute("get-user");
+
       expect(data).toEqual({
         id: "get-user",
         delay: null,
@@ -171,6 +183,7 @@ describe("AdminApiClient class", () => {
   describe("when reading variants", () => {
     it("should return route variants", async () => {
       const data = await apiClient.readVariants();
+
       expect(data).toEqual([
         {
           id: "get-user:1",
@@ -195,6 +208,7 @@ describe("AdminApiClient class", () => {
   describe("when reading variant", () => {
     it("should return variant data", async () => {
       const data = await apiClient.readVariant("get-user:2");
+
       expect(data).toEqual({
         id: "get-user:2",
         route: "get-user",
@@ -209,17 +223,20 @@ describe("AdminApiClient class", () => {
   describe("custom route variants", () => {
     it("should be empty", async () => {
       const data = await apiClient.readCustomRouteVariants();
+
       expect(data).toEqual([]);
     });
 
     it("should be able to add one", async () => {
       await apiClient.useRouteVariant("get-user:2");
       const data = await apiClient.readCustomRouteVariants();
+
       expect(data).toEqual([{ id: "get-user:2" }]);
     });
 
     it("should reject if route variant don't exist", async () => {
       expect.assertions(1);
+
       await apiClient.useRouteVariant("foo").catch((err) => {
         expect(err.message).toEqual('Route variant with id "foo" was not found');
       });
@@ -228,6 +245,7 @@ describe("AdminApiClient class", () => {
     it("should be empty after restoring them to the collection defaults", async () => {
       await apiClient.restoreRouteVariants();
       const data = await apiClient.readCustomRouteVariants();
+
       expect(data).toEqual([]);
     });
   });
@@ -246,12 +264,14 @@ describe("AdminApiClient class", () => {
         port: 3120,
       });
       const settings = await apiClient.readConfig();
+
       expect(settings.plugins.adminApi.port).toEqual(3120);
     });
 
     it("should do nothing if not port is provided", async () => {
       apiClient.configClient();
       const settings = await apiClient.readConfig();
+
       expect(settings.plugins.adminApi.port).toEqual(3120);
     });
 
@@ -268,6 +288,7 @@ describe("AdminApiClient class", () => {
         port: 3110,
       });
       const settings = await apiClient.readConfig();
+
       expect(settings.plugins.adminApi.port).toEqual(3110);
     });
   });
@@ -303,12 +324,14 @@ describe("AdminApiClient class", () => {
         agent: httpsAgent,
       });
       const settings = await apiClient.readConfig();
+
       expect(settings.plugins.adminApi.port).toEqual(3120);
     });
 
     it("should do nothing if no protocol is provided", async () => {
       apiClient.configClient();
       const settings = await apiClient.readConfig();
+
       expect(settings.plugins.adminApi.port).toEqual(3120);
     });
 
@@ -330,6 +353,7 @@ describe("AdminApiClient class", () => {
         agent: null,
       });
       const settings = await apiClient.readConfig();
+
       expect(settings.plugins.adminApi.port).toEqual(3110);
     });
   });

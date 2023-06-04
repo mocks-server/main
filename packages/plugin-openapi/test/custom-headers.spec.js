@@ -36,6 +36,7 @@ describe("when openapi response has headers", () => {
   describe("get-users route", () => {
     it("should have response headers in base collection", async () => {
       const response = await fetchJson("/api/users");
+
       expect(response.body).toEqual([
         {
           id: 1,
@@ -50,6 +51,7 @@ describe("when openapi response has headers", () => {
     it("should have response headers in all-users collection", async () => {
       await server.mock.collections.select("all-users", { check: true });
       const response = await fetchJson("/api/users");
+
       expect(response.body).toEqual([
         {
           id: 1,
@@ -71,6 +73,7 @@ describe("when openapi response has headers", () => {
       const response = await fetchJson("/api/users", {
         method: "POST",
       });
+
       expect(response.body).toBe(undefined);
       expect(response.status).toEqual(201);
       expect(response.headers.get("x-custom-header-create-user")).toEqual("create-user-value");
@@ -83,6 +86,7 @@ describe("when openapi response has headers", () => {
       const response = await fetchText("/api/users", {
         method: "POST",
       });
+
       expect(response.body).toEqual("<div>Error</div>");
       expect(response.status).toEqual(400);
       expect(response.headers.get("Content-Type")).toEqual("text/html; charset=utf-8");

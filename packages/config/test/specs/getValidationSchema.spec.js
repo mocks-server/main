@@ -22,6 +22,7 @@ describe("getValidationSchema method", () => {
         default: "default-str",
       });
       const validationSchema = config.getValidationSchema();
+
       expect(validationSchema).toEqual({
         type: "object",
         properties: {
@@ -51,6 +52,7 @@ describe("getValidationSchema method", () => {
       namespace = config.addNamespace("foo");
       namespace.addOption({ name: "fooOption", type: "number" });
       const validationSchema = config.getValidationSchema();
+
       expect(validationSchema).toEqual({
         type: "object",
         properties: {
@@ -82,6 +84,7 @@ describe("getValidationSchema method", () => {
       namespace = config.addNamespace("foo");
       namespace.addOption({ name: "fooOption", type: "number" });
       const validationSchema = config.getValidationSchema({ allowAdditionalProperties: true });
+
       expect(validationSchema).toEqual({
         type: "object",
         properties: {
@@ -115,6 +118,7 @@ describe("getValidationSchema method", () => {
       namespace.addOption({ name: "fooOption2", type: "array", itemsType: "unknown" });
       namespace.addOption({ name: "fooOption3", type: "unknown", nullable: true });
       const validationSchema = config.getValidationSchema({ allowAdditionalProperties: true });
+
       expect(validationSchema).toEqual({
         type: "object",
         properties: {

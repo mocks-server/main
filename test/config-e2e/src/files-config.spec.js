@@ -14,6 +14,7 @@ describe("Config from files", () => {
   describe("when no config is provided", () => {
     it("config.readFile option should be true", async () => {
       await run("no-config", "only-init");
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["config.readFile:boolean:true"]));
     });

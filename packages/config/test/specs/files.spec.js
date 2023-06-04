@@ -1,4 +1,4 @@
-import commander from "commander";
+import { Command } from "commander";
 import sinon from "sinon";
 
 import { createConfigBeforeElements } from "../support/helpers";
@@ -30,6 +30,7 @@ describe("files", () => {
         filepath: "foo-file-path",
       });
       await config.init();
+
       expect(config.loadedFile).toEqual("foo-file-path");
     });
   });
@@ -49,6 +50,7 @@ describe("files", () => {
           readFile: false,
         },
       });
+
       expect(config.loadedFile).toEqual(null);
     });
   });
@@ -63,6 +65,7 @@ describe("files", () => {
         config: { fooNamespace: { fooOption: "value-from-file" } },
       });
       await config.init();
+
       expect(option.value).toEqual("value-from-file");
     });
 
@@ -71,6 +74,7 @@ describe("files", () => {
         config: { fooNamespace: { fooOption: "value-from-file" } },
       });
       await config.init();
+
       expect(option.hasBeenSet).toEqual(true);
     });
 
@@ -79,6 +83,7 @@ describe("files", () => {
         config: { fooNamespace: { fooOption: "value-from-file" } },
       });
       await config.init();
+
       expect(config.fileLoadedValues).toEqual({
         fooNamespace: {
           fooOption: "value-from-file",
@@ -95,6 +100,7 @@ describe("files", () => {
           fileSearchPlaces: ["foo", "foo2"],
         },
       });
+
       expect(cosmiconfig.mock.calls[0][1].searchPlaces).toEqual(["foo", "foo2"]);
     });
 
@@ -105,15 +111,17 @@ describe("files", () => {
       await config.init({
         config: { readFile: false },
       });
+
       expect(option.value).toEqual("default-str");
     });
 
     it("should not return value from file if readFile is disabled in argument", async () => {
-      commander.Command.prototype.opts.returns({ "config.readFile": false });
+      Command.prototype.opts.returns({ "config.readFile": false });
       cosmiconfigStub.search.resolves({
         config: { fooNamespace: { fooOption: "value-from-file" } },
       });
       await config.load();
+
       expect(option.value).toEqual("default-str");
     });
 
@@ -124,6 +132,7 @@ describe("files", () => {
         config: { fooNamespace: { fooOption: "value-from-file" } },
       });
       await config.init();
+
       expect(option.value).toEqual("default-str");
     });
 
@@ -131,6 +140,7 @@ describe("files", () => {
       cosmiconfigStub.search.resolves({
         config: { fooNamespace: { fooOption: 5 } },
       });
+
       await expect(config.init()).rejects.toThrow("fooOption");
     });
 
@@ -141,6 +151,7 @@ describe("files", () => {
       await config.load({
         fooNamespace: { fooOption: "value-from-init" },
       });
+
       expect(option.value).toEqual("value-from-file");
     });
 
@@ -152,12 +163,14 @@ describe("files", () => {
         config: { readFile: false },
         fooNamespace: { fooOption: "value-from-init" },
       });
+
       expect(option.value).toEqual("value-from-init");
     });
 
     it("should ignore undefined values", async () => {
       cosmiconfigStub.search.resolves({ config: { fooNamespace: { fooOption: undefined } } });
       await config.init();
+
       expect(option.value).toEqual("default-str");
     });
 
@@ -177,6 +190,7 @@ describe("files", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual({
         foo: 1,
         foo2: { var: false, var2: "x", var4: "y" },
@@ -201,6 +215,7 @@ describe("files", () => {
         type: "object",
       });
       await config.load();
+
       expect(option.value).toEqual({
         foo: 1,
         foo2: { var: false, var2: "x", var4: "y" },
@@ -224,6 +239,7 @@ describe("files", () => {
           fooOption: "foo-from-init",
         },
       });
+
       expect(func.getCall(0).args[0]).toEqual({
         fooNamespace: {
           fooOption: "foo-from-init",
@@ -236,6 +252,7 @@ describe("files", () => {
         config: () => ({ fooNamespace: { fooOption: "value-from-file" } }),
       });
       await config.init();
+
       expect(option.value).toEqual("value-from-file");
     });
 
@@ -246,6 +263,7 @@ describe("files", () => {
         },
       });
       await config.init();
+
       expect(option.value).toEqual("value-from-file");
     });
   });
@@ -262,6 +280,7 @@ describe("files", () => {
       await config.init({
         config: { readFile: false },
       });
+
       expect(option.value).toEqual("default-str");
     });
   });

@@ -144,6 +144,7 @@ describe("Files", () => {
   describe("path getter", () => {
     it("should return the resolved value of the path option", async () => {
       path.isAbsolute.returns(false);
+
       expect(files.path).toEqual(path.resolve(process.cwd(), "foo-path"));
     });
   });
@@ -151,6 +152,7 @@ describe("Files", () => {
   describe("loaders getter", () => {
     it("should return loaders", async () => {
       await files.init();
+
       expect(files.loaders.collections).toBeDefined();
       expect(files.loaders.routes).toBeDefined();
     });
@@ -160,6 +162,7 @@ describe("Files", () => {
     it("should not require files from mocks folders if it is disabled", async () => {
       enabledOption.value = false;
       await files.init();
+
       expect(libsMocks.stubs.fsExtra.ensureDirSync.callCount).toEqual(0);
     });
 
@@ -167,6 +170,7 @@ describe("Files", () => {
       path.isAbsolute.returns(false);
       fsExtra.existsSync.mockReturnValue(false);
       await files.init();
+
       expect(libsMocks.stubs.fsExtra.ensureDirSync.getCall(0).args[0]).toEqual(
         path.resolve(process.cwd(), "foo-path")
       );
@@ -175,6 +179,7 @@ describe("Files", () => {
     it("should not throw and add an alert if there is an error loading route files", async () => {
       libsMocks.stubs.globule.find.returns(["foo"]);
       await files.init();
+
       expect(alerts.flat.length).toEqual(1);
     });
 
@@ -189,6 +194,7 @@ describe("Files", () => {
       files._babelRegisterOption = babelRegisterOption;
       files._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await files.init();
+
       expect(alerts.flat[0].id).toEqual("files:loader:routes:file:foo");
       expect(alerts.flat[0].message).toEqual(
         expect.stringContaining("Error loading routes from file foo")
@@ -206,6 +212,7 @@ describe("Files", () => {
       files._babelRegisterOption = babelRegisterOption;
       files._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await files.init();
+
       expect(alerts.flat[0].id).toEqual("files:loader:collections:error");
       expect(alerts.flat[0].message).toEqual(
         expect.stringContaining("Error loading collections from file")
@@ -223,6 +230,7 @@ describe("Files", () => {
       files._babelRegisterOption = babelRegisterOption;
       files._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await files.init();
+
       expect(alerts.flat.length).toEqual(0);
     });
 
@@ -238,6 +246,7 @@ describe("Files", () => {
       files._babelRegisterOption = babelRegisterOption;
       files._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await files.init();
+
       expect(alerts.flat.length).toEqual(0);
     });
 
@@ -260,11 +269,13 @@ describe("Files", () => {
         },
       });
       await files.init();
+
       expect(alerts.flat[0].error.message).toEqual("Foo loader error");
     });
 
     it("should not throw and add an alert if there is an error loading mocks file", async () => {
       await files.init();
+
       expect(alerts.flat.length).toEqual(1);
     });
 
@@ -279,6 +290,7 @@ describe("Files", () => {
       files._babelRegisterOption = babelRegisterOption;
       files._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await files.init();
+
       expect(alerts.flat.length).toEqual(0);
     });
 
@@ -293,6 +305,7 @@ describe("Files", () => {
       files._babelRegisterOption = babelRegisterOption;
       files._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await files.init();
+
       expect(alerts.flat.length).toEqual(1);
       expect(alerts.flat[0].message).toEqual(
         expect.stringContaining("No collections file was found")
@@ -309,6 +322,7 @@ describe("Files", () => {
       files._babelRegisterOption = babelRegisterOption;
       files._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await files.init();
+
       expect(pluginMethods.loadCollections.callCount).toEqual(1);
     });
 
@@ -323,6 +337,7 @@ describe("Files", () => {
       files._babelRegisterOption = babelRegisterOption;
       files._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await files.init();
+
       expect(alerts.flat[0].message).toEqual(
         "Defining collections in 'mocks.json' file is deprecated. Please rename it to 'collections.json'"
       );
@@ -339,28 +354,34 @@ describe("Files", () => {
       files._babelRegisterOption = babelRegisterOption;
       files._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await files.init();
+
       expect(alerts.flat[0].message).toEqual(
         "Defining collections in 'mocks.json' file is deprecated. Please rename it to 'collections.json'"
       );
+
       libsMocks.stubs.globule.find.returns(["collections.json"]);
       await files.reload();
+
       expect(alerts.flat.length).toEqual(0);
     });
 
     it("should not throw and add an alert if there is an error in loadRoutesfiles method", async () => {
       sandbox.stub(files, "_readFile").throws(new Error());
       await files.init();
+
       expect(alerts.flat.length).toEqual(1);
     });
 
     it("should return a rejected promise if there is an error initializing", async () => {
       Logger.prototype.info.throws(new Error("foo error"));
+
       await expect(() => files.init()).rejects.toThrow("foo error");
     });
 
     it("should do nothing if folder exists", async () => {
       fsExtra.existsSync.mockReturnValue(true);
       await files.init();
+
       expect(libsMocks.stubs.fsExtra.ensureDirSync.callCount).toEqual(0);
     });
 
@@ -378,6 +399,7 @@ describe("Files", () => {
       files._babelRegisterOption = { value: true };
       files._babelRegisterOptionsOption = babelRegisterOptionsOption;
       await files.init();
+
       expect(requireSpy.getCall(0).args[0]).toEqual("@babel/register");
     });
 
@@ -385,7 +407,9 @@ describe("Files", () => {
       const fooCachePath = "foo-path";
 
       expect(requireCache[fooCachePath]).toBeDefined();
+
       await files.init();
+
       expect(requireCache[fooCachePath]).not.toBeDefined();
     });
 
@@ -397,6 +421,7 @@ describe("Files", () => {
       files._babelRegisterOptionsOption = babelRegisterOptionsOption;
       sandbox.spy(files, "_cleanRequireCache");
       await files.init();
+
       // it seems like require cache is empty in jest environment
       expect(files._cleanRequireCache.callCount).toEqual(0);
     });
@@ -405,7 +430,9 @@ describe("Files", () => {
       const fooCachePath = "foo-path/foo-children";
 
       expect(requireCache[fooCachePath]).toBeDefined();
+
       await files.init();
+
       expect(requireCache[fooCachePath]).not.toBeDefined();
     });
 
@@ -413,7 +440,9 @@ describe("Files", () => {
       const fooCachePath = "foo-path/foo-children-2";
 
       expect(requireCache[fooCachePath]).toBeDefined();
+
       await files.init();
+
       expect(requireCache[fooCachePath]).not.toBeDefined();
     });
   });
@@ -424,6 +453,7 @@ describe("Files", () => {
         files._enabledOption.value = false;
         await files.init();
         await files.start();
+
         expect(libsMocks.stubs.watch.callCount).toEqual(0);
       });
 
@@ -431,6 +461,7 @@ describe("Files", () => {
         files._watchOption.value = false;
         await files.init();
         await files.start();
+
         expect(libsMocks.stubs.watch.callCount).toEqual(0);
       });
 
@@ -439,6 +470,7 @@ describe("Files", () => {
         await files.init();
         await files.start();
         await files.start();
+
         expect(libsMocks.stubs.watchClose.callCount).toEqual(1);
       });
     });
@@ -452,6 +484,7 @@ describe("Files", () => {
       await files.start();
       libsMocks.stubs.watch.getCall(0).args[2]();
       await wait();
+
       expect(files._loadFiles.callCount).toEqual(2);
     });
   });
@@ -463,6 +496,7 @@ describe("Files", () => {
       await files.start();
       configMock.stubs.option.onChange.getCall(0).args[0]("foo-path-2");
       await wait();
+
       expect(libsMocks.stubs.watch.callCount).toEqual(2);
     });
 
@@ -473,6 +507,7 @@ describe("Files", () => {
       files._watchOption.value = false;
       configMock.stubs.option.onChange.getCall(1).args[0](false);
       await wait();
+
       expect(libsMocks.stubs.watchClose.callCount).toEqual(1);
     });
   });
@@ -495,6 +530,7 @@ describe("Files", () => {
         onLoad: spy,
       });
       await files.init();
+
       expect(libsMocks.stubs.globule.find.getCall(0).args[0]).toEqual([
         "foo/foo-path/**/*.json",
         "foo/foo-path/**/*.js",
@@ -528,6 +564,7 @@ describe("Files", () => {
         onLoad: spy,
       });
       await files.init();
+
       expect(spy.getCall(0).args[0]).toEqual([
         { path: "foo/foo-file.js", content: ["foo-content"] },
       ]);
@@ -557,6 +594,7 @@ describe("Files", () => {
         onLoad: spy,
       });
       await files.init();
+
       expect(spy.getCall(0).args[0]).toEqual([
         { path: "foo/foo-file.js", content: ["foo-promise-content"] },
       ]);
@@ -587,6 +625,7 @@ describe("Files", () => {
         onLoad: spy,
       });
       await files.init();
+
       expect(spy.getCall(0).args[0]).toEqual([]);
       expect(spy.getCall(0).args[1]).toEqual([{ path: "foo/foo-file.js", error: promiseError }]);
     });
@@ -615,6 +654,7 @@ describe("Files", () => {
         },
       });
       await files.init();
+
       expect(spy.getCall(0).args[0]).toEqual([
         { path: "foo/foo-path/**", content: ["foo-content"] },
       ]);
@@ -642,6 +682,7 @@ describe("Files", () => {
         },
       });
       await files.init();
+
       expect(alerts.flat[0].message).toEqual("Error processing loaded files");
       expect(alerts.flat[0].error.message).toEqual("foo-error");
     });

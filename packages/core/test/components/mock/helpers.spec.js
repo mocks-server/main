@@ -583,6 +583,7 @@ describe("mocks helpers", () => {
 
     it("should not modify original variants array", () => {
       addCustomVariant("route-4:variant-1", VARIANTS);
+
       expect(VARIANTS).toEqual(["route-1:variant-1", "route-2:variant-1", "route-3:variant-1"]);
     });
 
@@ -610,6 +611,7 @@ describe("mocks helpers", () => {
         alerts,
         logger,
       });
+
       expect(mock.id).toEqual("foo-id");
 
       expect(alerts.flat[0].id).toEqual("foo:variants");
@@ -638,6 +640,7 @@ describe("mocks helpers", () => {
         alerts,
         logger,
       });
+
       expect(mock).toEqual(null);
 
       expect(alerts.flat[0].id).toEqual("foo:process");

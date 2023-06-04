@@ -97,10 +97,12 @@ describe("status variant handler", () => {
       await waitForServerUrl("/api/books");
 
       const books = await doTextFetch("/api/books");
+
       expect(books.status).toEqual(200);
       expect(books.body).toEqual("");
 
       const authors = await doTextFetch("/api/authors");
+
       expect(authors.status).toEqual(200);
       expect(authors.body).toEqual("");
     });
@@ -109,12 +111,14 @@ describe("status variant handler", () => {
       await changeMockAndWait("authors-error");
 
       const authors = await doTextFetch("/api/authors");
+
       expect(authors.status).toEqual(403);
       expect(authors.body).toEqual("");
     });
 
     it("should send Content-Length header as 0", async () => {
       const response = await doTextFetch("/api/books");
+
       expect(response.headers.get("Content-Length")).toEqual("0");
     });
   });

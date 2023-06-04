@@ -151,6 +151,7 @@ describe("when method is defined as array", () => {
   describe("base mock", () => {
     it("should serve users under the /api/users path", async () => {
       const users = await doFetch("/api/users?req=1");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -162,7 +163,9 @@ describe("when method is defined as array", () => {
       it(`should serve user 1 under the /api/users/${id} path with ${method} method`, async () => {
         const users = await doFetch(`/api/users/${id}?req=${requestNumber}`, { method });
         requestNumber++;
+
         expect(users.status).toEqual(200);
+
         if (expectBody) {
           expect(users.body).toEqual({ id: 1, name: "John Doe" });
         }
@@ -191,6 +194,7 @@ describe("when method is defined as array", () => {
     it("should serve users under the /api/users path", async () => {
       core.mock.useRouteVariant("get-user:2");
       const users = await doFetch("/api/users?req=10");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -202,7 +206,9 @@ describe("when method is defined as array", () => {
       it(`should serve user 2 under the /api/users/${id} path with ${method} method`, async () => {
         const users = await doFetch(`/api/users/${id}?req=${requestNumber}`, { method });
         requestNumber++;
+
         expect(users.status).toEqual(200);
+
         if (expectBody) {
           expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
         }

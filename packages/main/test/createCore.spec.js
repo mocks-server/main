@@ -26,6 +26,7 @@ describe("createCore method", () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     coreMocks = new CoreMocks();
+
     expect.assertions(1);
   });
 
@@ -36,6 +37,7 @@ describe("createCore method", () => {
 
   it("should create a new Core, passing to it default options", async () => {
     createServer();
+
     expect(coreMocks.stubs.Constructor.mock.calls[0][0]).toEqual({
       config: {
         readArguments: false,
@@ -69,6 +71,7 @@ describe("createCore method", () => {
         },
       },
     });
+
     expect(coreMocks.stubs.Constructor.mock.calls[0][0]).toEqual({
       config: {
         readArguments: false,

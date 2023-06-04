@@ -86,6 +86,7 @@ describe("Quick start tutorial", () => {
   describe("base mock", () => {
     it("should serve 2 users under the /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.status).toEqual(200);
       expect(users.headers.get("x-mocks-server-example")).toEqual("some-value");
       expect(users.body).toEqual([
@@ -96,6 +97,7 @@ describe("Quick start tutorial", () => {
 
     it("should serve user 1 under the /api/users/1 path", async () => {
       const users = await doFetch("/api/users/1");
+
       expect(users.headers.get("x-mocks-server-example")).toEqual("some-value");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
@@ -103,6 +105,7 @@ describe("Quick start tutorial", () => {
 
     it("should serve user 1 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/2");
+
       expect(users.headers.get("x-mocks-server-example")).toEqual("some-value");
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
@@ -116,6 +119,7 @@ describe("Quick start tutorial", () => {
 
     it("should serve 4 users under the /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -127,12 +131,14 @@ describe("Quick start tutorial", () => {
 
     it("should serve user 3 under the /api/users/1 path", async () => {
       const users = await doFetch("/api/users/1");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 3, name: "Tommy" });
     });
 
     it("should serve user 3 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/2");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 3, name: "Tommy" });
     });
@@ -145,6 +151,7 @@ describe("Quick start tutorial", () => {
 
     it("should serve 4 users under the /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -156,12 +163,14 @@ describe("Quick start tutorial", () => {
 
     it("should serve user 2 under the /api/users/1 path", async () => {
       const users = await doFetch("/api/users/1");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/2");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
@@ -176,6 +185,7 @@ describe("Quick start tutorial", () => {
 
     it("should serve 4 users under the /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -187,12 +197,14 @@ describe("Quick start tutorial", () => {
 
     it("should serve user 2 under the /api/users/1 path", async () => {
       const users = await doFetch("/api/users/1");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/2");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
@@ -205,6 +217,7 @@ describe("Quick start tutorial", () => {
 
     it("should serve 4 users under the /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -216,12 +229,14 @@ describe("Quick start tutorial", () => {
 
     it("should serve user 2 under the /api/users/1 path", async () => {
       const users = await doFetch("/api/users/1");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/2");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });

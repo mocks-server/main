@@ -9,6 +9,7 @@ describe("Files helpers", () => {
     describe("only property", () => {
       it("should return a function returning true if file belongs to provided folder", () => {
         const options = babelRegisterDefaultOptions("foo/folder", {});
+
         expect(options.only[0]("foo/folder/file")).toEqual(true);
         expect(options.only[0]("foo/folder/subfolder/file")).toEqual(true);
         expect(options.only[0]("folder/foo/subfolder/file")).toEqual(false);
@@ -18,6 +19,7 @@ describe("Files helpers", () => {
     describe("cache property", () => {
       it("should be false", () => {
         const options = babelRegisterDefaultOptions("foo/folder", {});
+
         expect(options.cache).toEqual(false);
       });
     });
@@ -25,6 +27,7 @@ describe("Files helpers", () => {
     describe("extensions property", () => {
       it("should return Babel default extensions", () => {
         const options = babelRegisterDefaultOptions("foo/folder", {});
+
         expect(options.extensions).toEqual([
           ".es6",
           ".es",
@@ -45,6 +48,7 @@ describe("Files helpers", () => {
           cache: true,
           extensions: ["foo"],
         });
+
         expect(options.only).toEqual([]);
         expect(options.cache).toEqual(true);
         expect(options.extensions).toEqual(["foo"]);

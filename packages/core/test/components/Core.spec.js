@@ -74,6 +74,7 @@ describe("Core", () => {
     it("should listen to change logger level when log option changes", async () => {
       core = new Core();
       configMocks.stubs.option.onChange.getCall(0).args[0]("foo-level");
+
       expect(core.logger.setLevel.getCall(1).args[0]).toEqual("foo-level");
     });
   });
@@ -81,6 +82,7 @@ describe("Core", () => {
   describe("version", () => {
     it("should return current version", async () => {
       core = new Core();
+
       expect(core.version).toEqual(version);
     });
   });
@@ -89,6 +91,7 @@ describe("Core", () => {
     it("should init only once", async () => {
       await core.init();
       await core.init();
+
       expect(pluginsInstance.register.callCount).toEqual(1);
     });
 
@@ -96,6 +99,7 @@ describe("Core", () => {
       const fooConfig = { foo: "foo" };
       core = new Core(fooConfig);
       await core.init();
+
       expect(configMocks.stubs.instance.init.getCall(1).args[0]).toEqual(fooConfig);
     });
 
@@ -113,6 +117,7 @@ describe("Core", () => {
 
     it("should pass pkg advanced option to update notifier if received in constructor", () => {
       core = new Core({ foo: "foo" }, { pkg: { name: "foo-name", version: "foo-version" } });
+
       expect(updateNotifierMock.stubs.Constructor.mock.calls[1][0].pkg).toEqual({
         name: "foo-name",
         version: "foo-version",
@@ -135,21 +140,25 @@ describe("Core", () => {
       pluginsInstance = pluginsMocks.stubs.instance;
       core = new Core();
       await core.start();
+
       expect(pluginsInstance.register.callCount).toEqual(1);
     });
 
     it("should not init if it has been done before", async () => {
       await core.start();
+
       expect(pluginsInstance.register.callCount).toEqual(1);
     });
 
     it("should start server", async () => {
       await core.start();
+
       expect(serverInstance.start.callCount).toEqual(1);
     });
 
     it("should start plugins", async () => {
       await core.start();
+
       expect(pluginsInstance.start.callCount).toEqual(1);
     });
 
@@ -158,6 +167,7 @@ describe("Core", () => {
       core.start();
       core.start();
       await core.start();
+
       expect(pluginsInstance.start.callCount).toEqual(1);
     });
 
@@ -165,6 +175,7 @@ describe("Core", () => {
       core.start();
       await core.start();
       await core.start();
+
       expect(pluginsInstance.start.callCount).toEqual(2);
     });
   });
@@ -172,11 +183,13 @@ describe("Core", () => {
   describe("stop method", () => {
     it("should stop server", async () => {
       await core.stop();
+
       expect(serverInstance.stop.callCount).toEqual(1);
     });
 
     it("should stop plugins", async () => {
       await core.stop();
+
       expect(pluginsInstance.stop.callCount).toEqual(1);
     });
 
@@ -185,6 +198,7 @@ describe("Core", () => {
       core.stop();
       core.stop();
       await core.stop();
+
       expect(pluginsInstance.stop.callCount).toEqual(1);
     });
 
@@ -194,6 +208,7 @@ describe("Core", () => {
       core.stop();
       await core.stop();
       await core.stop();
+
       expect(pluginsInstance.stop.callCount).toEqual(2);
     });
   });

@@ -25,6 +25,7 @@ describe("routes api", () => {
   describe("get /", () => {
     it("should return current routes", async () => {
       const response = await doApiFetch("/mock/routes");
+
       expect(response.body).toEqual([
         {
           id: "get-user",
@@ -47,6 +48,7 @@ describe("routes api", () => {
   describe("get /get-user", () => {
     it("should return route with id get-user", async () => {
       const response = await doApiFetch("/mock/routes/get-user");
+
       expect(response.body).toEqual({
         id: "get-user",
         delay: null,
@@ -60,6 +62,7 @@ describe("routes api", () => {
   describe("get /get-users", () => {
     it("should return route with id get-users", async () => {
       const response = await doApiFetch("/mock/routes/get-users");
+
       expect(response.body).toEqual({
         id: "get-users",
         delay: null,
@@ -73,6 +76,7 @@ describe("routes api", () => {
   describe("get unexistant route", () => {
     it("should return a not found error", async () => {
       const response = await doApiFetch("/mock/routes/foo");
+
       expect(response.status).toEqual(404);
       expect(response.body.message).toEqual('Route with id "foo" was not found');
     });

@@ -167,6 +167,7 @@ describe("Collection", () => {
         middlewareMethodsStubs.res,
         middlewareMethodsStubs.next
       );
+
       expect(middlewareMethodsStubs.next.callCount).toEqual(1);
     });
 
@@ -179,8 +180,11 @@ describe("Collection", () => {
         middlewareMethodsStubs.res,
         middlewareMethodsStubs.next
       );
+
       expect(middlewareMethodsStubs.next.callCount).toEqual(0);
+
       clock.tick(500);
+
       expect(middlewareMethodsStubs.next.callCount).toEqual(1);
     });
 
@@ -192,8 +196,11 @@ describe("Collection", () => {
         middlewareMethodsStubs.res,
         middlewareMethodsStubs.next
       );
+
       expect(middlewareMethodsStubs.next.callCount).toEqual(0);
+
       clock.tick(1000);
+
       expect(middlewareMethodsStubs.next.callCount).toEqual(1);
     });
   });

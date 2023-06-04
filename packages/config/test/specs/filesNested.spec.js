@@ -26,6 +26,7 @@ describe("files nested", () => {
         config: { parentNamespace: { fooNamespace: { fooOption: "value-from-file" } } },
       });
       await config.init();
+
       expect(option.value).toEqual("value-from-file");
     });
 
@@ -33,6 +34,7 @@ describe("files nested", () => {
       cosmiconfigStub.search.resolves({
         config: { parentNamespace: { fooNamespace: { fooOption: 5 } } },
       });
+
       await expect(config.init()).rejects.toThrow("fooOption");
     });
 
@@ -43,6 +45,7 @@ describe("files nested", () => {
       await config.init({
         parentNamespace: { fooNamespace: { fooOption: "value-from-init" } },
       });
+
       expect(option.value).toEqual("value-from-file");
     });
 
@@ -54,6 +57,7 @@ describe("files nested", () => {
         config: { readFile: false },
         parentNamespace: { fooNamespace: { fooOption: "value-from-init" } },
       });
+
       expect(option.value).toEqual("value-from-init");
     });
 
@@ -62,6 +66,7 @@ describe("files nested", () => {
         config: { parentNamespace: { fooNamespace: { fooOption: undefined } } },
       });
       await config.init();
+
       expect(option.value).toEqual("default-str");
     });
 
@@ -84,6 +89,7 @@ describe("files nested", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual({
         foo: 1,
         foo2: { var: false, var2: "x", var4: "y" },
@@ -111,6 +117,7 @@ describe("files nested", () => {
           },
         },
       });
+
       expect(func.getCall(0).args[0]).toEqual({
         parentNamespace: {
           fooNamespace: {
@@ -125,6 +132,7 @@ describe("files nested", () => {
         config: () => ({ parentNamespace: { fooNamespace: { fooOption: "value-from-file" } } }),
       });
       await config.init();
+
       expect(option.value).toEqual("value-from-file");
     });
 
@@ -137,6 +145,7 @@ describe("files nested", () => {
         },
       });
       await config.init();
+
       expect(option.value).toEqual("value-from-file");
     });
   });
@@ -153,6 +162,7 @@ describe("files nested", () => {
       await config.init({
         config: { readFile: false },
       });
+
       expect(option.value).toEqual("default-str");
     });
   });

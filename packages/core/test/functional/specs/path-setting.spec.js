@@ -36,6 +36,7 @@ describe("path setting", () => {
   describe("When started", () => {
     it("should load web-tutorial mocks", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -49,6 +50,7 @@ describe("path setting", () => {
       await waitForServerUrl("/api/new-users");
 
       const users = await doFetch("/api/new-users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe modified" },
         { id: 2, name: "Jane Doe modified" },
@@ -56,6 +58,7 @@ describe("path setting", () => {
       ]);
 
       const oldUsers = await doFetch("/api/users");
+
       expect(oldUsers.body).toEqual([
         { id: 1, name: "John Doe modified" },
         { id: 2, name: "Jane Doe modified" },

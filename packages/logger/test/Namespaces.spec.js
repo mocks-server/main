@@ -40,6 +40,7 @@ describe("Namespaces", () => {
 
       it("should log with namespace label", () => {
         namespace.info("Hello world");
+
         expect(cleanLogs(console.log.getCall(0).args[0])).toEqual(
           formattedLog("foo-label:foo-label-2", "info", "Hello world")
         );
@@ -54,6 +55,7 @@ describe("Namespaces", () => {
       it("should log with nested namespace label", () => {
         const childNamespace = namespace.namespace("foo-label-4");
         childNamespace.info("Foo");
+
         expect(cleanLogs(console.log.getCall(0).args[0])).toEqual(
           formattedLog("foo-label:foo-label-2:foo-label-4", "info", "Foo")
         );
@@ -65,6 +67,7 @@ describe("Namespaces", () => {
         namespace.namespace("foo-label-2");
         namespace.namespace("foo-label-2");
         namespace.namespace("foo-label-2");
+
         expect(logger._namespaces.length).toEqual(1);
       });
     });
@@ -89,6 +92,7 @@ describe("Namespaces", () => {
 
       it("should log label", () => {
         logger.info("Hello world");
+
         expect(cleanLogs(console.log.getCall(0).args[0])).toEqual(
           formattedLog("", "info", "Hello world")
         );
@@ -102,6 +106,7 @@ describe("Namespaces", () => {
 
       it("should log without parent label", () => {
         namespace.info("Hello world");
+
         expect(cleanLogs(console.log.getCall(0).args[0])).toEqual(
           formattedLog("foo-label-2", "info", "Hello world")
         );
@@ -123,6 +128,7 @@ describe("Namespaces", () => {
       logger.info("Hello from root");
       firstNamespace.warn("Hello from first");
       secondNamespace.error("Hello from second");
+
       expect(logger.globalStore).toEqual(firstNamespace.globalStore);
       expect(firstNamespace.globalStore).toEqual(secondNamespace.globalStore);
 
@@ -157,6 +163,7 @@ describe("Namespaces", () => {
       firstNamespace.setLevel("silent", { transport: "store" });
       logger.info("Hello 2 from root");
       firstNamespace.warn("Hello 2 from first");
+
       expect(cleanLogs(logger.globalStore)).toEqual([
         formattedLog(LABEL, "info", "Hello from root"),
         formattedLog("foo-label:foo-label-2", "warn", "Hello from first"),
@@ -180,6 +187,7 @@ describe("Namespaces", () => {
       it("should also change", () => {
         logger.setLevel("warn");
         namespace.info("foo");
+
         expect(console.log.callCount).toEqual(0);
         expect(namespace.level).toEqual("warn");
       });
@@ -188,6 +196,7 @@ describe("Namespaces", () => {
         namespace.setLevel("warn");
         logger.setLevel("silly", { propagate: false });
         namespace.info("foo");
+
         expect(namespace.level).toEqual("warn");
         expect(console.log.callCount).toEqual(0);
       });
@@ -196,6 +205,7 @@ describe("Namespaces", () => {
         namespace.setLevel("warn", { pinned: true });
         logger.setLevel("silly");
         namespace.info("foo");
+
         expect(namespace.level).toEqual("warn");
         expect(console.log.callCount).toEqual(0);
       });
@@ -204,6 +214,7 @@ describe("Namespaces", () => {
         namespace.setLevel("warn", { pinned: true });
         logger.setLevel("silly", { forcePropagation: true });
         namespace.info("foo");
+
         expect(namespace.level).toEqual("silly");
         expect(console.log.callCount).toEqual(1);
       });
@@ -212,6 +223,7 @@ describe("Namespaces", () => {
         namespace.setLevel("warn", { transport: "console", pinned: true });
         logger.setLevel("silly");
         namespace.info("foo");
+
         expect(namespace.level).toEqual("silly");
         expect(console.log.callCount).toEqual(0);
       });
@@ -220,6 +232,7 @@ describe("Namespaces", () => {
         namespace.setLevel("warn", { transport: "console", pinned: true });
         logger.setLevel("silly", { forcePropagation: true });
         namespace.info("foo");
+
         expect(namespace.level).toEqual("silly");
         expect(console.log.callCount).toEqual(1);
       });
@@ -241,6 +254,7 @@ describe("Namespaces", () => {
         logger.setLevel("warn");
         firstNamespace.info("foo");
         secondNamespace.info("foo");
+
         expect(console.log.callCount).toEqual(0);
         expect(firstNamespace.level).toEqual("warn");
         expect(secondNamespace.level).toEqual("warn");
@@ -252,6 +266,7 @@ describe("Namespaces", () => {
         logger.setLevel("silly", { propagate: false });
         firstNamespace.info("foo");
         secondNamespace.info("foo");
+
         expect(firstNamespace.level).toEqual("warn");
         expect(secondNamespace.level).toEqual("error");
         expect(console.log.callCount).toEqual(0);
@@ -262,6 +277,7 @@ describe("Namespaces", () => {
         logger.setLevel("silly");
         firstNamespace.info("foo");
         secondNamespace.info("foo");
+
         expect(secondNamespace.level).toEqual("warn");
         expect(console.log.callCount).toEqual(1);
       });
@@ -271,6 +287,7 @@ describe("Namespaces", () => {
         logger.setLevel("silly");
         firstNamespace.info("foo");
         secondNamespace.info("foo");
+
         expect(firstNamespace.level).toEqual("warn");
         expect(secondNamespace.level).toEqual("warn");
         expect(console.log.callCount).toEqual(0);
@@ -280,6 +297,7 @@ describe("Namespaces", () => {
         secondNamespace.setLevel("warn", { transport: "console", pinned: true });
         logger.setLevel("silly");
         secondNamespace.info("foo");
+
         expect(secondNamespace.level).toEqual("silly");
         expect(console.log.callCount).toEqual(0);
       });

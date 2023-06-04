@@ -64,6 +64,7 @@ describe("when files watch is disabled", () => {
   describe("When started", () => {
     it("should serve users under the /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
@@ -73,12 +74,14 @@ describe("when files watch is disabled", () => {
 
     it("should serve user 1 under the /api/users/1 path", async () => {
       const users = await doFetch("/api/users/1");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 1 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/2");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
@@ -93,6 +96,7 @@ describe("when files watch is disabled", () => {
 
     it("should serve users in /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -108,6 +112,7 @@ describe("when files watch is disabled", () => {
 
     it("should serve users modified in /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.headers.get("x-custom-header")).toEqual("foo-header");
       expect(users.headers.get("x-another-header")).toEqual("another-header");
       expect(users.body).toEqual([
@@ -118,6 +123,7 @@ describe("when files watch is disabled", () => {
 
     it("should serve new users in /api/new-users path", async () => {
       const users = await doFetch("/api/new-users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe modified" },
         { id: 2, name: "Jane Doe modified" },

@@ -42,6 +42,7 @@ describe("programmatic", () => {
         default: ["foo", "foo2"],
         type: "array",
       });
+
       await expect(
         config.load({
           fooNamespace: { fooOption: "foo" },
@@ -58,6 +59,7 @@ describe("programmatic", () => {
         type: "array",
         itemsType: "number",
       });
+
       await expect(
         config.load({
           fooNamespace: { fooOption: [1, 2, "3", 5] },
@@ -69,6 +71,7 @@ describe("programmatic", () => {
       await config.init({
         fooNamespace: { fooOption: "foo-value-2" },
       });
+
       expect(option.value).toEqual("foo-value-2");
     });
 
@@ -76,6 +79,7 @@ describe("programmatic", () => {
       await config.init({
         fooNamespace: { fooOption: "foo-value-2" },
       });
+
       expect(option.hasBeenSet).toEqual(true);
     });
 
@@ -83,6 +87,7 @@ describe("programmatic", () => {
       await config.init({
         fooNamespace: { fooOption: "foo-value-2" },
       });
+
       expect(config.programmaticLoadedValues).toEqual({
         fooNamespace: {
           fooOption: "foo-value-2",
@@ -94,6 +99,7 @@ describe("programmatic", () => {
       await config.load({
         fooNamespace: { fooOption: "foo-value-2" },
       });
+
       expect(option.value).toEqual("foo-value-2");
     });
 
@@ -101,6 +107,7 @@ describe("programmatic", () => {
       await config.load({
         fooNamespace: { fooOption: "foo-value-2" },
       });
+
       expect(option.hasBeenSet).toEqual(true);
     });
 
@@ -117,6 +124,7 @@ describe("programmatic", () => {
         fooNamespace: value,
       });
       value.fooOption.foo = "foo2";
+
       expect(option.value).not.toBe(value.fooOption);
       expect(option.value).toEqual({ foo: "foo" });
     });
@@ -132,6 +140,7 @@ describe("programmatic", () => {
       await config.init({
         fooNamespace: { fooOption: { foo: 4, foo2: { var: false, var4: "y" }, foo3: "z" } },
       });
+
       expect(option.value).toEqual({
         foo: 4,
         foo2: { var: false, var3: "foo", var4: "y" },
@@ -151,6 +160,7 @@ describe("programmatic", () => {
       await config.init({
         fooNamespace: { fooOption: ["foo3", "foo4"] },
       });
+
       expect(option.value).toEqual(["foo3", "foo4"]);
     });
 
@@ -166,6 +176,7 @@ describe("programmatic", () => {
         type: "object",
       });
       await config.load();
+
       expect(option.value).toEqual({
         foo: 4,
         foo2: { var: false, var3: "foo", var4: "y" },
@@ -182,11 +193,13 @@ describe("programmatic", () => {
 
     it("option should return default value", async () => {
       await config.init({});
+
       expect(option.value).toEqual("default-str");
     });
 
     it("hasBeenSet property should return false", async () => {
       await config.init({});
+
       expect(option.hasBeenSet).toEqual(false);
     });
   });
@@ -200,6 +213,7 @@ describe("programmatic", () => {
       await config.init({
         fooNamespace: {},
       });
+
       expect(option.value).toEqual("default-str");
     });
 
@@ -207,6 +221,7 @@ describe("programmatic", () => {
       await config.init({
         fooNamespace: {},
       });
+
       expect(option.hasBeenSet).toEqual(false);
     });
   });

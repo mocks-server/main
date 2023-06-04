@@ -71,11 +71,24 @@ module.exports = {
         fetch: false,
       },
       plugins: ["jest", "no-only-tests", "jest-formatting"],
-      extends: ["plugin:jest/recommended"],
+      extends: [
+        "eslint:recommended",
+        "prettier",
+        "plugin:import/recommended",
+        "plugin:import/typescript",
+        "plugin:jest/recommended",
+        "plugin:jest-formatting/strict",
+      ],
       rules: {
         "jest/no-conditional-expect": [0],
         "no-only-tests/no-only-tests": [2],
         "jest/no-done-callback": [0],
+      },
+      settings: {
+        "import/resolver": {
+          typescript: true,
+          node: true,
+        },
       },
     },
     {

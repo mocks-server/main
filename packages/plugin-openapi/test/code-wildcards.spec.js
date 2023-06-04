@@ -44,6 +44,7 @@ describe("when openapi codes include have wildcards", () => {
     describe("get-users route", () => {
       it("should have 200-json-one-user variant available in base collection", async () => {
         const response = await fetchJson("/api/users");
+
         expect(response.body).toEqual([
           {
             id: 1,
@@ -56,6 +57,7 @@ describe("when openapi codes include have wildcards", () => {
       it("should have 200-json-two-users variant available in all-users collection", async () => {
         await server.mock.collections.select("all-users", { check: true });
         const response = await fetchJson("/api/users");
+
         expect(response.body).toEqual([
           {
             id: 1,
@@ -75,6 +77,7 @@ describe("when openapi codes include have wildcards", () => {
         const response = await fetchJson("/api/users", {
           method: "POST",
         });
+
         expect(response.body).toBe(undefined);
         expect(response.status).toEqual(201);
       });
@@ -84,6 +87,7 @@ describe("when openapi codes include have wildcards", () => {
         const response = await fetchText("/api/users", {
           method: "POST",
         });
+
         expect(response.body).toBe("Bad data");
         expect(response.status).toEqual(400);
       });
@@ -93,6 +97,7 @@ describe("when openapi codes include have wildcards", () => {
       it("should have 200-json-success variant available in base collection", async () => {
         await server.mock.collections.select("base", { check: true });
         const response = await fetchJson("/api/users/2");
+
         expect(response.body).toEqual({
           id: 1,
           name: "John Doe",
@@ -103,6 +108,7 @@ describe("when openapi codes include have wildcards", () => {
       it("should have 200-json-two-users variant available in users-error collection", async () => {
         await server.mock.collections.select("users-error", { check: true });
         const response = await fetchJson("/api/users/2");
+
         expect(response.body).toEqual({
           code: 404,
           message: "Not found",

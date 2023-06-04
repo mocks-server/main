@@ -22,6 +22,7 @@ describe("command line arguments with cli disabled", () => {
     it("should not be started", async () => {
       mocks = mocksRunner(["--files.path=web-tutorial", "--no-plugins.inquirerCli.enabled"]);
       await waitForServer();
+
       expect(mocks.logs).toEqual(expect.not.stringContaining("Select action"));
     });
   });
@@ -31,6 +32,7 @@ describe("command line arguments with cli disabled", () => {
       mocks = mocksRunner(["--files.path=web-tutorial", "--no-plugins.inquirerCli.enabled"]);
       await waitForServer();
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -44,6 +46,7 @@ describe("command line arguments with cli disabled", () => {
         mocks = mocksRunner(["--files.path=web-tutorial", "--no-plugins.inquirerCli.enabled"]);
         await waitForServer();
         const users = await doFetch("/api/users/2");
+
         expect(users.body).toEqual({ id: 1, name: "John Doe" });
       });
     });
@@ -57,6 +60,7 @@ describe("command line arguments with cli disabled", () => {
         ]);
         await waitForServer();
         const users = await doFetch("/api/users/2");
+
         expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
       });
     });
@@ -65,6 +69,7 @@ describe("command line arguments with cli disabled", () => {
   describe("delay option", () => {
     it("should set delay", async () => {
       expect.assertions(2);
+
       mocks = mocksRunner([
         "--files.path=web-tutorial",
         "--no-plugins.inquirerCli.enabled",
@@ -74,6 +79,7 @@ describe("command line arguments with cli disabled", () => {
       const timeCounter = new TimeCounter();
       const users = await doFetch("/api/users");
       timeCounter.stop();
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },

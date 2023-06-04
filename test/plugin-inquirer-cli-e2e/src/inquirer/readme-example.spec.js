@@ -21,6 +21,7 @@ describe("when readme example is executed", () => {
 
   beforeEach(() => {
     expect.assertions(1);
+
     cliRunner = new CliRunner(["node", cliFile]);
   });
 
@@ -30,18 +31,22 @@ describe("when readme example is executed", () => {
 
   it('should print a menu with "Main option 1" and "Main option 2"', async () => {
     expect.assertions(2);
+
     await cliRunner.waitUntilHasLogged(END_SCREEN);
+
     expect(cliRunner.logs.current).toEqual(expect.stringContaining("Main option 1"));
     expect(cliRunner.logs.current).toEqual(expect.stringContaining("Main option 2"));
   });
 
   it('should print a menu with "Exit" option', async () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN);
+
     expect(cliRunner.logs.current).toEqual(expect.stringContaining("Exit"));
   });
 
   it('should print selected option as "none" in header when inited', async () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN);
+
     expect(cliRunner.logs.current).toEqual(expect.stringContaining("Selected option: None"));
   });
 
@@ -50,6 +55,7 @@ describe("when readme example is executed", () => {
     const newScreen = await cliRunner.executeAndWaitUntilNewScreenRendered(
       cliRunner.pressEnter.bind(cliRunner)
     );
+
     expect(newScreen).toEqual(expect.stringContaining("Selected option: option1"));
   });
 
@@ -59,6 +65,7 @@ describe("when readme example is executed", () => {
     const newScreen = await cliRunner.executeAndWaitUntilNewScreenRendered(
       cliRunner.pressEnter.bind(cliRunner)
     );
+
     expect(newScreen).toEqual(expect.stringContaining("Selected option: option2"));
   });
 
@@ -68,6 +75,7 @@ describe("when readme example is executed", () => {
     cliRunner.cursorDown();
     cliRunner.pressEnter();
     await cliRunner.hasExited();
+
     expect(true).toEqual(true);
   });
 
@@ -75,6 +83,7 @@ describe("when readme example is executed", () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN);
     cliRunner.pressCtrlC();
     await cliRunner.hasExited();
+
     expect(true).toEqual(true);
   });
 });

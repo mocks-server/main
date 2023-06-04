@@ -23,8 +23,11 @@ describe("options", () => {
         type: "string",
         default: "default-str",
       });
+
       expect(option.value).toEqual("default-str");
+
       await config.load({ fooOption: "foo-str" });
+
       expect(option.value).toEqual("foo-str");
     });
 
@@ -37,8 +40,11 @@ describe("options", () => {
           default: "default-str",
         },
       ]);
+
       expect(option.value).toEqual("default-str");
+
       await config.load({ fooOption: "foo-str" });
+
       expect(option.value).toEqual("foo-str");
     });
 
@@ -51,6 +57,7 @@ describe("options", () => {
           default: "default-str",
         },
       ]);
+
       expect(config.option("fooOption")).toBe(option);
     });
 
@@ -63,6 +70,7 @@ describe("options", () => {
           default: "default-str",
         },
       ]);
+
       expect(config.options.includes(option)).toBe(true);
     });
   });
@@ -75,11 +83,16 @@ describe("options", () => {
         type: "string",
         default: "default-str",
       });
+
       expect(option.hasBeenSet).toEqual(false);
+
       await config.load();
+
       expect(option.hasBeenSet).toEqual(false);
       expect(option.value).toEqual("default-str");
+
       option.set("foo");
+
       expect(option.hasBeenSet).toEqual(true);
       expect(option.value).toEqual("foo");
     });
@@ -91,10 +104,13 @@ describe("options", () => {
         type: "string",
         default: "default-str",
       });
+
       expect(option.hasBeenSet).toEqual(false);
+
       await config.load({
         fooOption: "new-str",
       });
+
       expect(option.hasBeenSet).toEqual(true);
       expect(option.value).toEqual("new-str");
     });
@@ -127,6 +143,7 @@ describe("options", () => {
         default: [1, 2, 3],
       });
       await config.init();
+
       expect(config.value).toEqual({
         config: {
           allowUnknownArguments: false,
@@ -203,6 +220,7 @@ describe("options", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "string" });
+
       expect(option.name).toEqual("fooOption");
     });
 
@@ -214,6 +232,7 @@ describe("options", () => {
         description: "foo description",
         type: "string",
       });
+
       expect(option.description).toEqual("foo description");
     });
 
@@ -221,6 +240,7 @@ describe("options", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "string" });
+
       expect(() => namespace.addOption({ name: "fooOption", type: "string" })).toThrow(
         "already exists"
       );
@@ -229,6 +249,7 @@ describe("options", () => {
     it("should throw if option with same name already exist in root", async () => {
       config = new Config();
       option = config.addOption({ name: "fooOption", type: "string" });
+
       expect(() => config.addOption({ name: "fooOption", type: "string" })).toThrow(
         "already exists"
       );
@@ -238,6 +259,7 @@ describe("options", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       namespace.addNamespace("fooOption");
+
       expect(() => namespace.addOption({ name: "fooOption", type: "string" })).toThrow(
         "already exists"
       );
@@ -246,6 +268,7 @@ describe("options", () => {
     it("should throw if namespace with same name already exist in root", async () => {
       config = new Config();
       config.addNamespace("foo");
+
       expect(() => config.addOption({ name: "foo", type: "string" })).toThrow("already exists");
     });
 
@@ -257,12 +280,14 @@ describe("options", () => {
         type: "string",
         extraData: { fooMetadata: true },
       });
+
       expect(option.extraData).toEqual({ fooMetadata: true });
     });
 
     it("should throw when type is string and default does not match type", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "string", default: 5 })
       ).toThrowError("default");
@@ -271,6 +296,7 @@ describe("options", () => {
     it("should not throw when type is unknown and default is string", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "unknown", default: "foo" })
       ).not.toThrow();
@@ -279,6 +305,7 @@ describe("options", () => {
     it("should not throw when type is unknown and default is number", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "unknown", default: 5 })
       ).not.toThrow();
@@ -287,6 +314,7 @@ describe("options", () => {
     it("should not throw when type is unknown and default is array", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "unknown", default: [] })
       ).not.toThrow();
@@ -295,6 +323,7 @@ describe("options", () => {
     it("should not throw when type is unknown and default is object", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "unknown", default: {} })
       ).not.toThrow();
@@ -303,6 +332,7 @@ describe("options", () => {
     it("should not throw when type is unknown and default is function", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({
           name: "fooOption",
@@ -317,6 +347,7 @@ describe("options", () => {
     it("should not throw when type is unknown and default is boolean", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({
           name: "fooOption",
@@ -329,6 +360,7 @@ describe("options", () => {
     it("should not throw when itemsType is unknown and default is array of strings", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({
           name: "fooOption",
@@ -342,6 +374,7 @@ describe("options", () => {
     it("should not throw when itemsType is unknown and default is array number", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({
           name: "fooOption",
@@ -355,6 +388,7 @@ describe("options", () => {
     it("should not throw when itemsType is unknown and default is array of arrays", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({
           name: "fooOption",
@@ -368,6 +402,7 @@ describe("options", () => {
     it("should not throw when itemsType is unknown and default is array object", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({
           name: "fooOption",
@@ -381,6 +416,7 @@ describe("options", () => {
     it("should not throw when itemsType is unknown and default is array of functions", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({
           name: "fooOption",
@@ -398,6 +434,7 @@ describe("options", () => {
     it("should not throw when itemsType is unknown and default is array of boolean", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({
           name: "fooOption",
@@ -411,6 +448,7 @@ describe("options", () => {
     it("should not throw when itemsType is unknown and default is a mix of types", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({
           name: "fooOption",
@@ -433,6 +471,7 @@ describe("options", () => {
     it("should throw when type is not array and itemsType property is added", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({
           name: "fooOption",
@@ -446,6 +485,7 @@ describe("options", () => {
     it("should throw when type is array and default does not match type", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "array", default: "foo" })
       ).toThrowError("default");
@@ -454,6 +494,7 @@ describe("options", () => {
     it("should throw when type is array and contents does not match itemsType", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({
           name: "fooOption",
@@ -468,6 +509,7 @@ describe("options", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       const opt = namespace.addOption({ name: "fooOption", type: "unknown" });
+
       expect(() => (opt.value = "bar")).not.toThrow();
     });
 
@@ -475,6 +517,7 @@ describe("options", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       const opt = namespace.addOption({ name: "fooOption", type: "unknown" });
+
       expect(() => (opt.value = 10)).not.toThrow();
     });
 
@@ -482,6 +525,7 @@ describe("options", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       const opt = namespace.addOption({ name: "fooOption", type: "unknown" });
+
       expect(() => (opt.value = ["foo"])).not.toThrow();
     });
 
@@ -489,6 +533,7 @@ describe("options", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       const opt = namespace.addOption({ name: "fooOption", type: "unknown" });
+
       expect(() => (opt.value = { foo: "bar" })).not.toThrow();
     });
 
@@ -499,6 +544,7 @@ describe("options", () => {
         name: "fooOption",
         type: "unknown",
       });
+
       expect(
         () =>
           (opt.value = () => {
@@ -514,6 +560,7 @@ describe("options", () => {
         name: "fooOption",
         type: "unknown",
       });
+
       expect(() => (opt.value = true)).not.toThrow();
     });
 
@@ -525,6 +572,7 @@ describe("options", () => {
         type: "array",
         itemsType: "unknown",
       });
+
       expect(() => (opt.value = ["foo"])).not.toThrow();
     });
 
@@ -536,6 +584,7 @@ describe("options", () => {
         type: "array",
         itemsType: "unknown",
       });
+
       expect(() => (opt.value = [1])).not.toThrow();
     });
 
@@ -547,6 +596,7 @@ describe("options", () => {
         type: "array",
         itemsType: "unknown",
       });
+
       expect(() => (opt.value = [[1]])).not.toThrow();
     });
 
@@ -558,6 +608,7 @@ describe("options", () => {
         type: "array",
         itemsType: "unknown",
       });
+
       expect(() => {
         opt.value = [
           () => {
@@ -576,6 +627,7 @@ describe("options", () => {
         itemsType: "unknown",
         default: [false],
       });
+
       expect(() => (opt.value = [true, false])).not.toThrow();
     });
 
@@ -587,6 +639,7 @@ describe("options", () => {
         type: "array",
         itemsType: "unknown",
       });
+
       expect(() => {
         opt.value = [
           false,
@@ -605,6 +658,7 @@ describe("options", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "array" });
+
       expect(() => (option.value = 5)).toThrowError("5 is not of type array");
     });
 
@@ -612,6 +666,7 @@ describe("options", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "array", itemsType: "string" });
+
       expect(() => (option.value = ["5", "4", 5, "2"])).toThrowError("5 is not of type string");
     });
 
@@ -620,6 +675,7 @@ describe("options", () => {
       namespace = config.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "array", itemsType: "string" });
       option.value = ["5", "4", "5", "2"];
+
       expect(option.value).toEqual(["5", "4", "5", "2"]);
     });
 
@@ -627,6 +683,7 @@ describe("options", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "array", itemsType: "number" });
+
       expect(() => (option.value = [5, 4, "5", 1])).toThrowError("5 is not of type number");
     });
 
@@ -635,6 +692,7 @@ describe("options", () => {
       namespace = config.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "array", itemsType: "number" });
       option.value = [5, 4, 5, 1];
+
       expect(option.value).toEqual([5, 4, 5, 1]);
     });
 
@@ -642,6 +700,7 @@ describe("options", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "array", itemsType: "boolean" });
+
       expect(() => (option.value = [false, true, 5, false])).toThrowError(
         "5 is not of type boolean"
       );
@@ -652,6 +711,7 @@ describe("options", () => {
       namespace = config.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "array", itemsType: "boolean" });
       option.value = [false, true, false];
+
       expect(option.value).toEqual([false, true, false]);
     });
 
@@ -659,6 +719,7 @@ describe("options", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "array", itemsType: "object" });
+
       expect(() => (option.value = [{ foo: "foo" }, "foo"])).toThrowError(
         "foo is not of type object"
       );
@@ -669,6 +730,7 @@ describe("options", () => {
       namespace = config.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "array", itemsType: "object" });
       option.value = [{ foo: "foo" }, { foo2: "foo2" }];
+
       expect(option.value).toEqual([{ foo: "foo" }, { foo2: "foo2" }]);
     });
 
@@ -676,12 +738,14 @@ describe("options", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "string" });
+
       expect(() => (option.value = 5)).toThrowError("5 is not of type string");
     });
 
     it("should throw when type is number and default does not match type", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "number", default: "5" })
       ).toThrowError("default");
@@ -691,12 +755,14 @@ describe("options", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "number" });
+
       expect(() => (option.value = "foo")).toThrowError("foo is not of type number");
     });
 
     it("should throw when type is object and default does not match type", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "object", default: "{}" })
       ).toThrowError("default");
@@ -706,12 +772,14 @@ describe("options", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "object" });
+
       expect(() => (option.value = "foo")).toThrowError("foo is not of type object");
     });
 
     it("should throw when type is boolean and default does not match type", async () => {
       config = new Config();
       namespace = config.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "boolean", default: "foo" })
       ).toThrowError("default");
@@ -721,6 +789,7 @@ describe("options", () => {
       config = new Config();
       namespace = config.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "boolean" });
+
       expect(() => (option.value = 1)).toThrowError("1 is not of type boolean");
     });
   });
@@ -736,11 +805,13 @@ describe("options", () => {
 
     it("option should return default value", async () => {
       await config.init();
+
       expect(option.value).toEqual("default-str");
     });
 
     it("option should be initializated when calling to start only", async () => {
       await config.load();
+
       expect(option.value).toEqual("default-str");
     });
 
@@ -753,6 +824,7 @@ describe("options", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual({ foo: "var" });
     });
 
@@ -767,6 +839,7 @@ describe("options", () => {
       });
       await config.init();
       defaultValue.foo2 = "foo2";
+
       expect(option.value).toEqual({ foo: "var" });
       expect(option.value).not.toBe(defaultValue);
     });
@@ -781,6 +854,7 @@ describe("options", () => {
         itemsType: "string",
       });
       await config.init();
+
       expect(option.value).toEqual(["foo", "foo2"]);
     });
 
@@ -796,14 +870,18 @@ describe("options", () => {
       });
       await config.init();
       defaultValue.push("foo3");
+
       expect(option.value).toEqual(["foo", "foo2"]);
       expect(option.value).not.toBe(defaultValue);
     });
 
     it("option should return new value after setting it", async () => {
       await config.init();
+
       expect(option.value).toEqual("default-str");
+
       option.value = "new-str";
+
       expect(option.value).toEqual("new-str");
     });
 
@@ -817,8 +895,11 @@ describe("options", () => {
         itemsType: "string",
       });
       await config.init();
+
       expect(option.value).toEqual(["foo", "foo2"]);
+
       option.value.push("foo3");
+
       expect(option.value).toEqual(["foo", "foo2"]);
     });
 
@@ -831,15 +912,21 @@ describe("options", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual({ foo: "var" });
+
       option.value.foo2 = "foo2";
+
       expect(option.value).toEqual({ foo: "var" });
     });
 
     it("option omit undefined when setting value", async () => {
       await config.init();
+
       expect(option.value).toEqual("default-str");
+
       option.value = undefined;
+
       expect(option.value).toEqual("default-str");
     });
 
@@ -852,8 +939,11 @@ describe("options", () => {
         type: "number",
       });
       await config.init();
+
       expect(option.value).toEqual(5);
+
       option.value = 10;
+
       expect(option.value).toEqual(10);
     });
 
@@ -866,8 +956,11 @@ describe("options", () => {
         type: "boolean",
       });
       await config.init();
+
       expect(option.value).toEqual(true);
+
       option.value = false;
+
       expect(option.value).toEqual(false);
     });
 
@@ -880,8 +973,11 @@ describe("options", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual({ foo: "var" });
+
       option.set({ foo2: "var2" }, { merge: true });
+
       expect(option.value).toEqual({ foo2: "var2", foo: "var" });
     });
 
@@ -894,8 +990,11 @@ describe("options", () => {
         type: "array",
       });
       await config.init();
+
       expect(option.value).toEqual(["foo", "foo2"]);
+
       option.value = ["foo3", "foo4"];
+
       expect(option.value).toEqual(["foo3", "foo4"]);
     });
 
@@ -908,21 +1007,28 @@ describe("options", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual({ foo: "var" });
+
       option.set(undefined, { merge: true });
+
       expect(option.value).toEqual({ foo: "var" });
     });
 
     it("option should emit an event after setting new value", async () => {
       expect.assertions(2);
+
       let resolver;
       await config.load();
+
       expect(option.value).toEqual("default-str");
+
       const promise = new Promise((resolve) => {
         resolver = resolve;
       });
       option.onChange((newValue) => {
         expect(newValue).toEqual("new-str");
+
         resolver();
       });
       option.value = "new-str";
@@ -931,6 +1037,7 @@ describe("options", () => {
 
     it("option should emit an event after setting new value in option in root config", async () => {
       expect.assertions(2);
+
       let resolver;
       option = config.addOption({
         name: "rootOption",
@@ -938,12 +1045,15 @@ describe("options", () => {
         default: "foo-root-value",
       });
       await config.load();
+
       expect(option.value).toEqual("foo-root-value");
+
       const promise = new Promise((resolve) => {
         resolver = resolve;
       });
       option.onChange((newValue) => {
         expect(newValue).toEqual("new-str");
+
         resolver();
       });
       option.value = "new-str";
@@ -952,6 +1062,7 @@ describe("options", () => {
 
     it("option should emit an event after setting new value in option in nested namespace", async () => {
       expect.assertions(2);
+
       let resolver;
       option = namespace.addNamespace("childNamespace").addNamespace("childNamespace").addOption({
         name: "childOption",
@@ -959,12 +1070,15 @@ describe("options", () => {
         default: "foo-child-value",
       });
       await config.load();
+
       expect(option.value).toEqual("foo-child-value");
+
       const promise = new Promise((resolve) => {
         resolver = resolve;
       });
       option.onChange((newValue) => {
         expect(newValue).toEqual("new-str");
+
         resolver();
       });
       option.value = "new-str";
@@ -973,9 +1087,12 @@ describe("options", () => {
 
     it("option should not emit an event after setting same value", async () => {
       expect.assertions(2);
+
       const spy = sinon.spy();
       await config.load();
+
       expect(option.value).toEqual("default-str");
+
       option.onChange(spy);
       option.value = "default-str";
       await wait();
@@ -993,9 +1110,12 @@ describe("options", () => {
       });
 
       expect.assertions(2);
+
       const spy = sinon.spy();
       await config.load();
+
       expect(option.value).toEqual(["foo", "foo2"]);
+
       option.onChange(spy);
       option.value = ["foo", "foo2"];
       await wait();
@@ -1005,9 +1125,12 @@ describe("options", () => {
 
     it("option should not emit an event before calling to start", async () => {
       expect.assertions(2);
+
       const spy = sinon.spy();
       await config.init();
+
       expect(option.value).toEqual("default-str");
+
       option.onChange(spy);
       option.value = "foo-str";
       await wait();
@@ -1017,9 +1140,12 @@ describe("options", () => {
 
     it("option event should be removed if returned callback is executed", async () => {
       expect.assertions(2);
+
       const spy = sinon.spy();
       await config.load();
+
       expect(option.value).toEqual("default-str");
+
       const removeCallback = option.onChange(spy);
       removeCallback();
       option.value = "foo-str";
@@ -1030,6 +1156,7 @@ describe("options", () => {
 
     it("option should emit an event with merged value after setting new value when it is of type object and merge option is true", async () => {
       expect.assertions(2);
+
       let resolver;
       config = new Config({ moduleName: "testObjectSet" });
       namespace = config.addNamespace("fooNamespace");
@@ -1039,12 +1166,15 @@ describe("options", () => {
         type: "object",
       });
       await config.load();
+
       expect(option.value).toEqual({ foo: "var" });
+
       const promise = new Promise((resolve) => {
         resolver = resolve;
       });
       option.onChange((newValue) => {
         expect(newValue).toEqual({ foo: "var", foo2: "foo" });
+
         resolver();
       });
       option.set({ foo2: "foo" }, { merge: true });
@@ -1059,6 +1189,7 @@ describe("options", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual(undefined);
     });
 
@@ -1070,8 +1201,11 @@ describe("options", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual(undefined);
+
       option.set({ foo: "var" }, { merge: true });
+
       expect(option.value).toEqual({ foo: "var" });
     });
   });

@@ -42,6 +42,7 @@ describe("when registering route handlers", () => {
 
     it("should serve users in /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },

@@ -91,6 +91,7 @@ describe("VariantHandlerJson variant handler", () => {
   describe("middleware", () => {
     it("should return response body and status", () => {
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
+
       expect(expressStubs.res.status.getCall(0).args[0]).toEqual(FOO_VARIANT.status);
       expect(expressStubs.res.send.getCall(0).args[0]).toEqual(FOO_VARIANT.body);
     });
@@ -99,6 +100,7 @@ describe("VariantHandlerJson variant handler", () => {
       const FOO_HEADERS = { "Content-Type": "application/json; charset=utf-8" };
       routesHandler = new VariantHandlerJson({ ...FOO_VARIANT }, coreInstance);
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
+
       expect(expressStubs.res.set.getCall(0).args[0]).toEqual(FOO_HEADERS);
     });
 
@@ -109,6 +111,7 @@ describe("VariantHandlerJson variant handler", () => {
         coreInstance
       );
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
+
       expect(expressStubs.res.set.getCall(0).args[0]).toEqual(FOO_HEADERS);
     });
   });

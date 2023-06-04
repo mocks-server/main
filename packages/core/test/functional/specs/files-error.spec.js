@@ -44,12 +44,14 @@ describe("when there is an error loading files", () => {
 
     it("should have added an alert about error loading collections", async () => {
       const alert = findAlert("files:load:", core.alerts.flat);
+
       expect(alert.message).toEqual(expect.stringContaining("Error loading file"));
       expect(alert.message).toEqual(expect.stringContaining("collections.js"));
     });
 
     it("should have not added an alert about no collections file found", async () => {
       const alert = findAlert("files:loader:collections:not-found", core.alerts.flat);
+
       expect(alert).toBe(undefined);
     });
   });
@@ -78,6 +80,7 @@ describe("when there is an error loading files", () => {
 
     it("should have added an alert about error loading routes", async () => {
       const alert = findAlert("files:load:", core.alerts.flat);
+
       expect(alert.message).toEqual(expect.stringContaining("Error loading file"));
       expect(alert.message).toEqual(expect.stringContaining("user.js"));
     });

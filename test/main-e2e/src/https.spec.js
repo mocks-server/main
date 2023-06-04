@@ -48,6 +48,7 @@ describe("scaffold", () => {
 
     it("should serve users collection mock under the /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -82,6 +83,7 @@ describe("scaffold", () => {
         protocol: "https",
         agent: httpsAgent,
       });
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -115,6 +117,7 @@ describe("scaffold", () => {
         protocol: "https",
         agent: httpsAgent,
       });
+
       expect(about.body.versions.core).toBeDefined();
     });
 
@@ -123,6 +126,7 @@ describe("scaffold", () => {
         protocol: "https",
         agent: httpsAgent,
       });
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -154,6 +158,7 @@ describe("scaffold", () => {
       const about = await doFetch("/api/about", {
         port: 3110,
       });
+
       expect(about.body.versions.core).toBeDefined();
     });
 
@@ -162,6 +167,7 @@ describe("scaffold", () => {
         protocol: "https",
         agent: httpsAgent,
       });
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -191,6 +197,7 @@ describe("scaffold", () => {
 
     it("should serve users collection mock using http", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },

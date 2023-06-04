@@ -19,6 +19,7 @@ const {
 
 describe("server", () => {
   let server, hostOption, portOption;
+
   beforeAll(async () => {
     server = await startServer("web-tutorial", { log: "silly" });
     hostOption = server.config.namespace("plugins").namespace("adminApi").option("host");
@@ -33,6 +34,7 @@ describe("server", () => {
   describe("when started", () => {
     it("should return current config", async () => {
       const response = await doApiFetch("/config");
+
       expect(response.body.files.path).toEqual(fixturesFolder("web-tutorial"));
     });
   });
@@ -42,12 +44,14 @@ describe("server", () => {
       await server._stopPlugins();
       await waitForServer();
       const error = await doApiFetch("/config").catch((err) => Promise.resolve(err));
+
       expect(error.message).toEqual(expect.stringContaining("ECONNREFUSED"));
     });
 
     it("should respond to mock requests", async () => {
       await server._stopPlugins();
       const response = await doFetch("/api/users");
+
       expect(response.body).toEqual([
         {
           id: 1,
@@ -72,6 +76,7 @@ describe("server", () => {
       });
       await wait(1000);
       const response = await doFetch("/api/users/2");
+
       expect(response.body).toEqual({
         id: 2,
         name: "Jane Doe",
@@ -82,6 +87,7 @@ describe("server", () => {
       await server._stopPlugins();
       await waitForServer();
       const error = await doApiFetch("/config").catch((err) => Promise.resolve(err));
+
       expect(error.message).toEqual(expect.stringContaining("ECONNREFUSED"));
     });
   });
@@ -91,6 +97,7 @@ describe("server", () => {
       await server._startPlugins();
       await waitForServer();
       const response = await doFetch("/api/users/2");
+
       expect(response.body).toEqual({
         id: 2,
         name: "Jane Doe",
@@ -99,11 +106,13 @@ describe("server", () => {
 
     it("should have started the plugin", async () => {
       const response = await doApiFetch("/config");
+
       expect(response.body.files.path).toEqual(fixturesFolder("web-tutorial"));
     });
 
     it("should respond to mock requests", async () => {
       const response = await doFetch("/api/users");
+
       expect(response.body).toEqual([
         {
           id: 1,
@@ -120,6 +129,7 @@ describe("server", () => {
   describe("when url does not exist", () => {
     it("should respond not found", async () => {
       const response = await doApiFetch("/foo");
+
       expect(response.status).toEqual(404);
       expect(response.body).toEqual({ error: "Not Found", message: "Not Found", statusCode: 404 });
     });
@@ -127,6 +137,7 @@ describe("server", () => {
 
   describe("when there is an error", () => {
     let routes;
+
     beforeAll(() => {
       routes = server.mock.routes.plain;
       server.mock._routes = null;
@@ -138,6 +149,7 @@ describe("server", () => {
 
     it("should respond with error 500", async () => {
       const response = await doApiFetch("/mock/routes");
+
       expect(response.status).toEqual(500);
       expect(response.body).toEqual({
         error: "Internal Server Error",
@@ -163,11 +175,13 @@ describe("server", () => {
       const response = await doApiFetch("/config", {
         port: 3102,
       });
+
       expect(response.body.files.path).toEqual(fixturesFolder("web-tutorial"));
     });
 
     it("should respond to mock requests at same port", async () => {
       const response = await doFetch("/api/users");
+
       expect(response.body).toEqual([
         {
           id: 1,
@@ -206,6 +220,7 @@ describe("server", () => {
       const response = await doApiFetch("/config", {
         port: 3103,
       });
+
       expect(response.body.files.path).toEqual(fixturesFolder("web-tutorial"));
     });
   });
@@ -217,6 +232,7 @@ describe("server", () => {
       const error = await doApiFetch("/config", { port: 3103 }).catch((err) =>
         Promise.resolve(err)
       );
+
       expect(error.message).toEqual(expect.stringContaining("ECONNREFUSED"));
     });
   });
@@ -230,6 +246,7 @@ describe("server", () => {
       const error = await doApiFetch("/config", { port: 3103 }).catch((err) =>
         Promise.resolve(err)
       );
+
       expect(error.message).toEqual(expect.stringContaining("ECONNREFUSED"));
     });
   });
@@ -243,6 +260,7 @@ describe("server", () => {
       const response = await doApiFetch("/config", {
         port: 3115,
       });
+
       expect(response.body.plugins.adminApi.port).toEqual(3115);
       expect(response.body.plugins.adminApi.host).toEqual("0.0.0.0");
     });

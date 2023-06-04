@@ -26,6 +26,7 @@ describe("start method", () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     coreMocks = new CoreMocks();
+
     expect.assertions(1);
   });
 
@@ -36,6 +37,7 @@ describe("start method", () => {
 
   it("should create a new Core, passing to it options for CLI", async () => {
     await start();
+
     expect(coreMocks.stubs.Constructor.mock.calls[0][0]).toEqual({
       config: { readArguments: true, readEnvironment: true, readFile: true },
       plugins: {
@@ -53,6 +55,7 @@ describe("start method", () => {
       throw new Error(errorMessage);
     });
     await start();
+
     expect(console.error.getCall(0).args[0]).toEqual(`Error: ${errorMessage}`);
   });
 
@@ -61,6 +64,7 @@ describe("start method", () => {
     sandbox.stub(console, "error");
     coreMocks.stubs.instance.start.rejects(new Error(errorMessage));
     await start();
+
     expect(console.error.getCall(0).args[0]).toEqual(`Error: ${errorMessage}`);
   });
 });

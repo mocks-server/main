@@ -19,6 +19,7 @@ describe("environment nested", () => {
       ({ config, namespace, option } = createConfig({ moduleName: "namespaceTestA" }));
       process.env["NAMESPACE_TEST_A_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init();
+
       expect(option.value).toEqual("foo-from-env");
     });
 
@@ -33,6 +34,7 @@ describe("environment nested", () => {
         default: {},
         type: "object",
       });
+
       await expect(config.init()).rejects.toThrowError("fooOption");
     });
 
@@ -48,6 +50,7 @@ describe("environment nested", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual({ foo: 1, foo2: { var: false, var2: "x" } });
     });
 
@@ -55,6 +58,7 @@ describe("environment nested", () => {
       ({ config, namespace, option } = createConfig({ moduleName: "namespaceTestB" }));
       process.env["NAMESPACE_TEST_B_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init({ parentNamespace: { fooNamespace: { fooOption: "value-from-init" } } });
+
       expect(option.value).toEqual("foo-from-env");
     });
 
@@ -65,6 +69,7 @@ describe("environment nested", () => {
       });
       process.env["NAMESPACE_TEST_C_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init({ parentNamespace: { fooNamespace: { fooOption: "value-from-init" } } });
+
       expect(option.value).toEqual("foo-from-env");
     });
 
@@ -84,6 +89,7 @@ describe("environment nested", () => {
           fooNamespace: { fooOption: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" } },
         },
       });
+
       expect(option.value).toEqual({
         foo: 1,
         foo2: { var: false, var2: "x", var4: "y" },
@@ -104,6 +110,7 @@ describe("environment nested", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual({
         foo: 1,
         foo2: { var: false, var2: "x", var4: "y" },
@@ -134,6 +141,7 @@ describe("environment nested", () => {
           fooNamespace: { fooOption: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" } },
         },
       });
+
       expect(option.value).toEqual({
         foo: 1,
         foo2: { var: false, var2: "x", var4: "y", var5: 5 },
@@ -192,6 +200,7 @@ describe("environment nested", () => {
           },
         },
       });
+
       expect(option.value).toEqual({ foo: 2, foo2: { var: true, var3: "foo" }, foo4: "test" });
       expect(option2.value).toEqual({ foo5: { foo6: "x", foo7: "y", foo8: 8, foo9: true } });
       expect(option3.value).toEqual(true);

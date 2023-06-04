@@ -76,6 +76,7 @@ describe("Middleware variant handler", () => {
         coreInstance
       );
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
+
       expect(fooResponseMethod.getCall(0).args[0]).toEqual(expressStubs.req);
       expect(fooResponseMethod.getCall(0).args[1]).toEqual(expressStubs.res);
       expect(fooResponseMethod.getCall(0).args[2]).toEqual(expressStubs.next);

@@ -20,6 +20,7 @@ const {
 
 describe("settings api", () => {
   let server;
+
   beforeAll(async () => {
     server = await startServer("web-tutorial");
     await waitForServer();
@@ -32,6 +33,7 @@ describe("settings api", () => {
   describe("get", () => {
     it("should return current config", async () => {
       const settingsResponse = await doApiFetch("/config");
+
       expect(settingsResponse.body).toEqual({
         config: {
           allowUnknownArguments: true,
@@ -99,6 +101,7 @@ describe("settings api", () => {
     describe("when changing an unexistant option", () => {
       it("should response with a bad request containing errors", async () => {
         expect.assertions(4);
+
         const settingsResponse = await doApiFetch("/config", {
           method: "PATCH",
           body: {
@@ -109,6 +112,7 @@ describe("settings api", () => {
             },
           },
         });
+
         expect(settingsResponse.status).toEqual(400);
         expect(settingsResponse.body.message).toEqual(expect.stringContaining("foo"));
         expect(settingsResponse.body.message).toEqual(expect.stringContaining("anotherFoo"));
@@ -117,6 +121,7 @@ describe("settings api", () => {
 
       it("should not apply any change if request contains any error", async () => {
         expect.assertions(3);
+
         const settingsUpdateResponse = await doApiFetch("/config", {
           method: "PATCH",
           body: {
@@ -125,6 +130,7 @@ describe("settings api", () => {
           },
         });
         const settingsResponse = await doApiFetch("/config");
+
         expect(settingsUpdateResponse.status).toEqual(400);
         expect(settingsUpdateResponse.body.message).toEqual(expect.stringContaining("foo"));
         expect(settingsResponse.body.mock.routes.delay).toEqual(0);
@@ -136,6 +142,7 @@ describe("settings api", () => {
         const timeCounter = new TimeCounter();
         await doFetch("/api/users");
         timeCounter.stop();
+
         expect(timeCounter.total).toBeLessThan(200);
       });
 
@@ -153,6 +160,7 @@ describe("settings api", () => {
         });
         await doFetch("/api/users");
         timeCounter.stop();
+
         expect(timeCounter.total).toBeGreaterThan(2000);
       });
 
@@ -170,6 +178,7 @@ describe("settings api", () => {
         const timeCounter = new TimeCounter();
         await doFetch("/api/users");
         timeCounter.stop();
+
         expect(timeCounter.total).toBeLessThan(200);
       });
     });
@@ -178,11 +187,13 @@ describe("settings api", () => {
       describe("without changing it", () => {
         it("should serve user 1 under the /api/users/1 path", async () => {
           const users = await doFetch("/api/users/1");
+
           expect(users.body).toEqual({ id: 1, name: "John Doe" });
         });
 
         it("should serve user 1 under the /api/users/2 path", async () => {
           const users = await doFetch("/api/users/2");
+
           expect(users.body).toEqual({ id: 1, name: "John Doe" });
         });
       });
@@ -203,16 +214,19 @@ describe("settings api", () => {
 
         it("should return new collection when getting settings", async () => {
           const settingsResponse = await doApiFetch("/config");
+
           expect(settingsResponse.body.mock.collections.selected).toEqual("user-2");
         });
 
         it("should serve user 2 under the /api/users/1 path", async () => {
           const users = await doFetch("/api/users/1");
+
           expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
         });
 
         it("should serve user 2 under the /api/users/2 path", async () => {
           const users = await doFetch("/api/users/2");
+
           expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
         });
       });
@@ -245,11 +259,13 @@ describe("settings api", () => {
 
       it("should return new path option when getting settings", async () => {
         const settingsResponse = await doApiFetch("/config");
+
         expect(settingsResponse.body.files.path).toEqual(fixturesFolder("web-tutorial-modified"));
       });
 
       it("should serve users collection mock under the /api/users path", async () => {
         const users = await doFetch("/api/users");
+
         expect(users.body).toEqual([
           { id: 1, name: "John Doe modified" },
           { id: 2, name: "Jane Doe modified" },
@@ -286,6 +302,7 @@ describe("settings api", () => {
         const users = await doFetch("/api/users/1", {
           port: 3200,
         });
+
         expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
       });
     });

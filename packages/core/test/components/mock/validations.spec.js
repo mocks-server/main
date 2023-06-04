@@ -95,6 +95,7 @@ describe("mocks validations", () => {
         ...VALID_ROUTE,
         id: undefined,
       });
+
       expect(errors.message).toEqual("Route is invalid:  must have required property 'id'");
       expect(errors.errors.length).toEqual(1);
     });
@@ -104,6 +105,7 @@ describe("mocks validations", () => {
         ...VALID_ROUTE,
         id: 4,
       });
+
       expect(errors.message).toEqual("Route with id '4' is invalid: /id: type must be string");
       expect(errors.errors.length).toEqual(1);
     });
@@ -113,6 +115,7 @@ describe("mocks validations", () => {
         ...VALID_ROUTE,
         url: 4,
       });
+
       expect(errors.message).toEqual(
         "Route with id 'foo-route' is invalid: /url: type must be string. /url: instanceof must pass \"instanceof\" keyword validation. /url: oneOf must match exactly one schema in oneOf"
       );
@@ -124,6 +127,7 @@ describe("mocks validations", () => {
         ...VALID_ROUTE,
         url: /^foo/g,
       });
+
       expect(errors).toEqual(null);
     });
 
@@ -132,6 +136,7 @@ describe("mocks validations", () => {
         ...VALID_ROUTE,
         method: "FOO",
       });
+
       expect(errors.message).toEqual(
         "Route with id 'foo-route' is invalid: /method: enum must be equal to one of the allowed values. /method: type must be array. /method: oneOf must match exactly one schema in oneOf"
       );
@@ -142,6 +147,7 @@ describe("mocks validations", () => {
         ...VALID_ROUTE,
         delay: -2,
       });
+
       expect(errors.message).toEqual(
         "Route with id 'foo-route' is invalid: /delay: minimum must be >= 0"
       );
@@ -152,6 +158,7 @@ describe("mocks validations", () => {
         ...VALID_ROUTE,
         variants: "foo",
       });
+
       expect(errors.message).toEqual(
         "Route with id 'foo-route' is invalid: /variants: type must be array"
       );
@@ -169,6 +176,7 @@ describe("mocks validations", () => {
           },
         ],
       });
+
       expect(errors.message).toEqual(
         "Route with id 'foo-route' is invalid: /variants/0 must have required property 'type'. /variants/1 must have required property 'type'"
       );
@@ -184,6 +192,7 @@ describe("mocks validations", () => {
           },
         ],
       });
+
       expect(errors.message).toEqual(
         "Route with id 'foo-route' is invalid: /variants/0 must have required property 'type'"
       );
@@ -201,6 +210,7 @@ describe("mocks validations", () => {
           },
         ],
       });
+
       expect(errors.message).toEqual(
         "Route with id 'foo-route' is invalid: /variants/0 Property type is not expected to be here. /variants/0 Property delay is not expected to be here. /variants/0 Property options is not expected to be here. /variants/0: oneOf must match exactly one schema in oneOf. /variants/0/delay: type must be null. /variants/0/delay: minimum must be >= 0. /variants/0/delay: oneOf must match exactly one schema in oneOf"
       );
@@ -219,6 +229,7 @@ describe("mocks validations", () => {
           },
         ],
       });
+
       expect(errors.message).toEqual(
         "Route with id '4' is invalid:  must have required property 'url'. /id: type must be string. /method: enum must be equal to one of the allowed values. /method: type must be array. /method: oneOf must match exactly one schema in oneOf. /delay: minimum must be >= 0. /variants/0 must have required property 'type'"
       );
@@ -240,6 +251,7 @@ describe("mocks validations", () => {
           },
         ],
       });
+
       expect(errors).toEqual(null);
     });
   });
@@ -263,6 +275,7 @@ describe("mocks validations", () => {
         { ...VALID_VARIANT, id: undefined, options: undefined },
         VariantHandlerJson
       );
+
       expect(errors.message).toEqual(
         "Variant in route with id 'foo-route' is invalid: Invalid 'options' property:: type must be object"
       );
@@ -274,6 +287,7 @@ describe("mocks validations", () => {
         { ...VALID_VARIANT, options: undefined },
         VariantHandlerJson
       );
+
       expect(errors.message).toEqual(
         "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'options' property:: type must be object"
       );
@@ -290,6 +304,7 @@ describe("mocks validations", () => {
         },
         VariantHandlerJson
       );
+
       expect(errors.message).toEqual(
         "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'options' property: must have required property 'body'. /headers: type must be object"
       );
@@ -306,6 +321,7 @@ describe("mocks validations", () => {
         },
         VariantHandlerJson
       );
+
       expect(errors.message).toEqual(
         "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'options' property: Wrong type"
       );
@@ -333,6 +349,7 @@ describe("mocks validations", () => {
         { ...VALID_VARIANT, id: undefined, options: undefined },
         VariantHandlerMiddleware
       );
+
       expect(errors.message).toEqual(
         "Variant in route with id 'foo-route' is invalid: Invalid 'options' property:: type must be object"
       );
@@ -344,6 +361,7 @@ describe("mocks validations", () => {
         { ...VALID_VARIANT, options: undefined },
         VariantHandlerMiddleware
       );
+
       expect(errors.message).toEqual(
         "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'options' property:: type must be object"
       );
@@ -355,6 +373,7 @@ describe("mocks validations", () => {
         VALID_VARIANT,
         VariantHandlerMiddleware
       );
+
       expect(errors.message).toEqual(
         "Variant with id 'foo-variant' in route with id 'foo-route' is invalid: Invalid 'options' property: must have required property 'middleware'"
       );
@@ -374,6 +393,7 @@ describe("mocks validations", () => {
 
     it("should return error if collection is undefined", () => {
       const errors = collectionValidationErrors();
+
       expect(errors.message).toEqual(expect.stringContaining("type must be object"));
       expect(errors.errors.length).toEqual(1);
     });
@@ -382,6 +402,7 @@ describe("mocks validations", () => {
       const errors = collectionValidationErrors({
         routes: [],
       });
+
       expect(errors.message).toEqual("Collection is invalid:  must have required property 'id'");
       expect(errors.errors.length).toEqual(1);
     });
@@ -390,6 +411,7 @@ describe("mocks validations", () => {
       const errors = collectionValidationErrors({
         id: "foo",
       });
+
       expect(errors.message).toEqual(
         "Collection with id 'foo' is invalid:  must have required property 'routes'"
       );
@@ -400,6 +422,7 @@ describe("mocks validations", () => {
         from: 5,
         foo: "foo",
       });
+
       expect(errors.message).toEqual(
         "Collection is invalid:  must have required property 'routes'. /from: type must be string,null"
       );
@@ -444,6 +467,7 @@ describe("mocks validations", () => {
         },
         ROUTE_VARIANTS
       );
+
       expect(errors.message).toEqual(
         "Collection with id 'foo' is invalid: routeVariant with id 'foo:fake' was not found, use a valid 'routeId:variantId' identifier. routeVariant with id 'foo2:success' was not found, use a valid 'routeId:variantId' identifier"
       );
@@ -458,6 +482,7 @@ describe("mocks validations", () => {
         },
         ROUTE_VARIANTS
       );
+
       expect(errors.message).toEqual(
         "Collection with id 'foo' is invalid: route with id 'foo' is used more than once in the same collection"
       );
@@ -472,6 +497,7 @@ describe("mocks validations", () => {
         },
         ROUTE_VARIANTS
       );
+
       expect(errors.message).toEqual(
         "Collection with id 'foo' is invalid: route with id 'foo' is used more than once in the same collection. routeVariant with id 'foo2:success' was not found, use a valid 'routeId:variantId' identifier"
       );
@@ -482,6 +508,7 @@ describe("mocks validations", () => {
         id: "foo",
         from: "foo-base",
       });
+
       expect(errors).toEqual(null);
     });
   });

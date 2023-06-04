@@ -37,28 +37,35 @@ describe("Collection Decorator", () => {
   describe("id", () => {
     it("getter should return null if no collection id is provided", () => {
       const collection = new CollectionDecorator();
+
       expect(collection.id).toEqual(null);
     });
 
     it("getter should return collection id if provided", () => {
       const collection = new CollectionDecorator(COLLECTION_ID);
+
       expect(collection.id).toEqual(COLLECTION_ID);
     });
 
     it("setter should change collection id", () => {
       const collection = new CollectionDecorator(COLLECTION_ID);
+
       expect(collection.id).toEqual(COLLECTION_ID);
+
       collection.id = "new-id";
+
       expect(collection.id).toEqual("new-id");
     });
 
     it("should return always same collection if no id is provided when creating children", () => {
       const collection = new CollectionDecorator();
+
       expect(collection.collection().collection()).toBe(collection.collection().collection());
     });
 
     it("should return different collections if ids are different", () => {
       const collection = new CollectionDecorator();
+
       expect(collection.collection(COLLECTION_ID)).not.toBe(collection.collection());
     });
   });
@@ -66,11 +73,13 @@ describe("Collection Decorator", () => {
   describe("root", () => {
     it("should return same collection if it is root", () => {
       const collection = new CollectionDecorator();
+
       expect(collection.root).toBe(collection);
     });
 
     it("should return root collection if it is a namespace", () => {
       const collection = new CollectionDecorator("foo");
+
       expect(collection.collection("foo-2").collection("foo-3").root).toBe(collection);
     });
   });
@@ -80,18 +89,21 @@ describe("Collection Decorator", () => {
       const collection = new CollectionDecorator();
       const value = { foo: "foo" };
       collection.set(value, "foo");
+
       expect(collection.get("foo")).toBe(value);
     });
 
     it("should set the item value when it is a string", () => {
       const collection = new CollectionDecorator();
       collection.set(FOO_VALUE, "foo");
+
       expect(collection.get("foo")).toEqual(FOO_VALUE);
     });
 
     it("should set item with value undefined when no value is provided", () => {
       const collection = new CollectionDecorator();
       collection.set(undefined, ITEM_ID);
+
       expect(collection.get(ITEM_ID)).toBe(undefined);
     });
 
@@ -99,8 +111,11 @@ describe("Collection Decorator", () => {
       const NEW_VALUE = "foo-2";
       const collection = new CollectionDecorator();
       collection.set(FOO_VALUE, ITEM_ID);
+
       expect(collection.get(ITEM_ID)).toEqual(FOO_VALUE);
+
       collection.set(NEW_VALUE, ITEM_ID);
+
       expect(collection.get(ITEM_ID)).toEqual(NEW_VALUE);
     });
   });
@@ -109,16 +124,19 @@ describe("Collection Decorator", () => {
     it("should return undefined when item was set to undefined", () => {
       const collection = new CollectionDecorator();
       collection.set(undefined, ITEM_ID);
+
       expect(collection.get(ITEM_ID)).toBe(undefined);
     });
 
     it("should return null when item does not exists", () => {
       const collection = new CollectionDecorator();
+
       expect(collection.get(ITEM_ID)).toEqual(null);
     });
 
     it("should return null when neither item nor collection exist", () => {
       const collection = new CollectionDecorator();
+
       expect(collection.collection().collection().get(ITEM_ID)).toEqual(null);
     });
   });
@@ -127,16 +145,22 @@ describe("Collection Decorator", () => {
     it("should remove the item from collection", () => {
       const collection = new CollectionDecorator();
       collection.set(FOO_VALUE, ITEM_ID);
+
       expect(collection.items).toEqual([{ id: ITEM_ID, value: FOO_VALUE }]);
+
       collection.remove(ITEM_ID);
+
       expect(collection.items).toEqual([]);
     });
 
     it("should do nothing if the item is not found", () => {
       const collection = new CollectionDecorator();
       collection.set(FOO_VALUE, ITEM_ID);
+
       expect(collection.items).toEqual([{ id: ITEM_ID, value: FOO_VALUE }]);
+
       collection.remove("foo");
+
       expect(collection.items).toEqual([{ id: ITEM_ID, value: FOO_VALUE }]);
     });
 
@@ -145,12 +169,15 @@ describe("Collection Decorator", () => {
       collection.set(FOO_VALUE, "foo-item-0");
       collection.set(FOO_VALUE, ITEM_ID);
       collection.set(FOO_VALUE, "foo-item-2");
+
       expect(collection.items).toEqual([
         { id: "foo-item-0", value: FOO_VALUE },
         { id: ITEM_ID, value: FOO_VALUE },
         { id: "foo-item-2", value: FOO_VALUE },
       ]);
+
       collection.remove(ITEM_ID);
+
       expect(collection.items).toEqual([
         { id: "foo-item-0", value: FOO_VALUE },
         { id: "foo-item-2", value: FOO_VALUE },
@@ -164,12 +191,15 @@ describe("Collection Decorator", () => {
       collection.set(FOO_VALUE, "foo-item-0");
       collection.set(FOO_VALUE, ITEM_ID);
       collection.set(FOO_VALUE, "foo-item-2");
+
       expect(collection.items).toEqual([
         { id: "foo-item-0", value: FOO_VALUE },
         { id: ITEM_ID, value: FOO_VALUE },
         { id: "foo-item-2", value: FOO_VALUE },
       ]);
+
       collection.cleanItems();
+
       expect(collection.items).toEqual([]);
     });
   });
@@ -209,6 +239,7 @@ describe("Collection Decorator", () => {
       const collection = new CollectionDecorator();
       collection.onChange(() => {
         expect(collection.items).toEqual([{ id: ITEM_ID, value: FOO_VALUE }]);
+
         done();
       });
       collection.set(FOO_VALUE, ITEM_ID);
@@ -221,6 +252,7 @@ describe("Collection Decorator", () => {
       removeListener();
       collection.set(FOO_VALUE, ITEM_ID);
       await wait();
+
       expect(spy.callCount).toEqual(0);
     });
 
@@ -229,6 +261,7 @@ describe("Collection Decorator", () => {
       const childCollection = collection.collection("foo").collection("foo");
       collection.onChange(() => {
         expect(childCollection.items).toEqual([{ id: ITEM_ID, value: FOO_VALUE }]);
+
         done();
       });
       childCollection.set(FOO_VALUE, ITEM_ID);
@@ -239,6 +272,7 @@ describe("Collection Decorator", () => {
       collection.set(FOO_VALUE, ITEM_ID);
       collection.onChange(() => {
         expect(collection.items).toEqual([{ id: ITEM_ID, value: "foo-new-value" }]);
+
         done();
       });
       collection.set("foo-new-value", ITEM_ID);
@@ -250,6 +284,7 @@ describe("Collection Decorator", () => {
       childCollection.collection().set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
         expect(childCollection.items).toEqual([{ id: ITEM_ID, value: "foo-new-value" }]);
+
         done();
       });
       childCollection.set("foo-new-value", ITEM_ID);
@@ -260,6 +295,7 @@ describe("Collection Decorator", () => {
       collection.set(FOO_VALUE, ITEM_ID);
       collection.onChange(() => {
         expect(collection.items).toEqual([]);
+
         done();
       });
       collection.remove(ITEM_ID);
@@ -271,6 +307,7 @@ describe("Collection Decorator", () => {
       childCollection.set(FOO_VALUE, ITEM_ID);
       collection.onChange(() => {
         expect(childCollection.items).toEqual([]);
+
         done();
       });
       childCollection.remove(ITEM_ID);
@@ -281,6 +318,7 @@ describe("Collection Decorator", () => {
       collection.set(FOO_VALUE, ITEM_ID);
       collection.onChange(() => {
         expect(collection.items).toEqual([]);
+
         done();
       });
       collection.clean();
@@ -292,6 +330,7 @@ describe("Collection Decorator", () => {
       childCollection.set(FOO_VALUE, ITEM_ID);
       collection.onChange(() => {
         expect(childCollection.items).toEqual([]);
+
         done();
       });
       childCollection.clean();
@@ -302,6 +341,7 @@ describe("Collection Decorator", () => {
       collection.set(FOO_VALUE, ITEM_ID);
       collection.onChange(() => {
         expect(collection.items).toEqual([]);
+
         done();
       });
       collection.cleanItems();
@@ -313,6 +353,7 @@ describe("Collection Decorator", () => {
       childCollection.set(FOO_VALUE, ITEM_ID);
       collection.onChange(() => {
         expect(childCollection.items).toEqual([]);
+
         done();
       });
       childCollection.cleanItems();
@@ -322,6 +363,7 @@ describe("Collection Decorator", () => {
       const collection = new CollectionDecorator();
       collection.onChange(() => {
         expect(collection.id).toEqual("foo-new-id");
+
         done();
       });
       collection.id = "foo-new-id";
@@ -332,6 +374,7 @@ describe("Collection Decorator", () => {
       const childCollection = collection.collection("foo").collection("foo");
       collection.onChange(() => {
         expect(childCollection.id).toEqual("foo-new-id");
+
         done();
       });
       childCollection.id = "foo-new-id";

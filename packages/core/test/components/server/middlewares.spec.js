@@ -18,7 +18,7 @@ jest.mock("@hapi/boom");
 import * as Boom from "@hapi/boom";
 import bodyParser from "body-parser";
 
-import * as middlewares from "../../../src/server/middlewares";
+import * as middlewares from "../../../src/server/Middlewares";
 
 describe("middlewares", () => {
   let sandbox;
@@ -63,21 +63,25 @@ describe("middlewares", () => {
 
     it("should call to tracer verbose method, printing the request method", () => {
       middlewares.logRequest({ logger })(fooRequest, resMock, nextSpy);
+
       expect(loggerStub.getCall(0).args[0]).toEqual(expect.stringContaining("foo-method"));
     });
 
     it("should call to tracer verbose method, printing the request url", () => {
       middlewares.logRequest({ logger })(fooRequest, resMock, nextSpy);
+
       expect(loggerStub.getCall(0).args[0]).toEqual(expect.stringContaining("foo-url"));
     });
 
     it("should call to tracer verbose method, printing the request id", () => {
       middlewares.logRequest({ logger })(fooRequest, resMock, nextSpy);
+
       expect(loggerStub.getCall(0).args[0]).toEqual(expect.stringContaining("foo-id"));
     });
 
     it("should call to next callback", () => {
       middlewares.logRequest({ logger })(fooRequest, resMock, nextSpy);
+
       expect(nextSpy.callCount).toEqual(1);
     });
   });
@@ -98,11 +102,13 @@ describe("middlewares", () => {
 
     it("should call to tracer debug method, printing the request id", () => {
       middlewares.notFound({ logger })(fooRequest, resMock, nextSpy);
+
       expect(loggerStub.getCall(0).args[0]).toEqual(expect.stringContaining("foo-id"));
     });
 
     it("should call to next callback, passing a not found error", () => {
       middlewares.notFound({ logger })(fooRequest, resMock, nextSpy);
+
       expect(nextSpy.getCall(0).args[0]).toEqual(fooNotFoundError);
     });
   });
@@ -135,21 +141,25 @@ describe("middlewares", () => {
 
     it("should call to next callback if no error is received", () => {
       middlewares.errorHandler({ logger })(null, fooRequest, resMock, nextSpy);
+
       expect(nextSpy.callCount).toEqual(1);
     });
 
     it("should trace the received error with the request id", () => {
       middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
+
       expect(logger.error.getCall(0).args[0]).toEqual(expect.stringContaining("foo-id"));
     });
 
     it("should convert the received error to a bad implementation error if it is not a Boom error", () => {
       middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
+
       expect(Boom.badImplementation.mock.calls[0][0]).toEqual("foo error message");
     });
 
     it("should trace the received error message", () => {
       middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
+
       expect(logger.error.getCall(0).args[0]).toEqual(
         expect.stringContaining("foo bad implementation error message")
       );
@@ -157,30 +167,35 @@ describe("middlewares", () => {
 
     it("should trace the received error stack", () => {
       middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
+
       expect(logger.silly.getCall(0).args[0]).toEqual(fooError.stack.toString());
     });
 
     it("should call to set response status as error statusCode", () => {
       fooError.stack = null;
       middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
+
       expect(resMock.status.getCall(0).args[0]).toEqual("foo-bad-implementation-status-code");
     });
 
     it("should call to send response with error payload", () => {
       fooError.stack = null;
       middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
+
       expect(resMock.send.getCall(0).args[0]).toEqual("foo-bad-implementation-payload");
     });
 
     it("should not trace error stack if error is controlled", () => {
       Boom.isBoom.mockReturnValue(true);
       middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
+
       expect(logger.silly.callCount).toEqual(0);
     });
 
     it("should not convert the received error if it is controlled", () => {
       Boom.isBoom.mockReturnValue(true);
       middlewares.errorHandler({ logger })(fooError, fooRequest, resMock, nextSpy);
+
       expect(Boom.badImplementation).not.toHaveBeenCalled();
     });
   });
@@ -188,6 +203,7 @@ describe("middlewares", () => {
   describe("jsonBodyParser", () => {
     it("should call to json body parser passing options to it", () => {
       middlewares.jsonBodyParser({ foo: "foo" });
+
       expect(bodyParser.json.getCall(0).args[0]).toEqual({ foo: "foo" });
     });
   });
@@ -195,6 +211,7 @@ describe("middlewares", () => {
   describe("urlEncodedBodyParser", () => {
     it("should call to urlencoded body parser passing options to it", () => {
       middlewares.urlEncodedBodyParser({ foo: "foo" });
+
       expect(bodyParser.urlencoded.getCall(0).args[0]).toEqual({ foo: "foo" });
     });
   });

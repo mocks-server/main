@@ -34,6 +34,7 @@ describe("createServer", () => {
   describe("When started", () => {
     it("should serve users collection mock under the /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -42,11 +43,13 @@ describe("createServer", () => {
 
     it("should serve user 1 under the /api/users/1 path", async () => {
       const users = await doFetch("/api/users/1");
+
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 1 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/2");
+
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
   });
@@ -56,6 +59,7 @@ describe("createServer", () => {
       const response = await doFetch("/api/mock/collections", {
         port: 3110,
       });
+
       expect(response.body).toEqual([
         {
           id: "base",
@@ -90,6 +94,7 @@ describe("createServer", () => {
       const response = await doFetch("/api/mock/routes", {
         port: 3110,
       });
+
       expect(response.body).toEqual([
         {
           id: "add-headers",
@@ -121,6 +126,7 @@ describe("createServer", () => {
       const response = await doFetch("/api/mock/variants", {
         port: 3110,
       });
+
       expect(response.body).toEqual([
         {
           id: "add-headers:enabled",
@@ -211,6 +217,7 @@ describe("createServer", () => {
 
     it("should serve users collection mock under the /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -219,16 +226,19 @@ describe("createServer", () => {
 
     it("should serve user 1 under the /api/users/1 path", async () => {
       const users = await doFetch("/api/users/1");
+
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/2");
+
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
 
     it("should return not found for /api/users/3 path", async () => {
       const usersResponse = await doFetch("/api/users/3");
+
       expect(usersResponse.status).toEqual(404);
     });
   });
@@ -240,6 +250,7 @@ describe("createServer", () => {
 
     it("should serve users collection mock under the /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -248,16 +259,19 @@ describe("createServer", () => {
 
     it("should serve user 1 under the /api/users/1 path", async () => {
       const users = await doFetch("/api/users/1");
+
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 1 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/2");
+
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should return user 2 for /api/users/3 path", async () => {
       const users = await doFetch("/api/users/3");
+
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
   });
@@ -269,6 +283,7 @@ describe("createServer", () => {
 
     it("should serve users collection mock under the /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -277,16 +292,19 @@ describe("createServer", () => {
 
     it("should serve user 1 under the /api/users/1 path", async () => {
       const users = await doFetch("/api/users/1");
+
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/2");
+
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
 
     it("should return not found for /api/users/3 path", async () => {
       const usersResponse = await doFetch("/api/users/3");
+
       expect(usersResponse.status).toEqual(404);
     });
   });
@@ -310,11 +328,13 @@ describe("createServer", () => {
       const settingsResponse = await doFetch("/api/config", {
         port: 3110,
       });
+
       expect(settingsResponse.body.mock.collections.selected).toEqual("base");
     });
 
     it("should serve user 1 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/2");
+
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
   });
@@ -334,21 +354,25 @@ describe("createServer", () => {
       const response = await doFetch("/api/mock/custom-route-variants", {
         port: 3110,
       });
+
       expect(response.body).toEqual([{ id: "get-user:real" }]);
     });
 
     it("should serve user 1 under the /api/users/1 path", async () => {
       const users = await doFetch("/api/users/1");
+
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/2");
+
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
 
     it("should return not found for /api/users/3 path", async () => {
       const usersResponse = await doFetch("/api/users/3");
+
       expect(usersResponse.status).toEqual(404);
     });
   });
@@ -365,11 +389,13 @@ describe("createServer", () => {
       const response = await doFetch("/api/mock/custom-route-variants", {
         port: 3110,
       });
+
       expect(response.body).toEqual([]);
     });
 
     it("should serve user 1 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/1");
+
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
   });

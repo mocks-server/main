@@ -57,6 +57,7 @@ describe("generated collections", () => {
     describe("get-users route", () => {
       it("should have 200-json-one-user variant available in users collection", async () => {
         const response = await fetchJson("/api/users");
+
         expect(response.body).toEqual([
           {
             id: 1,
@@ -72,6 +73,7 @@ describe("generated collections", () => {
         const response = await fetchJson("/api/users", {
           method: "POST",
         });
+
         expect(response.body).toBe(undefined);
         expect(response.status).toEqual(201);
       });
@@ -80,6 +82,7 @@ describe("generated collections", () => {
     describe("get-users-id route", () => {
       it("should have 200-json-success variant available in users collection", async () => {
         const response = await fetchJson("/api/users/2");
+
         expect(response.body).toEqual({
           id: 1,
           name: "John Doe",
@@ -332,6 +335,7 @@ describe("generated collections", () => {
     describe("get-users route", () => {
       it("should have 200-json-one-user variant available in users collection", async () => {
         const response = await fetchJson("/api/users");
+
         expect(response.body).toEqual([
           {
             id: 1,
@@ -345,6 +349,7 @@ describe("generated collections", () => {
     describe("get-books route", () => {
       it("should be also available", async () => {
         const response = await fetchJson("/api/books");
+
         expect(response.body).toEqual([
           {
             title: "1984",

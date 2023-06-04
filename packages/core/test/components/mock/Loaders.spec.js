@@ -38,26 +38,35 @@ describe("DefinitionsManager", () => {
     it("should call to onLoad callback", async () => {
       const load = loaders.createLoader();
       load(["foo1", "foo2"]);
+
       expect(onLoad.callCount).toEqual(1);
     });
 
     it("should replace all previously loaded contents", async () => {
       expect.assertions(2);
+
       const load = loaders.createLoader();
       load(["foo1", "foo2"]);
+
       expect(loaders.definitions).toEqual(["foo1", "foo2"]);
+
       load(["foo3", "foo4"]);
+
       expect(loaders.definitions).toEqual(["foo3", "foo4"]);
     });
 
     it("should not replace contents of other load functions", async () => {
       expect.assertions(2);
+
       const load = loaders.createLoader();
       const load2 = loaders.createLoader();
       load(["foo1", "foo2"]);
       load2(["foo3", "foo4"]);
+
       expect(loaders.definitions).toEqual(["foo1", "foo2", "foo3", "foo4"]);
+
       load2(["foo5", "foo6"]);
+
       expect(loaders.definitions).toEqual(["foo1", "foo2", "foo5", "foo6"]);
     });
   });

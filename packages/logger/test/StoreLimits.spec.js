@@ -34,12 +34,15 @@ describe("Store limits", () => {
       logger.info("1");
       logger.info("2");
       logger.info("3");
+
       expect(cleanLogs(logger.store)).toEqual([
         formattedLog(LABEL, INFO, "1"),
         formattedLog(LABEL, INFO, "2"),
         formattedLog(LABEL, INFO, "3"),
       ]);
+
       logger.info("4");
+
       expect(cleanLogs(logger.store)).toEqual([
         formattedLog(LABEL, INFO, "2"),
         formattedLog(LABEL, INFO, "3"),
@@ -58,12 +61,15 @@ describe("Store limits", () => {
       logger.info("1");
       logger.info("2");
       logger.info("3");
+
       expect(cleanLogs(logger.globalStore)).toEqual([
         formattedLog(LABEL, INFO, "1"),
         formattedLog(LABEL, INFO, "2"),
         formattedLog(LABEL, INFO, "3"),
       ]);
+
       logger.info("4");
+
       expect(cleanLogs(logger.globalStore)).toEqual([
         formattedLog(LABEL, INFO, "2"),
         formattedLog(LABEL, INFO, "3"),
@@ -77,13 +83,16 @@ describe("Store limits", () => {
       namespace.info("2");
       logger.info("3");
       namespace.info("4");
+
       expect(cleanLogs(logger.globalStore)).toEqual([
         formattedLog(NAMESPACE_LABEL, INFO, "2"),
         formattedLog(LABEL, INFO, "3"),
         formattedLog(NAMESPACE_LABEL, INFO, "4"),
       ]);
+
       logger.info("5");
       namespace.info("6");
+
       expect(cleanLogs(logger.globalStore)).toEqual([
         formattedLog(NAMESPACE_LABEL, INFO, "4"),
         formattedLog(LABEL, INFO, "5"),

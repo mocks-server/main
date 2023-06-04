@@ -21,6 +21,7 @@ describe("when exitLogsMode is executed", () => {
 
   beforeEach(() => {
     expect.assertions(1);
+
     cliRunner = new CliRunner(["node", cliFile]);
   });
 
@@ -30,16 +31,19 @@ describe("when exitLogsMode is executed", () => {
 
   it('should print a menu with "Option 1"', async () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN);
+
     expect(cliRunner.logs.current).toEqual(expect.stringContaining("Option 1"));
   });
 
   it('should print a menu with "Exit" option', async () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN);
+
     expect(cliRunner.logs.current).toEqual(expect.stringContaining("Exit"));
   });
 
   it('should print selected option as "none" in header when inited', async () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN);
+
     expect(cliRunner.logs.current).toEqual(expect.stringContaining("Selected option: None"));
   });
 
@@ -48,22 +52,29 @@ describe("when exitLogsMode is executed", () => {
     const newScreen = await cliRunner.executeAndWaitUntilNewScreenRendered(
       cliRunner.pressEnter.bind(cliRunner)
     );
+
     expect(newScreen).toEqual(expect.stringContaining("Selected option: option1"));
   });
 
   it('should enter in logs mode, exit it after 500ms when user select "Display logs", and continue working normally', async () => {
     expect.assertions(3);
+
     await cliRunner.waitUntilHasLogged(END_SCREEN);
     cliRunner.cursorDown();
     let newScreen = await await cliRunner.executeAndWaitUntilNewScreenRendered(
       cliRunner.pressEnter.bind(cliRunner)
     );
+
     expect(newScreen).toEqual(expect.stringContaining("Displaying logs"));
+
     await cliRunner.waitUntilHasLogged(END_SCREEN);
+
     expect(cliRunner.logs.current).toEqual(expect.stringContaining("Option 1"));
+
     newScreen = await await cliRunner.executeAndWaitUntilNewScreenRendered(
       cliRunner.pressEnter.bind(cliRunner)
     );
+
     expect(newScreen).toEqual(expect.stringContaining("Selected option: option1"));
   });
 });

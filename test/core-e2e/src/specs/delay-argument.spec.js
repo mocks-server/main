@@ -31,9 +31,11 @@ describe("delay argument", () => {
 
   it("should set delay", async () => {
     expect.assertions(2);
+
     const timeCounter = new TimeCounter();
     const users = await doFetch("/api/users");
     timeCounter.stop();
+
     expect(users.body).toEqual([
       { id: 1, name: "John Doe" },
       { id: 2, name: "Jane Doe" },

@@ -25,6 +25,7 @@ describe("mocks api", () => {
   describe("get /", () => {
     it("should return current mocks", async () => {
       const response = await doApiFetch("/mock/collections");
+
       expect(response.body).toEqual([
         {
           id: "base",
@@ -51,6 +52,7 @@ describe("mocks api", () => {
   describe("get /base", () => {
     it("should return base mock", async () => {
       const response = await doApiFetch("/mock/collections/base");
+
       expect(response.body).toEqual({
         id: "base",
         from: null,
@@ -63,6 +65,7 @@ describe("mocks api", () => {
   describe("get /user-2", () => {
     it("should return user-2 mock", async () => {
       const response = await doApiFetch("/mock/collections/user-2");
+
       expect(response.body).toEqual({
         id: "user-2",
         from: "base",
@@ -75,6 +78,7 @@ describe("mocks api", () => {
   describe("get unexistant mock", () => {
     it("should return a not found error", async () => {
       const response = await doApiFetch("/mock/collections/foo");
+
       expect(response.status).toEqual(404);
       expect(response.body.message).toEqual('Collection with id "foo" was not found');
     });

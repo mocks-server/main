@@ -77,6 +77,7 @@ describe("commands", () => {
       CypressStub.env.withArgs("MOCKS_SERVER_ADMIN_API_HOST").returns("foo-host");
       CypressStub.env.withArgs("MOCKS_SERVER_ADMIN_API_HTTPS").returns("true");
       commands(CypressStub, cyStub);
+
       expect(
         apiClient.configClient.calledWith({
           port: "foo-port",
@@ -92,6 +93,7 @@ describe("commands", () => {
     it("should call to set current collection", () => {
       const { setCollection } = commands(CypressStub, cyStub);
       setCollection("foo");
+
       expect(
         apiClient.updateConfig.calledWith({
           mock: {
@@ -107,6 +109,7 @@ describe("commands", () => {
       CypressStub.env.returns("false");
       const { setCollection } = commands(CypressStub, cyStub);
       setCollection("foo");
+
       expect(apiClient.updateConfig.callCount).toEqual(0);
     });
 
@@ -115,6 +118,7 @@ describe("commands", () => {
       const { setCollection } = commands(CypressStub, cyStub);
       setCollection("foo");
       await wait();
+
       expect(cyStub.log.getCall(0).args[1]).toEqual(expect.stringContaining(FOO_ERROR_MESSAGE));
     });
 
@@ -124,6 +128,7 @@ describe("commands", () => {
       const { setCollection } = commands(CypressStub, cyStub);
       setCollection("foo");
       await wait();
+
       expect(cyStub.log.callCount).toEqual(0);
     });
 
@@ -132,6 +137,7 @@ describe("commands", () => {
       const { setCollection } = commands(CypressStub, cyStub);
       setCollection("foo");
       await wait();
+
       expect(cyStub.log.getCall(1).args[0]).toEqual(
         expect.stringContaining("http://127.0.0.1:3110")
       );
@@ -145,6 +151,7 @@ describe("commands", () => {
       });
       setCollection("foo");
       await wait();
+
       expect(cyStub.log.getCall(1).args[0]).toEqual(
         expect.stringContaining("https://127.0.0.1:3110")
       );
@@ -159,6 +166,7 @@ describe("commands", () => {
       });
       setCollection("foo");
       await wait();
+
       expect(cyStub.log.getCall(1).args[0]).toEqual(
         expect.stringContaining("http://foo-host:4000")
       );
@@ -169,6 +177,7 @@ describe("commands", () => {
     it("should call to update delay", () => {
       const { setDelay } = commands(CypressStub, cyStub);
       setDelay(3000);
+
       expect(
         apiClient.updateConfig.calledWith({
           mock: {
@@ -184,6 +193,7 @@ describe("commands", () => {
       CypressStub.env.returns("false");
       const { setDelay } = commands(CypressStub, cyStub);
       setDelay("foo");
+
       expect(apiClient.updateConfig.callCount).toEqual(0);
     });
 
@@ -192,6 +202,7 @@ describe("commands", () => {
       const { setDelay } = commands(CypressStub, cyStub);
       setDelay("foo");
       await wait();
+
       expect(cyStub.log.getCall(0).args[1]).toEqual(expect.stringContaining(FOO_ERROR_MESSAGE));
     });
   });
@@ -200,6 +211,7 @@ describe("commands", () => {
     it("should call to update config", () => {
       const { setConfig } = commands(CypressStub, cyStub);
       setConfig("foo");
+
       expect(apiClient.updateConfig.calledWith("foo")).toBe(true);
     });
 
@@ -207,6 +219,7 @@ describe("commands", () => {
       CypressStub.env.returns("0");
       const { setConfig } = commands(CypressStub, cyStub);
       setConfig("foo");
+
       expect(apiClient.updateConfig.callCount).toEqual(0);
     });
 
@@ -215,6 +228,7 @@ describe("commands", () => {
       const { setConfig } = commands(CypressStub, cyStub);
       setConfig("foo-config");
       await wait();
+
       expect(cyStub.log.getCall(0).args[1]).toEqual(expect.stringContaining("foo-config"));
     });
 
@@ -223,6 +237,7 @@ describe("commands", () => {
       const { setConfig } = commands(CypressStub, cyStub);
       setConfig("foo");
       await wait();
+
       expect(cyStub.log.getCall(0).args[2]).toEqual(expect.stringContaining(FOO_ERROR_MESSAGE));
     });
   });
@@ -231,6 +246,7 @@ describe("commands", () => {
     it("should call to useRoute variant", () => {
       const { useRouteVariant } = commands(CypressStub, cyStub);
       useRouteVariant("foo");
+
       expect(apiClient.useRouteVariant.calledWith("foo")).toBe(true);
     });
 
@@ -238,6 +254,7 @@ describe("commands", () => {
       CypressStub.env.returns(0);
       const { useRouteVariant } = commands(CypressStub, cyStub);
       useRouteVariant("foo");
+
       expect(apiClient.useRouteVariant.callCount).toEqual(0);
     });
 
@@ -246,6 +263,7 @@ describe("commands", () => {
       const { useRouteVariant } = commands(CypressStub, cyStub);
       useRouteVariant("foo");
       await wait();
+
       expect(cyStub.log.getCall(0).args[1]).toEqual(expect.stringContaining(FOO_ERROR_MESSAGE));
     });
   });
@@ -254,6 +272,7 @@ describe("commands", () => {
     it("should call to useRoute variant", () => {
       const { restoreRouteVariants } = commands(CypressStub, cyStub);
       restoreRouteVariants();
+
       expect(apiClient.restoreRouteVariants.callCount).toEqual(1);
     });
 
@@ -261,6 +280,7 @@ describe("commands", () => {
       CypressStub.env.returns(false);
       const { restoreRouteVariants } = commands(CypressStub, cyStub);
       restoreRouteVariants();
+
       expect(apiClient.restoreRouteVariants.callCount).toEqual(0);
     });
 
@@ -269,6 +289,7 @@ describe("commands", () => {
       const { restoreRouteVariants } = commands(CypressStub, cyStub);
       restoreRouteVariants();
       await wait();
+
       expect(cyStub.log.getCall(0).args[1]).toEqual(expect.stringContaining(FOO_ERROR_MESSAGE));
     });
   });
@@ -279,6 +300,7 @@ describe("commands", () => {
       configClient({
         host: "foo",
       });
+
       expect(
         apiClient.configClient.calledWith({
           host: "foo",
@@ -360,6 +382,7 @@ describe("commands", () => {
         sandbox.stub(customApiClient, "updateConfig").resolves();
         const { setCollection } = commands(CypressStub, cyStub);
         setCollection("foo", customApiClient);
+
         expect(
           customApiClient.updateConfig.calledWith({
             mock: {
@@ -384,6 +407,7 @@ describe("commands", () => {
         );
         setCollection("foo", customApiClient);
         await wait();
+
         expect(cyStub.log.getCall(1).args[0]).toEqual(
           expect.stringContaining("http://foo-host:4000")
         );
@@ -396,6 +420,7 @@ describe("commands", () => {
         sandbox.stub(customApiClient, "updateConfig").resolves();
         const { setDelay } = commands(CypressStub, cyStub);
         setDelay(3000, customApiClient);
+
         expect(
           customApiClient.updateConfig.calledWith({
             mock: {
@@ -414,6 +439,7 @@ describe("commands", () => {
         sandbox.stub(customApiClient, "updateConfig").resolves();
         const { setConfig } = commands(CypressStub, cyStub);
         setConfig("foo", customApiClient);
+
         expect(customApiClient.updateConfig.calledWith("foo")).toBe(true);
       });
     });
@@ -424,6 +450,7 @@ describe("commands", () => {
         sandbox.stub(customApiClient, "useRouteVariant").resolves();
         const { useRouteVariant } = commands(CypressStub, cyStub);
         useRouteVariant("foo", customApiClient);
+
         expect(customApiClient.useRouteVariant.calledWith("foo")).toBe(true);
       });
     });
@@ -434,6 +461,7 @@ describe("commands", () => {
         sandbox.stub(customApiClient, "restoreRouteVariants").resolves();
         const { restoreRouteVariants } = commands(CypressStub, cyStub);
         restoreRouteVariants(customApiClient);
+
         expect(customApiClient.restoreRouteVariants.callCount).toEqual(1);
       });
     });

@@ -77,7 +77,9 @@ describe("Cli", () => {
     onChangeCollection = sandbox.stub();
     onChangeHttps = sandbox.stub();
     onChangePort = sandbox.stub();
+
     expect.assertions(1);
+
     mockOptions = () => {
       optionCli = { ...cli._optionCli, onChange: onChangeCli, value: true };
       optionEmojis = { ...cli._optionEmojis, onChange: onChangeEmojis, value: true };
@@ -127,6 +129,7 @@ describe("Cli", () => {
       mockOptions();
       optionCli.value = false;
       await cli.init();
+
       expect(inquirerMocks.stubs.Inquirer.callCount).toEqual(0);
     });
   });
@@ -138,55 +141,69 @@ describe("Cli", () => {
 
     it("should start cli when core cli setting is true and cli was not started", async () => {
       expect.assertions(2);
+
       onChangeCli.getCall(0).args[0](true);
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(0).args[0]).toEqual("main");
     });
 
     it("should refresh main menu when delay option is changed and current screen is main menu", async () => {
       expect.assertions(2);
+
       optionDelay.onChange.getCall(0).args[0]("foo");
       await wait();
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
     it("should refresh main menu when host option is changed and current screen is main menu", async () => {
       expect.assertions(2);
+
       optionHost.onChange.getCall(0).args[0]("foo");
       await wait();
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
     it("should refresh main menu when log option is changed and current screen is main menu", async () => {
       expect.assertions(2);
+
       onChangeLog.getCall(0).args[0]("foo");
       await wait();
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
     it("should refresh main menu when watch option is changed and current screen is main menu", async () => {
       expect.assertions(2);
+
       onChangeWatch.getCall(0).args[0](false);
       await wait();
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
     it("should refresh main menu when port option is changed and current screen is main menu", async () => {
       expect.assertions(2);
+
       onChangePort.getCall(0).args[0](3200);
       await wait();
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
     it("should refresh main menu when https option is changed and current screen is main menu", async () => {
       expect.assertions(2);
+
       onChangeHttps.getCall(0).args[0](false);
       await wait();
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -194,6 +211,7 @@ describe("Cli", () => {
     it("should not display main menu when collection is changed and current screen is not main menu", async () => {
       cli._currentScreen = "FOO";
       onChangeCollection.getCall(0).args[0]("foo");
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
     });
 
@@ -202,15 +220,19 @@ describe("Cli", () => {
       inquirerMocks.reset();
       cli._currentScreen = "FOO";
       onChangeCollection.getCall(0).args[0]("foo");
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(0);
     });
 
     it("should start cli if it was not started and cli option is true", async () => {
       await cli.stop();
       inquirerMocks.reset();
+
       expect.assertions(2);
+
       optionCli.value = true;
       onChangeCli.getCall(0).args[0](true);
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(0).args[0]).toEqual("main");
     });
@@ -220,6 +242,7 @@ describe("Cli", () => {
       inquirerMocks.reset();
       optionCli.value = false;
       onChangeCli.getCall(0).args[0](false);
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(0);
     });
 
@@ -227,6 +250,7 @@ describe("Cli", () => {
       inquirerMocks.reset();
       optionCli.value = false;
       onChangeCli.getCall(0).args[0](false);
+
       expect(inquirerMocks.stubs.inquirer.clearScreen.getCall(0).args[0]).toEqual({
         header: false,
       });
@@ -234,9 +258,11 @@ describe("Cli", () => {
 
     it("should silent traces again if log setting changes and cli is not in logs mode", async () => {
       expect.assertions(2);
+
       cli._isOverwritingLogLevel = false;
       optionLog.value = "debug";
       onChangeLog.getCall(0).args[0]("debug");
+
       expect(cli._logLevel).toEqual("debug");
       expect(optionLog.value).toEqual("silent");
     });
@@ -246,6 +272,7 @@ describe("Cli", () => {
       inquirerMocks.reset();
       optionLog.value = "debug";
       onChangeLog.getCall(0).args[0]("debug");
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(0);
     });
 
@@ -254,30 +281,41 @@ describe("Cli", () => {
       cli._currentScreen = "logs";
       optionLog.value = "debug";
       onChangeLog.getCall(0).args[0]("debug");
+
       expect(optionLog.value).toEqual("debug");
     });
 
     it("should ignore changes in log level dispatched by his own silentTraces method", async () => {
       expect.assertions(2);
+
       cli._silentTraces();
+
       expect(cli._isOverwritingLogLevel).toEqual(true);
+
       optionLog.value = "silent";
       onChangeLog.getCall(0).args[0]("silent");
+
       expect(cli._isOverwritingLogLevel).toEqual(false);
     });
 
     it("should change inquirer emojis setting when emojis option changes", async () => {
       expect.assertions(2);
+
       onChangeEmojis.getCall(0).args[0](false);
+
       expect(inquirerMocks.stubs.inquirer.emojis).toEqual(false);
+
       onChangeEmojis.getCall(0).args[0](true);
+
       expect(inquirerMocks.stubs.inquirer.emojis).toEqual(true);
     });
 
     it("should refresh main menu when emojis option is changed and current screen is main menu", async () => {
       expect.assertions(2);
+
       onChangeEmojis.getCall(0).args[0](false);
       await wait();
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -285,6 +323,7 @@ describe("Cli", () => {
     it("should not display main menu when emojis is changed and current screen is not main menu", async () => {
       cli._currentScreen = "FOO";
       onChangeEmojis.getCall(0).args[0](false);
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
     });
   });
@@ -296,8 +335,10 @@ describe("Cli", () => {
 
     it("should refresh main menu", async () => {
       expect.assertions(2);
+
       coreInstance.alerts.root.onChange.getCall(0).args[0]();
       await wait();
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(2);
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
@@ -318,6 +359,7 @@ describe("Cli", () => {
       mockOptions();
       optionCli.value = true;
       await cli.start();
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(1);
     });
 
@@ -328,6 +370,7 @@ describe("Cli", () => {
       optionCli.value = false;
       await cli.init();
       await cli.start();
+
       expect(inquirerMocks.stubs.inquirer.inquire.callCount).toEqual(0);
     });
 
@@ -355,6 +398,7 @@ describe("Cli", () => {
     it("should clear screen", async () => {
       inquirerMocks.reset();
       await cli.stop();
+
       expect(inquirerMocks.stubs.inquirer.clearScreen.getCall(0).args[0]).toEqual({
         header: false,
       });
@@ -362,8 +406,10 @@ describe("Cli", () => {
 
     it("should remove onChange listeners", async () => {
       expect.assertions(2);
+
       inquirerMocks.reset();
       await cli.stop();
+
       expect(removeChangeMocksSpy.callCount).toEqual(1);
       expect(removeChangeAlertsSpy.callCount).toEqual(1);
     });
@@ -373,6 +419,7 @@ describe("Cli", () => {
       await cli.stop();
       await cli.stop();
       await cli.stop();
+
       expect(inquirerMocks.stubs.inquirer.clearScreen.callCount).toEqual(2);
     });
   });
@@ -394,22 +441,26 @@ describe("Cli", () => {
 
     it("should call to clear screen", async () => {
       await cli.start();
+
       expect(inquirerMocks.stubs.inquirer.clearScreen.callCount).toEqual(3);
     });
 
     it("should display main menu if there are no collections", async () => {
       coreInstance.mock.collections.ids = [];
       await cli.start();
+
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
     it("should call to display collections menu", async () => {
       await cli.start();
+
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("collection");
     });
 
     it("should set current selected collection", async () => {
       await cli.start();
+
       expect(optionCollection.value).toEqual(fooSelectedMock);
     });
 
@@ -422,6 +473,7 @@ describe("Cli", () => {
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
       coreInstance.mock.collections.ids = fooMocks;
       await cli._changeCurrentCollection();
+
       expect(optionCollection.value).toEqual(["foo1", "foo2"]);
     });
 
@@ -434,6 +486,7 @@ describe("Cli", () => {
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
       coreInstance.mock.collections.ids = fooMocks;
       await cli._changeCurrentCollection();
+
       expect(optionCollection.value).toEqual(["foo1", "foo2"]);
     });
 
@@ -446,6 +499,7 @@ describe("Cli", () => {
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
       coreInstance.mock.collections.ids = fooMocks;
       await cli._changeCurrentCollection();
+
       expect(optionCollection.value).toEqual(["foo1", "foo2"]);
     });
   });
@@ -467,22 +521,26 @@ describe("Cli", () => {
 
     it("should call to clear screen", async () => {
       await cli.start();
+
       expect(inquirerMocks.stubs.inquirer.clearScreen.callCount).toEqual(3);
     });
 
     it("should display main menu if there are no routes variants", async () => {
       coreInstance.mock.routes.plainVariants = [];
       await cli.start();
+
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("main");
     });
 
     it("should call to display routes variants menu", async () => {
       await cli.start();
+
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("variant");
     });
 
     it("should set current selected route variant", async () => {
       await cli.start();
+
       expect(coreInstance.mock.useRouteVariant.getCall(0).args).toEqual([fooSelectedVariant]);
     });
 
@@ -495,6 +553,7 @@ describe("Cli", () => {
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
       coreInstance.mock.routes.plainVariants = fooVariants;
       await cli._changeRouteVariant();
+
       expect(coreInstance.mock.useRouteVariant.getCall(0).args).toEqual([["foo1", "foo2"]]);
     });
 
@@ -507,6 +566,7 @@ describe("Cli", () => {
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
       coreInstance.mock.routes.plainVariants = fooVariants;
       await cli._changeRouteVariant();
+
       expect(coreInstance.mock.useRouteVariant.getCall(0).args).toEqual([["foo1", "foo2"]]);
     });
 
@@ -519,12 +579,14 @@ describe("Cli", () => {
         .callsFake(inquirerMocks.stubs.inquirer.inquireFake.runner);
       coreInstance.mock.routes.plainVariants = fooVariants;
       await cli._changeRouteVariant();
+
       expect(coreInstance.mock.useRouteVariant.getCall(0).args).toEqual([["foo1", "foo2"]]);
     });
   });
 
   describe('when user selects "Change Delay"', () => {
     const fooDelay = 2000;
+
     beforeEach(() => {
       inquirerMocks.stubs.inquirer.inquire.onCall(0).resolves("delay");
       inquirerMocks.stubs.inquirer.inquire.onCall(1).resolves(fooDelay);
@@ -532,21 +594,25 @@ describe("Cli", () => {
 
     it("should call to clear screen", async () => {
       await cli.start();
+
       expect(inquirerMocks.stubs.inquirer.clearScreen.callCount).toEqual(3);
     });
 
     it("should call to display delay menu", async () => {
       await cli.start();
+
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("delay");
     });
 
     it("should set current selected feature", async () => {
       await cli.start();
+
       expect(optionDelay.value).toEqual(fooDelay);
     });
 
     it("should not pass delay validation if user introduce non numeric characters", async () => {
       await cli.start();
+
       expect(cli._cli.questions.delay.validate(cli._cli.questions.delay.filter("asdads"))).toEqual(
         false
       );
@@ -554,6 +620,7 @@ describe("Cli", () => {
 
     it("should pass delay validation if user introduce numeric characters", async () => {
       await cli.start();
+
       expect(cli._cli.questions.delay.validate(cli._cli.questions.delay.filter("123230"))).toEqual(
         true
       );
@@ -567,6 +634,7 @@ describe("Cli", () => {
 
     it("should call to restart server", async () => {
       await cli.start();
+
       expect(coreInstance.server.restart.callCount).toEqual(1);
     });
   });
@@ -578,6 +646,7 @@ describe("Cli", () => {
 
     it("should call to restore variants", async () => {
       await cli.start();
+
       expect(coreInstance.mock.restoreRouteVariants.callCount).toEqual(1);
     });
   });
@@ -592,11 +661,13 @@ describe("Cli", () => {
 
     it("should call to display log level menu", async () => {
       await cli.start();
+
       expect(inquirerMocks.stubs.inquirer.inquire.getCall(1).args[0]).toEqual("logLevel");
     });
 
     it("should set current log level with the result of log level question", async () => {
       await cli.start();
+
       expect(cli._logLevel).toEqual(fooLogLevel);
     });
   });
@@ -609,12 +680,14 @@ describe("Cli", () => {
     it("should call to switchWatch server method, passing true if it was disabled", async () => {
       optionWatch.value = false;
       await cli.start();
+
       expect(optionWatch.value).toEqual(true);
     });
 
     it("should call to switchWatch server method, passing false if it was enabled", async () => {
       optionWatch.value = true;
       await cli.start();
+
       expect(optionWatch.value).toEqual(false);
     });
   });
@@ -626,11 +699,13 @@ describe("Cli", () => {
 
     it("should call to logsMode CLI method", async () => {
       await cli.start();
+
       expect(inquirerMocks.stubs.inquirer.logsMode.callCount).toEqual(1);
     });
 
     it("should call to set current log level after logs mode is enabled", async () => {
       expect.assertions(2);
+
       const fooLogLevel = "foo-log-level";
       coreMocks.reset();
       cli = new Cli(cliArgs);
@@ -639,8 +714,11 @@ describe("Cli", () => {
       optionLog.value = fooLogLevel;
       await cli.init();
       inquirerMocks.stubs.inquirer.logsMode.executeCb(true);
+
       expect(optionLog.value).toEqual(fooLogLevel);
+
       await cli.start();
+
       expect(optionLog.value).toEqual("silent");
     });
   });
@@ -648,30 +726,35 @@ describe("Cli", () => {
   describe("when printing header", () => {
     it("should print server url as first element", async () => {
       await cli.start();
+
       expect(cli._header()[0]).toEqual(expect.stringContaining("Server listening"));
     });
 
     it("should print localhost as host when it is 0.0.0.0", async () => {
       optionHost.value = "0.0.0.0";
       await cli.start();
+
       expect(cli._header()[0]).toEqual(expect.stringContaining("http://localhost"));
     });
 
     it("should print protocol as http when https is disabled", async () => {
       optionHttps.value = false;
       await cli.start();
+
       expect(cli._header()[0]).toEqual(expect.stringContaining("http://localhost"));
     });
 
     it("should print protocol as https when https is enabled", async () => {
       optionHttps.value = true;
       await cli.start();
+
       expect(cli._header()[0]).toEqual(expect.stringContaining("https://localhost"));
     });
 
     it("should print custom host as host", async () => {
       optionHost.value = "foo-host";
       await cli.start();
+
       expect(cli._header()[0]).toEqual(expect.stringContaining("http://foo-host"));
     });
 
@@ -679,6 +762,7 @@ describe("Cli", () => {
       optionDelay.hasBeenSet = true;
       optionDelay.value = 1000;
       await cli.start();
+
       expect(cli._header()[1]).toEqual(expect.stringContaining(chalk.yellow("1000")));
     });
 
@@ -686,30 +770,35 @@ describe("Cli", () => {
       optionDelay.hasBeenSet = true;
       optionDelay.value = 0;
       await cli.start();
+
       expect(cli._header()[1]).toEqual(expect.stringContaining(chalk.green("0")));
     });
 
     it("should print mocks in red if are equal to 0", async () => {
       coreInstance.mock.collections.plain = [];
       await cli.start();
+
       expect(cli._header()[3]).toEqual(expect.stringContaining(chalk.red("0")));
     });
 
     it("should print mocks in green if are greater than 0", async () => {
       coreInstance.mock.collections.plain = [{}, {}, {}, {}];
       await cli.start();
+
       expect(cli._header()[3]).toEqual(expect.stringContaining(chalk.green("4")));
     });
 
     it("should print current mock in red if it is null", async () => {
       coreInstance.mock.collections.selected = null;
       await cli.start();
+
       expect(cli._header()[2]).toEqual(expect.stringContaining(chalk.red("-")));
     });
 
     it("should print current mock in green if it is defined", async () => {
       coreInstance.mock.collections.selected = "foo";
       await cli.start();
+
       expect(cli._header()[2]).toEqual(expect.stringContaining(chalk.green("foo")));
     });
 
@@ -717,6 +806,7 @@ describe("Cli", () => {
       coreInstance.mock.collections.selected = "foo";
       coreInstance.mock.customRouteVariants = ["foo-variant", "foo-variant-2"];
       await cli.start();
+
       expect(cli._header()[2]).toEqual(
         expect.stringContaining(chalk.yellow("foo (custom variants: foo-variant,foo-variant-2)"))
       );
@@ -725,36 +815,42 @@ describe("Cli", () => {
     it("should print current routes in red if there are less than 1", async () => {
       coreInstance.mock.routes.plain = [];
       await cli.start();
+
       expect(cli._header()[4]).toEqual(expect.stringContaining(chalk.red("0")));
     });
 
     it("should print current routes in green if there are less than 1", async () => {
       coreInstance.mock.routes.plain = [{}, {}];
       await cli.start();
+
       expect(cli._header()[4]).toEqual(expect.stringContaining(chalk.green("2")));
     });
 
     it("should print current routes variants in red if there are less than 1", async () => {
       coreInstance.mock.routes.plainVariants = [];
       await cli.start();
+
       expect(cli._header()[5]).toEqual(expect.stringContaining(chalk.red("0")));
     });
 
     it("should not print current routes in green if there are more than 1", async () => {
       coreInstance.mock.routes.plainVariants = [{}, {}];
       await cli.start();
+
       expect(cli._header()[5]).toEqual(expect.stringContaining(chalk.green("2")));
     });
 
     it("should print watch in yellow if it is disabled", async () => {
       optionWatch.value = false;
       await cli.start();
+
       expect(cli._header()[7]).toEqual(expect.stringContaining(chalk.yellow("false")));
     });
 
     it("should print watch in yellow if it is enabled", async () => {
       optionWatch.value = true;
       await cli.start();
+
       expect(cli._header()[7]).toEqual(expect.stringContaining(chalk.green("true")));
     });
   });
@@ -763,6 +859,7 @@ describe("Cli", () => {
     it("should not display alerts if core alerts are empty", async () => {
       coreInstance.alerts.root.flat = [];
       await cli.start();
+
       expect(cli._alertsHeader().length).toEqual(0);
     });
 
@@ -774,23 +871,27 @@ describe("Cli", () => {
         },
       ];
       await cli.start();
+
       expect(cli._alertsHeader()[0]).toEqual(expect.stringContaining("[foo-id]"));
     });
 
     it("should display provided alert in yellow when it has no error", async () => {
       expect.assertions(2);
+
       coreInstance.alerts.root.flat = [
         {
           message: "foo message",
         },
       ];
       await cli.start();
+
       expect(cli._alertsHeader()[0]).toEqual(expect.stringContaining("Warning"));
       expect(cli._alertsHeader()[0]).toEqual(expect.stringContaining(chalk.yellow("foo message")));
     });
 
     it("should display provided alert in red when it has error", async () => {
       expect.assertions(2);
+
       coreInstance.alerts.root.flat = [
         {
           message: "foo message",
@@ -801,6 +902,7 @@ describe("Cli", () => {
         },
       ];
       await cli.start();
+
       expect(cli._alertsHeader()[0]).toEqual(expect.stringContaining("Error"));
       expect(cli._alertsHeader()[0]).toEqual(
         expect.stringContaining(
@@ -820,6 +922,7 @@ describe("Cli", () => {
 
     it("should exit logs mode", async () => {
       await wait();
+
       expect(inquirerMocks.stubs.inquirer.exitLogsMode.callCount).toEqual(2);
     });
   });

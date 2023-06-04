@@ -48,6 +48,7 @@ describe("UpdateNotifier", () => {
     it("should pass package data to notifier if no pkg is received", () => {
       const notifier = new UpdateNotifier({ alerts });
       notifier.init();
+
       expect(updateNotifier).toHaveBeenCalledWith({
         pkg: packageJson,
         shouldNotifyInNpmScript: true,
@@ -57,6 +58,7 @@ describe("UpdateNotifier", () => {
     it("should pass pkg data to notifier if received", () => {
       const notifier = new UpdateNotifier({ alerts, pkg: { name: "foo-name" } });
       notifier.init();
+
       expect(updateNotifier).toHaveBeenCalledWith({
         pkg: { name: "foo-name" },
         shouldNotifyInNpmScript: true,
@@ -68,12 +70,14 @@ describe("UpdateNotifier", () => {
     it("should execute notifier notify method", () => {
       const notifier = new UpdateNotifier({ alerts });
       notifier.init();
+
       expect(updateNotifierMock.notify.callCount).toEqual(1);
     });
 
     it("should add an alert if notifier returns update property", () => {
       const notifier = new UpdateNotifier({ alerts });
       notifier.init();
+
       expect(alerts.flat).toEqual([
         {
           id: "update-notifier:out-of-date",
@@ -87,6 +91,7 @@ describe("UpdateNotifier", () => {
       const notifier = new UpdateNotifier({ alerts });
       updateNotifierMock.update = null;
       notifier.init();
+
       expect(alerts.flat).toEqual([]);
     });
   });

@@ -26,6 +26,7 @@ describe("port setting", () => {
   describe("When started", () => {
     it("should be listening on port 3100", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -40,6 +41,7 @@ describe("port setting", () => {
       const users = await doFetch("/api/users", {
         port: 3005,
       });
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },

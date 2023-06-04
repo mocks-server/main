@@ -25,6 +25,7 @@ describe("routes variants api", () => {
   describe("get /", () => {
     it("should return routes variants", async () => {
       const response = await doApiFetch("/mock/variants");
+
       expect(response.body).toEqual([
         {
           id: "get-user:1",
@@ -79,6 +80,7 @@ describe("routes variants api", () => {
   describe("get /get-user:1", () => {
     it("should return route variant with id get-user:1", async () => {
       const response = await doApiFetch("/mock/variants/get-user:1");
+
       expect(response.body).toEqual({
         id: "get-user:1",
         route: "get-user",
@@ -93,6 +95,7 @@ describe("routes variants api", () => {
   describe("get /get-user:2", () => {
     it("should return route variant with id get-user:2", async () => {
       const response = await doApiFetch("/mock/variants/get-user:2");
+
       expect(response.body).toEqual({
         id: "get-user:2",
         route: "get-user",
@@ -107,6 +110,7 @@ describe("routes variants api", () => {
   describe("get unexistant route variant", () => {
     it("should return a not found error", async () => {
       const response = await doApiFetch("/mock/variants/foo");
+
       expect(response.status).toEqual(404);
       expect(response.body.message).toEqual('Route variant with id "foo" was not found');
     });

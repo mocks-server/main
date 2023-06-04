@@ -16,6 +16,7 @@ describe("Config from env vars", () => {
           MOCKS_CONFIG_READ_FILE: false,
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["config.readFile:boolean:false"]));
     });
@@ -26,6 +27,7 @@ describe("Config from env vars", () => {
           MOCKS_NUMBER_DEFAULT_ZERO: 1,
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["numberDefaultZero:number:1"]));
     });
@@ -39,6 +41,7 @@ describe("Config from env vars", () => {
           MOCKS_CONFIG_READ_FILE: false,
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["config.readFile:boolean:true"]));
     });
@@ -52,6 +55,7 @@ describe("Config from env vars", () => {
           MOCKS_FIRST_NAMESPACE_SECOND_NAMESPACE_FOO_OPTION: "option-from-env",
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["namespace.component.alias:string:alias-from-env"])
@@ -68,6 +72,7 @@ describe("Config from env vars", () => {
           MOCKS_FIRST_NAMESPACE_SECOND_NAMESPACE_FOO_OPTION: "option-from-env",
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["namespace.component.alias:string:alias-from-env"])
@@ -86,6 +91,7 @@ describe("Config from env vars", () => {
           MOCKS_FIRST_NAMESPACE_SECOND_NAMESPACE_THIRD_NAMESPACE_FOO_OPTION_3: "option-from-env",
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["namespace.component.alias:string:alias-from-env"])
@@ -105,6 +111,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_STRING_WITH_DEFAULT: "foo-from-env",
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.stringWithDefault:string:foo-from-env"])
@@ -119,6 +126,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_NUMBER_DEFAULT_ZERO: 5,
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["component.numberDefaultZero:number:5"]));
     });
@@ -129,6 +137,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_NUMBER_DEFAULT_ZERO: 5.4,
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["component.numberDefaultZero:number:5.4"]));
     });
@@ -139,6 +148,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_NUMBER_DEFAULT_ZERO: "5",
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["component.numberDefaultZero:number:5"]));
     });
@@ -149,6 +159,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_NUMBER_DEFAULT_ZERO: "5.4",
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["component.numberDefaultZero:number:5.4"]));
     });
@@ -157,6 +168,7 @@ describe("Config from env vars", () => {
   describe("when option is boolean and default value is true", () => {
     it("option should be true if no env var is provided", async () => {
       await run("no-config", "option-types");
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.booleanDefaultTrue:boolean:true"])
@@ -169,6 +181,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_BOOLEAN_DEFAULT_TRUE: false,
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.booleanDefaultTrue:boolean:false"])
@@ -181,6 +194,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_BOOLEAN_DEFAULT_TRUE: "false",
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.booleanDefaultTrue:boolean:false"])
@@ -193,6 +207,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_BOOLEAN_DEFAULT_TRUE: "0",
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.booleanDefaultTrue:boolean:false"])
@@ -205,6 +220,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_BOOLEAN_DEFAULT_TRUE: 0,
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.booleanDefaultTrue:boolean:false"])
@@ -219,6 +235,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_BOOLEAN_DEFAULT_FALSE: true,
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.booleanDefaultFalse:boolean:true"])
@@ -231,6 +248,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_BOOLEAN_DEFAULT_FALSE: "true",
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.booleanDefaultFalse:boolean:true"])
@@ -243,6 +261,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_BOOLEAN_DEFAULT_FALSE: "1",
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.booleanDefaultFalse:boolean:true"])
@@ -255,6 +274,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_BOOLEAN_DEFAULT_FALSE: 1,
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.booleanDefaultFalse:boolean:true"])
@@ -269,6 +289,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_OBJECT_WITH_DEFAULT: '{"foo2":"var2","foo3":false,"foo4":5}',
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining([
@@ -285,6 +306,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_ARRAY_WITH_DEFAULT: '["foo-from-env-1","foo-from-env-2"]',
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining([
@@ -299,6 +321,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_ARRAY_NUMBER: "[1,2,3.5]",
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["component.arrayNumber:array:[1,2,3.5]"]));
     });
@@ -309,6 +332,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_ARRAY_OBJECT: '[{"foo":"foo1"},{"foo2":"foo2"}]',
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(['component.arrayObject:array:[{"foo":"foo1"},{"foo2":"foo2"}]'])
@@ -321,6 +345,7 @@ describe("Config from env vars", () => {
           MOCKS_COMPONENT_ARRAY_BOOLEAN: "[false,true,false,true]",
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.arrayBoolean:array:[false,true,false,true]"])

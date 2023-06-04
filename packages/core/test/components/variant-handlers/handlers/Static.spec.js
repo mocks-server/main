@@ -70,6 +70,7 @@ describe("Static variant handler", () => {
     it("should pass path option to express static", () => {
       const handler = new VariantHandlerStatic({ path: "foo-path" }, coreInstance);
       const router = handler.router;
+
       expect(router.path).toEqual("foo-path");
     });
 
@@ -78,6 +79,7 @@ describe("Static variant handler", () => {
       const router = handler.router;
       const staticOptions = router.options;
       staticOptions.setHeaders(expressStubs.res);
+
       expect(expressStubs.res.set.getCall(0).args[0]).toEqual({ foo: "foo" });
     });
 
@@ -88,6 +90,7 @@ describe("Static variant handler", () => {
       );
       const router = handler.router;
       const staticOptions = router.options;
+
       expect(staticOptions.setHeaders).toEqual("foo-method");
     });
   });

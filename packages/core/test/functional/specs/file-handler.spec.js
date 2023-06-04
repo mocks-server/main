@@ -41,6 +41,7 @@ describe("file variant handler", () => {
       await waitForServerUrl("/api/users");
 
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([{ id: 1, name: "John Doe" }]);
       expect(users.status).toEqual(200);
       expect(users.headers.get("Content-Type")).toEqual("application/json; charset=UTF-8");
@@ -48,6 +49,7 @@ describe("file variant handler", () => {
 
     it("should serve user route", async () => {
       const users = await doFetch("/api/users/1");
+
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
       expect(users.status).toEqual(200);
       expect(users.headers.get("Content-Type")).toEqual("application/json; charset=UTF-8");
@@ -56,6 +58,7 @@ describe("file variant handler", () => {
 
     it("should serve web route", async () => {
       const users = await doTextFetch("/web");
+
       expect(users.body).toEqual("<div>Hello world</div>");
       expect(users.status).toEqual(200);
       expect(users.headers.get("Content-Type")).toEqual("text/html; charset=UTF-8");
@@ -68,6 +71,7 @@ describe("file variant handler", () => {
       await changeMockAndWait("users-error");
 
       const users = await doTextFetch("/api/users");
+
       expect(users.body).toEqual(expect.stringContaining("Error loaded from file"));
       expect(users.status).toEqual(400);
       expect(users.headers.get("Content-Type")).toEqual("text/plain; charset=UTF-8");
@@ -75,6 +79,7 @@ describe("file variant handler", () => {
 
     it("should return txt error in user route", async () => {
       const users = await doTextFetch("/api/users/1");
+
       expect(users.body).toEqual(expect.stringContaining("Error loaded from file"));
       expect(users.status).toEqual(400);
       expect(users.headers.get("Content-Type")).toEqual("text/plain; charset=UTF-8");
@@ -88,12 +93,14 @@ describe("file variant handler", () => {
 
     it("should serve users route", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([{ id: 1, name: "John Doe" }]);
       expect(users.status).toEqual(200);
     });
 
     it("should return 500 error in user route", async () => {
       const users = await doFetch("/api/users/1");
+
       expect(users.status).toEqual(500);
       expect(users.body.message).toEqual("An internal server error occurred");
     });
@@ -109,6 +116,7 @@ describe("file variant handler", () => {
       const timeCounter = new TimeCounter();
       const users = await doTextFetch("/api/users");
       timeCounter.stop();
+
       expect(timeCounter.total).toBeGreaterThan(400);
       expect(users.body).toEqual(expect.stringContaining("Error loaded from file"));
     });

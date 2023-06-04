@@ -65,6 +65,7 @@ describe("path argument", () => {
 
     it("should serve users under the /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.status).toEqual(200);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },

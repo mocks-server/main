@@ -20,6 +20,7 @@ describe("options nested", () => {
       parentNamespace = config.addNamespace("foo");
       namespace = parentNamespace.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "string" });
+
       expect(option.name).toEqual("fooOption");
     });
 
@@ -28,6 +29,7 @@ describe("options nested", () => {
       parentNamespace = config.addNamespace("foo");
       namespace = parentNamespace.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "string" });
+
       expect(config.namespace("foo").namespace("foo").option("fooOption")).toBe(option);
     });
 
@@ -35,6 +37,7 @@ describe("options nested", () => {
       config = new Config();
       parentNamespace = config.addNamespace("foo");
       namespace = parentNamespace.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "string", default: 5 })
       ).toThrowError("default");
@@ -45,6 +48,7 @@ describe("options nested", () => {
       parentNamespace = config.addNamespace("foo");
       namespace = parentNamespace.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "string" });
+
       expect(() => (option.value = 5)).toThrowError("5 is not of type string");
     });
 
@@ -52,6 +56,7 @@ describe("options nested", () => {
       config = new Config();
       parentNamespace = config.addNamespace("foo");
       namespace = parentNamespace.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "number", default: "5" })
       ).toThrowError("default");
@@ -62,6 +67,7 @@ describe("options nested", () => {
       parentNamespace = config.addNamespace("foo");
       namespace = parentNamespace.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "number" });
+
       expect(() => (option.value = "foo")).toThrowError("foo is not of type number");
     });
 
@@ -69,6 +75,7 @@ describe("options nested", () => {
       config = new Config();
       parentNamespace = config.addNamespace("foo");
       namespace = parentNamespace.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "object", default: "{}" })
       ).toThrowError("default");
@@ -79,6 +86,7 @@ describe("options nested", () => {
       parentNamespace = config.addNamespace("foo");
       namespace = parentNamespace.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "object" });
+
       expect(() => (option.value = "foo")).toThrowError("foo is not of type object");
     });
 
@@ -86,6 +94,7 @@ describe("options nested", () => {
       config = new Config();
       parentNamespace = config.addNamespace("foo");
       namespace = parentNamespace.addNamespace("foo");
+
       expect(() =>
         namespace.addOption({ name: "fooOption", type: "boolean", default: "foo" })
       ).toThrowError("default");
@@ -96,6 +105,7 @@ describe("options nested", () => {
       parentNamespace = config.addNamespace("foo");
       namespace = parentNamespace.addNamespace("foo");
       option = namespace.addOption({ name: "fooOption", type: "boolean" });
+
       expect(() => (option.value = 1)).toThrowError("1 is not of type boolean");
     });
   });
@@ -111,6 +121,7 @@ describe("options nested", () => {
 
     it("option should return default value", async () => {
       await config.init();
+
       expect(option.value).toEqual("default-str");
     });
 
@@ -124,13 +135,17 @@ describe("options nested", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual({ foo: "var" });
     });
 
     it("option should return new value after setting it", async () => {
       await config.init();
+
       expect(option.value).toEqual("default-str");
+
       option.value = "new-str";
+
       expect(option.value).toEqual("new-str");
     });
 
@@ -144,8 +159,11 @@ describe("options nested", () => {
         type: "number",
       });
       await config.init();
+
       expect(option.value).toEqual(5);
+
       option.value = 10;
+
       expect(option.value).toEqual(10);
     });
 
@@ -159,8 +177,11 @@ describe("options nested", () => {
         type: "boolean",
       });
       await config.init();
+
       expect(option.value).toEqual(true);
+
       option.value = false;
+
       expect(option.value).toEqual(false);
     });
 
@@ -174,8 +195,11 @@ describe("options nested", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual({ foo: "var" });
+
       option.set({ foo2: "var2" }, { merge: true });
+
       expect(option.value).toEqual({ foo2: "var2", foo: "var" });
     });
 
@@ -189,8 +213,11 @@ describe("options nested", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual({ foo: "var" });
+
       option.set(undefined);
+
       expect(option.value).toEqual({ foo: "var" });
     });
 
@@ -203,6 +230,7 @@ describe("options nested", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual(undefined);
     });
 
@@ -215,8 +243,11 @@ describe("options nested", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual(undefined);
+
       option.set({ foo: "var" }, { merge: true });
+
       expect(option.value).toEqual({ foo: "var" });
     });
   });

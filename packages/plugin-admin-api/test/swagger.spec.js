@@ -27,6 +27,7 @@ describe("swagger", () => {
   describe("when server is started", () => {
     it("should return current API url", async () => {
       const response = await doServerFetch("/docs/openapi.json");
+
       expect(response.body.servers[0].url).toEqual(`http://localhost:${portOption.value}/api`);
     });
   });
@@ -38,6 +39,7 @@ describe("swagger", () => {
       const response = await doServerFetch("/docs/openapi.json", {
         port: 3102,
       });
+
       expect(response.body.servers[0].url).toEqual(`http://localhost:3102/api`);
     });
   });
@@ -48,6 +50,7 @@ describe("swagger", () => {
       portOption.value = 3110;
       await wait(1000);
       const response = await doServerFetch("/docs/openapi.json");
+
       expect(response.body.servers[0].url).toEqual(`http://127.0.0.1:3110/api`);
     });
   });
@@ -55,6 +58,7 @@ describe("swagger", () => {
   describe("when root url is loaded", () => {
     it("should redirect to swagger", async () => {
       const response = await doServerFetch("/");
+
       expect(response.url).toEqual("http://127.0.0.1:3110/docs/");
     });
   });
@@ -62,6 +66,7 @@ describe("swagger", () => {
   describe("when root index.html url is loaded", () => {
     it("should redirect to swagger", async () => {
       const response = await doServerFetch("/index.html");
+
       expect(response.url).toEqual("http://127.0.0.1:3110/docs/");
     });
   });
@@ -69,6 +74,7 @@ describe("swagger", () => {
   describe("when root index.htm url is loaded", () => {
     it("should redirect to swagger", async () => {
       const response = await doServerFetch("/index.htm");
+
       expect(response.url).toEqual("http://127.0.0.1:3110/docs/");
     });
   });

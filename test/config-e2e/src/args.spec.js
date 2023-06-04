@@ -14,6 +14,7 @@ describe("Config from args", () => {
       await run("no-config", "only-init", {
         args: ["--no-config.readFile"],
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["config.readFile:boolean:false"]));
     });
@@ -22,6 +23,7 @@ describe("Config from args", () => {
       await run("no-config", "disable-read-arguments", {
         args: ["--no-config.readFile"],
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["config.readFile:boolean:true"]));
     });
@@ -30,6 +32,7 @@ describe("Config from args", () => {
       await run("no-config", "root-options", {
         args: ["--stringWithDefault=foo-from-arg"],
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["stringWithDefault:string:foo-from-arg"]));
     });
@@ -40,6 +43,7 @@ describe("Config from args", () => {
       await run("no-config", "several-namespaces", {
         args: ["--namespace.component.alias=alias-from-arg"],
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["namespace.component.alias:string:alias-from-arg"])
@@ -50,6 +54,7 @@ describe("Config from args", () => {
       await run("no-config", "several-namespaces-after-init", {
         args: ["--namespace.component.alias=alias-from-arg"],
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["namespace.component.alias:string:alias-from-arg"])
@@ -62,6 +67,7 @@ describe("Config from args", () => {
       await run("no-config", "option-types", {
         args: ["--component.stringWithDefault=foo-from-args"],
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.stringWithDefault:string:foo-from-args"])
@@ -74,6 +80,7 @@ describe("Config from args", () => {
       await run("no-config", "option-types", {
         args: ["--component.arrayWithDefault", "foo-from-args-1", "foo-from-args-2"],
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining([
@@ -89,6 +96,7 @@ describe("Config from args", () => {
         },
         args: ["--component.arrayWithDefault", "foo-from-args-1", "foo-from-args-2"],
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining([
@@ -101,6 +109,7 @@ describe("Config from args", () => {
       await run("no-config", "option-types", {
         args: ["--component.arrayNumber", "1", "2", "3.5"],
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["component.arrayNumber:array:[1,2,3.5]"]));
     });
@@ -109,6 +118,7 @@ describe("Config from args", () => {
       await run("no-config", "option-types", {
         args: ["--component.arrayObject", '{"foo": "foo1"}', '{"foo2":"foo2"}'],
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(['component.arrayObject:array:[{"foo":"foo1"},{"foo2":"foo2"}]'])
@@ -119,6 +129,7 @@ describe("Config from args", () => {
       await run("no-config", "option-types", {
         args: ["--component.arrayBoolean", "false", "true", "0", "1"],
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.arrayBoolean:array:[false,true,false,true]"])
@@ -131,6 +142,7 @@ describe("Config from args", () => {
       await run("no-config", "option-types", {
         args: ['--component.objectWithDefault={"foo2":"var2"}'],
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(['component.objectWithDefault:object:{"foo":"var","foo2":"var2"}'])
@@ -158,6 +170,7 @@ describe("Config from args", () => {
       await run("no-config", "option-types", {
         args: ["--no-component.booleanDefaultTrue"],
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.booleanDefaultTrue:boolean:false"])
@@ -173,6 +186,7 @@ describe("Config from args", () => {
           MOCKS_COMPONENT_BOOLEAN_DEFAULT_TRUE: true,
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.booleanDefaultTrue:boolean:false"])
@@ -185,6 +199,7 @@ describe("Config from args", () => {
       await run("no-config", "option-types", {
         args: ["--component.booleanDefaultFalse"],
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.booleanDefaultFalse:boolean:true"])
@@ -197,6 +212,7 @@ describe("Config from args", () => {
       await run("no-config", "option-types", {
         args: ["--component.numberDefaultZero=5"],
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["component.numberDefaultZero:number:5"]));
     });
@@ -205,6 +221,7 @@ describe("Config from args", () => {
       await run("no-config", "option-types", {
         args: ["--component.numberDefaultZero=5.34"],
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(expect.arrayContaining(["component.numberDefaultZero:number:5.34"]));
     });
@@ -218,6 +235,7 @@ describe("Config from args", () => {
           MOCKS_COMPONENT_BOOLEAN_DEFAULT_TRUE: false,
         },
       });
+
       expect(runner.exitCode).toEqual(0);
       expect(options).toEqual(
         expect.arrayContaining(["component.booleanDefaultFalse:boolean:true"])

@@ -24,6 +24,7 @@ describe("collection.selected argument", () => {
       mocks = mocksRunner([PATH_OPTION]);
       await waitForServer();
       const users = await doFetch("/api/users/2");
+
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
   });
@@ -33,6 +34,7 @@ describe("collection.selected argument", () => {
       mocks = mocksRunner([PATH_OPTION, "--mock.collections.selected=user-real"]);
       await waitForServer();
       const users = await doFetch("/api/users/2");
+
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
   });
@@ -41,6 +43,7 @@ describe("collection.selected argument", () => {
     it("should print a warning", async () => {
       mocks = mocksRunner([PATH_OPTION, "--mock.collections.selected=foo"]);
       await waitForServer();
+
       expect(mocks.logs.current).toEqual(
         expect.stringContaining("Collection 'foo' was not found")
       );
@@ -50,6 +53,7 @@ describe("collection.selected argument", () => {
       mocks = mocksRunner([PATH_OPTION, "--mock.collections.selected=foo2"]);
       await waitForServer();
       const users = await doFetch("/api/users/2");
+
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
   });

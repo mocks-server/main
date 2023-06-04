@@ -40,6 +40,7 @@ describe("Events", () => {
     it("should emit an event when a log is added to the store", (done) => {
       logger.onChangeStore(() => {
         expect(logger.store.length).toEqual(1);
+
         done();
       });
       logger.info("Hello from root");
@@ -53,6 +54,7 @@ describe("Events", () => {
       logger.info("Hello from root 4");
       logger.onChangeStore(() => {
         expect(logger.store.length).toEqual(2);
+
         done();
       });
       logger.info("Hello from root 5");
@@ -60,9 +62,12 @@ describe("Events", () => {
 
     it("should emit an event when store is cleaned", (done) => {
       logger.info("Hello from root");
+
       expect(logger.store.length).toEqual(1);
+
       logger.onChangeStore(() => {
         expect(logger.store.length).toEqual(0);
+
         done();
       });
       logger.cleanStore();
@@ -71,6 +76,7 @@ describe("Events", () => {
     it("should emit an event when a log is added to the store of a namespace", (done) => {
       namespace.onChangeStore(() => {
         expect(namespace.store.length).toEqual(1);
+
         done();
       });
       namespace.info("Hello from namespace");
@@ -82,6 +88,7 @@ describe("Events", () => {
       removeListener();
       logger.info("Hello from root");
       await wait(200);
+
       expect(spy.callCount).toEqual(0);
       expect(logger.store.length).toEqual(1);
     });
@@ -91,6 +98,7 @@ describe("Events", () => {
       namespace.onChangeStore(spy);
       logger.info("Hello from root");
       await wait(200);
+
       expect(spy.callCount).toEqual(0);
       expect(logger.store.length).toEqual(1);
       expect(namespace.store.length).toEqual(0);
@@ -106,6 +114,7 @@ describe("Events", () => {
     it("should emit an event when a log is added to the global store", (done) => {
       logger.onChangeGlobalStore(() => {
         expect(logger.globalStore.length).toEqual(1);
+
         done();
       });
       logger.info("Hello from root");
@@ -119,6 +128,7 @@ describe("Events", () => {
       logger.info("Hello from root 4");
       logger.onChangeGlobalStore(() => {
         expect(logger.globalStore.length).toEqual(2);
+
         done();
       });
       logger.info("Hello from root 5");
@@ -128,6 +138,7 @@ describe("Events", () => {
       logger.info("Hello from root");
       logger.onChangeGlobalStore(() => {
         expect(namespace.globalStore.length).toEqual(2);
+
         done();
       });
       namespace.info("Hello from namespace");
@@ -139,6 +150,7 @@ describe("Events", () => {
       removeListener();
       logger.info("Hello from root");
       await wait(200);
+
       expect(spy.callCount).toEqual(0);
       expect(logger.globalStore.length).toEqual(1);
     });
@@ -148,6 +160,7 @@ describe("Events", () => {
       namespace.onChangeGlobalStore(spy);
       logger.info("Hello from root");
       await wait(200);
+
       expect(spy.callCount).toEqual(0);
       expect(logger.globalStore.length).toEqual(1);
       expect(namespace.globalStore.length).toEqual(1);

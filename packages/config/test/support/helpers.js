@@ -3,7 +3,7 @@ jest.mock("cosmiconfig");
 import { Config } from "../../src/Config";
 
 import { cosmiconfig } from "cosmiconfig";
-import commander from "commander";
+import { Command, Option } from "commander";
 import sinon from "sinon";
 
 function createConfigBeforeElements({ createNamespace = false } = {}) {
@@ -15,11 +15,11 @@ function createConfigBeforeElements({ createNamespace = false } = {}) {
 
   cosmiconfig.mockImplementation(() => cosmiconfigStub);
 
-  sandbox.stub(commander.Option.prototype, "argParser");
-  sandbox.stub(commander.Command.prototype, "addOption");
-  sandbox.stub(commander.Command.prototype, "allowUnknownOption");
-  sandbox.stub(commander.Command.prototype, "parse");
-  sandbox.stub(commander.Command.prototype, "opts").returns({});
+  sandbox.stub(Option.prototype, "argParser");
+  sandbox.stub(Command.prototype, "addOption");
+  sandbox.stub(Command.prototype, "allowUnknownOption");
+  sandbox.stub(Command.prototype, "parse");
+  sandbox.stub(Command.prototype, "opts").returns({});
 
   const createConfig = function (options) {
     config = new Config(options);

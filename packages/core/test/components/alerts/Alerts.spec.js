@@ -42,6 +42,7 @@ describe("Alerts", () => {
   describe("set method", () => {
     it("should add alert to items", async () => {
       alerts.set("foo", "Foo message");
+
       expect(alerts.flat).toEqual([
         {
           id: "foo",
@@ -53,6 +54,7 @@ describe("Alerts", () => {
     it("should add alert to subcollection items", async () => {
       alerts.set("foo", "Foo message");
       alerts.collection("foo-collection").set("foo-2", "Foo message 2");
+
       expect(alerts.flat).toEqual([
         {
           id: "foo",
@@ -69,6 +71,7 @@ describe("Alerts", () => {
       const FOO_ERROR = new Error("Foo error message");
       FOO_ERROR.stack = "foo-stack";
       alerts.set("foo", "Foo message", FOO_ERROR);
+
       expect(logger.error.calledWith("Foo message: Foo error message")).toEqual(true);
       expect(logger.debug.calledWith("foo-stack")).toEqual(true);
     });
@@ -77,12 +80,14 @@ describe("Alerts", () => {
       const FOO_ERROR = new Error("Foo error message");
       FOO_ERROR.stack = null;
       alerts.set("foo", "Foo message", FOO_ERROR);
+
       expect(logger.error.calledWith("Foo message: Foo error message")).toEqual(true);
       expect(logger.debug.callCount).toEqual(0);
     });
 
     it("should trace warn if alert is called without error", async () => {
       alerts.set("foo", "Foo message");
+
       expect(logger.warn.calledWith("Foo message")).toEqual(true);
     });
   });

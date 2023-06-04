@@ -27,28 +27,35 @@ describe("Collection", () => {
   describe("id", () => {
     it("getter should return null if no collection id is provided", () => {
       const collection = new NestedCollections();
+
       expect(collection.id).toEqual(null);
     });
 
     it("getter should return collection id if provided", () => {
       const collection = new NestedCollections(COLLECTION_ID);
+
       expect(collection.id).toEqual(COLLECTION_ID);
     });
 
     it("setter should change collection id", () => {
       const collection = new NestedCollections(COLLECTION_ID);
+
       expect(collection.id).toEqual(COLLECTION_ID);
+
       collection.id = "new-id";
+
       expect(collection.id).toEqual("new-id");
     });
 
     it("should return always same collection if no id is provided when creating children", () => {
       const collection = new NestedCollections();
+
       expect(collection.collection().collection()).toBe(collection.collection().collection());
     });
 
     it("should return different collections if ids are different", () => {
       const collection = new NestedCollections();
+
       expect(collection.collection(COLLECTION_ID)).not.toBe(collection.collection());
     });
   });
@@ -56,11 +63,13 @@ describe("Collection", () => {
   describe("path", () => {
     it("getter should return collection id if collection is root", () => {
       const collection = new NestedCollections("foo");
+
       expect(collection.path).toEqual("foo");
     });
 
     it("getter should return parent collections ids joined with collection id", () => {
       const collection = new NestedCollections("foo");
+
       expect(collection.collection("foo-2").collection("foo-3").path).toEqual("foo:foo-2:foo-3");
     });
   });
@@ -68,11 +77,13 @@ describe("Collection", () => {
   describe("root", () => {
     it("should return same collection if it is root", () => {
       const collection = new NestedCollections("foo");
+
       expect(collection.root).toBe(collection);
     });
 
     it("should return root collection if it is a namespace", () => {
       const collection = new NestedCollections("foo");
+
       expect(collection.collection("foo-2").collection("foo-3").root).toBe(collection);
     });
   });
@@ -82,18 +93,21 @@ describe("Collection", () => {
       const collection = new NestedCollections();
       const value = { foo: "foo" };
       collection.set("foo", value);
+
       expect(collection.get("foo")).toBe(value);
     });
 
     it("should set the item value when it is a string", () => {
       const collection = new NestedCollections();
       collection.set("foo", FOO_VALUE);
+
       expect(collection.get("foo")).toEqual(FOO_VALUE);
     });
 
     it("should set item with value undefined when no value is provided", () => {
       const collection = new NestedCollections();
       collection.set(ITEM_ID);
+
       expect(collection.get(ITEM_ID)).toBe(undefined);
     });
 
@@ -101,8 +115,11 @@ describe("Collection", () => {
       const NEW_VALUE = "foo-2";
       const collection = new NestedCollections();
       collection.set(ITEM_ID, FOO_VALUE);
+
       expect(collection.get(ITEM_ID)).toEqual(FOO_VALUE);
+
       collection.set(ITEM_ID, NEW_VALUE);
+
       expect(collection.get(ITEM_ID)).toEqual(NEW_VALUE);
     });
   });
@@ -111,16 +128,19 @@ describe("Collection", () => {
     it("should return undefined when item was set to undefined", () => {
       const collection = new NestedCollections();
       collection.set(ITEM_ID, undefined);
+
       expect(collection.get(ITEM_ID)).toBe(undefined);
     });
 
     it("should return null when item does not exists", () => {
       const collection = new NestedCollections();
+
       expect(collection.get(ITEM_ID)).toEqual(null);
     });
 
     it("should return null when neither item nor collection exist", () => {
       const collection = new NestedCollections();
+
       expect(collection.collection().collection().get(ITEM_ID)).toEqual(null);
     });
   });
@@ -129,16 +149,22 @@ describe("Collection", () => {
     it("should remove the item from collection", () => {
       const collection = new NestedCollections();
       collection.set(ITEM_ID, FOO_VALUE);
+
       expect(collection.items).toEqual([{ id: ITEM_ID, value: FOO_VALUE }]);
+
       collection.remove(ITEM_ID);
+
       expect(collection.items).toEqual([]);
     });
 
     it("should do nothing if the item is not found", () => {
       const collection = new NestedCollections();
       collection.set(ITEM_ID, FOO_VALUE);
+
       expect(collection.items).toEqual([{ id: ITEM_ID, value: FOO_VALUE }]);
+
       collection.remove("foo");
+
       expect(collection.items).toEqual([{ id: ITEM_ID, value: FOO_VALUE }]);
     });
 
@@ -147,12 +173,15 @@ describe("Collection", () => {
       collection.set("foo-item-0", FOO_VALUE);
       collection.set(ITEM_ID, FOO_VALUE);
       collection.set("foo-item-2", FOO_VALUE);
+
       expect(collection.items).toEqual([
         { id: "foo-item-0", value: FOO_VALUE },
         { id: ITEM_ID, value: FOO_VALUE },
         { id: "foo-item-2", value: FOO_VALUE },
       ]);
+
       collection.remove(ITEM_ID);
+
       expect(collection.items).toEqual([
         { id: "foo-item-0", value: FOO_VALUE },
         { id: "foo-item-2", value: FOO_VALUE },
@@ -166,12 +195,15 @@ describe("Collection", () => {
       collection.set("foo-item-0", FOO_VALUE);
       collection.set(ITEM_ID, FOO_VALUE);
       collection.set("foo-item-2", FOO_VALUE);
+
       expect(collection.items).toEqual([
         { id: "foo-item-0", value: FOO_VALUE },
         { id: ITEM_ID, value: FOO_VALUE },
         { id: "foo-item-2", value: FOO_VALUE },
       ]);
+
       collection.cleanItems();
+
       expect(collection.items).toEqual([]);
     });
   });
@@ -211,6 +243,7 @@ describe("Collection", () => {
       const collection = new NestedCollections();
       collection.onChange(() => {
         expect(collection.items).toEqual([{ id: ITEM_ID, value: FOO_VALUE }]);
+
         done();
       });
       collection.set(ITEM_ID, FOO_VALUE);
@@ -223,6 +256,7 @@ describe("Collection", () => {
       removeListener();
       collection.set(ITEM_ID, FOO_VALUE);
       await wait();
+
       expect(spy.callCount).toEqual(0);
     });
 
@@ -231,6 +265,7 @@ describe("Collection", () => {
       const childCollection = collection.collection("foo").collection("foo");
       collection.onChange(() => {
         expect(childCollection.items).toEqual([{ id: ITEM_ID, value: FOO_VALUE }]);
+
         done();
       });
       childCollection.set(ITEM_ID, FOO_VALUE);
@@ -241,6 +276,7 @@ describe("Collection", () => {
       collection.set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
         expect(collection.items).toEqual([{ id: ITEM_ID, value: "foo-new-value" }]);
+
         done();
       });
       collection.set(ITEM_ID, "foo-new-value");
@@ -252,6 +288,7 @@ describe("Collection", () => {
       childCollection.collection().set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
         expect(childCollection.items).toEqual([{ id: ITEM_ID, value: "foo-new-value" }]);
+
         done();
       });
       childCollection.set(ITEM_ID, "foo-new-value");
@@ -262,6 +299,7 @@ describe("Collection", () => {
       collection.set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
         expect(collection.items).toEqual([]);
+
         done();
       });
       collection.remove(ITEM_ID);
@@ -273,6 +311,7 @@ describe("Collection", () => {
       childCollection.set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
         expect(childCollection.items).toEqual([]);
+
         done();
       });
       childCollection.remove(ITEM_ID);
@@ -283,6 +322,7 @@ describe("Collection", () => {
       collection.set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
         expect(collection.items).toEqual([]);
+
         done();
       });
       collection.clean();
@@ -294,6 +334,7 @@ describe("Collection", () => {
       childCollection.set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
         expect(childCollection.items).toEqual([]);
+
         done();
       });
       childCollection.clean();
@@ -304,6 +345,7 @@ describe("Collection", () => {
       collection.set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
         expect(collection.items).toEqual([]);
+
         done();
       });
       collection.cleanItems();
@@ -315,6 +357,7 @@ describe("Collection", () => {
       childCollection.set(ITEM_ID, FOO_VALUE);
       collection.onChange(() => {
         expect(childCollection.items).toEqual([]);
+
         done();
       });
       childCollection.cleanItems();
@@ -324,6 +367,7 @@ describe("Collection", () => {
       const collection = new NestedCollections();
       collection.onChange(() => {
         expect(collection.id).toEqual("foo-new-id");
+
         done();
       });
       collection.id = "foo-new-id";
@@ -334,6 +378,7 @@ describe("Collection", () => {
       const childCollection = collection.collection("foo").collection("foo");
       collection.onChange(() => {
         expect(childCollection.id).toEqual("foo-new-id");
+
         done();
       });
       childCollection.id = "foo-new-id";
@@ -542,6 +587,7 @@ describe("Collection", () => {
       ]);
 
       await wait();
+
       expect(spy.callCount).toEqual(0);
     });
 
@@ -569,6 +615,7 @@ describe("Collection", () => {
       ]);
 
       await wait();
+
       expect(spy.callCount).toEqual(0);
     });
   });
@@ -644,6 +691,7 @@ describe("Collection", () => {
       ]);
 
       await wait();
+
       expect(spy.callCount).toEqual(0);
     });
   });

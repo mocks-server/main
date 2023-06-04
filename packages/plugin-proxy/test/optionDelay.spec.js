@@ -33,6 +33,7 @@ describe("when using delay option in server", () => {
       const timeCounter = new TimeCounter();
       const response = await doFetch("/api/users");
       timeCounter.stop();
+
       expect(timeCounter.total).toBeGreaterThan(999);
       expect(response.body).toEqual([
         {
@@ -52,6 +53,7 @@ describe("when using delay option in server", () => {
       const timeCounter = new TimeCounter();
       const response = await doFetch("/api/users/2");
       timeCounter.stop();
+
       expect(timeCounter.total).toBeGreaterThan(999);
       expect(response.body).toEqual({
         id: 2,

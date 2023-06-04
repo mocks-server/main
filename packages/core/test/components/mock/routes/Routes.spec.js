@@ -110,6 +110,7 @@ describe("Routes", () => {
         [VariantHandlerJson]
       );
       const routeVariants = routes.get();
+
       expect(routeVariants[0].delay).toEqual(5000);
     });
 
@@ -125,6 +126,7 @@ describe("Routes", () => {
         [VariantHandlerJson]
       );
       const routeVariants = routes.get();
+
       expect(routeVariants[0].delay).toEqual(4000);
     });
 
@@ -139,6 +141,7 @@ describe("Routes", () => {
         [VariantHandlerJson]
       );
       const routeVariants = routes.get();
+
       expect(routeVariants[0].delay).toEqual(null);
     });
 
@@ -281,6 +284,7 @@ describe("Routes", () => {
         [VariantHandlerJson]
       );
       const routeVariants = routes.get();
+
       expect(routeVariants[0]).toBeInstanceOf(Route);
       expect(routeVariants[0].type).toEqual("json");
       expect(routeVariants[0].id).toEqual("foo-route:foo-variant");

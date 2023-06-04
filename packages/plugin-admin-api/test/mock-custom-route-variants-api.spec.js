@@ -27,6 +27,7 @@ describe("mock custom routes variants api", () => {
   describe("get /", () => {
     it("should return mock custom routes variants", async () => {
       const response = await doApiFetch("/mock/custom-route-variants");
+
       expect(response.body).toEqual([]);
     });
   });
@@ -40,11 +41,13 @@ describe("mock custom routes variants api", () => {
         },
       });
       const response = await doApiFetch("/mock/custom-route-variants");
+
       expect(response.body).toEqual([{ id: "get-user:2" }]);
     });
 
     it("should have changed user response", async () => {
       const response = await doFetch("/api/users/1");
+
       expect(response.body).toEqual({ id: 2, name: "Jane Doe" });
     });
   });
@@ -55,11 +58,13 @@ describe("mock custom routes variants api", () => {
         method: "DELETE",
       });
       const response = await doApiFetch("/mock/custom-route-variants");
+
       expect(response.body).toEqual([]);
     });
 
     it("should have changed user response", async () => {
       const response = await doFetch("/api/users/1");
+
       expect(response.body).toEqual({ id: 1, name: "John Doe" });
     });
   });
@@ -73,11 +78,13 @@ describe("mock custom routes variants api", () => {
         },
       });
       const response = await doApiFetch("/mock/custom-route-variants");
+
       expect(response.body).toEqual([]);
     });
 
     it("should not have changed user response", async () => {
       const response = await doFetch("/api/users/1");
+
       expect(response.body).toEqual({ id: 1, name: "John Doe" });
     });
   });

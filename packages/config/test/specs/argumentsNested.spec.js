@@ -1,4 +1,4 @@
-import commander from "commander";
+import { Command } from "commander";
 
 import { createConfigBeforeElements } from "../support/helpers";
 
@@ -18,16 +18,17 @@ describe("arguments nested", () => {
 
   describe("when option is defined in argument", () => {
     it("should return value from it", async () => {
-      commander.Command.prototype.opts.returns({
+      Command.prototype.opts.returns({
         "parentNamespace.fooNamespace.fooOption": "foo-from-arg",
       });
       ({ config, namespace, option } = createConfig({ moduleName: "testD" }));
       await config.init();
+
       expect(option.value).toEqual("foo-from-arg");
     });
 
     it("should return object if option is of type object", async () => {
-      commander.Command.prototype.opts.returns({
+      Command.prototype.opts.returns({
         "parentNamespace.fooNamespace.fooOption": {
           foo: 1,
           foo2: { var: true, var2: "x-from-arg", var6: "xyz" },
@@ -42,6 +43,7 @@ describe("arguments nested", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual({
         foo: 1,
         foo2: { var: true, var2: "x-from-arg", var6: "xyz" },
@@ -50,7 +52,7 @@ describe("arguments nested", () => {
 
     it("should return object if option is of type object and namespaces have several levels", async () => {
       let secondNamespace, option2;
-      commander.Command.prototype.opts.returns({
+      Command.prototype.opts.returns({
         "parentNamespace.fooNamespace.fooOption": {
           foo: 1,
           foo2: { var: true, var2: "x-from-arg", var6: "xyz" },
@@ -74,6 +76,7 @@ describe("arguments nested", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual({
         foo: 1,
         foo2: { var: true, var2: "x-from-arg", var6: "xyz" },
@@ -84,35 +87,38 @@ describe("arguments nested", () => {
     });
 
     it("should not return value from it if it is undefined", async () => {
-      commander.Command.prototype.opts.returns({
+      Command.prototype.opts.returns({
         "parentNamespace.fooNamespace.fooOption": undefined,
       });
       ({ config, namespace, option } = createConfig({ moduleName: "testE" }));
       await config.init();
+
       expect(option.value).toEqual("default-str");
     });
 
     it("should overwrite value from init", async () => {
-      commander.Command.prototype.opts.returns({
+      Command.prototype.opts.returns({
         "parentNamespace.fooNamespace.fooOption": "foo-from-arg",
       });
       ({ config, namespace, option } = createConfig({ moduleName: "testF" }));
       await config.init({ parentNamespace: { fooNamespace: { fooOption: "value-from-init" } } });
+
       expect(option.value).toEqual("foo-from-arg");
     });
 
     it("should overwrite value from env var", async () => {
-      commander.Command.prototype.opts.returns({
+      Command.prototype.opts.returns({
         "parentNamespace.fooNamespace.fooOption": "foo-from-arg",
       });
       ({ config, namespace, option } = createConfig({ moduleName: "namespaceTestG" }));
       process.env["NAMESPACE_TEST_G_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init();
+
       expect(option.value).toEqual("foo-from-arg");
     });
 
     it("should overwrite value from file", async () => {
-      commander.Command.prototype.opts.returns({
+      Command.prototype.opts.returns({
         "parentNamespace.fooNamespace.fooOption": "foo-from-arg",
       });
       ({ config, namespace, option } = createConfig({ moduleName: "testH" }));
@@ -120,11 +126,12 @@ describe("arguments nested", () => {
         config: { parentNamespace: { fooNamespace: { fooOption: "value-from-file" } } },
       });
       await config.init();
+
       expect(option.value).toEqual("foo-from-arg");
     });
 
     it("should overwrite value from init, env var and file", async () => {
-      commander.Command.prototype.opts.returns({
+      Command.prototype.opts.returns({
         "parentNamespace.fooNamespace.fooOption": "foo-from-arg",
       });
       ({ config, namespace, option } = createConfig({ moduleName: "namespaceTestI" }));
@@ -133,6 +140,7 @@ describe("arguments nested", () => {
         config: { parentNamespace: { fooNamespace: { fooOption: "value-from-file" } } },
       });
       await config.init({ parentNamespace: { fooNamespace: { fooOption: "value-from-init" } } });
+
       expect(option.value).toEqual("foo-from-arg");
     });
 
@@ -145,12 +153,13 @@ describe("arguments nested", () => {
         default: true,
         type: "boolean",
       });
-      commander.Command.prototype.opts.returns({ "parentNamespace.fooNamespace.fooOption": true });
+      Command.prototype.opts.returns({ "parentNamespace.fooNamespace.fooOption": true });
       process.env["NAMESPACE_TEST_J_PARENT_NAMESPACE_FOO_NAMESPACE_FOO_OPTION"] = false;
       cosmiconfigStub.search.resolves({
         config: { parentNamespace: { fooNamespace: { fooOption: false } } },
       });
       await config.init({ parentNamespace: { fooNamespace: { fooOption: false } } });
+
       expect(option.value).toEqual(false);
     });
 
@@ -163,7 +172,7 @@ describe("arguments nested", () => {
           },
         },
       });
-      commander.Command.prototype.opts.returns({
+      Command.prototype.opts.returns({
         "parentNamespace.fooNamespace.fooOption": {
           foo: 1,
           foo2: { var: true, var2: "x-from-arg", var6: "xyz" },
@@ -183,6 +192,7 @@ describe("arguments nested", () => {
           fooNamespace: { fooOption: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" } },
         },
       });
+
       expect(option.value).toEqual({
         foo: 1,
         foo2: { var: true, var2: "x-from-arg", var4: "y", var5: 5, var6: "xyz", var7: 7 },

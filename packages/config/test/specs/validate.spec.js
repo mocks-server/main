@@ -37,6 +37,7 @@ describe("validate method", () => {
             const validation = config.validate({
               [name]: invalidValue,
             });
+
             expect(validation.valid).toEqual(false);
             expect(validation.errors.length).toEqual(1);
           });
@@ -54,6 +55,7 @@ describe("validate method", () => {
             const validation = config.validate({
               [name]: invalidValue,
             });
+
             expect(validation.valid).toEqual(false);
             expect(validation.errors.length).toEqual(1);
           });
@@ -70,6 +72,7 @@ describe("validate method", () => {
           const validation = config.validate({
             [name]: null,
           });
+
           expect(validation.valid).toEqual(true);
           expect(validation.errors).toEqual(null);
         });
@@ -83,6 +86,7 @@ describe("validate method", () => {
             default: defaultValue,
           });
           config.option(name).value = null;
+
           expect(config.option(name).value).toEqual(null);
         });
 
@@ -97,6 +101,7 @@ describe("validate method", () => {
           const validation = config.validate({
             [name]: validValue,
           });
+
           expect(validation.valid).toEqual(true);
           expect(validation.errors).toEqual(null);
         });
@@ -112,6 +117,7 @@ describe("validate method", () => {
             const validation = config.validate({
               [name]: validValue,
             });
+
             expect(validation.valid).toEqual(true);
             expect(validation.errors).toEqual(null);
           });
@@ -129,6 +135,7 @@ describe("validate method", () => {
             const validation = config.validate({
               [name]: validValue,
             });
+
             expect(validation.valid).toEqual(true);
             expect(validation.errors).toEqual(null);
           });
@@ -244,6 +251,7 @@ describe("validate method", () => {
           fooOption: "foo",
         },
       });
+
       expect(validation.valid).toEqual(false);
       expect(validation.errors.length).toEqual(1);
     });
@@ -257,6 +265,7 @@ describe("validate method", () => {
           fooOption: 2,
         },
       });
+
       expect(validation.valid).toEqual(true);
       expect(validation.errors).toEqual(null);
     });
@@ -273,6 +282,7 @@ describe("validate method", () => {
         fooOption: "2",
         foo2: "x",
       });
+
       expect(validation.valid).toEqual(false);
       expect(validation.errors.length).toEqual(1);
     });
@@ -291,6 +301,7 @@ describe("validate method", () => {
         },
         { allowAdditionalProperties: true }
       );
+
       expect(validation.valid).toEqual(true);
       expect(validation.errors).toEqual(null);
     });

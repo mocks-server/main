@@ -47,6 +47,7 @@ describe("Inquirer", () => {
     it("should add an extra exit option to main menu", () => {
       const cli = new Inquirer();
       cli.questions = fooQuestions;
+
       expect(cli._questions.main.choices[2].name).toEqual("Exit");
     });
 
@@ -55,6 +56,7 @@ describe("Inquirer", () => {
 
       const cli = new Inquirer();
       cli.questions = questionsWithoutMain;
+
       expect(cli._questions.notMain.choices.length).toEqual(1);
     });
   });
@@ -64,6 +66,7 @@ describe("Inquirer", () => {
       sandbox.stub(process, "exit");
       const cli = new Inquirer();
       cli.quit();
+
       expect(process.exit.callCount).toEqual(1);
     });
   });
@@ -73,6 +76,7 @@ describe("Inquirer", () => {
       sandbox.stub(process.stdout, "write");
       const cli = new Inquirer();
       cli.clearScreen();
+
       expect(process.stdout.write.calledWith("\x1Bc")).toEqual(true);
     });
 
@@ -81,6 +85,7 @@ describe("Inquirer", () => {
       sandbox.stub(process.stdout, "write");
       const cli = new Inquirer(() => [fooHeader]);
       cli.clearScreen();
+
       // Get console call 3 (From 0 to 2 are rendering section header)
       expect(console.log.getCall(3).args[0]).toEqual(expect.stringContaining(fooHeader));
     });
@@ -93,6 +98,7 @@ describe("Inquirer", () => {
         () => [fooAlert]
       );
       cli.clearScreen();
+
       // Get console call 3 (From 0 to 2 are rendering section header)
       expect(console.log.getCall(3).args[0]).toEqual(expect.stringContaining(fooAlert));
     });
@@ -105,6 +111,7 @@ describe("Inquirer", () => {
         () => [fooAlert]
       );
       cli.clearScreen();
+
       // Get console call 1 (0 and 2 are headers separators)
       expect(console.log.getCall(1).args[0]).toEqual("ALERTS");
     });
@@ -120,6 +127,7 @@ describe("Inquirer", () => {
         }
       );
       cli.clearScreen();
+
       // Get console call 1 (0 and 2 are headers separators)
       expect(console.log.getCall(1).args[0]).toEqual("⚠️  ALERTS");
     });
@@ -136,6 +144,7 @@ describe("Inquirer", () => {
       );
       cli.emojis = false;
       cli.clearScreen();
+
       // Get console call 1 (0 and 2 are headers separators)
       expect(console.log.getCall(1).args[0]).toEqual("ALERTS");
     });
@@ -147,6 +156,7 @@ describe("Inquirer", () => {
       cli.clearScreen({
         header: false,
       });
+
       expect(console.log.getCalls().length).toEqual(0);
     });
   });
@@ -154,15 +164,18 @@ describe("Inquirer", () => {
   describe("inquire method", () => {
     it("should return the inquirer returned value", async () => {
       expect.assertions(1);
+
       const fooValue = "foo-value";
       sandbox.stub(inquirer, "prompt").usingPromise().resolves({ value: fooValue });
       const cli = new Inquirer();
       cli.questions = fooQuestions;
+
       expect(await cli.inquire("main")).toEqual(fooValue);
     });
 
     it("should resolve previous questions", async () => {
       expect.assertions(4);
+
       const fooValue = "foo-value";
       sandbox.stub(inquirer, "prompt").usingPromise().resolves({ value: fooValue });
       const cli = new Inquirer();
@@ -171,6 +184,7 @@ describe("Inquirer", () => {
       const resolvePreviousQuestion2 = sandbox.spy();
       cli._currentInquirers.add(resolvePreviousQuestion1);
       cli._currentInquirers.add(resolvePreviousQuestion2);
+
       expect(await cli.inquire("main")).toEqual(fooValue);
       expect(resolvePreviousQuestion1.callCount).toEqual(1);
       expect(resolvePreviousQuestion2.callCount).toEqual(1);
@@ -179,15 +193,18 @@ describe("Inquirer", () => {
 
     it("should call to inquire prompt method, passing the correspondant question", async () => {
       expect.assertions(1);
+
       sandbox.stub(inquirer, "prompt").usingPromise().resolves({});
       const cli = new Inquirer();
       cli.questions = fooQuestions;
       await cli.inquire("main");
+
       expect(inquirer.prompt.getCall(0).args[0].message).toEqual("Select action:");
     });
 
     it("should call to remove keypress listener after inquire has finished", async () => {
       expect.assertions(1);
+
       sandbox.stub(inquirer, "prompt").usingPromise().resolves({});
       const cli = new Inquirer();
       cli.questions = fooQuestions;
@@ -196,16 +213,19 @@ describe("Inquirer", () => {
       });
       sandbox.stub(process.stdin, "removeListener");
       await cli.inquire("main");
+
       expect(process.stdin.removeListener.getCall(0).args[0]).toEqual("keypress");
     });
 
     it('should call to quit method if inquired question is "main" and answer value is "quit"', async () => {
       expect.assertions(1);
+
       sandbox.stub(process, "exit");
       sandbox.stub(inquirer, "prompt").usingPromise().resolves({ value: "quit" });
       const cli = new Inquirer();
       cli.questions = fooQuestions;
       await cli.inquire("main");
+
       expect(process.exit.callCount).toEqual(1);
     });
   });
@@ -252,6 +272,7 @@ describe("Inquirer", () => {
       const cli = new Inquirer();
       cli.questions = fooQuestions;
       await cli.logsMode();
+
       expect(process.stdout.write.calledWith("\x1Bc")).toEqual(true);
     });
 
@@ -259,6 +280,7 @@ describe("Inquirer", () => {
       const cli = new Inquirer();
       cli.questions = fooQuestions;
       await cli.logsMode();
+
       expect(
         console.log.calledWith(
           chalk.blue("Displaying logs. Press any key to display main menu again")
@@ -271,6 +293,7 @@ describe("Inquirer", () => {
       cli.questions = fooQuestions;
       const fooCallBack = sinon.spy();
       await cli.logsMode(fooCallBack);
+
       expect(fooCallBack.callCount).toEqual(1);
     });
 
@@ -279,6 +302,7 @@ describe("Inquirer", () => {
       const cli = new Inquirer();
       cli.questions = fooQuestions;
       await cli.logsMode();
+
       expect(process.exit.callCount).toEqual(1);
     });
 
@@ -292,6 +316,7 @@ describe("Inquirer", () => {
       const cli = new Inquirer();
       cli.questions = fooQuestions;
       await cli.logsMode();
+
       expect(process.stdin.setRawMode.callCount).toEqual(2);
     });
 
@@ -308,6 +333,7 @@ describe("Inquirer", () => {
       cli.questions = fooQuestions;
       await cli.logsMode();
       process.stdin = originalStdin;
+
       expect(process.stdin.setRawMode.callCount).toEqual(undefined);
     });
   });
@@ -321,6 +347,7 @@ describe("Inquirer", () => {
       const cli = new Inquirer();
       cli.questions = fooQuestions;
       cli.exitLogsMode();
+
       expect(process.stdin.removeListener.callCount).toEqual(0);
     });
   });

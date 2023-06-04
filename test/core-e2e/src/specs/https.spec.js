@@ -68,6 +68,7 @@ describe("https option", () => {
       agent: httpsAgent,
       protocol: "https",
     });
+
     expect(users.body).toEqual([
       { id: 1, name: "John Doe" },
       { id: 2, name: "Jane Doe" },

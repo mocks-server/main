@@ -57,6 +57,7 @@ describe("generated routes", () => {
   describe("get-users route", () => {
     it("should have 200-json-one-user variant available in base collection", async () => {
       const response = await fetchJson("/api/users");
+
       expect(response.body).toEqual([
         {
           id: 1,
@@ -72,6 +73,7 @@ describe("generated routes", () => {
       const response = await fetchJson("/api/users", {
         method: "POST",
       });
+
       expect(response.body).toBe(undefined);
       expect(response.status).toEqual(201);
     });
@@ -80,6 +82,7 @@ describe("generated routes", () => {
   describe("get-users-id route", () => {
     it("should have 200-json-success variant available in base collection", async () => {
       const response = await fetchJson("/api/users/2");
+
       expect(response.body).toEqual({
         id: 1,
         name: "John Doe",
@@ -91,6 +94,7 @@ describe("generated routes", () => {
   describe("get-users-id-books-bookId route", () => {
     it("should have 200-json-success variant available in base collection", async () => {
       const response = await fetchJson("/api/users/2/books/3");
+
       expect(response.body).toEqual({
         id: 1,
         title: "1984",
@@ -102,6 +106,7 @@ describe("generated routes", () => {
   describe("get-users-id-books-bookId-pages-pageNumber route", () => {
     it("should have 200-text-success variant available in base collection", async () => {
       const response = await fetchText("/api/users/2/books/3/pages/4");
+
       expect(response.body).toEqual("Page of the book 1984 by George Orwell.");
       expect(response.status).toEqual(200);
     });

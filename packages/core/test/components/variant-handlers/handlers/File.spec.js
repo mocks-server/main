@@ -71,6 +71,7 @@ describe("File variant handler", () => {
   describe("middleware", () => {
     it("should return response status and send response using file path", () => {
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
+
       expect(expressStubs.res.status.getCall(0).args[0]).toEqual(FOO_VARIANT.status);
       expect(expressStubs.res.sendFile.getCall(0).args[0]).toEqual(FOO_VARIANT.path);
     });
@@ -79,12 +80,14 @@ describe("File variant handler", () => {
       const FOO_HEADERS = { foo: "foo" };
       routesHandler = new File({ ...FOO_VARIANT, headers: FOO_HEADERS }, coreInstance);
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
+
       expect(expressStubs.res.set.getCall(0).args[0]).toEqual(FOO_HEADERS);
     });
 
     it("should do nothing more if no error happens", () => {
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
       expressStubs.res.sendFile.getCall(0).args[2]();
+
       expect(expressStubs.next.callCount).toEqual(0);
     });
 
@@ -92,6 +95,7 @@ describe("File variant handler", () => {
       const error = new Error();
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
       expressStubs.res.sendFile.getCall(0).args[2](error);
+
       expect(expressStubs.next.getCall(0).args[0]).toEqual(error);
     });
   });

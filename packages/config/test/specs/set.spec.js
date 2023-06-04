@@ -57,6 +57,7 @@ describe("set method", () => {
           },
         },
       });
+
       expect(config.value).toEqual({
         config: {
           allowUnknownArguments: false,
@@ -118,6 +119,7 @@ describe("set method", () => {
           foo: true,
         },
       });
+
       expect(config.value).toEqual({
         config: {
           allowUnknownArguments: false,
@@ -187,6 +189,7 @@ describe("set method", () => {
           },
         },
       };
+
       expect(config.value).toEqual({
         config: {
           allowUnknownArguments: false,
@@ -238,6 +241,7 @@ describe("set method", () => {
         },
         { merge: true }
       );
+
       expect(config.value).toEqual({
         config: {
           allowUnknownArguments: false,
@@ -275,6 +279,7 @@ describe("set method", () => {
       ]);
       await config.init();
       config.set();
+
       expect(config.value).toEqual({
         config: {
           allowUnknownArguments: false,
@@ -310,6 +315,7 @@ describe("set method", () => {
           foo3: [3, 2, 1],
         },
       });
+
       expect(namespace.value).toEqual({
         foo: true,
         foo2: {
@@ -341,6 +347,7 @@ describe("set method", () => {
           foo3: [3, 2, 1],
         },
       };
+
       expect(namespace.value).toEqual({
         foo: true,
         foo2: {
@@ -367,6 +374,7 @@ describe("set method", () => {
       });
       await config.init();
       namespace.set();
+
       expect(namespace.value).toEqual({
         foo: false,
         foo2: {
@@ -395,6 +403,7 @@ describe("set method", () => {
         },
         { merge: true }
       );
+
       expect(namespace.value).toEqual({
         foo2: {
           foo3: { foo: "foo", foo2: "foo2" },
@@ -418,6 +427,7 @@ describe("set method", () => {
       });
       await config.init();
       option.set({ foo2: "foo2", child: { fooB: "foo-b" } }, { merge: true });
+
       expect(option.value).toEqual({
         foo: "foo",
         foo2: "foo2",
@@ -434,6 +444,7 @@ describe("set method", () => {
       });
       await config.init();
       option.set({ foo2: "foo2", array: [4, 5, 6] }, { merge: true });
+
       expect(option.value).toEqual({
         foo: "foo",
         foo2: "foo2",
@@ -450,6 +461,7 @@ describe("set method", () => {
       });
       await config.init();
       option.set({ foo2: "foo2" });
+
       expect(option.value).toEqual({ foo2: "foo2" });
     });
   });

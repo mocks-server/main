@@ -75,6 +75,7 @@ describe("Mock", () => {
     it("should return delay option value", () => {
       mock._routes._delayOption.hasBeenSet = true;
       mock._routes._delayOption.value = "foo-delay";
+
       expect(mock._getDelay()).toEqual("foo-delay");
     });
   });
@@ -84,17 +85,22 @@ describe("Mock", () => {
       const spy = sandbox.spy();
       mock.onChange(spy);
       mock._eventEmitter.emit("change:mock");
+
       expect(spy.callCount).toEqual(1);
     });
 
     it("should return a function to remove listener", () => {
       expect.assertions(2);
+
       const spy = sandbox.spy();
       const removeCallback = mock.onChange(spy);
       mock._eventEmitter.emit("change:mock");
+
       expect(spy.callCount).toEqual(1);
+
       removeCallback();
       mock._eventEmitter.emit("change:mock");
+
       expect(spy.callCount).toEqual(1);
     });
   });
@@ -102,21 +108,25 @@ describe("Mock", () => {
   describe("load method", () => {
     it("should process loaded mocks", () => {
       mock.load();
+
       expect(mock.collections.plain).toEqual([]);
     });
 
     it("should process loaded routes", () => {
       mock.load();
+
       expect(mock.routes.plain).toEqual([]);
     });
 
     it("should process route variants", () => {
       mock.load();
+
       expect(mock.routes.plainVariants).toEqual([]);
     });
 
     it("should call onChange method", () => {
       mock.load();
+
       expect(methods.onChange.callCount).toEqual(1);
     });
   });
@@ -124,18 +134,23 @@ describe("Mock", () => {
   describe("when there are no mocks", () => {
     it("should call to create express router", () => {
       mock.load();
+
       expect(express.Router.callCount).toEqual(1);
+
       mock.router();
+
       expect(routerMock.callCount).toEqual(1);
     });
 
     it("should return null as selected collection", () => {
       mock.load();
+
       expect(mock.collections.selected).toEqual(null);
     });
 
     it("should return empty array in collections ids", () => {
       mock.load();
+
       expect(mock.collections.ids).toEqual([]);
     });
   });
@@ -144,6 +159,7 @@ describe("Mock", () => {
     describe("plain", () => {
       it("should return routes in plain format", () => {
         mock._plainRoutes = ["foo", "foo-2"];
+
         expect(mock.routes.plain).toEqual(["foo", "foo-2"]);
       });
     });
@@ -151,6 +167,7 @@ describe("Mock", () => {
     describe("plainVariants", () => {
       it("should return variants in plain format", () => {
         mock._plainVariants = ["foo", "foo-2"];
+
         expect(mock.routes.plainVariants).toEqual(["foo", "foo-2"]);
       });
     });
@@ -160,6 +177,7 @@ describe("Mock", () => {
     describe("plain", () => {
       it("should return collections in plain format", () => {
         mock._plainCollections = ["foo", "foo-2"];
+
         expect(mock.collections.plain).toEqual(["foo", "foo-2"]);
       });
     });
@@ -205,6 +223,7 @@ describe("Mock", () => {
     describe("when loaded", () => {
       it("should set current id", () => {
         mock.load();
+
         expect(mock.collections.selected).toEqual("mock-id");
       });
 
@@ -212,6 +231,7 @@ describe("Mock", () => {
         mock._collectionsInstance._selectedOption.hasBeenSet = true;
         mock._collectionsInstance._selectedOption.value = "mock-id";
         mock.load();
+
         expect(mock.collections.selected).toEqual("mock-id");
       });
     });
@@ -220,12 +240,14 @@ describe("Mock", () => {
       it("should set selected collection when it exists", () => {
         mock.load();
         mock.collections.select("mock-id");
+
         expect(mock.collections.selected).toEqual("mock-id");
       });
 
       it("should set default collection when id does not exists", () => {
         mock.load();
         mock.collections.select("foo-id");
+
         expect(mock.collections.selected).toEqual("mock-id");
       });
     });
@@ -234,6 +256,7 @@ describe("Mock", () => {
       it("should set selected collection option", () => {
         mock.load();
         mock.collections.select("foo-mock-id");
+
         expect(mock._collectionsInstance._selectedOption.value).toEqual("foo-mock-id");
       });
 
@@ -262,6 +285,7 @@ describe("Mock", () => {
       it("should return customVariants", () => {
         mock.load();
         mock.useRouteVariant("route-2:variant-2");
+
         expect(mock.customRouteVariants).toEqual(["route-2:variant-2"]);
       });
     });
@@ -270,8 +294,11 @@ describe("Mock", () => {
       it("should return empty array", () => {
         mock.load();
         mock.useRouteVariant("route-2:variant-2");
+
         expect(mock.customRouteVariants).toEqual(["route-2:variant-2"]);
+
         mock.restoreRouteVariants();
+
         expect(mock.customRouteVariants).toEqual([]);
       });
     });
@@ -286,6 +313,7 @@ describe("Mock", () => {
     describe("when loaded", () => {
       it("should add alerts", () => {
         mock.load();
+
         expect(alerts.flat).toEqual([
           {
             id: "mocks:routes:load:0:validation",
@@ -320,6 +348,7 @@ describe("Mock", () => {
       it("should not set collection when id does not exists", () => {
         mock.load();
         mock.collections.select("foo-id");
+
         expect(mock.collections.selected).toEqual(null);
       });
     });
@@ -328,6 +357,7 @@ describe("Mock", () => {
   describe("createLoaders method", () => {
     it("should return new loaders", () => {
       const { loadRoutes, loadCollections } = mock.createLoaders();
+
       expect(loadRoutes).toBe(loadersMock.stubs.loader);
       expect(loadCollections).toBe(loadersMock.stubs.loader);
     });
@@ -336,16 +366,22 @@ describe("Mock", () => {
   describe("when collections load", () => {
     it("should not load collections if routes are not loaded", () => {
       sandbox.spy(mock, "load");
+
       expect.assertions(1);
+
       loadersMock.stubs.Constructor.mock.calls[0][0].onLoad();
+
       expect(mock.load.callCount).toEqual(0);
     });
 
     it("should load collections if routes are loaded", () => {
       sandbox.spy(mock, "load");
+
       expect.assertions(1);
+
       loadersMock.stubs.Constructor.mock.calls[1][0].onLoad();
       loadersMock.stubs.Constructor.mock.calls[0][0].onLoad();
+
       expect(mock.load.callCount).toEqual(1);
     });
   });
@@ -353,16 +389,22 @@ describe("Mock", () => {
   describe("when routes load", () => {
     it("should not load routes if collections are not loaded", () => {
       sandbox.spy(mock, "load");
+
       expect.assertions(1);
+
       loadersMock.stubs.Constructor.mock.calls[1][0].onLoad();
+
       expect(mock.load.callCount).toEqual(0);
     });
 
     it("should load routes if collections are loaded", () => {
       sandbox.spy(mock, "load");
+
       expect.assertions(1);
+
       loadersMock.stubs.Constructor.mock.calls[0][0].onLoad();
       loadersMock.stubs.Constructor.mock.calls[1][0].onLoad();
+
       expect(mock.load.callCount).toEqual(1);
     });
   });

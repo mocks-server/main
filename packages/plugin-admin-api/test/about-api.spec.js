@@ -14,6 +14,7 @@ const { version: coreVersion } = require("../../core/package.json");
 
 describe("about api", () => {
   let server;
+
   beforeAll(async () => {
     server = await startServer("web-tutorial");
     await waitForServer();
@@ -26,6 +27,7 @@ describe("about api", () => {
   describe("get /", () => {
     it("should return current version", async () => {
       const response = await doApiFetch("/about");
+
       expect(response.body).toEqual({
         versions: {
           adminApi: version,

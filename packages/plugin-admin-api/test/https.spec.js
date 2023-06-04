@@ -29,6 +29,7 @@ const httpsAgent = new https.Agent({
 
 describe("https", () => {
   let server;
+
   beforeAll(async () => {
     const generateCerts = spawn([
       "openssl",
@@ -79,6 +80,7 @@ describe("https", () => {
         agent: httpsAgent,
         protocol: "https",
       });
+
       expect(response.body).toEqual({
         versions: {
           adminApi: version,
@@ -95,6 +97,7 @@ describe("https", () => {
         agent: httpsAgent,
         protocol: "https",
       });
+
       expect(response.body).toEqual([
         {
           id: 1,

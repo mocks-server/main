@@ -51,6 +51,7 @@ describe("interactive CLI", () => {
 
     it("should serve users collection mock under the /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -59,11 +60,13 @@ describe("interactive CLI", () => {
 
     it("should serve user 1 under the /api/users/1 path", async () => {
       const users = await doFetch("/api/users/1");
+
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 1 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/2");
+
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
   });
@@ -73,6 +76,7 @@ describe("interactive CLI", () => {
       await mocks.pressEnter();
       await mocks.cursorDown(2);
       const newScreen = await mocks.pressEnter();
+
       expect(newScreen).toEqual(expect.stringContaining("Current collection: user-real"));
     });
 
@@ -82,6 +86,7 @@ describe("interactive CLI", () => {
 
     it("should serve users collection mock under the /api/users path", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -90,16 +95,19 @@ describe("interactive CLI", () => {
 
     it("should serve user 1 under the /api/users/1 path", async () => {
       const users = await doFetch("/api/users/1");
+
       expect(users.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should serve user 2 under the /api/users/2 path", async () => {
       const users = await doFetch("/api/users/2");
+
       expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
     });
 
     it("should return not found for /api/users/3 path", async () => {
       const usersResponse = await doFetch("/api/users/3");
+
       expect(usersResponse.status).toEqual(404);
     });
   });
@@ -110,6 +118,7 @@ describe("interactive CLI", () => {
       await mocks.pressEnter();
       await mocks.cursorDown(2);
       const newScreen = await mocks.pressEnter();
+
       expect(newScreen).toEqual(expect.stringContaining("Log level: verbose"));
     });
   });
@@ -117,15 +126,18 @@ describe("interactive CLI", () => {
   describe("When displaying logs", () => {
     it("should log requests", async () => {
       expect.assertions(2);
+
       await mocks.cursorDown(7);
       await mocks.pressEnter();
       await wait(500);
       await doFetch("/api/users");
       await wait(1000);
+
       expect(mocks.currentScreen).toEqual(expect.stringContaining("Displaying logs"));
       expect(mocks.currentScreen).toEqual(
         expect.stringContaining("[verbose][mock:routes:get-users:success] Sending response")
       );
+
       await mocks.pressEnter();
     });
   });
@@ -136,14 +148,17 @@ describe("interactive CLI", () => {
       await mocks.pressEnter();
       await mocks.write(2000);
       const newScreen = await mocks.pressEnter();
+
       expect(newScreen).toEqual(expect.stringContaining("Delay: 2000"));
     });
 
     it("should respond after defined delay", async () => {
       expect.assertions(2);
+
       const timeCounter = new TimeCounter();
       const users = await doFetch("/api/users");
       timeCounter.stop();
+
       expect(timeCounter.total).toBeGreaterThan(1999);
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },

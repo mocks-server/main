@@ -69,6 +69,7 @@ describe("Status variant handler", () => {
   describe("middleware", () => {
     it("should return response status", () => {
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
+
       expect(expressStubs.res.status.getCall(0).args[0]).toEqual(FOO_VARIANT.status);
       expect(expressStubs.res.send.getCall(0).args[0]).toEqual(undefined);
     });
@@ -77,6 +78,7 @@ describe("Status variant handler", () => {
       const FOO_HEADERS = { "Content-Length": "0" };
       routesHandler = new VariantHandlerStatus({ ...FOO_VARIANT }, coreInstance);
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
+
       expect(expressStubs.res.set.getCall(0).args[0]).toEqual(FOO_HEADERS);
     });
 
@@ -87,6 +89,7 @@ describe("Status variant handler", () => {
         coreInstance
       );
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
+
       expect(expressStubs.res.set.getCall(0).args[0]).toEqual({
         "Content-Length": "0",
         foo: "foo",

@@ -38,6 +38,7 @@ describe("when files watch is enabled", () => {
   describe("When started", () => {
     it("should serve users", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -51,6 +52,7 @@ describe("when files watch is enabled", () => {
       await fsExtra.copy(fixturesFolder("web-tutorial-modified"), fixturesFolder("temp"));
       await waitForServerUrl("/api/new-users");
       const users = await doFetch("/api/users");
+
       expect(users.headers.get("x-custom-header")).toEqual("foo-header");
       expect(users.headers.get("x-another-header")).toEqual("another-header");
       expect(users.body).toEqual([
@@ -61,6 +63,7 @@ describe("when files watch is enabled", () => {
 
     it("should serve new users in /api/new-users path", async () => {
       const users = await doFetch("/api/new-users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe modified" },
         { id: 2, name: "Jane Doe modified" },
@@ -75,6 +78,7 @@ describe("when files watch is enabled", () => {
       await fsExtra.copy(fixturesFolder("web-tutorial/db"), fixturesFolder("temp/db"));
       await wait(5000);
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },

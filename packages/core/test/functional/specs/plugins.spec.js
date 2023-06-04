@@ -81,6 +81,7 @@ describe("plugins", () => {
       describe("when started", () => {
         it("should start server and send responses", async () => {
           const users = await doFetch("/api/users");
+
           expect(users.body).toEqual([
             { id: 1, name: "John Doe" },
             { id: 2, name: "Jane Doe" },
@@ -146,6 +147,7 @@ describe("plugins", () => {
 
         it("should respond to custom routes", async () => {
           const response = await doFetch("/foo-path");
+
           expect(response.body).toEqual(FOO_CUSTOM_RESPONSE);
         });
 
@@ -158,6 +160,7 @@ describe("plugins", () => {
             const startAlert = alerts.find(
               (alert) => alert.id === "plugins:test-plugin:test-start"
             );
+
             expect(alerts.length).toEqual(2);
             expect(registerAlert.message).toEqual("Warning registering plugin");
             expect(startAlert.message).toEqual("Warning starting plugin");
@@ -172,6 +175,7 @@ describe("plugins", () => {
               (alert) => alert.id === "plugins:test-plugin:test-start"
             );
             const idAlert = alerts.find((alert) => alert.id === "plugins:format:0");
+
             expect(alerts.length).toEqual(3);
             expect(registerAlert.message).toEqual("Warning registering plugin");
             expect(idAlert.message).toEqual("Plugins must have a static id property");
@@ -219,6 +223,7 @@ describe("plugins", () => {
         it("should start server and send responses", async () => {
           await coreStartMethod();
           const users = await doFetch("/api/users");
+
           expect(users.body).toEqual([
             { id: 1, name: "John Doe modified" },
             { id: 2, name: "Jane Doe modified" },
@@ -229,6 +234,7 @@ describe("plugins", () => {
       describe("when using the stop method received in the scoped core", () => {
         it("should have executed logger in stop method", async () => {
           await coreStopMethod();
+
           expect(
             filterLogs(core.logger.globalStore, "[plugins:test-plugin] Log from stop method")
               .length
@@ -252,11 +258,14 @@ describe("plugins", () => {
             plugins: { register: [pluginConstructor] },
           });
           const users = await doFetch("/api/users");
+
           expect(users.body).toEqual([
             { id: 1, name: "John Doe" },
             { id: 2, name: "Jane Doe" },
           ]);
+
           timeCounter.stop();
+
           expect(timeCounter.total).toBeGreaterThan(3000);
         });
 

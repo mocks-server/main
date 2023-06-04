@@ -29,6 +29,7 @@ describe("when defining host option as a function", () => {
   describe("get /users", () => {
     it("should return users from host", async () => {
       const response = await doFetch("/api/users");
+
       expect(response.body).toEqual([
         {
           id: 1,
@@ -45,6 +46,7 @@ describe("when defining host option as a function", () => {
   describe("get /users/1", () => {
     it("should return user from second host", async () => {
       const response = await doFetch("/api/users/1");
+
       expect(response.body).toEqual({
         id: 1,
         name: "John Doe 2",
@@ -55,6 +57,7 @@ describe("when defining host option as a function", () => {
   describe("get /users/2", () => {
     it("should return user from second host", async () => {
       const response = await doFetch("/api/users/2");
+
       expect(response.body).toEqual({
         id: 2,
         name: "Jane Doe 2",

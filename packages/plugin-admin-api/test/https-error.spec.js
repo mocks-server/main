@@ -26,6 +26,7 @@ const httpsAgent = new https.Agent({
 
 describe("https error handling", () => {
   let server;
+
   beforeAll(async () => {
     server = await startServer("web-tutorial", {
       plugins: {
@@ -52,6 +53,7 @@ describe("https error handling", () => {
       }).catch((error) => {
         return Promise.resolve(error);
       });
+
       expect(response.message).toEqual(
         expect.stringContaining("https://127.0.0.1:3110/api/about")
       );
@@ -62,6 +64,7 @@ describe("https error handling", () => {
   describe("get /users in mock API using http", () => {
     it("should return users", async () => {
       const response = await doFetch("/api/users");
+
       expect(response.body).toEqual([
         {
           id: 1,
@@ -89,6 +92,7 @@ describe("https error handling", () => {
 
     it("/about API should work", async () => {
       const response = await doApiFetch("/about");
+
       expect(response.body).toEqual({
         versions: {
           adminApi: version,
@@ -99,6 +103,7 @@ describe("https error handling", () => {
 
     it("users Mock should work", async () => {
       const response = await doFetch("/api/users");
+
       expect(response.body).toEqual([
         {
           id: 1,

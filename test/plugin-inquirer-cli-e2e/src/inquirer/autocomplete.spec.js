@@ -25,6 +25,7 @@ describe("when autocomplete fixture is executed", () => {
 
   beforeEach(() => {
     expect.assertions(1);
+
     cliRunner = new CliRunner(["node", cliFile]);
   });
 
@@ -34,21 +35,25 @@ describe("when autocomplete fixture is executed", () => {
 
   it('should print a menu with "Select tags"', async () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
+
     expect(cliRunner.logs.current).toEqual(expect.stringContaining("Select tags"));
   });
 
   it('should print a menu with "Exit" option', async () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
+
     expect(cliRunner.logs.current).toEqual(expect.stringContaining("Exit"));
   });
 
   it('should print selected option as "none" in header when inited', async () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
+
     expect(cliRunner.logs.current).toEqual(expect.stringContaining("Selected option: None"));
   });
 
   it('should allow to choose all available tags when "Select tags" is selected', async () => {
     expect.assertions(3);
+
     await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
     await wait(1000);
     const newScreen = await cliRunner.executeAndWaitUntilNewScreenRendered(
@@ -57,6 +62,7 @@ describe("when autocomplete fixture is executed", () => {
         newScreenTimeout: RENDER_TIME_OUT,
       }
     );
+
     expect(newScreen).toEqual(expect.stringContaining("a-tag"));
     expect(newScreen).toEqual(expect.stringContaining("b-tag"));
     expect(newScreen).toEqual(expect.stringContaining("c-tag"));
@@ -64,6 +70,7 @@ describe("when autocomplete fixture is executed", () => {
 
   it('should allow to choose only "a-tag" tag when "Select tags" is selected, and "a" is pressed', async () => {
     expect.assertions(3);
+
     await cliRunner.waitUntilHasLogged(END_SCREEN, { timeout: RENDER_TIME_OUT });
     await wait(1000);
     await cliRunner.executeAndWaitUntilNewScreenRendered(cliRunner.pressEnter.bind(cliRunner), {

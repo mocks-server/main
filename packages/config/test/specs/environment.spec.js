@@ -1,4 +1,4 @@
-import commander from "commander";
+import { Command } from "commander";
 
 import { createConfigBeforeElements } from "../support/helpers";
 
@@ -21,6 +21,7 @@ describe("environment", () => {
       ({ config, namespace, option } = createConfig({ moduleName: "testA" }));
       process.env["TEST_A_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init();
+
       expect(option.value).toEqual("foo-from-env");
     });
 
@@ -28,6 +29,7 @@ describe("environment", () => {
       ({ config, namespace, option } = createConfig({ moduleName: "testA" }));
       process.env["TEST_A_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init();
+
       expect(option.hasBeenSet).toEqual(true);
     });
 
@@ -35,6 +37,7 @@ describe("environment", () => {
       ({ config, namespace, option } = createConfig({ moduleName: "testA" }));
       process.env["TEST_A_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init();
+
       expect(config.envLoadedValues).toEqual({
         fooNamespace: {
           fooOption: "foo-from-env",
@@ -51,6 +54,7 @@ describe("environment", () => {
       });
       process.env["TEST_ROOT_FOO_OPTION"] = "foo-from-env";
       await config.init();
+
       expect(config.envLoadedValues).toEqual({
         fooOption: "foo-from-env",
       });
@@ -60,14 +64,16 @@ describe("environment", () => {
       ({ config, namespace, option } = createConfig({ moduleName: "testDisabled" }));
       process.env["TEST_DISABLED_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init({ config: { readEnvironment: false } });
+
       expect(option.value).toEqual("default-str");
     });
 
     it("should not return value from it when readEnvironment option is disabled using argument", async () => {
-      commander.Command.prototype.opts.returns({ "config.readEnvironment": false });
+      Command.prototype.opts.returns({ "config.readEnvironment": false });
       ({ config, namespace, option } = createConfig({ moduleName: "testDisabled" }));
       process.env["TEST_DISABLED_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init();
+
       expect(option.value).toEqual("default-str");
     });
 
@@ -80,6 +86,7 @@ describe("environment", () => {
         default: {},
         type: "object",
       });
+
       await expect(config.init()).rejects.toThrowError("fooOption");
     });
 
@@ -94,6 +101,7 @@ describe("environment", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual({ foo: 1, foo2: { var: false, var2: "x" } });
     });
 
@@ -107,6 +115,7 @@ describe("environment", () => {
         type: "array",
       });
       await config.init();
+
       expect(option.value).toEqual(["foo", 2]);
     });
 
@@ -120,6 +129,7 @@ describe("environment", () => {
         type: "array",
         itemsType: "number",
       });
+
       await expect(config.init()).rejects.toThrowError("fooOption");
     });
 
@@ -135,6 +145,7 @@ describe("environment", () => {
         type: "object",
       });
       await config.load();
+
       expect(option.value).toEqual({ foo: 1, foo2: { var: false, var2: "x" } });
     });
 
@@ -148,6 +159,7 @@ describe("environment", () => {
         type: "boolean",
       });
       await config.init();
+
       expect(option.value).toEqual(false);
     });
 
@@ -161,6 +173,7 @@ describe("environment", () => {
         type: "boolean",
       });
       await config.init();
+
       expect(option.value).toEqual(false);
     });
 
@@ -174,6 +187,7 @@ describe("environment", () => {
         type: "boolean",
       });
       await config.init();
+
       expect(option.value).toEqual(false);
     });
 
@@ -187,6 +201,7 @@ describe("environment", () => {
         type: "boolean",
       });
       await config.init();
+
       expect(option.value).toEqual(false);
     });
 
@@ -200,6 +215,7 @@ describe("environment", () => {
         type: "boolean",
       });
       await config.init();
+
       expect(option.value).toEqual(true);
     });
 
@@ -213,6 +229,7 @@ describe("environment", () => {
         type: "boolean",
       });
       await config.init();
+
       expect(option.value).toEqual(true);
     });
 
@@ -220,6 +237,7 @@ describe("environment", () => {
       ({ config, namespace, option } = createConfig({ moduleName: "testB" }));
       process.env["TEST_B_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init({ fooNamespace: { fooOption: "value-from-init" } });
+
       expect(option.value).toEqual("foo-from-env");
     });
 
@@ -230,6 +248,7 @@ describe("environment", () => {
       });
       process.env["TEST_C_FOO_NAMESPACE_FOO_OPTION"] = "foo-from-env";
       await config.init({ fooNamespace: { fooOption: "value-from-init" } });
+
       expect(option.value).toEqual("foo-from-env");
     });
 
@@ -246,6 +265,7 @@ describe("environment", () => {
       await config.init({
         fooNamespace: { fooOption: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" } },
       });
+
       expect(option.value).toEqual({
         foo: 1,
         foo2: { var: false, var2: "x", var4: "y" },
@@ -264,6 +284,7 @@ describe("environment", () => {
         type: "object",
       });
       await config.init();
+
       expect(option.value).toEqual({
         foo: 1,
         foo2: { var: false, var2: "x", var4: "y" },
@@ -287,6 +308,7 @@ describe("environment", () => {
       await config.init({
         fooNamespace: { fooOption: { foo: 2, foo2: { var: true, var4: "y" }, foo3: "z" } },
       });
+
       expect(option.value).toEqual({
         foo: 1,
         foo2: { var: false, var2: "x", var4: "y", var5: 5 },

@@ -25,6 +25,7 @@ describe("cors middleware", () => {
 
     it("should add cors headers to admin api routes", async () => {
       const response = await doApiFetch("/about", { method: "OPTIONS" });
+
       expect(response.headers.get("access-control-allow-origin")).toEqual("*");
       expect(response.headers.get("access-control-allow-methods")).toEqual(
         "GET,HEAD,PUT,PATCH,POST,DELETE"
@@ -33,6 +34,7 @@ describe("cors middleware", () => {
 
     it("should add cors headers to mock routes", async () => {
       const response = await doFetch("/api/users/2", { method: "OPTIONS" });
+
       expect(response.headers.get("access-control-allow-origin")).toEqual("*");
       expect(response.headers.get("access-control-allow-methods")).toEqual(
         "GET,HEAD,PUT,PATCH,POST,DELETE"
@@ -54,6 +56,7 @@ describe("cors middleware", () => {
 
     it("should add cors headers to admin api routes", async () => {
       const response = await doApiFetch("/about", { method: "OPTIONS" });
+
       expect(response.headers.get("access-control-allow-origin")).toEqual("*");
       expect(response.headers.get("access-control-allow-methods")).toEqual(
         "GET,HEAD,PUT,PATCH,POST,DELETE"
@@ -62,6 +65,7 @@ describe("cors middleware", () => {
 
     it("should disable cors headers in mock routes", async () => {
       const response = await doFetch("/api/users/2", { method: "OPTIONS" });
+
       expect(response.headers.get("access-control-allow-origin")).toEqual(null);
       expect(response.headers.get("access-control-allow-methods")).toEqual(null);
     });

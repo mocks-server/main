@@ -101,14 +101,17 @@ describe("text variant handler", () => {
       await waitForServerUrl("/api/books");
 
       const books = await doTextFetch("/api/books");
+
       expect(books.body).toEqual("1984, Pulp");
 
       const authors = await doTextFetch("/api/authors");
+
       expect(authors.body).toEqual("George Orwell, Charles Bukowski");
     });
 
     it("should send content-type header as text", async () => {
       const response = await doTextFetch("/api/books");
+
       expect(response.headers.get("Content-Type")).toEqual("text/plain; charset=utf-8");
     });
   });

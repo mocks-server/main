@@ -39,19 +39,23 @@ describe("static variant handler", () => {
       await waitForServerUrl("/api/users");
 
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([{ email: "foo@foo.com" }]);
     });
 
     it("should serve static files", async () => {
       const json = await doFetch("/web/subfolder/foo.json");
+
       expect(json.body).toEqual({ foo: "foo-value" });
 
       const humans = await doTextFetch("/web/humans.txt");
+
       expect(humans.body).toEqual(expect.stringContaining("Hello world from TXT"));
     });
 
     it("should serve index file", async () => {
       const index = await doTextFetch("/web");
+
       expect(index.body).toEqual(expect.stringContaining("Hello world from HTML"));
     });
   });
@@ -65,6 +69,7 @@ describe("static variant handler", () => {
       const timeCounter = new TimeCounter();
       const json = await doFetch("/web/subfolder/foo.json");
       timeCounter.stop();
+
       expect(timeCounter.total).toBeGreaterThan(400);
       expect(json.body).toEqual({ foo: "foo-value" });
     });
@@ -73,6 +78,7 @@ describe("static variant handler", () => {
       const timeCounter = new TimeCounter();
       const index = await doTextFetch("/web");
       timeCounter.stop();
+
       expect(timeCounter.total).toBeGreaterThan(400);
       expect(index.body).toEqual(expect.stringContaining("Hello world from HTML"));
     });
@@ -85,19 +91,23 @@ describe("static variant handler", () => {
 
     it("should serve static files", async () => {
       const json = await doFetch("/web/subfolder/foo.json");
+
       expect(json.body).toEqual({ foo: "foo-value" });
 
       const humans = await doTextFetch("/web/humans.txt");
+
       expect(humans.body).toEqual(expect.stringContaining("Hello world from TXT"));
     });
 
     it("should retun not found in folder", async () => {
       const response = await doTextFetch("/web");
+
       expect(response.status).toEqual(404);
     });
 
     it("should serve index file when route includes file name", async () => {
       const index = await doTextFetch("/web/index.html");
+
       expect(index.body).toEqual(expect.stringContaining("Hello world from HTML"));
     });
   });
@@ -105,14 +115,17 @@ describe("static variant handler", () => {
   describe("When headers option is set in variant", () => {
     it("responses of static files should include headers", async () => {
       const json = await doFetch("/web/subfolder/foo.json");
+
       expect(json.headers.get("x-index-disabled")).toEqual("true");
 
       const humans = await doTextFetch("/web/humans.txt");
+
       expect(humans.headers.get("x-index-disabled")).toEqual("true");
     });
 
     it("response of index file should include headers", async () => {
       const index = await doTextFetch("/web/index.html");
+
       expect(index.headers.get("x-index-disabled")).toEqual("true");
     });
   });
@@ -124,16 +137,19 @@ describe("static variant handler", () => {
 
     it("responses of static files should return error", async () => {
       const json = await doFetch("/web/subfolder/foo.json");
+
       expect(json.status).toEqual(400);
       expect(json.body).toEqual({ message: "Forced error" });
 
       const humans = await doFetch("/web/humans.txt");
+
       expect(humans.status).toEqual(400);
       expect(humans.body).toEqual({ message: "Forced error" });
     });
 
     it("response of index file should return error", async () => {
       const index = await doFetch("/web");
+
       expect(index.status).toEqual(400);
       expect(index.body).toEqual({ message: "Forced error" });
     });

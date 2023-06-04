@@ -25,6 +25,7 @@ describe("routes with static variants", () => {
   describe("get /mock/routes", () => {
     it("should return routes", async () => {
       const response = await doApiFetch("/mock/routes");
+
       expect(response.body).toEqual([
         {
           id: "get-users",
@@ -54,6 +55,7 @@ describe("routes with static variants", () => {
   describe("get /mock/variants", () => {
     it("should return routes variants", async () => {
       const response = await doApiFetch("/mock/variants");
+
       expect(response.body).toEqual([
         {
           id: "get-users:1",

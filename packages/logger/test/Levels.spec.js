@@ -30,6 +30,7 @@ describe("Levels", () => {
     it(`should log ${level} with created namespace`, () => {
       console.log.reset();
       logger[level]("Hello world");
+
       expect(cleanLogs(console.log.getCall(0).args[0])).toEqual(
         formattedLog(LABEL, level, "Hello world")
       );
@@ -40,6 +41,7 @@ describe("Levels", () => {
     it(`should not log ${level} with created namespace`, () => {
       console.log.reset();
       logger[level]("foo");
+
       expect(console.log.callCount).toEqual(0);
     });
   }
@@ -48,6 +50,7 @@ describe("Levels", () => {
     it(`should add ${level} log to store`, () => {
       logger.cleanStore();
       logger[level](message);
+
       expect(cleanLogs(logger.store)).toEqual([formattedLog(LABEL, level, message)]);
     });
   }
@@ -56,6 +59,7 @@ describe("Levels", () => {
     it(`should not add ${level} log to store`, () => {
       logger.cleanStore();
       logger[level](message);
+
       expect(logger.store.length).toEqual(0);
     });
   }
@@ -86,6 +90,7 @@ describe("Levels", () => {
 
       it("log should include time", () => {
         logger.info("Hello world");
+
         expect(console.log.getCall(0).args[0]).toMatch(/\d\d:\d\d:\d\d:\d\d\s.*/);
       });
 
@@ -93,6 +98,7 @@ describe("Levels", () => {
         logger.info("Hello");
         logger.info("Hi");
         logger.info("message 3");
+
         expect(cleanLogs(logger.store)).toEqual([
           formattedLog(LABEL, "info", "Hello"),
           formattedLog(LABEL, "info", "Hi"),

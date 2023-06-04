@@ -24,6 +24,7 @@ describe("when using filter option", () => {
   describe("get /users", () => {
     it("should return modified users from host", async () => {
       const response = await doFetch("/api/users");
+
       expect(response.body).toEqual([
         {
           id: 1,
@@ -40,6 +41,7 @@ describe("when using filter option", () => {
   describe("get /users/2", () => {
     it("should return second user from host", async () => {
       const response = await doFetch("/api/users/2");
+
       expect(response.body).toEqual({
         id: 2,
         name: "Modified Jane Doe",

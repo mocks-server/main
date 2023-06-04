@@ -15,6 +15,7 @@ describe("data provider methods used through node", () => {
   describe("when reading about", () => {
     it("should return current versions", async () => {
       const about = await readAbout();
+
       expect(about.versions).toBeDefined();
     });
   });
@@ -22,6 +23,7 @@ describe("data provider methods used through node", () => {
   describe("when reading alerts", () => {
     it("should return one alert", async () => {
       const alerts = await readAlerts();
+
       expect(alerts.length).toEqual(1);
     });
 
@@ -29,6 +31,7 @@ describe("data provider methods used through node", () => {
       const alerts = await readAlerts();
       const alertId = alerts[0].id;
       const alert = await readAlert(alertId);
+
       expect(alert.id).toEqual(alertId);
     });
   });
@@ -36,6 +39,7 @@ describe("data provider methods used through node", () => {
   describe("when reading routes", () => {
     it("should return routes collection", async () => {
       const routes = await readRoutes();
+
       expect(routes.length).toEqual(1);
     });
 
@@ -43,6 +47,7 @@ describe("data provider methods used through node", () => {
       const routes = await readRoutes();
       const routeId = routes[0].id;
       const route = await readRoute(routeId);
+
       expect(route.id).toEqual(routeId);
     });
   });
@@ -50,6 +55,7 @@ describe("data provider methods used through node", () => {
   describe("when reading collections", () => {
     it("should return collections", async () => {
       const collections = await readCollections();
+
       expect(collections.length).toEqual(2);
     });
 
@@ -57,6 +63,7 @@ describe("data provider methods used through node", () => {
       const collections = await readCollections();
       const collectionId = collections[0].id;
       const collection = await readCollection(collectionId);
+
       expect(collection.id).toEqual(collectionId);
     });
 
@@ -64,6 +71,7 @@ describe("data provider methods used through node", () => {
       const collections = await readCollections();
       const collectionId = collections[1].id;
       const mock = await readCollection(collectionId);
+
       expect(mock.id).toEqual(collectionId);
     });
 
@@ -71,6 +79,7 @@ describe("data provider methods used through node", () => {
       const collections = await readCollections();
       const routeVariantId = collections[0].routes[0];
       const routeVariant = await readVariant(routeVariantId);
+
       expect(routeVariant.id).toEqual(routeVariantId);
     });
 
@@ -78,6 +87,7 @@ describe("data provider methods used through node", () => {
       const collections = await readCollections();
       const routeVariantId = collections[1].routes[0];
       const routeVariant = await readVariant(routeVariantId);
+
       expect(routeVariant.id).toEqual(routeVariantId);
     });
   });
@@ -85,6 +95,7 @@ describe("data provider methods used through node", () => {
   describe("when reading config", () => {
     it("should return current collection", async () => {
       const config = await readConfig();
+
       expect(config.mock.collections.selected).toEqual(undefined);
     });
   });
@@ -95,6 +106,7 @@ describe("data provider methods used through node", () => {
         mock: { collections: { selected: "user2" } },
       });
       const config = await readConfig();
+
       expect(config.mock.collections.selected).toEqual("user2");
     });
 
@@ -107,6 +119,7 @@ describe("data provider methods used through node", () => {
         },
       });
       const config = await readConfig();
+
       expect(config.mock.routes.delay).toEqual(1000);
     });
 
@@ -115,6 +128,7 @@ describe("data provider methods used through node", () => {
         mock: { collections: { selected: "base" } },
       });
       const config = await readConfig();
+
       expect(config.mock.collections.selected).toEqual("base");
     });
   });

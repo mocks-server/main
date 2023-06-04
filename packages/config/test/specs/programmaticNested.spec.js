@@ -67,6 +67,7 @@ describe("programmatic nested", () => {
         },
         fooNewNamespace: { fooOption: 5, anotherOption: { fooProperty: true } },
       });
+
       expect(option.value).toEqual("value");
     });
 
@@ -74,6 +75,7 @@ describe("programmatic nested", () => {
       await config.init({
         parentNamespace: { fooNamespace: { fooOption: "foo-value-2" } },
       });
+
       expect(option.value).toEqual("foo-value-2");
     });
 
@@ -91,6 +93,7 @@ describe("programmatic nested", () => {
         parentNamespace: { fooNamespace: value },
       });
       value.fooOption.foo = "foo2";
+
       expect(option.value).not.toBe(value.fooOption);
       expect(option.value).toEqual({ foo: "foo" });
     });
@@ -109,6 +112,7 @@ describe("programmatic nested", () => {
           fooNamespace: { fooOption: { foo: 4, foo2: { var: false, var4: "y" }, foo3: "z" } },
         },
       });
+
       expect(option.value).toEqual({
         foo: 4,
         foo2: { var: false, var3: "foo", var4: "y" },
@@ -151,6 +155,7 @@ describe("programmatic nested", () => {
           },
         },
       });
+
       expect(option.value).toEqual({
         foo: 4,
         foo2: { var: false, var3: "foo", var4: "y" },
@@ -169,6 +174,7 @@ describe("programmatic nested", () => {
 
     it("option should return default value", async () => {
       await config.init({});
+
       expect(option.value).toEqual("default-str");
     });
   });
@@ -182,6 +188,7 @@ describe("programmatic nested", () => {
       await config.init({
         parentNamespace: {},
       });
+
       expect(option.value).toEqual("default-str");
     });
   });
@@ -195,6 +202,7 @@ describe("programmatic nested", () => {
       await config.init({
         parentNamespace: { fooNamespace: {} },
       });
+
       expect(option.value).toEqual("default-str");
     });
   });

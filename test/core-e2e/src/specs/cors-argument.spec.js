@@ -26,6 +26,7 @@ describe("cors command line argument", () => {
 
     it("cors middleware should handle OPTIONS requests", async () => {
       const users = await doFetch(`/api/users/1`, { method: "OPTIONS" });
+
       expect(users.status).toEqual(204);
       expect(users.headers.get("access-control-allow-origin")).toEqual("*");
       expect(users.headers.get("access-control-allow-methods")).toEqual(
@@ -36,6 +37,7 @@ describe("cors command line argument", () => {
 
     it("cors middleware should handle OPTIONS requests to all paths without route", async () => {
       const users = await doFetch(`/api/foo`, { method: "OPTIONS" });
+
       expect(users.status).toEqual(204);
       expect(users.headers.get("access-control-allow-origin")).toEqual("*");
       expect(users.headers.get("access-control-allow-methods")).toEqual(
@@ -46,6 +48,7 @@ describe("cors command line argument", () => {
 
     it("Response headers should include cors headers", async () => {
       const users = await doFetch(`/api/users/1`);
+
       expect(users.headers.get("access-control-allow-origin")).toEqual("*");
     });
   });
@@ -62,6 +65,7 @@ describe("cors command line argument", () => {
 
     it("route middleware should handle OPTIONS request", async () => {
       const users = await doFetch(`/api/users/1`, { method: "OPTIONS" });
+
       expect(users.status).toEqual(200);
       expect(users.headers.get("access-control-allow-origin")).toEqual(null);
       expect(users.headers.get("access-control-allow-methods")).toEqual(null);
@@ -70,6 +74,7 @@ describe("cors command line argument", () => {
 
     it("cors middleware should not handle OPTIONS requests to paths without route", async () => {
       const users = await doFetch(`/api/foo`, { method: "OPTIONS" });
+
       expect(users.status).toEqual(404);
       expect(users.headers.get("access-control-allow-origin")).toEqual(null);
       expect(users.headers.get("access-control-allow-methods")).toEqual(null);
@@ -78,6 +83,7 @@ describe("cors command line argument", () => {
 
     it("Response headers should not include cors headers", async () => {
       const users = await doFetch(`/api/users/1`);
+
       expect(users.headers.get("access-control-allow-origin")).toEqual(null);
     });
   });
@@ -97,6 +103,7 @@ describe("cors command line argument", () => {
 
     it("route middleware should handle OPTIONS request", async () => {
       const users = await doFetch(`/api/users/1`, { method: "OPTIONS" });
+
       expect(users.status).toEqual(200);
       expect(users.headers.get("access-control-allow-origin")).toEqual("*");
       expect(users.headers.get("access-control-allow-methods")).toEqual(
@@ -107,6 +114,7 @@ describe("cors command line argument", () => {
 
     it("cors middleware should not handle OPTIONS requests to paths without route", async () => {
       const users = await doFetch(`/api/foo`, { method: "OPTIONS" });
+
       expect(users.status).toEqual(404);
       expect(users.headers.get("access-control-allow-origin")).toEqual("*");
       expect(users.headers.get("access-control-allow-methods")).toEqual(
@@ -117,6 +125,7 @@ describe("cors command line argument", () => {
 
     it("Response headers should include cors headers", async () => {
       const users = await doFetch(`/api/users/1`);
+
       expect(users.headers.get("access-control-allow-origin")).toEqual("*");
     });
   });

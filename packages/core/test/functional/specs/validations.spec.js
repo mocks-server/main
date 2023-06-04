@@ -162,18 +162,21 @@ describe("mocks and routes validations", () => {
 
     it("should return user 2 at /api/users/1", async () => {
       const response = await doFetch("/api/users/1");
+
       expect(response.status).toEqual(200);
       expect(response.body).toEqual({ id: 2, name: "Jane Doe" });
     });
 
     it("should return user 1 at /api/invalid-users/1", async () => {
       const response = await doFetch("/api/invalid-users/1");
+
       expect(response.status).toEqual(200);
       expect(response.body).toEqual({ id: 1, name: "John Doe" });
     });
 
     it("should return 404 at /api/users", async () => {
       const response = await doFetch("/api/users");
+
       expect(response.status).toEqual(404);
     });
 
@@ -181,6 +184,7 @@ describe("mocks and routes validations", () => {
       core.config.namespace("mock").namespace("collections").option("selected").value =
         "invalid-variant";
       const response = await doFetch("/api/invalid-users/1");
+
       expect(response.status).toEqual(200);
       expect(response.body).toEqual({ id: 1, name: "John Doe" });
     });

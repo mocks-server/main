@@ -21,6 +21,7 @@ describe("when removeListeners is executed", () => {
 
   beforeEach(() => {
     expect.assertions(1);
+
     cliRunner = new CliRunner(["node", cliFile]);
   });
 
@@ -30,16 +31,19 @@ describe("when removeListeners is executed", () => {
 
   it('should print a menu with "Option 1"', async () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN);
+
     expect(cliRunner.logs.current).toEqual(expect.stringContaining("Option 1"));
   });
 
   it('should print a menu with "Exit" option', async () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN);
+
     expect(cliRunner.logs.current).toEqual(expect.stringContaining("Exit"));
   });
 
   it('should print selected option as "none" in header when inited', async () => {
     await cliRunner.waitUntilHasLogged(END_SCREEN);
+
     expect(cliRunner.logs.current).toEqual(expect.stringContaining("Selected option: None"));
   });
 
@@ -52,6 +56,7 @@ describe("when removeListeners is executed", () => {
           );
         } catch (error) {
           expect(error.message).toEqual(expect.stringContaining("No new screen was rendered"));
+
           done();
         }
       }, 600);

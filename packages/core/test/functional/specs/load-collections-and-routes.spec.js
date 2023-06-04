@@ -48,6 +48,7 @@ describe("loadCollections and loadRoutes methods", () => {
   describe("When started", () => {
     it("should return users", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -140,12 +141,15 @@ describe("loadCollections and loadRoutes methods", () => {
       await waitForServerUrl("/api/books");
 
       const books = await doFetch("/api/books");
+
       expect(books.body).toEqual([{ id: 1, title: "1984" }]);
 
       const authors = await doFetch("/api/authors");
+
       expect(authors.body).toEqual([{ id: 1, name: "George Orwell" }]);
 
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -154,6 +158,7 @@ describe("loadCollections and loadRoutes methods", () => {
 
     it("should send content-type header as json", async () => {
       const response = await doFetch("/api/books");
+
       expect(response.headers.get("Content-Type")).toEqual("application/json; charset=utf-8");
     });
 
@@ -162,32 +167,39 @@ describe("loadCollections and loadRoutes methods", () => {
       await waitUntilCollectionChanged("bradbury");
 
       const authors = await doFetch("/api/authors");
+
       expect(authors.body).toEqual([{ id: 1, name: "Ray Bradbury" }]);
     });
 
     it("should be able to change to a new collection", async () => {
       await changeMockAndWait("authors-error");
       const books = await doFetch("/api/books");
+
       expect(books.body).toEqual([{ id: 1, title: "1984" }]);
 
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
       ]);
 
       const authors = await doFetch("/api/authors");
+
       expect(authors.status).toEqual(403);
     });
 
     it("should keep collections loaded from files", async () => {
       await changeMockAndWait("base");
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
       ]);
+
       const authors = await doFetch("/api/authors");
+
       expect(authors.status).toEqual(404);
     });
   });

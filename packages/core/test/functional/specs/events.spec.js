@@ -45,6 +45,7 @@ describe("events", () => {
   describe("When started", () => {
     it("should load web-tutorial mocks", async () => {
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -60,6 +61,7 @@ describe("events", () => {
       removeSpy = option.onChange(spies.onChangeSettings);
       option.value = "silly";
       await wait(500);
+
       expect(spies.onChangeSettings.getCall(0).args[0]).toEqual("silly");
     });
 
@@ -67,6 +69,7 @@ describe("events", () => {
       removeSpy();
       option.value = "debug";
       await wait(500);
+
       expect(spies.onChangeSettings.callCount).toEqual(1);
     });
   });
@@ -79,6 +82,7 @@ describe("events", () => {
       removeSpy = core.mock.onChange(spies.onChangeMock);
       option.value = fixturesFolder("web-tutorial-modified");
       await waitForServerUrl("/api/new-users");
+
       expect(spies.onChangeMock.callCount).toEqual(2);
     });
 
@@ -86,6 +90,7 @@ describe("events", () => {
       removeSpy();
       option.value = fixturesFolder("web-tutorial");
       await wait(5000);
+
       expect(spies.onChangeMock.callCount).toEqual(2);
     });
   });
@@ -99,6 +104,7 @@ describe("events", () => {
       removeSpy = core.mock.onChange(spies.onChangeMock);
       option.value = 1000;
       await wait(1000);
+
       expect(spies.onChangeMock.callCount).toEqual(1);
     });
 
@@ -106,6 +112,7 @@ describe("events", () => {
       removeSpy();
       option.value = 0;
       await wait(1000);
+
       expect(spies.onChangeMock.callCount).toEqual(1);
     });
   });
@@ -118,6 +125,7 @@ describe("events", () => {
       removeSpy = core.alerts.onChange(spies.onChangeAlerts);
       option.value = "unexistant";
       await wait(500);
+
       expect(spies.onChangeAlerts.callCount).toEqual(1);
     });
 
@@ -125,6 +133,7 @@ describe("events", () => {
       removeSpy();
       option.value = "unexistant2";
       await wait(500);
+
       expect(spies.onChangeAlerts.callCount).toEqual(1);
     });
   });

@@ -10,6 +10,7 @@ describe("configClient method", () => {
   const HOST = "foo-host";
 
   let sandbox;
+
   beforeAll(() => {
     sandbox = sinon.createSandbox();
     sandbox.spy(providers.getByTag(TAG), "config");
@@ -24,6 +25,7 @@ describe("configClient method", () => {
       host: HOST,
       port: PORT,
     });
+
     expect(providers.getByTag(TAG).config.getCall(0).args[0].baseUrl).toEqual(
       `http://${HOST}:${PORT}${BASE_PATH}`
     );

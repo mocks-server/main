@@ -20,9 +20,11 @@ describe("command line arguments", () => {
   describe("path option", () => {
     it("should set mocks folder", async () => {
       expect.assertions(2);
+
       mocks = mocksRunner(["--files.path=web-tutorial"]);
       await waitForServerAndCli();
       const users = await doFetch("/api/users");
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -35,9 +37,11 @@ describe("command line arguments", () => {
     describe("when not provided", () => {
       it("should set as current mock the first one found", async () => {
         expect.assertions(2);
+
         mocks = mocksRunner(["--files.path=web-tutorial"]);
         await waitForServerAndCli();
         const users = await doFetch("/api/users/2");
+
         expect(users.body).toEqual({ id: 1, name: "John Doe" });
         expect(mocks.currentScreen).toEqual(expect.stringContaining("Current collection: base"));
       });
@@ -46,9 +50,11 @@ describe("command line arguments", () => {
     describe("when provided and exists", () => {
       it("should set current mock", async () => {
         expect.assertions(2);
+
         mocks = mocksRunner(["--files.path=web-tutorial", "--mock.collections.selected=user-2"]);
         await waitForServerAndCli();
         const users = await doFetch("/api/users/2");
+
         expect(users.body).toEqual({ id: 2, name: "Jane Doe" });
         expect(mocks.currentScreen).toEqual(expect.stringContaining("Current collection: user-2"));
       });
@@ -58,6 +64,7 @@ describe("command line arguments", () => {
       it("should display an alert", async () => {
         mocks = mocksRunner(["--files.path=web-tutorial", "--mock.collections.selected=foo"]);
         await waitForServerAndCli();
+
         expect(mocks.currentScreen).toEqual(expect.stringContaining("ALERTS"));
         expect(mocks.currentScreen).toEqual(
           expect.stringContaining("Collection 'foo' was not found")
@@ -66,9 +73,11 @@ describe("command line arguments", () => {
 
       it("should set as current behavior the first one found", async () => {
         expect.assertions(3);
+
         mocks = mocksRunner(["--files.path=web-tutorial", "--mock.collections.selected=foo"]);
         await waitForServerAndCli();
         const users = await doFetch("/api/users/2");
+
         expect(users.body).toEqual({ id: 1, name: "John Doe" });
         expect(mocks.currentScreen).toEqual(
           expect.stringContaining("Selecting the first one found")
@@ -81,11 +90,13 @@ describe("command line arguments", () => {
   describe("delay option", () => {
     it("should set delay", async () => {
       expect.assertions(3);
+
       mocks = mocksRunner(["--files.path=web-tutorial", "--mock.routes.delay=2000"]);
       await waitForServerAndCli();
       const timeCounter = new TimeCounter();
       const users = await doFetch("/api/users");
       timeCounter.stop();
+
       expect(users.body).toEqual([
         { id: 1, name: "John Doe" },
         { id: 2, name: "Jane Doe" },
@@ -99,6 +110,7 @@ describe("command line arguments", () => {
     it("should set log level", async () => {
       mocks = mocksRunner(["--files.path=web-tutorial", "--log=debug"]);
       await waitForServerAndCli();
+
       expect(mocks.currentScreen).toEqual(expect.stringContaining("Log level: debug"));
     });
   });
@@ -107,12 +119,14 @@ describe("command line arguments", () => {
     it("should print emojis by default", async () => {
       mocks = mocksRunner(["--files.path=web-tutorial"]);
       await waitForServerAndCli();
+
       expect(mocks.currentScreen).toEqual(expect.stringContaining("↕️"));
     });
 
     it("should disable emojis when --no-plugins.inquirerCli.emojis argument is received", async () => {
       mocks = mocksRunner(["--files.path=web-tutorial", "--no-plugins.inquirerCli.emojis"]);
       await waitForServerAndCli();
+
       expect(mocks.currentScreen).toEqual(expect.not.stringContaining("↕️"));
     });
   });

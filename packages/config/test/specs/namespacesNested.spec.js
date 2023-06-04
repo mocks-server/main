@@ -18,16 +18,19 @@ describe("namespaces nested", () => {
     it("should have name property", async () => {
       config = new Config();
       parentNamespace = config.addNamespace("foo");
+
       expect(parentNamespace.name).toEqual("foo");
     });
 
     it("should throw if no name is provided", async () => {
       ({ namespace } = createConfig());
+
       expect(() => namespace.addNamespace()).toThrow("provide a name");
     });
 
     it("should throw if no name is provided when created in root", async () => {
       ({ config } = createConfig());
+
       expect(() => config.addNamespace()).toThrow("provide a name");
     });
   });
@@ -39,6 +42,7 @@ describe("namespaces nested", () => {
 
     it("should have root property returning root config", async () => {
       namespace = config.addNamespace("foo");
+
       expect(parentNamespace.root).toBe(config);
       expect(namespace.root).toBe(config);
       expect(config.root).toBe(config);
@@ -52,6 +56,7 @@ describe("namespaces nested", () => {
         },
         fooNewNamespace: { fooOption: 5, anotherOption: { fooProperty: true } },
       });
+
       expect(option.value).toEqual("value");
       await expect(config.load()).rejects.toThrow("fooNewNamespace");
     });
@@ -69,6 +74,7 @@ describe("namespaces nested", () => {
           },
         },
       });
+
       expect(option.value).toEqual("value");
       await expect(config.load()).rejects.toThrow("anotherNamespace");
     });
@@ -81,6 +87,7 @@ describe("namespaces nested", () => {
         },
         fooNewNamespace: { fooOption3: 5, anotherOption3: { fooProperty: true } },
       });
+
       expect(option.value).toEqual("value");
 
       const anotherNamespace = parentNamespace.addNamespace("anotherNamespace");

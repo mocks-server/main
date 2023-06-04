@@ -27,6 +27,7 @@ describe("port command line argument", () => {
     const users = await doFetch("/api/users", {
       port: 3005,
     });
+
     expect(users.body).toEqual([
       { id: 1, name: "John Doe" },
       { id: 2, name: "Jane Doe" },

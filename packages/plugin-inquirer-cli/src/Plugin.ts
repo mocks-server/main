@@ -20,6 +20,7 @@ import { isNumber, debounce } from "lodash";
 
 import { renderHeader, renderAlert, getCurrentMockMessageLevel } from "./Helpers";
 import { Inquirer } from "./Inquirer";
+
 import type { InquirerInterface, InquirerQuestionsMap, InquirerQuestion } from "./Inquirer.types";
 import type {
   EmojisEnabledOption,

@@ -9,11 +9,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 import { CollectionDefinitions } from "./CollectionDefinitions";
+import { DefinitionLoadersManager } from "./DefinitionLoadersManager";
+import { RouteDefinitions } from "./RouteDefinitions";
+
 import type {
   CollectionDefinition,
   CollectionDefinitionsInterface,
 } from "./CollectionDefinitions.types";
-import { DefinitionLoadersManager } from "./DefinitionLoadersManager";
 import type { DefinitionLoadersManagerInterface } from "./DefinitionLoadersManager.types";
 import type {
   DefinitionsInterface,
@@ -21,7 +23,6 @@ import type {
   DefinitionsOptions,
   DefinitionsLoaders,
 } from "./Definitions.types";
-import { RouteDefinitions } from "./RouteDefinitions";
 import type { RouteDefinition, RouteDefinitionsInterface } from "./RouteDefinitions.types";
 
 export const Definitions: DefinitionsConstructor = class Definitions

@@ -12,11 +12,12 @@ import type { ConfigNamespaceInterface } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 
 import type { AlertsInterface } from "../alerts/types";
-import type { CoreInterface } from "../Core.types";
 import type { FilesInterface } from "../files/types";
 import type { MockInterface } from "../mock/types";
 import type { ServerInterface } from "../server/types";
 import type { VariantHandlersInterface } from "../variant-handlers/types";
+
+import type { CoreInterface } from "../Core.types";
 
 import type {
   ScopedCoreInterface,

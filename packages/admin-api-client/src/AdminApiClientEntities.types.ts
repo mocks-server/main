@@ -149,6 +149,14 @@ export interface AdminApiClientEntitiesInterface {
   config: ApiEntityInterface;
   /** Alerts entity API client */
   alerts: ApiEntityInterface;
+  /** Collections API entity client */
+  collections: ApiEntityInterface;
+  /** Routes entity API client */
+  routes: ApiEntityInterface;
+  /** Variants entity API client */
+  variants: ApiEntityInterface;
+  /** Custom route variants entity API client */
+  customRouteVariants: ApiEntityInterface;
   /**
    * Returns API client for an specific Alert entity
    * @param id - Alert Id {@link EntityId}
@@ -156,8 +164,7 @@ export interface AdminApiClientEntitiesInterface {
    * @example const alertApiClient = adminApiClientEntities.alert(2);
    */
   alert(id: EntityId): ApiEntityInterface;
-  /** Collections API entity client */
-  collections: ApiEntityInterface;
+
   /**
    * Returns API client for an specific Collection entity
    * @param id - Collection Id {@link EntityId}
@@ -165,8 +172,7 @@ export interface AdminApiClientEntitiesInterface {
    * @example const collectionApiClient = adminApiClientEntities.collection(2);
    */
   collection(id: EntityId): ApiEntityInterface;
-  /** Routes entity API client */
-  routes: ApiEntityInterface;
+
   /**
    * Returns API client for an specific Route entity
    * @param id - Route Id {@link EntityId}
@@ -174,8 +180,7 @@ export interface AdminApiClientEntitiesInterface {
    * @example const routeApiClient = adminApiClientEntities.route(2);
    */
   route(id: EntityId): ApiEntityInterface;
-  /** Variants entity API client */
-  variants: ApiEntityInterface;
+
   /**
    * Returns API client for an specific Variant entity
    * @param id - Variant Id {@link EntityId}
@@ -183,8 +188,7 @@ export interface AdminApiClientEntitiesInterface {
    * @example const variantApiClient = adminApiClientEntities.variant(2);
    */
   variant(id: EntityId): ApiEntityInterface;
-  /** Custom route variants entity API client */
-  customRouteVariants: ApiEntityInterface;
+
   /**
    * Configurates the API client host, port, protocol and agent
    * @param configuration - API client configuration {@link ApiClientConfig}

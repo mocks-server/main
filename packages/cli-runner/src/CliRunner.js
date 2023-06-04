@@ -1,7 +1,7 @@
 const crossSpawn = require("cross-spawn");
 const treeKill = require("tree-kill");
 
-const Logs = require("./Logs");
+const { Logs, printLog } = require("./Logs");
 
 const ENCODING_TYPE = "utf8";
 const CTRL_C = "\u0003";
@@ -55,8 +55,8 @@ module.exports = class CliRunner {
           this._resolveExitPromise();
         });
       } catch (error) {
-        console.log("Error starting process");
-        console.log(error);
+        printLog("Error starting process");
+        printLog(error);
         this._exitCode = 1;
         this._resolveExitPromise();
       }

@@ -23,6 +23,7 @@ import {
   ajvErrorLike,
   customValidationSingleMessage,
 } from "../Validator";
+
 import type { JSONSchema7WithInstanceofDefinition, ValidationErrors } from "../Validator.types";
 
 const collectionsSchema: JSONSchema7WithInstanceofDefinition = {

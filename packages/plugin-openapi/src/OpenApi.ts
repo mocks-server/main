@@ -14,6 +14,7 @@ import {
   VariantTypes,
   CONTENT_TYPE_HEADER,
 } from "./Constants";
+
 import type { OpenApiDefinition, MocksServerOpenAPIV3 } from "./OpenApi.types";
 
 const methods = Object.values(OpenAPIV3.HttpMethods);

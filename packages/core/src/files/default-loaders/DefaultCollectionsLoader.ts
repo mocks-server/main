@@ -11,8 +11,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import path from "path";
 
 import type { CollectionDefinition, CollectionDefinitionsLoader } from "../../mock/types";
-import type { ErrorLoadingFile, FileLoaded, FilesLoaderCoreTools } from "../FilesLoader.types";
 import { validateFileContent } from "../Helpers";
+
+import type { ErrorLoadingFile, FileLoaded, FilesLoaderCoreTools } from "../FilesLoader.types";
 
 import type {
   DefaultCollectionsLoaderConstructor,

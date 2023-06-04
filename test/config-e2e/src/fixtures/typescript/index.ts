@@ -91,7 +91,7 @@ namespaces.forEach((namespace: ConfigNamespaceInterface) => {
   const root: ConfigInterface = namespace.root;
 });
 
-const onChangeNamespaceOption: EventListener = function () {
+const onChangeNamespaceOption: EventListener<string> = function () {
   console.log("Option changed!");
 }
 

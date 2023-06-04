@@ -54,19 +54,8 @@ const ApiClient: ApiClientContructor = class ApiClient implements ApiClientInter
   private _protocol: Protocol = DEFAULT_PROTOCOL;
   private _agent?: ApiClientConfig["agent"];
 
-  get _baseUrl(): Url {
+  private get _baseUrl(): Url {
     return `${this._protocol}://${this._host}:${this._port}${BASE_PATH}`;
-  }
-
-  private _fullUrl(apiPath: ApiPath): Url {
-    return `${this._baseUrl}${apiPath}`;
-  }
-
-  private _addAgent(options: CrossFetchOptions = {}): CrossFetchOptions {
-    if (this._agent) {
-      options.agent = this._agent;
-    }
-    return options;
   }
 
   public config(configuration: ApiClientConfig = {}): void {
@@ -117,6 +106,17 @@ const ApiClient: ApiClientContructor = class ApiClient implements ApiClientInter
         headers: JSON_HEADERS,
       })
     ).then(handleResponse);
+  }
+
+  private _fullUrl(apiPath: ApiPath): Url {
+    return `${this._baseUrl}${apiPath}`;
+  }
+
+  private _addAgent(options: CrossFetchOptions = {}): CrossFetchOptions {
+    if (this._agent) {
+      options.agent = this._agent;
+    }
+    return options;
   }
 };
 
@@ -188,36 +188,36 @@ export const AdminApiClientEntities: AdminApiClientEntitiesConstructor = class A
     return this._alerts;
   }
 
-  public alert(id: EntityId): ApiEntityInterface {
-    return new ApiEntity(this._apiClient, ALERTS, id);
-  }
-
   public get collections(): ApiEntityInterface {
     return this._collections;
-  }
-
-  public collection(id: EntityId): ApiEntityInterface {
-    return new ApiEntity(this._apiClient, COLLECTIONS, id);
   }
 
   public get routes(): ApiEntityInterface {
     return this._routes;
   }
 
-  public route(id: EntityId): ApiEntityInterface {
-    return new ApiEntity(this._apiClient, ROUTES, id);
-  }
-
   public get variants(): ApiEntityInterface {
     return this._variants;
   }
 
-  public variant(id: EntityId): ApiEntityInterface {
-    return new ApiEntity(this._apiClient, VARIANTS, id);
-  }
-
   public get customRouteVariants(): ApiEntityInterface {
     return this._customRouteVariants;
+  }
+
+  public alert(id: EntityId): ApiEntityInterface {
+    return new ApiEntity(this._apiClient, ALERTS, id);
+  }
+
+  public collection(id: EntityId): ApiEntityInterface {
+    return new ApiEntity(this._apiClient, COLLECTIONS, id);
+  }
+
+  public route(id: EntityId): ApiEntityInterface {
+    return new ApiEntity(this._apiClient, ROUTES, id);
+  }
+
+  public variant(id: EntityId): ApiEntityInterface {
+    return new ApiEntity(this._apiClient, VARIANTS, id);
   }
 
   public configClient(configuration: ApiClientConfig): void {

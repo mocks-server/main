@@ -9,7 +9,13 @@ const STOP_WAITS_EVENT_NAME = "stop";
 
 const NEW_LINE_CHAR = "\n";
 
+function printLog(...args) {
+  // eslint-disable-next-line no-console
+  console.log(...args);
+}
+
 function normalizePaths(str) {
+  // eslint-disable-next-line no-control-regex
   return str.replace(/\x1Bc/, ""); // TODO, fix
 }
 
@@ -48,7 +54,7 @@ class Logs {
     const cleanLog = this._cleanLog(log);
     if (cleanLog.length) {
       if (!this._silent) {
-        console.log(cleanLog);
+        printLog(cleanLog);
       }
       this._currentScreenLogs.push(cleanLog);
       this._lines.push(cleanLog);
@@ -104,7 +110,7 @@ class Logs {
 
     const timeout = setTimeout(() => {
       const errorMessage = `${data} was not printed after ${timeoutOption}ms`;
-      console.log(errorMessage);
+      printLog(errorMessage);
       stopAndReject(new Error(errorMessage));
     }, timeoutOption);
 
@@ -173,7 +179,7 @@ class Logs {
         clearTimeout(forceScreenRenderedTimeout);
       }
       forceScreenRenderedTimeout = setTimeout(() => {
-        console.log(
+        printLog(
           `Still receiving logs after ${screenRenderedTimeout}ms. Resolving with received data until now`
         );
         stopAndResolve();
@@ -196,7 +202,7 @@ class Logs {
     const onNewScreen = () => {
       screens++;
       if (screens > screensLimit) {
-        console.log(`More than ${screensLimit} new screens rendered. Resolving with last one`);
+        printLog(`More than ${screensLimit} new screens rendered. Resolving with last one`);
         stopAndResolve();
       } else {
         if (newScreenTimeout) {
@@ -265,4 +271,7 @@ class Logs {
   }
 }
 
-module.exports = Logs;
+module.exports = {
+  Logs,
+  consoleLog: printLog,
+};

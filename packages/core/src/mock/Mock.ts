@@ -16,17 +16,19 @@ import express from "express";
 import type { AlertsInterface } from "../alerts/types";
 import { addEventListener, CHANGE_MOCK } from "../common";
 import type { EventListener, EventListenerRemover } from "../common/types";
-import type { CoreInterface } from "../Core.types";
 import type { NextFunction, Request, Response, Router } from "../server/types";
 import type { VariantHandlerConstructor } from "../variant-handlers/types";
+
+import type { CoreInterface } from "../Core.types";
 
 import { Collections } from "./collections";
 import type { CollectionsInterface } from "./collections/types";
 import { Definitions } from "./definitions";
 import type { DefinitionsInterface, DefinitionsLoaders } from "./definitions/types";
-import type { MockInterface, MockConstructor, MockOptions } from "./Mock.types";
 import { Routes } from "./routes";
 import type { RouteId, RoutesInterface } from "./routes/types";
+
+import type { MockInterface, MockConstructor, MockOptions } from "./Mock.types";
 
 export const Mock: MockConstructor = class Mock implements MockInterface {
   static get id() {

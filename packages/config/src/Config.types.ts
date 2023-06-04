@@ -46,6 +46,24 @@ export interface LoadArgumentsOptions {
 
 /** Root config interface */
 export interface ConfigInterface {
+  /** Returns current options values and values from all child namespaces */
+  value: ConfigurationObject;
+  /** Returns values assigned in programmatic configuration */
+  programmaticLoadedValues: ConfigurationObject;
+  /** Returns values assigned in configuration files */
+  fileLoadedValues: ConfigurationObject;
+  /** Returns values assigned in environment variables */
+  envLoadedValues: ConfigurationObject;
+  /** Returns values assigned in arguments */
+  argsLoadedValues: ConfigurationObject;
+  /** Returns the path of the configuration file loaded, or null in case no file was loaded */
+  loadedFile: string | null;
+  /** Returns an array containing all current namespaces */
+  namespaces: ConfigNamespaceInterface[];
+  /** Returns an array containing all current options */
+  options: OptionInterfaceGeneric[];
+  /** Returns the root config interface */
+  root: ConfigInterface;
   /**
    * Validates a provided object based on current configuration and namespaces options
    * @param config - Configuration object to validate {@link ConfigurationObject}
@@ -127,24 +145,6 @@ export interface ConfigInterface {
     >[]
   ];
 
-  /** Returns current options values and values from all child namespaces */
-  value: ConfigurationObject;
-  /** Returns values assigned in programmatic configuration */
-  programmaticLoadedValues: ConfigurationObject;
-  /** Returns values assigned in configuration files */
-  fileLoadedValues: ConfigurationObject;
-  /** Returns values assigned in environment variables */
-  envLoadedValues: ConfigurationObject;
-  /** Returns values assigned in arguments */
-  argsLoadedValues: ConfigurationObject;
-  /** Returns the path of the configuration file loaded, or null in case no file was loaded */
-  loadedFile: string | null;
-  /** Returns an array containing all current namespaces */
-  namespaces: ConfigNamespaceInterface[];
-  /** Returns an array containing all current options */
-  options: OptionInterfaceGeneric[];
-  /** Returns the root config interface */
-  root: ConfigInterface;
   /**
    * Set the value of the options, including child namespaces, using the values in the provided configuration object
    * @param configuration - Configuration object {@link ConfigurationObject}

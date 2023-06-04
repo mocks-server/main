@@ -31,6 +31,12 @@ import type {
 } from "../definitions/types";
 
 import { Route } from "./Route";
+import {
+  routeValidationErrors,
+  variantValidationErrors,
+  compileValidator,
+} from "./RoutesValidator";
+
 import type {
   RouteId,
   RouteInterface,
@@ -44,11 +50,6 @@ import type {
   RoutesInterface,
   RoutesOptions,
 } from "./Routes.types";
-import {
-  routeValidationErrors,
-  variantValidationErrors,
-  compileValidator,
-} from "./RoutesValidator";
 
 const LOAD_NAMESPACE = "load";
 

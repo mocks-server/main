@@ -1,10 +1,11 @@
 import { isUndefined, isEmpty, snakeCase } from "lodash";
 
+import { namespaceAndParentNames } from "./ConfigNamespaceHelpers";
+import { getOptionParserWithBooleansAndArrays } from "./Typing";
+
 import type { ConfigurationObject } from "./Common.types";
 import type { ConfigNamespaceInterface } from "./Config.types";
-import { namespaceAndParentNames } from "./ConfigNamespaceHelpers";
 import type { EnvironmentConstructor, EnvironmentInterface } from "./Environment.types";
-import { getOptionParserWithBooleansAndArrays } from "./Typing";
 
 function varSegment(segment: string): string {
   return snakeCase(segment).toUpperCase();
@@ -27,6 +28,11 @@ export const Environment: EnvironmentConstructor = class Environment
   constructor(moduleName: string) {
     this._moduleName = moduleName;
     this._config = {};
+  }
+
+  public read(namespaces: ConfigNamespaceInterface[]): ConfigurationObject {
+    this._config = this._readNamespaces(namespaces);
+    return this._config;
   }
 
   private _loadFromEnv(
@@ -61,10 +67,5 @@ export const Environment: EnvironmentConstructor = class Environment
       }
       return config;
     }, {} as ConfigurationObject);
-  }
-
-  public read(namespaces: ConfigNamespaceInterface[]): ConfigurationObject {
-    this._config = this._readNamespaces(namespaces);
-    return this._config;
   }
 };

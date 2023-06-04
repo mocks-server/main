@@ -11,6 +11,7 @@ import type { ConfigNamespaceInterface } from "@mocks-server/config";
 import type { LoggerInterface } from "@mocks-server/logger";
 
 import type { AlertsInterface } from "../alerts/types";
+
 import type { BaseCoreInterface, CoreInterface } from "../Core.types";
 
 /** Objects allowing to create a scoped core */

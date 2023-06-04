@@ -3,14 +3,6 @@ import betterAjvErrors from "better-ajv-errors";
 import type { JSONSchema7TypeName, JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { isString, isNumber, isObject, isBoolean } from "lodash";
 
-import type { UnknownObject } from "./Common.types";
-import type { ConfigNamespaceInterface } from "./Config.types";
-import type {
-  OptionDefinitionGeneric,
-  OptionType,
-  OptionItemsType,
-  OptionInterfaceGeneric,
-} from "./Option.types";
 import {
   optionIsArray,
   NUMBER_TYPE,
@@ -21,6 +13,15 @@ import {
   NULL_TYPE,
   UNKNOWN_TYPE,
 } from "./Typing";
+
+import type { UnknownObject } from "./Common.types";
+import type { ConfigNamespaceInterface } from "./Config.types";
+import type {
+  OptionDefinitionGeneric,
+  OptionType,
+  OptionItemsType,
+  OptionInterfaceGeneric,
+} from "./Option.types";
 import type {
   ConfigValidationResult,
   GetValidationSchemaOptions,

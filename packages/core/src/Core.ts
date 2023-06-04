@@ -23,12 +23,6 @@ import { readJsonSync } from "fs-extra";
 import { Alerts } from "./alerts";
 import type { AlertsInterface } from "./alerts/types";
 import { CHANGE_MOCK, CHANGE_ALERTS } from "./common";
-import type {
-  CoreInterface,
-  CoreConstructor,
-  CoreAdvancedOptions,
-  LogOptionDefinition,
-} from "./Core.types";
 import { Files } from "./files";
 import type { FilesInterface } from "./files/types";
 import { Mock } from "./mock";
@@ -43,6 +37,13 @@ import { UpdateNotifier } from "./update-notifier";
 import type { UpdateNotifierInterface } from "./update-notifier/types";
 import { VariantHandlers } from "./variant-handlers";
 import type { VariantHandlersInterface } from "./variant-handlers/types";
+
+import type {
+  CoreInterface,
+  CoreConstructor,
+  CoreAdvancedOptions,
+  LogOptionDefinition,
+} from "./Core.types";
 
 const MODULE_NAME = "mocks";
 

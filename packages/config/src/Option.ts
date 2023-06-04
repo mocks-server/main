@@ -3,8 +3,11 @@ import EventEmitter from "events";
 import deepMerge from "deepmerge";
 import { isUndefined, isEqual, isNull } from "lodash";
 
-import type { UnknownObject } from "./Common.types";
 import { addEventListener, CHANGE } from "./Events";
+import { typeIsArray, typeIsObject, optionIsObject, avoidArraysMerge } from "./Typing";
+import { validateOptionAndThrow, validateValueTypeAndThrow } from "./Validation";
+
+import type { UnknownObject } from "./Common.types";
 import type { EventListener, EventListenerRemover } from "./Events.types";
 import type {
   OptionInterface,
@@ -13,8 +16,6 @@ import type {
   GetOptionValueTypeFromDefinition,
   GetOptionTypeFromDefinition,
 } from "./Option.types";
-import { typeIsArray, typeIsObject, optionIsObject, avoidArraysMerge } from "./Typing";
-import { validateOptionAndThrow, validateValueTypeAndThrow } from "./Validation";
 
 export class Option<T extends OptionDefinitionGeneric, TypeOfValue = void>
   implements OptionInterface<T, TypeOfValue>
@@ -68,14 +69,6 @@ export class Option<T extends OptionDefinitionGeneric, TypeOfValue = void>
     return this._clone(this._default);
   }
 
-  public get value(): GetOptionValueTypeFromDefinition<T, TypeOfValue> {
-    return this._clone(this._value);
-  }
-
-  public set value(value: GetOptionValueTypeFromDefinition<T, TypeOfValue>) {
-    this.set(value);
-  }
-
   public get nullable(): boolean {
     return this._nullable;
   }
@@ -86,6 +79,49 @@ export class Option<T extends OptionDefinitionGeneric, TypeOfValue = void>
 
   public get itemsType(): T["itemsType"] | undefined {
     return this._itemsType;
+  }
+
+  public get hasBeenSet() {
+    return this._hasBeenSet;
+  }
+
+  public get value(): GetOptionValueTypeFromDefinition<T, TypeOfValue> {
+    return this._clone(this._value);
+  }
+
+  public set value(value: GetOptionValueTypeFromDefinition<T, TypeOfValue>) {
+    this.set(value);
+  }
+
+  public set(
+    value: GetOptionValueTypeFromDefinition<T, TypeOfValue>,
+    { merge = false }: SetMethodOptions = {}
+  ): void {
+    if (!isUndefined(value)) {
+      this._hasBeenSet = true;
+      if (merge && typeIsObject(this.type)) {
+        this._merge(value);
+      } else {
+        const previousValue = this._value;
+        this._validateAndThrow(value);
+        this._value = this._clone(value);
+        this._emitChange(previousValue, this._value);
+      }
+    }
+  }
+
+  public startEvents() {
+    this._eventsStarted = true;
+  }
+
+  public onChange(
+    listener: EventListener<GetOptionValueTypeFromDefinition<T, TypeOfValue>>
+  ): EventListenerRemover {
+    return addEventListener<GetOptionValueTypeFromDefinition<T, TypeOfValue>>(
+      listener,
+      CHANGE,
+      this._eventEmitter
+    );
   }
 
   private _clone(
@@ -118,16 +154,6 @@ export class Option<T extends OptionDefinitionGeneric, TypeOfValue = void>
     }
   }
 
-  public onChange(
-    listener: EventListener<GetOptionValueTypeFromDefinition<T, TypeOfValue>>
-  ): EventListenerRemover {
-    return addEventListener<GetOptionValueTypeFromDefinition<T, TypeOfValue>>(
-      listener,
-      CHANGE,
-      this._eventEmitter
-    );
-  }
-
   private _merge(value: GetOptionValueTypeFromDefinition<T, TypeOfValue>) {
     const previousValue = this._value;
     this._validateAndThrow(value);
@@ -135,30 +161,5 @@ export class Option<T extends OptionDefinitionGeneric, TypeOfValue = void>
       arrayMerge: avoidArraysMerge,
     }) as GetOptionValueTypeFromDefinition<T, TypeOfValue>;
     this._emitChange(previousValue, this._value);
-  }
-
-  public set(
-    value: GetOptionValueTypeFromDefinition<T, TypeOfValue>,
-    { merge = false }: SetMethodOptions = {}
-  ): void {
-    if (!isUndefined(value)) {
-      this._hasBeenSet = true;
-      if (merge && typeIsObject(this.type)) {
-        this._merge(value);
-      } else {
-        const previousValue = this._value;
-        this._validateAndThrow(value);
-        this._value = this._clone(value);
-        this._emitChange(previousValue, this._value);
-      }
-    }
-  }
-
-  public startEvents() {
-    this._eventsStarted = true;
-  }
-
-  public get hasBeenSet() {
-    return this._hasBeenSet;
   }
 }

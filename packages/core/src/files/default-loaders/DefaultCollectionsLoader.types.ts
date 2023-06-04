@@ -9,6 +9,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 import type { CollectionDefinitionsLoader } from "../../mock/types";
+
 import type { FilesInterface } from "../Files.types";
 
 /**  Default Collections Loader constructor */

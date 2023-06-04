@@ -2,6 +2,9 @@ import { Option as CommanderOption, Command as CommanderCommand } from "commande
 import type { Command } from "commander";
 import { isUndefined } from "lodash";
 
+import { namespaceAndParentNames } from "./ConfigNamespaceHelpers";
+import { getOptionParserWithArrayContents, BOOLEAN_TYPE, OBJECT_TYPE, ARRAY_TYPE } from "./Typing";
+
 import type {
   BaseCommanderOptionProperties,
   CommanderOptionProperties,
@@ -12,9 +15,7 @@ import type {
 } from "./CommandLineArgument.types";
 import type { ConfigurationObject, UnknownObject } from "./Common.types";
 import type { ConfigNamespaceInterface } from "./Config.types";
-import { namespaceAndParentNames } from "./ConfigNamespaceHelpers";
 import type { OptionInterfaceGeneric } from "./Option.types";
-import { getOptionParserWithArrayContents, BOOLEAN_TYPE, OBJECT_TYPE, ARRAY_TYPE } from "./Typing";
 
 const NAMESPACE_SEPARATOR = ".";
 const COMMANDER_VALUE_GETTER = ` <value>`;
@@ -94,6 +95,31 @@ export const CommandLineArguments: CommandLineArgumentsConstructor = class Comma
     this._config = {};
   }
 
+  public read(
+    namespaces: ConfigNamespaceInterface[],
+    { allowUnknownOption }: ReadOptions
+  ): ConfigurationObject {
+    const config = {};
+
+    // Create commander options
+    const commanderOptionsData = {};
+    const program = new CommanderCommand();
+    this._createNamespaceOptions(namespaces, program, commanderOptionsData);
+
+    // Get commander results
+    if (allowUnknownOption) {
+      program.allowUnknownOption();
+    }
+
+    program.parse();
+    const results = program.opts();
+
+    // Convert commander results into object with namespaces levels
+    this._config = this._commanderResultsToConfigObject(results, config, commanderOptionsData);
+
+    return this._config;
+  }
+
   private _createNamespaceInterfaceOptions(
     namespace: ConfigNamespaceInterface,
     command: Command,
@@ -156,30 +182,5 @@ export const CommandLineArguments: CommandLineArgumentsConstructor = class Comma
       }
     });
     return config;
-  }
-
-  public read(
-    namespaces: ConfigNamespaceInterface[],
-    { allowUnknownOption }: ReadOptions
-  ): ConfigurationObject {
-    const config = {};
-
-    // Create commander options
-    const commanderOptionsData = {};
-    const program = new CommanderCommand();
-    this._createNamespaceOptions(namespaces, program, commanderOptionsData);
-
-    // Get commander results
-    if (allowUnknownOption) {
-      program.allowUnknownOption();
-    }
-
-    program.parse();
-    const results = program.opts();
-
-    // Convert commander results into object with namespaces levels
-    this._config = this._commanderResultsToConfigObject(results, config, commanderOptionsData);
-
-    return this._config;
   }
 };

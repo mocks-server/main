@@ -6,9 +6,11 @@ module.exports = {
   },
   parserOptions: {
     ecmaVersion: 2018,
+    sourceType: "module",
   },
+  ignorePatterns: ["node_modules/**/*"],
   plugins: ["prettier", "@nrwl/nx"],
-  extends: ["prettier"],
+  extends: ["eslint:recommended", "prettier", "plugin:json/recommended"],
   rules: {
     "prettier/prettier": [
       2,
@@ -17,6 +19,8 @@ module.exports = {
         parser: "flow",
       },
     ],
+    camelcase: [2, { properties: "never" }],
+    "no-console": [2, { allow: ["warn", "error"] }],
     "no-shadow": [2, { builtinGlobals: true, hoist: "all" }],
     "no-undef": 2,
     "no-unused-vars": [2, { vars: "all", args: "after-used", ignoreRestSiblings: false }],
@@ -66,7 +70,7 @@ module.exports = {
         it: true,
         fetch: false,
       },
-      plugins: ["jest", "no-only-tests"],
+      plugins: ["jest", "no-only-tests", "jest-formatting"],
       extends: ["plugin:jest/recommended"],
       rules: {
         "jest/no-conditional-expect": [0],
@@ -117,6 +121,13 @@ module.exports = {
         "plugin:import/typescript",
       ],
       rules: {
+        "@typescript-eslint/member-ordering": "error",
+        "@typescript-eslint/explicit-member-accessibility": [
+          "error",
+          { overrides: { constructors: "no-public" } },
+        ],
+        "import/no-relative-packages": [2],
+        "@typescript-eslint/no-unused-vars": [2],
         "@typescript-eslint/no-shadow": "error",
         "no-shadow": "off",
         "prettier/prettier": [
@@ -132,9 +143,19 @@ module.exports = {
             groups: ["builtin", "external", "internal", "parent", "sibling", "index"],
             pathGroups: [
               {
-                pattern: "./*Types",
+                pattern: "../**/*.types",
+                group: "parent",
+                position: "after",
+              },
+              {
+                pattern: "./*.types",
+                group: "sibling",
+                position: "after",
+              },
+              {
+                pattern: "**/*.types",
                 group: "internal",
-                position: "before",
+                position: "after",
               },
             ],
             "newlines-between": "always",

@@ -19,6 +19,8 @@ import type { CollectionId } from "../definitions/types";
 import { routeIsEnabled } from "../routes";
 import type { RouteInterface, RouteId, RoutesInterface } from "../routes/types";
 
+import { addRoutesToCollectionRoutes } from "./Helpers";
+
 import type {
   CollectionConstructor,
   CollectionInterface,
@@ -26,7 +28,6 @@ import type {
   CollectionPlainObject,
   ResetRoutesOptions,
 } from "./Collection.types";
-import { addRoutesToCollectionRoutes } from "./Helpers";
 
 export const Collection: CollectionConstructor = class Collection implements CollectionInterface {
   private _id: CollectionId;

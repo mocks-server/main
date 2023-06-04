@@ -1,12 +1,5 @@
 import EventEmitter from "events";
 
-import type { ConfigurationObject } from "./Common.types";
-import type {
-  ConfigInterface,
-  ConfigNamespaceInterface,
-  ConfigNamespaceProperties,
-  ConfigNamespaceConstructor,
-} from "./Config.types";
 import {
   checkNamespaceName,
   checkOptionName,
@@ -15,6 +8,14 @@ import {
   getOptionsValues,
 } from "./ConfigNamespaceHelpers";
 import { Option } from "./Option";
+
+import type { ConfigurationObject } from "./Common.types";
+import type {
+  ConfigInterface,
+  ConfigNamespaceInterface,
+  ConfigNamespaceProperties,
+  ConfigNamespaceConstructor,
+} from "./Config.types";
 import type {
   OptionInterfaceGeneric,
   SetMethodOptions,
@@ -48,6 +49,41 @@ export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
     this._options = [];
     this._started = false;
     this._isRoot = isRoot;
+  }
+
+  public get isRoot(): boolean {
+    return Boolean(this._isRoot);
+  }
+
+  public get name(): ConfigNamespaceInterface["name"] {
+    return this._name;
+  }
+
+  public get parents(): ConfigNamespaceInterface[] {
+    return [...this._parents];
+  }
+
+  public get root(): ConfigInterface {
+    return this._root;
+  }
+
+  public get namespaces(): ConfigNamespaceInterface[] {
+    return [...this._namespaces];
+  }
+
+  public get options(): OptionInterfaceGeneric[] {
+    return [...this._options];
+  }
+
+  public get value(): ConfigurationObject {
+    return {
+      ...getNamespacesValues(this._namespaces),
+      ...getOptionsValues(this._options),
+    };
+  }
+
+  public set value(configuration: ConfigurationObject) {
+    this.set(configuration);
   }
 
   public addOption<Type extends OptionDefinitionGeneric>(
@@ -96,13 +132,6 @@ export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
     ];
   }
 
-  private _setOptions(configuration: ConfigurationObject, options: SetMethodOptions): void {
-    this._options.forEach(<T extends OptionInterfaceGeneric>(option: T) => {
-      const optionValue = configuration[option.name] as T["value"];
-      option.set(optionValue, options);
-    });
-  }
-
   public set(configuration: ConfigurationObject = {}, options: SetMethodOptions = {}): void {
     this._setOptions(configuration, options);
     this._namespaces.forEach((namespace) => {
@@ -128,46 +157,18 @@ export const ConfigNamespace: ConfigNamespaceConstructor = class ConfigNamespace
     return namespace;
   }
 
-  public get isRoot(): boolean {
-    return Boolean(this._isRoot);
-  }
-
-  public get name(): ConfigNamespaceInterface["name"] {
-    return this._name;
-  }
-
-  public get parents(): ConfigNamespaceInterface[] {
-    return [...this._parents];
-  }
-
-  public get root(): ConfigInterface {
-    return this._root;
-  }
-
-  public get namespaces(): ConfigNamespaceInterface[] {
-    return [...this._namespaces];
-  }
-
-  public get options(): OptionInterfaceGeneric[] {
-    return [...this._options];
-  }
-
-  public get value(): ConfigurationObject {
-    return {
-      ...getNamespacesValues(this._namespaces),
-      ...getOptionsValues(this._options),
-    };
-  }
-
-  public set value(configuration: ConfigurationObject) {
-    this.set(configuration);
-  }
-
   public namespace(name: ConfigNamespaceInterface["name"]): ConfigNamespaceInterface | undefined {
     return findObjectWithName(this._namespaces, name);
   }
 
   public option(name: OptionInterfaceGeneric["name"]): OptionInterfaceGeneric | undefined {
     return findObjectWithName(this._options, name);
+  }
+
+  private _setOptions(configuration: ConfigurationObject, options: SetMethodOptions): void {
+    this._options.forEach(<T extends OptionInterfaceGeneric>(option: T) => {
+      const optionValue = configuration[option.name] as T["value"];
+      option.set(optionValue, options);
+    });
   }
 };

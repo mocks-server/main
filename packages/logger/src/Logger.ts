@@ -5,6 +5,7 @@ import * as winston from "winston";
 import ArrayTransport from "winston-array-transport";
 
 import { observableStore, CHANGE_EVENT, addEventListener } from "./Events";
+
 import type { EventsListener, EventsListenerRemover } from "./Events.types";
 import {
   LEVEL_SILLY,

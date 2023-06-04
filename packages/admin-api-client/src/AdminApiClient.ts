@@ -1,7 +1,8 @@
 import type { ConfigurationObject } from "@mocks-server/config";
 
-import type { AdminApiClientInterface, AdminApiClientConstructor } from "./AdminApiClient.types";
 import { AdminApiClientEntities } from "./AdminApiClientEntities";
+
+import type { AdminApiClientInterface, AdminApiClientConstructor } from "./AdminApiClient.types";
 import type {
   ApiClientConfig,
   ApiResponseBody,

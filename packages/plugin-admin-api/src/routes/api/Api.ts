@@ -24,13 +24,14 @@ import { Router } from "express";
 import { readCollectionAndModelRouter } from "../../support/Routers";
 
 import { About } from "./About";
-import type { AboutInterface } from "./About.types";
 import { Alerts } from "./Alerts";
+import { Config } from "./Config";
+import { CustomRouteVariants } from "./CustomRouteVariants";
+
+import type { AboutInterface } from "./About.types";
 import type { AlertsInterface } from "./Alerts.types";
 import type { ApiConstructor, ApiInterface, ApiOptions } from "./Api.types";
-import { Config } from "./Config";
 import type { ConfigInterface } from "./Config.types";
-import { CustomRouteVariants } from "./CustomRouteVariants";
 import type { CustomRouteVariantsInterface } from "./CustomRouteVariants.types";
 
 export const Api: ApiConstructor = class Api implements ApiInterface {

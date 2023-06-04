@@ -14,6 +14,8 @@ import type {
   VariantHandlerTypes,
 } from "../definitions/types";
 
+import { HTTP_METHODS, ALL_HTTP_METHODS_ALIAS, ALL_HTTP_METHODS } from "./RoutesValidator";
+
 import type {
   RouteConstructor,
   RouteId,
@@ -22,7 +24,6 @@ import type {
   RouteInterfaceEnabled,
   RoutePlainObject,
 } from "./Route.types";
-import { HTTP_METHODS, ALL_HTTP_METHODS_ALIAS, ALL_HTTP_METHODS } from "./RoutesValidator";
 
 export function routeIsEnabled(route: RouteInterface): route is RouteInterfaceEnabled {
   return !route.disabled;

@@ -13,6 +13,7 @@ import express, { Router } from "express";
 import type { ApiEntityItem } from "../common/Common.types";
 
 import { addCollectionMiddleware, addModelMiddleware } from "./Middlewares";
+
 import type { CollectionAndModelRouterOptions } from "./Routers.types";
 
 export function readCollectionAndModelRouter<

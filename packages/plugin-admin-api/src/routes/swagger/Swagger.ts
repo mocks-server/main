@@ -10,6 +10,7 @@ import { serverUrl } from "../../common/Helpers";
 import { ROOT_PATH } from "../../common/Paths";
 
 import { openapiDocument } from "./Openapi";
+
 import type { OpenApiDocument } from "./Openapi.types";
 import type {
   SwaggerConstructor,

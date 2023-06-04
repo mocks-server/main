@@ -18,6 +18,14 @@ import type { CollectionDefinition, CollectionId } from "../definitions/types";
 import type { RouteId, RouteInterface, RoutesInterface } from "../routes/types";
 
 import { Collection } from "./Collection";
+import {
+  collectionRouteVariantsValidationErrors,
+  collectionValidationErrors,
+  getCollectionRouteIds,
+  findRouteByVariantId,
+} from "./CollectionsValidator";
+import { addRoutesToCollectionRoutes } from "./Helpers";
+
 import type {
   CollectionInterface,
   CollectionPlainObject,
@@ -31,13 +39,6 @@ import type {
   SelectCollectionOptionsPromise,
   SelectedCollectionOptionDefinition,
 } from "./Collections.types";
-import {
-  collectionRouteVariantsValidationErrors,
-  collectionValidationErrors,
-  getCollectionRouteIds,
-  findRouteByVariantId,
-} from "./CollectionsValidator";
-import { addRoutesToCollectionRoutes } from "./Helpers";
 
 const OPTIONS: [SelectedCollectionOptionDefinition] = [
   {

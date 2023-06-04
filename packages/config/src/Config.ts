@@ -2,17 +2,7 @@ import deepMerge from "deepmerge";
 import type deepmerge from "deepmerge";
 import type { JSONSchema7 } from "json-schema";
 
-import type { CommandLineArgumentsInterface } from "./CommandLineArgument.types";
 import { CommandLineArguments } from "./CommandLineArguments";
-import type { ConfigurationObject } from "./Common.types";
-import type {
-  ConfigConstructor,
-  ConfigInterface,
-  ConfigOptions,
-  ConfigValidationOptions,
-  LoadArgumentsOptions,
-  ConfigNamespaceInterface,
-} from "./Config.types";
 import { ConfigNamespace } from "./ConfigNamespace";
 import {
   checkNamespaceName,
@@ -20,15 +10,7 @@ import {
   getNamespacesValues,
 } from "./ConfigNamespaceHelpers";
 import { Environment } from "./Environment";
-import type { EnvironmentInterface } from "./Environment.types";
 import { Files } from "./Files";
-import type { FilesInterface } from "./Files.types";
-import type {
-  OptionInterface,
-  OptionInterfaceOfType,
-  SetMethodOptions,
-  OptionDefinitionGeneric,
-} from "./Option.types";
 import {
   CONFIG_NAMESPACE,
   READ_FILE_OPTION,
@@ -41,11 +23,32 @@ import {
 } from "./Options";
 import { avoidArraysMerge, STRING_TYPE, BOOLEAN_TYPE, ARRAY_TYPE } from "./Typing";
 import { validateConfigAndThrow, validateConfig, getValidationSchema } from "./Validation";
+
+import type { CommandLineArgumentsInterface } from "./CommandLineArgument.types";
+import type { ConfigurationObject } from "./Common.types";
+import type {
+  ConfigConstructor,
+  ConfigInterface,
+  ConfigOptions,
+  ConfigValidationOptions,
+  LoadArgumentsOptions,
+  ConfigNamespaceInterface,
+} from "./Config.types";
+import type { EnvironmentInterface } from "./Environment.types";
+import type { FilesInterface } from "./Files.types";
+import type {
+  OptionInterface,
+  OptionInterfaceOfType,
+  SetMethodOptions,
+  OptionDefinitionGeneric,
+} from "./Option.types";
 import type { GetValidationSchemaOptions, ConfigValidationResult } from "./Validation.types";
 
 const ROOT_NAMESPACE = "_rootOptions";
 
 export const Config: ConfigConstructor = class Config implements ConfigInterface {
+  public addOption: ConfigNamespaceInterface["addOption"];
+  public addOptions: ConfigNamespaceInterface["addOptions"];
   private _initializated: boolean;
   private _deepMergeOptions: deepmerge.Options;
   private _programmaticConfig: ConfigurationObject;
@@ -66,8 +69,6 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
   private _fileSearchStop: OptionInterfaceOfType<string>;
   private _allowUnknownArguments: OptionInterfaceOfType<boolean, { hasDefault: true }>;
   private _config: ConfigurationObject;
-  public addOption: ConfigNamespaceInterface["addOption"];
-  public addOptions: ConfigNamespaceInterface["addOptions"];
 
   constructor(
     { moduleName, mergeArrays = true }: ConfigOptions = { moduleName: "", mergeArrays: true }
@@ -161,6 +162,109 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
     ];
   }
 
+  public get programmaticLoadedValues(): ConfigurationObject {
+    return { ...this._programmaticConfig };
+  }
+
+  public get fileLoadedValues(): ConfigurationObject {
+    return { ...this._fileConfig };
+  }
+
+  public get envLoadedValues(): ConfigurationObject {
+    return { ...this._envConfig };
+  }
+
+  public get argsLoadedValues(): ConfigurationObject {
+    return { ...this._argsConfig };
+  }
+
+  public get loadedFile(): string | null {
+    return this._files.loadedFile;
+  }
+
+  public get namespaces(): ConfigNamespaceInterface[] {
+    return this._namespaces.filter((namespace) => !namespace.isRoot);
+  }
+
+  public get options(): OptionInterface<OptionDefinitionGeneric>[] {
+    return this._rootNamespace.options;
+  }
+
+  public get root(): ConfigInterface {
+    return this;
+  }
+
+  public get value(): ConfigurationObject {
+    return getNamespacesValues(this._namespaces);
+  }
+
+  public set value(configuration: ConfigurationObject) {
+    this.set(configuration);
+  }
+
+  public validate(
+    config: ConfigurationObject,
+    { allowAdditionalProperties = false }: ConfigValidationOptions = {}
+  ): ConfigValidationResult {
+    return validateConfig(config, {
+      namespaces: this._namespaces,
+      allowAdditionalProperties,
+    });
+  }
+
+  public getValidationSchema({
+    allowAdditionalProperties = false,
+  }: ConfigValidationOptions = {}): JSONSchema7 {
+    return getValidationSchema({
+      namespaces: this._namespaces,
+      allowAdditionalProperties,
+      removeCustomProperties: true,
+    });
+  }
+
+  public async init(programmaticConfig: ConfigurationObject = {}): Promise<void> {
+    this._programmaticConfig = programmaticConfig;
+    await this._load({ allowUnknown: true });
+  }
+
+  public async load(programmaticConfig?: ConfigurationObject): Promise<void> {
+    if (!this._initializated) {
+      await this.init(programmaticConfig);
+    }
+    await this._load();
+    this._startNamespacesEvents();
+  }
+
+  public addNamespace(name: ConfigNamespaceInterface["name"]): ConfigNamespaceInterface {
+    checkNamespaceName(name, {
+      namespaces: this._namespaces,
+      options: this._rootNamespace && this._rootNamespace.options,
+    });
+    const namespace = new ConfigNamespace(name, { brothers: this._namespaces, root: this });
+    this._namespaces.push(namespace);
+    return namespace;
+  }
+
+  public namespace(name: ConfigNamespaceInterface["name"]): ConfigNamespaceInterface | undefined {
+    return findObjectWithName(this._namespaces, name);
+  }
+
+  public option(
+    name: OptionDefinitionGeneric["name"]
+  ): OptionInterface<OptionDefinitionGeneric> | undefined {
+    return findObjectWithName(this._rootNamespace.options, name);
+  }
+
+  public set(configuration: ConfigurationObject = {}, options: SetMethodOptions = {}): void {
+    this._namespaces.forEach((namespace) => {
+      if (!namespace.isRoot) {
+        namespace.set((configuration[namespace.name] as ConfigurationObject) || {}, options);
+      } else {
+        namespace.set(configuration, options);
+      }
+    });
+  }
+
   private async _loadFromFile(): Promise<ConfigurationObject> {
     if (this._readFile.value !== true) {
       return {};
@@ -195,26 +299,6 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
       [this._programmaticConfig, this._fileConfig, this._envConfig, this._argsConfig],
       this._deepMergeOptions
     );
-  }
-
-  public validate(
-    config: ConfigurationObject,
-    { allowAdditionalProperties = false }: ConfigValidationOptions = {}
-  ): ConfigValidationResult {
-    return validateConfig(config, {
-      namespaces: this._namespaces,
-      allowAdditionalProperties,
-    });
-  }
-
-  public getValidationSchema({
-    allowAdditionalProperties = false,
-  }: ConfigValidationOptions = {}): JSONSchema7 {
-    return getValidationSchema({
-      namespaces: this._namespaces,
-      allowAdditionalProperties,
-      removeCustomProperties: true,
-    });
   }
 
   private _validateAndThrow({ allowAdditionalProperties }: Partial<GetValidationSchemaOptions>) {
@@ -256,88 +340,5 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
       this._mergeValidateAndSetNamespaces({ allowUnknown });
       this._initializated = true;
     }
-  }
-
-  public async init(programmaticConfig: ConfigurationObject = {}): Promise<void> {
-    this._programmaticConfig = programmaticConfig;
-    await this._load({ allowUnknown: true });
-  }
-
-  public async load(programmaticConfig?: ConfigurationObject): Promise<void> {
-    if (!this._initializated) {
-      await this.init(programmaticConfig);
-    }
-    await this._load();
-    this._startNamespacesEvents();
-  }
-
-  public addNamespace(name: ConfigNamespaceInterface["name"]): ConfigNamespaceInterface {
-    checkNamespaceName(name, {
-      namespaces: this._namespaces,
-      options: this._rootNamespace && this._rootNamespace.options,
-    });
-    const namespace = new ConfigNamespace(name, { brothers: this._namespaces, root: this });
-    this._namespaces.push(namespace);
-    return namespace;
-  }
-
-  public namespace(name: ConfigNamespaceInterface["name"]): ConfigNamespaceInterface | undefined {
-    return findObjectWithName(this._namespaces, name);
-  }
-
-  public option(
-    name: OptionDefinitionGeneric["name"]
-  ): OptionInterface<OptionDefinitionGeneric> | undefined {
-    return findObjectWithName(this._rootNamespace.options, name);
-  }
-
-  public get value(): ConfigurationObject {
-    return getNamespacesValues(this._namespaces);
-  }
-
-  public set value(configuration: ConfigurationObject) {
-    this.set(configuration);
-  }
-
-  public get programmaticLoadedValues(): ConfigurationObject {
-    return { ...this._programmaticConfig };
-  }
-
-  public get fileLoadedValues(): ConfigurationObject {
-    return { ...this._fileConfig };
-  }
-
-  public get envLoadedValues(): ConfigurationObject {
-    return { ...this._envConfig };
-  }
-
-  public get argsLoadedValues(): ConfigurationObject {
-    return { ...this._argsConfig };
-  }
-
-  public get loadedFile(): string | null {
-    return this._files.loadedFile;
-  }
-
-  public get namespaces(): ConfigNamespaceInterface[] {
-    return this._namespaces.filter((namespace) => !namespace.isRoot);
-  }
-
-  public get options(): OptionInterface<OptionDefinitionGeneric>[] {
-    return this._rootNamespace.options;
-  }
-
-  public get root(): ConfigInterface {
-    return this;
-  }
-
-  public set(configuration: ConfigurationObject = {}, options: SetMethodOptions = {}): void {
-    this._namespaces.forEach((namespace) => {
-      if (!namespace.isRoot) {
-        namespace.set((configuration[namespace.name] as ConfigurationObject) || {}, options);
-      } else {
-        namespace.set(configuration, options);
-      }
-    });
   }
 };

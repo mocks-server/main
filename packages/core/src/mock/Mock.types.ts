@@ -13,9 +13,10 @@ import type { LoggerInterface } from "@mocks-server/logger";
 
 import type { AlertsInterface } from "../alerts/types";
 import type { EventListener, EventListenerRemover } from "../common/types";
-import type { CoreInterface } from "../Core.types";
 import type { NextFunction, Request, Response } from "../server/types";
 import type { VariantHandlerConstructor } from "../variant-handlers/types";
+
+import type { CoreInterface } from "../Core.types";
 
 import type { CollectionsInterface } from "./collections/types";
 import type {

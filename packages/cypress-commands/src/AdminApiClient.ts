@@ -13,12 +13,13 @@ import {
 } from "@mocks-server/admin-api-paths";
 import type { ConfigurationObject } from "@mocks-server/config";
 
+import { isUndefined, isFalsy } from "./Helpers";
+
 import type {
   AdminApiClientConfig,
   AdminApiClientInterface,
   AdminApiClientConstructor,
 } from "./AdminApiClient.types";
-import { isUndefined, isFalsy } from "./Helpers";
 
 function doNothing(): Promise<void> {
   return Promise.resolve();

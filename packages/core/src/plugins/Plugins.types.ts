@@ -17,6 +17,7 @@ import type { LoggerInterface } from "@mocks-server/logger";
 
 import type { AlertsInterface } from "../alerts/types";
 import type { ScopedCoreInterface } from "../common/types";
+
 import type { CoreInterface } from "../Core.types";
 
 export type PluginsOptionDefinition = OptionDefinition<PluginConstructor[], { hasDefault: true }>;

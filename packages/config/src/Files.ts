@@ -15,14 +15,8 @@ export const Files: FilesConstructor = class Files implements FilesInterface {
     this._config = {};
   }
 
-  private async _transformConfig(
-    config: ConfigurationObject | ConfigFunction,
-    initConfig: ConfigurationObject
-  ): Promise<ConfigurationObject> {
-    if (isFunction(config)) {
-      return config(initConfig);
-    }
-    return config;
+  public get loadedFile(): string | null {
+    return this._loadedFrom;
   }
 
   public async read(
@@ -51,7 +45,13 @@ export const Files: FilesConstructor = class Files implements FilesInterface {
     return { ...this._config };
   }
 
-  public get loadedFile(): string | null {
-    return this._loadedFrom;
+  private async _transformConfig(
+    config: ConfigurationObject | ConfigFunction,
+    initConfig: ConfigurationObject
+  ): Promise<ConfigurationObject> {
+    if (isFunction(config)) {
+      return config(initConfig);
+    }
+    return config;
   }
 };

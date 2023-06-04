@@ -1,5 +1,7 @@
 import EventEmitter from "events";
 
+import { CHANGE_EVENT, addEventListener } from "./Events";
+
 import type {
   CollectionId,
   CollectionElement,
@@ -16,7 +18,6 @@ import type {
   CollectionBaseInterface,
   CollectionConstructor,
 } from "./Collection.types";
-import { CHANGE_EVENT, addEventListener } from "./Events";
 import type { EventsListener, EventsListenerRemover } from "./Events.types";
 
 function elementIdIsEqualTo(element: CollectionElement, id: CollectionId): boolean {

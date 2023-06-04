@@ -32,6 +32,16 @@ import type {
   DefaultCollectionsLoaderInterface,
   DefaultRoutesLoaderInterface,
 } from "./default-loaders/types";
+import { FilesLoader } from "./FilesLoader";
+import {
+  babelRegisterDefaultOptions,
+  getFilesGlobule,
+  isYamlFile,
+  readYamlFile,
+  isFileLoaded,
+  isErrorLoadingFile,
+} from "./Helpers";
+
 import type {
   CreateFilesLoaderOptions,
   FilesConstructor,
@@ -45,16 +55,7 @@ import type {
   BabelEnabledOptionDefinition,
   BabelConfigOptionDefinition,
 } from "./Files.types";
-import { FilesLoader } from "./FilesLoader";
 import type { FilesLoaderInterface, FileLoaded, ErrorLoadingFile } from "./FilesLoader.types";
-import {
-  babelRegisterDefaultOptions,
-  getFilesGlobule,
-  isYamlFile,
-  readYamlFile,
-  isFileLoaded,
-  isErrorLoadingFile,
-} from "./Helpers";
 
 const OPTIONS: [
   FilesEnabledOptionDefinition,

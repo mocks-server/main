@@ -30,16 +30,6 @@ import {
   notFound,
   errorHandler,
 } from "./Middlewares";
-import type {
-  ServerConstructor,
-  ServerOptions,
-  ServerInterface,
-  Router,
-  CustomRouter,
-  ProtocolHttps,
-  ProtocolHttp,
-  RequestHandler,
-} from "./Server.types";
 import {
   CORS_NAMESPACE,
   JSON_BODY_PARSER_NAMESPACE,
@@ -52,6 +42,17 @@ import {
   HTTPS_OPTIONS,
   ALL_HOSTS,
 } from "./ServerOptions";
+
+import type {
+  ServerConstructor,
+  ServerOptions,
+  ServerInterface,
+  Router,
+  CustomRouter,
+  ProtocolHttps,
+  ProtocolHttp,
+  RequestHandler,
+} from "./Server.types";
 
 const LOCALHOST = "localhost";
 const HTTPS_ALERT_ID = "https";

@@ -3,8 +3,6 @@ import type { ConfigurationObject } from "@mocks-server/config";
 import type Bluebird from "cypress/types/bluebird";
 
 import { AdminApiClient } from "./AdminApiClient";
-import type { AdminApiClientConfig, AdminApiClientInterface } from "./AdminApiClient.types";
-import type { CypressCommandsMethods, Log } from "./Commands.types";
 import {
   ENABLED_ENVIRONMENT_VAR,
   ADMIN_API_PORT_ENVIRONMENT_VAR,
@@ -14,6 +12,9 @@ import {
   isFalsy,
   isTruthy,
 } from "./Helpers";
+
+import type { AdminApiClientConfig, AdminApiClientInterface } from "./AdminApiClient.types";
+import type { CypressCommandsMethods, Log } from "./Commands.types";
 
 /**
  * Creates methods to be used by Cypress commands

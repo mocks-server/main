@@ -11,9 +11,15 @@ export interface FilesConstructor {
 }
 
 export interface FilesInterface {
+  /** Path to the config file that has been loaded */
+  loadedFile: string | null;
+  /** Read config from file
+   * @param initialConfig - Initial config object
+   * @param options - Options for reading config
+   * @returns Config object from file
+   **/
   read(
     initialConfig: ConfigurationObject,
     options: FilesReadOptions
   ): Promise<ConfigurationObject>;
-  loadedFile: string | null;
 }

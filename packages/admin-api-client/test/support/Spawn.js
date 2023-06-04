@@ -44,8 +44,6 @@ module.exports = class CliRunner {
         this._resolveExitPromise();
       });
     } catch (error) {
-      console.log("Error starting process");
-      console.log(error);
       this._exitCode = 1;
       this._resolveExitPromise();
     }

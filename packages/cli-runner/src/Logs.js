@@ -273,5 +273,5 @@ class Logs {
 
 module.exports = {
   Logs,
-  consoleLog: printLog,
+  printLog,
 };

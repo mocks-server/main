@@ -8,6 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
+
 import http from "http";
 import type { Server as HttpServer } from "http";
 
@@ -88,10 +89,6 @@ export const Server: ServerConstructor = class Server implements ServerInterface
   private _serverStartingPromise: Promise<void> | undefined;
   private _serverStoppingPromise: Promise<void> | undefined;
 
-  static get id(): string {
-    return "server";
-  }
-
   constructor({ config, alerts, mockRouter, logger }: ServerOptions) {
     this._logger = logger;
     this._config = config;
@@ -154,6 +151,20 @@ export const Server: ServerConstructor = class Server implements ServerInterface
     this._httpsKeyOption.onChange(this._reinitializeServer);
   }
 
+  public static get id(): string {
+    return "server";
+  }
+
+  public get protocol(): ProtocolHttp | ProtocolHttps {
+    return this._httpsEnabledOption.value ? "https" : "http";
+  }
+
+  public get url(): string {
+    const host = this._hostOption.value;
+    const hostName = host === ALL_HOSTS ? LOCALHOST : host;
+    return `${this.protocol}://${hostName}:${this._portOption.value}`;
+  }
+
   public init(): Promise<void> {
     process.on("SIGINT", () => {
       this.stop().then(() => {
@@ -161,6 +172,61 @@ export const Server: ServerConstructor = class Server implements ServerInterface
       });
       process.exit();
     });
+    return Promise.resolve();
+  }
+
+  public stop(): Promise<void> {
+    if (this._serverStoppingPromise) {
+      return this._serverStoppingPromise;
+    }
+    if (this._server) {
+      const server = this._server as HttpServer;
+      this._serverStoppingPromise = new Promise((resolve) => {
+        this._logger.verbose("Stopping server");
+        server.close(() => {
+          this._logger.info("Server stopped");
+          this._serverStarted = false;
+          this._serverStoppingPromise = undefined;
+          resolve();
+        });
+      });
+
+      return this._serverStoppingPromise;
+    }
+    return Promise.resolve();
+  }
+
+  public async start(): Promise<void> {
+    await this._initServer();
+    if (this._serverStartingPromise) {
+      this._logger.debug("Server is already starting, returning same promise");
+      return this._serverStartingPromise;
+    }
+    this._serverStartingPromise = new Promise(this._startServer);
+    return this._serverStartingPromise;
+  }
+
+  public async restart(): Promise<void> {
+    await this.stop();
+    return this.start();
+  }
+
+  public addRouter(path: string, router: Router): Promise<void> {
+    this._logger.info(`Adding custom router with path ${path}`);
+    this._customRouters.push({
+      path,
+      router,
+    });
+    return this._reinitializeServer();
+  }
+
+  public removeRouter(path: string, router: Router): Promise<void> {
+    this._logger.info(`Removing custom router with path ${path}`);
+    const indexToRemove = this._getCustomRouterIndex(path, router);
+    if (indexToRemove !== null) {
+      this._customRouters.splice(indexToRemove, 1);
+      return this._reinitializeServer();
+    }
     return Promise.resolve();
   }
 
@@ -289,42 +355,6 @@ export const Server: ServerConstructor = class Server implements ServerInterface
     });
   }
 
-  public stop(): Promise<void> {
-    if (this._serverStoppingPromise) {
-      return this._serverStoppingPromise;
-    }
-    if (this._server) {
-      const server = this._server as HttpServer;
-      this._serverStoppingPromise = new Promise((resolve) => {
-        this._logger.verbose("Stopping server");
-        server.close(() => {
-          this._logger.info("Server stopped");
-          this._serverStarted = false;
-          this._serverStoppingPromise = undefined;
-          resolve();
-        });
-      });
-
-      return this._serverStoppingPromise;
-    }
-    return Promise.resolve();
-  }
-
-  public async start(): Promise<void> {
-    await this._initServer();
-    if (this._serverStartingPromise) {
-      this._logger.debug("Server is already starting, returning same promise");
-      return this._serverStartingPromise;
-    }
-    this._serverStartingPromise = new Promise(this._startServer);
-    return this._serverStartingPromise;
-  }
-
-  public async restart(): Promise<void> {
-    await this.stop();
-    return this.start();
-  }
-
   private _getCustomRouterIndex(path: string, router: Router): number | null {
     let routerIndex = null;
     this._customRouters.forEach((customRouter, index) => {
@@ -333,34 +363,5 @@ export const Server: ServerConstructor = class Server implements ServerInterface
       }
     });
     return routerIndex;
-  }
-
-  public addRouter(path: string, router: Router): Promise<void> {
-    this._logger.info(`Adding custom router with path ${path}`);
-    this._customRouters.push({
-      path,
-      router,
-    });
-    return this._reinitializeServer();
-  }
-
-  public removeRouter(path: string, router: Router): Promise<void> {
-    this._logger.info(`Removing custom router with path ${path}`);
-    const indexToRemove = this._getCustomRouterIndex(path, router);
-    if (indexToRemove !== null) {
-      this._customRouters.splice(indexToRemove, 1);
-      return this._reinitializeServer();
-    }
-    return Promise.resolve();
-  }
-
-  public get protocol(): ProtocolHttp | ProtocolHttps {
-    return this._httpsEnabledOption.value ? "https" : "http";
-  }
-
-  public get url(): string {
-    const host = this._hostOption.value;
-    const hostName = host === ALL_HOSTS ? LOCALHOST : host;
-    return `${this.protocol}://${hostName}:${this._portOption.value}`;
   }
 };

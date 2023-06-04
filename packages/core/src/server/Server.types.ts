@@ -74,8 +74,6 @@ export interface ServerOptions {
 
 /** Creates a Server interface */
 export interface ServerConstructor {
-  /** Unique id for Server class */
-  get id(): string;
   /**
    * Creates a server interface interface
    * @param options - Server options {@link ServerOptions}
@@ -83,10 +81,24 @@ export interface ServerConstructor {
    * @example const server = new Server({ config, alerts, logger, mockRouter });
    */
   new (options: ServerOptions): ServerInterface;
+
+  /** Unique id for Server class */
+  get id(): string;
 }
 
 /** Server interface */
 export interface ServerInterface {
+  /**
+   * Returns the protocol currently used by the server
+   * @returns "https" or "http"
+   */
+  get protocol(): ProtocolHttp | ProtocolHttps;
+  /**
+   * Returns the server url, including the protocol and the port
+   * @returns Server url
+   * @example http://localhost:3000
+   */
+  get url(): string;
   /**
    * Initialize the server. Listen to process exit signal to stop server before exiting
    * @example await server.init();
@@ -117,15 +129,4 @@ export interface ServerInterface {
    * @example await server.removeRouter("/custom", expressRouter);
    */
   removeRouter(path: string, router: Router): Promise<void>;
-  /**
-   * Returns the protocol currently used by the server
-   * @returns "https" or "http"
-   */
-  get protocol(): ProtocolHttp | ProtocolHttps;
-  /**
-   * Returns the server url, including the protocol and the port
-   * @returns Server url
-   * @example http://localhost:3000
-   */
-  get url(): string;
 }

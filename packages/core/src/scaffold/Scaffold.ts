@@ -173,10 +173,6 @@ export const Scaffold: ScaffoldConstructor = class Scaffold implements ScaffoldI
   private _filesEnabledOption: OptionInterfaceGeneric;
   private _collectionSelectedOption: OptionInterfaceGeneric;
 
-  static get id() {
-    return "scaffold";
-  }
-
   constructor({ config, alerts, logger }: ScaffoldOptions) {
     this._logger = logger;
     this._config = config;
@@ -193,14 +189,25 @@ export const Scaffold: ScaffoldConstructor = class Scaffold implements ScaffoldI
     this._alerts = alerts;
   }
 
-  _parseConfigForTemplates() {
+  public static get id() {
+    return "scaffold";
+  }
+
+  public async init({ folderPath }: ScaffoldInitOptions): Promise<void> {
+    await Promise.all([
+      this._checkAndCreateFolderScaffold(folderPath),
+      this._checkAndCreateConfigScaffold(),
+    ]);
+  }
+
+  private _parseConfigForTemplates() {
     return {
       namespaces: parseNamespacesForTemplates(this._config.namespaces),
       options: parseOptionsForTemplate(this._config.options),
     };
   }
 
-  async _createConfig(): Promise<void> {
+  private async _createConfig(): Promise<void> {
     this._logger.info("Creating config file");
     const configTemplate = await readTemplate("config.hbs");
     const namespaceTemplate = await readTemplate("namespace.hbs");
@@ -216,12 +223,12 @@ export const Scaffold: ScaffoldConstructor = class Scaffold implements ScaffoldI
     );
   }
 
-  _createFolder(destPath: string): Promise<void> {
+  private _createFolder(destPath: string): Promise<void> {
     this._logger.info("Creating scaffold folder");
     return copy(FILES_SCAFFOLD_PATH, destPath);
   }
 
-  _checkAndCreateConfigScaffold(): Promise<void> {
+  private _checkAndCreateConfigScaffold(): Promise<void> {
     const configFileLoaded = !!this._config.loadedFile;
 
     if (this._readConfigFileOption.value && !configFileLoaded) {
@@ -234,18 +241,11 @@ export const Scaffold: ScaffoldConstructor = class Scaffold implements ScaffoldI
     return Promise.resolve();
   }
 
-  _checkAndCreateFolderScaffold(filesLoaderPath: string): Promise<void> {
+  private _checkAndCreateFolderScaffold(filesLoaderPath: string): Promise<void> {
     if (this._filesEnabledOption.value && !existsSync(filesLoaderPath)) {
       this._alerts.set("folder", "Mocks Server folder was not found. A scaffold was created");
       return this._createFolder(filesLoaderPath);
     }
     return Promise.resolve();
-  }
-
-  async init({ folderPath }: ScaffoldInitOptions): Promise<void> {
-    await Promise.all([
-      this._checkAndCreateFolderScaffold(folderPath),
-      this._checkAndCreateConfigScaffold(),
-    ]);
   }
 };

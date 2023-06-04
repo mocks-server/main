@@ -6,7 +6,7 @@ on:
     branches:
       - master
       - release
-      - refactor/typescript-migration
+      # - refactor/typescript-migration
   pull_request:
 concurrency:  
   group: ${{ github.workflow }}-${{ github.ref }}

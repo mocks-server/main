@@ -21,7 +21,7 @@ export interface VariantHandlerStatusPreview {
   status: number;
 }
 
-export interface VariantHandlerStatusOptions extends MocksServer.VariantHandlerBaseOptions {
+export interface VariantHandlerStatusOptions {
   /** Status to send in the response */
   status: number;
   /** Object containing HTTP headers to send in the response */
@@ -47,7 +47,7 @@ export interface VariantHandlerStatusConstructor extends VariantHandlerConstruct
    * @example const variantHandlerStatus = new VariantHandlerStatus({status:200},core);
    */
   new (
-    options: VariantHandlerStatusOptions,
+    options: VariantHandlerStatusOptions & MocksServer.VariantHandlerBaseOptions,
     core: ScopedCoreInterface
   ): VariantHandlerStatusInterface;
 }

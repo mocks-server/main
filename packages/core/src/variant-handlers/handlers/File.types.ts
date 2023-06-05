@@ -48,7 +48,7 @@ export interface VariantHandlerFileOptionsExpressWithRoot
   root: string;
 }
 
-export interface VariantHandlerFileOptions extends MocksServer.VariantHandlerBaseOptions {
+export interface VariantHandlerFileOptions {
   /** Path to the file to be served */
   path: string;
   /** Response status to send */

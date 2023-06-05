@@ -23,7 +23,7 @@ export interface VariantHandlerTextPreview {
   body: string;
 }
 
-export interface VariantHandlerTextOptions extends MocksServer.VariantHandlerBaseOptions {
+export interface VariantHandlerTextOptions {
   /** Status to send in the response */
   status: number;
   /** Text body to send in the response */
@@ -50,7 +50,10 @@ export interface VariantHandlerTextConstructor extends VariantHandlerConstructor
    * @returns Interface of variant handler of type text {@link VariantHandlerTextInterface}.
    * @example const variantHandlerText = new variantHandlerText({ status: 200, body: "foo" }, core);
    */
-  new (options: VariantHandlerTextOptions, core: ScopedCoreInterface): VariantHandlerTextInterface;
+  new (
+    options: VariantHandlerTextOptions & MocksServer.VariantHandlerBaseOptions,
+    core: ScopedCoreInterface
+  ): VariantHandlerTextInterface;
 }
 
 /** Json variant handler interface */

@@ -20,7 +20,7 @@ import type {
 /** Response preview */
 export type VariantHandlerStaticPreview = null;
 
-export interface VariantHandlerStaticOptions extends MocksServer.VariantHandlerBaseOptions {
+export interface VariantHandlerStaticOptions {
   /** Path of the folder to be served. It can be a relative path from process.cwd, or an absolute path. */
   path: string;
   /** Object containing headers to set in the response of all static assets */
@@ -48,7 +48,7 @@ export interface VariantHandlerStaticConstructor extends VariantHandlerConstruct
    * @example const variantHandlerStatus = new VariantHandlerStatus({status:200},core);
    */
   new (
-    options: VariantHandlerStaticOptions,
+    options: VariantHandlerStaticOptions & MocksServer.VariantHandlerBaseOptions,
     core: ScopedCoreInterface
   ): VariantHandlerStaticInterface;
 }

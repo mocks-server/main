@@ -19,7 +19,7 @@ import type {
 /** Response preview */
 export type VariantHandlerMiddlewarePreview = null;
 
-export interface VariantHandlerMiddlewareOptions extends MocksServer.VariantHandlerBaseOptions {
+export interface VariantHandlerMiddlewareOptions {
   /** Middleware to be executed as request handler */
   middleware: (req: Request, res: Response, next: NextFunction, core: ScopedCoreInterface) => void;
 }
@@ -43,7 +43,7 @@ export interface VariantHandlerMiddlewareConstructor extends VariantHandlerConst
    * @example const variantHandlerMiddleware = new VariantHandlerMiddleware({middleware},core);
    */
   new (
-    options: VariantHandlerMiddlewareOptions,
+    options: VariantHandlerMiddlewareOptions & MocksServer.VariantHandlerBaseOptions,
     core: ScopedCoreInterface
   ): VariantHandlerMiddlewareInterface;
 }

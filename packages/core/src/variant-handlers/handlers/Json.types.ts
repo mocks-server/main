@@ -23,7 +23,7 @@ export interface VariantHandlerJsonPreview {
   body: JSONValue;
 }
 
-export interface VariantHandlerJsonOptions extends MocksServer.VariantHandlerBaseOptions {
+export interface VariantHandlerJsonOptions {
   /** Status to send in the response */
   status: number;
   /** JSON Body to send in the response */
@@ -50,7 +50,10 @@ export interface VariantHandlerJsonConstructor extends VariantHandlerConstructor
    * @returns Interface of variant handler of type json {@link VariantHandlerJsonInterface}.
    * @example const variantHandlerJson = new VariantHandlerJson({ status: 200, body: {foo: 2} },core);
    */
-  new (options: VariantHandlerJsonOptions, core: ScopedCoreInterface): VariantHandlerJsonInterface;
+  new (
+    options: VariantHandlerJsonOptions & MocksServer.VariantHandlerBaseOptions,
+    core: ScopedCoreInterface
+  ): VariantHandlerJsonInterface;
 }
 
 /** Json variant handler interface */

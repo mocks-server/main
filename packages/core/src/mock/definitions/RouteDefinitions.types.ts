@@ -17,13 +17,6 @@ declare global {
     //eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface VariantHandlerOptionsByType {}
 
-    interface VariantHandlerBaseOptions {
-      /** Route method */
-      method: RouteDefinitionHTTPMethod;
-      /** Route path */
-      url: string; // TODO, deprecate. Use path instead
-    }
-
     type VariantDefinitionId = string;
 
     /** Common properties to all types of route variants */
@@ -41,7 +34,7 @@ declare global {
       [K in keyof VariantHandlerOptionsByType]: {
         type: K;
         options: VariantHandlerOptionsByType[K];
-      };
+      } & VariantDefinitionCommon;
     };
 
     type VariantHandlerTypes = keyof VariantHandlerOptionsByType;
@@ -53,8 +46,15 @@ declare global {
     type VariantHandlerTypeOptions =
       VariantHandlerOptionsByType[keyof VariantHandlerOptionsByType];
 
-    type VariantHandlerOptions = VariantHandlerBaseOptions &
-      VariantHandlerOptionsByType[keyof VariantHandlerOptionsByType];
+    interface VariantHandlerBaseOptions {
+      /** Route method */
+      method: RouteDefinitionHTTPMethod;
+      /** Route path */
+      url: string; // TODO, deprecate. Use path instead
+    }
+
+    type VariantHandlerOptions = VariantHandlerOptionsByType[keyof VariantHandlerOptionsByType] &
+      VariantHandlerBaseOptions;
   }
 }
 

@@ -9,7 +9,7 @@ import type { ProxyOptions } from "express-http-proxy";
 /** Proxy response preview */
 export type VariantHandlerProxyResponsePreview = null;
 
-export interface VariantHandlerProxyOptions extends MocksServer.VariantHandlerBaseOptions {
+export interface VariantHandlerProxyOptions {
   /** Proxy host, or function to get it */
   host: string | ((req: Request) => string);
   /** Response body */
@@ -35,7 +35,7 @@ export interface VariantHandlerProxyConstructor extends VariantHandlerConstructo
    * @example const variantHandlerProxy = new VariantHandlerProxy({ status: 200, body: {foo: 2} },core);
    */
   new (
-    options: VariantHandlerProxyOptions,
+    options: VariantHandlerProxyOptions & MocksServer.VariantHandlerBaseOptions,
     core: ScopedCoreInterface
   ): VariantHandlerProxyInterface;
 }

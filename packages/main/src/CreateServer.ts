@@ -12,14 +12,14 @@ import { readFileSync } from "fs";
 import path from "path";
 
 import { Core } from "@mocks-server/core";
-import type { CoreInterface } from "@mocks-server/core";
+import type { CoreInterface, Configuration } from "@mocks-server/core";
 import { Plugin as AdminApi } from "@mocks-server/plugin-admin-api";
 import { Plugin as InquirerCli } from "@mocks-server/plugin-inquirer-cli";
 import { Plugin as OpenApi } from "@mocks-server/plugin-openapi";
 import { Plugin as PluginProxy } from "@mocks-server/plugin-proxy";
 import deepMerge from "deepmerge";
 
-const DEFAULT_CONFIG: MocksServer.Config = {
+const DEFAULT_CONFIG: Configuration = {
   config: {
     readArguments: false,
     readEnvironment: false,
@@ -36,7 +36,7 @@ const DEFAULT_CONFIG: MocksServer.Config = {
   },
 };
 
-export function createServer(userConfig: MocksServer.Config): CoreInterface {
+export function createServer(userConfig: Configuration): CoreInterface {
   const pkg = JSON.parse(readFileSync(path.resolve(__dirname, "..", "package.json"), "utf8"));
   const config = userConfig ? deepMerge(DEFAULT_CONFIG, userConfig) : DEFAULT_CONFIG;
   return new Core(config, {

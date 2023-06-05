@@ -1,4 +1,5 @@
 import type { ConfigurationObject } from "@mocks-server/config";
+import type { Configuration } from "@mocks-server/core";
 
 import { AdminApiClientEntities } from "./AdminApiClientEntities";
 
@@ -23,12 +24,12 @@ export const AdminApiClient: AdminApiClientConstructor = class AdminApiClient
     return this._adminApiClient.about.read();
   }
 
-  public readConfig(): Promise<ConfigurationObject> {
-    return this._adminApiClient.config.read() as Promise<ConfigurationObject>;
+  public readConfig(): Promise<Configuration> {
+    return this._adminApiClient.config.read() as Promise<Configuration>;
   }
 
-  public updateConfig(newConfig: ConfigurationObject): Promise<void> {
-    return this._adminApiClient.config.update(newConfig) as Promise<void>;
+  public updateConfig(newConfig: Configuration): Promise<void> {
+    return this._adminApiClient.config.update(newConfig as ConfigurationObject) as Promise<void>;
   }
 
   public readAlerts(): Promise<ApiResponseBody> {

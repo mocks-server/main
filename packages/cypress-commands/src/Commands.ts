@@ -1,5 +1,5 @@
 import type { EntityId } from "@mocks-server/admin-api-client";
-import type { ConfigurationObject } from "@mocks-server/config";
+import type { Configuration } from "@mocks-server/core";
 import type Bluebird from "cypress/types/bluebird";
 
 import { AdminApiClient } from "./AdminApiClient";
@@ -117,10 +117,7 @@ export function commands(Cyp: typeof Cypress, CypCy: typeof cy): CypressCommands
     );
   }
 
-  function setConfig(
-    mocksServerConfig: ConfigurationObject,
-    apiClient?: AdminApiClientInterface
-  ): void {
+  function setConfig(mocksServerConfig: Configuration, apiClient?: AdminApiClientInterface): void {
     const client = getClient(apiClient);
     const configMessage = JSON.stringify(mocksServerConfig);
     doRequestAndLog(

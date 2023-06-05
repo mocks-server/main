@@ -1,5 +1,5 @@
 import type { EntityId } from "@mocks-server/admin-api-client";
-import type { ConfigurationObject } from "@mocks-server/config";
+import type { Configuration } from "@mocks-server/core";
 
 import type { AdminApiClientConfig, AdminApiClientInterface } from "./AdminApiClient.types";
 
@@ -28,7 +28,7 @@ export interface CypressCommandsMethods {
    * @param apiClient - Custom API client to be used instead of the default one. Useful to control several Mocks Servers instances {@link AdminApiClientInterface}
    * @example setConfig({ mock: { delay: 1000 }});
    */
-  setConfig(mocksServerConfig: ConfigurationObject, apiClient?: AdminApiClientInterface): void;
+  setConfig(mocksServerConfig: Configuration, apiClient?: AdminApiClientInterface): void;
   /**
    * Set a specific route variant to be used by the current collection.
    * @param id - Route variant id {@link EntityId}

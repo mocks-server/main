@@ -7,3 +7,4 @@ export * from "./Files.types";
 export * from "./Option.types";
 export * from "./Typing.types";
 export * from "./Validation.types";
+export * from "./Options.types";

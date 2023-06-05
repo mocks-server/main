@@ -11,7 +11,7 @@ import {
   DEFAULT_PORT,
   DEFAULT_CLIENT_HOST,
 } from "@mocks-server/admin-api-paths";
-import type { ConfigurationObject } from "@mocks-server/config";
+import type { Configuration } from "@mocks-server/core";
 
 import { isUndefined, isFalsy } from "./Helpers";
 
@@ -43,7 +43,7 @@ export const AdminApiClient: AdminApiClientConstructor = class AdminApiClient
     return `${this._protocol}://${this._host}:${this._port}`;
   }
 
-  public updateConfig(mocksServerConfig: ConfigurationObject): Promise<void> {
+  public updateConfig(mocksServerConfig: Configuration): Promise<void> {
     if (this._isDisabled()) {
       return doNothing();
     }

@@ -10,9 +10,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 import type {
   ConfigInterface,
-  ConfigurationObject,
   GetOptionValueTypeFromDefinition,
   OptionDefinition,
+  BuiltInConfig,
 } from "@mocks-server/config";
 import type { LoggerInterface, LogLevel } from "@mocks-server/logger";
 import type { Package } from "update-notifier";
@@ -27,7 +27,7 @@ declare global {
   //eslint-disable-next-line @typescript-eslint/no-namespace
   namespace MocksServer {
     //eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface Config extends ConfigurationObject {}
+    interface Config extends BuiltInConfig {}
   }
 }
 
@@ -41,6 +41,8 @@ declare global {
     }
   }
 }
+
+export type Configuration = MocksServer.Config;
 
 /** Mocks-server base core interface */
 export interface BaseCoreInterface {
@@ -77,15 +79,12 @@ export interface CoreAdvancedOptions {
 export interface CoreConstructor {
   /**
    * Creates a Mocks Server core interface
-   * @param config - Programmatic configuration {@link ConfigurationObject}
+   * @param config - Programmatic configuration {@link Configuration}
    * @param advancedOptions - Advanced options {@link AdvancedOptions}
    * @returns Mocks Server core interface {@link CoreInterface}.
    * @example const core = new Core({ log: "error" }, { pkg: { version: "1.2.0" }});
    */
-  new (
-    programmaticConfig?: ConfigurationObject,
-    advancedOptions?: CoreAdvancedOptions
-  ): CoreInterface;
+  new (programmaticConfig?: Configuration, advancedOptions?: CoreAdvancedOptions): CoreInterface;
 }
 
 /** Mocks-server base core interface */

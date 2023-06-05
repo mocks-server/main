@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import type { EntityId } from "@mocks-server/admin-api-client";
-import type { ConfigurationObject } from "@mocks-server/config";
+import type { Configuration } from "@mocks-server/core";
 
 import type { AdminApiClientInterface, AdminApiClientConfig } from "./AdminApiClient.types";
 
@@ -32,7 +32,7 @@ declare global {
        * @example cy.mocksSetConfig({ mock: { routes: { delay: 1000 }} })
        */
       mocksSetConfig(
-        mocksServerConfig: ConfigurationObject,
+        mocksServerConfig: Configuration,
         adminApiClient?: AdminApiClientInterface
       ): Promise<void>;
 

@@ -15,6 +15,7 @@ import {
   Config,
   ConfigInterface,
   ConfigNamespaceInterface,
+  ConfigurationObject,
   OptionInterfaceOfType,
 } from "@mocks-server/config";
 import { Logger, LoggerInterface, LogLevel } from "@mocks-server/logger";
@@ -43,6 +44,7 @@ import type {
   CoreConstructor,
   CoreAdvancedOptions,
   LogOptionDefinition,
+  Configuration,
 } from "./Core.types";
 
 const MODULE_NAME = "mocks";
@@ -57,7 +59,7 @@ const ROOT_OPTIONS: [LogOptionDefinition] = [
 ];
 
 export const Core: CoreConstructor = class Core implements CoreInterface {
-  private _programmaticConfig: MocksServer.Config;
+  private _programmaticConfig: Configuration;
   private _eventEmitter: EventEmitter;
   private _logger: LoggerInterface;
   private _configLogger: LoggerInterface;
@@ -80,10 +82,7 @@ export const Core: CoreConstructor = class Core implements CoreInterface {
   private _startPluginsPromise: Promise<void> | null;
   private _version: string;
 
-  constructor(
-    programmaticConfig: MocksServer.Config = {},
-    advancedOptions: CoreAdvancedOptions = {}
-  ) {
+  constructor(programmaticConfig: Configuration = {}, advancedOptions: CoreAdvancedOptions = {}) {
     // TODO, move to about. Do not read on constructor
     const packageJson = readJsonSync(path.resolve(__dirname, "..", "package.json"));
     this._version = packageJson.version;
@@ -228,7 +227,7 @@ export const Core: CoreConstructor = class Core implements CoreInterface {
     this._updateNotifier.init();
 
     // Init config
-    await this._config.init(this._programmaticConfig);
+    await this._config.init(this._programmaticConfig as ConfigurationObject);
     this._logger.setLevel(this._logOption.value);
 
     // Register plugins, let them add their custom config

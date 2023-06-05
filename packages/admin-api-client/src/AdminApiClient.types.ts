@@ -1,4 +1,4 @@
-import type { ConfigurationObject } from "@mocks-server/config";
+import type { Configuration } from "@mocks-server/core";
 
 import type { ApiResponseBody, ApiClientConfig } from "./AdminApiClientEntities.types";
 import type { EntityId } from "./Common.types";
@@ -26,14 +26,14 @@ export interface AdminApiClientInterface {
    * @returns Promise. Resolved with config data {@link ConfigurationObject}
    * @example const config = await adminApiClient.readConfig();
    */
-  readConfig(): Promise<ConfigurationObject>;
+  readConfig(): Promise<Configuration>;
   /**
    * Updates config data
    * @param newConfig - Partial Mocks Server configuration object to be updated {@link ConfigurationObject}
    * @returns Promise. Resolved with undefined when data is valid
    * @example await adminApiClient.updateConfig({ mock: { delay: 1000 }});
    */
-  updateConfig(newConfig: ConfigurationObject): Promise<void>;
+  updateConfig(newConfig: Configuration): Promise<void>;
   /**
    * Returns alerts data
    * @returns Promise. Resolved with alerts data {@link ApiResponseBody}

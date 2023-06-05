@@ -10,7 +10,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 import { badRequest } from "@hapi/boom";
-import type { ScopedCoreInterface } from "@mocks-server/core";
+import type { ConfigurationObject } from "@mocks-server/config";
+import type { ScopedCoreInterface, Configuration } from "@mocks-server/core";
 import { NextFunction, Response, Router } from "express";
 
 import type { RequestWithId } from "../../server/Server.types";
@@ -34,8 +35,8 @@ export const Config: ConfigConstructor = class Config implements ConfigInterface
     return this._router;
   }
 
-  private _validateNewConfig(newConfig: MocksServer.Config) {
-    return this._config.validate(newConfig);
+  private _validateNewConfig(newConfig: Configuration) {
+    return this._config.validate(newConfig as ConfigurationObject);
   }
 
   private _patch(req: RequestWithId, res: Response, next: NextFunction) {

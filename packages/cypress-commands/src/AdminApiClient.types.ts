@@ -1,5 +1,5 @@
 import type { ApiClientConfig, EntityId, BaseUrl } from "@mocks-server/admin-api-client";
-import type { ConfigurationObject } from "@mocks-server/config";
+import type { Configuration } from "@mocks-server/core";
 
 export interface AdminApiClientConfig extends ApiClientConfig {
   enabled?: boolean;
@@ -26,7 +26,7 @@ export interface AdminApiClientInterface {
    * @returns Promise. Resolved with undefined when data is valid
    * @example await adminApiClient.updateConfig({ mock: { delay: 1000 }});
    */
-  updateConfig(mocksServerConfig: ConfigurationObject): Promise<void>;
+  updateConfig(mocksServerConfig: Configuration): Promise<void>;
   /**
    * Sets a custom route variant to be used by current collection
    * @param id - Route variant id

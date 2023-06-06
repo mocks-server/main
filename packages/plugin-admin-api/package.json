@@ -1,6 +1,6 @@
 {
   "name": "@mocks-server/plugin-admin-api",
-  "version": "5.0.0-beta.3",
+  "version": "5.0.0-beta.4",
   "description": "Mocks Server plugin providing an administration REST API",
   "keywords": [
     "mocks-server-plugin",
@@ -33,7 +33,7 @@
     "test:unit": "jest --runInBand"
   },
   "peerDependencies": {
-    "@mocks-server/core": "5.0.0-beta.2"
+    "@mocks-server/core": "5.0.0-beta.3"
   },
   "dependencies": {
     "@hapi/boom": "9.1.4",

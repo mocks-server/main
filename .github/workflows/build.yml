@@ -1,6 +1,6 @@
 name: build
 env:
-  NODE_CURRENT_VERSION: "16.15.0"
+  NODE_CURRENT_VERSION: "18.16.0"
 on:
   push:
     branches:
@@ -26,11 +26,11 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.4
         with:
-          version: "6.x"
+          version: "8.x"
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16.x"
+          node-version: "18.x"
           cache: 'pnpm'
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -69,11 +69,11 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.4
         with:
-          version: "6.x"
+          version: "8.x"
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16.x"
+          node-version: "18.x"
           cache: 'pnpm'
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -101,7 +101,7 @@ jobs:
     strategy:
       max-parallel: 2
       matrix:
-        node: ["16.15.0"]
+        node: ["18.16.0"]
         projectName: ${{fromJson(needs.get-affected.outputs.test-unit)}}
     env:
       NODE: ${{ matrix.node }}
@@ -117,7 +117,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.4
         with:
-          version: "6.x"
+          version: "8.x"
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
@@ -214,7 +214,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        node: ["14.19.3","16.15.0","17.9.0", "18.2.0"]
+        node: ["18.16.0", "20.0.0"]
         projectName: ${{fromJson(needs.get-affected.outputs.test-e2e)}}
     steps:
       - name: Checkout
@@ -222,7 +222,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.4
         with:
-          version: "6.x"
+          version: "8.x"
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
@@ -244,25 +244,25 @@ jobs:
       - name: Set env vars
         run: |
           echo "NODE_OPTIONS=--openssl-legacy-provider" >> $GITHUB_ENV
-        if: ${{ matrix.node == '18.2.0' || matrix.node == '17.9.0' }}
+        if: ${{ matrix.node == '18.16.0' || matrix.node == '20.0.0' }}
       - name: Test E2E
         run: pnpm run nx run-many -- --target test:e2e --projects ${{ matrix.projectName }}
       - name: Unset env vars
-        if: always() && ${{ matrix.node == '18.2.0' || matrix.node == '17.9.0' }}
+        if: always() && ${{ matrix.node == '18.16.0' || matrix.node == '20.0.0' }}
         run: |
           echo "NODE_OPTIONS=" >> $GITHUB_ENV
   install-windows:
     runs-on: windows-2019
     strategy:
       matrix:
-        node: ["16.15.0"]
+        node: ["18.16.0"]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.4
         with:
-          version: "6.x"
+          version: "8.x"
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
@@ -291,7 +291,7 @@ jobs:
     strategy:
       max-parallel: 2
       matrix:
-        node: ["16.15.0"]
+        node: ["18.16.0"]
         projectName: ${{fromJson(needs.get-affected.outputs.test-e2e)}}
     steps:
       - name: Checkout
@@ -299,7 +299,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.4
         with:
-          version: "6.x"
+          version: "8.x"
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:

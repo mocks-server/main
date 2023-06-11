@@ -10,17 +10,17 @@ jobs:
     - name: Install pnpm
       uses: pnpm/action-setup@v2.2.4
       with:
-        version: "6.x"
+        version: "8.x"
     - uses: actions/setup-node@v3
       with:
-        node-version: '16.x'
+        node-version: '18.x'
         registry-url: 'https://npm.pkg.github.com'
         cache: 'pnpm'
     - run: pnpm install
     - run: pnpm run build:all
     - uses: actions/setup-node@v3
       with:
-        node-version: '16.x'
+        node-version: '18.x'
         registry-url: 'https://npm.pkg.github.com'
         # Defaults to the user or organization that owns the workflow file
         scope: '@mocks-server'

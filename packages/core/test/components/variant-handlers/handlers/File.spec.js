@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 const sinon = require("sinon");
 
 const CoreMocks = require("../../Core.mocks.js");
-const { VariantHandlerFile: File } = require("../../../../src/variant-handlers/handlers/File");
+const { VariantHandlerFile: VHFile } = require("../../../../src/variant-handlers/handlers/File");
 
 describe("File variant handler", () => {
   const FOO_VARIANT = {
@@ -40,7 +40,7 @@ describe("File variant handler", () => {
     };
     coreMocks = new CoreMocks();
     coreInstance = coreMocks.stubs.instance;
-    routesHandler = new File(FOO_VARIANT, coreInstance);
+    routesHandler = new VHFile(FOO_VARIANT, coreInstance);
   });
 
   afterEach(() => {
@@ -50,13 +50,13 @@ describe("File variant handler", () => {
 
   describe("id", () => {
     it("should have file value", () => {
-      expect(File.id).toEqual("file");
+      expect(VHFile.id).toEqual("file");
     });
   });
 
   describe("validationSchema", () => {
     it("should be defined", () => {
-      expect(File.validationSchema).toBeDefined();
+      expect(VHFile.validationSchema).toBeDefined();
     });
   });
 
@@ -78,7 +78,7 @@ describe("File variant handler", () => {
 
     it("should add headers if they are defined", () => {
       const FOO_HEADERS = { foo: "foo" };
-      routesHandler = new File({ ...FOO_VARIANT, headers: FOO_HEADERS }, coreInstance);
+      routesHandler = new VHFile({ ...FOO_VARIANT, headers: FOO_HEADERS }, coreInstance);
       routesHandler.middleware(expressStubs.req, expressStubs.res, expressStubs.next);
 
       expect(expressStubs.res.set.getCall(0).args[0]).toEqual(FOO_HEADERS);

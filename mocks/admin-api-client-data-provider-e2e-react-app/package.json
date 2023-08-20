@@ -13,8 +13,8 @@
     "redux": "4.2.0"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "start": "react-app-rewired --openssl-legacy-provider start",
+    "build": "react-app-rewired --openssl-legacy-provider build",
     "serve": "serve -l 3000"
   },
   "browserslist": {

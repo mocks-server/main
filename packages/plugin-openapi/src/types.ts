@@ -4,6 +4,10 @@ import { MOCKS_SERVER_ROUTE_ID, MOCKS_SERVER_VARIANT_ID } from "./constants";
 
 import type { OpenAPIV3 as OriginalOpenApiV3 } from "openapi-types";
 
+type Prettify<T> = {
+  [K in keyof T]: T[K];
+} & object;
+
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace OpenAPIV3 {
   export interface ResponseObject extends OriginalOpenApiV3.ResponseObject { [MOCKS_SERVER_VARIANT_ID]?: string }
@@ -15,6 +19,26 @@ export namespace OpenAPIV3 {
   export interface PathItemObject extends OriginalOpenApiV3.PathItemObject {}
 
   export type ResponseHeaders = ResponseObject["headers"]
+
+
+  export type DereferencedSchemaObject = Prettify<Omit<OriginalOpenApiV3.SchemaObject, 'additionalProperties' | 'properties' | 'allOf' | 'oneOf' | 'anyOf' | 'not'> & {
+    additionalProperties?: boolean | DereferencedSchemaObject; 
+    properties?: {
+      [name: string]: DereferencedSchemaObject;
+    };
+    allOf?: ( DereferencedSchemaObject)[];
+    oneOf?: ( DereferencedSchemaObject)[];
+    anyOf?: ( DereferencedSchemaObject)[];
+    not?:  DereferencedSchemaObject;
+  }>
+
+  export type ArraySchemaObject = { type: 'array', items: DereferencedSchemaObject };
+
+  export type NonArraySchemaObject = OriginalOpenApiV3.NonArraySchemaObject;
+
+  export type NonArrayDereferencedSchemaObject = Prettify<Omit<DereferencedSchemaObject, 'type'> & {
+      type?: OriginalOpenApiV3.NonArraySchemaObjectType;
+  }>
 
   export interface OperationObject extends OriginalOpenApiV3.OperationObject { [MOCKS_SERVER_ROUTE_ID]?: string }
 

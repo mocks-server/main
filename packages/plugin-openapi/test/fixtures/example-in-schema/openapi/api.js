@@ -70,7 +70,7 @@ module.exports = [
               400: {
                 $ref: "#/components/responses/BadRequest",
               },
-              406: {
+              405: {
                 description: "Invalid schema",
                 content: {
                   "text/plain": {
@@ -78,7 +78,7 @@ module.exports = [
                   },
                 },
               },
-              407: {
+              406: {
                 description: "Invalid schema: mixed allOf",
                 content: {
                   "application/json": {
@@ -162,6 +162,191 @@ module.exports = [
                           },
                         },
                       ],
+                    },
+                  },
+                },
+              },
+              409: {
+                description: "Additional properties without examples",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      additionalProperties: {
+                        type: "string",
+                      },
+                    },
+                  },
+                },
+              },
+              410: {
+                description: "Additional properties with inline example",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      additionalProperties: {
+                        type: "string",
+                        example: "Hello",
+                      },
+                    },
+                  },
+                },
+              },
+              411: {
+                description: "Additional properties with example override",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      additionalProperties: {
+                        type: "string",
+                        example: "ignored",
+                      },
+                      example: {
+                        en: "Hello",
+                        fr: "Bonjour",
+                      },
+                    },
+                  },
+                },
+              },
+              412: {
+                description: "Additional properties as boolean",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      additionalProperties: true,
+                    },
+                  },
+                },
+              },
+              413: {
+                description: "Additional properties as boolean",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      additionalProperties: false,
+                    },
+                  },
+                },
+              },
+              414: {
+                description: "No schema type",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      additionalProperties: {},
+                    },
+                  },
+                },
+              },
+              415: {
+                description: "Array example without items",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      additionalProperties: {
+                        type: "array",
+                      },
+                    },
+                  },
+                },
+              },
+              416: {
+                description: "Array example",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      additionalProperties: {
+                        type: "array",
+                        items: {
+                          type: "string",
+                          format: "uuid",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              417: {
+                description: "String with format",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      additionalProperties: {
+                        type: "string",
+                        format: "password",
+                      },
+                    },
+                  },
+                },
+              },
+              418: {
+                description: "Array example",
+                content: {
+                  "text/plain": {
+                    schema: {
+                      type: "object",
+                      additionalProperties: {
+                        type: "array",
+                        items: {},
+                      },
+                    },
+                  },
+                },
+              },
+              421: {
+                description: "Array example without items (2)",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "array",
+                    },
+                  },
+                },
+              },
+              422: {
+                description: "Invalid type",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      additionalProperties: {
+                        type: "invalid",
+                      },
+                    },
+                  },
+                },
+              },
+              423: {
+                description: "Example type with format",
+                content: {
+                  "text/plain": {
+                    schema: {
+                      type: "string",
+                      format: "hostname",
+                    },
+                  },
+                },
+              },
+              424: {
+                description: "Example type with format",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      properties: {
+                        message: {
+                          type: "string",
+                        },
+                      },
                     },
                   },
                 },

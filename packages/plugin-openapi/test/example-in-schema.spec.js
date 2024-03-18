@@ -30,6 +30,15 @@ describe("when openapi has object with examples", () => {
           variants: [
             "serverVersion:200-json-example",
             "serverVersion:400-json-example",
+            "serverVersion:408-json-example",
+            "serverVersion:409-json-example",
+            "serverVersion:410-json-example",
+            "serverVersion:411-json-example",
+            "serverVersion:412-json-example",
+            "serverVersion:416-json-example",
+            "serverVersion:417-json-example",
+            "serverVersion:423-text-example",
+            "serverVersion:424-json-example",
             "serverVersion:500-text-example",
           ],
         },
@@ -113,6 +122,132 @@ describe("when openapi has object with examples", () => {
           },
         },
         {
+          id: "serverVersion:408-json-example",
+          type: "json",
+          route: "serverVersion",
+          delay: null,
+          disabled: false,
+          preview: {
+            status: 408,
+            body: {
+              prop1: "string",
+              prop2: "string",
+              prop3: "string",
+            },
+          },
+        },
+        {
+          id: "serverVersion:409-json-example",
+          type: "json",
+          route: "serverVersion",
+          delay: null,
+          disabled: false,
+          preview: {
+            status: 409,
+            body: {
+              additionalProp1: "string",
+              additionalProp2: "string",
+              additionalProp3: "string",
+            },
+          },
+        },
+        {
+          id: "serverVersion:410-json-example",
+          type: "json",
+          route: "serverVersion",
+          delay: null,
+          disabled: false,
+          preview: {
+            status: 410,
+            body: {
+              additionalProp1: "Hello",
+              additionalProp2: "Hello",
+              additionalProp3: "Hello",
+            },
+          },
+        },
+        {
+          id: "serverVersion:411-json-example",
+          type: "json",
+          route: "serverVersion",
+          delay: null,
+          disabled: false,
+          preview: {
+            status: 411,
+            body: {
+              en: "Hello",
+              fr: "Bonjour",
+            },
+          },
+        },
+        {
+          id: "serverVersion:412-json-example",
+          type: "json",
+          route: "serverVersion",
+          delay: null,
+          disabled: false,
+          preview: {
+            status: 412,
+            body: {
+              additionalProp1: {},
+            },
+          },
+        },
+        {
+          id: "serverVersion:416-json-example",
+          type: "json",
+          route: "serverVersion",
+          delay: null,
+          disabled: false,
+          preview: {
+            status: 416,
+            body: {
+              additionalProp1: ["3fa85f64-5717-4562-b3fc-2c963f66afa6"],
+              additionalProp2: ["3fa85f64-5717-4562-b3fc-2c963f66afa6"],
+              additionalProp3: ["3fa85f64-5717-4562-b3fc-2c963f66afa6"],
+            },
+          },
+        },
+        {
+          id: "serverVersion:417-json-example",
+          type: "json",
+          route: "serverVersion",
+          delay: null,
+          disabled: false,
+          preview: {
+            status: 417,
+            body: {
+              additionalProp1: "string",
+              additionalProp2: "string",
+              additionalProp3: "string",
+            },
+          },
+        },
+        {
+          id: "serverVersion:423-text-example",
+          type: "text",
+          route: "serverVersion",
+          delay: null,
+          disabled: false,
+          preview: {
+            status: 423,
+            body: "example.com",
+          },
+        },
+        {
+          id: "serverVersion:424-json-example",
+          type: "json",
+          route: "serverVersion",
+          delay: null,
+          disabled: false,
+          preview: {
+            status: 424,
+            body: {
+              message: "string",
+            },
+          },
+        },
+        {
           id: "serverVersion:500-text-example",
           type: "text",
           route: "serverVersion",
@@ -142,7 +277,6 @@ describe("when openapi has object with examples", () => {
             ],
           },
         },
-
         {
           id: "getUsers:418-text-example",
           type: "text",
@@ -154,7 +288,6 @@ describe("when openapi has object with examples", () => {
             body: "I'm",
           },
         },
-
         {
           id: "getUsers:500-text-example",
           type: "text",

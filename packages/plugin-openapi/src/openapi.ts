@@ -9,8 +9,12 @@ import { MOCKS_SERVER_ROUTE_ID, MOCKS_SERVER_VARIANT_ID, VariantTypes, CONTENT_T
 
 const methods = Object.values(OpenAPIV3Object.HttpMethods);
 
+function isEmpty<TValue>(value: TValue | null | undefined): value is null | undefined {
+  return value == null;
+}
+
 function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-  return value !== null && value !== undefined;
+  return !isEmpty(value);
 }
 
 function replaceTemplateInPath(path: string): string {
@@ -82,7 +86,7 @@ function getStatusCode(code: string, codes: string[]): number {
 }
 
 function openApiResponseExampleToVariant(exampleId: string, code: number, variantType: RouteVariantTypes, mediaType: string, openApiResponseExample: OpenAPIV3.ExampleObject, openApiResponseHeaders?:  OpenAPIV3.ResponseHeaders): RouteVariant | null {
-  if(!notEmpty(openApiResponseExample) || !notEmpty(openApiResponseExample.value)) {
+  if(isEmpty(openApiResponseExample) || isEmpty(openApiResponseExample.value)) {
     return null;
   }
   
@@ -122,12 +126,185 @@ function openApiResponseExamplesToVariants(code: number, variantType: RouteVaria
     }).filter(notEmpty);
   }
 
-  const res = openApiResponseExampleToVariant("example", code, variantType, mediaType, { value: example }, openApiResponseHeaders);
-  return res ? [res] : null;
+  let res = openApiResponseExampleToVariant("example", code, variantType, mediaType, { value: example }, openApiResponseHeaders);
+
+  if (res) return [res];
+
+  const { schema } = openApiResponseMediaType;
+  
+  if (isSchemaObject(schema) ) {
+    if (notEmpty(schema.example)) {
+      return openApiResponseExamplesToVariants(
+        code,
+        variantType,
+        mediaType,
+        schema,
+        openApiResponseHeaders,
+      );
+    }
+
+    res = openApiResponseExampleToVariant(
+      "example",
+      code,
+      variantType,
+      mediaType,
+      { value: collectExampleFromSchema(schema) },
+      openApiResponseHeaders,
+    );
+
+    if (res) {
+      return [res];
+    }
+  }
+  
+  return null;
+}
+
+function isSchemaObject(value: unknown): value is OpenAPIV3.DereferencedSchemaObject {
+  return value != null && typeof value === 'object' && !Array.isArray(value) && !('$ref' in value);
+}
+
+function collectExampleFromSchema(schema: OpenAPIV3.DereferencedSchemaObject, isArray = false): Record<string, unknown>[] | Record<string, unknown> | null {
+  if (schema.type === "object") {
+      // @ts-expect-error somehow TS is not able to narrow the discriminated
+      // union type and thinks that `schema.type` could still be "array"
+      return collectExampleFromObjectSchema(schema);
+  }
+
+  if (schema.type === 'array') {
+    // @ts-expect-error same problem as above, type narrowing is not working
+    // here.
+    const items = schema.items;
+    
+    if (!items) return null;
+    
+    return collectExampleFromSchema(items, true);
+  }
+
+  if (schema.type === 'boolean' || schema.type === 'integer' || schema.type === 'number' || schema.type === 'string') {
+    const returnValue = schema.example ?? schema.enum?.[0] ?? getExampleFromType(schema);
+
+     return isArray ? [returnValue] : returnValue;
+  }
+  
+  if (schema.allOf) {
+    if (!validateAllOfSchema(schema)) {
+      return null;
+    }
+
+    const mergedProps = schema.allOf.reduce<{[name: string]: OpenAPIV3.DereferencedSchemaObject}>(
+      (acc, cur) => ({
+        ...acc,
+        ...(cur.properties),
+      }),
+      {},
+    );
+
+    const result = collectExampleFromObjectSchema({ properties: mergedProps });
+  
+    return isArray && result ? [result] : result;
+  }
+
+  if (schema.oneOf) {
+    return collectExampleFromSchema(schema.oneOf[0]);
+  }
+
+  if (schema.anyOf) {
+    return collectExampleFromSchema(schema.anyOf[0]);
+  }
+
+  return null;
+}
+
+function validateAllOfSchema(schema: OpenAPIV3.DereferencedSchemaObject): schema is OpenAPIV3.NonArrayDereferencedSchemaObject {
+  const valid = schema.allOf?.every(entry => isSchemaObject(entry) && entry.type === 'object' && Boolean(entry.properties));
+  
+  return Boolean(valid);
+}
+
+
+function collectExampleFromObjectSchema(schema: OpenAPIV3.NonArrayDereferencedSchemaObject) {
+  const propertyEntries = Object.entries(schema.properties ?? {}).map(([key, prop]) => [key, prop.example ?? prop.enum?.[0] ?? getExampleFromType(prop)]).filter(([, value]) => notEmpty(value));
+  
+  const properties = propertyEntries.length ? Object.fromEntries(propertyEntries) as Record<string, unknown> : null;
+  const additionalProperties = collectAdditionalPropertiesExample(schema);
+
+  if (properties == null && additionalProperties == null) return null;
+  
+  const props = properties || {};
+  const add = additionalProperties || {};
+
+  return {
+    ...props,
+    ...add,
+  }
+}
+
+function collectAdditionalPropertiesExample(schema: OpenAPIV3.NonArrayDereferencedSchemaObject) {
+  if (!schema.additionalProperties) return null;
+
+  if (typeof schema.additionalProperties === 'boolean') {
+    return { additionalProp1: {} };
+  }
+
+  const exampleValue = schema.additionalProperties.example || getExampleFromType(schema.additionalProperties);
+
+  if (!exampleValue) return null;
+
+  return {
+    additionalProp1: exampleValue,
+    additionalProp2: exampleValue,
+    additionalProp3: exampleValue,
+  }
+}
+
+function getExampleFromType(schema: OpenAPIV3.DereferencedSchemaObject): Array<string | number | boolean | object> | string | number | boolean | object | null {
+  const defaultValues = new Map<string, number|boolean|string|object>([
+    ['number', 0,],
+    ['integer', 0,],
+    ['boolean', true,],
+    ['object', {},],
+    ['string', 'string',],
+    ['string.date', new Date().toISOString().split('T')[0]],
+    ['string.date-time', new Date().toISOString()],
+    ['string.email', 'user@example.com',],
+    ['string.uuid', '3fa85f64-5717-4562-b3fc-2c963f66afa6',],
+    ['string.hostname', 'example.com',],
+    ['string.ipv4', '198.51.100.42',],
+    ['string.ipv6', '2001:0db8:5b96:0000:0000:426f:8e17:642a',],
+  ]);
+
+  if (!schema.type) {
+    return null;
+  }
+
+  let key = schema.type;
+
+  if (key === 'array') {
+    // @ts-expect-error type narrowing not working for some reason (schema
+    // should be narrowed to "ArraySchemaObject")
+    if (schema.items == null) return null;
+    // @ts-expect-error same problem as above
+    const itemType = getExampleFromType(schema.items);
+
+    return itemType ? [itemType] : null;
+  }
+
+  if (schema.format) {
+    key += `.${schema.format}`;
+
+    if (!defaultValues.has(key)) {
+      key = schema.type
+    }
+  }
+  
+  // @ts-expect-error The check with Map.has should exclude "undefined" from
+  // the Map.get return type union, but TS doesn't support that yet
+  return defaultValues.has(key) ? defaultValues.get(key) : null;
 }
 
 function openApiResponseMediaToVariants(code: number, mediaType: string, openApiResponseMediaType?: OpenAPIV3.MediaTypeObject, openApiResponseHeaders?: OpenAPIV3.ResponseHeaders): RouteVariants  {
-  if(!notEmpty(openApiResponseMediaType)) {
+  if(isEmpty(openApiResponseMediaType)) {
     return null;
   }
   if(isJsonMediaType(mediaType)) {
@@ -140,7 +317,7 @@ function openApiResponseMediaToVariants(code: number, mediaType: string, openApi
 }
 
 function openApiResponseCodeToVariants(code: number, openApiResponse?: OpenAPIV3.ResponseObject): RouteVariants  {
-  if(!notEmpty(openApiResponse)) {
+  if(isEmpty(openApiResponse)) {
     return [];
   }
   const content = openApiResponse.content;
@@ -153,7 +330,7 @@ function openApiResponseCodeToVariants(code: number, openApiResponse?: OpenAPIV3
 }
 
 function routeVariants(openApiResponses?: OpenAPIV3.ResponsesObject): RouteVariants {
-  if(!notEmpty(openApiResponses)) {
+  if(isEmpty(openApiResponses)) {
     return [];
   }
   const codes = Object.keys(openApiResponses);
@@ -169,7 +346,7 @@ function getCustomRouteId(openApiOperation: OpenAPIV3.OperationObject): string |
 }
 
 function openApiPathToRoutes(path: string, basePath = "", openApiPathObject?: OpenAPIV3.PathItemObject ): Routes | null {
-  if(!notEmpty(openApiPathObject)) {
+  if(isEmpty(openApiPathObject)) {
     return null;
   }
   return methods.map(method => {

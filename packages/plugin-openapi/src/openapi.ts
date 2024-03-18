@@ -174,11 +174,16 @@ function collectExampleFromSchema(schema: OpenAPIV3.DereferencedSchemaObject, is
   if (schema.type === 'array') {
     // @ts-expect-error same problem as above, type narrowing is not working
     // here.
-    return collectExampleFromSchema((schema).items, true);
+    const items = schema.items;
+    
+    if (!items) return null;
+    
+    return collectExampleFromSchema(items, true);
   }
 
   if (schema.type === 'boolean' || schema.type === 'integer' || schema.type === 'number' || schema.type === 'string') {
-     const returnValue = schema.example ?? schema.enum?.[0] ?? null;
+    const returnValue = schema.example ?? schema.enum?.[0] ?? getExampleFromType(schema);
+
      return isArray ? [returnValue] : returnValue;
   }
   
@@ -218,10 +223,84 @@ function validateAllOfSchema(schema: OpenAPIV3.DereferencedSchemaObject): schema
 }
 
 
-function collectExampleFromObjectSchema(schema: OpenAPIV3.NonArrayDereferencedSchemaObject & { properties: NonNullable<OpenAPIV3.NonArrayDereferencedSchemaObject['properties']>}) {
-  const entries = Object.entries(schema.properties).map(([key, prop]) => [key, prop.example ?? prop.enum?.[0]]).filter(([, value]) => notEmpty(value));
+function collectExampleFromObjectSchema(schema: OpenAPIV3.NonArrayDereferencedSchemaObject) {
+  const propertyEntries = Object.entries(schema.properties ?? {}).map(([key, prop]) => [key, prop.example ?? prop.enum?.[0] ?? getExampleFromType(prop)]).filter(([, value]) => notEmpty(value));
   
-  return entries.length ? Object.fromEntries(entries) as Record<string, unknown> : null;
+  const properties = propertyEntries.length ? Object.fromEntries(propertyEntries) as Record<string, unknown> : null;
+  const additionalProperties = collectAdditionalPropertiesExample(schema);
+
+  if (properties == null && additionalProperties == null) return null;
+  
+  const props = properties || {};
+  const add = additionalProperties || {};
+
+  return {
+    ...props,
+    ...add,
+  }
+}
+
+function collectAdditionalPropertiesExample(schema: OpenAPIV3.NonArrayDereferencedSchemaObject) {
+  if (!schema.additionalProperties) return null;
+
+  if (typeof schema.additionalProperties === 'boolean') {
+    return { additionalProp1: {} };
+  }
+
+  const exampleValue = schema.additionalProperties.example || getExampleFromType(schema.additionalProperties);
+
+  if (!exampleValue) return null;
+
+  return {
+    additionalProp1: exampleValue,
+    additionalProp2: exampleValue,
+    additionalProp3: exampleValue,
+  }
+}
+
+function getExampleFromType(schema: OpenAPIV3.DereferencedSchemaObject): Array<string | number | boolean | object> | string | number | boolean | object | null {
+  const defaultValues = new Map<string, number|boolean|string|object>([
+    ['number', 0,],
+    ['integer', 0,],
+    ['boolean', true,],
+    ['object', {},],
+    ['string', 'string',],
+    ['string.date', new Date().toISOString().split('T')[0]],
+    ['string.date-time', new Date().toISOString()],
+    ['string.email', 'user@example.com',],
+    ['string.uuid', '3fa85f64-5717-4562-b3fc-2c963f66afa6',],
+    ['string.hostname', 'example.com',],
+    ['string.ipv4', '198.51.100.42',],
+    ['string.ipv6', '2001:0db8:5b96:0000:0000:426f:8e17:642a',],
+  ]);
+
+  if (!schema.type) {
+    return null;
+  }
+
+  let key = schema.type;
+
+  if (key === 'array') {
+    // @ts-expect-error type narrowing not working for some reason (schema
+    // should be narrowed to "ArraySchemaObject")
+    if (schema.items == null) return null;
+    // @ts-expect-error same problem as above
+    const itemType = getExampleFromType(schema.items);
+
+    return itemType ? [itemType] : null;
+  }
+
+  if (schema.format) {
+    key += `.${schema.format}`;
+
+    if (!defaultValues.has(key)) {
+      key = schema.type
+    }
+  }
+  
+  // @ts-expect-error The check with Map.has should exclude "undefined" from
+  // the Map.get return type union, but TS doesn't support that yet
+  return defaultValues.has(key) ? defaultValues.get(key) : null;
 }
 
 function openApiResponseMediaToVariants(code: number, mediaType: string, openApiResponseMediaType?: OpenAPIV3.MediaTypeObject, openApiResponseHeaders?: OpenAPIV3.ResponseHeaders): RouteVariants  {

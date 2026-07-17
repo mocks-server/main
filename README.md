@@ -1,17 +1,10 @@
-<p align="center"><a href="https://www.mocks-server.org" target="_blank" rel="noopener noreferrer"><img width="120" src="https://www.mocks-server.org/img/logo_120.png" alt="Mocks Server logo"></a></p>
-
-<p align="center">
-  <a href="https://github.com/mocks-server/main/actions?query=workflow%3Abuild+branch%3Amaster"><img src="https://github.com/mocks-server/main/workflows/build/badge.svg?branch=master" alt="Build Status"></a>
-  <a href="https://codecov.io/gh/mocks-server/main"><img src="https://codecov.io/gh/mocks-server/main/branch/master/graph/badge.svg?token=2S8ZR55AJV" alt="Coverage"></a>
-  <a href="https://sonarcloud.io/project/overview?id=mocks-server_main"><img src="https://sonarcloud.io/api/project_badges/measure?project=mocks-server_main&metric=alert_status" alt="Quality Gate"></a>
-  <a href="https://www.npmjs.com/package/@mocks-server/main"><img src="https://img.shields.io/npm/dm/@mocks-server/main.svg" alt="Downloads"></a>
-  <a href="https://renovatebot.com"><img src="https://img.shields.io/badge/renovate-enabled-brightgreen.svg" alt="Renovate"></a>
-  <a href="https://github.com/mocks-server/main/releases"><img src="https://img.shields.io/github/release-date/mocks-server/main.svg" alt="Last release"></a>
-  <a href="https://github.com/mocks-server/main/commits"><img src="https://img.shields.io/github/last-commit/mocks-server/main.svg" alt="Last commit"></a>
-  <a href="https://github.com/mocks-server/main/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/@mocks-server/main.svg" alt="License"></a>
-</p>
-
----
+> [!WARNING]
+> **Project discontinued**
+>
+> This project is no longer maintained and has been archived.
+> It will not receive new features, bug fixes, or security updates.
+>
+> Thank you to everyone who used the project, reported issues, and contributed over the years. Your support is greatly appreciated.
 
 ## Introduction
 
@@ -35,7 +28,7 @@ Providing a Javascript API, an interactive command line interface and a REST API
 
 ## Documentation
 
-To check out docs, visit [www.mocks-server.org][website-url].
+To check out docs, visit [mocks-server.javierbrea.com][website-url].
 
 ## Ecosystem
 
@@ -54,11 +47,6 @@ To check out docs, visit [www.mocks-server.org][website-url].
 | [config] | [![config-status]][config-package] | Provides configuration to [core][core] components and plugins |
 | [nested-collections] | [![nested-collections-status]][nested-collections-package] | Nested collections manager. Used to provide alert namespaces to plugins |
 | [logger] | [![logger-status]][logger-package] | Winston-based logger with namespaces and events emitter |
-
-## Contributing
-
-Contributors are welcome.
-Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of conduct](.github/CODE_OF_CONDUCT.md).
 
 [main]: https://github.com/mocks-server/main/tree/master/packages/main
 [main-status]: https://img.shields.io/npm/v/@mocks-server/main.svg
@@ -112,6 +100,6 @@ Please read the [contributing guidelines](.github/CONTRIBUTING.md) and [code of 
 [logger-status]: https://img.shields.io/npm/v/@mocks-server/logger.svg
 [logger-package]: https://npmjs.com/package/@mocks-server/logger
 
-[website-url]: https://www.mocks-server.org
+[website-url]: https://mocks-server.javierbrea.com
 [data-provider]: https://www.data-provider.org
 [cypress]: https://www.cypress.io/
